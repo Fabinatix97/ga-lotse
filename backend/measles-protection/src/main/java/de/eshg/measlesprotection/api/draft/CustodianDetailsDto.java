@@ -35,4 +35,4 @@ public record CustodianDetailsDto(
     String placeOfBirth,
     SalutationDto salutation,
     String title,
-    @NotNull @Valid AddressDto address) {}
+    @Valid AddressDto address) {}

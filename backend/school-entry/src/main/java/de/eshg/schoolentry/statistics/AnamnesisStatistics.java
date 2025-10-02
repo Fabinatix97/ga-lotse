@@ -109,6 +109,14 @@ public class AnamnesisStatistics {
     return anamnesisGetter.apply(anamnesis);
   }
 
+  static String getNumberOfSiblings(SchoolEntryProcedure procedure) {
+    Anamnesis anamnesis = procedure.getAnamnesis();
+    if (anamnesis == null || anamnesis.getNumberOfSiblings() == null) {
+      return null;
+    }
+    return anamnesis.getNumberOfSiblings().toString();
+  }
+
   private static String getAnamnesisCheckUpsAttribute(
       SchoolEntryProcedure procedure,
       Function<Anamnesis, de.eshg.schoolentry.domain.model.BooleanWithUnknown> anamnesisGetter) {

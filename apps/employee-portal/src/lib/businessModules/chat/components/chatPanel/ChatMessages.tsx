@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Box, Divider, List, ListItem, Typography } from "@mui/joy";
+import { Box, Divider, List, ListItem, Stack, Typography } from "@mui/joy";
 import { SxProps } from "@mui/joy/styles/types";
 import { isSameDay, startOfDay } from "date-fns";
 import { User } from "matrix-js-sdk";
@@ -88,6 +88,7 @@ export function ChatMessages({ room, sx }: Readonly<ChatMessagesProps>) {
   async function removeMessage(messageId: string) {
     await matrixClient.redactEvent(room.room.roomId, messageId);
   }
+
   async function editChatMessage(
     messageId: string,
     text: string,
@@ -111,112 +112,115 @@ export function ChatMessages({ room, sx }: Readonly<ChatMessagesProps>) {
         ...(sx ?? {}),
       }}
       data-testid="chat-messages"
+      role="log"
+      aria-live="polite"
+      aria-atomic="false"
     >
-      <List
+      <Stack
         ref={rootRef}
-        sx={{
-          display: "flex",
-          flexDirection: "column-reverse",
-          overflowY: "auto",
-        }}
+        direction="column-reverse"
+        sx={{ overflowY: "auto" }}
       >
-        {messages?.map((message, index: number) => {
-          if (!message) return null;
-          if (isChatMessage(message) && !message.content) return null;
-          const nextMessage = messages[index + 1];
-          const shouldShowDivider =
-            index !== messages.length - 1 &&
-            message.timestamp &&
-            nextMessage?.timestamp &&
-            nextMessage &&
-            !isSameDay(
-              startOfDay(message.timestamp),
-              startOfDay(nextMessage.timestamp),
-            );
+        <List>
+          {messages?.toReversed().map((message, index: number) => {
+            if (!message) return null;
+            if (isChatMessage(message) && !message.content) return null;
+            const nextMessage = messages[index + 1];
+            const shouldShowDivider =
+              index !== messages.length - 1 &&
+              message.timestamp &&
+              nextMessage?.timestamp &&
+              nextMessage &&
+              !isSameDay(
+                startOfDay(message.timestamp),
+                startOfDay(nextMessage.timestamp),
+              );
 
-          const mentions: MentionedMember[] =
-            "mentions" in message && message.mentions?.length
-              ? pipe(
-                  [...new Set(message.mentions)],
-                  map((user) => {
-                    const roomMember = find(roomMembers, (m) =>
-                      isStrictEqual(m.userId, user),
-                    );
+            const mentions: MentionedMember[] =
+              "mentions" in message && message.mentions?.length
+                ? pipe(
+                    [...new Set(message.mentions)],
+                    map((user) => {
+                      const roomMember = find(roomMembers, (m) =>
+                        isStrictEqual(m.userId, user),
+                      );
 
-                    return roomMember
-                      ? { name: roomMember.name, userId: roomMember.userId }
-                      : undefined;
-                  }),
-                  filter((u) => isTruthy(u)),
-                )
-              : [];
+                      return roomMember
+                        ? { name: roomMember.name, userId: roomMember.userId }
+                        : undefined;
+                    }),
+                    filter((u) => isTruthy(u)),
+                  )
+                : [];
 
-          return (
-            <ListItem
-              key={message.id}
-              sx={{
-                display: "block",
-              }}
-            >
-              <Box
+            return (
+              <ListItem
+                key={message.id}
                 sx={{
-                  width: "100%",
-                  display: "flex",
-                  flexDirection:
-                    message.sender instanceof User &&
-                    message.sender?.userId === loggedInUserId
-                      ? "row-reverse"
-                      : "row",
-                  paddingX: { xxs: 0.5, sm: 3 },
-                  paddingY: 0,
-                  marginBottom: isChatMessage(message) ? 3 : 2,
+                  display: "block",
                 }}
+                role="listitem"
               >
-                {isSystemMessage(message) ? (
-                  <ChatSystemMessage key={message.id} message={message} />
-                ) : (
-                  <ChatBubble
-                    variant={
-                      message.sender?.userId === loggedInUserId
-                        ? "sent"
-                        : "received"
-                    }
-                    loggedInUserId={loggedInUserId}
-                    message={message}
-                    mentions={mentions}
-                    lastReadMessageIndexes={lastReadMessageIndexes}
-                    index={index}
-                    removeMessage={removeMessage}
-                    editMessage={(text, mentionedUsers) =>
-                      editChatMessage(message.id, text, mentionedUsers)
-                    }
-                    roomMembers={roomMembers}
-                    edited={message.edited}
-                    roomId={room.room.roomId}
-                  />
-                )}
-              </Box>
-              {shouldShowDivider && message.timestamp && (
-                <Divider
+                <Box
                   sx={{
                     width: "100%",
-                    padding: 2,
-                    paddingTop: 0,
-                    "&::before, &::after": {
-                      backgroundColor: "neutral.200",
-                    },
+                    display: "flex",
+                    flexDirection:
+                      message.sender instanceof User &&
+                      message.sender?.userId === loggedInUserId
+                        ? "row-reverse"
+                        : "row",
+                    paddingX: { xxs: 0.5, sm: 3 },
+                    paddingY: 0,
+                    marginBottom: isChatMessage(message) ? 3 : 2,
                   }}
                 >
-                  <Typography level="title-sm" textColor="neutral.500">
-                    {getDayLabel(message.timestamp)}
-                  </Typography>
-                </Divider>
-              )}
-            </ListItem>
-          );
-        })}
-        {hasNextPage && <Box ref={sentryRef} />}
-      </List>
+                  {isSystemMessage(message) ? (
+                    <ChatSystemMessage key={message.id} message={message} />
+                  ) : (
+                    <ChatBubble
+                      variant={
+                        message.sender?.userId === loggedInUserId
+                          ? "sent"
+                          : "received"
+                      }
+                      loggedInUserId={loggedInUserId}
+                      message={message}
+                      mentions={mentions}
+                      lastReadMessageIndexes={lastReadMessageIndexes}
+                      index={index}
+                      removeMessage={removeMessage}
+                      editMessage={(text, mentionedUsers) =>
+                        editChatMessage(message.id, text, mentionedUsers)
+                      }
+                      roomMembers={roomMembers}
+                      edited={message.edited}
+                      roomId={room.room.roomId}
+                    />
+                  )}
+                </Box>
+                {shouldShowDivider && message.timestamp && (
+                  <Divider
+                    sx={{
+                      width: "100%",
+                      padding: 2,
+                      paddingTop: 0,
+                      "&::before, &::after": {
+                        backgroundColor: "neutral.200",
+                      },
+                    }}
+                  >
+                    <Typography level="title-sm" textColor="neutral.500">
+                      {getDayLabel(message.timestamp)}
+                    </Typography>
+                  </Divider>
+                )}
+                {hasNextPage && <Box ref={sentryRef} />}
+              </ListItem>
+            );
+          })}
+        </List>
+      </Stack>
       {!!typingUsers?.length && (
         <Typography
           level="body-sm"

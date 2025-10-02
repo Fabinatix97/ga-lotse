@@ -26,7 +26,10 @@ import {
   mapExaminationEvaluationToExaminationResultValue,
   validateValue,
 } from "@/lib/businessModules/schoolEntry/features/procedures/sopessExamination/SopessExaminationForm";
-import { EVALUATION_EXAMINATION_TYPES } from "@/lib/businessModules/schoolEntry/features/procedures/translations";
+import {
+  EVALUATION_EXAMINATION_TYPES,
+  REQUIRED_PROCEDURE_PROPERTIES,
+} from "@/lib/businessModules/schoolEntry/features/procedures/translations";
 
 interface PseudowordFormProps {
   points: OptionalFieldValue<number>;
@@ -105,7 +108,9 @@ export function PseudowordForm(props: PseudowordFormProps) {
         <Stack direction="row" gap={2}>
           <SopessExaminationFields
             examinationResultName={fieldName("result")}
-            examinationResultLabel="Auditive Infoverarbeitung"
+            examinationResultLabel={
+              REQUIRED_PROCEDURE_PROPERTIES.SOPESS_EXAMINATION_AUDITIVE_PROCESSING_RESULT
+            }
             responseName={fieldName("doctorLetter")}
             examinationResultValue={props.result}
             setFieldValue={props.setFieldValue}

@@ -21,6 +21,7 @@ import {
 import { SwitchField } from "@/lib/shared/components/formFields/SwitchField";
 
 type AdminFormValues = Record<string, boolean>;
+
 interface AssignAdminProps {
   roomId: string;
   onCancel: () => void;
@@ -90,45 +91,60 @@ export function AssignAdminView({
           height: "100%",
         }}
       >
-        <Typography level="title-lg">Admins bestimmen</Typography>
+        <Typography level="title-lg" component="h3" id="assign-admin-label">
+          Admins bestimmen
+        </Typography>
         <Formik
           initialValues={initialValues}
           enableReinitialize
           onSubmit={handleSubmit}
         >
           {({ initialValues }) => (
-            <FormPlus>
-              {Object.keys(initialValues).map((id) => {
-                const memberInfo = joinedMembers.find(
-                  (member) => member.member.userId === id,
-                );
-                const member = memberInfo?.member;
-                if (!member) return null;
+            <FormPlus aria-labelledby="assign-admin-label">
+              <Box display="contents" role="list">
+                {Object.keys(initialValues).map((id, index) => {
+                  const memberInfo = joinedMembers.find(
+                    (member) => member.member.userId === id,
+                  );
+                  const member = memberInfo?.member;
+                  if (!member) return null;
 
-                return (
-                  <Stack
-                    key={`['${member.userId}']`}
-                    direction="row"
-                    justifyContent="space-between"
-                    marginBottom={2}
-                  >
-                    <Stack direction="row" alignItems="center" gap={1}>
-                      <ChatAvatar
-                        avatarUrl={null}
-                        userId={member.userId}
-                        name={member.name}
-                        size="sm"
-                      />
-                      <Typography level="title-sm">{member.name}</Typography>
+                  return (
+                    <Stack
+                      key={`['${member.userId}']`}
+                      direction="row"
+                      justifyContent="space-between"
+                      marginBottom={2}
+                      role="listitem"
+                    >
+                      <Stack direction="row" alignItems="center" gap={1}>
+                        <ChatAvatar
+                          avatarUrl={null}
+                          userId={member.userId}
+                          name={member.name}
+                          size="sm"
+                        />
+                        <Typography
+                          level="title-sm"
+                          id={`member-label-${index}`}
+                        >
+                          {member.name}
+                        </Typography>
+                      </Stack>
+                      {initialValues[member.userId] ? (
+                        <Switch
+                          checked
+                          size="lg"
+                          disabled
+                          aria-labelledby={`member-label-${index}`}
+                        />
+                      ) : (
+                        <SwitchField name={`['${member.userId}']`} label="" />
+                      )}
                     </Stack>
-                    {initialValues[member.userId] ? (
-                      <Switch checked size="lg" disabled />
-                    ) : (
-                      <SwitchField name={`['${member.userId}']`} label="" />
-                    )}
-                  </Stack>
-                );
-              })}
+                  );
+                })}
+              </Box>
               <Stack
                 direction="row"
                 justifyContent="space-between"

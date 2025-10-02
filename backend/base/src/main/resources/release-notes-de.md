@@ -2,6 +2,23 @@ GA-Lotse ist ein Kooperationsprojekt des Gesundheitsamts Frankfurt am Main mit d
 
 Finanziert von der Europäischen Union – NextGenerationEU
 
+## GA-Lotse 2.8
+_01.10.2025_
+
+Einundzwanzigster Release der Anwendung GA-Lotse
+
+### Einschulungsuntersuchungen:
+
+* Planung
+  * Detailliertere Anzeige der fehlenden Attribute für den Schulinfobrief
+* Statistik
+  * Schuljahr als Attribut auswählbar
+
+### Zahnärztlicher Dienst
+
+* Statistik
+  * Schuljahr als Attribut auswählbar
+
 ## GA-Lotse 2.7
 _24.09.2025_
 

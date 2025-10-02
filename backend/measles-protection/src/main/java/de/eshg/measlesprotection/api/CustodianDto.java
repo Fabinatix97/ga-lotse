@@ -37,6 +37,6 @@ public record CustodianDto(
     String placeOfBirth,
     SalutationDto salutation,
     String title,
-    @NotNull @Valid AddressDto address,
+    @Valid AddressDto address,
     @Valid CustodianSyncDto custodianSync)
     implements PersonBaseDto {}

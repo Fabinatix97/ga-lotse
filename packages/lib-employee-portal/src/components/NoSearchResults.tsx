@@ -13,6 +13,7 @@ interface NoSearchResultsProps {
   buttonLabel?: string;
   onClick?: () => void;
   decorator?: ReactNode;
+  ariaHideButton?: boolean;
 }
 
 export function NoSearchResults({
@@ -20,6 +21,7 @@ export function NoSearchResults({
   buttonLabel,
   onClick,
   decorator,
+  ariaHideButton,
 }: NoSearchResultsProps) {
   return (
     <Stack alignItems="center" gap={3}>
@@ -29,6 +31,7 @@ export function NoSearchResults({
       </Stack>
       {isNonNullish(buttonLabel) && isNonNullish(onClick) && (
         <Button
+          aria-hidden={ariaHideButton}
           variant="outlined"
           startDecorator={decorator ?? <AddOutlined />}
           onClick={onClick}

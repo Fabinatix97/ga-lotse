@@ -46,11 +46,10 @@ import de.eshg.rest.client.SimpleModelAttributeArgumentResolver;
 import java.net.URI;
 import java.time.Duration;
 import java.time.Instant;
-import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+import org.apache.commons.lang3.NotImplementedException;
 import org.springframework.core.convert.ConversionService;
-import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestClient;
@@ -227,7 +226,9 @@ public class BusinessModuleClient
   }
 
   @Override
-  public void closeGdprValidationTask(UUID gdprProcedureId) {}
+  public void closeGdprValidationTask(UUID gdprProcedureId) {
+    throw new NotImplementedException();
+  }
 
   @Override
   public void addDownloadPackage(UUID gdprProcedureId, UUID businessProcedureId) {
@@ -246,12 +247,12 @@ public class BusinessModuleClient
 
   @Override
   public GetGdprDownloadPackagesInfoResponse getGdprDownloadPackagesInfo(UUID procedureId) {
-    return new GetGdprDownloadPackagesInfoResponse(List.of());
+    throw new NotImplementedException();
   }
 
   @Override
-  public ResponseEntity<Resource> getGdprDownloadPackage(UUID downloadId, UUID gdprProcedureId) {
-    return ResponseEntity.ok().body(new ByteArrayResource(new byte[] {}));
+  public ResponseEntity<Resource> getGdprDownloadPackage(UUID downloadId) {
+    throw new NotImplementedException();
   }
 
   @Override
@@ -260,7 +261,9 @@ public class BusinessModuleClient
   }
 
   @Override
-  public void deleteBusinessProcedure(UUID gdprProcedureId, UUID businessProcedureId) {}
+  public void deleteBusinessProcedure(UUID gdprProcedureId, UUID businessProcedureId) {
+    throw new NotImplementedException();
+  }
 
   @Override
   public GetAllValidationTasksResponse getAllGdprValidationTasks(

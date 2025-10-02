@@ -78,7 +78,11 @@ export function NewDirectChat({
   }
 
   return (
-    <Box sx={{ height: "100%" }}>
+    <Box
+      sx={{ height: "100%" }}
+      role="region"
+      aria-labelledby="new-direct-chat-label"
+    >
       <Formik<DirectChatFormValues>
         initialValues={{ invite: null, message: "" }}
         validate={validateDMForm}
@@ -91,6 +95,7 @@ export function NewDirectChat({
             flexDirection: "column",
             justifyContent: "space-between",
           }}
+          aria-labelledby="new-direct-chat-label"
         >
           <Box
             sx={{
@@ -107,7 +112,9 @@ export function NewDirectChat({
               marginBottom={1}
               height="2.25rem"
             >
-              <Typography level="h3">Neue Direktnachricht</Typography>
+              <Typography level="h3" component="h2" id="new-direct-chat-label">
+                Neue Direktnachricht
+              </Typography>
               <Button
                 variant="soft"
                 color="neutral"
@@ -129,6 +136,7 @@ export function NewDirectChat({
             name="message"
             selectFieldName="mentionedUsers"
             roomMembers={[]}
+            skipInitialFocus
           />
         </FormPlus>
       </Formik>

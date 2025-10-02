@@ -22,8 +22,9 @@ import {
   Typography,
 } from "@mui/joy";
 import { SxProps } from "@mui/joy/styles/types";
+import { visuallyHidden } from "@mui/utils";
 import { useRouter } from "next/navigation";
-import { FunctionComponent, ReactNode, createElement } from "react";
+import { FunctionComponent, ReactNode, createElement, useId } from "react";
 import { isDefined } from "remeda";
 
 import { formatDate, formatFileSize } from "@eshg/lib-portal";
@@ -73,13 +74,15 @@ const iconByType = {
 } as const satisfies Record<ApiFileType | CustomFileType, FunctionComponent>;
 
 export function FileCard(props: FileCardProps) {
+  const titleId = useId();
   return (
     <Card
       orientation="horizontal"
       sx={{ backgroundColor: "white", "--Card-padding": "0.5rem", ...props.sx }}
       size="sm"
       data-testid="fileCard"
-      role={props.role}
+      role={props.role ?? "group"}
+      aria-labelledby={titleId}
     >
       <AspectRatio
         ratio="1"
@@ -87,23 +90,47 @@ export function FileCard(props: FileCardProps) {
         color="neutral"
         sx={{ minWidth: 48, borderRadius: "10%", svg: { fontSize: "1.5rem" } }}
       >
-        <Box role="img" aria-label={`Dateityp: ${props.type}`}>
-          {createElement(iconByType[props.type])}
-        </Box>
+        <Box aria-hidden="true">{createElement(iconByType[props.type])}</Box>
       </AspectRatio>
       <CardContent sx={{ justifyContent: "space-between" }}>
-        <Typography level="body-sm" sx={{ wordBreak: "break-word" }}>
+        <Typography
+          level="body-sm"
+          sx={{ wordBreak: "break-word" }}
+          id={titleId}
+        >
           {props.name}
         </Typography>
         <Stack direction="row" justifyContent="space-between" gap={3}>
-          <Stack direction="row" gap={3}>
+          <Stack direction="row" gap={3} component="dl" margin="0">
             {isDefined(props.creationDate) && (
-              <Typography level="body-sm" textColor="text.secondary">
-                {formatDate(props.creationDate)}
-              </Typography>
+              <>
+                <Typography sx={visuallyHidden} role="term">
+                  Erstellungsdatum
+                </Typography>
+                <Typography
+                  level="body-sm"
+                  textColor="text.secondary"
+                  role="definition"
+                >
+                  {formatDate(props.creationDate)}
+                </Typography>
+              </>
             )}
-            <Typography level="body-sm" textColor="text.secondary">
+            <Typography sx={visuallyHidden} role="term">
+              Dateigröße
+            </Typography>
+            <Typography
+              level="body-sm"
+              textColor="text.secondary"
+              role="definition"
+            >
               {formatFileSize(props.size)}
+            </Typography>
+            <Typography sx={visuallyHidden} role="term">
+              Dateityp
+            </Typography>
+            <Typography sx={visuallyHidden} role="definition">
+              {props.type}
             </Typography>
           </Stack>
           <FileCardButton

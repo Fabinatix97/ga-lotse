@@ -29,7 +29,6 @@ export function UndecipheredMessage({
         <LockOutlinedIcon
           sx={{
             color: isSent ? "background.body" : "text.primary",
-            opacity: 0.5,
           }}
         />
         <Typography
@@ -39,7 +38,6 @@ export function UndecipheredMessage({
             color: isSent ? "background.body" : "text.primary",
             paddingLeft: 0.3,
             paddingRight: 0.5,
-            opacity: 0.5,
           }}
         >
           Entschlüsselung fehlgeschlagen

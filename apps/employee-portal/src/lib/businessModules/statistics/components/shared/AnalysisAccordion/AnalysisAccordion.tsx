@@ -4,7 +4,7 @@
  */
 
 import { Delete, Edit } from "@mui/icons-material";
-import { CircularProgress, Stack } from "@mui/joy";
+import { Box, CircularProgress, Stack } from "@mui/joy";
 import { Suspense, useState } from "react";
 
 import {
@@ -85,21 +85,24 @@ export function AnalysisAccordion(props: AnalysisAccordionProps) {
         <NoSearchResults info="Keine Analysen vorhanden" />
       )}
 
-      {sortedAnalyses.map((analysis) => (
-        <AnalysisAccordionItem
-          key={analysis.id}
-          analysis={analysis}
-          expanded={expandedAccordions[analysis.id] ?? false}
-          attributes={props.attributes}
-          evaluatedDataAmountTotal={props.evaluatedDataAmountTotal}
-          isReport={isReport}
-          dataSourceSensitivity={props.dataSourceSensitivity}
-          onExpand={(expanded) => {
-            handleAccordionExpand(analysis.id, expanded);
-          }}
-          onDiagramCreateClicked={props.onDiagramCreateClicked}
-        />
-      ))}
+      <Box display="contents" role="list">
+        {sortedAnalyses.map((analysis) => (
+          <Box key={analysis.id} display="contents" role="listitem">
+            <AnalysisAccordionItem
+              analysis={analysis}
+              expanded={expandedAccordions[analysis.id] ?? false}
+              attributes={props.attributes}
+              evaluatedDataAmountTotal={props.evaluatedDataAmountTotal}
+              isReport={isReport}
+              dataSourceSensitivity={props.dataSourceSensitivity}
+              onExpand={(expanded) => {
+                handleAccordionExpand(analysis.id, expanded);
+              }}
+              onDiagramCreateClicked={props.onDiagramCreateClicked}
+            />
+          </Box>
+        ))}
+      </Box>
     </Stack>
   );
 }
@@ -141,58 +144,66 @@ function AnalysisAccordionItem(props: AnalysisAccordionItemProps) {
   }
 
   return (
-    <AccordionSheet
-      key={props.analysis.id}
-      expanded={props.expanded}
-      summary={<AnalysisAccordionSummary analysis={props.analysis} />}
-      controls={
-        canWrite &&
-        !props.isReport && (
-          <ActionsMenu
-            actionItems={[
-              {
-                label: "Anpassen",
-                onClick: openUpdateAnalysisSidebar,
-                startDecorator: <Edit />,
-              },
-              {
-                label: "Löschen",
-                onClick: () => {
-                  handleAnalysisDelete(props.analysis.id, props.analysis.name);
+    <Box
+      display="contents"
+      role="group"
+      aria-label={`Accordion: ${props.analysis.name}`}
+    >
+      <AccordionSheet
+        expanded={props.expanded}
+        summary={<AnalysisAccordionSummary analysis={props.analysis} />}
+        controls={
+          canWrite &&
+          !props.isReport && (
+            <ActionsMenu
+              actionItems={[
+                {
+                  label: "Anpassen",
+                  onClick: openUpdateAnalysisSidebar,
+                  startDecorator: <Edit />,
                 },
-                startDecorator: <Delete />,
-              },
-            ]}
-          />
-        )
-      }
-      details={
-        <Suspense
-          fallback={
-            <Stack
-              sx={{
-                alignItems: "center",
-                justifyContent: "center",
-                height: "10rem",
-              }}
-            >
-              <CircularProgress />
-            </Stack>
-          }
-        >
-          {props.expanded && (
-            <AnalysisAccordionDetails
-              analysis={props.analysis}
-              attributes={props.attributes}
-              evaluatedDataAmountTotal={props.evaluatedDataAmountTotal}
-              isReport={props.isReport}
-              dataSourceSensitivity={props.dataSourceSensitivity}
-              onDiagramCreateClicked={props.onDiagramCreateClicked}
+                {
+                  label: "Löschen",
+                  onClick: () => {
+                    handleAnalysisDelete(
+                      props.analysis.id,
+                      props.analysis.name,
+                    );
+                  },
+                  startDecorator: <Delete />,
+                },
+              ]}
             />
-          )}
-        </Suspense>
-      }
-      onExpand={props.onExpand}
-    />
+          )
+        }
+        details={
+          <Suspense
+            fallback={
+              <Stack
+                sx={{
+                  alignItems: "center",
+                  justifyContent: "center",
+                  height: "10rem",
+                }}
+              >
+                <CircularProgress />
+              </Stack>
+            }
+          >
+            {props.expanded && (
+              <AnalysisAccordionDetails
+                analysis={props.analysis}
+                attributes={props.attributes}
+                evaluatedDataAmountTotal={props.evaluatedDataAmountTotal}
+                isReport={props.isReport}
+                dataSourceSensitivity={props.dataSourceSensitivity}
+                onDiagramCreateClicked={props.onDiagramCreateClicked}
+              />
+            )}
+          </Suspense>
+        }
+        onExpand={props.onExpand}
+      />
+    </Box>
   );
 }

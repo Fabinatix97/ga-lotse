@@ -70,7 +70,7 @@ export function ProcedureMetricsDisplay() {
           })
         }
       />
-      <Stack role="list" direction="row" flexWrap="wrap" gap={2}>
+      <Stack component="dl" direction="row" flexWrap="wrap" gap={2}>
         <FlashCard
           color="background"
           title={columnName.totalCount}

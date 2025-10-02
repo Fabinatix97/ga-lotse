@@ -43,6 +43,7 @@ import {
   BOOLEAN_SELECT_STYLE,
   BOOLEAN_WITH_UNKNOWN_STYLE,
 } from "@/lib/businessModules/schoolEntry/features/procedures/styles";
+import { REQUIRED_PROCEDURE_PROPERTIES } from "@/lib/businessModules/schoolEntry/features/procedures/translations";
 import { OtherVaccinationForm } from "@/lib/businessModules/schoolEntry/features/procedures/vaccination/OtherVaccinationForm";
 import {
   VACCINATION_FIELD_STYLE,
@@ -94,22 +95,64 @@ interface NameLabel {
 
 const VACCINATIONS: NameLabel[][] = [
   [
-    { name: "diphtheria", label: "Diphtherie" },
-    { name: "tetanus", label: "Tetanus" },
-    { name: "pertussis", label: "Pertussis" },
-    { name: "hib", label: "Hib" },
-    { name: "polio", label: "Polio" },
-    { name: "hepatitisB", label: "Hep. B" },
-    { name: "pneumococcus", label: "Pneumokokken" },
+    {
+      name: "diphtheria",
+      label: REQUIRED_PROCEDURE_PROPERTIES.VACCINATION_STATUS_DIPHTHERIA,
+    },
+    {
+      name: "tetanus",
+      label: REQUIRED_PROCEDURE_PROPERTIES.VACCINATION_STATUS_TETANUS,
+    },
+    {
+      name: "pertussis",
+      label: REQUIRED_PROCEDURE_PROPERTIES.VACCINATION_STATUS_PERTUSSIS,
+    },
+    {
+      name: "hib",
+      label: REQUIRED_PROCEDURE_PROPERTIES.VACCINATION_STATUS_HIB,
+    },
+    {
+      name: "polio",
+      label: REQUIRED_PROCEDURE_PROPERTIES.VACCINATION_STATUS_POLIO,
+    },
+    {
+      name: "hepatitisB",
+      label: REQUIRED_PROCEDURE_PROPERTIES.VACCINATION_STATUS_HEPATITIS_B,
+    },
+    {
+      name: "pneumococcus",
+      label: REQUIRED_PROCEDURE_PROPERTIES.VACCINATION_STATUS_PNEUMOCOCCUS,
+    },
   ],
   [
-    { name: "mmr", label: "MMR" },
-    { name: "varicella", label: "Varizellen" },
-    { name: "meningococcusB", label: "Meningokokken B" },
-    { name: "meningococcusC", label: "Meningokokken C" },
-    { name: "rota", label: "Rota" },
-    { name: "tbe", label: "FSME" },
-    { name: "hepatitisA", label: "Hep. A" },
+    {
+      name: "mmr",
+      label: REQUIRED_PROCEDURE_PROPERTIES.VACCINATION_STATUS_MMR,
+    },
+    {
+      name: "varicella",
+      label: REQUIRED_PROCEDURE_PROPERTIES.VACCINATION_STATUS_VARICELLA,
+    },
+    {
+      name: "meningococcusB",
+      label: REQUIRED_PROCEDURE_PROPERTIES.VACCINATION_STATUS_MENINGOCOCCUS_B,
+    },
+    {
+      name: "meningococcusC",
+      label: REQUIRED_PROCEDURE_PROPERTIES.VACCINATION_STATUS_MENINGOCOCCUS_C,
+    },
+    {
+      name: "rota",
+      label: REQUIRED_PROCEDURE_PROPERTIES.VACCINATION_STATUS_ROTA,
+    },
+    {
+      name: "tbe",
+      label: REQUIRED_PROCEDURE_PROPERTIES.VACCINATION_STATUS_TBE,
+    },
+    {
+      name: "hepatitisA",
+      label: REQUIRED_PROCEDURE_PROPERTIES.VACCINATION_STATUS_HEPATITIS_A,
+    },
   ],
 ];
 
@@ -168,7 +211,9 @@ export function VaccinationForm(props: VaccinationFormProps) {
           />
           <SoftRequiredSelectField
             name="vaccinationScheme"
-            label="Impfschema"
+            label={
+              REQUIRED_PROCEDURE_PROPERTIES.VACCINATION_STATUS_VACCINATION_SCHEME
+            }
             options={VACCINATION_SCHEME_OPTIONS}
             sx={{ " .MuiSelect-root": { width: "140px" } }}
             softRequired
@@ -250,7 +295,9 @@ export function VaccinationForm(props: VaccinationFormProps) {
           </Stack>
           <SoftRequiredSelectField
             name="perkombiHbv"
-            label="PerkombiHBV"
+            label={
+              REQUIRED_PROCEDURE_PROPERTIES.VACCINATION_STATUS_PERKOMBI_HBV
+            }
             options={BOOLEAN_WITH_UNKNOWN_OPTIONS}
             sx={BOOLEAN_WITH_UNKNOWN_STYLE}
             softRequired

@@ -5,7 +5,12 @@
 
 import { Divider, Stack, Typography } from "@mui/joy";
 
-import { Alert, InputField, TextareaField } from "@eshg/lib-portal";
+import {
+  Alert,
+  DetailsList,
+  InputField,
+  TextareaField,
+} from "@eshg/lib-portal";
 
 import { EvaluationDetails } from "@/lib/businessModules/statistics/api/models/evaluationDetails";
 import { SaveEvaluationTemplateStepFormModel } from "@/lib/businessModules/statistics/components/evaluations/EvaluationTemplateSidebar/SaveEvaluationTemplateStep/saveEvaluationTemplateStepFormModel";
@@ -40,8 +45,12 @@ export function SaveEvaluationTemplateStep({
         Zusammenfassung
       </Typography>
       <Stack gap={2}>
-        <DataSource dataSourceName={evaluationDetails.dataSourceName} />
-        <Attributes attributeLabels={evaluationDetails.attributeLabels} />
+        <DetailsList>
+          <Stack gap={2}>
+            <DataSource dataSourceName={evaluationDetails.dataSourceName} />
+            <Attributes attributeLabels={evaluationDetails.attributeLabels} />
+          </Stack>
+        </DetailsList>
         <Analyses analyses={evaluationDetails.analyses} />
         <Alert
           variant="soft"

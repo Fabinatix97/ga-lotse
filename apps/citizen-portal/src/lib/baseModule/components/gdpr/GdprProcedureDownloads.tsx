@@ -32,12 +32,8 @@ import { byBreakpoint } from "@/lib/shared/breakpoints";
 function useFileDownloadForPackage() {
   const downloadPackage = useDownloadPackageFileByModule();
   return useFileDownload(
-    (params: {
-      businessModule: ApiBusinessModule;
-      gdprId: string;
-      packageId: string;
-    }) =>
-      downloadPackage(params.businessModule, params.gdprId, params.packageId),
+    (params: { businessModule: ApiBusinessModule; packageId: string }) =>
+      downloadPackage(params.businessModule, params.packageId),
   );
 }
 
@@ -89,7 +85,6 @@ export function GdprProcedureDownloads({
               onDownload={() =>
                 businessModuleDownload.download({
                   businessModule: response.data.businessModule,
-                  gdprId: procedure.id,
                   packageId: pkg.id,
                 })
               }

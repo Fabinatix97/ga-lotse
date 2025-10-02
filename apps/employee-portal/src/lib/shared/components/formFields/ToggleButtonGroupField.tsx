@@ -5,6 +5,7 @@
 
 import { Button, ToggleButtonGroup } from "@mui/joy";
 import { SxProps } from "@mui/joy/styles/types";
+import { useId } from "react";
 
 import {
   BaseField,
@@ -21,10 +22,12 @@ export interface ToggleButtonGroupFieldProps extends FieldProps<string> {
 
 export function ToggleButtonGroupField(props: ToggleButtonGroupFieldProps) {
   const field = useBaseField<string>(props);
+  const labelId = useId();
 
   return (
     <BaseField
       label={props.label}
+      labelId={labelId}
       helperText={field.helperText}
       required={field.required}
       error={field.error}
@@ -36,6 +39,11 @@ export function ToggleButtonGroupField(props: ToggleButtonGroupFieldProps) {
         variant="outlined"
         color="primary"
         sx={{ width: "100%" }}
+        slotProps={{
+          root: {
+            "aria-labelledby": labelId,
+          },
+        }}
         onChange={(_, newValue) => {
           if (!newValue) {
             return;

@@ -22,7 +22,10 @@ import {
   MIN_0,
   validateValue,
 } from "@/lib/businessModules/schoolEntry/features/procedures/sopessExamination/SopessExaminationForm";
-import { EVALUATION_EXAMINATION_TYPES } from "@/lib/businessModules/schoolEntry/features/procedures/translations";
+import {
+  EVALUATION_EXAMINATION_TYPES,
+  REQUIRED_PROCEDURE_PROPERTIES,
+} from "@/lib/businessModules/schoolEntry/features/procedures/translations";
 
 interface SelectiveAttentionFormProps {
   points: OptionalFieldValue<number>;
@@ -87,7 +90,9 @@ export function SelectiveAttentionForm(props: SelectiveAttentionFormProps) {
         <Stack direction="row" gap={2}>
           <SopessExaminationFields
             examinationResultName={fieldName("result")}
-            examinationResultLabel="Psych. Verhalten"
+            examinationResultLabel={
+              REQUIRED_PROCEDURE_PROPERTIES.SOPESS_EXAMINATION_PSYCHOLOGICAL_BEHAVIOR_RESULT
+            }
             responseName={fieldName("doctorLetter")}
             examinationResultValue={props.result}
             setFieldValue={props.setFieldValue}

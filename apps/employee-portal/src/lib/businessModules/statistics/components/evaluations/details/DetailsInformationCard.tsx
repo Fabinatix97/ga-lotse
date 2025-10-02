@@ -135,7 +135,7 @@ export function DetailsInformationCard(props: DetailsInformationCardProps) {
         )
       }
     >
-      <Stack gap={1}>
+      <Stack gap={1} component="dl" margin="0">
         <LabelValuePair
           label="Zeitraum"
           value={

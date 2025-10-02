@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Stack } from "@mui/joy";
+import { Box, Stack } from "@mui/joy";
 import { useMemo, useState } from "react";
 
 import { RoomList } from "@/lib/businessModules/chat/components/roomList/RoomList";
@@ -16,10 +16,14 @@ import {
 import { useChatRoomList } from "@/lib/businessModules/chat/shared/hooks/useChatRoomList";
 
 interface RoomsPanelProps {
+  chatPanelView: ChatPanelView;
+  mobileView: MobileView;
   setChatPanelView: (viewType: ChatPanelView) => void;
   setMobileView: (viewType: MobileView) => void;
 }
 export function RoomsPanel({
+  chatPanelView,
+  mobileView,
   setChatPanelView,
   setMobileView,
 }: Readonly<RoomsPanelProps>) {
@@ -34,8 +38,10 @@ export function RoomsPanel({
   }, [roomList, searchQuery]);
 
   return (
-    <>
+    <Box display="contents" role="navigation" aria-label="Konversationen">
       <RoomsPanelHeader
+        chatPanelView={chatPanelView}
+        mobileView={mobileView}
         setChatPanelView={(viewType) => {
           setChatPanelView(viewType);
           if (infoPanelState.isOpen) {
@@ -45,7 +51,6 @@ export function RoomsPanel({
         setMobileView={setMobileView}
         searchQuery={searchQuery}
         setSearchQuery={setSearchQuery}
-        roomSearchDisabled={roomList.length === 0}
       />
       <Stack
         sx={{
@@ -61,6 +66,6 @@ export function RoomsPanel({
           setSearchQuery={setSearchQuery}
         />
       </Stack>
-    </>
+    </Box>
   );
 }

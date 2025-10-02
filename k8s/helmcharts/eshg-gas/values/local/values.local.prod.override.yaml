@@ -9,8 +9,8 @@ image:
 
 thirdPartyImages:
   kubectl:
-    name: bitnamisecure/kubectl
-    tag: "1.33.4@sha256:b631dd49c6e80e2524d67e7c1e44cefecde7a7b398d51ab95643969dd6797de1"
+    name: rancher/kubectl
+    tag: "1.33.5@sha256:6f157ad0ff43d31320ab7bf4015271a97466f13c49f03c5108b57b47a312d2c2"
     registry: "docker.io"
     pullPolicy: IfNotPresent
   nginx:

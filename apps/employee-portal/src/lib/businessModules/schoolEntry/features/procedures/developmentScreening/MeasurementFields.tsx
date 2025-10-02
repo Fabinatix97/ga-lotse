@@ -26,6 +26,7 @@ import { GetPercentilesRequest } from "@eshg/school-entry-api";
 import { Percentiles } from "@/lib/businessModules/schoolEntry/api/models/examinations/Percentiles";
 import { useGetPercentiles } from "@/lib/businessModules/schoolEntry/api/queries/valueEvaluatorApi";
 import { StatusChip } from "@/lib/businessModules/schoolEntry/features/procedures/examinations/StatusChip";
+import { REQUIRED_PROCEDURE_PROPERTIES } from "@/lib/businessModules/schoolEntry/features/procedures/translations";
 
 function formatPercentageValue(value: number | undefined) {
   return value === undefined ? "" : formatDecimal(value * 100);
@@ -102,7 +103,7 @@ export function MeasurementFields(props: MeasurementFieldsProps) {
           <Stack direction="row" gap={2} alignItems="center">
             <SoftRequiredNumberField
               name={fieldName("height")}
-              label="Größe (cm)"
+              label={REQUIRED_PROCEDURE_PROPERTIES.DEVELOPMENT_SCREENING_HEIGHT}
               validate={validateIntegerInMinMax}
               sx={FIXED_WIDTH_STYLE}
               min={MIN_1}
@@ -116,7 +117,7 @@ export function MeasurementFields(props: MeasurementFieldsProps) {
           <Stack direction="row" gap={2} alignItems="center">
             <SoftRequiredNumberField
               name={fieldName("weight")}
-              label="Gewicht (kg)"
+              label={REQUIRED_PROCEDURE_PROPERTIES.DEVELOPMENT_SCREENING_WEIGHT}
               validate={validateWeight}
               sx={FIXED_WIDTH_STYLE}
               min={MIN_0_01}
@@ -139,7 +140,7 @@ export function MeasurementFields(props: MeasurementFieldsProps) {
         <Stack direction="row" gap={2} alignItems="center" flexWrap="wrap">
           <SoftRequiredNumberField
             name={fieldName("systole")}
-            label="RRsys (mmHg)"
+            label={REQUIRED_PROCEDURE_PROPERTIES.DEVELOPMENT_SCREENING_SYSTOLE}
             validate={validateIntegerInMinMax}
             sx={FIXED_WIDTH_STYLE}
             min={MIN_1}
@@ -148,7 +149,7 @@ export function MeasurementFields(props: MeasurementFieldsProps) {
           />
           <SoftRequiredNumberField
             name={fieldName("diastole")}
-            label="RRdiast (mmHg)"
+            label={REQUIRED_PROCEDURE_PROPERTIES.DEVELOPMENT_SCREENING_DIASTOLE}
             validate={validateIntegerInMinMax}
             sx={FIXED_WIDTH_STYLE}
             min={MIN_1}

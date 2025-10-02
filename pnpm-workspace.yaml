@@ -9,9 +9,9 @@ packages:
 
 catalogs:
   next:
-    "next": "15.5.2"
-    "@next/bundle-analyzer": "15.5.2"
-    "eslint-config-next": "15.5.2"
+    "next": "15.4.7"
+    "@next/bundle-analyzer": "15.4.7"
+    "eslint-config-next": "15.4.7"
 
   react:
     "react": "19.1.1"

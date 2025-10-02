@@ -44,6 +44,7 @@ type GenericViewType =
   | "listMonth"
   | "timeGridWeek"
   | "timeGridDay";
+
 export function renderToolbarNavigationLabel(
   navItem: "prev" | "next",
   viewType: GenericViewType,
@@ -71,7 +72,13 @@ export function CalendarHeaderToolbar<ViewType extends string>(
       gap={1}
       flexWrap="wrap"
     >
-      <Stack direction="row" gap={1} alignItems="center">
+      <Stack
+        direction="row"
+        gap={1}
+        alignItems="center"
+        role="group"
+        aria-label="Zeitraum"
+      >
         <Button color="neutral" variant="outlined" onClick={props.goToToday}>
           Heute
         </Button>
@@ -109,6 +116,7 @@ export function CalendarHeaderToolbar<ViewType extends string>(
             level="h4"
             textColor="text.secondary"
             aria-live="polite"
+            aria-atomic="true"
           >
             {props.title}
           </Typography>

@@ -34,6 +34,8 @@ export interface DocumentFormValues {
   labCode?: string;
 }
 
+export type DocumentFormInitialFocus = "KEYWORD" | "DOCUMENT_DETAILS" | null;
+
 interface DocumentFormProps {
   initialValues: DocumentFormValues;
   document: ApiDocument;
@@ -47,6 +49,7 @@ interface DocumentFormProps {
   onReject?: () => void;
   onClose: () => void;
   isProcedureFinalized: boolean;
+  initialFocus?: DocumentFormInitialFocus;
 }
 
 export function DocumentForm(props: Readonly<DocumentFormProps>) {

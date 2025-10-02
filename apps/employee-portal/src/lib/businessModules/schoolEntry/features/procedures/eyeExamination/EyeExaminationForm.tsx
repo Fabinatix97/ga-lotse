@@ -31,6 +31,7 @@ import {
 import { SetAllExaminationResultsSelect } from "@/lib/businessModules/schoolEntry/features/procedures/examinations/SetAllSelect";
 import { handleChangeExaminationResultValue } from "@/lib/businessModules/schoolEntry/features/procedures/examinations/examinationResultHelpers";
 import { EyeForm } from "@/lib/businessModules/schoolEntry/features/procedures/eyeExamination/EyeForm";
+import { REQUIRED_PROCEDURE_PROPERTIES } from "@/lib/businessModules/schoolEntry/features/procedures/translations";
 import { ConfirmLeaveDirtyFormEffect } from "@/lib/shared/components/form/ConfirmLeaveDirtyFormEffect";
 import { FormGroupGrid } from "@/lib/shared/components/form/FormGroupGrid";
 
@@ -161,7 +162,9 @@ export function EyeExaminationForm(props: EyeExaminationFormProps) {
             <Grid xs={12} xxl={5}>
               <Stack gap={2} direction="column">
                 <ExaminationResultFields
-                  examinationResultLabel="Sehscreening"
+                  examinationResultLabel={
+                    REQUIRED_PROCEDURE_PROPERTIES.EYE_EXAMINATION_EYE_EXAMINATION
+                  }
                   name="eyeExamination"
                   values={values.eyeExamination}
                   setFieldValue={setFieldValue}
@@ -191,13 +194,17 @@ export function EyeExaminationForm(props: EyeExaminationFormProps) {
             <Grid xs={12} xxl={5}>
               <Stack gap={2} direction="column">
                 <ExaminationResultFields
-                  examinationResultLabel="Lang-Test"
+                  examinationResultLabel={
+                    REQUIRED_PROCEDURE_PROPERTIES.EYE_EXAMINATION_LANG_EXAMINATION
+                  }
                   name="langExamination"
                   values={values.langExamination}
                   setFieldValue={setFieldValue}
                 />
                 <ExaminationResultFields
-                  examinationResultLabel="Ishihara"
+                  examinationResultLabel={
+                    REQUIRED_PROCEDURE_PROPERTIES.EYE_EXAMINATION_ISHIHARA_EXAMINATION
+                  }
                   name="ishiharaExamination"
                   values={values.ishiharaExamination}
                   setFieldValue={setFieldValue}

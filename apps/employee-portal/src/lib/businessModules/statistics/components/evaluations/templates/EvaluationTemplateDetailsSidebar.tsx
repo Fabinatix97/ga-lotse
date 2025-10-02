@@ -5,7 +5,8 @@
 
 import { EditOutlined } from "@mui/icons-material";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
-import { Button, Divider, IconButton, Stack, Typography } from "@mui/joy";
+import { Box, Button, Divider, IconButton, Stack, Typography } from "@mui/joy";
+import { visuallyHidden } from "@mui/utils";
 import { isDefined } from "remeda";
 
 import {
@@ -16,7 +17,7 @@ import {
   UseSidebarResult,
   useSidebar,
 } from "@eshg/lib-employee-portal";
-import { formatDate } from "@eshg/lib-portal";
+import { DetailsList, formatDate } from "@eshg/lib-portal";
 
 import { useGetEvaluationTemplateDetails } from "@/lib/businessModules/statistics/api/queries/useGetEvaluationTemplateDetails";
 import {
@@ -82,36 +83,55 @@ function EvaluationTemplateDetailsSidebar({
               </IconButton>
             )}
           </Stack>
-          {isDefined(evaluationTemplateDetails.description) && (
-            <Typography level="body-md">
-              {evaluationTemplateDetails.description}
-            </Typography>
-          )}
-          <Stack gap={1}>
-            <Typography level="title-md">Erstellt von</Typography>
-            <UserLink user={evaluationTemplateDetails.user} />
-          </Stack>
-          <Stack gap={1}>
-            <Typography level="title-md">Erstellt am</Typography>
-            <Typography level="body-md">
-              {formatDate(evaluationTemplateDetails.createdAt)}
-            </Typography>
-          </Stack>
+          <DetailsList>
+            <Stack gap={3}>
+              {isDefined(evaluationTemplateDetails.description) && (
+                <>
+                  <Typography sx={visuallyHidden} role="term">
+                    Beschreibung
+                  </Typography>
+                  <Typography level="body-md" role="definition">
+                    {evaluationTemplateDetails.description}
+                  </Typography>
+                </>
+              )}
+              <Stack gap={1}>
+                <Typography level="title-md" role="term">
+                  Erstellt von
+                </Typography>
+                <Box display="contents" role="definition">
+                  <UserLink user={evaluationTemplateDetails.user} />
+                </Box>
+              </Stack>
+              <Stack gap={1}>
+                <Typography level="title-md" role="term">
+                  Erstellt am
+                </Typography>
+                <Typography level="body-md" role="definition">
+                  {formatDate(evaluationTemplateDetails.createdAt)}
+                </Typography>
+              </Stack>
+            </Stack>
+          </DetailsList>
           <Divider />
           <Typography level="h3" component="h2">
             Vorlagendetails
           </Typography>
-          <DataSource
-            dataSourceName={evaluationTemplateDetails.dataSourceName}
-          />
-          <Sensitivity
-            dataSourceSensitivity={
-              evaluationTemplateDetails.dataSourceSensitivity
-            }
-          />
-          <Attributes
-            attributeLabels={evaluationTemplateDetails.attributeLabels}
-          />
+          <DetailsList>
+            <Stack gap={3}>
+              <DataSource
+                dataSourceName={evaluationTemplateDetails.dataSourceName}
+              />
+              <Sensitivity
+                dataSourceSensitivity={
+                  evaluationTemplateDetails.dataSourceSensitivity
+                }
+              />
+              <Attributes
+                attributeLabels={evaluationTemplateDetails.attributeLabels}
+              />
+            </Stack>
+          </DetailsList>
           <Analyses analyses={evaluationTemplateDetails.analyses} />
           {canWrite && (
             <Stack gap={3}>

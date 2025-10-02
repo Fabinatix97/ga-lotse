@@ -46,7 +46,6 @@ import java.nio.charset.StandardCharsets;
 import java.time.Clock;
 import java.time.Instant;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
@@ -618,8 +617,7 @@ public class SchoolEntryController {
     Map<RequiredProcedureArea, EnumSet<ProcedureProperty>> incompleteAreas =
         SchoolInfoLetterValidator.validateSchoolEntryProcedure(procedure);
 
-    return new ValidateRequiredProcedureDataResponse(
-        new ArrayList<>(incompleteAreas.keySet()), incompleteAreas);
+    return new ValidateRequiredProcedureDataResponse(incompleteAreas);
   }
 
   @GetMapping("/waiting-room-procedures")

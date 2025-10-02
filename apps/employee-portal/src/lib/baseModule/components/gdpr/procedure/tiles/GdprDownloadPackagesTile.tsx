@@ -40,12 +40,8 @@ import { businessModuleNames } from "@/lib/shared/components/procedures/constant
 function useFileDownloadForPackage() {
   const downloadPackage = useDownloadPackageFileByModule();
   return useFileDownload(
-    (params: {
-      businessModule: ApiBusinessModule;
-      gdprId: string;
-      packageId: string;
-    }) =>
-      downloadPackage(params.businessModule, params.gdprId, params.packageId),
+    (params: { businessModule: ApiBusinessModule; packageId: string }) =>
+      downloadPackage(params.businessModule, params.packageId),
   );
 }
 
@@ -121,7 +117,6 @@ export function GdprDownloadPackagesTile({
                           onClick={() =>
                             businessModuleDownload.download({
                               businessModule: response.data.businessModule,
-                              gdprId: gdprProcedure.id,
                               packageId: pkg.id,
                             })
                           }

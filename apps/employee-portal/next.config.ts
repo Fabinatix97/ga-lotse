@@ -28,7 +28,7 @@ function getHash(path: string) {
 const withPwa = nextPwa({
   cacheStartUrl: false,
   dynamicStartUrl: false,
-  dest: "public",
+  dest: "build/serviceWorker",
   customWorkerSrc: "src/serviceWorker/sw",
   register: false,
   reloadOnOnline: false,

@@ -102,24 +102,32 @@ export function SearchableGroups<
             </Typography>
           )}
           {showSearch && (
-            <FormControl>
-              {props.searchLabel && <FormLabel>{props.searchLabel}</FormLabel>}
-              <Input
-                size="md"
-                placeholder={props.placeholder}
-                value={searchTerm}
-                endDecorator={<SearchOutlined />}
-                onChange={(event) => setSearchTerm(event.target.value)}
-              />
-              <LiveAnnouncer
-                active={searchTerm !== ""}
-                message={
-                  amountSearchResults === 0
-                    ? "Keine Treffer"
-                    : `${amountSearchResults} Suchvorschläge. Navigation mit der Tabtaste.`
-                }
-              />
-            </FormControl>
+            <Box
+              display="contents"
+              role="search"
+              aria-label={props.searchLabel ?? props.label}
+            >
+              <FormControl>
+                {props.searchLabel && (
+                  <FormLabel>{props.searchLabel}</FormLabel>
+                )}
+                <Input
+                  size="md"
+                  placeholder={props.placeholder}
+                  value={searchTerm}
+                  endDecorator={<SearchOutlined />}
+                  onChange={(event) => setSearchTerm(event.target.value)}
+                />
+                <LiveAnnouncer
+                  active={searchTerm !== ""}
+                  message={
+                    amountSearchResults === 0
+                      ? "Keine Treffer"
+                      : `${amountSearchResults} Suchvorschläge. Navigation mit der Tabtaste.`
+                  }
+                />
+              </FormControl>
+            </Box>
           )}
         </Stack>
       )}

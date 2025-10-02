@@ -42,6 +42,11 @@ public interface QueryValidationTraits extends JUnit5ValidationFileAssertions {
     captureQueryAndCompareWithFile(action.toCallable(), normalizer);
   }
 
+  default void captureQueryAndCompareWithFile(
+      Action action, ValidationNormalizer normalizer, String suffix) {
+    captureQueryAndCompareWithFile(action.toCallable(), normalizer, suffix);
+  }
+
   default <T> T captureQueryAndCompareWithFile(
       Callable<T> callable, ValidationNormalizer normalizer) {
     return captureQueryAndCompareUsingAssertionFunction(

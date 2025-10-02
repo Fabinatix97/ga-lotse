@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Button, Stack } from "@mui/joy";
+import { Box, Button, Stack } from "@mui/joy";
 import { isNonNullish } from "remeda";
 
 import { Alert, formatDate } from "@eshg/lib-portal";
@@ -53,17 +53,19 @@ export function ReportAutomationTile({
         }
       >
         <Stack gap={5}>
-          <Stack gap={3}>
+          <Stack gap={3} component="dl" margin="0">
             <LabelValuePair
               label="Status"
               value={
-                <ReportSeriesStateChip
-                  value={
-                    isActiveSeries
-                      ? ReportSeriesState.Activated
-                      : ReportSeriesState.Deactivated
-                  }
-                />
+                <Box display="contents" role="definition">
+                  <ReportSeriesStateChip
+                    value={
+                      isActiveSeries
+                        ? ReportSeriesState.Activated
+                        : ReportSeriesState.Deactivated
+                    }
+                  />
+                </Box>
               }
             />
             {isActiveSeries ? (

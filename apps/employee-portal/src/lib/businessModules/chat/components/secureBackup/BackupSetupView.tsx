@@ -16,6 +16,7 @@ import { ClientState } from "@/lib/businessModules/chat/shared/enums";
 
 export interface SecureBackupContent {
   header: string;
+  headerSidebar: string;
   subheader: string;
   description: string[];
 }
@@ -23,15 +24,16 @@ export interface SecureBackupContent {
 const content = {
   [ClientState.CreateKeyBackup]: {
     header: "Richten Sie ein Sicherheitsbackup ein",
+    headerSidebar: "Sicherheitsbackup",
     subheader:
       "Richten Sie ein Sicherheitsbackup ein um die Chatfunktion zu nutzen",
     description: [
-      "Schützen Sie sich vor dem Verlust des Zugriffs auf verschlüsselte Nachrichten und Daten, indem Sie die Sicherheitsschlüssel auf Ihrem Server sichern.",
-      "Geben Sie ein Passwort ein, das nur Sie kennen, da es zum Schutz Ihrer Daten verwendet wird. Aus Sicherheitsgründen sollten Sie Ihr GA-Lotse Benutzerpasswort nicht wieder verwenden.",
+      "Sichern Sie Ihre verschlüsselten Nachrichten und Daten, indem Sie die Sicherheitsschlüssel auf Ihrem Server speichern. Wählen Sie ein eigenes, sicheres Passwort, das Sie nirgendwo anders verwenden.",
     ],
   },
   [ClientState.RestoreKeyBackup]: {
     header: "Bestätigen sie dieses Endgerät",
+    headerSidebar: "Bestätigen sie dieses Endgerät",
     subheader: "Bestätigen sie dieses Endgerät um die Chatfunktion zu nutzen",
     description: [
       "Bestätigen Sie Ihre Identität, um auf verschlüsselte Nachrichten zuzugreifen und Ihre Identität gegenüber anderen zu bestätigen.",

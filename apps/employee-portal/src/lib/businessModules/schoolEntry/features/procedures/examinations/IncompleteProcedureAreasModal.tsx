@@ -3,31 +3,49 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Typography } from "@mui/joy";
+import { Box, Typography } from "@mui/joy";
 
 import { BaseModal, BaseModalProps } from "@eshg/lib-portal";
-import { ApiRequiredProcedureArea } from "@eshg/school-entry-api";
+import { type ApiProcedureProperty } from "@eshg/school-entry-api";
 
-import { REQUIRED_PROCEDURE_AREAS } from "@/lib/businessModules/schoolEntry/features/procedures/translations";
+import {
+  REQUIRED_PROCEDURE_AREAS,
+  REQUIRED_PROCEDURE_PROPERTIES,
+} from "@/lib/businessModules/schoolEntry/features/procedures/translations";
 
+type IncompleteAreas = Record<string, ApiProcedureProperty[]>;
 interface IncompleteProcedureAreasModalProps {
-  incompleteProcedureAreas: ApiRequiredProcedureArea[];
+  incompleteProcedureAreas: IncompleteAreas;
 }
 
 export function IncompleteProcedureAreasModal(
   props: IncompleteProcedureAreasModalProps &
     Omit<BaseModalProps, "children" | "modalTitle">,
 ) {
+  const { incompleteProcedureAreas, ...modalProps } = props;
+
   return (
-    <BaseModal {...props} modalTitle="Fehlende Angaben!" color="danger">
+    <BaseModal {...modalProps} modalTitle="Fehlende Angaben!" color="danger">
       <Typography level="body-md">
         Bitte vervollständigen Sie folgende Bereiche:
       </Typography>
-      <Typography component="ul" fontWeight="bold">
-        {props.incompleteProcedureAreas.map((area) => (
-          <li key={area}>{REQUIRED_PROCEDURE_AREAS[area]}</li>
-        ))}
-      </Typography>
+      <Box overflow="auto">
+        <Typography component="ul">
+          {Object.entries(incompleteProcedureAreas).map(
+            ([area, values]: [string, ApiProcedureProperty[]]) => (
+              <li key={area}>
+                <Typography fontWeight="bold">
+                  {REQUIRED_PROCEDURE_AREAS[area]}
+                </Typography>
+                <br />
+                {values
+                  .map((value) => REQUIRED_PROCEDURE_PROPERTIES[value])
+                  .join(", ")}
+              </li>
+            ),
+          )}
+        </Typography>
+      </Box>
     </BaseModal>
   );
 }

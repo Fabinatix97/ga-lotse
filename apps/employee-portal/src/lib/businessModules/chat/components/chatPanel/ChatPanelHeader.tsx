@@ -19,7 +19,9 @@ import {
   MenuItem,
   Stack,
 } from "@mui/joy";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
+
+import { useIsBreakpointDown } from "@eshg/lib-portal";
 
 import { ChatColumnHeaderWrapper } from "@/lib/businessModules/chat/components/ChatColumnHeaderWrapper";
 import { LeaveChatConfirmation } from "@/lib/businessModules/chat/components/LeaveChatConfirmation";
@@ -52,7 +54,8 @@ export function ChatPanelHeader({
   setMobileView,
 }: Readonly<ChatPanelHeaderProps>) {
   const { matrixClient } = useChatClientContext();
-  const { closeInfoPanel, setInfoPanelView } = useInfoPanelContext();
+  const { closeInfoPanel, setInfoPanelView, infoPanelState } =
+    useInfoPanelContext();
   const {
     getAvatarUrl,
     communicationType,
@@ -64,6 +67,18 @@ export function ChatPanelHeader({
   useRoomStateEventUpdate(roomId);
   const [isOpen, setIsOpen] = useState(false);
   const { setRoomIdParam } = useChatSearchParams();
+
+  const isMobile = useIsBreakpointDown("sm");
+  const focusRef = useRef<HTMLElement>(null);
+  const focusRefMobile = useRef<HTMLElement>(null);
+  useEffect(() => {
+    if (!isMobile && !infoPanelState.isOpen && focusRef.current) {
+      focusRef.current.focus();
+    }
+    if (isMobile && !infoPanelState.isOpen && focusRefMobile.current) {
+      focusRefMobile.current.focus();
+    }
+  }, [infoPanelState.isOpen, isMobile]);
 
   function handleRoomInfoClick() {
     setInfoPanelView(InfoPanelView.RoomInfo, roomId);
@@ -118,6 +133,7 @@ export function ChatPanelHeader({
               justifyContent: "center",
               height: "100%",
             }}
+            aria-label="Zurück zu den Konversationen"
             onClick={() => {
               setRoomIdParam("");
               setMobileView(MobileView.RoomList);
@@ -144,8 +160,16 @@ export function ChatPanelHeader({
             <Dropdown>
               <MenuButton
                 slots={{ root: IconButton }}
-                slotProps={{ root: { variant: "outlined", color: "primary" } }}
-                aria-label="open room options"
+                slotProps={{
+                  root: {
+                    variant: "outlined",
+                    color: "primary",
+                    ref: (el) => {
+                      focusRef.current = el;
+                    },
+                  },
+                }}
+                aria-label="Chat-Einstellungen öffnen"
               >
                 <MoreVertIcon color="primary" />
               </MenuButton>
@@ -178,10 +202,13 @@ export function ChatPanelHeader({
             </Dropdown>
           </Stack>
           <IconButton
+            ref={(el) => {
+              focusRefMobile.current = el;
+            }}
             variant="outlined"
             color="primary"
             sx={{ display: { xxs: "flex", sm: "none" } }}
-            aria-label="open room settings"
+            aria-label="Chat-Einstellungen öffnen"
             onClick={handleSettingOnMobileClick}
           >
             <InfoOutlinedIcon />

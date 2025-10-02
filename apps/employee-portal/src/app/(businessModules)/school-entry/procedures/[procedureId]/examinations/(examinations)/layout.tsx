@@ -8,10 +8,11 @@
 import { Box, Button, Grid, Stack } from "@mui/joy";
 import { useRouter } from "next/navigation";
 import { use, useState } from "react";
+import { isEmpty } from "remeda";
 
 import { PageGrid } from "@eshg/lib-employee-portal";
 import { DynamicLayoutProps } from "@eshg/lib-portal";
-import { ApiRequiredProcedureArea } from "@eshg/school-entry-api";
+import { type ApiProcedureProperty } from "@eshg/school-entry-api";
 
 import { useSchoolEntryApi } from "@/lib/businessModules/schoolEntry/api/clients";
 import { useGetProcedure } from "@/lib/businessModules/schoolEntry/api/queries/schoolEntryApi";
@@ -95,8 +96,8 @@ interface CreateReportsPanelProps {
 function CreateReportsPanel(props: CreateReportsPanelProps) {
   const medicalReportSidebar = useMedicalReportSidebar();
   const [incompleteProcedureAreas, setIncompleteProcedureAreas] = useState<
-    ApiRequiredProcedureArea[]
-  >([]);
+    Record<string, ApiProcedureProperty[]>
+  >({});
   const schoolEntryApi = useSchoolEntryApi();
 
   const router = useRouter();
@@ -106,7 +107,8 @@ function CreateReportsPanel(props: CreateReportsPanelProps) {
       props.procedureId,
     );
     const incompleteAreas = validationResponse.incompleteAreas;
-    if (incompleteAreas.length === 0) {
+
+    if (isEmpty(incompleteAreas)) {
       router.push(
         routes.procedures.byId(props.procedureId).examinations.infoLetter,
       );
@@ -127,9 +129,9 @@ function CreateReportsPanel(props: CreateReportsPanelProps) {
         Schulinfobrief erstellen
       </Button>
       <IncompleteProcedureAreasModal
-        open={incompleteProcedureAreas.length > 0}
+        open={Object.entries(incompleteProcedureAreas).length > 0}
         incompleteProcedureAreas={incompleteProcedureAreas}
-        onClose={() => setIncompleteProcedureAreas([])}
+        onClose={() => setIncompleteProcedureAreas({})}
       />
       <Button
         variant="outlined"

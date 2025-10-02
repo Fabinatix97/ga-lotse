@@ -12,10 +12,11 @@ import {
   FormHelperText,
   Typography,
 } from "@mui/joy";
+import { visuallyHidden } from "@mui/utils";
 import { useField } from "formik";
-import { HTMLAttributes } from "react";
+import { HTMLAttributes, useEffect, useRef } from "react";
 
-import { CustomAutocomplete } from "@eshg/lib-portal";
+import { CustomAutocomplete, DetailsList } from "@eshg/lib-portal";
 
 import { ApiUser } from "@/lib/businessModules/chat/shared/types";
 
@@ -35,10 +36,20 @@ export function UsersAutocomplete({
   multiple,
 }: Readonly<UsersAutocompleteProps>) {
   const [field, meta, helpers] = useField<string | string[] | null>(name);
+  const ref = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    if (ref.current) {
+      ref.current.focus();
+    }
+  }, []);
+
   return (
     <Box>
       <CustomAutocomplete
+        inputRef={(el) => (ref.current = el)}
         name="invite"
+        aria-label={placeholder}
         multiple={multiple}
         value={field.value}
         size="lg"
@@ -49,21 +60,10 @@ export function UsersAutocomplete({
             ?.display_name ?? value
         }
         startDecorator={<SearchIcon />}
-        slotProps={{
-          input: {
-            sx: {
-              "&::placeholder": {
-                color: "primary.300",
-              },
-            },
-          },
-        }}
         sx={{
           ".MuiAutocomplete-popupIndicator": {
             display: "none",
           },
-          backgroundColor: "background.surface",
-          borderColor: "primary.300",
           minHeight: "3.25rem",
         }}
         renderOption={(props, option) => {
@@ -84,48 +84,67 @@ export function UsersAutocomplete({
                 gap: 2,
               }}
             >
-              <Box
-                sx={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 1,
-                  flexShrink: 0,
-                }}
-              >
-                <ChatAvatar
-                  name={apiUser.display_name}
-                  userId={apiUser.user_id}
-                  avatarUrl={apiUser.avatar_url ?? null}
-                  size="sm"
-                />
-                <Typography level="title-md">{apiUser.display_name}</Typography>
-              </Box>
-              {apiUser.department && (
-                <Typography
-                  noWrap
-                  level="body-md"
+              <DetailsList>
+                <Box
                   sx={{
-                    color: "neutral.400",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 1,
+                    flexShrink: 0,
                   }}
                 >
-                  {apiUser.department}
-                </Typography>
-              )}
-              {apiUser.user_id && (
-                <Typography
-                  noWrap
-                  level="body-md"
-                  sx={{
-                    color: "neutral.400",
-                    textAlign: "right",
-                    flex: {
-                      xl: 1,
-                    },
-                  }}
-                >
-                  {apiUser.user_id}
-                </Typography>
-              )}
+                  <ChatAvatar
+                    name={apiUser.display_name}
+                    userId={apiUser.user_id}
+                    avatarUrl={apiUser.avatar_url ?? null}
+                    size="sm"
+                  />
+                  <Typography sx={visuallyHidden} role="term">
+                    Name
+                  </Typography>
+                  <Typography level="title-md" role="definition">
+                    {apiUser.display_name}
+                  </Typography>
+                </Box>
+                {apiUser.department && (
+                  <>
+                    <Typography sx={visuallyHidden} role="term">
+                      Abteilung
+                    </Typography>
+                    <Typography
+                      noWrap
+                      level="body-md"
+                      sx={{
+                        color: "text.secondary",
+                      }}
+                      role="definition"
+                    >
+                      {apiUser.department}
+                    </Typography>
+                  </>
+                )}
+                {apiUser.user_id && (
+                  <>
+                    <Typography sx={visuallyHidden} role="term">
+                      User-Id
+                    </Typography>
+                    <Typography
+                      noWrap
+                      level="body-md"
+                      sx={{
+                        color: "text.secondary",
+                        textAlign: "right",
+                        flex: {
+                          xl: 1,
+                        },
+                      }}
+                      role="definition"
+                    >
+                      {apiUser.user_id}
+                    </Typography>
+                  </>
+                )}
+              </DetailsList>
             </AutocompleteOption>
           );
         }}

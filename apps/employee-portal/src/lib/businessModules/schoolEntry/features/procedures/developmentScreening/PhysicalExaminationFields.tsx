@@ -24,6 +24,7 @@ import {
 import { ClickIcd10CodeHandler } from "@/lib/businessModules/schoolEntry/features/procedures/examinations/Icd10CodeField";
 import { SetAllExaminationResultsSelect } from "@/lib/businessModules/schoolEntry/features/procedures/examinations/SetAllSelect";
 import { FIXED_WIDTH_STYLE } from "@/lib/businessModules/schoolEntry/features/procedures/examinations/examinationResultHelpers";
+import { REQUIRED_PROCEDURE_PROPERTIES } from "@/lib/businessModules/schoolEntry/features/procedures/translations";
 
 interface PhysicalExaminationFieldsProps extends NestedFormProps {
   values: PhysicalExaminationFieldsValues;
@@ -58,40 +59,51 @@ export function PhysicalExaminationFields(
     [
       {
         name: "nutritionalCondition",
-        label: "Ernährungszustand",
+        label:
+          REQUIRED_PROCEDURE_PROPERTIES.DEVELOPMENT_SCREENING_NUTRITIONAL_CONDITION_RESULT,
         values: props.values.nutritionalCondition,
       },
       {
         name: "neurology",
-        label: "Neurologie",
+        label:
+          REQUIRED_PROCEDURE_PROPERTIES.DEVELOPMENT_SCREENING_NEUROLOGY_RESULT,
         values: props.values.neurology,
       },
       {
         name: "respiratoryCardiovascular",
-        label: "Atmung-Herz-Kreislauf",
+        label:
+          REQUIRED_PROCEDURE_PROPERTIES.DEVELOPMENT_SCREENING_RESPIRATORY_CARDIOVASCULAR_RESULT,
         values: props.values.respiratoryCardiovascular,
       },
-      { name: "skin", label: "Haut", values: props.values.skin },
+      {
+        name: "skin",
+        label: REQUIRED_PROCEDURE_PROPERTIES.DEVELOPMENT_SCREENING_SKIN_RESULT,
+        values: props.values.skin,
+      },
     ],
     [
       {
         name: "musculatureSkeleton",
-        label: "Muskulatur, Skelett",
+        label:
+          REQUIRED_PROCEDURE_PROPERTIES.DEVELOPMENT_SCREENING_MUSCULATURE_SKELETON_RESULT,
         values: props.values.musculatureSkeleton,
       },
       {
         name: "metabolism",
-        label: "Endo/Stoffw.",
+        label:
+          REQUIRED_PROCEDURE_PROPERTIES.DEVELOPMENT_SCREENING_METABOLISM_RESULT,
         values: props.values.metabolism,
       },
       {
         name: "abdomen",
-        label: "Abdomen",
+        label:
+          REQUIRED_PROCEDURE_PROPERTIES.DEVELOPMENT_SCREENING_ABDOMEN_RESULT,
         values: props.values.abdomen,
       },
       {
         name: "earNoseThroat",
-        label: "HNO",
+        label:
+          REQUIRED_PROCEDURE_PROPERTIES.DEVELOPMENT_SCREENING_EAR_NOSE_THROAT_RESULT,
         values: props.values.earNoseThroat,
       },
     ],

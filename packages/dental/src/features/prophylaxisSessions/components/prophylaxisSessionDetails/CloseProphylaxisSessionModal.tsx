@@ -5,6 +5,7 @@
 
 import { KeyboardArrowRightOutlined } from "@mui/icons-material";
 import { Button, Stack, Typography } from "@mui/joy";
+import { isDefined } from "remeda";
 
 import { BaseModal, BaseModalPropsRequiredClose } from "@eshg/lib-portal";
 
@@ -48,8 +49,8 @@ export function CloseProphylaxisSessionModal(
   return (
     <BaseModal modalTitle="Untersuchung abschließen?" {...props}>
       <Typography level="body-md" marginBottom={1}>
-        Zusammenfassung der Untersuchung in der Einrichtung {institutionName}{" "}
-        Gruppe {groupName}:
+        Zusammenfassung der Untersuchung in der Einrichtung {institutionName}
+        {isDefined(groupName) && ` Gruppe ${groupName}`}:
       </Typography>
       <Typography fontWeight={600}>
         {getParticipantText(closedParticipants)} untersucht

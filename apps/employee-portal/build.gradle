@@ -12,6 +12,8 @@ next {
   sonarProjectKey = project.findProperty("sonar-project-key-employee-portal")
 }
 
+def serviceWorkerDir = layout.buildDirectory.dir("serviceWorker")
+
 nextLoadingFiles {
   includeDirs = ['(baseModule)', '(businessModules)']
 }
@@ -19,4 +21,18 @@ nextLoadingFiles {
 reverseProxy {
   serviceName = "employee-portal-reverse-proxy"
   mainConfigFile = "employee-portal.conf"
+}
+
+tasks.named('nextBuild').configure {
+  outputs.dir serviceWorkerDir
+}
+
+tasks.register('copyServiceWorkerBuild', Copy) {
+  dependsOn 'nextBuild'
+  from serviceWorkerDir
+  into "${nextBuildDirectory}/standalone/apps/employee-portal/public"
+}
+
+tasks.named('copyPublicBuildAssets').configure {
+  dependsOn 'copyServiceWorkerBuild'
 }

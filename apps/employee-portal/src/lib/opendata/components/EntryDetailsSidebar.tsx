@@ -9,13 +9,20 @@ import { isEmpty } from "remeda";
 
 import {
   ButtonBar,
+  DetailsItem,
+  DetailsRow,
   SidebarActions,
   SidebarContent,
   SidebarWithFormRefProps,
   useConfirmationDialog,
   useSidebarWithFormRef,
 } from "@eshg/lib-employee-portal";
-import { ExternalLink, formatDate } from "@eshg/lib-portal";
+import {
+  DetailsColumn,
+  DetailsList,
+  ExternalLink,
+  formatDate,
+} from "@eshg/lib-portal";
 import { ApiVersion } from "@eshg/opendata-api";
 
 import { EditEntrySidebarContent } from "@/lib/opendata/components/EditEntrySidebarContent";
@@ -23,10 +30,6 @@ import { VersionFileCard } from "@/lib/opendata/components/VersionFileCard";
 import { deleteVersionDialogOptions } from "@/lib/opendata/helper";
 import { useDeleteVersion } from "@/lib/opendata/mutations/opendata";
 import { useGetVersion } from "@/lib/opendata/queries/opendata";
-import {
-  DetailsCell,
-  DetailsCellProps,
-} from "@/lib/shared/components/detailsSection/DetailsCell";
 import { businessModuleNames } from "@/lib/shared/components/procedures/constants";
 
 export function useEntryDetailsSidebar() {
@@ -79,57 +82,52 @@ function EntryDetailsSidebar({
     <>
       <SidebarContent title={data.versionName}>
         <Stack spacing={2}>
-          <OpenDataCell
-            label="Name"
-            value={isEmpty(data.versionName) ? "-" : data.versionName}
-            name="name"
-          />
-          <OpenDataCell
-            label="Beschreibung"
-            value={isEmpty(data.description) ? "-" : data.description}
-            name="description"
-          />
-          <Stack direction="row" spacing={2}>
-            <OpenDataCell
-              label="Startdatum"
-              value={isEmpty(startDate) ? "-" : startDate}
-              name="statisticStartDate"
-              flexGrow
-            />
-            <OpenDataCell
-              label="Enddatum"
-              value={isEmpty(endDate) ? "-" : endDate}
-              name="statisticEndDate"
-              flexGrow
-            />
-          </Stack>
-          <OpenDataCell
-            label="Lizenz URL"
-            value={
-              <ExternalLink href={data.licence} openInNewTab>
-                {data.licence}
-              </ExternalLink>
-            }
-            name="licence"
-          />
-          <OpenDataCell
-            label="Fachmodule"
-            name="sources"
-            valueIsDiv
-            value={
-              isEmpty(sources) ? (
-                "-"
-              ) : (
-                <Stack direction="row" spacing={1} flexWrap="wrap">
-                  {sources.map((source) => (
-                    <Chip key={source} color="primary">
-                      {businessModuleNames[source]}
-                    </Chip>
-                  ))}
-                </Stack>
-              )
-            }
-          />
+          <DetailsList>
+            <DetailsColumn>
+              <DetailsItem
+                label="Name"
+                value={isEmpty(data.versionName) ? "-" : data.versionName}
+              />
+              <DetailsItem
+                label="Beschreibung"
+                value={isEmpty(data.description) ? "-" : data.description}
+              />
+              <DetailsRow>
+                <DetailsItem
+                  label="Startdatum"
+                  value={isEmpty(startDate) ? "-" : startDate}
+                />
+                <DetailsItem
+                  label="Enddatum"
+                  value={isEmpty(endDate) ? "-" : endDate}
+                />
+              </DetailsRow>
+              <DetailsItem
+                label="Lizenz URL"
+                value={
+                  <ExternalLink href={data.licence} openInNewTab>
+                    {data.licence}
+                  </ExternalLink>
+                }
+              />
+              <DetailsItem
+                label="Fachmodule"
+                value={
+                  isEmpty(sources) ? (
+                    "-"
+                  ) : (
+                    <Stack direction="row" spacing={1} flexWrap="wrap">
+                      {sources.map((source) => (
+                        <Chip key={source} color="primary">
+                          {businessModuleNames[source]}
+                        </Chip>
+                      ))}
+                    </Stack>
+                  )
+                }
+              />
+            </DetailsColumn>
+          </DetailsList>
           <Divider orientation="horizontal" />
           <Typography level="title-md">Dateien</Typography>
           <VersionFileCard version={data} />
@@ -159,19 +157,5 @@ function EntryDetailsSidebar({
         />
       </SidebarActions>
     </>
-  );
-}
-
-function OpenDataCell(props: DetailsCellProps) {
-  return (
-    <DetailsCell
-      {...props}
-      sx={{ gap: 0, ...props.sx }}
-      valueSx={{
-        paddingY: 0.75,
-        overflowWrap: "anywhere",
-        ...props.valueSx,
-      }}
-    />
   );
 }

@@ -24,6 +24,7 @@ typescript {
 }
 
 def configDir = rootProject.layout.projectDirectory.dir('config')
+def typesDir = project.layout.buildDirectory.dir('types')
 
 tasks.register('assemble') {
   group = 'package'
@@ -35,6 +36,14 @@ tasks.register('build') {
   group = 'package'
   dependsOn 'check'
   dependsOn 'assemble'
+}
+
+tasks.named('compile').configure {
+  outputs.dir typesDir
+
+  doFirst {
+    delete typesDir
+  }
 }
 
 tasks.named('lint').configure {

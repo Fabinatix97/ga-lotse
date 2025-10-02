@@ -47,7 +47,7 @@ function EditCustodianSidebar({
       {
         procedureId: procedureId,
         custodianId: custodianId,
-        custodian: { ...request, address: request.contactAddress! },
+        custodian: { ...request, address: request.contactAddress },
       },
       {
         onSuccess: () => {

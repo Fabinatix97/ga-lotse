@@ -9,6 +9,7 @@ import { Divider, Sheet, Stack, Typography } from "@mui/joy";
 import { OverlayBoundary } from "@eshg/lib-employee-portal";
 import {
   Alert,
+  DetailsList,
   InternalLinkButton,
   SingleAutocompleteField,
 } from "@eshg/lib-portal";
@@ -78,18 +79,26 @@ function Summary(props: { evaluationTemplateId: string }) {
   return (
     <Sheet variant="plain">
       <Stack gap={3}>
-        {evaluationTemplateDetails.description && (
-          <Stack gap={1}>
-            <Typography level="title-md">Beschreibung</Typography>
-            <Typography level="body-md">
-              {evaluationTemplateDetails.description}
-            </Typography>
+        <DetailsList>
+          <Stack gap={3}>
+            {evaluationTemplateDetails.description && (
+              <Stack gap={1}>
+                <Typography level="title-md" role="term">
+                  Beschreibung
+                </Typography>
+                <Typography level="body-md" role="definition">
+                  {evaluationTemplateDetails.description}
+                </Typography>
+              </Stack>
+            )}
+            <DataSource
+              dataSourceName={evaluationTemplateDetails.dataSourceName}
+            />
+            <Attributes
+              attributeLabels={evaluationTemplateDetails.attributeLabels}
+            />
           </Stack>
-        )}
-        <DataSource dataSourceName={evaluationTemplateDetails.dataSourceName} />
-        <Attributes
-          attributeLabels={evaluationTemplateDetails.attributeLabels}
-        />
+        </DetailsList>
         <Analyses analyses={evaluationTemplateDetails.analyses} />
         <Alert
           variant="soft"

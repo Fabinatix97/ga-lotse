@@ -8,8 +8,9 @@ import {
   FileDownloadOutlined,
   Remove as RemoveIcon,
 } from "@mui/icons-material";
-import { Button, Stack } from "@mui/joy";
+import { Box, Button, Stack } from "@mui/joy";
 import { useFormikContext } from "formik";
+import { useEffect } from "react";
 import { isDefined } from "remeda";
 
 import {
@@ -17,7 +18,12 @@ import {
   FileField,
   useConfirmationDialog,
 } from "@eshg/lib-employee-portal";
-import { FileType, FormAddMoreButton, useFileDownload } from "@eshg/lib-portal";
+import {
+  FileType,
+  FormAddMoreButton,
+  useFileDownload,
+  useFocus,
+} from "@eshg/lib-portal";
 import { ApiFileType } from "@eshg/lib-procedures-api";
 import { ApiOmsFile } from "@eshg/official-medical-service-api";
 
@@ -38,6 +44,16 @@ interface FilesSectionProps {
 export function FilesSection(props: Readonly<FilesSectionProps>) {
   const [active, toggleActive] = useToggle(props.withInitialField);
   const { openCancelDialog } = useConfirmationDialog();
+  const {
+    ref: addFileRef,
+    focus: focusAddFile,
+    reset: resetAddFile,
+  } = useFocus();
+  const {
+    ref: newFileInputRef,
+    focus: focusNewFileInput,
+    reset: resetNewFileInput,
+  } = useFocus();
 
   const { setFieldValue, setFieldTouched, values } = useFormikContext<
     AddDocumentFormValues | DocumentFormValues
@@ -50,6 +66,16 @@ export function FilesSection(props: Readonly<FilesSectionProps>) {
   );
 
   const accept = [FileType.Pdf, FileType.Jpeg, FileType.Png];
+
+  useEffect(() => {
+    if (props.canAdd) {
+      if (active) {
+        resetAddFile();
+      } else {
+        resetNewFileInput();
+      }
+    }
+  }, [active, props.canAdd, resetAddFile, resetNewFileInput]);
 
   return (
     <Stack gap={2} data-testid="files">
@@ -77,6 +103,11 @@ export function FilesSection(props: Readonly<FilesSectionProps>) {
                           toggleActive();
                         }
                         await setFieldValue("files", newArr, false);
+                        if (newArr.length === 0) {
+                          focusNewFileInput();
+                        } else {
+                          focusAddFile();
+                        }
                       },
                       confirmLabel: "Löschen",
                       title: "Datei wirklich löschen?",
@@ -118,10 +149,11 @@ export function FilesSection(props: Readonly<FilesSectionProps>) {
           ))}
       </Stack>
       {props.canAdd && (
-        <>
+        <Box display="contents" role="group" aria-label="Neue Datei">
           {active && (
             // ToDo: Bug in FileField validation? filetype validation runs via drag and drop only
             <FileField
+              ref={(el) => (newFileInputRef.current = el)}
               label="Datei hochladen (PDF, JPG oder PNG)"
               name="files"
               placeholder="Auswählen"
@@ -138,6 +170,7 @@ export function FilesSection(props: Readonly<FilesSectionProps>) {
                   );
                   // Only remove the upload card if the file was valid and added, otherwise it should stay and show the error
                   toggleActive();
+                  focusAddFile();
                 } else {
                   // We still need to set this value, but without the new file
                   await setFieldValue(props.name, [...values.files!], false);
@@ -156,6 +189,7 @@ export function FilesSection(props: Readonly<FilesSectionProps>) {
                 startDecorator={<RemoveIcon />}
                 onClick={() => {
                   toggleActive();
+                  focusAddFile();
                 }}
               >
                 Hinzufügen abbrechen
@@ -163,14 +197,16 @@ export function FilesSection(props: Readonly<FilesSectionProps>) {
             )
           ) : (
             <FormAddMoreButton
+              ref={(el) => (addFileRef.current = el)}
               onClick={() => {
                 toggleActive();
+                focusNewFileInput();
               }}
             >
               {props.addLabel}
             </FormAddMoreButton>
           )}
-        </>
+        </Box>
       )}
     </Stack>
   );

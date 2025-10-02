@@ -235,22 +235,15 @@ image: "{{ .registry }}/{{ .name }}:{{ .tag }}"
 imagePullPolicy: {{ .pullPolicy }}
 {{- end }}
 
-{{- define "waitForStatefulset" }}
+{{- define "waitForRollout" }}
 {{- $Values := index . 0 }}
-{{- $deployment := index . 1 }}
+{{- $resourceType := index . 1 }}
+{{- $resource := index . 2 }}
 {{ $securityContext := merge (deepCopy (default dict $Values.initContainerSecurityContext )) (deepCopy (default dict $Values.containerSecurityContext )) }}
-- name: {{ include "truncateWithHash" (printf "waitfor-%s" $deployment) }}
+- name: {{ include "truncateWithHash" (printf "waitfor-%s" $resource) }}
   {{- include "getThirdPartyImage" $Values.thirdPartyImages.kubectl | indent 2 }}
   securityContext: {{- $securityContext | toYaml | nindent 4 }}
-  command:
-    - "bash"
-    - "-c"
-    - until ( READY="$(kubectl -n ${POD_NAMESPACE} get statefulsets -o jsonpath='{.items[?(@.metadata.name=="{{ $deployment }}")].status.readyReplicas}')"; [ "$READY" -ge "1" ] ); do echo waiting for {{ $deployment }}; sleep 1; done
-  env:
-    - name: POD_NAMESPACE
-      valueFrom:
-        fieldRef:
-          fieldPath: metadata.namespace
+  command: ["/bin/kubectl", "rollout", "status", "--timeout=1h", {{ $resourceType | quote }}, {{ $resource | quote }}]
   resources:
     requests:
       cpu: 10m
@@ -260,29 +253,16 @@ imagePullPolicy: {{ .pullPolicy }}
       memory: 50Mi
 {{- end }}
 
+{{- define "waitForStatefulset" }}
+{{- $Values := index . 0 }}
+{{- $statefulset := index . 1 }}
+{{ include "waitForRollout" (list $Values "statefulsets" $statefulset) }}
+{{- end }}
+
 {{- define "waitForDeployment" }}
 {{- $Values := index . 0 }}
 {{- $deployment := index . 1 }}
-{{ $securityContext := merge (deepCopy (default dict $Values.initContainerSecurityContext )) (deepCopy (default dict $Values.containerSecurityContext )) }}
-- name: {{ include "truncateWithHash" (printf "waitfor-%s" $deployment) }}
-  {{- include "getThirdPartyImage" $Values.thirdPartyImages.kubectl | indent 2 }}
-  securityContext: {{- $securityContext | toYaml | nindent 4 }}
-  command:
-    - "bash"
-    - "-c"
-    - until ( AVAILABLE="$(kubectl -n ${POD_NAMESPACE} get deployments -o jsonpath='{.items[?(@.metadata.name=="{{ $deployment }}")].status.conditions[?(@.type=="Available")].status}')"; [ "$AVAILABLE" == "True" ] ); do echo waiting for {{ $deployment }}; sleep 1; done
-  env:
-    - name: POD_NAMESPACE
-      valueFrom:
-        fieldRef:
-          fieldPath: metadata.namespace
-  resources:
-    requests:
-      cpu: 10m
-      memory: 10Mi
-    limits:
-      cpu: 50m
-      memory: 50Mi
+{{ include "waitForRollout" (list $Values "deployments" $deployment) }}
 {{- end }}
 
 

@@ -19,6 +19,7 @@ import { ArticulationField } from "@/lib/businessModules/schoolEntry/features/pr
 import {
   ARTICULATION_EVALUATION_TYPES,
   ARTICULATION_VALUES,
+  REQUIRED_PROCEDURE_PROPERTIES,
 } from "@/lib/businessModules/schoolEntry/features/procedures/translations";
 
 interface ArticulationFormProps {
@@ -41,16 +42,53 @@ interface BooleanField {
 }
 
 const BOOLEAN_FIELDS: BooleanField[] = [
-  { name: "lettersSAndZPoints", label: "S, Z" },
-  { name: "formationSchPoints", label: "Sch" },
-  { name: "lettersTAndDPoints", label: "T, D" },
-  { name: "formationChPoints", label: "Ch" },
-  { name: "lettersGAndKPoints", label: "G, K" },
-  { name: "lettersLAndNPoints", label: "L, N" },
-  { name: "letterRPoints", label: "R" },
-  { name: "letterFAndFormationPfPoints", label: "F, Pf" },
-  { name: "letterBPoints", label: "B" },
-  { name: "formationsTrDrKrGrPoints", label: "tr, dr, kr, gr" },
+  {
+    name: "lettersSAndZPoints",
+    label:
+      REQUIRED_PROCEDURE_PROPERTIES.SOPESS_EXAMINATION_LETTERS_S_AND_Z_POINTS,
+  },
+  {
+    name: "formationSchPoints",
+    label:
+      REQUIRED_PROCEDURE_PROPERTIES.SOPESS_EXAMINATION_FORMATION_SCH_POINTS,
+  },
+  {
+    name: "lettersTAndDPoints",
+    label:
+      REQUIRED_PROCEDURE_PROPERTIES.SOPESS_EXAMINATION_LETTERS_T_AND_D_POINTS,
+  },
+  {
+    name: "formationChPoints",
+    label: REQUIRED_PROCEDURE_PROPERTIES.SOPESS_EXAMINATION_FORMATION_CH_POINTS,
+  },
+  {
+    name: "lettersGAndKPoints",
+    label:
+      REQUIRED_PROCEDURE_PROPERTIES.SOPESS_EXAMINATION_LETTERS_G_AND_K_POINTS,
+  },
+  {
+    name: "lettersLAndNPoints",
+    label:
+      REQUIRED_PROCEDURE_PROPERTIES.SOPESS_EXAMINATION_LETTERS_L_AND_N_POINTS,
+  },
+  {
+    name: "letterRPoints",
+    label: REQUIRED_PROCEDURE_PROPERTIES.SOPESS_EXAMINATION_LETTER_R_POINTS,
+  },
+  {
+    name: "letterFAndFormationPfPoints",
+    label:
+      REQUIRED_PROCEDURE_PROPERTIES.SOPESS_EXAMINATION_LETTER_F_AND_FORMATION_PF_POINTS,
+  },
+  {
+    name: "letterBPoints",
+    label: REQUIRED_PROCEDURE_PROPERTIES.SOPESS_EXAMINATION_LETTER_B_POINTS,
+  },
+  {
+    name: "formationsTrDrKrGrPoints",
+    label:
+      REQUIRED_PROCEDURE_PROPERTIES.SOPESS_EXAMINATION_FORMATIONS_TR_DR_KR_GR_POINTS,
+  },
 ];
 
 function getSum(props: ArticulationFormProps) {

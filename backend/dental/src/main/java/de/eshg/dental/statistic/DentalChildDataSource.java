@@ -18,6 +18,7 @@ import de.eshg.dental.statistic.model.*;
 import de.eshg.lib.statistics.api.DataSourceSensitivity;
 import de.eshg.lib.statistics.datasource.ProcedureDataSource;
 import de.eshg.lib.statistics.util.TimeRange;
+import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
@@ -53,6 +54,7 @@ public class DentalChildDataSource extends ProcedureDataSource<Child, DentalChil
       case PROCEDURE_ID -> child.getExternalId();
       case CHILD_CENTRAL_FILE_ID -> child.getChildIdFromCentralFile();
       case CHILD_AGE -> latestScreeningExamination.map(this::getChildAgeAtExamination).orElse(null);
+      case SCHULJAHR -> getSchoolYear(child);
       case EINRICHTUNG -> child.getInstitutionId();
       case GRUPPE -> getGroup(child.getGroupName());
       case ANZAHL_MASSNAHMEN -> child.getExaminations().size();
@@ -86,6 +88,17 @@ public class DentalChildDataSource extends ProcedureDataSource<Child, DentalChil
       case F_WERTE_BLEIBEND ->
           getDValues(latestScreeningExamination, Tooth::isSecondaryTooth, DMFValues::getFValue);
     };
+  }
+
+  private String getSchoolYear(Child child) {
+    if (child.getYear() == null) {
+      return null;
+    }
+
+    DateTimeFormatter yearPattern = DateTimeFormatter.ofPattern("yy");
+    return String.format(
+        "%s/%s",
+        child.getYear().format(yearPattern), child.getYear().plusYears(1).format(yearPattern));
   }
 
   private Integer getChildAgeAtExamination(ScreeningExaminationResult latestScreeningExamination) {

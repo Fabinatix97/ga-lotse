@@ -9,8 +9,8 @@ import {
   Edit,
   OpenInFullOutlined,
 } from "@mui/icons-material";
-import { IconButton, Stack, Tooltip, Typography } from "@mui/joy";
-import { useState } from "react";
+import { Box, IconButton, Stack, Tooltip, Typography } from "@mui/joy";
+import { useId, useState } from "react";
 import { isNonNullish, isObjectType } from "remeda";
 
 import { ActionsMenu, useConfirmationDialog } from "@eshg/lib-employee-portal";
@@ -152,9 +152,10 @@ export function AnalysisChartDiagram(props: {
 
   const [openFullScreenChart, setOpenFullScreenChart] = useState(false);
   const canExportData = canExportDataPermission(props.dataSourceSensitivity);
+  const titleId = useId();
 
   return (
-    <>
+    <Box display="contents" role="group" aria-labelledby={titleId}>
       <BaseModal
         open={openFullScreenChart}
         modalTitle={props.analysisDiagram.title}
@@ -196,6 +197,7 @@ export function AnalysisChartDiagram(props: {
                   paddingRight: "1rem",
                 }}
                 level="title-md"
+                id={titleId}
                 data-testid="analysis-diagram-title"
               >
                 {props.analysisDiagram.title}
@@ -261,6 +263,6 @@ export function AnalysisChartDiagram(props: {
         }
         onShowMoreDescription={() => setOpenFullScreenChart(true)}
       />
-    </>
+    </Box>
   );
 }

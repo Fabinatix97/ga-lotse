@@ -81,6 +81,46 @@ public class SchoolInfoLetterValidator {
       DevelopmentScreening developmentScreening) {
     EnumSet<Property> errors = validate(developmentScreening);
     errors.addAll(
+        validateExaminationResultWithDiagnosis(
+            developmentScreening.getAbdomen(),
+            Property.DEVELOPMENT_SCREENING_ABDOMEN_RESULT,
+            Property.DEVELOPMENT_SCREENING_ABDOMEN_DOCTOR_LETTER));
+    errors.addAll(
+        validateExaminationResultWithDiagnosis(
+            developmentScreening.getEarNoseThroat(),
+            Property.DEVELOPMENT_SCREENING_EAR_NOSE_THROAT_RESULT,
+            Property.DEVELOPMENT_SCREENING_EAR_NOSE_THROAT_DOCTOR_LETTER));
+    errors.addAll(
+        validateExaminationResultWithDiagnosis(
+            developmentScreening.getNutritionalCondition(),
+            Property.DEVELOPMENT_SCREENING_NUTRITIONAL_CONDITION_RESULT,
+            Property.DEVELOPMENT_SCREENING_NUTRITIONAL_CONDITION_DOCTOR_LETTER));
+    errors.addAll(
+        validateExaminationResultWithDiagnosis(
+            developmentScreening.getRespiratoryCardiovascular(),
+            Property.DEVELOPMENT_SCREENING_RESPIRATORY_CARDIOVASCULAR_RESULT,
+            Property.DEVELOPMENT_SCREENING_RESPIRATORY_CARDIOVASCULAR_DOCTOR_LETTER));
+    errors.addAll(
+        validateExaminationResultWithDiagnosis(
+            developmentScreening.getMusculatureSkeleton(),
+            Property.DEVELOPMENT_SCREENING_MUSCULATURE_SKELETON_RESULT,
+            Property.DEVELOPMENT_SCREENING_MUSCULATURE_SKELETON_DOCTOR_LETTER));
+    errors.addAll(
+        validateExaminationResultWithDiagnosis(
+            developmentScreening.getMetabolism(),
+            Property.DEVELOPMENT_SCREENING_METABOLISM_RESULT,
+            Property.DEVELOPMENT_SCREENING_METABOLISM_DOCTOR_LETTER));
+    errors.addAll(
+        validateExaminationResultWithDiagnosis(
+            developmentScreening.getNeurology(),
+            Property.DEVELOPMENT_SCREENING_NEUROLOGY_RESULT,
+            Property.DEVELOPMENT_SCREENING_NEUROLOGY_DOCTOR_LETTER));
+    errors.addAll(
+        validateExaminationResultWithDiagnosis(
+            developmentScreening.getSkin(),
+            Property.DEVELOPMENT_SCREENING_SKIN_RESULT,
+            Property.DEVELOPMENT_SCREENING_SKIN_DOCTOR_LETTER));
+    errors.addAll(
         validateHandicapWithDiagnosis(
             developmentScreening.getChronicDisease(),
             Property.DEVELOPMENT_SCREENING_CHRONIC_DISEASE_RESULT,
@@ -110,6 +150,17 @@ public class SchoolInfoLetterValidator {
       }
     }
     return EnumSet.noneOf(Property.class);
+  }
+
+  private static EnumSet<Property> validateExaminationResultWithDiagnosis(
+      ExaminationWithDiagnosis examinationWithDiagnosis,
+      Property resultMissing,
+      Property doctorLetterMissing) {
+    if (examinationWithDiagnosis == null || examinationWithDiagnosis.getResult() == null) {
+      return EnumSet.of(resultMissing);
+    } else {
+      return validateDoctorLetter(examinationWithDiagnosis.getResult(), doctorLetterMissing);
+    }
   }
 
   private static EnumSet<Property> validateSopessExamination(
@@ -501,6 +552,23 @@ public class SchoolInfoLetterValidator {
     EYE_EXAMINATION_EYE_EXAMINATION_DOCTOR_LETTER(null, false),
     EYE_EXAMINATION_ISHIHARA_EXAMINATION_DOCTOR_LETTER(null, false),
     EYE_EXAMINATION_LANG_EXAMINATION_DOCTOR_LETTER(null, false),
+    DEVELOPMENT_SCREENING_ABDOMEN_RESULT(null, false),
+    DEVELOPMENT_SCREENING_ABDOMEN_DOCTOR_LETTER(null, false),
+    DEVELOPMENT_SCREENING_EAR_NOSE_THROAT_RESULT(null, false),
+    DEVELOPMENT_SCREENING_EAR_NOSE_THROAT_DOCTOR_LETTER(null, false),
+    DEVELOPMENT_SCREENING_NUTRITIONAL_CONDITION_RESULT(null, false),
+    DEVELOPMENT_SCREENING_NUTRITIONAL_CONDITION_DOCTOR_LETTER(null, false),
+    DEVELOPMENT_SCREENING_RESPIRATORY_CARDIOVASCULAR_RESULT(null, false),
+    DEVELOPMENT_SCREENING_RESPIRATORY_CARDIOVASCULAR_DOCTOR_LETTER(null, false),
+    DEVELOPMENT_SCREENING_NEUROLOGY_RESULT(null, false),
+    DEVELOPMENT_SCREENING_NEUROLOGY_DOCTOR_LETTER(null, false),
+    DEVELOPMENT_SCREENING_SKIN_RESULT(null, false),
+    DEVELOPMENT_SCREENING_SKIN_DOCTOR_LETTER(null, false),
+    DEVELOPMENT_SCREENING_MUSCULATURE_SKELETON_RESULT(null, false),
+    DEVELOPMENT_SCREENING_MUSCULATURE_SKELETON_DOCTOR_LETTER(null, false),
+    DEVELOPMENT_SCREENING_METABOLISM_RESULT(null, false),
+    DEVELOPMENT_SCREENING_METABOLISM_DOCTOR_LETTER(null, false),
+
     DEVELOPMENT_SCREENING_CHRONIC_DISEASE_RESULT(null, false),
     DEVELOPMENT_SCREENING_CHRONIC_DISEASE_ICD10(null, false),
     DEVELOPMENT_SCREENING_DISABILITY_RESULT(null, false),

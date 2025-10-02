@@ -24,7 +24,10 @@ import { ProcedureDetails } from "@/lib/businessModules/schoolEntry/api/models/P
 import { useGetLocationSelectionMode } from "@/lib/businessModules/schoolEntry/api/queries/configApi";
 import { InvitationDetails } from "@/lib/businessModules/schoolEntry/features/procedures/procedureDetails/InvitationDetails";
 import { useUpdateProcedureSidebar } from "@/lib/businessModules/schoolEntry/features/procedures/procedureDetails/UpdateProcedureSidebar";
-import { PROCEDURE_TYPES } from "@/lib/businessModules/schoolEntry/features/procedures/translations";
+import {
+  PROCEDURE_TYPES,
+  REQUIRED_PROCEDURE_PROPERTIES,
+} from "@/lib/businessModules/schoolEntry/features/procedures/translations";
 
 interface ProcedureDetailsProps {
   procedure: ProcedureDetails;
@@ -55,7 +58,7 @@ export function ProcedureDetailsSection(props: ProcedureDetailsProps) {
                 value={PROCEDURE_TYPES[props.procedure.type]}
               />
               <DetailsItem
-                label="Schuljahr"
+                label={REQUIRED_PROCEDURE_PROPERTIES.SCHOOL_YEAR}
                 value={
                   isDefined(props.procedure.schoolYear)
                     ? formatSchoolYear(props.procedure.schoolYear)
@@ -81,7 +84,7 @@ export function ProcedureDetailsSection(props: ProcedureDetailsProps) {
               )}
             </Stack>
             <DetailsItem
-              label="Schule"
+              label={REQUIRED_PROCEDURE_PROPERTIES.SCHOOL_ID}
               value={
                 isDefined(props.procedure.school)
                   ? props.procedure.school.name
@@ -101,7 +104,7 @@ export function ProcedureDetailsSection(props: ProcedureDetailsProps) {
             )}
             <Stack gap={1}>
               <DetailsItem
-                label="Termin"
+                label={REQUIRED_PROCEDURE_PROPERTIES.APPOINTMENT}
                 value={
                   props.procedure.appointment
                     ? `${formatWeekdayDateTime(props.procedure.appointment.start)} Uhr`

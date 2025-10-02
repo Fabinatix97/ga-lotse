@@ -322,6 +322,7 @@ function UpdateProcedureSidebar(props: UpdateProcedureSidebarProps) {
               <Radio
                 value={AppointmentSelectionType.AdHoc}
                 label="Termin zu sofort buchen"
+                disabled={values.hasBeenClosed}
               />
               {values.appointmentSelectionType ===
                 AppointmentSelectionType.AdHoc && (
@@ -350,6 +351,7 @@ function UpdateProcedureSidebar(props: UpdateProcedureSidebarProps) {
                   <CheckboxField
                     name="changeRecipient"
                     label="Abweichender Einladungsadressat"
+                    disabled={values.hasBeenClosed}
                     onChange={(event) => {
                       if (!event.target.checked) {
                         void setFieldValue("recipient", null);

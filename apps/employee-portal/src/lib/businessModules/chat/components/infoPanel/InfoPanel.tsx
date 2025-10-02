@@ -51,7 +51,7 @@ export function InfoPanel({ setMobileView }: Readonly<InfoPanelProps>) {
           <InfoPanelHeader
             close={onClose}
             roomId={infoPanelState.payload}
-            onBackIconClick={() => setMobileView(MobileView.ChatMessages)}
+            onBackIconClick={onClose}
           />
         );
       case InfoPanelView.RenameGroupChat:
@@ -61,9 +61,13 @@ export function InfoPanel({ setMobileView }: Readonly<InfoPanelProps>) {
           <InfoPanelHeader
             close={onClose}
             roomId={infoPanelState.payload}
-            onBackIconClick={() =>
-              setInfoPanelView(InfoPanelView.MobileView, infoPanelState.payload)
-            }
+            onBackIconClick={() => {
+              closeInfoPanel();
+              setInfoPanelView(
+                InfoPanelView.MobileView,
+                infoPanelState.payload,
+              );
+            }}
           />
         );
       case InfoPanelView.UserInfo:

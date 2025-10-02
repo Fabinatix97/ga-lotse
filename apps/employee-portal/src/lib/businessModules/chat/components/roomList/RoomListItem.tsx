@@ -78,21 +78,9 @@ export function RoomListItem({
           </Typography>
         </Stack>
         {latestMessage?.decrypted ? (
-          <Stack direction="row" alignItems="center">
-            <LockOutlinedIcon
-              sx={{
-                opacity: 0.5,
-              }}
-            />
-            <Typography
-              noWrap
-              sx={{
-                paddingLeft: 0.3,
-                opacity: 0.5,
-              }}
-            >
-              Entschlüsselung fehlgeschlagen
-            </Typography>
+          <Stack direction="row" gap={0.5} alignItems="center">
+            <LockOutlinedIcon />
+            <Typography noWrap>Entschlüsselung fehlgeschlagen</Typography>
           </Stack>
         ) : (
           <Typography noWrap>

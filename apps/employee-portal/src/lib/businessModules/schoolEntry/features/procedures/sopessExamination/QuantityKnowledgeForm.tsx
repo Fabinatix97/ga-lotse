@@ -22,7 +22,10 @@ import {
   MIN_0,
   validateValue,
 } from "@/lib/businessModules/schoolEntry/features/procedures/sopessExamination/SopessExaminationForm";
-import { EVALUATION_EXAMINATION_TYPES } from "@/lib/businessModules/schoolEntry/features/procedures/translations";
+import {
+  EVALUATION_EXAMINATION_TYPES,
+  REQUIRED_PROCEDURE_PROPERTIES,
+} from "@/lib/businessModules/schoolEntry/features/procedures/translations";
 
 interface QuantityKnowledgeFormProps {
   quantityKnowledgePoints: OptionalFieldValue<number>;
@@ -84,7 +87,9 @@ export function QuantityKnowledgeForm(props: QuantityKnowledgeFormProps) {
         <Stack direction="row" gap={2}>
           <SopessExaminationFields
             examinationResultName={fieldName("result")}
-            examinationResultLabel="Wissen/Denken"
+            examinationResultLabel={
+              REQUIRED_PROCEDURE_PROPERTIES.SOPESS_EXAMINATION_KNOWLEDGE_THINKING_RESULT
+            }
             responseName={fieldName("doctorLetter")}
             examinationResultValue={props.result}
             setFieldValue={props.setFieldValue}

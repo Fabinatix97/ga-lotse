@@ -42,6 +42,7 @@ export interface InputFieldProps
   maxLength?: number;
   "aria-label"?: string;
   "aria-details"?: string;
+  "aria-describedby"?: string;
   untrimmedInput?: boolean;
   autoComplete?: InputProps["autoComplete"];
   autoFocus?: boolean;
@@ -142,6 +143,7 @@ const MemoizedInputField = memo(function InnerInputField(
             readOnly: props.readOnly === true || props.unstyledReadOnly,
             maxLength: props.maxLength,
             "aria-details": props["aria-details"],
+            "aria-describedby": props["aria-describedby"],
             autoFocus: props.autoFocus ?? false,
             max: props.type === "date" ? "9999-12-31" : undefined,
           },

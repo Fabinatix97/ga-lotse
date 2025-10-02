@@ -37,4 +37,6 @@ public interface GdprDownloadPackageRepository
   @Modifying
   @Query("delete from GdprDownloadPackage g where g.externalId in :externalIds")
   int deleteAllByExternalIdIn(Collection<UUID> externalIds);
+
+  List<GdprDownloadPackage> findAllByIdentificationDataHashIsNull();
 }

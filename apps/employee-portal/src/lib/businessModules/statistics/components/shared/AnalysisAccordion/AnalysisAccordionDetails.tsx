@@ -65,7 +65,7 @@ export function AnalysisAccordionDetails(props: AnalysisAccordionDetailsProps) {
       >
         <Stack spacing={2} width="30rem">
           <Typography level="title-md">Analysedetails</Typography>
-          <Stack spacing={1}>
+          <Stack spacing={1} component="dl" margin="0">
             <LabelValuePair
               label="Erstellungsdatum"
               value={formatDate(props.analysis.createdAt)}
@@ -90,13 +90,14 @@ export function AnalysisAccordionDetails(props: AnalysisAccordionDetailsProps) {
         )}
       </Stack>
       <Divider />
-      <Stack gap={2} direction="row" flexWrap="wrap">
+      <Stack gap={2} direction="row" flexWrap="wrap" role="list">
         {analysisDiagrams.map((it) => (
           <Stack
             key={it.diagramId}
             sx={{ minWidth: "31rem" }}
             flexGrow={1}
             flexBasis="30%"
+            role="listitem"
           >
             <AnalysisChartDiagram
               configuration={props.analysis.diagramConfiguration}
@@ -114,6 +115,7 @@ export function AnalysisAccordionDetails(props: AnalysisAccordionDetailsProps) {
           startDecorator={<Add />}
           sx={{ alignSelf: "flex-end" }}
           data-testid="lower-add-diagram-button"
+          aria-hidden="true"
           onClick={handleDiagramCreateClick}
         >
           Diagramm hinzufügen

@@ -5,7 +5,7 @@
 
 import { Divider, Stack, Typography } from "@mui/joy";
 
-import { Alert, InputField } from "@eshg/lib-portal";
+import { Alert, DetailsList, InputField } from "@eshg/lib-portal";
 
 import { EvaluationTemplateDetails } from "@/lib/businessModules/statistics/api/models/evaluationTemplateDetails";
 import {
@@ -45,8 +45,16 @@ export function UploadTemplateStep({
         required="Bitte Kontakt angeben."
       />
       <Divider />
-      <DataSource dataSourceName={evaluationTemplateDetails.dataSourceName} />
-      <Attributes attributeLabels={evaluationTemplateDetails.attributeLabels} />
+      <DetailsList>
+        <Stack gap={3}>
+          <DataSource
+            dataSourceName={evaluationTemplateDetails.dataSourceName}
+          />
+          <Attributes
+            attributeLabels={evaluationTemplateDetails.attributeLabels}
+          />
+        </Stack>
+      </DetailsList>
       <Analyses analyses={evaluationTemplateDetails.analyses} />
     </Stack>
   );

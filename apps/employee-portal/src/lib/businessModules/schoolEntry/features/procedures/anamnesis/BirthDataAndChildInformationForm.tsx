@@ -24,6 +24,7 @@ import {
 
 import { FlexLabel } from "@/lib/businessModules/schoolEntry/features/procedures/examinations/FlexLabel";
 import { BOOLEAN_SELECT_STYLE } from "@/lib/businessModules/schoolEntry/features/procedures/styles";
+import { REQUIRED_PROCEDURE_PROPERTIES } from "@/lib/businessModules/schoolEntry/features/procedures/translations";
 import { InfoIconTooltipButton } from "@/lib/shared/components/buttons/IconTooltipButton";
 
 import { AnamnesisFormValues, TEXT_INPUT_STYLE } from "./AnamnesisForm";
@@ -87,7 +88,7 @@ export function BirthDataAndChildInformationForm(
               name={developmentInfo("birthWeight")}
               label={
                 <FlexLabel>
-                  Gewicht
+                  {REQUIRED_PROCEDURE_PROPERTIES.ANAMNESIS_BIRTH_WEIGHT}
                   <Typography component="span" sx={visuallyHidden}>
                     in g (300 - 6000, 9999 - unbekannt)
                   </Typography>
@@ -143,7 +144,7 @@ export function BirthDataAndChildInformationForm(
           />
           <SoftRequiredNumberField
             name={additionalChildInfo("numberOfSiblings")}
-            label="Anzahl Geschwister / im Haushalt lebende Kinder"
+            label={REQUIRED_PROCEDURE_PROPERTIES.ANAMNESIS_NUMBER_OF_SIBLINGS}
             min={0}
             sx={{ width: "80px" }}
             softRequired

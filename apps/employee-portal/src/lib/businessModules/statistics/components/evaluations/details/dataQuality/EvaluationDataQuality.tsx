@@ -119,7 +119,8 @@ function DataQualityCards(props: {
 
   return (
     <Stack
-      role="list"
+      component="dl"
+      margin="0"
       direction={{ xxs: "column", sm: "row" }}
       flexWrap={{ xxs: "wrap", sm: "nowrap" }}
       gap={2}

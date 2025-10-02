@@ -1263,6 +1263,35 @@
         "tags" : [ "GdprValidationTask" ]
       }
     },
+    "/gdpr-validation-tasks/download-packages/{downloadId}" : {
+      "get" : {
+        "operationId" : "getGdprDownloadPackage",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "downloadId",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "type" : "string",
+                  "format" : "binary"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Get Gdpr Download Package by its downloadId",
+        "tags" : [ "GdprValidationTask" ]
+      }
+    },
     "/gdpr-validation-tasks/notification-banner" : {
       "get" : {
         "operationId" : "getGdprNotificationBanner",
@@ -1472,43 +1501,6 @@
           }
         },
         "summary" : "Get approved Gdpr Download Packages by Gdpr Procedure Id",
-        "tags" : [ "GdprValidationTask" ]
-      }
-    },
-    "/gdpr-validation-tasks/{gdprProcedureId}/download-packages/{downloadId}" : {
-      "get" : {
-        "operationId" : "getGdprDownloadPackage",
-        "parameters" : [ {
-          "in" : "path",
-          "name" : "gdprProcedureId",
-          "required" : true,
-          "schema" : {
-            "type" : "string",
-            "format" : "uuid"
-          }
-        }, {
-          "in" : "path",
-          "name" : "downloadId",
-          "required" : true,
-          "schema" : {
-            "type" : "string",
-            "format" : "uuid"
-          }
-        } ],
-        "responses" : {
-          "200" : {
-            "content" : {
-              "*/*" : {
-                "schema" : {
-                  "type" : "string",
-                  "format" : "binary"
-                }
-              }
-            },
-            "description" : "OK"
-          }
-        },
-        "summary" : "Get Gdpr Download Package by the gdprProcedureId and its downloadId",
         "tags" : [ "GdprValidationTask" ]
       }
     },
@@ -4504,7 +4496,7 @@
         }
       },
       "AffectedPerson" : {
-        "required" : [ "address", "dateOfBirth", "firstName", "lastName" ],
+        "required" : [ "dateOfBirth", "firstName", "lastName" ],
         "type" : "object",
         "properties" : {
           "address" : {
@@ -4585,7 +4577,7 @@
         "description" : "Represents the individual the facility reports on and is the integral part of the procedure."
       },
       "AffectedPersonDetails" : {
-        "required" : [ "address", "dateOfBirth", "firstName", "lastName" ],
+        "required" : [ "dateOfBirth", "firstName", "lastName" ],
         "type" : "object",
         "properties" : {
           "address" : {
@@ -5396,7 +5388,7 @@
         }
       },
       "Custodian" : {
-        "required" : [ "address", "custodianId", "dateOfBirth", "firstName", "lastName" ],
+        "required" : [ "custodianId", "dateOfBirth", "firstName", "lastName" ],
         "type" : "object",
         "properties" : {
           "address" : {
@@ -5467,7 +5459,7 @@
         "description" : "Related to the affected person and required if the affected person is a minor."
       },
       "CustodianDetails" : {
-        "required" : [ "address", "dateOfBirth", "firstName", "lastName" ],
+        "required" : [ "dateOfBirth", "firstName", "lastName" ],
         "type" : "object",
         "properties" : {
           "address" : {

@@ -4,6 +4,7 @@
  */
 
 import { Stack, Typography } from "@mui/joy";
+import { visuallyHidden } from "@mui/utils";
 import { useState } from "react";
 
 import { ButtonLink } from "@eshg/lib-portal";
@@ -21,21 +22,28 @@ export function CollapsableList({
     : items;
 
   return (
-    <Stack>
-      {resultItems.map((it) => (
-        <Typography key={it} level="body-md">
+    <>
+      {items.map((it) => (
+        <Typography key={it} sx={visuallyHidden} role="definition">
           {it}
         </Typography>
       ))}
-      {shownItemsWhileCollapsed < items.length && (
-        <ButtonLink
-          sx={{ alignSelf: "flex-start" }}
-          variant="plain"
-          onClick={() => setCollapsed(!collapsed)}
-        >
-          {collapsed ? "Alle anzeigen" : "Weniger anzeigen"}
-        </ButtonLink>
-      )}
-    </Stack>
+      <Stack aria-hidden="true">
+        {resultItems.map((it) => (
+          <Typography key={it} level="body-md">
+            {it}
+          </Typography>
+        ))}
+        {shownItemsWhileCollapsed < items.length && (
+          <ButtonLink
+            sx={{ alignSelf: "flex-start" }}
+            variant="plain"
+            onClick={() => setCollapsed(!collapsed)}
+          >
+            {collapsed ? "Alle anzeigen" : "Weniger anzeigen"}
+          </ButtonLink>
+        )}
+      </Stack>
+    </>
   );
 }

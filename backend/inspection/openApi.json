@@ -2298,6 +2298,35 @@
         "tags" : [ "GdprValidationTask" ]
       }
     },
+    "/gdpr-validation-tasks/download-packages/{downloadId}" : {
+      "get" : {
+        "operationId" : "getGdprDownloadPackage",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "downloadId",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "type" : "string",
+                  "format" : "binary"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Get Gdpr Download Package by its downloadId",
+        "tags" : [ "GdprValidationTask" ]
+      }
+    },
     "/gdpr-validation-tasks/notification-banner" : {
       "get" : {
         "operationId" : "getGdprNotificationBanner",
@@ -2507,43 +2536,6 @@
           }
         },
         "summary" : "Get approved Gdpr Download Packages by Gdpr Procedure Id",
-        "tags" : [ "GdprValidationTask" ]
-      }
-    },
-    "/gdpr-validation-tasks/{gdprProcedureId}/download-packages/{downloadId}" : {
-      "get" : {
-        "operationId" : "getGdprDownloadPackage",
-        "parameters" : [ {
-          "in" : "path",
-          "name" : "gdprProcedureId",
-          "required" : true,
-          "schema" : {
-            "type" : "string",
-            "format" : "uuid"
-          }
-        }, {
-          "in" : "path",
-          "name" : "downloadId",
-          "required" : true,
-          "schema" : {
-            "type" : "string",
-            "format" : "uuid"
-          }
-        } ],
-        "responses" : {
-          "200" : {
-            "content" : {
-              "*/*" : {
-                "schema" : {
-                  "type" : "string",
-                  "format" : "binary"
-                }
-              }
-            },
-            "description" : "OK"
-          }
-        },
-        "summary" : "Get Gdpr Download Package by the gdprProcedureId and its downloadId",
         "tags" : [ "GdprValidationTask" ]
       }
     },

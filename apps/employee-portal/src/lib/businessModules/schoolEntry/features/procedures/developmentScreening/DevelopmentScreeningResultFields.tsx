@@ -20,6 +20,7 @@ import {
   BOLD_LABEL_STYLE,
   FIXED_WIDTH_BOOLEAN_SELECT_STYLE,
 } from "@/lib/businessModules/schoolEntry/features/procedures/styles";
+import { REQUIRED_PROCEDURE_PROPERTIES } from "@/lib/businessModules/schoolEntry/features/procedures/translations";
 
 const OFFSET_STYLE: SxProps = { marginLeft: "238px" };
 
@@ -28,7 +29,9 @@ export function DevelopmentScreeningResultFields() {
     <Stack direction="row" gap={3} flexWrap="wrap" sx={OFFSET_STYLE}>
       <SoftRequiredSelectField
         name="schoolRecommendation"
-        label="Empfehlungen"
+        label={
+          REQUIRED_PROCEDURE_PROPERTIES.DEVELOPMENT_SCREENING_SCHOOL_RECOMMENDATION
+        }
         options={SCHOOL_RECOMMENDATION_OPTIONS}
         renderValue={getAbbreviation}
         sx={{ ...FIXED_WIDTH_BOOLEAN_SELECT_STYLE, ...BOLD_LABEL_STYLE }}
@@ -36,7 +39,7 @@ export function DevelopmentScreeningResultFields() {
       />
       <SoftRequiredBooleanSelectField
         name="extraEffort"
-        label="Mehraufwand"
+        label={REQUIRED_PROCEDURE_PROPERTIES.DEVELOPMENT_SCREENING_EXTRA_EFFORT}
         sx={{ ...FIXED_WIDTH_BOOLEAN_SELECT_STYLE, ...BOLD_LABEL_STYLE }}
         allowDeselection
         softRequired

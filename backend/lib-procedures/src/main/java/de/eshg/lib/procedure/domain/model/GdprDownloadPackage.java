@@ -19,6 +19,10 @@ public class GdprDownloadPackage extends BaseEntityWithExternalId {
   @Column(nullable = false)
   private UUID businessProcedureId;
 
+  @DataSensitivity(SensitivityLevel.PSEUDONYMIZED)
+  @Column(nullable = true)
+  private String identificationDataHash;
+
   @DataSensitivity(SensitivityLevel.HIGHLY_SENSITIVE)
   @Column(nullable = false)
   private byte[] content;
@@ -29,6 +33,14 @@ public class GdprDownloadPackage extends BaseEntityWithExternalId {
 
   public void setBusinessProcedureId(UUID businessProcedureId) {
     this.businessProcedureId = businessProcedureId;
+  }
+
+  public String getIdentificationDataHash() {
+    return identificationDataHash;
+  }
+
+  public void setIdentificationDataHash(String identificationDataHash) {
+    this.identificationDataHash = identificationDataHash;
   }
 
   public byte[] getContent() {

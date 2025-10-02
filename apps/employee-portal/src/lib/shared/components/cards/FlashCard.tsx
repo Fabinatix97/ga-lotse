@@ -43,7 +43,6 @@ export function FlashCard({
 }) {
   return (
     <JoyCard
-      role="listitem"
       variant="soft"
       size="md"
       sx={{
@@ -52,10 +51,15 @@ export function FlashCard({
         border: "1px solid",
         borderColor: borderColors(color),
       }}
+      data-testid="metrics-card"
     >
       <Stack gap={1}>
         <Stack direction="row" justifyContent="space-between" paddingBottom={1}>
-          <Typography level="title-md" sx={{ color: "warning.700" }}>
+          <Typography
+            level="title-md"
+            sx={{ color: "warning.700" }}
+            role="term"
+          >
             {title}
           </Typography>
           <Box
@@ -72,7 +76,12 @@ export function FlashCard({
           alignItems="center"
         >
           {icon}
-          <Typography component="p" level="h4" sx={{ color: "warning.700" }}>
+          <Typography
+            component="p"
+            level="h4"
+            sx={{ color: "warning.700" }}
+            role="definition"
+          >
             {figure}
           </Typography>
         </Stack>

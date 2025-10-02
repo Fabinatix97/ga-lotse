@@ -20,13 +20,17 @@ import { validatePipe, validateRequired } from "../../helpers/validators";
 import { ValidationRules } from "../../types/form";
 import { RequiresChildren } from "../../types/react";
 
-export function renderLabel(label: string | ReactNode) {
+export function renderLabel(label: string | ReactNode, labelId?: string) {
   if (isNullish(label)) {
     return null;
   }
 
   if (typeof label === "object") {
     return label;
+  }
+
+  if (isDefined(labelId)) {
+    return <FormLabel id={labelId}>{label}</FormLabel>;
   }
 
   return <FormLabel>{label}</FormLabel>;
@@ -74,6 +78,7 @@ export interface BaseFieldProps
   extends SupportedFormControlProps,
     RequiresChildren {
   label?: string | ReactNode;
+  labelId?: string;
   helperText?: string;
   error?: boolean;
   fieldDecorator?: ReactNode;
@@ -82,6 +87,7 @@ export interface BaseFieldProps
 export function BaseField(props: BaseFieldProps) {
   const {
     label,
+    labelId,
     helperText,
     fieldDecorator: _,
     children,
@@ -92,7 +98,7 @@ export function BaseField(props: BaseFieldProps) {
 
   return (
     <FormControl {...formControlProps}>
-      {renderLabel(label)}
+      {renderLabel(label, labelId)}
       {children}
       {renderHelperText(debouncedHelperText)}
     </FormControl>

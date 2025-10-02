@@ -54,6 +54,7 @@ export function ChatHeader({
             noWrap
             level="h3"
             sx={{ minWidth: "5ch", textOverflow: "ellipsis" }}
+            component="h2"
           >
             {roomName}
           </Typography>

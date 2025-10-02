@@ -84,15 +84,13 @@ export function AuditlogCreatePasswordSidebar({
                 </Typography>
                 <PasswordField
                   data-testid="passwordField"
-                  label="Passwort vergeben"
+                  label="Neues Passwort"
                   name={fieldName("password")}
-                  visibilityLabel="visiblePassword"
                 />
                 <PasswordField
                   data-testid="repeatedPasswordField"
                   label="Passwort wiederholen"
                   name={fieldName("repeatedPassword")}
-                  visibilityLabel="visibleRepeatedPassword"
                 />
               </Stack>
               <PasswortRequirementHints

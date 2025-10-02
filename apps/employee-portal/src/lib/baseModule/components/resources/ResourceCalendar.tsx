@@ -66,11 +66,15 @@ export function ResourceCalendar(props: {
         <Typography component="h2" level="h3">
           Auslastung
         </Typography>
-        {props.isTodayAvaliable && (
-          <Chip color="success" sx={{ paddingX: 1 }}>
-            heute verfügbar
-          </Chip>
-        )}
+        <Chip
+          role="status"
+          aria-live="polite"
+          aria-atomic="true"
+          color={props.isTodayAvaliable ? "success" : "danger"}
+          sx={{ paddingX: 1 }}
+        >
+          {props.isTodayAvaliable ? "heute verfügbar" : "heute nicht verfügbar"}
+        </Chip>
       </Stack>
       <Card
         variant="plain"

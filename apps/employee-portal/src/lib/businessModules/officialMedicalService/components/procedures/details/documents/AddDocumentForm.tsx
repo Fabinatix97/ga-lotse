@@ -22,7 +22,7 @@ import {
   FormAddMoreButton,
   InputField,
   RadioGroupField,
-  useToggleFocus,
+  useFocusToggle,
 } from "@eshg/lib-portal";
 
 import { theme } from "@/lib/baseModule/theme/theme";
@@ -57,12 +57,12 @@ export function AddDocumentForm(props: Readonly<AddDocumentFormProps>) {
     ref1: documentTypeEnRef,
     ref2: addDocumentTypeTransRef,
     toggle: toggleDocumentType,
-  } = useToggleFocus(false);
+  } = useFocusToggle(false);
   const {
     ref1: helpTextEnRef,
     ref2: addHelpTextTransRef,
     toggle: toggleHelpText,
-  } = useToggleFocus(false);
+  } = useFocusToggle(false);
 
   async function handleChange(
     values: AddDocumentFormValues,

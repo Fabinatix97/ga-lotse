@@ -5,6 +5,8 @@
 
 "use client";
 
+import { isDefined } from "remeda";
+
 import {
   MainContentLayout,
   StickyToolbarLayout,
@@ -33,7 +35,11 @@ export function DentalProphylaxisSessionDetailsPage() {
     <StickyToolbarLayout
       toolbar={
         <Toolbar
-          title={`Maßnahme - ${institutionName} - ${groupName}`}
+          title={
+            isDefined(groupName)
+              ? `Maßnahme - ${institutionName} - ${groupName}`
+              : `Maßnahme - ${institutionName}`
+          }
           backButton={
             <ToolbarBackButton href={routes.prophylaxisSessions.overview} />
           }

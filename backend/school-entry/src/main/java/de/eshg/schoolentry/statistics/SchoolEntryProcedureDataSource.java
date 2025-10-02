@@ -13,7 +13,6 @@ import de.eshg.lib.statistics.api.DataSourceSensitivity;
 import de.eshg.lib.statistics.datasource.ProcedureDataSource;
 import de.eshg.lib.statistics.util.DateRange;
 import de.eshg.lib.statistics.util.TimeRange;
-import de.eshg.schoolentry.domain.model.Anamnesis;
 import de.eshg.schoolentry.domain.model.DevelopmentScreening_;
 import de.eshg.schoolentry.domain.model.SchoolEntryProcedure;
 import de.eshg.schoolentry.domain.model.SchoolEntryProcedure_;
@@ -155,10 +154,22 @@ public class SchoolEntryProcedureDataSource
     return switch (attribute) {
       case PROCEDURE_ID -> procedure.getExternalId();
       case CHILD_CENTRAL_FILE_ID -> procedure.getChildIdFromCentralFile();
-      case KIH ->
-          AnamnesisStatistics.getAnamnesisAttribute(procedure, Anamnesis::getNumberOfSiblings);
+      case KIH -> AnamnesisStatistics.getNumberOfSiblings(procedure);
       case SCHULE -> procedure.getSchoolId();
+      case SCHULJAHR -> getSchoolYear(procedure);
     };
+  }
+
+  private static String getSchoolYear(SchoolEntryProcedure procedure) {
+    if (procedure.getSchoolYear() == null) {
+      return null;
+    }
+
+    DateTimeFormatter yearPattern = DateTimeFormatter.ofPattern("yy");
+    return String.format(
+        "%s/%s",
+        procedure.getSchoolYear().format(yearPattern),
+        procedure.getSchoolYear().plusYears(1).format(yearPattern));
   }
 
   private String getAppointmentOrExaminationDate(SchoolEntryProcedure procedure) {

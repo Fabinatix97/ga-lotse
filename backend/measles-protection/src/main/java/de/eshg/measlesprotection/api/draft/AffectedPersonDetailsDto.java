@@ -36,6 +36,6 @@ public record AffectedPersonDetailsDto(
     String placeOfBirth,
     SalutationDto salutation,
     String title,
-    @NotNull @Valid AddressDto address,
+    @Valid AddressDto address,
     @Valid AddressDto differentBillingAddress,
     @Valid List<CustodianDetailsDto> custodians) {}

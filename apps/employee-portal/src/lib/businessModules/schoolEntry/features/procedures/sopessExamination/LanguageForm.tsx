@@ -25,6 +25,7 @@ import {
   PRIMARY_LANGUAGE_OPTIONS,
 } from "@/lib/businessModules/schoolEntry/features/procedures/options";
 import { LanguageValues } from "@/lib/businessModules/schoolEntry/features/procedures/sopessExamination/SopessExaminationForm";
+import { REQUIRED_PROCEDURE_PROPERTIES } from "@/lib/businessModules/schoolEntry/features/procedures/translations";
 
 const FAMILY_LANGUAGE_STYLE: SxProps = {
   ".MuiSelect-root": { width: "75px" },
@@ -53,7 +54,9 @@ export function LanguageForm(props: LanguageFormProps) {
       <Stack direction="row" gap={3} flexWrap="wrap">
         <SoftRequiredSelectField
           name={fieldName("primaryLanguage")}
-          label="Erstsprache"
+          label={
+            REQUIRED_PROCEDURE_PROPERTIES.SOPESS_EXAMINATION_PRIMARY_LANGUAGE
+          }
           options={PRIMARY_LANGUAGE_OPTIONS}
           renderValue={getAbbreviation}
           sx={FIXED_WIDTH_STYLE}
@@ -61,7 +64,9 @@ export function LanguageForm(props: LanguageFormProps) {
         />
         <SoftRequiredSelectField
           name={fieldName("germanKnowledgePrimaryCarer")}
-          label="Deutschkenntnisse Hauptbezugsperson"
+          label={
+            REQUIRED_PROCEDURE_PROPERTIES.SOPESS_EXAMINATION_GERMAN_KNOWLEDGE_PRIMARY_CARER
+          }
           options={LANGUAGE_KNOWLEDGE_OPTIONS}
           renderValue={getAbbreviation}
           sx={FIXED_WIDTH_STYLE}
@@ -69,7 +74,9 @@ export function LanguageForm(props: LanguageFormProps) {
         />
         <SoftRequiredSelectField
           name={fieldName("familyLanguage")}
-          label="Familiensprache"
+          label={
+            REQUIRED_PROCEDURE_PROPERTIES.SOPESS_EXAMINATION_FAMILY_LANGUAGE
+          }
           options={FAMILY_LANGUAGE_OPTIONS}
           renderValue={getAbbreviation}
           sx={FAMILY_LANGUAGE_STYLE}
@@ -77,7 +84,9 @@ export function LanguageForm(props: LanguageFormProps) {
         />
         <SoftRequiredSelectField
           name={fieldName("germanKnowledgeChild")}
-          label="Deutschkenntnisse"
+          label={
+            REQUIRED_PROCEDURE_PROPERTIES.SOPESS_EXAMINATION_GERMAN_KNOWLEDGE_CHILD
+          }
           options={GERMAN_KNOWLEDGE_OPTIONS}
           renderValue={getAbbreviation}
           sx={FIXED_WIDTH_STYLE}
@@ -88,7 +97,7 @@ export function LanguageForm(props: LanguageFormProps) {
             id={inGermanySinceId}
             sx={{ fontSize: "sm", fontWeight: "500" }}
           >
-            in Deutschland seit
+            {REQUIRED_PROCEDURE_PROPERTIES.SOPESS_EXAMINATION_IN_GERMANY_SINCE}
           </FormLabel>
           <MonthAndYearFields
             testId="inGermanySince"

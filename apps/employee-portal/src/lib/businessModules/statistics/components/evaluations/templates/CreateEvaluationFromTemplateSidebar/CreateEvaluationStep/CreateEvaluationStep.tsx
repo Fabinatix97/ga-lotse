@@ -5,7 +5,7 @@
 
 import { Divider, Stack, Typography } from "@mui/joy";
 
-import { Alert, InputField } from "@eshg/lib-portal";
+import { Alert, DetailsList, InputField } from "@eshg/lib-portal";
 
 import { EvaluationTemplateDetails } from "@/lib/businessModules/statistics/api/models/evaluationTemplateDetails";
 import { AnonymizationConfiguration } from "@/lib/businessModules/statistics/components/evaluations/AnonymizationConfiguration";
@@ -53,17 +53,29 @@ export function CreateEvaluationStep({
       <Typography level="h3" component="span">
         Zusammenfassung
       </Typography>
-      <Stack gap={1}>
-        <Typography level="title-md">Auswertungsvorlage</Typography>
-        <Typography level="body-md">
-          {evaluationTemplateDetails.name}
-        </Typography>
-      </Stack>
-      <DataSource dataSourceName={evaluationTemplateDetails.dataSourceName} />
-      <Sensitivity
-        dataSourceSensitivity={evaluationTemplateDetails.dataSourceSensitivity}
-      />
-      <Attributes attributeLabels={evaluationTemplateDetails.attributeLabels} />
+      <DetailsList>
+        <Stack gap={3}>
+          <Stack gap={1}>
+            <Typography level="title-md" role="term">
+              Auswertungsvorlage
+            </Typography>
+            <Typography level="body-md" role="definition">
+              {evaluationTemplateDetails.name}
+            </Typography>
+          </Stack>
+          <DataSource
+            dataSourceName={evaluationTemplateDetails.dataSourceName}
+          />
+          <Sensitivity
+            dataSourceSensitivity={
+              evaluationTemplateDetails.dataSourceSensitivity
+            }
+          />
+          <Attributes
+            attributeLabels={evaluationTemplateDetails.attributeLabels}
+          />
+        </Stack>
+      </DetailsList>
       <Analyses analyses={evaluationTemplateDetails.analyses} />
       <Alert
         variant="soft"

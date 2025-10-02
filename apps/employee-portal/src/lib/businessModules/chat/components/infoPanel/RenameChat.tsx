@@ -47,7 +47,12 @@ export function RenameChat({ roomId, onCancel }: Readonly<RenameChatProps>) {
         padding: 2,
       }}
     >
-      <Typography level="title-lg" sx={{ marginBottom: 2 }}>
+      <Typography
+        level="title-lg"
+        component="h3"
+        id="rename-group-label"
+        sx={{ marginBottom: 2 }}
+      >
         Gruppe umbenennen
       </Typography>
       <Formik
@@ -55,11 +60,11 @@ export function RenameChat({ roomId, onCancel }: Readonly<RenameChatProps>) {
         validate={validateForm}
         onSubmit={handleRenameChat}
       >
-        <FormPlus>
+        <FormPlus aria-labelledby="rename-group-label">
           <InputField
             name="name"
             placeholder="Neuen Namen eingeben"
-            aria-label="Group name"
+            aria-label="Gruppenname"
             label=""
           />
           <Stack direction="row" spacing={2} marginTop={2}>

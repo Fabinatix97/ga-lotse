@@ -117,6 +117,8 @@ public class GdprValidationTaskController<
         businessProcedureId,
         gdprProcedureId);
 
+    String identificationDataHash = service.getIdentificationDataHash(gdprProcedureId);
+
     ZipEditor zipEditor = zipEditorProvider.create(fileStateIds);
     byte[] zip =
         serializationService.toZip(
@@ -125,7 +127,9 @@ public class GdprValidationTaskController<
             zipEditor,
             SerializationUtil.createNormalizedSequenceIdObjectMapperCustomizer());
     UUID downloadId =
-        service.createAndSaveDownloadPackage(businessProcedureId, zip).getExternalId();
+        service
+            .createAndSaveDownloadPackage(businessProcedureId, identificationDataHash, zip)
+            .getExternalId();
     service.sendDownloadId(gdprProcedureId, downloadId);
     service.writeAuditLog("Erstellung DSGVO Datenpaket", mapAuditlog(validationTask, procedure));
     log.info(
@@ -211,8 +215,8 @@ public class GdprValidationTaskController<
   }
 
   @Override
-  public ResponseEntity<Resource> getGdprDownloadPackage(UUID gdprProcedureId, UUID downloadId) {
-    GdprDownloadPackage downloadPackage = service.getDownloadPackage(gdprProcedureId, downloadId);
+  public ResponseEntity<Resource> getGdprDownloadPackage(UUID downloadId) {
+    GdprDownloadPackage downloadPackage = service.getDownloadPackage(downloadId);
     byte[] content = downloadPackage.getContent();
 
     service.writeAuditLog("Abrufen DSGVO Datenpaket", mapAuditlog(downloadPackage));

@@ -5,7 +5,7 @@
 
 import { Divider, Stack, Typography } from "@mui/joy";
 
-import { InputField } from "@eshg/lib-portal";
+import { DetailsList, InputField } from "@eshg/lib-portal";
 
 import { Analysis } from "@/lib/businessModules/statistics/api/models/analysis";
 import { AnonymizationOptions } from "@/lib/businessModules/statistics/api/models/anonymizationOptions";
@@ -100,33 +100,45 @@ function Summary(props: SummaryProps) {
       <Typography level="h4" component="h2">
         {props.dataSourceName}
       </Typography>
-      {props.evaluationTemplateName && (
-        <Stack gap={1}>
-          <Typography level="title-md">Auswertungsvorlage</Typography>
-          <Typography level="body-md">
-            {props.evaluationTemplateName}
-          </Typography>
-        </Stack>
-      )}
-      <Stack gap={1}>
-        <Typography level="title-md">Betrachtungszeitraum</Typography>
-        <Typography level="body-md">
-          {formatDateRangeNumeric(
-            new Date(props.timeSpan.start),
-            new Date(props.timeSpan.end),
-          )}
-        </Typography>
+      <Stack gap={3}>
+        <DetailsList>
+          <Stack gap={3}>
+            {props.evaluationTemplateName && (
+              <Stack gap={1}>
+                <Typography level="title-md" role="term">
+                  Auswertungsvorlage
+                </Typography>
+                <Typography level="body-md" role="definition">
+                  {props.evaluationTemplateName}
+                </Typography>
+              </Stack>
+            )}
+            <Stack gap={1}>
+              <Typography level="title-md" role="term">
+                Betrachtungszeitraum
+              </Typography>
+              <Typography level="body-md" role="definition">
+                {formatDateRangeNumeric(
+                  new Date(props.timeSpan.start),
+                  new Date(props.timeSpan.end),
+                )}
+              </Typography>
+            </Stack>
+            <Stack gap={1}>
+              <Typography level="title-md" role="term">
+                Anonymisierung der Daten
+              </Typography>
+              <Typography level="body-md" role="definition">
+                {willBeAnonymized(props.anonymized, props.anonymizationOptions)
+                  ? "Ja"
+                  : "Nein"}
+              </Typography>
+            </Stack>
+            <Attributes attributeLabels={props.attributeLabels} />
+          </Stack>
+        </DetailsList>
+        {props.analyses && <Analyses analyses={props.analyses} />}
       </Stack>
-      <Stack gap={1}>
-        <Typography level="title-md">Anonymisierung der Daten</Typography>
-        <Typography level="body-md">
-          {willBeAnonymized(props.anonymized, props.anonymizationOptions)
-            ? "Ja"
-            : "Nein"}
-        </Typography>
-      </Stack>
-      <Attributes attributeLabels={props.attributeLabels} />
-      {props.analyses && <Analyses analyses={props.analyses} />}
     </Stack>
   );
 }

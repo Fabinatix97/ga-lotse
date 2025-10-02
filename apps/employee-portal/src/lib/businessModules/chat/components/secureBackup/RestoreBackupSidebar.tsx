@@ -140,15 +140,13 @@ export function RestoreBackupSidebar({
                   ))}
                   <PasswordField
                     data-testid="passphrase"
-                    label="Sicherheitsphrase vergeben"
+                    label="Neues Passwort"
                     name={fieldName("passphrase")}
-                    visibilityLabel="visiblePassphrase"
                   />
                   <PasswordField
                     data-testid="recovery-key"
                     label="Oder Wiederherstellungsschlüssel"
                     name={fieldName("recoveryKey")}
-                    visibilityLabel="visibleRecoveryKey"
                   />
                   {featureToggleResetPassphraseEnabled && (
                     <Stack direction="row" spacing={0.5}>

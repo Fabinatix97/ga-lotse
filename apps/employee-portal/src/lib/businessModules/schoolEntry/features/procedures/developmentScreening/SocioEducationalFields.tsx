@@ -19,6 +19,7 @@ import {
   BOOLEAN_SELECT_STYLE,
   FIXED_WIDTH_BOOLEAN_SELECT_STYLE,
 } from "@/lib/businessModules/schoolEntry/features/procedures/styles";
+import { REQUIRED_PROCEDURE_PROPERTIES } from "@/lib/businessModules/schoolEntry/features/procedures/translations";
 
 export interface SocioEducationalFieldsValues {
   reIntroduction: OptionalFieldValue<boolean>;
@@ -45,21 +46,60 @@ interface BooleanField {
 
 const BOOLEAN_FIELD_GROUPS: BooleanField[][] = [
   [
-    { name: "reIntroduction", label: "Sprechstunde" },
-    { name: "languageAdvice", label: "Sprachförderung" },
-    { name: "socialService", label: "Sozialdienst" },
+    {
+      name: "reIntroduction",
+      label:
+        REQUIRED_PROCEDURE_PROPERTIES.DEVELOPMENT_SCREENING_RE_INTRODUCTION,
+    },
+    {
+      name: "languageAdvice",
+      label:
+        REQUIRED_PROCEDURE_PROPERTIES.DEVELOPMENT_SCREENING_LANGUAGE_ADVICE,
+    },
+    {
+      name: "socialService",
+      label: REQUIRED_PROCEDURE_PROPERTIES.DEVELOPMENT_SCREENING_SOCIAL_SERVICE,
+    },
   ],
   [
-    { name: "schoolCounselling", label: "Schulberatung" },
-    { name: "nutritionalAdvice", label: "Ernährungsber." },
-    { name: "otherSupport", label: "Sonstige Hilfen" },
+    {
+      name: "schoolCounselling",
+      label:
+        REQUIRED_PROCEDURE_PROPERTIES.DEVELOPMENT_SCREENING_SCHOOL_COUNSELLING,
+    },
+    {
+      name: "nutritionalAdvice",
+      label:
+        REQUIRED_PROCEDURE_PROPERTIES.DEVELOPMENT_SCREENING_NUTRITIONAL_ADVICE,
+    },
+    {
+      name: "otherSupport",
+      label: REQUIRED_PROCEDURE_PROPERTIES.DEVELOPMENT_SCREENING_OTHER_SUPPORT,
+    },
   ],
   [
-    { name: "motorPromotion", label: "Motorikförderung" },
-    { name: "vaccinationAdvice", label: "Impfberatung" },
-    { name: "infoLetter", label: "Schulinfobrief" },
+    {
+      name: "motorPromotion",
+      label:
+        REQUIRED_PROCEDURE_PROPERTIES.DEVELOPMENT_SCREENING_MOTOR_PROMOTION,
+    },
+    {
+      name: "vaccinationAdvice",
+      label:
+        REQUIRED_PROCEDURE_PROPERTIES.DEVELOPMENT_SCREENING_VACCINATION_ADVICE,
+    },
+    {
+      name: "infoLetter",
+      label: REQUIRED_PROCEDURE_PROPERTIES.DEVELOPMENT_SCREENING_INFO_LETTER,
+    },
   ],
-  [{ name: "educationalAdvice", label: "Erziehungsber." }],
+  [
+    {
+      name: "educationalAdvice",
+      label:
+        REQUIRED_PROCEDURE_PROPERTIES.DEVELOPMENT_SCREENING_EDUCATIONAL_ADVICE,
+    },
+  ],
 ];
 
 export function SocioEducationalFields(props: SocioEducationalFieldsProps) {

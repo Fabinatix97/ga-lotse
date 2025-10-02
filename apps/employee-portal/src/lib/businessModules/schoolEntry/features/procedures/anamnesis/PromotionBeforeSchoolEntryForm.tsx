@@ -24,6 +24,7 @@ import {
 } from "@/lib/businessModules/schoolEntry/features/procedures/anamnesis/AnamnesisForm";
 import { SetAllBooleanSelect } from "@/lib/businessModules/schoolEntry/features/procedures/examinations/SetAllSelect";
 import { BOOLEAN_SELECT_STYLE } from "@/lib/businessModules/schoolEntry/features/procedures/styles";
+import { REQUIRED_PROCEDURE_PROPERTIES } from "@/lib/businessModules/schoolEntry/features/procedures/translations";
 
 const FIXED_WIDTH_BOOLEAN_SELECT_STYLE: SxProps = {
   ".MuiFormLabel-root": { width: "150px" },
@@ -79,35 +80,43 @@ export function PromotionBeforeSchoolEntryForm(
             <Stack gap={2}>
               <SoftRequiredBooleanSelectField
                 name={promotionBeforeSchoolEntry("earlySupport")}
-                label="Frühförderung"
+                label={REQUIRED_PROCEDURE_PROPERTIES.ANAMNESIS_EARLY_SUPPORT}
                 sx={FIXED_WIDTH_BOOLEAN_SELECT_STYLE}
                 softRequired
                 allowDeselection
               />
               <SoftRequiredBooleanSelectField
                 name={promotionBeforeSchoolEntry("integrationPlace")}
-                label="Integrationsplatz"
+                label={
+                  REQUIRED_PROCEDURE_PROPERTIES.ANAMNESIS_INTEGRATION_PLACE
+                }
                 sx={FIXED_WIDTH_BOOLEAN_SELECT_STYLE}
                 softRequired
                 allowDeselection
               />
               <BooleanWithDateFields
                 nameBoolean={promotionBeforeSchoolEntry("speechTherapy")}
-                labelBoolean="Logopädie"
+                labelBoolean={
+                  REQUIRED_PROCEDURE_PROPERTIES.ANAMNESIS_SPEECH_THERAPY
+                }
                 nameStartDate={promotionTherapyAndAidInfo("speechTherapyStart")}
                 nameEndDate={promotionTherapyAndAidInfo("speechTherapyEnd")}
                 values={props.values.promotionBeforeSchoolEntry}
               />
               <BooleanWithDateFields
                 nameBoolean={promotionBeforeSchoolEntry("ergotherapy")}
-                labelBoolean="Ergotherapie"
+                labelBoolean={
+                  REQUIRED_PROCEDURE_PROPERTIES.ANAMNESIS_ERGOTHERAPY
+                }
                 nameStartDate={promotionTherapyAndAidInfo("ergoTherapyStart")}
                 nameEndDate={promotionTherapyAndAidInfo("ergoTherapyEnd")}
                 values={props.values.promotionBeforeSchoolEntry}
               />
               <BooleanWithDateFields
                 nameBoolean={promotionBeforeSchoolEntry("physiotherapy")}
-                labelBoolean="Krankengymnastik"
+                labelBoolean={
+                  REQUIRED_PROCEDURE_PROPERTIES.ANAMNESIS_PHYSIOTHERAPY
+                }
                 nameStartDate={promotionTherapyAndAidInfo("physioTherapyStart")}
                 nameEndDate={promotionTherapyAndAidInfo("physioTherapyEnd")}
                 values={props.values.promotionBeforeSchoolEntry}

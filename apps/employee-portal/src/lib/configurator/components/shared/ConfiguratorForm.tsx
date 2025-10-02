@@ -223,11 +223,19 @@ export function ConfiguratorForm<T extends FormikValues>({
                   message="Sie müssen zuerst alle Angaben ausfüllen, bevor Sie speichern können."
                 />
               )}
-              {sheets.map((sheet) => (
-                <Sheet key={sheet.title}>
+              {sheets.map((sheet, index) => (
+                <Sheet
+                  key={sheet.title}
+                  role="region"
+                  aria-labelledby={`region-${index}`}
+                >
                   <Stack gap={4}>
                     <Stack gap={3}>
-                      <Typography level="h3" component="h2">
+                      <Typography
+                        level="h3"
+                        component="h2"
+                        id={`region-${index}`}
+                      >
                         {sheet.title}
                       </Typography>
                       {isDefined(sheet.description) ? (
@@ -240,14 +248,32 @@ export function ConfiguratorForm<T extends FormikValues>({
                         )
                       ) : null}
                     </Stack>
-                    {sheet.sections.map((section, index) => (
-                      <Stack key={`sheet-${index}`} gap={3}>
+                    {sheet.sections.map((section, sectionIndex) => (
+                      <Stack
+                        key={`sheet-${sectionIndex}`}
+                        gap={3}
+                        role="group"
+                        aria-label={
+                          isDefined(section.title)
+                            ? undefined
+                            : `Sektion ${index + 1}.${sectionIndex + 1}`
+                        }
+                        aria-labelledby={
+                          isDefined(section.title)
+                            ? `section-title-${sectionIndex}`
+                            : undefined
+                        }
+                      >
                         {(isDefined(section.title) ||
                           isDefined(section.alert) ||
                           isDefined(section.description)) && (
                           <Stack gap={1}>
                             {isDefined(section.title) && (
-                              <Typography level="title-md">
+                              <Typography
+                                level="title-md"
+                                id={`section-title-${sectionIndex}`}
+                                component="h3"
+                              >
                                 {section.title}
                               </Typography>
                             )}
@@ -278,9 +304,9 @@ export function ConfiguratorForm<T extends FormikValues>({
               ))}
             </Stack>
             <Stack gap={3} minWidth={{ xxs: "100%", xs: "27rem" }} flex={0.33}>
-              <Sheet>
+              <Sheet role="region" aria-labelledby="note-label">
                 <Stack gap={3}>
-                  <Typography level="h3" component="h2">
+                  <Typography level="h3" component="h2" id="note-label">
                     Hinweis
                   </Typography>
                   {status === "COMPLETE" && (

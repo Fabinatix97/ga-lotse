@@ -145,7 +145,6 @@ export function useDownloadPackageFileByModule() {
 
   function downloadPackage(
     businessModule: ApiBusinessModule,
-    gdprProcedureId: string,
     downloadId: string,
   ) {
     const resolved = moduleApiHooks.find(
@@ -156,7 +155,6 @@ export function useDownloadPackageFileByModule() {
       `Module mapping for API should be defined for business module ${businessModule}`,
     );
     return resolved.api.getGdprDownloadPackageRaw({
-      gdprProcedureId,
       downloadId,
     });
   }

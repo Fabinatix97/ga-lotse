@@ -38,6 +38,8 @@ def genBuildInfo() {
   layout.buildDirectory.file('dist/build-info.txt').get().getAsFile().text = "emscripten-autotools/Dockerfile: ${dockerfileHash}\nbuild.sh: ${buildShHash}\n"
 }
 
+def distDir = layout.buildDirectory.dir('dist')
+
 abstract class BuildInContainer extends DockerExistingImage {
 
   @InputFile
@@ -107,10 +109,16 @@ tasks.register('buildDockerImage', DockerBuildImage) {
 tasks.register('buildInContainer', BuildInContainer) {
   targetImageId buildDockerImage.imageId
   buildSh = layout.projectDirectory.file('build.sh').getAsFile()
-  outputDir = layout.buildDirectory.dir('dist').get().getAsFile()
+  outputDir = distDir.get().getAsFile()
+
+  outputs.dir distDir
+  // disable caching in pipeline
+  // MR pipelines install a cached version
+  // only run when a PROD image is built, but skip caching in this to avoid caching issues
+  outputs.cacheIf { System.env.CI != "true" }
 
   doFirst {
-    delete layout.buildDirectory.dir('dist')
+    delete distDir
     genBuildInfo()
   }
 }
@@ -132,6 +140,8 @@ tasks.register('installCached', NpmTask) {
   doFirst {
     mkdir "${projectDir}/cached/node_modules"
   }
+
+  outputs.dir distDir
 
   def CI_PROJECT_ID = System.env.CI_PROJECT_ID
   def CI_JOB_TOKEN = System.env.CI_JOB_TOKEN

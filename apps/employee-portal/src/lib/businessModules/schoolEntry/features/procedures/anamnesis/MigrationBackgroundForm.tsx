@@ -21,6 +21,7 @@ import { ApiSchoolEntryCountryCode } from "@eshg/school-entry-api";
 import { CountryCodes } from "@/lib/businessModules/schoolEntry/api/models/CountryCodes";
 import { MigrationBackgroundValues } from "@/lib/businessModules/schoolEntry/features/procedures/anamnesis/AnamnesisForm";
 import { CountryWithNumberField } from "@/lib/businessModules/schoolEntry/features/procedures/anamnesis/CountryWithNumberField";
+import { REQUIRED_PROCEDURE_PROPERTIES } from "@/lib/businessModules/schoolEntry/features/procedures/translations";
 
 type NationalityValues = keyof Omit<
   MigrationBackgroundValues,
@@ -29,21 +30,35 @@ type NationalityValues = keyof Omit<
 
 const MIGRATION_FIELDS: { name: NationalityValues; label: string }[][] = [
   [
-    { name: "nationalityChild", label: "StA bei Geb. Kind" },
-    { name: "countryOfBirthChild", label: "Geburtsland Kind" },
-  ],
-  [
-    { name: "nationalityFirstParent", label: "StA bei Geb. Elternteil 1" },
     {
-      name: "countryOfBirthFirstParent",
-      label: "Geburtsland des Elternteil 1",
+      name: "nationalityChild",
+      label: REQUIRED_PROCEDURE_PROPERTIES.ANAMNESIS_NATIONALITY_CHILD,
+    },
+    {
+      name: "countryOfBirthChild",
+      label: REQUIRED_PROCEDURE_PROPERTIES.ANAMNESIS_COUNTRY_OF_BIRTH_CHILD,
     },
   ],
   [
-    { name: "nationalitySecondParent", label: "StA bei Geb. Elternteil 2" },
+    {
+      name: "nationalityFirstParent",
+      label: REQUIRED_PROCEDURE_PROPERTIES.ANAMNESIS_NATIONALITY_FIRST_PARENT,
+    },
+    {
+      name: "countryOfBirthFirstParent",
+      label:
+        REQUIRED_PROCEDURE_PROPERTIES.ANAMNESIS_COUNTRY_OF_BIRTH_FIRST_PARENT,
+    },
+  ],
+  [
+    {
+      name: "nationalitySecondParent",
+      label: REQUIRED_PROCEDURE_PROPERTIES.ANAMNESIS_NATIONALITY_SECOND_PARENT,
+    },
     {
       name: "countryOfBirthSecondParent",
-      label: "Geburtsland des Elternteil 2",
+      label:
+        REQUIRED_PROCEDURE_PROPERTIES.ANAMNESIS_COUNTRY_OF_BIRTH_SECOND_PARENT,
     },
   ],
 ];

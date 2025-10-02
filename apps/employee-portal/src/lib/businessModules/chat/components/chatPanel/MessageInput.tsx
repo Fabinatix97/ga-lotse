@@ -57,7 +57,7 @@ export function MessageInput({
           }
         }}
       >
-        <FormPlus>
+        <FormPlus aria-label="Neue Nachricht">
           <TextareaComponent
             name="message"
             selectFieldName="mentionedUsers"

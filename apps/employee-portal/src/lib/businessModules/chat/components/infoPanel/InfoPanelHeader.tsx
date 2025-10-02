@@ -6,6 +6,9 @@
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import CloseIcon from "@mui/icons-material/Close";
 import { IconButton, Stack, Typography } from "@mui/joy";
+import { useEffect, useRef } from "react";
+
+import { useIsBreakpointDown } from "@eshg/lib-portal";
 
 import { ChatAvatar } from "@/lib/businessModules/chat/components/ChatAvatar";
 import { ChatColumnHeaderWrapper } from "@/lib/businessModules/chat/components/ChatColumnHeaderWrapper";
@@ -33,6 +36,18 @@ export function InfoPanelHeader({
     useRoomInfo(roomId);
 
   useRoomStateEventUpdate(roomId);
+
+  const isMobile = useIsBreakpointDown("sm");
+  const focusRef = useRef<HTMLElement>(null);
+  const focusRefMobile = useRef<HTMLElement>(null);
+  useEffect(() => {
+    if (focusRef.current && !isMobile) {
+      focusRef.current.focus();
+    }
+    if (focusRefMobile.current && isMobile) {
+      focusRefMobile.current.focus();
+    }
+  }, [isMobile]);
 
   const name = type === "memberInfo" ? user?.display_name : room?.name;
 
@@ -68,6 +83,9 @@ export function InfoPanelHeader({
           }}
         >
           <IconButton
+            ref={(el) => {
+              focusRefMobile.current = el;
+            }}
             sx={{
               display: { xxs: "flex", sm: "none" },
               alignItems: "center",
@@ -75,7 +93,7 @@ export function InfoPanelHeader({
               height: "100%",
               width: "3.25rem",
             }}
-            aria-label="go back to messages"
+            aria-label="Zurück zum Chat"
             onClick={onBackIconClick}
           >
             <ArrowBackIosIcon color="primary" size="lg" />
@@ -87,16 +105,24 @@ export function InfoPanelHeader({
             size="lg"
             userId={currentUserId}
           />
-          <Typography noWrap level="title-md" sx={{ minWidth: "5ch" }}>
+          <Typography
+            noWrap
+            level="title-md"
+            component="h2"
+            sx={{ minWidth: "5ch" }}
+          >
             {name}
           </Typography>
         </Stack>
         <IconButton
+          ref={(el) => {
+            focusRef.current = el;
+          }}
           variant="outlined"
-          aria-label="close sidebar"
+          aria-label="Schließen"
           sx={{
             borderColor: "primary.outlinedBorder",
-            display: { xxs: "none", sm: "block" },
+            display: { xxs: "none", sm: "flex" },
           }}
           onClick={close}
         >

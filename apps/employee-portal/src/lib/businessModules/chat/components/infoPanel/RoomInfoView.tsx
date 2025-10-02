@@ -53,6 +53,7 @@ export function RoomInfoView({ roomId }: Readonly<RoomInfoViewProps>) {
     closeInfoPanel();
     void leaveRoom(matrixClient, roomId);
   }
+
   async function handleRemoveUser() {
     if (!kickUserId) return;
     if (kickUserId === matrixClient.getUserId()) return;
@@ -96,31 +97,11 @@ export function RoomInfoView({ roomId }: Readonly<RoomInfoViewProps>) {
                 overflowY: "auto",
               }}
             >
-              <Typography level="title-lg">
+              <Typography level="title-lg" component="h3">
                 {joinedMembers.length} Mitglieder
               </Typography>
-              {joinedMembers.map(({ member, isRoomCreator, isAdmin }) => {
-                return (
-                  <GroupChatMember
-                    key={member.userId}
-                    member={member}
-                    isRoomCreator={isRoomCreator}
-                    isAdmin={isAdmin}
-                    handleKick={() => setKickUserId(member.userId)}
-                  />
-                );
-              })}
-            </Stack>
-            {!!invitedMembers?.length && (
-              <Stack
-                spacing={2}
-                sx={{
-                  padding: 3,
-                  overflowY: "auto",
-                }}
-              >
-                <Typography level="title-lg">Ausstehende Mitglieder</Typography>
-                {invitedMembers.map(({ member, isRoomCreator, isAdmin }) => {
+              <Box display="contents" role="list">
+                {joinedMembers.map(({ member, isRoomCreator, isAdmin }) => {
                   return (
                     <GroupChatMember
                       key={member.userId}
@@ -131,6 +112,32 @@ export function RoomInfoView({ roomId }: Readonly<RoomInfoViewProps>) {
                     />
                   );
                 })}
+              </Box>
+            </Stack>
+            {!!invitedMembers?.length && (
+              <Stack
+                spacing={2}
+                sx={{
+                  padding: 3,
+                  overflowY: "auto",
+                }}
+              >
+                <Typography level="title-lg" component="h3">
+                  Ausstehende Mitglieder
+                </Typography>
+                <Box display="contents" role="list">
+                  {invitedMembers.map(({ member, isRoomCreator, isAdmin }) => {
+                    return (
+                      <GroupChatMember
+                        key={member.userId}
+                        member={member}
+                        isRoomCreator={isRoomCreator}
+                        isAdmin={isAdmin}
+                        handleKick={() => setKickUserId(member.userId)}
+                      />
+                    );
+                  })}
+                </Box>
               </Stack>
             )}
           </>

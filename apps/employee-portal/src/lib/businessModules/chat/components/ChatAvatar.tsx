@@ -43,6 +43,7 @@ export function ChatAvatar({
       color="warning"
       size={size}
       src={props.avatarUrl ?? undefined}
+      aria-hidden="true"
     >
       <GroupOutlinedIcon size="md" sx={{ color: "white" }} />
     </Avatar>
@@ -73,6 +74,7 @@ function BadgeAvatar({
       invisible={invisiblePresence}
       variant="solid"
       size="sm"
+      aria-hidden="true"
       sx={{
         "& .MuiBadge-badge": {
           backgroundColor: getStatusColor(presence),

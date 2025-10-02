@@ -178,7 +178,7 @@ export function ChatPanel({
   }
   if (roomId && roomWithCommunicationType) {
     return (
-      <>
+      <Box display="contents" role="region" aria-label="Chat">
         <ChatPanelHeader roomId={roomId} setMobileView={setMobileView} />
         <Box
           sx={{
@@ -211,7 +211,7 @@ export function ChatPanel({
           roomMembers={roomWithCommunicationType.room.getMembers()}
           isRoomDeactivated={isRoomDeactivated}
         />
-      </>
+      </Box>
     );
   } else {
     return <ChatIllustrationBackground />;

@@ -24,6 +24,8 @@ tasks.register('compile', PnpmTaskWithProjectDependencies) {
 
   outputs.dir distDir
 
+  outputs.cacheIf { true }
+
   args = ['tsc']
 
   doFirst {

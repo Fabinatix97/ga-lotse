@@ -1214,10 +1214,10 @@ metadata:
 rules:
 - apiGroups: ["apps"]
   resources: ["deployments"]
-  verbs: ["list"]
+  verbs: ["get", "list", "watch"]
 - apiGroups: ["apps"]
   resources: ["statefulsets"]
-  verbs: ["list"]
+  verbs: ["get", "list", "watch"]
 ---
 # Source: ga-lotse-ctr/templates/rolebindings.yaml
 kind: RoleBinding
@@ -1423,7 +1423,7 @@ spec:
       dnsPolicy: None
       initContainers:
       - name: waitfor-service-directory
-        image: "docker.io/bitnamisecure/kubectl:1.33.4@sha256:b631dd49c6e80e2524d67e7c1e44cefecde7a7b398d51ab95643969dd6797de1"
+        image: "docker.io/rancher/kubectl:1.33.5@sha256:6f157ad0ff43d31320ab7bf4015271a97466f13c49f03c5108b57b47a312d2c2"
         imagePullPolicy: IfNotPresent
         securityContext:
           allowPrivilegeEscalation: false
@@ -1434,15 +1434,7 @@ spec:
           readOnlyRootFilesystem: true
           seLinuxOptions:
             type: container_init_t
-        command:
-        - "bash"
-        - "-c"
-        - until ( AVAILABLE="$(kubectl -n ${POD_NAMESPACE} get deployments -o jsonpath='{.items[?(@.metadata.name=="service-directory")].status.conditions[?(@.type=="Available")].status}')"; [ "$AVAILABLE" == "True" ] ); do echo waiting for service-directory; sleep 1; done
-        env:
-        - name: POD_NAMESPACE
-          valueFrom:
-            fieldRef:
-              fieldPath: metadata.namespace
+        command: ["/bin/kubectl", "rollout", "status", "--timeout=1h", "deployments", "service-directory"]
         resources:
           requests:
             cpu: 10m
@@ -1687,7 +1679,7 @@ spec:
         - name: workspace
           mountPath: /ws
       - name: waitfor-keycloak-db
-        image: "docker.io/bitnamisecure/kubectl:1.33.4@sha256:b631dd49c6e80e2524d67e7c1e44cefecde7a7b398d51ab95643969dd6797de1"
+        image: "docker.io/rancher/kubectl:1.33.5@sha256:6f157ad0ff43d31320ab7bf4015271a97466f13c49f03c5108b57b47a312d2c2"
         imagePullPolicy: IfNotPresent
         securityContext:
           allowPrivilegeEscalation: false
@@ -1698,15 +1690,7 @@ spec:
           readOnlyRootFilesystem: true
           seLinuxOptions:
             type: container_init_t
-        command:
-        - "bash"
-        - "-c"
-        - until ( READY="$(kubectl -n ${POD_NAMESPACE} get statefulsets -o jsonpath='{.items[?(@.metadata.name=="keycloak-db")].status.readyReplicas}')"; [ "$READY" -ge "1" ] ); do echo waiting for keycloak-db; sleep 1; done
-        env:
-        - name: POD_NAMESPACE
-          valueFrom:
-            fieldRef:
-              fieldPath: metadata.namespace
+        command: ["/bin/kubectl", "rollout", "status", "--timeout=1h", "statefulsets", "keycloak-db"]
         resources:
           requests:
             cpu: 10m
@@ -1878,7 +1862,7 @@ spec:
       dnsPolicy: None
       initContainers:
       - name: waitfor-keycloak
-        image: "docker.io/bitnamisecure/kubectl:1.33.4@sha256:b631dd49c6e80e2524d67e7c1e44cefecde7a7b398d51ab95643969dd6797de1"
+        image: "docker.io/rancher/kubectl:1.33.5@sha256:6f157ad0ff43d31320ab7bf4015271a97466f13c49f03c5108b57b47a312d2c2"
         imagePullPolicy: IfNotPresent
         securityContext:
           allowPrivilegeEscalation: false
@@ -1889,15 +1873,7 @@ spec:
           readOnlyRootFilesystem: true
           seLinuxOptions:
             type: container_init_t
-        command:
-        - "bash"
-        - "-c"
-        - until ( AVAILABLE="$(kubectl -n ${POD_NAMESPACE} get deployments -o jsonpath='{.items[?(@.metadata.name=="keycloak")].status.conditions[?(@.type=="Available")].status}')"; [ "$AVAILABLE" == "True" ] ); do echo waiting for keycloak; sleep 1; done
-        env:
-        - name: POD_NAMESPACE
-          valueFrom:
-            fieldRef:
-              fieldPath: metadata.namespace
+        command: ["/bin/kubectl", "rollout", "status", "--timeout=1h", "deployments", "keycloak"]
         resources:
           requests:
             cpu: 10m
@@ -2124,7 +2100,7 @@ spec:
       dnsPolicy: None
       initContainers:
       - name: waitfor-lsd
-        image: "docker.io/bitnamisecure/kubectl:1.33.4@sha256:b631dd49c6e80e2524d67e7c1e44cefecde7a7b398d51ab95643969dd6797de1"
+        image: "docker.io/rancher/kubectl:1.33.5@sha256:6f157ad0ff43d31320ab7bf4015271a97466f13c49f03c5108b57b47a312d2c2"
         imagePullPolicy: IfNotPresent
         securityContext:
           allowPrivilegeEscalation: false
@@ -2135,15 +2111,7 @@ spec:
           readOnlyRootFilesystem: true
           seLinuxOptions:
             type: container_init_t
-        command:
-        - "bash"
-        - "-c"
-        - until ( AVAILABLE="$(kubectl -n ${POD_NAMESPACE} get deployments -o jsonpath='{.items[?(@.metadata.name=="lsd")].status.conditions[?(@.type=="Available")].status}')"; [ "$AVAILABLE" == "True" ] ); do echo waiting for lsd; sleep 1; done
-        env:
-        - name: POD_NAMESPACE
-          valueFrom:
-            fieldRef:
-              fieldPath: metadata.namespace
+        command: ["/bin/kubectl", "rollout", "status", "--timeout=1h", "deployments", "lsd"]
         resources:
           requests:
             cpu: 10m
@@ -2152,7 +2120,7 @@ spec:
             cpu: 50m
             memory: 50Mi
       - name: waitfor-centralrepository-db
-        image: "docker.io/bitnamisecure/kubectl:1.33.4@sha256:b631dd49c6e80e2524d67e7c1e44cefecde7a7b398d51ab95643969dd6797de1"
+        image: "docker.io/rancher/kubectl:1.33.5@sha256:6f157ad0ff43d31320ab7bf4015271a97466f13c49f03c5108b57b47a312d2c2"
         imagePullPolicy: IfNotPresent
         securityContext:
           allowPrivilegeEscalation: false
@@ -2163,15 +2131,7 @@ spec:
           readOnlyRootFilesystem: true
           seLinuxOptions:
             type: container_init_t
-        command:
-        - "bash"
-        - "-c"
-        - until ( READY="$(kubectl -n ${POD_NAMESPACE} get statefulsets -o jsonpath='{.items[?(@.metadata.name=="centralrepository-db")].status.readyReplicas}')"; [ "$READY" -ge "1" ] ); do echo waiting for centralrepository-db; sleep 1; done
-        env:
-        - name: POD_NAMESPACE
-          valueFrom:
-            fieldRef:
-              fieldPath: metadata.namespace
+        command: ["/bin/kubectl", "rollout", "status", "--timeout=1h", "statefulsets", "centralrepository-db"]
         resources:
           requests:
             cpu: 10m
@@ -2698,7 +2658,7 @@ spec:
     spec:
       initContainers:
       - name: waitfor-servicedirectory-db
-        image: "docker.io/bitnamisecure/kubectl:1.33.4@sha256:b631dd49c6e80e2524d67e7c1e44cefecde7a7b398d51ab95643969dd6797de1"
+        image: "docker.io/rancher/kubectl:1.33.5@sha256:6f157ad0ff43d31320ab7bf4015271a97466f13c49f03c5108b57b47a312d2c2"
         imagePullPolicy: IfNotPresent
         securityContext:
           allowPrivilegeEscalation: false
@@ -2709,15 +2669,7 @@ spec:
           readOnlyRootFilesystem: true
           seLinuxOptions:
             type: container_init_t
-        command:
-        - "bash"
-        - "-c"
-        - until ( READY="$(kubectl -n ${POD_NAMESPACE} get statefulsets -o jsonpath='{.items[?(@.metadata.name=="servicedirectory-db")].status.readyReplicas}')"; [ "$READY" -ge "1" ] ); do echo waiting for servicedirectory-db; sleep 1; done
-        env:
-        - name: POD_NAMESPACE
-          valueFrom:
-            fieldRef:
-              fieldPath: metadata.namespace
+        command: ["/bin/kubectl", "rollout", "status", "--timeout=1h", "statefulsets", "servicedirectory-db"]
         resources:
           requests:
             cpu: 10m

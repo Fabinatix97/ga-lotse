@@ -27,7 +27,7 @@ export function ChatUserId({
   return (
     <Stack spacing={1} sx={{ width: "100%" }}>
       {!noLabel && (
-        <Typography level="body-sm" textColor="text.secondary">
+        <Typography level="body-sm" textColor="text.secondary" role="term">
           Chat-ID
         </Typography>
       )}
@@ -44,11 +44,12 @@ export function ChatUserId({
             ...multiLineEllipsis(2),
             wordBreak: "break-all",
           }}
+          role="definition"
         >
           {userId}
         </Typography>
         <IconButton
-          aria-label="Copy chat id"
+          aria-label="Chat-ID kopieren"
           variant="outlined"
           color="primary"
           onClick={async () => await copy(userId)}

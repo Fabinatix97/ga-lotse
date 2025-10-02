@@ -135,6 +135,7 @@ export function GeoShapesTable({
                 info="Keine Geo-Shapes vorhanden"
                 buttonLabel="Geo-Shapes importieren"
                 decorator={<FileUploadOutlinedIcon />}
+                ariaHideButton
                 onClick={onImportGeoShapesClick}
               />
             </Box>

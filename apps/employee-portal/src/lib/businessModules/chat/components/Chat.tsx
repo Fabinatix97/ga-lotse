@@ -25,6 +25,7 @@ import {
   ChatPanelView,
   ChatTabTakeoverView,
   ClientState,
+  InfoPanelView,
   MobileView,
 } from "@/lib/businessModules/chat/shared/enums";
 import { useCreateNewChat } from "@/lib/businessModules/chat/shared/hooks/useCreateNewChat";
@@ -184,6 +185,8 @@ export function Chat() {
             }}
           >
             <RoomsPanel
+              chatPanelView={chatPanelView}
+              mobileView={visibleOnMobile}
               setChatPanelView={changeChatPanelView}
               setMobileView={setVisibleOnMobile}
             />
@@ -223,6 +226,8 @@ export function Chat() {
                 borderLeft: "1px solid",
                 borderColor: "neutral.outlinedBorder",
               }}
+              role="dialog"
+              aria-label={infoPanelAriaName(infoPanelState.view)}
             >
               <InfoPanel key={roomId} setMobileView={setVisibleOnMobile} />
             </Stack>
@@ -231,4 +236,24 @@ export function Chat() {
       )}
     </>
   );
+}
+
+function infoPanelAriaName(infoPanelView?: InfoPanelView) {
+  switch (infoPanelView) {
+    case InfoPanelView.RoomInfo:
+    case InfoPanelView.MobileView:
+      return "Chat-Informationen";
+    case InfoPanelView.AdminSettings:
+      return "Chat-Einstellungen";
+    case InfoPanelView.AddChatMember:
+      return "Chat-Mitglied hinzufügen";
+    case InfoPanelView.AssignAdminLevel:
+      return "Admin bestimmen";
+    case InfoPanelView.RenameGroupChat:
+      return "Chat umbenennen";
+    case InfoPanelView.UserInfo:
+      return "Kontakt";
+    default:
+      return undefined;
+  }
 }

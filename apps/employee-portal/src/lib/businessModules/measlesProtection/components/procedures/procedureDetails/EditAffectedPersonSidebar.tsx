@@ -41,7 +41,7 @@ function EditAffectedPersonSidebar({
     await editAffectedPerson.mutateAsync(
       {
         procedureId: procedureId,
-        person: { ...request, address: request.contactAddress! },
+        person: { ...request, address: request.contactAddress },
       },
       {
         onSuccess: () => {

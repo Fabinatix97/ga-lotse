@@ -21,6 +21,7 @@ export function UserAvatar({
       size={size}
       variant="solid"
       color="primary"
+      aria-hidden="true"
       sx={{
         "--Avatar-size": size === "lg" ? "5rem" : undefined,
         textTransform: "uppercase",

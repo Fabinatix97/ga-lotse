@@ -10,6 +10,7 @@ import { RequiresChildren } from "../../types/react";
 
 const UnstyledDescriptionList = styled("dl")({
   margin: 0,
+  display: "contents",
 });
 
 const DetailsListContext = createContext(false);

@@ -90,5 +90,7 @@
   <include file="migrations/0080_move_parallel_examinations_to_appointment_block.xml"/>
   <include file="migrations/0081_add_lead_times_to_appointment_availability.xml"/>
   <include file="migrations/0082_move_team_to_appointment_block.xml"/>
+  <include file="migrations/0083_add_gdpr_identification_data_hash.xml"/>
+
 
 </databaseChangeLog>

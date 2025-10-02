@@ -16,6 +16,7 @@ import {
   ApiUserRole,
 } from "@eshg/base-api";
 import {
+  DetailsItem,
   DetailsRow,
   EditButton,
   ResponsiveDivider,
@@ -23,6 +24,7 @@ import {
 } from "@eshg/lib-employee-portal";
 import {
   DetailsColumn,
+  DetailsList,
   InternalLinkButton,
   SALUTATION_VALUES,
 } from "@eshg/lib-portal";
@@ -31,7 +33,6 @@ import { GroupList } from "@/lib/baseModule/components/users/GroupList";
 import { useUserProfileEditSidebar } from "@/lib/baseModule/components/users/userSidebar/UserProfileEditSidebar";
 import { ChatUserId } from "@/lib/businessModules/chat/components/ChatUserId";
 import { routes } from "@/lib/businessModules/chat/shared/routes";
-import { DetailsCell } from "@/lib/shared/components/detailsSection/DetailsCell";
 import {
   ExternalLinkDetailsItem,
   emailHref,
@@ -65,133 +66,120 @@ export function UserProfileDetails({
         flexBasis: "500px",
       }}
     >
-      <Stack gap={2} flex={1}>
-        <Stack direction="row" gap={1} justifyContent="space-between">
-          <Typography level="h3" component="h2" id="user-profiler-header">
-            Profil
-          </Typography>
-          {isSelf && (
-            <EditButton
-              aria-label="Profil bearbeiten"
-              onClick={() =>
-                updateSidebar.open({
-                  selfUser: user,
-                  selfGroups: groups,
-                  selfTitle: title,
-                  selfSalutation: salutation,
-                })
-              }
-            />
-          )}
-        </Stack>
-
-        <Stack
-          gap={2}
-          direction={{
-            md: "row",
-          }}
-        >
-          <Stack
-            sx={{
-              flexBasis: { md: "140px" },
-            }}
-          >
-            <UserAvatar user={user} size="lg" />
+      <DetailsList>
+        <Stack gap={2} flex={1}>
+          <Stack direction="row" gap={1} justifyContent="space-between">
+            <Typography level="h3" component="h2" id="user-profiler-header">
+              Profil
+            </Typography>
+            {isSelf && (
+              <EditButton
+                aria-label="Profil bearbeiten"
+                onClick={() =>
+                  updateSidebar.open({
+                    selfUser: user,
+                    selfGroups: groups,
+                    selfTitle: title,
+                    selfSalutation: salutation,
+                  })
+                }
+              />
+            )}
           </Stack>
 
           <Stack
             gap={2}
-            flex={1}
             direction={{
               md: "row",
             }}
-            divider={<ResponsiveDivider />}
           >
-            <DetailsColumn>
-              {isDefined(salutation ?? title) && (
-                <DetailsRow>
-                  {isDefined(salutation) &&
-                    salutation !== ApiSalutation.NotSpecified && (
-                      <DetailsCell
-                        name="salutation"
-                        label="Anrede"
-                        value={SALUTATION_VALUES[salutation]}
-                      />
-                    )}
-                  <DetailsCell name="title" label="Titel" value={title} />
-                </DetailsRow>
-              )}
+            <Stack
+              sx={{
+                flexBasis: { md: "140px" },
+              }}
+            >
+              <UserAvatar user={user} size="lg" />
+            </Stack>
 
-              <DetailsCell
-                name="firstName"
-                label="Vorname"
-                value={user.firstName}
-              />
-              <DetailsCell
-                name="lastName"
-                label="Nachname"
-                value={user.lastName}
-              />
-              <DetailsCell
-                name="username"
-                label="Benutzername"
-                value={user.username}
-              />
-              <DetailsCell
-                name="enabled"
-                label="Benutzerstatus"
-                value={user.enabled ? "" : "Deaktiviert"}
-              />
-            </DetailsColumn>
-
-            <DetailsColumn>
-              <ExternalLinkDetailsItem
-                label="E-Mail-Adresse"
-                value={user.email}
-                href={emailHref}
-              />
-              <DetailsCell
-                name="phoneNumber"
-                label="Telefonnummer"
-                value={user.phoneNumber}
-              />
-              {user.externalChatUsername && hasChatUserRole && (
-                <>
-                  <DetailsCell
-                    name="externalChatUsername"
-                    label="Chat-ID"
-                    valueIsDiv
-                    value={
-                      <ChatUserId userId={user.externalChatUsername} noLabel />
-                    }
-                  />
-                  {!isSelf && (
-                    <InternalLinkButton
-                      href={routes.userRoom(user.externalChatUsername)}
-                      startDecorator={<ChatOutlinedIcon />}
-                      variant="outlined"
-                      sx={{ alignSelf: "flex-start", maxWidth: "100%", mt: 1 }}
-                    >
-                      Direktnachricht
-                    </InternalLinkButton>
-                  )}
-                </>
-              )}
-            </DetailsColumn>
-
-            {groups.length > 0 && (
+            <Stack
+              gap={2}
+              flex={1}
+              direction={{
+                md: "row",
+              }}
+              divider={<ResponsiveDivider />}
+            >
               <DetailsColumn>
-                <DetailsCell
-                  name="groups"
-                  label="Abteilung"
-                  value={<GroupList groups={groups} />}
-                  valueIsDiv
+                {isDefined(salutation ?? title) && (
+                  <DetailsRow>
+                    {isDefined(salutation) &&
+                      salutation !== ApiSalutation.NotSpecified && (
+                        <DetailsItem
+                          label="Anrede"
+                          value={SALUTATION_VALUES[salutation]}
+                        />
+                      )}
+                    <DetailsItem label="Titel" value={title} />
+                  </DetailsRow>
+                )}
+
+                <DetailsItem label="Vorname" value={user.firstName} />
+                <DetailsItem label="Nachname" value={user.lastName} />
+                <DetailsItem label="Benutzername" value={user.username} />
+                <DetailsItem
+                  label="Benutzerstatus"
+                  value={user.enabled ? "" : "Deaktiviert"}
                 />
               </DetailsColumn>
-            )}
+
+              <DetailsColumn>
+                <ExternalLinkDetailsItem
+                  label="E-Mail-Adresse"
+                  value={user.email}
+                  href={emailHref}
+                />
+                <DetailsItem label="Telefonnummer" value={user.phoneNumber} />
+                {user.externalChatUsername && hasChatUserRole && (
+                  <>
+                    <DetailsItem
+                      label="Chat-ID"
+                      value={
+                        <ChatUserId
+                          userId={user.externalChatUsername}
+                          noLabel
+                        />
+                      }
+                    />
+                    {!isSelf && (
+                      <InternalLinkButton
+                        href={routes.userRoom(user.externalChatUsername)}
+                        startDecorator={<ChatOutlinedIcon />}
+                        variant="outlined"
+                        sx={{
+                          alignSelf: "flex-start",
+                          maxWidth: "100%",
+                          mt: 1,
+                        }}
+                      >
+                        Direktnachricht
+                      </InternalLinkButton>
+                    )}
+                  </>
+                )}
+              </DetailsColumn>
+
+              {groups.length > 0 && (
+                <DetailsColumn>
+                  <DetailsItem
+                    label="Abteilung"
+                    value={<GroupList groups={groups} />}
+                  />
+                </DetailsColumn>
+              )}
+            </Stack>
           </Stack>
         </Stack>
-      </Stack>
+      </DetailsList>
     </Sheet>
   );
 }

@@ -22,9 +22,9 @@ export function OtherModulesLink(props: {
   status: Omit<ConfiguratorStatus, "COMPLETE">;
 }) {
   return (
-    <Stack gap={1}>
+    <Stack gap={1} role="list">
       {Object.keys(props.modules).map((tabKey) => (
-        <Stack key={tabKey} gap={2} flexDirection="row">
+        <Stack key={tabKey} gap={2} flexDirection="row" role="listitem">
           {props.status === "INCOMPLETE" ? (
             <ErrorOutlineOutlined color="warning" />
           ) : (

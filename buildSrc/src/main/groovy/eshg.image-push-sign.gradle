@@ -19,14 +19,21 @@ def getImageName() {
     return "${getImageBaseName()}/${project.name}"
 }
 
-def getRepoDigest(String imageNameWithTag) {
-    def repoDigest = new ByteArrayOutputStream()
-    exec {
-        standardOutput = repoDigest
-        commandLine 'docker', 'inspect', '--format={{index .RepoDigests 0}}', imageNameWithTag
-    }
+static def getRepoDigest(String imageNameWithTag) {
+  def commandLine = ['docker', 'inspect', '--format={{index .RepoDigests 0}}', imageNameWithTag]
+  def stdout = new StringBuilder()
+  def stderr = new StringBuilder()
 
-    return repoDigest.toString().trim()
+  def process = commandLine.execute()
+  process.consumeProcessOutput(stdout, stderr)
+  process.waitFor()
+
+  assert stderr.toString().isEmpty(): "Could not get repo digest! Docker returned:\n${stderr.toString()}"
+
+  def digest = stdout.toString().trim()
+  assert !digest.isEmpty(): "Unexpected empty output from command!"
+
+  return digest
 }
 
 def assertTagNameIsGiven() {
@@ -47,10 +54,7 @@ def getImageNameWithLatestTag() {
 
 // Export methods by turning them into closures
 ext {
-    getImageBaseName = this.&getImageBaseName
     getImageName = this.&getImageName
-    getRepoDigest = this.&getRepoDigest
-    assertTagNameIsGiven = this.&assertTagNameIsGiven
     getTagName = this.&getTagName
     getImageNameWithTag = this.&getImageNameWithTag
     getImageNameWithLatestTag = this.&getImageNameWithLatestTag

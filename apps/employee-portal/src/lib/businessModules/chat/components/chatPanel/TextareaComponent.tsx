@@ -38,6 +38,7 @@ interface MessageFormValues {
   message: string;
   mentionedUsers?: string[];
 }
+
 interface TextareaComponent {
   name: string;
   selectFieldName: string;
@@ -46,6 +47,7 @@ interface TextareaComponent {
   roomMembers: RoomMember[];
   disabled?: boolean;
   ref?: RefObject<HTMLDivElement | null>;
+  skipInitialFocus?: boolean;
 }
 
 export function TextareaComponent({
@@ -56,6 +58,7 @@ export function TextareaComponent({
   selectedRoomId,
   disabled,
   ref,
+  skipInitialFocus,
 }: Readonly<TextareaComponent>) {
   const { matrixClient, departmentInfo, clientState } = useChatClientContext();
   const [filteredUsers, setFilteredUsers] = useState<RoomMember[]>([]);
@@ -75,13 +78,13 @@ export function TextareaComponent({
   );
   const isMobile = useIsMobile();
   useEffect(() => {
-    if (!isSubmitting && field.value === "") {
+    if (!isSubmitting && field.value === "" && !skipInitialFocus) {
       const innerTextareaElement = inputRef.current?.childNodes?.[0];
       if (innerTextareaElement instanceof HTMLTextAreaElement) {
         innerTextareaElement.focus();
       }
     }
-  }, [field.value, isSubmitting]);
+  }, [field.value, isSubmitting, skipInitialFocus]);
   useEffect(() => {
     resetForm();
   }, [resetForm, selectedRoomId]);
@@ -111,6 +114,7 @@ export function TextareaComponent({
 
     void debouncedHandleUserTyping(true);
   }
+
   function handleUserModalClose() {
     setFilteredUsers([]);
     setSelectedUserIndex(undefined);
@@ -175,6 +179,7 @@ export function TextareaComponent({
       inputNode.focus();
     }
   }
+
   const inputDisabled =
     isSubmitting || clientState === ClientState.Idle || disabled;
   const buttonDisabled = isSubmitting ?? inputDisabled ?? !!_meta.error;
@@ -225,53 +230,56 @@ export function TextareaComponent({
           ))}
         </Menu>
       </ClickAwayListener>
-      <Textarea
-        ref={(el) => {
-          inputRef.current = el;
-          if (!ref) return;
-          ref.current = el;
-        }}
-        minRows={1}
-        maxRows={isMobile ? 3.5 : 5}
-        placeholder="Nachricht schreiben"
-        value={field.value}
-        variant="plain"
-        name={name}
-        size="lg"
-        sx={{
-          flexDirection: "row",
-          alignItems: "center",
-          paddingRight: "0.75rem",
-          backgroundColor: "background.level1",
-          fontSize: "1rem",
-          "--Textarea-paddingInline": "1rem",
-          "--Textarea-paddingBlock": "1rem",
-          "--Textarea-radius": "0.5rem",
-          "& textarea": {
-            "::-webkit-scrollbar": {
-              display: "none",
+      <Box role="group" aria-label="Neue Nachricht">
+        <Textarea
+          ref={(el) => {
+            inputRef.current = el;
+            if (!ref) return;
+            ref.current = el;
+          }}
+          minRows={1}
+          maxRows={isMobile ? 3.5 : 5}
+          placeholder="Nachricht"
+          value={field.value}
+          variant="outlined"
+          name={name}
+          size="lg"
+          sx={{
+            flexDirection: "row",
+            alignItems: "center",
+            paddingRight: "0.75rem",
+            backgroundColor: "background.level1",
+            fontSize: "1rem",
+            "--Textarea-paddingInline": "1rem",
+            "--Textarea-paddingBlock": "1rem",
+            "--Textarea-radius": "0.5rem",
+            "& textarea": {
+              "::-webkit-scrollbar": {
+                display: "none",
+              },
             },
-          },
-          "& div": {
-            margin: 0,
-          },
-        }}
-        color="neutral"
-        disabled={inputDisabled}
-        endDecorator={
-          <IconButton
-            size="sm"
-            color={buttonDisabled ? "neutral" : "primary"}
-            type="submit"
-            disabled={buttonDisabled}
-          >
-            <SendOutlinedIcon />
-          </IconButton>
-        }
-        autoFocus
-        onChange={handleTextareaChange}
-        onKeyDown={handleKeydown}
-      />
+            "& div": {
+              margin: 0,
+            },
+          }}
+          color="neutral"
+          disabled={inputDisabled}
+          endDecorator={
+            <IconButton
+              size="sm"
+              color={buttonDisabled ? "neutral" : "primary"}
+              type="submit"
+              disabled={buttonDisabled}
+              aria-label="Senden"
+            >
+              <SendOutlinedIcon />
+            </IconButton>
+          }
+          autoFocus
+          onChange={handleTextareaChange}
+          onKeyDown={handleKeydown}
+        />
+      </Box>
     </Box>
   );
 }

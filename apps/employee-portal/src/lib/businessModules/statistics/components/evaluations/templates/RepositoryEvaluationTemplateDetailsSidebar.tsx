@@ -4,6 +4,7 @@
  */
 
 import { Button, Divider, Stack, Typography } from "@mui/joy";
+import { visuallyHidden } from "@mui/utils";
 import { isDefined } from "remeda";
 
 import {
@@ -14,7 +15,7 @@ import {
   UseSidebarResult,
   useSidebar,
 } from "@eshg/lib-employee-portal";
-import { Alert, formatDate } from "@eshg/lib-portal";
+import { Alert, DetailsList, formatDate } from "@eshg/lib-portal";
 
 import { useDownloadEvaluationTemplate } from "@/lib/businessModules/statistics/api/mutations/useDownloadRepositoryEvaluationTemplate";
 import { useGetEvaluationTemplateFromRepository } from "@/lib/businessModules/statistics/api/queries/useGetEvaluationTemplateFromRepository";
@@ -58,41 +59,60 @@ function RepositoryEvaluationTemplateDetailsSidebar({
           <Typography level="h3" component="h2">
             {evaluationTemplateDetails.name}
           </Typography>
-          {isDefined(evaluationTemplateDetails.description) && (
-            <Typography level="body-md">
-              {evaluationTemplateDetails.description}
-            </Typography>
-          )}
-          {isDefined(evaluationTemplateDetails.contact) && (
-            <Stack gap={1}>
-              <Typography level="title-md">Kontakt</Typography>
-              <Typography level="body-md">
-                {evaluationTemplateDetails.contact}
-              </Typography>
+          <DetailsList>
+            <Stack gap={3}>
+              {isDefined(evaluationTemplateDetails.description) && (
+                <>
+                  <Typography sx={visuallyHidden} role="term">
+                    Beschreibung
+                  </Typography>
+                  <Typography level="body-md" role="definition">
+                    {evaluationTemplateDetails.description}
+                  </Typography>
+                </>
+              )}
+              {isDefined(evaluationTemplateDetails.contact) && (
+                <Stack gap={1}>
+                  <Typography level="title-md" role="term">
+                    Kontakt
+                  </Typography>
+                  <Typography level="body-md" role="definition">
+                    {evaluationTemplateDetails.contact}
+                  </Typography>
+                </Stack>
+              )}
+              <Stack gap={1}>
+                <Typography level="title-md" role="term">
+                  Herkunft
+                </Typography>
+                <Typography level="body-md" role="definition">
+                  {evaluationTemplateDetails.origin}
+                </Typography>
+              </Stack>
+              <Stack gap={1}>
+                <Typography level="title-md" role="term">
+                  Erstellt am
+                </Typography>
+                <Typography level="body-md" role="definition">
+                  {formatDate(evaluationTemplateDetails.createdAt)}
+                </Typography>
+              </Stack>
             </Stack>
-          )}
-          <Stack gap={1}>
-            <Typography level="title-md">Herkunft</Typography>
-            <Typography level="body-md">
-              {evaluationTemplateDetails.origin}
-            </Typography>
-          </Stack>
-          <Stack gap={1}>
-            <Typography level="title-md">Erstellt am</Typography>
-            <Typography level="body-md">
-              {formatDate(evaluationTemplateDetails.createdAt)}
-            </Typography>
-          </Stack>
+          </DetailsList>
           <Divider />
           <Typography level="h3" component="h2">
             Vorlagendetails
           </Typography>
-          <DataSource
-            dataSourceName={evaluationTemplateDetails.dataSourceName}
-          />
-          <Attributes
-            attributeLabels={evaluationTemplateDetails.attributeLabels}
-          />
+          <DetailsList>
+            <Stack gap={3}>
+              <DataSource
+                dataSourceName={evaluationTemplateDetails.dataSourceName}
+              />
+              <Attributes
+                attributeLabels={evaluationTemplateDetails.attributeLabels}
+              />
+            </Stack>
+          </DetailsList>
           <Analyses analyses={evaluationTemplateDetails.analyses} />
         </Stack>
       </SidebarContent>

@@ -66,7 +66,11 @@ export function SelectDiagramStep(
 
   return (
     <>
-      <Typography level="body-md" sx={{ paddingBottom: 2 }}>
+      <Typography
+        level="body-md"
+        sx={{ paddingBottom: 2 }}
+        id="presentation-label"
+      >
         Wie soll die Analyse dargestellt werden?
       </Typography>
 
@@ -74,6 +78,7 @@ export function SelectDiagramStep(
         name={props.fieldName("diagramType")}
         required="Bitte Darstellungsform wählen."
         options={options}
+        aria-labelledby="presentation-label"
       />
     </>
   );

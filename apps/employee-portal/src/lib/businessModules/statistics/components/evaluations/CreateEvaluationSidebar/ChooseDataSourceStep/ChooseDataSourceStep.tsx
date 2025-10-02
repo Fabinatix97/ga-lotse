@@ -36,10 +36,11 @@ export function ChooseDataSourceStep(props: ChooseDataSourceStepProps) {
   return (
     <Stack flexDirection="column" gap={1}>
       <Stack flexDirection="column" gap={2}>
-        <Typography>Datenquelle wählen:</Typography>
+        <Typography id="datasource-label">Datenquelle wählen:</Typography>
         <RadioGroupField
           name={props.fieldName("dataSourceId")}
           required="Bitte Vorlage oder Datenquelle auswählen"
+          aria-labelledby="datasource-label"
         >
           <Stack gap={2}>
             <SelectableCard value={CHOOSE_EVALUATION_TEMPLATE}>

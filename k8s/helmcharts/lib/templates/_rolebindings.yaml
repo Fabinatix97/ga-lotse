@@ -12,11 +12,11 @@ metadata:
 rules:
   - apiGroups: ["apps"]
     resources: ["deployments"]
-    verbs: ["list"]
+    verbs: ["get", "list", "watch"]
 {{- if .Values.businessmoduleDefaults.database.k8sDeployment }}
   - apiGroups: ["apps"]
     resources: ["statefulsets"]
-    verbs: ["list"]
+    verbs: ["get", "list", "watch"]
 {{- end }}
 ---
 

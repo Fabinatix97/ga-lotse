@@ -1002,7 +1002,7 @@ public class ChildService {
           fileState().firstName(),
           fileState().lastName(),
           fileState().dateOfBirth(),
-          child().getGroupName().trim(),
+          child().getGroupName(),
           fileState().gender());
     }
   }

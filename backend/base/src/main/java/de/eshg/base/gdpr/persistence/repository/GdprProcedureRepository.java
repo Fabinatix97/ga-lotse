@@ -52,7 +52,7 @@ public interface GdprProcedureRepository
 
   @Query(
       """
-    SELECT procedure.id FROM GdprProcedure procedure
+    SELECT procedure.externalId FROM GdprProcedure procedure
     WHERE EXISTS (SELECT 1 FROM procedure.downloads download
         WHERE download.downloadId IN :downloadIds)
     ORDER BY procedure.id ASC

@@ -12,12 +12,14 @@ import { useRef } from "react";
 
 import { LiveAnnouncer } from "../liveAnnouncer/LiveAnnouncer";
 
-export type CustomAutocompleteProps<
+export interface CustomAutocompleteProps<
   T,
   Multiple extends boolean | undefined,
   DisableClearable extends boolean | undefined,
   FreeSolo extends boolean | undefined,
-> = AutocompleteProps<T, Multiple, DisableClearable, FreeSolo>;
+> extends AutocompleteProps<T, Multiple, DisableClearable, FreeSolo> {
+  inputRef?: (el: HTMLElement) => void;
+}
 
 export function CustomAutocomplete<
   T,
@@ -43,11 +45,17 @@ export function CustomAutocomplete<
           clearIndicator: {
             tabIndex: 0,
           },
+          input: {
+            ref: (el) => {
+              if (el) {
+                props.inputRef?.(el);
+              }
+            },
+            "aria-description":
+              props["aria-description"] ??
+              (props.multiple ? "Mehrfachauswahl möglich" : undefined),
+          },
         }}
-        aria-description={
-          props["aria-description"] ??
-          (props.multiple ? "Mehrfachauswahl möglich" : undefined)
-        }
         sx={{
           "& .MuiAutocomplete-clearIndicator": {
             visibility: "visible",

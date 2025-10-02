@@ -36,6 +36,8 @@ export function ConfiguratorCard({
               aria-label={title}
               variant="outlined"
               color="primary"
+              aria-hidden="true"
+              tabIndex={-1}
             >
               <ArrowForwardOutlined />
             </InternalLinkIconButton>

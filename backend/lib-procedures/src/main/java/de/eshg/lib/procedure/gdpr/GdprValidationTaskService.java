@@ -53,7 +53,10 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.argon2.Argon2PasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -106,21 +109,21 @@ public class GdprValidationTaskService<
     return downloadPackageRepository.findBusinessProcedureIdsByExternalIdIn(downloadIds);
   }
 
-  public GdprDownloadPackage getDownloadPackage(UUID gdprId, UUID downloadId) {
-    validatePermissionToAccessGdprProcedure(gdprId);
-    validateDownloadIdBelongsToGdprProcedure(gdprId, downloadId);
+  public GdprDownloadPackage getDownloadPackage(UUID downloadId) {
     log.info("Fetching download package from database by downloadId: {}", downloadId);
-    return downloadPackageRepository
-        .findByExternalId(downloadId)
-        .orElseThrow(() -> new NotFoundException("GdprDownloadPackage not found."));
+    Optional<GdprDownloadPackage> pkg = downloadPackageRepository.findByExternalId(downloadId);
+    String identificationDataHash =
+        pkg.orElseThrow(() -> new NotFoundException("GdprDownloadPackage not found."))
+            .getIdentificationDataHash();
+    if (!validatePermissionToAccessGdprDownload(identificationDataHash)) {
+      throw new ResponseStatusException(
+          HttpStatus.FORBIDDEN, "User is not allowed to access this download package");
+    }
+    return pkg.get();
   }
 
-  private void validateDownloadIdBelongsToGdprProcedure(UUID gdprId, UUID downloadId) {
-    Set<UUID> knownDownloadIds = fetchDownloadIdsFromBase(gdprId).downloadIds();
-    if (!knownDownloadIds.contains(downloadId)) {
-      throw new BadRequestException(
-          "The requested gdpr procedure does not contain the requested download package");
-    }
+  private boolean validatePermissionToAccessGdprDownload(String identificationDatHash) {
+    return getIdentificationDataOfCurrentUser().verify(identificationDatHash);
   }
 
   public Procedure<?, ?, ?, ?> getBusinessProcedureFromDb(UUID id) {
@@ -189,11 +192,17 @@ public class GdprValidationTaskService<
         gdprProcedureId, new AddGdprDownloadsRequest(Set.of(downloadId)));
   }
 
-  public GdprDownloadPackage createAndSaveDownloadPackage(UUID businessProcedureId, byte[] zip) {
+  public GdprDownloadPackage createAndSaveDownloadPackage(
+      UUID businessProcedureId, String identificationDataHash, byte[] zip) {
     GdprDownloadPackage downloadPackage = new GdprDownloadPackage();
     downloadPackage.setBusinessProcedureId(businessProcedureId);
+    downloadPackage.setIdentificationDataHash(identificationDataHash);
     downloadPackage.setContent(zip);
     return downloadPackageRepository.save(downloadPackage);
+  }
+
+  public String getIdentificationDataHash(UUID gdprProcedureId) {
+    return getIdentificationData(gdprProcedureId).hash();
   }
 
   public List<GdprDownloadPackageInfo> getDownloadPackagesInfo(UUID gdprProcedureId) {
@@ -229,7 +238,11 @@ public class GdprValidationTaskService<
   }
 
   public GdprIdentificationDataDto getGdprIdentificationData(UUID gdprId) {
-    return baseGdprProcedureApi.getGdprProcedure(gdprId).identificationData();
+    try {
+      return baseGdprProcedureApi.getGdprProcedure(gdprId).identificationData();
+    } catch (HttpClientErrorException.Forbidden forbidden) {
+      throw new ResponseStatusException(HttpStatus.FORBIDDEN, forbidden.getMessage());
+    }
   }
 
   public OpenTaskSummary getOpenGdprValidationTaskSummary() {
@@ -359,73 +372,113 @@ public class GdprValidationTaskService<
   }
 
   private void validatePermissionToAccessGdprProcedure(UUID gdprProcedureId) {
-    GdprIdentificationDataDto identificationData;
-    try {
-      identificationData =
-          baseGdprProcedureApi.getGdprProcedure(gdprProcedureId).identificationData();
-    } catch (HttpClientErrorException.Forbidden forbidden) {
-      throw new ResponseStatusException(HttpStatus.FORBIDDEN, forbidden.getMessage());
+    IdentificationData procedureIdentificationData = getIdentificationData(gdprProcedureId);
+    IdentificationData userIdentificationData = getIdentificationDataOfCurrentUser();
+    if (!procedureIdentificationData.equals(userIdentificationData)) {
+      log.info(
+          "User {} tried to access procedure of {}",
+          userIdentificationData,
+          procedureIdentificationData);
+      throw new ResponseStatusException(
+          HttpStatus.FORBIDDEN, "User is not allowed to access this procedure");
     }
-    switch (identificationData) {
+  }
+
+  private IdentificationData getIdentificationData(UUID gdprProcedureId) {
+    GdprIdentificationDataDto identificationData = getGdprIdentificationData(gdprProcedureId);
+    return switch (identificationData) {
       case null -> throw new IllegalStateException("Identification data null");
-      case GdprPersonDto p -> validateUser(p);
-      case GdprFacilityDto f -> validateUser(f);
+      case GdprPersonDto p -> getIdentificationData(p);
+      case GdprFacilityDto f -> getIdentificationData(f);
       default ->
           throw new IllegalStateException(
               "Unexpected type of IdentificationData: " + identificationData.getClass());
-    }
+    };
   }
 
-  private void validateUser(GdprPersonDto p) {
+  private IdentificationData getIdentificationData(GdprPersonDto p) {
     if (StringUtils.isEmpty(p.bpk2())) {
-      validateEmployee();
+      return IdentificationData.standardEmployee();
     } else {
-      validateCitizen(p);
+      return IdentificationData.bundIdUser(p.bpk2());
     }
   }
 
-  private void validateUser(GdprFacilityDto f) {
+  private IdentificationData getIdentificationData(GdprFacilityDto f) {
     if (StringUtils.isEmpty(f.dataTransmitterPseudonymId())) {
-      validateEmployee();
+      return IdentificationData.standardEmployee();
     } else {
-      validateFacility(f);
+      return IdentificationData.mukUser(f.dataTransmitterPseudonymId());
     }
   }
 
-  private void validateEmployee() {
-    if (!CurrentUserHelper.isEmployee()) {
-      throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Current user is not an employee");
+  private IdentificationData getIdentificationDataOfCurrentUser() {
+    if (CurrentUserHelper.isEmployee()) {
+      return IdentificationData.standardEmployee();
     }
+    Assert.isTrue(
+        !CurrentUserHelper.currentUserHasRole(MUK_USER)
+            || !CurrentUserHelper.currentUserHasRole(BUND_ID_USER),
+        "User has BUND_ID and MUK roles");
+    if (CurrentUserHelper.currentUserHasRole(BUND_ID_USER)) {
+      Optional<String> bpk2Gracefully = CurrentUserHelper.getBundIdGracefully();
+      if (bpk2Gracefully.isEmpty()) {
+        throw new ResponseStatusException(
+            HttpStatus.FORBIDDEN, "Bund-id user does not have a bpk2");
+      }
+      return IdentificationData.bundIdUser(bpk2Gracefully.get());
+    }
+    if (CurrentUserHelper.currentUserHasRole(MUK_USER)) {
+      Optional<String> mukIdGracefully = CurrentUserHelper.getMukIdGracefully();
+      if (mukIdGracefully.isEmpty()) {
+        throw new ResponseStatusException(
+            HttpStatus.FORBIDDEN, "Muk user does not have a dataTransmitterPseudonymId");
+      }
+      return IdentificationData.mukUser(mukIdGracefully.get());
+    }
+    throw new ResponseStatusException(
+        HttpStatus.FORBIDDEN, "User is neither employee nor Bund-id user nor Muk-user");
   }
 
-  private void validateCitizen(GdprPersonDto p) {
-    if (!CurrentUserHelper.currentUserHasRole(BUND_ID_USER)) {
-      throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Current user is not a bund-id user");
-    }
-    Optional<String> bpk2Gracefully = CurrentUserHelper.getBundIdGracefully();
-    if (bpk2Gracefully.isEmpty()) {
-      throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Bund-id user does not have a bpk2");
-    }
-    if (!p.bpk2().equals(bpk2Gracefully.get())) {
-      throw new ResponseStatusException(
-          HttpStatus.FORBIDDEN,
-          "Bund-id bpk2 of current user and of given gdpr procedure do not match");
-    }
-  }
+  private record IdentificationData(IdentificationDataType type, String id) {
+    private static final PasswordEncoder argon2 = new Argon2PasswordEncoder(16, 32, 1, 7 * 1024, 5);
 
-  private void validateFacility(GdprFacilityDto f) {
-    if (!CurrentUserHelper.currentUserHasRole(MUK_USER)) {
-      throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Current user is not a muk user");
+    static IdentificationData standardEmployee() {
+      return new IdentificationData(IdentificationDataType.STANDARD_EMPLOYEE, "");
     }
-    Optional<String> mukIdGracefully = CurrentUserHelper.getMukIdGracefully();
-    if (mukIdGracefully.isEmpty()) {
-      throw new ResponseStatusException(
-          HttpStatus.FORBIDDEN, "Muk user does not have a dataTransmitterPseudonymId");
+
+    static IdentificationData bundIdUser(String id) {
+      return new IdentificationData(IdentificationDataType.BUND_ID_USER, id);
     }
-    if (!f.dataTransmitterPseudonymId().equals(mukIdGracefully.get())) {
-      throw new ResponseStatusException(
-          HttpStatus.FORBIDDEN,
-          "Muk dataTransmitterPseudonymId of current user and of given gdpr procedure do not match");
+
+    static IdentificationData mukUser(String id) {
+      return new IdentificationData(IdentificationDataType.MUK_USER, id);
+    }
+
+    String hash() {
+      return argon2.encode(string());
+    }
+
+    boolean verify(String hash) {
+      return argon2.matches(string(), hash);
+    }
+
+    private String string() {
+      return type.encodedName + id;
+    }
+
+    private enum IdentificationDataType {
+      STANDARD_EMPLOYEE("STANDARD_EMPLOYEE"),
+      BUND_ID_USER("BUND_ID_USER"),
+      MUK_USER("MUK_USER"),
+      ;
+
+      // never change the values of encodedName, their hashes are stored in the database
+      private final String encodedName;
+
+      IdentificationDataType(String encodedName) {
+        this.encodedName = encodedName;
+      }
     }
   }
 }

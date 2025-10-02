@@ -78,7 +78,11 @@ export function NewGroupChat({
   }
 
   return (
-    <Box sx={{ height: "100%" }}>
+    <Box
+      sx={{ height: "100%" }}
+      role="region"
+      aria-labelledby="create-group-chat-label"
+    >
       <Formik<DirectChatFormValues>
         initialValues={{ invite: [], chatName: "", message: "" }}
         validate={validateGroupForm}
@@ -92,6 +96,7 @@ export function NewGroupChat({
               flexDirection: "column",
               justifyContent: "space-between",
             }}
+            aria-labelledby="create-group-chat-label"
           >
             <Box
               sx={{
@@ -107,7 +112,13 @@ export function NewGroupChat({
                 marginBottom={1}
                 height="2.25rem"
               >
-                <Typography level="h3">Gruppenchat erstellen</Typography>
+                <Typography
+                  level="h3"
+                  component="h2"
+                  id="create-group-chat-label"
+                >
+                  Gruppenchat erstellen
+                </Typography>
                 <Button
                   variant="soft"
                   color="neutral"
@@ -128,7 +139,7 @@ export function NewGroupChat({
                 name="chatName"
                 placeholder="Gruppenchat benennen"
                 label=""
-                aria-label="Chat name"
+                aria-label="Gruppenchatname"
                 sx={{
                   "--FormLabel-margin": 0,
                   marginTop: 0,
@@ -163,6 +174,7 @@ export function NewGroupChat({
               name="message"
               selectFieldName="mentionedUsers"
               roomMembers={[]}
+              skipInitialFocus
             />
           </FormPlus>
         )}

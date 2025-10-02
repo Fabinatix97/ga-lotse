@@ -72,7 +72,7 @@ export function TaskMetricsDisplay(props: {
           })
         }
       />
-      <Stack role="list" direction="row" flexWrap="wrap" gap={2}>
+      <Stack component="dl" direction="row" flexWrap="wrap" gap={2}>
         <FlashCard
           color="primary"
           title="Geschlossene Vorgänge"

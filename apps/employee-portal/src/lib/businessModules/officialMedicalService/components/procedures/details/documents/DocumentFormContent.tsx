@@ -14,7 +14,7 @@ import {
   Typography,
 } from "@mui/joy";
 import { useField } from "formik";
-import { ReactNode } from "react";
+import { ReactNode, useEffect } from "react";
 import { isEmpty } from "remeda";
 
 import {
@@ -22,12 +22,18 @@ import {
   EditButton,
   SidebarContent,
 } from "@eshg/lib-employee-portal";
-import { DetailsColumn, DetailsList, InputField } from "@eshg/lib-portal";
+import {
+  DetailsColumn,
+  DetailsList,
+  InputField,
+  useFocus,
+} from "@eshg/lib-portal";
 import {
   ApiDocument,
   ApiDocumentStatus,
 } from "@eshg/official-medical-service-api";
 
+import { DocumentFormInitialFocus } from "@/lib/businessModules/officialMedicalService/components/procedures/details/documents/DocumentForm";
 import { FilesSection } from "@/lib/businessModules/officialMedicalService/components/procedures/details/documents/FilesSection";
 import { statusColorsDocumentStatus } from "@/lib/businessModules/officialMedicalService/shared/constants";
 import { STATUS_NAMES_DOCUMENT_STATUS } from "@/lib/businessModules/officialMedicalService/shared/translations";
@@ -38,8 +44,20 @@ export function DocumentFormContent(props: {
   onEditInformation?: () => void;
   onEditNote?: () => void;
   isProcedureFinalized: boolean;
+  initialFocus?: DocumentFormInitialFocus;
 }) {
   const [{ value: files }] = useField<File[]>("files");
+  const { ref: editDocumentDetailsRef, focus: focusEditDocumentDetails } =
+    useFocus();
+  const { ref: editKeywordRef, focus: focusEditKeyword } = useFocus();
+
+  useEffect(() => {
+    if (props.initialFocus === "DOCUMENT_DETAILS") {
+      focusEditDocumentDetails();
+    } else if (props.initialFocus === "KEYWORD") {
+      focusEditKeyword();
+    }
+  }, [props.initialFocus, focusEditDocumentDetails, focusEditKeyword]);
 
   const canAddFiles =
     (props.document.documentStatus === ApiDocumentStatus.Missing ||
@@ -112,8 +130,10 @@ export function DocumentFormContent(props: {
               <Divider orientation="horizontal" />
             </>
           )}
-        <Stack gap={2}>
-          <Typography level="title-md">Dateien</Typography>
+        <Stack gap={2} role="group" aria-labelledby="files-label">
+          <Typography level="title-md" component="h2" id="files-label">
+            Dateien
+          </Typography>
           {props.document.documentStatus === ApiDocumentStatus.Submitted &&
             props.document.reasonForRejection && (
               <>
@@ -160,6 +180,9 @@ export function DocumentFormContent(props: {
               {!isEmpty(props.document.files) &&
                 !props.isProcedureFinalized && (
                   <EditButton
+                    ref={(el) => {
+                      editKeywordRef.current = el;
+                    }}
                     aria-label="Stichwörter bearbeiten"
                     onClick={props.onEditNote}
                   />
@@ -172,10 +195,15 @@ export function DocumentFormContent(props: {
         <DetailsList>
           <DetailsColumn gap={2} data-testid="additional-info">
             <Stack direction="row" gap={2} justifyContent="space-between">
-              <Typography level="title-md">Dokument-Angaben</Typography>
+              <Typography level="title-md" component="h2">
+                Dokument-Angaben
+              </Typography>
               {props.document.documentStatus === ApiDocumentStatus.Missing &&
                 !props.isProcedureFinalized && (
                   <EditButton
+                    ref={(el) => {
+                      editDocumentDetailsRef.current = el;
+                    }}
                     aria-label="Dokument-Angaben bearbeiten"
                     onClick={props.onEditInformation}
                   />

@@ -89,18 +89,9 @@ export function ChatInputField(props: Readonly<ChatInputFieldProps>) {
         data-testid={props["data-testid"]}
         aria-label={props["aria-label"]}
         size="lg"
-        sx={{
-          backgroundColor: "background.surface",
-          borderColor: "primary.300",
-        }}
         slotProps={{
           input: {
             maxLength: props.maxLength,
-            sx: {
-              "&::placeholder": {
-                color: "primary.300",
-              },
-            },
           },
         }}
         onChange={handleChange}

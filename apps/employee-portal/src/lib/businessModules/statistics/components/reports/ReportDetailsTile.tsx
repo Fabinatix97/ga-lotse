@@ -83,6 +83,8 @@ export function ReportDetailsTile(props: ReportDetailsTileProps) {
       alignItems="end"
       position="sticky"
       top={`calc(${headerHeightDesktop} + ${simpleToolbarHeight} + 1.5rem)`}
+      role="region"
+      aria-labelledby="details-label"
     >
       <Sheet sx={{ padding: 3 }} data-testid="report-details-tile">
         <Stack gap={3}>
@@ -91,7 +93,7 @@ export function ReportDetailsTile(props: ReportDetailsTileProps) {
             justifyContent="space-between"
             alignItems="center"
           >
-            <Typography level="h3" component="h2">
+            <Typography level="h3" component="h2" id="details-label">
               Report-Details
             </Typography>
             <ActionsMenu

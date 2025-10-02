@@ -11,7 +11,7 @@ import { OptionalFieldValue } from "@eshg/lib-portal";
 
 export function ChartsSamplePreview({ chart }: { chart: ReactNode }) {
   return (
-    <Stack gap={3}>
+    <Stack gap={3} aria-hidden="true">
       <Typography level="h3" component="h2">
         Vorschau
       </Typography>

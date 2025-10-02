@@ -25,6 +25,7 @@ import { ClickIcd10CodeHandler } from "@/lib/businessModules/schoolEntry/feature
 import { SetAllBooleanSelect } from "@/lib/businessModules/schoolEntry/features/procedures/examinations/SetAllSelect";
 import { DISABILITY_TYPE_OPTIONS } from "@/lib/businessModules/schoolEntry/features/procedures/options";
 import { BOOLEAN_SELECT_STYLE } from "@/lib/businessModules/schoolEntry/features/procedures/styles";
+import { REQUIRED_PROCEDURE_PROPERTIES } from "@/lib/businessModules/schoolEntry/features/procedures/translations";
 
 const DISABILITY_TYPE_STYLE: SxProps = {
   ".MuiSelect-root": { width: "314px" },
@@ -80,14 +81,18 @@ export function HandicapFields(props: HandicapFieldsProps) {
         <Stack gap={1}>
           <HandicapWithDiagnosisFields
             name={fieldName("chronicDisease")}
-            label="chron. Krankheit"
+            label={
+              REQUIRED_PROCEDURE_PROPERTIES.DEVELOPMENT_SCREENING_CHRONIC_DISEASE_RESULT
+            }
             values={props.values.chronicDisease}
             setFieldValue={props.setFieldValue}
             onClickIcd10Code={props.onClickIcd10Code}
           />
           <HandicapWithDiagnosisFields
             name={fieldName("disability")}
-            label="Behinderung"
+            label={
+              REQUIRED_PROCEDURE_PROPERTIES.DEVELOPMENT_SCREENING_DISABILITY_RESULT
+            }
             values={props.values.disability}
             setFieldValue={props.setFieldValue}
             onClickIcd10Code={props.onClickIcd10Code}
@@ -95,7 +100,13 @@ export function HandicapFields(props: HandicapFieldsProps) {
           />
           <SoftRequiredSelectField
             name={fieldName("disabilityType")}
-            label={<FlexLabel>Behinderungs-Art</FlexLabel>}
+            label={
+              <FlexLabel>
+                {
+                  REQUIRED_PROCEDURE_PROPERTIES.DEVELOPMENT_SCREENING_DISABILITY_TYPE
+                }
+              </FlexLabel>
+            }
             options={DISABILITY_TYPE_OPTIONS}
             sx={DISABILITY_TYPE_STYLE}
             disabled={!props.values.disability.result}

@@ -43,6 +43,7 @@ import {
   BOLD_LABEL_STYLE,
   BOOLEAN_SELECT_STYLE,
 } from "@/lib/businessModules/schoolEntry/features/procedures/styles";
+import { REQUIRED_PROCEDURE_PROPERTIES } from "@/lib/businessModules/schoolEntry/features/procedures/translations";
 import { ConfirmLeaveDirtyFormEffect } from "@/lib/shared/components/form/ConfirmLeaveDirtyFormEffect";
 
 export interface AnamnesisFormValues {
@@ -217,14 +218,18 @@ export function AnamnesisForm(props: AnamnesisFormProps) {
               )}
               <SoftRequiredBooleanSelectField
                 name="childLanguageScreening"
-                label="Kiss"
+                label={
+                  REQUIRED_PROCEDURE_PROPERTIES.ANAMNESIS_CHILD_LANGUAGE_SCREENING
+                }
                 sx={{ ...BOOLEAN_SELECT_STYLE, ...BOLD_LABEL_STYLE }}
                 softRequired
                 allowDeselection
               />
               <SoftRequiredBooleanSelectField
                 name="preliminaryCourse"
-                label="Vorlaufkurs"
+                label={
+                  REQUIRED_PROCEDURE_PROPERTIES.ANAMNESIS_PRELIMINARY_COURSE
+                }
                 sx={{ ...BOOLEAN_SELECT_STYLE, ...BOLD_LABEL_STYLE }}
                 softRequired
                 allowDeselection

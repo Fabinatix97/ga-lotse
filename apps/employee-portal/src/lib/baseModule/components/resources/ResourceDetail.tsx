@@ -15,13 +15,14 @@ import {
   ApiUserRole,
 } from "@eshg/base-api";
 import {
+  DetailsItem,
   EditButton,
   InformationSheet,
   useHasUserRoleCheck,
 } from "@eshg/lib-employee-portal";
+import { DetailsList } from "@eshg/lib-portal";
 
 import { LabelList } from "@/lib/baseModule/components/labels/LabelList";
-import { DetailsCell } from "@/lib/shared/components/detailsSection/DetailsCell";
 
 import { ResourceCalendar, TimeRangeProps } from "./ResourceCalendar";
 import { resourceTypeNames } from "./constants";
@@ -104,48 +105,50 @@ export function ResourceDetail(props: {
       </Stack>
 
       <Stack direction={{ xxs: "column-reverse", md: "row" }} gap={2}>
-        <InformationSheet data-testid="resource-details" sx={{ flex: 2 }}>
-          <Stack
-            direction="row"
-            alignItems="center"
-            justifyContent="space-between"
-          >
-            <Typography component="h2" level="h3">
-              Details
-            </Typography>
-            {hasWritePerms && (
-              <EditButton
-                onClick={() => startActivity({ type: "edit-data" })}
+        <InformationSheet
+          data-testid="resource-details"
+          sx={{ flex: 2 }}
+          aria-labelledby="resource-detail-label"
+        >
+          <DetailsList>
+            <Stack
+              direction="row"
+              alignItems="center"
+              justifyContent="space-between"
+            >
+              <Typography component="h2" level="h3" id="resource-detail-label">
+                Details
+              </Typography>
+              {hasWritePerms && (
+                <EditButton
+                  onClick={() => startActivity({ type: "edit-data" })}
+                />
+              )}
+            </Stack>
+            <Stack gap={1}>
+              <DetailsItem label="Name" value={props.resource.name} />
+              <DetailsItem
+                label="Typ"
+                value={resourceTypeNames[props.resource.type]}
               />
-            )}
-          </Stack>
-          <Stack gap={1}>
-            <DetailsCell name="name" label="Name" value={props.resource.name} />
-            <DetailsCell
-              name="type"
-              label="Typ"
-              value={resourceTypeNames[props.resource.type]}
-            />
-            <DetailsCell
-              name="articleNumber"
-              label="Artikelnummer"
-              value={props.resource.articleNumber}
-            />
-            {props.resource.labels.length > 0 && (
-              <DetailsCell
-                name="labels"
-                label="Labels"
-                value={
-                  <LabelList labels={props.resource.labels} maxVisible={3} />
-                }
+              <DetailsItem
+                label="Artikelnummer"
+                value={props.resource.articleNumber}
               />
-            )}
-            <DetailsCell
-              name="description"
-              label="Beschreibung"
-              value={props.resource.description}
-            />
-          </Stack>
+              {props.resource.labels.length > 0 && (
+                <DetailsItem
+                  label="Labels"
+                  value={
+                    <LabelList labels={props.resource.labels} maxVisible={3} />
+                  }
+                />
+              )}
+              <DetailsItem
+                label="Beschreibung"
+                value={props.resource.description}
+              />
+            </Stack>
+          </DetailsList>
         </InformationSheet>
         <ResourceCalendar
           resourceCalendarEvents={props.resourceCalendarEvents}

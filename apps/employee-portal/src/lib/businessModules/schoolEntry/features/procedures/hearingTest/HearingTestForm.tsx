@@ -26,6 +26,7 @@ import {
   ExaminationResultFieldsValues,
 } from "@/lib/businessModules/schoolEntry/features/procedures/examinations/ExaminationResultFields";
 import { EarForm } from "@/lib/businessModules/schoolEntry/features/procedures/hearingTest/EarForm";
+import { REQUIRED_PROCEDURE_PROPERTIES } from "@/lib/businessModules/schoolEntry/features/procedures/translations";
 import { ConfirmLeaveDirtyFormEffect } from "@/lib/shared/components/form/ConfirmLeaveDirtyFormEffect";
 import { FormGroupGrid } from "@/lib/shared/components/form/FormGroupGrid";
 
@@ -81,7 +82,9 @@ export function HearingTestForm(props: HearingTestFormProps) {
             <Grid xs={6}>
               <ExaminationResultFields
                 name="examinationResult"
-                examinationResultLabel="Hörscreening"
+                examinationResultLabel={
+                  REQUIRED_PROCEDURE_PROPERTIES.HEARING_TEST_EXAMINATION_RESULT
+                }
                 values={values.examinationResult}
                 setFieldValue={setFieldValue}
               />

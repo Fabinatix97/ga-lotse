@@ -16,6 +16,7 @@ import {
 // ToDo: @saschl replace old field or rename
 interface SwitchFieldProps extends FieldProps<boolean>, FieldComponentProps {
   sx?: SxProps;
+  ref?: (el: HTMLElement) => void;
 }
 
 export function SwitchField(props: SwitchFieldProps) {
@@ -36,6 +37,15 @@ export function SwitchField(props: SwitchFieldProps) {
       }}
     >
       <Switch
+        slotProps={{
+          input: {
+            ref: (el) => {
+              if (el) {
+                props.ref?.(el);
+              }
+            },
+          },
+        }}
         checked={field.input.value}
         sx={{
           "--Switch-trackRadius": "16px",

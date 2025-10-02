@@ -29,7 +29,7 @@ export function HeaderToolbar(props: {
     <CalendarHeaderToolbar
       title={props.title}
       slotProps={{
-        select: { "aria-label": "Kalendaransicht", placeholder: "Monat" },
+        select: { "aria-label": "Kalenderansicht", placeholder: "Monat" },
       }}
       viewType={props.viewType}
       goToToday={props.goToToday}

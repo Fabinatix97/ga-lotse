@@ -10,7 +10,7 @@ import { RequiresChildren } from "@eshg/lib-portal";
 
 export function StyledValue(props: RequiresChildren) {
   return (
-    <Typography flex={1} level="title-md">
+    <Typography flex={1} level="title-md" role="definition">
       {props.children}
     </Typography>
   );
@@ -22,7 +22,7 @@ export function LabelValuePair(props: {
 }) {
   return (
     <Stack direction="row" gap={1}>
-      <Typography flex={1} level="body-md">
+      <Typography flex={1} level="body-md" role="term">
         {props.label}
       </Typography>
       {typeof props.value === "string" ? (

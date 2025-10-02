@@ -29,6 +29,9 @@ public enum DentalChildAttributes implements AttributeInfo {
           DentalChildAttributes.CATEGORY_CHILD,
           true)),
 
+  SCHULJAHR(
+      TextAttribute.create("Schuljahr", "SCHULJAHR", DentalChildAttributes.CATEGORY_CHILD, true)),
+
   EINRICHTUNG(
       ContactIdAttribute.create(
           "Einrichtung", "EINRICHTUNG", DentalChildAttributes.CATEGORY_CHILD, true)),

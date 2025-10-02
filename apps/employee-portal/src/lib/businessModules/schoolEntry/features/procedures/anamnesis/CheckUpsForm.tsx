@@ -22,17 +22,18 @@ import {
   BOOLEAN_SELECT_STYLE,
   BOOLEAN_WITH_UNKNOWN_STYLE,
 } from "@/lib/businessModules/schoolEntry/features/procedures/styles";
+import { REQUIRED_PROCEDURE_PROPERTIES } from "@/lib/businessModules/schoolEntry/features/procedures/translations";
 
 const CHECKUPS: { name: string; label: string }[] = [
-  { name: "u2", label: "U2" },
-  { name: "u3", label: "U3" },
-  { name: "u4", label: "U4" },
-  { name: "u5", label: "U5" },
-  { name: "u6", label: "U6" },
-  { name: "u7", label: "U7" },
-  { name: "u7a", label: "U7a" },
-  { name: "u8", label: "U8" },
-  { name: "u9", label: "U9" },
+  { name: "u2", label: REQUIRED_PROCEDURE_PROPERTIES.ANAMNESIS_U_2 },
+  { name: "u3", label: REQUIRED_PROCEDURE_PROPERTIES.ANAMNESIS_U_3 },
+  { name: "u4", label: REQUIRED_PROCEDURE_PROPERTIES.ANAMNESIS_U_4 },
+  { name: "u5", label: REQUIRED_PROCEDURE_PROPERTIES.ANAMNESIS_U_5 },
+  { name: "u6", label: REQUIRED_PROCEDURE_PROPERTIES.ANAMNESIS_U_6 },
+  { name: "u7", label: REQUIRED_PROCEDURE_PROPERTIES.ANAMNESIS_U_7 },
+  { name: "u7a", label: REQUIRED_PROCEDURE_PROPERTIES.ANAMNESIS_U_7_A },
+  { name: "u8", label: REQUIRED_PROCEDURE_PROPERTIES.ANAMNESIS_U_8 },
+  { name: "u9", label: REQUIRED_PROCEDURE_PROPERTIES.ANAMNESIS_U_9 },
 ];
 
 interface CheckUpsFormProps extends NestedFormProps {

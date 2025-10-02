@@ -158,6 +158,10 @@ public enum EmployeePermissionRole implements PermissionRole {
       DELETE_PERMISSION_TEMPLATE.formatted("DSGVO-Prüfaufträge"),
       "Kann DSGVO-Prüfaufträge und Downloadpakete in Fachmodulen löschen",
       Module.BASE),
+  BUSINESS_MODULE_READ_GDPR_PACKAGE_IDENTIFICATION(
+      "Technischer User DSGVO Paketidentifikation Migration",
+      "Technischer User der Fachmodule, für inter-modul DSGVO Download-Paket Identifikation Datenmigration, nicht für menschliche User bestimmt",
+      Module.BASE),
 
   BASE_PROCEDURES_READ(
       READ_PERMISSION_TEMPLATE.formatted("Vorgänge"),
@@ -207,7 +211,7 @@ public enum EmployeePermissionRole implements PermissionRole {
       Module.STATISTICS),
   STATISTICS_STATISTICS_TECHNICAL_USER(
       "Technischer User Statistiken",
-      "Technischer User des Statistik-Moduls, um die konkreten Statistikdaten von den Fachmodulen zusammenzutragen, nicht für echte User bestimmt",
+      "Technischer User des Statistik-Moduls, um die konkreten Statistikdaten von den Fachmodulen zusammenzutragen, nicht für menschliche User bestimmt",
       Module.STATISTICS),
 
   INBOX_PROCEDURE_WRITE(

@@ -4,6 +4,9 @@
  */
 
 import { Stack, Typography } from "@mui/joy";
+import { visuallyHidden } from "@mui/utils";
+
+import { DetailsList } from "@eshg/lib-portal";
 
 import { ChatUserId } from "@/lib/businessModules/chat/components/ChatUserId";
 
@@ -14,21 +17,27 @@ interface MemberInfoProps {
 
 export function MemberInfo({ userId, departmentName }: MemberInfoProps) {
   return (
-    <Stack
-      spacing={2}
-      sx={{
-        padding: 3,
-        borderBottom: "1px solid",
-        borderColor: "neutral.outlinedBorder",
-      }}
-    >
-      <Typography
-        sx={{ textWrap: "pretty" }}
-        data-testid="chat-user-department"
+    <DetailsList>
+      <Stack
+        spacing={2}
+        sx={{
+          padding: 3,
+          borderBottom: "1px solid",
+          borderColor: "neutral.outlinedBorder",
+        }}
       >
-        {departmentName}
-      </Typography>
-      <ChatUserId userId={userId} />
-    </Stack>
+        <Typography sx={visuallyHidden} role="term">
+          Abteilung
+        </Typography>
+        <Typography
+          sx={{ textWrap: "pretty" }}
+          data-testid="chat-user-department"
+          role="definition"
+        >
+          {departmentName}
+        </Typography>
+        <ChatUserId userId={userId} />
+      </Stack>
+    </DetailsList>
   );
 }

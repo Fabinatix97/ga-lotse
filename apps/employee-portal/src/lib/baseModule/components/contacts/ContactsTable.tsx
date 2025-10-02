@@ -158,7 +158,7 @@ export function ContactsTable({
           gap={2}
           justifyContent="space-between"
         >
-          <Stack direction="row" gap={2}>
+          <Stack direction="row" gap={2} role="group" aria-label="Filter">
             <SearchFilter
               label="Suche"
               searchParamName={contactSearchParamNames.name}

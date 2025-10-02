@@ -6,6 +6,8 @@
 import { List, ListItem, ListItemButton } from "@mui/joy";
 import { useMemo } from "react";
 
+import { LiveAnnouncer } from "@eshg/lib-portal";
+
 import { RoomListItem } from "@/lib/businessModules/chat/components/roomList/RoomListItem";
 import { useInfoPanelContext } from "@/lib/businessModules/chat/shared/InfoPanelProvider";
 import { useUnreadNotificationsPerRoom } from "@/lib/businessModules/chat/shared/UnreadNotificationsPerRoomProvider";
@@ -46,41 +48,53 @@ export function RoomList({
   }, [roomList]);
 
   return (
-    <List sx={{ py: 0 }} data-testid="chat-room-list">
-      {sortedChats?.map((data) => {
-        return (
-          <ListItem key={data.room.roomId}>
-            <ListItemButton
-              selected={selectedRoomId === data.room.roomId}
-              color="neutral"
-              sx={{
-                paddingX: 3,
-                paddingY: 2,
-              }}
-              onClick={() => {
-                setRoomIdParam(data.room.roomId);
-                setChatPanelView(ChatPanelView.ChatMessages);
-                setMobileView(MobileView.ChatMessages);
-                setSearchQuery("");
-                if (infoPanelState.isOpen) {
-                  setInfoPanelView(InfoPanelView.RoomInfo, data.room.roomId);
-                }
-              }}
-            >
-              <RoomListItem
-                room={data.room}
-                messageReads={messageReadsPerRoom[data.room.roomId] ?? []}
-                unreadNotifications={
-                  unreadNotificationsPerRoom[data.room.roomId]
-                }
-                communicationType={data.communicationType}
-                latestMessage={data.latestMessage}
-                searchQuery={searchQuery}
-              />
-            </ListItemButton>
-          </ListItem>
-        );
-      })}
-    </List>
+    <>
+      <LiveAnnouncer
+        active={sortedChats.length === 0}
+        message="Keine Chats vorhanden"
+      />
+      <LiveAnnouncer
+        active={sortedChats.length > 0}
+        message={`${sortedChats.length} Chats vorhanden`}
+      />
+      <List sx={{ py: 0 }} data-testid="chat-room-list">
+        {sortedChats?.map((data) => {
+          return (
+            <ListItem key={data.room.roomId}>
+              <ListItemButton
+                selected={selectedRoomId === data.room.roomId}
+                aria-pressed={selectedRoomId === data.room.roomId}
+                color="neutral"
+                sx={{
+                  paddingX: 3,
+                  paddingY: 2,
+                }}
+                aria-label={`Chat mit ${data.room.name} öffnen`}
+                onClick={() => {
+                  setRoomIdParam(data.room.roomId);
+                  setChatPanelView(ChatPanelView.ChatMessages);
+                  setMobileView(MobileView.ChatMessages);
+                  setSearchQuery("");
+                  if (infoPanelState.isOpen) {
+                    setInfoPanelView(InfoPanelView.RoomInfo, data.room.roomId);
+                  }
+                }}
+              >
+                <RoomListItem
+                  room={data.room}
+                  messageReads={messageReadsPerRoom[data.room.roomId] ?? []}
+                  unreadNotifications={
+                    unreadNotificationsPerRoom[data.room.roomId]
+                  }
+                  communicationType={data.communicationType}
+                  latestMessage={data.latestMessage}
+                  searchQuery={searchQuery}
+                />
+              </ListItemButton>
+            </ListItem>
+          );
+        })}
+      </List>
+    </>
   );
 }

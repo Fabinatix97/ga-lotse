@@ -37,9 +37,9 @@ export function ConfiguratorOverview({
             : `Fachmoduls ${configuratorNameMapping[module]}`}
         </Typography>
         <Stack gap={5}>
-          <Grid container spacing={2} sx={{ flexGrow: 1 }}>
+          <Grid container spacing={2} sx={{ flexGrow: 1 }} role="list">
             {data[module]?.endpointStates.map((tab) => (
-              <Grid key={tab.tabButtonName} xxs={12} xs={6}>
+              <Grid key={tab.tabButtonName} xxs={12} xs={6} role="listitem">
                 <ConfiguratorCard
                   title={tab.tabButtonName}
                   link={tab.link}

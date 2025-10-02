@@ -51,7 +51,12 @@ export function ContactDetails({ contact }: { contact: Contact }) {
     0;
 
   return (
-    <ContentPanel dense={false} testId="contact-details-panel">
+    <ContentPanel
+      dense={false}
+      testId="contact-details-panel"
+      role="region"
+      ariaLabel="Details"
+    >
       {hasWritePerms && (
         <EditButton
           sx={{ maxWidth: "fit-content", flex: 0, alignSelf: "flex-end" }}

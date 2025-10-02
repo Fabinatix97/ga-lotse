@@ -4,7 +4,7 @@
  */
 
 import { CheckCircleOutline, RadioButtonUnchecked } from "@mui/icons-material";
-import { Stack, Typography } from "@mui/joy";
+import { Box, Stack, Typography } from "@mui/joy";
 import { Formik } from "formik";
 import { AuthDict, IAuthData } from "matrix-js-sdk";
 import {
@@ -85,6 +85,7 @@ export function CreateBackupSidebar({
           resolve({ confirmed });
           setModalValues(undefined);
         }
+
         setModalValues({ ...modalValues, onFinished });
       });
     },
@@ -212,7 +213,7 @@ export function CreateBackupSidebar({
         >
           {({ isSubmitting, values, errors }) => (
             <SidebarForm ref={formRef}>
-              <SidebarContent title={content.header}>
+              <SidebarContent title={content.headerSidebar}>
                 <Stack gap={2}>
                   {content.description.map((i) => (
                     <Typography key={i} level="body-md">
@@ -221,21 +222,22 @@ export function CreateBackupSidebar({
                   ))}
                   <PasswordField
                     data-testid="passphrase"
-                    label="Sicherheitsphrase vergeben"
+                    label="Neues Passwort"
                     name={fieldName("passphrase")}
-                    visibilityLabel="visiblePassphrase"
+                    aria-describedby="password-requirements"
                   />
                   <PasswordField
                     data-testid="repeatedPassphrase"
-                    label="Sicherheitsphrase wiederholen"
+                    label="Passwort wiederholen"
                     name={fieldName("repeatedPassphrase")}
-                    visibilityLabel="visibleRepeatedPassphrase"
+                    aria-describedby="password-requirements"
                   />
                 </Stack>
                 <PasswortRequirementHints
                   erroneous={errors.validForm === "false"}
                   password={values.passphrase}
                   repeatedPassword={values.repeatedPassphrase}
+                  hintSectionId="password-requirements"
                 />
               </SidebarContent>
               <SidebarActions>
@@ -258,42 +260,37 @@ interface PasswortRequirementHintsProps {
   erroneous: boolean;
   password: string;
   repeatedPassword: string;
+  hintSectionId?: string;
 }
 
 function PasswortRequirementHints({
   erroneous,
   password,
   repeatedPassword,
+  hintSectionId,
 }: Readonly<PasswortRequirementHintsProps>) {
   return (
     <Stack gap={0.5} mt={3}>
-      {erroneous && (
-        <Typography mb={2} color="danger" fontSize="small">
-          Bitte beachten Sie die Sicherheitsphrasenanforderungen
-        </Typography>
-      )}
-
-      <Typography
-        mb={1}
-        color={erroneous ? "danger" : "neutral"}
-        fontSize="small"
-      >
-        Anforderungen an Sicherheitsphrasen:
+      <Typography mb={1} level="body-md" component="h2">
+        Anforderungen an das Passwort:
       </Typography>
 
-      {getPasswordValidityInfo(password, repeatedPassword).map(
-        ({ message, valid }) => (
-          <Typography
-            key={message}
-            fontWeight="lighter"
-            startDecorator={getPasswordRuleDecorator(valid)}
-            color={getPasswordRuleColor(valid, erroneous)}
-            fontSize="small"
-          >
-            {message}
-          </Typography>
-        ),
-      )}
+      <Box display="contents" role="list" id={hintSectionId}>
+        {getPasswordValidityInfo(password, repeatedPassword).map(
+          ({ message, valid }) => (
+            <Typography
+              key={message}
+              fontWeight="lighter"
+              startDecorator={getPasswordRuleDecorator(valid)}
+              color={getPasswordRuleColor(valid, erroneous)}
+              fontSize="small"
+              role="listitem"
+            >
+              {message}
+            </Typography>
+          ),
+        )}
+      </Box>
     </Stack>
   );
 }

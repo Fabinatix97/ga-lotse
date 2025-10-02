@@ -80,7 +80,7 @@ export function RecoveryKeyModal({
       </List>
       <Stack direction="row" spacing={2} sx={{ marginRight: "auto" }}>
         <IconButton
-          aria-label="Copy chat recovery key"
+          aria-label="Wiederherstellungschlüssel kopieren"
           variant="outlined"
           color="primary"
           data-testid="copy-button"

@@ -26,6 +26,7 @@ import {
 import { useGetAllDocuments } from "@/lib/businessModules/officialMedicalService/api/queries/employeeOmsProcedureApi";
 import {
   DocumentForm,
+  DocumentFormInitialFocus,
   DocumentFormValues,
 } from "@/lib/businessModules/officialMedicalService/components/procedures/details/documents/DocumentForm";
 import { EditDocumentInformationForm } from "@/lib/businessModules/officialMedicalService/components/procedures/details/documents/EditDocumentInformationForm";
@@ -55,6 +56,9 @@ function DocumentSidebar({
   isProcedureFinalized,
   ...props
 }: Readonly<DocumentSidebarProps>) {
+  const [initialDefaultFocus, setInitialDefaultFocus] =
+    useState<DocumentFormInitialFocus>(null);
+
   const patchCompleteDocumentFileUpload = usePatchCompleteDocumentFileUpload();
   const patchDocumentInformation = usePatchDocumentInformation();
   const patchDocumentNote = usePatchDocumentNote();
@@ -151,6 +155,7 @@ function DocumentSidebar({
           document={document}
           submitLabel="Schließen"
           isProcedureFinalized={isProcedureFinalized}
+          initialFocus={initialDefaultFocus}
           onSubmit={handleDocumentSubmit}
           onCancel={handleCancel}
           onClose={props.onClose}
@@ -167,6 +172,7 @@ function DocumentSidebar({
           submitLabel="Speichern"
           onSubmit={handleEditInformation}
           onCancel={() => {
+            setInitialDefaultFocus("DOCUMENT_DETAILS");
             setMode("default");
           }}
         />
@@ -179,6 +185,7 @@ function DocumentSidebar({
           submitLabel="Speichern"
           onSubmit={handleEditNote}
           onCancel={() => {
+            setInitialDefaultFocus("KEYWORD");
             setMode("default");
           }}
         />

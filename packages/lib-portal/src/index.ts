@@ -384,7 +384,8 @@ export {
   useValidateGermanZipCode,
 } from "./hooks/useValidators";
 export { useWindowDimensions } from "./hooks/useWindowDimension";
-export { useToggleFocus } from "./hooks/useToggleFocus";
+export { useFocusToggle } from "./hooks/useFocusToggle";
+export { useFocus } from "./hooks/useFocus";
 
 export { de } from "./i18n/locales/de";
 export { loadLocale } from "./i18n/loadLocale";

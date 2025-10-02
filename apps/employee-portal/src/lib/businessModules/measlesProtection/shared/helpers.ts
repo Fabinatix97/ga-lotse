@@ -28,7 +28,7 @@ export function mapToAffectedPerson(
 ): ApiAffectedPersonDetails {
   return {
     ...person,
-    address: person.contactAddress!,
+    address: person.contactAddress,
   };
 }
 

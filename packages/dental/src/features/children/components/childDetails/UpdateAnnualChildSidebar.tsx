@@ -126,7 +126,7 @@ function UpdateAnnualChildSidebar(props: UpdateAnnualChildSidebarProps) {
             <SearchGroupField
               name="groupName"
               label="Gruppe"
-              institution={annualChild.institution}
+              institution={values.institution}
               freeSolo
             />
             <ProcedureLabelSelection

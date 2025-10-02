@@ -26,7 +26,10 @@ import {
   mapExaminationEvaluationToExaminationResultValue,
   validateValue,
 } from "@/lib/businessModules/schoolEntry/features/procedures/sopessExamination/SopessExaminationForm";
-import { EVALUATION_EXAMINATION_TYPES } from "@/lib/businessModules/schoolEntry/features/procedures/translations";
+import {
+  EVALUATION_EXAMINATION_TYPES,
+  REQUIRED_PROCEDURE_PROPERTIES,
+} from "@/lib/businessModules/schoolEntry/features/procedures/translations";
 
 interface BodyCoordinationFormProps {
   points: OptionalFieldValue<number>;
@@ -89,7 +92,7 @@ export function BodyCoordinationForm(props: BodyCoordinationFormProps) {
       <Stack direction="row" gap={2} flexWrap="wrap">
         <Stack direction="row" gap={2}>
           <SoftRequiredNumberField
-            label="Sprungzahl"
+            label={REQUIRED_PROCEDURE_PROPERTIES.SOPESS_EXAMINATION_JUMP_COUNT}
             name={fieldName("points")}
             sx={FIXED_WIDTH_STYLE}
             validate={validateJumpCount}
@@ -105,7 +108,9 @@ export function BodyCoordinationForm(props: BodyCoordinationFormProps) {
         <Stack direction="row" gap={2}>
           <SopessExaminationFields
             examinationResultName={fieldName("result")}
-            examinationResultLabel="Grobmotorik"
+            examinationResultLabel={
+              REQUIRED_PROCEDURE_PROPERTIES.SOPESS_EXAMINATION_GROSS_MOTOR_SKILLS
+            }
             responseName={fieldName("doctorLetter")}
             examinationResultValue={props.result}
             setFieldValue={props.setFieldValue}

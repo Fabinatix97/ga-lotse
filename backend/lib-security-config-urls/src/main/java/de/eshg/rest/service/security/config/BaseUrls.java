@@ -276,8 +276,7 @@ public final class BaseUrls {
       public static final String BUSINESS_PROCEDURE_DOWNLOAD_PACKAGE =
           "/{gdprProcedureId}/business-procedures/{businessProcedureId}/downloadPackage";
       public static final String DOWNLOAD_PACKAGES_INFO = "/{gdprProcedureId}/download-packages";
-      public static final String DOWNLOAD_PACKAGE =
-          "/{gdprProcedureId}/download-packages/{downloadId}";
+      public static final String DOWNLOAD_PACKAGE = "/download-packages/{downloadId}";
       public static final String CLOSE_PROCEDURE = "/{gdprProcedureId}/close";
 
       private Gdpr() {}

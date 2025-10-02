@@ -126,7 +126,7 @@ export function AddChatMember({
         padding: 2,
       }}
     >
-      <Typography level="title-lg" sx={{ marginBottom: 2 }}>
+      <Typography level="title-lg" sx={{ marginBottom: 2 }} component="h3">
         Mitglieder hinzufügen
       </Typography>
       <Formik

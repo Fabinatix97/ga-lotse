@@ -96,9 +96,8 @@ public interface GdprValidationTaskApi {
 
   @GetExchange(DOWNLOAD_PACKAGE)
   @ApiResponse(responseCode = "200")
-  @Operation(summary = "Get Gdpr Download Package by the gdprProcedureId and its downloadId")
+  @Operation(summary = "Get Gdpr Download Package by its downloadId")
   ResponseEntity<Resource> getGdprDownloadPackage(
-      @PathVariable(name = "gdprProcedureId") UUID gdprProcedureId,
       @PathVariable(name = "downloadId") UUID downloadId);
 
   @GetExchange

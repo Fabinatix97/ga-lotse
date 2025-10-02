@@ -399,6 +399,7 @@ export function EvaluationsTable({
                   info="Keine Auswertungen vorhanden"
                   buttonLabel="Auswertung erstellen"
                   decorator={<Add />}
+                  ariaHideButton
                   onClick={onCreateEvaluationClick}
                 />
               </Box>
