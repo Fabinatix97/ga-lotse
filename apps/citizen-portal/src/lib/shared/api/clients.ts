@@ -7,6 +7,7 @@ import {
   Configuration,
   PublicConfigApi,
   PublicDepartmentApi,
+  PublicStreetApi,
 } from "@eshg/base-api";
 import { ApiConfiguration } from "@eshg/lib-portal";
 import {
@@ -47,6 +48,11 @@ export function usePublicDepartmentApi() {
 export function usePublicConfigApi() {
   const configuration = useConfiguration();
   return new PublicConfigApi(configuration);
+}
+
+export function usePublicStreetApi() {
+  const configuration = useConfiguration();
+  return new PublicStreetApi(configuration);
 }
 
 type ConfigurationConstructor<TConfiguration> = new (

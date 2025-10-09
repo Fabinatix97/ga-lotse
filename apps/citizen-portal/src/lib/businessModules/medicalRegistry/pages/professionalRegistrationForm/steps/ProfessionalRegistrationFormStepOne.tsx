@@ -8,12 +8,14 @@ import { useFormikContext } from "formik";
 import { useMemo } from "react";
 
 import {
+  AddressAutoFillField,
   DateField,
   EmailField,
   GENDER_OPTIONS,
   InputField,
   PhoneNumberField,
   SelectField,
+  StreetField,
   buildEnumOptions,
   useValidateLength,
   useValidatePastOrTodayDate,
@@ -31,6 +33,7 @@ import { ApiCountryCode, ApiTypeOfChange } from "@eshg/medical-registry-api";
 import { requiredFieldMessageKey } from "@/lib/businessModules/medicalRegistry/pages/professionalRegistrationForm/ProfessionalRegistrationForm";
 import { SelectionOption } from "@/lib/businessModules/travelMedicine/components/shared/CountryFieldMulti";
 import { useTranslation } from "@/lib/i18n/client";
+import { usePublicStreetApi } from "@/lib/shared/api/clients";
 import { byBreakpoint } from "@/lib/shared/breakpoints";
 import { CountryField } from "@/lib/shared/components/form/CountryField";
 import {
@@ -42,6 +45,8 @@ import { createFieldNameMapper } from "@/lib/shared/helpers/form";
 const changeTypeNamesOptions = buildEnumOptions(CHANGE_TYPE_NAMES);
 
 export function ProfessionalRegistrationFormStepOne() {
+  const publicStreetApi = usePublicStreetApi();
+
   const validateLength = useValidateLength();
   const validatePastOrTodayDate = useValidatePastOrTodayDate();
   const validateZipCode = useValidateZipCode();
@@ -175,7 +180,8 @@ export function ProfessionalRegistrationFormStepOne() {
             />
           </Grid>
           <Grid {...byBreakpoint({ mobile: 12, desktop: 6 })}>
-            <InputField
+            <StreetField
+              api={publicStreetApi}
               name={personalInformationForm("street")}
               label={t("stepOne.contentSheetTwo.label.street")}
               required={t(requiredFieldMessageKey)}
@@ -191,8 +197,10 @@ export function ProfessionalRegistrationFormStepOne() {
             />
           </Grid>
           <Grid {...byBreakpoint({ mobile: 12, desktop: 6 })}>
-            <InputField
-              name={personalInformationForm("postalCode")}
+            <AddressAutoFillField
+              api={publicStreetApi}
+              fieldName={personalInformationForm}
+              name="postalCode"
               label={t("stepOne.contentSheetTwo.label.postalCode")}
               required={t(requiredFieldMessageKey)}
               validate={validatePipe(
@@ -204,8 +212,10 @@ export function ProfessionalRegistrationFormStepOne() {
             />
           </Grid>
           <Grid {...byBreakpoint({ mobile: 12, desktop: 6 })}>
-            <InputField
-              name={personalInformationForm("city")}
+            <AddressAutoFillField
+              api={publicStreetApi}
+              fieldName={personalInformationForm}
+              name="city"
               label={t("stepOne.contentSheetTwo.label.city")}
               required={t(requiredFieldMessageKey)}
               validate={validateLength(1, 50)}

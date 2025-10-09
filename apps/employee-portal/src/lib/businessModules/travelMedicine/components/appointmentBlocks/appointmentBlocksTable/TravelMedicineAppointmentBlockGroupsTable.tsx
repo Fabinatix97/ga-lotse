@@ -26,6 +26,10 @@ import {
 } from "@/lib/businessModules/travelMedicine/api/clients";
 import { mapAppointmentBlockApi } from "@/lib/businessModules/travelMedicine/api/mapAppointmentBlockApi";
 import { useGetAppointmentBlockGroupsQuery } from "@/lib/businessModules/travelMedicine/api/queries/appointmentBlocks";
+import {
+  useGetAllMedicalAssistantsQuery,
+  useGetAllPhysiciansQuery,
+} from "@/lib/businessModules/travelMedicine/api/queries/appointmentStaff";
 import { useGetAppointmentStandardDurationsQuery } from "@/lib/businessModules/travelMedicine/api/queries/appointmentStandardDurations";
 import { appointmentBlockApiQueryKey } from "@/lib/businessModules/travelMedicine/api/queries/queryKeys";
 import { routes } from "@/lib/businessModules/travelMedicine/shared/routes";
@@ -49,6 +53,8 @@ export function TravelMedicineAppointmentBlockGroupsTable(
   const [
     { data: appointmentBlockGroups, isFetching },
     { data: standardDurations },
+    { data: physicians },
+    { data: mfas },
   ] = useSuspenseQueries({
     queries: [
       useGetAppointmentBlockGroupsQuery({
@@ -60,6 +66,8 @@ export function TravelMedicineAppointmentBlockGroupsTable(
         sortDirection: getSortDirection(tableControl.tableSorting),
       }),
       useGetAppointmentStandardDurationsQuery(standardDurationApi),
+      useGetAllPhysiciansQuery(),
+      useGetAllMedicalAssistantsQuery(),
     ],
   });
 
@@ -67,6 +75,8 @@ export function TravelMedicineAppointmentBlockGroupsTable(
   const COLUMNS = useAppointmentBlockGroupsColumns({
     appointmentBlockApi: mapAppointmentBlockApi(appointmentBlockApi),
     appointmentBlockApiQueryKey,
+    physicians,
+    mfas,
     standardDurations,
     columnHelper,
   });

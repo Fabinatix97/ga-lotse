@@ -28,11 +28,13 @@ export function DashboardProceduresTable() {
     <TableSheet
       title={
         <Stack padding={1} direction="row" alignItems="center">
-          <Typography level="h3" component="h2">
+          <Typography level="h3" component="h2" id="procedure-table-label">
             Zuletzt bearbeitete Vorgänge
           </Typography>
         </Stack>
       }
+      role="region"
+      aria-labelledby="procedure-table-label"
     >
       <DataTable
         data={procedures}

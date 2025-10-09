@@ -61,6 +61,7 @@ export function MeaslesProtectionAppointmentBlockGroupsTable(
   const COLUMNS = useAppointmentBlockGroupsColumns({
     appointmentBlockApi: mapAppointmentBlockApi(appointmentBlockApi),
     appointmentBlockApiQueryKey,
+    withTeam: false,
     standardDurations,
     columnHelper,
     showWeekDays: true,

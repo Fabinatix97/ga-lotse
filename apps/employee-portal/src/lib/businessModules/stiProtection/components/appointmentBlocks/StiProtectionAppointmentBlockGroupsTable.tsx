@@ -20,6 +20,7 @@ import {
 } from "@eshg/lib-employee-portal";
 import { ApiAppointmentBlockSortKey } from "@eshg/sti-protection-api";
 
+import { useUserApi } from "@/lib/baseModule/api/clients";
 import {
   useAppointmentBlockApi,
   useAppointmentStandardDurationsApi,
@@ -27,6 +28,10 @@ import {
 import { mapAppointmentBlockApi } from "@/lib/businessModules/stiProtection/api/mapAppointmentBlockApi";
 import { appointmentBlockApiQueryKey } from "@/lib/businessModules/stiProtection/api/queries/apiQueryKeys";
 import { useGetAppointmentBlockGroupsQuery } from "@/lib/businessModules/stiProtection/api/queries/appointmentBlocks";
+import {
+  getAllConsultantsQuery,
+  getAllPhysiciansQuery,
+} from "@/lib/businessModules/stiProtection/api/queries/appointmentStaff";
 import {
   useGetHivAppointmentStandardDurationsQuery,
   useGetSexWorkAppointmentStandardDurationsQuery,
@@ -49,11 +54,14 @@ export function StiProtectionAppointmentBlockGroupsTable(
 
   const appointmentStandardDurationApi = useAppointmentStandardDurationsApi();
   const appointmentBlockApi = useAppointmentBlockApi();
+  const userApi = useUserApi();
 
   const [
     appointmentBlockGroups,
     { data: standardDurationsHiv },
     { data: standardDurationsSexWork },
+    { data: physicians },
+    { data: consultants },
   ] = useSuspenseQueries({
     queries: [
       useGetAppointmentBlockGroupsQuery({
@@ -70,6 +78,8 @@ export function StiProtectionAppointmentBlockGroupsTable(
       useGetSexWorkAppointmentStandardDurationsQuery(
         appointmentStandardDurationApi,
       ),
+      getAllPhysiciansQuery(userApi),
+      getAllConsultantsQuery(userApi),
     ],
   });
 
@@ -77,6 +87,8 @@ export function StiProtectionAppointmentBlockGroupsTable(
   const columns = useAppointmentBlockGroupsColumns({
     appointmentBlockApi: mapAppointmentBlockApi(appointmentBlockApi),
     appointmentBlockApiQueryKey,
+    physicians,
+    consultants,
     standardDurations: { ...standardDurationsHiv, ...standardDurationsSexWork },
     columnHelper,
     showWeekDays: true,

@@ -9,6 +9,7 @@ import { FieldArray, useFormikContext } from "formik";
 import { useId, useMemo } from "react";
 
 import {
+  AddressAutoFillField,
   Alert,
   BooleanRadioField,
   DateField,
@@ -16,6 +17,7 @@ import {
   InputField,
   SelectField,
   SelectOption,
+  StreetField,
   useValidateGermanZipCode,
   useValidateLength,
   useValidateNumber,
@@ -38,6 +40,7 @@ import {
 
 import { requiredFieldMessageKey } from "@/lib/businessModules/medicalRegistry/pages/professionalRegistrationForm/ProfessionalRegistrationForm";
 import { useTranslation } from "@/lib/i18n/client";
+import { usePublicStreetApi } from "@/lib/shared/api/clients";
 import { allBreakpoints, byBreakpoint } from "@/lib/shared/breakpoints";
 import { StyledRemoveButton } from "@/lib/shared/components/form/file/buttonVariants";
 import {
@@ -49,6 +52,7 @@ import { createFieldNameMapper } from "@/lib/shared/helpers/form";
 const MAX_EMPLOYEES = 30;
 
 export function ProfessionalRegistrationFormStepThree() {
+  const publicStreetApi = usePublicStreetApi();
   const validateLength = useValidateLength();
   const validateNumber = useValidateNumber();
   const validateZipCode = useValidateGermanZipCode();
@@ -109,7 +113,8 @@ export function ProfessionalRegistrationFormStepThree() {
                   />
                 </Grid>
                 <Grid {...byBreakpoint({ mobile: 12, desktop: 6 })}>
-                  <InputField
+                  <StreetField
+                    api={publicStreetApi}
                     name={practiceInformationForm("street")}
                     label={t("stepThree.label.street")}
                     required={t(requiredFieldMessageKey)}
@@ -125,8 +130,10 @@ export function ProfessionalRegistrationFormStepThree() {
                   />
                 </Grid>
                 <Grid {...byBreakpoint({ mobile: 12, desktop: 6 })}>
-                  <InputField
-                    name={practiceInformationForm("postalCode")}
+                  <AddressAutoFillField
+                    api={publicStreetApi}
+                    name="postalCode"
+                    fieldName={practiceInformationForm}
                     label={t("stepThree.label.postalCode")}
                     required={t(requiredFieldMessageKey)}
                     validate={validatePipe(
@@ -136,8 +143,10 @@ export function ProfessionalRegistrationFormStepThree() {
                   />
                 </Grid>
                 <Grid {...byBreakpoint({ mobile: 12, desktop: 6 })}>
-                  <InputField
-                    name={practiceInformationForm("city")}
+                  <AddressAutoFillField
+                    api={publicStreetApi}
+                    name="city"
+                    fieldName={practiceInformationForm}
                     label={t("stepThree.label.city")}
                     required={t(requiredFieldMessageKey)}
                     validate={validateLength(1, 50)}

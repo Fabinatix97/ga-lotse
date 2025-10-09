@@ -303,6 +303,14 @@ data:
         proxy_pass $targetHostName;
       }
 
+      # No authorization required for the Street API
+      location /api/base/public/streets/ {
+        limit_req zone=base_streets;
+        limit_req_status 429;
+        limit_req_log_level warn;
+        proxy_pass http://base.frankfurt.svc.cluster.local/public/streets/;
+      }
+
       # No authorization required for the base feature toggles API
       location = /api/base/feature-toggles {
         set $targetHostName http://base.frankfurt.svc.cluster.local/feature-toggles;
@@ -523,6 +531,7 @@ data:
       default_type  application/octet-stream;
       limit_req_zone $binary_remote_addr zone=organisations_report:10m rate=5r/m;
       limit_req_zone $binary_remote_addr zone=tm_citizen_procedure:10m rate=1r/m;
+      limit_req_zone $binary_remote_addr zone=base_streets:10m rate=10r/m;
 
       log_format  main  '$remote_addr - $remote_user [$time_local] "$request" '
       'status=$status '

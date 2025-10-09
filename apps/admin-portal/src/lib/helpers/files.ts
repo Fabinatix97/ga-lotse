@@ -20,10 +20,10 @@ async function saveDownload5(
   suggestedName: string,
   downloadPromise: () => Blob,
 ) {
-  const [newHandle, fileBlob] = await Promise.all([
+  const [newHandle, fileBlob] = [
     getFileHandle(suggestedName),
     downloadPromise(),
-  ]);
+  ];
 
   const writableStream = await newHandle.createWritable();
   await writableStream.write(fileBlob);

@@ -10,24 +10,37 @@ import { useEffect, useRef } from "react";
 import { isDeepEqual } from "remeda";
 import { useDebounce } from "use-debounce";
 
-import { ApiPostalCodeAndCityResponse } from "@eshg/base-api";
-import { InputField, InputFieldProps } from "@eshg/lib-portal";
+import {
+  ApiPostalCodeAndCityResponse,
+  PublicStreetApi,
+  StreetApi,
+} from "@eshg/base-api";
 
-import { useGetPostalCodeAndCityForStreet } from "../../api/queries/streets";
+import {
+  AnyStreetApi,
+  useGetPostalCodeAndCityForStreet,
+} from "../../api/queries/streets";
+import { InputField, InputFieldProps } from "../formFields/InputField";
 
-import { BaseAddressFormInputs } from "./addressForms";
+export interface MinimalAutocompleteAddressInputs {
+  street: string;
+  houseNumber: string;
+  postalCode: string;
+  city: string;
+}
 
-interface AddressAutoFillFieldProps
+export interface AddressAutoFillFieldProps
   extends Omit<InputFieldProps, "options" | "loading" | "freeSolo" | "name"> {
   name: "postalCode" | "city";
-  fieldName: (key: keyof BaseAddressFormInputs) => string;
+  fieldName: (key: keyof MinimalAutocompleteAddressInputs) => string;
+  api: AnyStreetApi;
 }
 
 export function AddressAutoFillField(props: AddressAutoFillFieldProps) {
   const { setFieldValue, setFieldTouched } =
-    useFormikContext<BaseAddressFormInputs>();
+    useFormikContext<MinimalAutocompleteAddressInputs>();
 
-  const query = useSuggestedPostalCodeAndCity(props.fieldName);
+  const query = useSuggestedPostalCodeAndCity(props.api, props.fieldName);
 
   const autofillValue = query.isSuccess ? query.data[props.name] : null;
 
@@ -60,18 +73,19 @@ export function AddressAutoFillField(props: AddressAutoFillFieldProps) {
 }
 
 function useSuggestedPostalCodeAndCity(
-  fieldName: (key: keyof BaseAddressFormInputs) => string,
+  api: PublicStreetApi | StreetApi,
+  fieldName: (key: keyof MinimalAutocompleteAddressInputs) => string,
 ): UseQueryResult<
   ApiPostalCodeAndCityResponse | { city: null; postalCode: null }
 > {
-  const { getFieldMeta } = useFormikContext<BaseAddressFormInputs>();
+  const { getFieldMeta } = useFormikContext<MinimalAutocompleteAddressInputs>();
 
-  const streetProps = getFieldMeta<BaseAddressFormInputs["street"]>(
+  const streetProps = getFieldMeta<MinimalAutocompleteAddressInputs["street"]>(
     fieldName("street"),
   );
-  const houseNumberProps = getFieldMeta<BaseAddressFormInputs["houseNumber"]>(
-    fieldName("houseNumber"),
-  );
+  const houseNumberProps = getFieldMeta<
+    MinimalAutocompleteAddressInputs["houseNumber"]
+  >(fieldName("houseNumber"));
   const queryInputs = {
     street: streetProps.value,
     houseNumber: houseNumberProps.value,
@@ -94,6 +108,7 @@ function useSuggestedPostalCodeAndCity(
   const [houseNumber] = useDebounce(houseNumberProps.value, 1000);
 
   return useGetPostalCodeAndCityForStreet(
+    api,
     { street, houseNumber },
     { enabled: hasChanged && isValid },
   );

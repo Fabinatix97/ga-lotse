@@ -72,8 +72,12 @@ public final class BasePublicSecurityConfig extends AbstractPublicSecurityConfig
   private void streets() {
     requestMatchers(GET, BaseUrls.Base.STREET_API + BaseUrls.Base.STREET_AUTOCOMPLETE_URL)
         .hasRole(EmployeePermissionRole.STANDARD_EMPLOYEE);
-    requestMatchers(GET, BaseUrls.Base.STREET_API + Base.POSTAL_CODE_AND_CITY_URL)
+    requestMatchers(GET, BaseUrls.Base.STREET_API + BaseUrls.Base.POSTAL_CODE_AND_CITY_URL)
         .hasRole(EmployeePermissionRole.STANDARD_EMPLOYEE);
+    requestMatchers(GET, BaseUrls.Base.PUBLIC_STREET_API + BaseUrls.Base.STREET_AUTOCOMPLETE_URL)
+        .permitAll();
+    requestMatchers(GET, BaseUrls.Base.PUBLIC_STREET_API + BaseUrls.Base.POSTAL_CODE_AND_CITY_URL)
+        .permitAll();
   }
 
   private void labels() {

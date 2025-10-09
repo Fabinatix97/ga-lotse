@@ -23,6 +23,7 @@ import {
   ApiLocationSelectionMode,
 } from "@eshg/school-entry-api";
 
+import { useUserApi } from "@/lib/baseModule/api/clients";
 import {
   useAppointmentBlockApi,
   useAppointmentStandardDurationsApi,
@@ -31,6 +32,10 @@ import {
 import { mapAppointmentBlockApi } from "@/lib/businessModules/schoolEntry/api/mapAppointmentBlockApi";
 import { appointmentBlockApiQueryKey } from "@/lib/businessModules/schoolEntry/api/queries/apiQueryKeys";
 import { getAppointmentBlockGroupsQuery } from "@/lib/businessModules/schoolEntry/api/queries/appointmentBlockApi";
+import {
+  getAllMedicalAssistantsQuery,
+  getAllPhysiciansQuery,
+} from "@/lib/businessModules/schoolEntry/api/queries/appointmentStaff";
 import { useGetAppointmentStandardDurationsQuery } from "@/lib/businessModules/schoolEntry/api/queries/appointmentStandardDuration";
 import { getLocationSelectionModeQuery } from "@/lib/businessModules/schoolEntry/api/queries/configApi";
 import { routes } from "@/lib/businessModules/schoolEntry/shared/routes";
@@ -52,11 +57,14 @@ export function SchoolEntryAppointmentBlockGroupsTable(
   const configApi = useConfigApi();
   const appointmentBlockApi = useAppointmentBlockApi();
   const standardDurationApi = useAppointmentStandardDurationsApi();
+  const userApi = useUserApi();
 
   const [
     { data: locationSelectionMode },
     getAppointmentBlockGroups,
     { data: standardDurations },
+    { data: physicians },
+    { data: mfas },
   ] = useSuspenseQueries({
     queries: [
       getLocationSelectionModeQuery(configApi),
@@ -69,6 +77,8 @@ export function SchoolEntryAppointmentBlockGroupsTable(
         sortDirection: getSortDirection(tableControl.tableSorting),
       }),
       useGetAppointmentStandardDurationsQuery(standardDurationApi),
+      getAllPhysiciansQuery(userApi),
+      getAllMedicalAssistantsQuery(userApi),
     ],
   });
 
@@ -76,6 +86,8 @@ export function SchoolEntryAppointmentBlockGroupsTable(
   const columns = useAppointmentBlockGroupsColumns({
     appointmentBlockApi: mapAppointmentBlockApi(appointmentBlockApi),
     appointmentBlockApiQueryKey,
+    physicians,
+    mfas,
     standardDurations,
     columnHelper,
     additionalColumn:

@@ -102,11 +102,11 @@ export function useSubmitDraftProcedureMutation({
         roleStatus: data.roleStatus,
       });
     },
-    async onSuccess(data, variables, context) {
+    async onSuccess(data, variables, onMutateResult, context) {
       await client.invalidateQueries({
         queryKey: measlesProtectionApiQueryKey(["procedures"]),
       });
-      return onSuccess?.(data, variables, context);
+      return onSuccess?.(data, variables, onMutateResult, context);
     },
     onError,
   });

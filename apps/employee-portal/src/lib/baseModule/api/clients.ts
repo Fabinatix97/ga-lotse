@@ -21,6 +21,7 @@ import {
   PublicConfigApi,
   PublicDepartmentApi,
   ResourceApi,
+  StreetApi,
   TaskAggregationApi,
   TaskMetricsApi,
   UserApi,
@@ -73,6 +74,11 @@ export function useGdprProcedureApi() {
 export function useResourceApi() {
   const configuration = useConfiguration();
   return new ResourceApi(configuration);
+}
+
+export function useStreetApi() {
+  const configuration = useConfiguration();
+  return new StreetApi(configuration);
 }
 
 export function useCalendarApi() {

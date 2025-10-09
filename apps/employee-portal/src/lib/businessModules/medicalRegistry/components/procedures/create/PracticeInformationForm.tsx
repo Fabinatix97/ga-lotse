@@ -6,21 +6,27 @@
 import { Grid, Typography } from "@mui/joy";
 import { useFormikContext } from "formik";
 
+import { ApiCountryCode } from "@eshg/base-api";
 import {
+  AddressAutoFillField,
   Alert,
   BooleanRadioField,
   EmailField,
   InputField,
   NestedFormProps,
+  StreetField,
   createFieldNameMapper,
   useValidateLength,
   useValidateNumber,
+  validatePipe,
+  validateZipCode,
 } from "@eshg/lib-portal";
 import {
   MedicalRegistryCreateProcedureFormValues,
   PracticeInformationFormValues,
 } from "@eshg/medical-registry";
 
+import { useStreetApi } from "@/lib/baseModule/api/clients";
 import { requiredFieldMessage } from "@/lib/businessModules/medicalRegistry/components/procedures/create/MedicalRegistryCreateProcedureForm";
 
 interface PracticeInformationFormProps extends NestedFormProps {
@@ -28,6 +34,7 @@ interface PracticeInformationFormProps extends NestedFormProps {
 }
 
 export function PracticeInformationForm(props: PracticeInformationFormProps) {
+  const streetApi = useStreetApi();
   const validateLength = useValidateLength();
   const validateNumber = useValidateNumber();
   const values =
@@ -79,7 +86,8 @@ export function PracticeInformationForm(props: PracticeInformationFormProps) {
           <Grid xxl={6} />
 
           <Grid xxs={6} xxl={4.5}>
-            <InputField
+            <StreetField
+              api={streetApi}
               name={fieldName("street")}
               label="Straße"
               required={requiredFieldMessage}
@@ -97,16 +105,23 @@ export function PracticeInformationForm(props: PracticeInformationFormProps) {
           <Grid xxl={6} />
 
           <Grid xxs={6} xxl={2}>
-            <InputField
-              name={fieldName("postalCode")}
+            <AddressAutoFillField
+              api={streetApi}
+              name="postalCode"
+              fieldName={fieldName}
               label="Postleitzahl"
               required={requiredFieldMessage}
-              validate={validateLength(1, 20)}
+              validate={validatePipe(
+                validateZipCode(ApiCountryCode.De),
+                validateLength(1, 20),
+              )}
             />
           </Grid>
           <Grid xxs={6} xxl={4}>
-            <InputField
-              name={fieldName("city")}
+            <AddressAutoFillField
+              api={streetApi}
+              name="city"
+              fieldName={fieldName}
               label="Ort"
               required={requiredFieldMessage}
               validate={validateLength(1, 50)}

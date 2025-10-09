@@ -8,6 +8,7 @@ import {
   AppointmentBlockApi,
   DeleteAppointmentBlockRequest,
   UpdateAppointmentBlockRequest,
+  ValidateUpdateAppointmentBlockRequest,
 } from "@eshg/school-entry-api";
 
 import { mapApiAppointmentBlock } from "@/lib/businessModules/schoolEntry/api/models/AppointmentBlockGroup";
@@ -24,6 +25,12 @@ export function mapAppointmentBlockApi(
     updateAppointmentBlock: async (
       requestParameters: UpdateAppointmentBlockRequest,
     ) => await appointmentBlockApi.updateAppointmentBlockRaw(requestParameters),
+    validateUpdateAppointmentBlock: async (
+      requestParameters: ValidateUpdateAppointmentBlockRequest,
+    ) =>
+      await appointmentBlockApi.validateUpdateAppointmentBlockRaw(
+        requestParameters,
+      ),
     deleteAppointmentBlock: async (
       requestParameters: DeleteAppointmentBlockRequest,
     ) => await appointmentBlockApi.deleteAppointmentBlockRaw(requestParameters),

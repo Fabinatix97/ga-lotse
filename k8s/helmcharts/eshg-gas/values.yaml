@@ -481,3 +481,5 @@ limitReqZone:
     limitRate: "5r/m"
   tmCitizenProcedure:
     limitRate: "1r/m"
+  baseStreets:
+    limitRate: "10r/m"

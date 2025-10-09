@@ -24,6 +24,7 @@ import { appointmentBlockApiQueryKey } from "@/lib/businessModules/measlesProtec
 import { useAppointmentBlockApi } from "@/lib/businessModules/officialMedicalService/api/clients";
 import { mapAppointmentBlockApi } from "@/lib/businessModules/officialMedicalService/api/mapAppointmentBlockApi";
 import { useGetAppointmentBlockGroupsQuery } from "@/lib/businessModules/officialMedicalService/api/queries/appointmentBlocksApi";
+import { useGetAllPhysiciansQuery } from "@/lib/businessModules/officialMedicalService/api/queries/appointmentStaffApi";
 import { useGetAppointmentStandardDurationQuery } from "@/lib/businessModules/officialMedicalService/api/queries/appointmentStandardDurationsApi";
 import { routes } from "@/lib/businessModules/officialMedicalService/shared/routes";
 
@@ -41,26 +42,31 @@ export function OMSAppointmentBlockGroupsTablePage(
     initialSorting: INITIAL_SORTING_APPOINTMENT_BLOCK_GROUPS,
   });
 
-  const [appointmentBlockGroups, { data: standardDurations }] =
-    useSuspenseQueries({
-      queries: [
-        useGetAppointmentBlockGroupsQuery({
-          pageNumber: tableControl.paginationProps.pageNumber,
-          pageSize: tableControl.paginationProps.pageSize,
-          sortKey: getSortKey<ApiAppointmentBlockSortKey>(
-            tableControl.tableSorting,
-          ),
-          sortDirection: getSortDirection(tableControl.tableSorting),
-        }),
-        useGetAppointmentStandardDurationQuery(),
-      ],
-    });
+  const [
+    appointmentBlockGroups,
+    { data: standardDurations },
+    { data: physicians },
+  ] = useSuspenseQueries({
+    queries: [
+      useGetAppointmentBlockGroupsQuery({
+        pageNumber: tableControl.paginationProps.pageNumber,
+        pageSize: tableControl.paginationProps.pageSize,
+        sortKey: getSortKey<ApiAppointmentBlockSortKey>(
+          tableControl.tableSorting,
+        ),
+        sortDirection: getSortDirection(tableControl.tableSorting),
+      }),
+      useGetAppointmentStandardDurationQuery(),
+      useGetAllPhysiciansQuery(),
+    ],
+  });
 
   const appointmentBlockApi = useAppointmentBlockApi();
   const columnHelper = createColumnHelper<AppointmentBlockRow>();
   const COLUMNS = useAppointmentBlockGroupsColumns({
     appointmentBlockApi: mapAppointmentBlockApi(appointmentBlockApi),
     appointmentBlockApiQueryKey,
+    physicians,
     standardDurations,
     columnHelper,
   });

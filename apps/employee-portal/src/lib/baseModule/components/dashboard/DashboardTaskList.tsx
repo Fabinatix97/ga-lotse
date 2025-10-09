@@ -28,6 +28,8 @@ export function DashboardTaskList() {
         flexDirection: "column",
         flex: 1,
       }}
+      role="region"
+      aria-labelledby="tasks-label"
     >
       <Stack spacing={3}>
         <Stack
@@ -35,7 +37,9 @@ export function DashboardTaskList() {
           justifyContent="space-between"
           alignItems="center"
         >
-          <Typography level="h3">Aufgaben</Typography>
+          <Typography level="h3" component="h2" id="tasks-label">
+            Aufgaben
+          </Typography>
           <Stack justifyContent="flex-end">
             <InternalLinkButton
               variant="plain"
@@ -46,7 +50,7 @@ export function DashboardTaskList() {
             </InternalLinkButton>
           </Stack>
         </Stack>
-        <Stack spacing={2}>
+        <Stack spacing={2} role="list">
           {tasks.map((task) => (
             <TaskBox key={task.taskId} task={task} />
           ))}

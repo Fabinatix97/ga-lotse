@@ -31,6 +31,8 @@ export { unwrapRawResponse } from "./api/unwrapRawResponse";
 export { useHandledBackgroundQuery } from "./api/useHandledBackgroundQuery";
 export { useHandledMutation } from "./api/useHandledMutation";
 
+export { StreetField } from "./components/address/StreetField";
+export { AddressAutoFillField } from "./components/address/AddressAutoFillField";
 export { Alert, type AlertProps } from "./components/Alert";
 export {
   BaseModal,

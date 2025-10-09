@@ -6,11 +6,15 @@
 import { Divider, Grid, Stack, Typography } from "@mui/joy";
 
 import {
+  AddressAutoFillField,
   EmailField,
   InputField,
   NestedFormProps,
+  StreetField,
   createFieldNameMapper,
 } from "@eshg/lib-portal";
+
+import { useStreetApi } from "@/lib/baseModule/api/clients";
 
 import { validatePostboxNumber } from "./validate";
 
@@ -40,12 +44,17 @@ export interface AddressValues {
 
 export function AddressForm(props: NestedFormProps) {
   const fieldName = createFieldNameMapper(props.name);
+  const streetApi = useStreetApi();
 
   return (
     <>
       <Stack direction="row" gap={2}>
         <Grid xs={8} padding={0}>
-          <InputField name={fieldName("street")} label="Straße" />
+          <StreetField
+            name={fieldName("street")}
+            label="Straße"
+            api={streetApi}
+          />
         </Grid>
         <Grid xs={4} padding={0}>
           <InputField name={fieldName("houseNumber")} label="Hausnummer" />
@@ -54,10 +63,20 @@ export function AddressForm(props: NestedFormProps) {
       <InputField name={fieldName("addressAddition")} label="Adresszusatz" />
       <Stack direction="row" gap={2}>
         <Grid xs={4} padding={0}>
-          <InputField name={fieldName("postalCode")} label="Postleitzahl" />
+          <AddressAutoFillField
+            name="postalCode"
+            fieldName={fieldName}
+            label="Postleitzahl"
+            api={streetApi}
+          />
         </Grid>
         <Grid xs={8} padding={0}>
-          <InputField name={fieldName("city")} label="Stadt" />
+          <AddressAutoFillField
+            name="city"
+            fieldName={fieldName}
+            label="Stadt"
+            api={streetApi}
+          />
         </Grid>
       </Stack>
       <InputField name={fieldName("country")} label="Land" />

@@ -21,6 +21,7 @@ import {
 } from "@eshg/lib-portal";
 
 import { AppointmentBlockApi } from "../../api/AppointmentBlockApi";
+import { User } from "../../api/models/User";
 import { useDeleteAppointmentBlock } from "../../api/mutations/appointmentBlock";
 import { useConfirmationDialog } from "../../hooks/useConfirmationDialog";
 import {
@@ -45,6 +46,10 @@ function toggleRowExpanded({
 export function useAppointmentBlockGroupsColumns({
   appointmentBlockApi,
   appointmentBlockApiQueryKey,
+  withTeam = true,
+  physicians,
+  mfas,
+  consultants,
   standardDurations,
   columnHelper,
   additionalColumn,
@@ -52,6 +57,10 @@ export function useAppointmentBlockGroupsColumns({
 }: {
   appointmentBlockApi: AppointmentBlockApi;
   appointmentBlockApiQueryKey: QueryKeyFactory;
+  withTeam?: boolean;
+  physicians?: User[];
+  mfas?: User[];
+  consultants?: User[];
   standardDurations: Partial<Record<ApiAppointmentType, number>>;
   columnHelper: ColumnHelper<AppointmentBlockRow>;
   additionalColumn?: ColumnDef<AppointmentBlockRow, string>;
@@ -221,6 +230,10 @@ export function useAppointmentBlockGroupsColumns({
                       appointmentBlockApi,
                       appointmentBlockApiQueryKey,
                       appointmentTypes: original.types,
+                      withTeam,
+                      physicians,
+                      mfas,
+                      consultants,
                       standardDurations,
                     });
                   },

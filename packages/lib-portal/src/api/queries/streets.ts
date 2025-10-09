@@ -5,20 +5,28 @@
 
 import { useQuery } from "@tanstack/react-query";
 
+import { PublicStreetApi, StreetApi } from "@eshg/base-api";
+
 import { streetApiQueryKey } from "../../config/apiQueryKeys";
-import { useApi } from "../../contexts/api";
+
+export type AnyStreetApi = PublicStreetApi | StreetApi;
+
+function isPublicApi(api: AnyStreetApi): api is PublicStreetApi {
+  return api instanceof PublicStreetApi;
+}
 
 export function useAutocompleteStreetQuery(
+  streetApi: AnyStreetApi,
   { street }: { street: string },
   { enabled }: { enabled: boolean },
 ) {
-  const { streetApi } = useApi();
-
   return useQuery({
     queryFn: async ({ signal }) => {
-      return await streetApi.autocompleteStreet(street, { signal });
+      return isPublicApi(streetApi)
+        ? await streetApi.publicAutocompleteStreet(street, { signal })
+        : await streetApi.autocompleteStreet(street, { signal });
     },
-    queryKey: streetApiQueryKey(["autocompleteStreet", street]),
+    queryKey: streetApiQueryKey(["autocompleteStreet", street, streetApi]),
     enabled,
     gcTime: 60000, // 1 minute cache
     staleTime: 60000,
@@ -26,19 +34,22 @@ export function useAutocompleteStreetQuery(
 }
 
 export function useGetPostalCodeAndCityForStreet(
+  streetApi: AnyStreetApi,
   { street, houseNumber }: { street?: string; houseNumber?: string },
   { enabled }: { enabled: boolean },
 ) {
-  const { streetApi } = useApi();
-
   return useQuery({
     queryFn: async ({ signal }) => {
       if (street) {
-        return await streetApi.getPostalCodeAndCityForStreet(
-          street,
-          houseNumber,
-          { signal },
-        );
+        return isPublicApi(streetApi)
+          ? await streetApi.publicGetPostalCodeAndCityForStreet(
+              street,
+              houseNumber,
+              { signal },
+            )
+          : await streetApi.getPostalCodeAndCityForStreet(street, houseNumber, {
+              signal,
+            });
       } else {
         return {
           city: null,
@@ -50,6 +61,7 @@ export function useGetPostalCodeAndCityForStreet(
       "getPostalCodeAndCityForStreet",
       street ?? "",
       houseNumber ?? "",
+      streetApi,
     ]),
     enabled,
     throwOnError: false,

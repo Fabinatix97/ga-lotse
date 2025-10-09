@@ -24,12 +24,17 @@ interface TableSheetProps extends RequiresChildren {
   invertTitleAndContentDomOrder?: boolean;
   footer?: ReactNode;
   "aria-label"?: string;
+  "aria-labelledby"?: string;
   role?: string;
 }
 
 export function TableSheet(props: TableSheetProps): ReactElement {
   return (
-    <StyledSheet role={props.role} aria-label={props["aria-label"]}>
+    <StyledSheet
+      role={props.role}
+      aria-label={props["aria-label"]}
+      aria-labelledby={props["aria-labelledby"]}
+    >
       <Stack
         flex={1}
         overflow="auto"

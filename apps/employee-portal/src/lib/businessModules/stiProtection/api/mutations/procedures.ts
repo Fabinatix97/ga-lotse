@@ -74,8 +74,8 @@ export function useCloseProcedure({
 }: MutationPassThrough<string, void> = {}) {
   const snackbar = useSnackbar();
   return useCloseProcedureMutation({
-    onSuccess(data, variables, context) {
-      onSuccess?.(data, variables, context);
+    onSuccess(data, variables, onMutateResult, context) {
+      onSuccess?.(data, variables, onMutateResult, context);
       snackbar.confirmation("Vorgang wird abgeschlossen");
     },
     onError,
@@ -101,8 +101,8 @@ export function useReopenProcedure({
 }: MutationPassThrough<string, void> = {}) {
   const snackbar = useSnackbar();
   return useReopenProcedureMutation({
-    onSuccess(data, variables, context) {
-      onSuccess?.(data, variables, context);
+    onSuccess(data, variables, onMutateResult, context) {
+      onSuccess?.(data, variables, onMutateResult, context);
       snackbar.confirmation("Vorgang wird wieder geöffnet");
     },
     onError,
@@ -171,8 +171,8 @@ export function useUpdatePersonDetails({
   onError,
 }: MutationPassThrough<UpdatePersonDetailsParams, void> = {}) {
   return useUpdatePersonDetailsMutation({
-    onSuccess(data, variables, context) {
-      onSuccess?.(data, variables, context);
+    onSuccess(data, variables, onMutateResult, context) {
+      onSuccess?.(data, variables, onMutateResult, context);
     },
     onError,
   });

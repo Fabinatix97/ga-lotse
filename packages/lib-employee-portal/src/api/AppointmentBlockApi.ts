@@ -25,11 +25,19 @@ export interface DeleteAppointmentBlockRequest {
   appointmentBlockId: string;
 }
 
+export interface ValidateAppointmentBlockGroupResponse {
+  userIdsWithEventConflicts: string[];
+  userIdsWithoutEventConflicts: string[];
+}
+
 export interface AppointmentBlockApi {
   getAppointmentBlock(appointmentBlockId: string): Promise<AppointmentBlock>;
   updateAppointmentBlock(
     requestParameters: UpdateAppointmentBlockRequest,
   ): Promise<ApiResponse<AppointmentBlock>>;
+  validateUpdateAppointmentBlock(
+    requestParameters: UpdateAppointmentBlockRequest,
+  ): Promise<ApiResponse<ValidateAppointmentBlockGroupResponse>>;
   deleteAppointmentBlock(
     requestParameters: DeleteAppointmentBlockRequest,
   ): Promise<ApiResponse<void>>;

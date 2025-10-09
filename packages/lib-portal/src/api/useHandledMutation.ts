@@ -84,7 +84,8 @@ function runBefore<const TParams extends unknown[]>(
   handler: ((...params: TParams) => unknown) | undefined,
   beforeHandler: (...params: TParams) => unknown,
 ) {
-  return (...params: TParams): undefined => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  return (...params: TParams): any => {
     beforeHandler(...params);
     if (handler !== undefined) {
       handler(...params);

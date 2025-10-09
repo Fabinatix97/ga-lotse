@@ -4760,6 +4760,70 @@
         "tags" : [ "PublicDepartment" ]
       }
     },
+    "/public/streets/autocomplete" : {
+      "get" : {
+        "operationId" : "publicAutocompleteStreet",
+        "parameters" : [ {
+          "description" : "The case-insensitive street name prefix to autocomplete",
+          "example" : "Breite ga",
+          "in" : "query",
+          "name" : "streetNamePrefix",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/AutocompleteStreetResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "PublicStreet" ]
+      }
+    },
+    "/public/streets/postal-code-and-city" : {
+      "get" : {
+        "operationId" : "publicGetPostalCodeAndCityForStreet",
+        "parameters" : [ {
+          "description" : "The case-insensitive street name prefix of the street",
+          "example" : "Breite ga",
+          "in" : "query",
+          "name" : "streetNamePrefix",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "in" : "query",
+          "name" : "houseNumber",
+          "required" : false,
+          "schema" : {
+            "pattern" : "^(\\d+)([ a-zA-Z]*)$|",
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/PostalCodeAndCityResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "PublicStreet" ]
+      }
+    },
     "/recent-procedures" : {
       "get" : {
         "operationId" : "aggregateSelfRecentProcedures",

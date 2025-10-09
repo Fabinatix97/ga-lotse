@@ -13,11 +13,13 @@ import { isNonNullish } from "remeda";
 
 import { ApiCountryCode } from "@eshg/base-api";
 import {
+  AddressAutoFillField,
   FormAddMoreButton,
   InputField,
   NestedFormProps,
   SelectField,
   SelectOption,
+  StreetField,
   createFieldNameMapper,
   useValidateLength,
   validatePipe,
@@ -25,10 +27,9 @@ import {
 } from "@eshg/lib-portal";
 
 import { BaseAddressType } from "../../api/models/address";
+import { useApi } from "../../contexts/api";
 import { CountryField } from "../formFields/CountryField";
 
-import { AddressAutoFillField } from "./AddressAutoFillField";
-import { StreetField } from "./StreetField";
 import { createEmptyAddress } from "./helpers";
 
 export interface BaseAddressFormInputs {
@@ -204,6 +205,7 @@ function CommonAddressFields({
   fieldName: (key: keyof BaseAddressFormInputs) => string;
   ref?: (el: HTMLElement) => void;
 }) {
+  const { streetApi } = useApi();
   const validateLength = useValidateLength();
   const ctx = useFormikContext<BaseAddressFormInputs>();
 
@@ -228,6 +230,7 @@ function CommonAddressFields({
         <>
           <Grid xxs={12} xs={9}>
             <StreetField
+              api={streetApi}
               name={fieldName("street")}
               label="Straße"
               required="Bitte eine Straße angeben"
@@ -264,6 +267,7 @@ function CommonAddressFields({
       )}
       <Grid xxs={12} xs={4}>
         <AddressAutoFillField
+          api={streetApi}
           fieldName={fieldName}
           name="postalCode"
           label="Postleitzahl"
@@ -276,6 +280,7 @@ function CommonAddressFields({
       </Grid>
       <Grid xxs={12} xs={8}>
         <AddressAutoFillField
+          api={streetApi}
           fieldName={fieldName}
           name="city"
           label="Ort"

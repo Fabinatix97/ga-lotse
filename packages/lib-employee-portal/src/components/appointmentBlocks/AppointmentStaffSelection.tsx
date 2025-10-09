@@ -12,6 +12,7 @@ import {
 } from "@tanstack/react-query";
 import { useFormikContext } from "formik";
 import { useState } from "react";
+import { isEmpty } from "remeda";
 
 import { useSnackbar } from "@eshg/lib-portal";
 
@@ -67,7 +68,7 @@ export function AppointmentStaffSelection(
       );
       return;
     }
-    if (props.physicianRequired && staffSelection.physicians?.length === 0) {
+    if (props.physicianRequired && isEmpty(staffSelection.physicians ?? [])) {
       snackbar.notification(props.physicianRequired);
       return;
     }

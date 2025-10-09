@@ -3,22 +3,20 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { Grid, Stack, Typography } from "@mui/joy";
-import { Formik } from "formik";
+import { Formik, FormikErrors } from "formik";
 import { Ref } from "react";
-import { isDefined, unique } from "remeda";
+import { isDefined, isEmpty } from "remeda";
+
+import { QueryKeyFactory } from "@eshg/lib-portal";
 
 import {
-  NumberField,
-  OptionalFieldValue,
-  QueryKeyFactory,
-} from "@eshg/lib-portal";
-
-import { AppointmentBlockApi } from "../../api/AppointmentBlockApi";
+  AppointmentBlockApi,
+  UpdateAppointmentBlockRequest,
+} from "../../api/AppointmentBlockApi";
+import { User } from "../../api/models/User";
 import { useUpdateAppointmentBlock } from "../../api/mutations/appointmentBlock";
 import { useGetAppointmentBlock } from "../../api/queries/appointmentBlock";
 import { SidebarActions } from "../../features/drawer/components/SidebarActions";
-import { SidebarContent } from "../../features/drawer/components/SidebarContent";
 import { SidebarForm } from "../../features/drawer/components/SidebarForm";
 import {
   SidebarWithFormRefProps,
@@ -29,20 +27,12 @@ import { SidebarFormHandle } from "../../features/drawer/types/sidebar";
 import {
   formatDateInput,
   formatTimeInput,
-  isAfterTime,
-  isBeforeTime,
-  parseTime,
   toLocalDateTime,
 } from "../../utils/dateTime";
 import { FormButtonBar } from "../form/FormButtonBar";
-import { TimeField } from "../formFields/TimeField";
 
 import { AppointmentBlock } from "./AppointmentBlockGroup";
-import {
-  calculateAppointmentsPerBlock,
-  getAppointmentDurationInMinutes,
-} from "./calculateAppointmentCount";
-import { calculateMaxParallelBookings } from "./calculateMaxParallelBookings";
+import { UpdateAppointmentBlockSidebarContent } from "./UpdateAppointmentBlockSidebarContent";
 import { ApiAppointmentType } from "./types";
 
 export function useUpdateAppointmentBlockSidebar(): UseSidebarWithFormRefResult<UpdateAppointmentBlockProps> {
@@ -52,6 +42,10 @@ export function useUpdateAppointmentBlockSidebar(): UseSidebarWithFormRefResult<
 interface UpdateAppointmentBlockProps extends SidebarWithFormRefProps {
   appointmentBlockId: string;
   appointmentTypes: ApiAppointmentType[];
+  withTeam: boolean;
+  physicians?: User[];
+  mfas?: User[];
+  consultants?: User[];
   formRef: Ref<SidebarFormHandle>;
   appointmentBlockApi: AppointmentBlockApi;
   appointmentBlockApiQueryKey: QueryKeyFactory;
@@ -62,11 +56,12 @@ export interface UpdateAppointmentBlockValues {
   startTime: string;
   endTime: string;
   parallelExaminations?: number;
+  physicians?: string[];
+  mfas?: string[];
+  consultants?: string[];
 }
 
-export function UpdateAppointmentBlockSidebar(
-  props: UpdateAppointmentBlockProps,
-) {
+function UpdateAppointmentBlockSidebar(props: UpdateAppointmentBlockProps) {
   const { appointmentBlockApi, appointmentBlockId } = props;
   const { data: appointmentBlock } = useGetAppointmentBlock(
     appointmentBlockId,
@@ -77,80 +72,70 @@ export function UpdateAppointmentBlockSidebar(
   const updateMutations = useUpdateAppointmentBlock(appointmentBlockApi);
 
   async function handleUpdate(values: UpdateAppointmentBlockValues) {
-    await updateMutations.mutateAsync({
-      appointmentBlockId: appointmentBlock.id,
-      apiUpdateAppointmentBlockRequest: {
-        start: toLocalDateTime(
-          formatDateInput(appointmentBlock.start),
-          values.startTime,
-        ),
-        end: toLocalDateTime(
-          formatDateInput(appointmentBlock.end),
-          values.endTime,
-        ),
-        parallelExaminations: values.parallelExaminations ?? 1,
-        mfas: appointmentBlock.mfas ?? [],
-        physicians: appointmentBlock.physicians ?? [],
-        consultants: appointmentBlock.consultants ?? [],
-      },
-    });
+    await updateMutations.mutateAsync(
+      mapFormValuesToApiValues(appointmentBlock, values),
+    );
 
     props.onClose(true);
   }
+
+  function handleValidate(values: UpdateAppointmentBlockValues) {
+    if (!props.withTeam) {
+      return;
+    }
+    const errors: FormikErrors<UpdateAppointmentBlockValues> = {};
+    const missing: string[] = [];
+    const physiciansEmpty = isEmpty(values.physicians ?? []);
+    const mfasEmpty = isEmpty(values.mfas ?? []);
+    const consultantsEmpty = isEmpty(values.consultants ?? []);
+
+    if (isDefined(props.physicians) && physiciansEmpty) {
+      missing.push("einen Arzt/eine Ärztin");
+    }
+    if (isDefined(props.mfas) && mfasEmpty) {
+      missing.push("ein:e MFA");
+    }
+    if (isDefined(props.consultants) && consultantsEmpty) {
+      missing.push("ein:e Berater:in");
+    }
+
+    if (physiciansEmpty && mfasEmpty && consultantsEmpty) {
+      const msg = `Es muss mindestens ${missing.join(" oder ")} ausgewählt sein.`;
+      errors.physicians = msg;
+      errors.mfas = msg;
+      errors.consultants = msg;
+    }
+
+    return errors;
+  }
+
   return (
     <Formik
       initialValues={{
         startTime: formatTimeInput(appointmentBlock.start),
         endTime: formatTimeInput(appointmentBlock.end),
         parallelExaminations: appointmentBlock.parallelExaminations,
+        mfas: appointmentBlock.mfas,
+        physicians: appointmentBlock.physicians,
+        consultants: appointmentBlock.consultants,
       }}
+      validate={handleValidate}
       onSubmit={handleUpdate}
     >
       {({ values, isSubmitting }) => (
         <SidebarForm ref={props.formRef}>
-          <SidebarContent title="Terminblock bearbeiten">
-            <Stack gap={2}>
-              <Typography level="title-md">Termin:</Typography>
-              <Grid container spacing={2}>
-                <Grid xxs>
-                  <TimeField
-                    name="startTime"
-                    label="Startzeit"
-                    required="Bitte eine Startzeit angeben."
-                    validate={(value) =>
-                      validateAppointmentStartTime(value, appointmentBlock)
-                    }
-                  />
-                </Grid>
-                <Grid xxs>
-                  <TimeField
-                    name="endTime"
-                    label="Endzeit"
-                    required="Bitte eine Endzeit angeben."
-                    validate={(value) =>
-                      validateAppointmentEndTime(
-                        value,
-                        values.startTime,
-                        appointmentBlock,
-                        props.appointmentTypes,
-                        props.standardDurations,
-                      )
-                    }
-                  />
-                </Grid>
-              </Grid>
-              {isDefined(appointmentBlock.parallelExaminations) && (
-                <NumberField
-                  name="parallelExaminations"
-                  label="Parallele Untersuchungen"
-                  required="Bitte die Anzahl paralleler Untersuchungen angeben."
-                  validate={(value) =>
-                    validateParallelExaminations(value, appointmentBlock)
-                  }
-                />
-              )}
-            </Stack>
-          </SidebarContent>
+          <UpdateAppointmentBlockSidebarContent
+            formValues={values}
+            appointmentBlock={appointmentBlock}
+            appointmentTypes={props.appointmentTypes}
+            withTeam={props.withTeam}
+            physicians={props.physicians}
+            mfas={props.mfas}
+            consultants={props.consultants}
+            appointmentBlockApi={props.appointmentBlockApi}
+            appointmentBlockApiQueryKey={props.appointmentBlockApiQueryKey}
+            standardDurations={props.standardDurations}
+          />
           <SidebarActions>
             <FormButtonBar
               submitLabel="Speichern"
@@ -164,98 +149,25 @@ export function UpdateAppointmentBlockSidebar(
   );
 }
 
-function validateAppointmentStartTime(
-  value: string,
+export function mapFormValuesToApiValues(
   appointmentBlock: AppointmentBlock,
-) {
-  if (isBeforeTime(value, formatTimeInput(appointmentBlock.start))) {
-    return "Die Startzeit muss im Terminblock liegen.";
-  }
-  const bookedAppointments = appointmentBlock.bookedAppointments;
-  if (isDefined(bookedAppointments) && bookedAppointments.length > 0) {
-    const earliestBookedAppointment = bookedAppointments.toSorted(
-      (a, b) => a.start.getTime() - b.start.getTime(),
-    )[0];
-
-    if (isAfterTime(value, formatTimeInput(earliestBookedAppointment!.start))) {
-      return "Es sind bereits Termine vor dieser Zeit gebucht.";
-    }
-  }
-  return undefined;
-}
-
-function validateAppointmentEndTime(
-  value: string,
-  startTime: string,
-  appointmentBlock: AppointmentBlock,
-  types: ApiAppointmentType[],
-  standardDurations: Partial<Record<ApiAppointmentType, number>>,
-) {
-  if (!isAfterTime(value, startTime)) {
-    return "Die Endzeit muss nach der Startzeit liegen.";
-  }
-
-  if (isAfterTime(value, formatTimeInput(appointmentBlock.end))) {
-    return "Die Endzeit muss im Terminblock liegen.";
-  }
-
-  const bookedAppointments = appointmentBlock.bookedAppointments;
-  if (isDefined(bookedAppointments) && bookedAppointments.length > 0) {
-    const latestBookedAppointment = bookedAppointments.toSorted(
-      (a, b) => b.end.getTime() - a.end.getTime(),
-    )[0];
-
-    if (isBeforeTime(value, formatTimeInput(latestBookedAppointment!.end))) {
-      return "Es sind bereits Termine nach dieser Zeit gebucht.";
-    }
-  }
-
-  if (
-    types.every(
-      (type) =>
-        calculateAppointmentsPerBlock(
-          type,
-          parseTime(startTime, appointmentBlock.start),
-          parseTime(value, appointmentBlock.end),
-          standardDurations,
-        ) === 0,
-    )
-  ) {
-    const appointmentDurationInMinutes =
-      unique(
-        types.map((type) =>
-          getAppointmentDurationInMinutes(type, standardDurations),
-        ),
-      ).join(", ") + " Minuten";
-    return `Die Dauer ist nicht teilbar durch die Terminlängen: ${appointmentDurationInMinutes}.`;
-  }
-  return undefined;
-}
-
-function validateParallelExaminations(
-  value: OptionalFieldValue<number>,
-  appointmentBlock: AppointmentBlock,
-) {
-  if (typeof value !== "number") {
-    return "Bitte die Anzahl paralleler Untersuchungen angeben.";
-  }
-  if (value < 1) {
-    return "Die Anzahl der parallelen Untersuchungen muss mindestens 1 betragen.";
-  }
-  if (value > 10) {
-    return "Die Anzahl der parallelen Untersuchungen darf höchstens 10 betragen.";
-  }
-  if (value > appointmentBlock.parallelExaminations!) {
-    return "Die Anzahl der parallelen Untersuchungen kann nicht erhöht werden.";
-  }
-
-  if (isDefined(appointmentBlock.bookedAppointments)) {
-    const maxParallelBookings = calculateMaxParallelBookings(
-      appointmentBlock.bookedAppointments,
-    );
-    if (value < maxParallelBookings) {
-      return `Die Anzahl der parallelen Untersuchungen muss mindestens gleich der maximalen Anzahl der gleichzeitig gebuchten Termine (${maxParallelBookings}) sein.`;
-    }
-  }
-  return undefined;
+  values: UpdateAppointmentBlockValues,
+): UpdateAppointmentBlockRequest {
+  return {
+    appointmentBlockId: appointmentBlock.id,
+    apiUpdateAppointmentBlockRequest: {
+      start: toLocalDateTime(
+        formatDateInput(appointmentBlock.start),
+        values.startTime,
+      ),
+      end: toLocalDateTime(
+        formatDateInput(appointmentBlock.end),
+        values.endTime,
+      ),
+      parallelExaminations: values.parallelExaminations ?? 1,
+      mfas: values.mfas ?? [],
+      physicians: values.physicians ?? [],
+      consultants: values.consultants ?? [],
+    },
+  };
 }

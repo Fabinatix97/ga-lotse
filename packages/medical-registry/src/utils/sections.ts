@@ -53,7 +53,7 @@ export function shouldEnableSection(
   typeOfChange: ApiTypeOfChange | "",
 ): boolean {
   if (typeOfChange === "") {
-    return true;
+    return false;
   }
   return sectionEnabled[section].includes(typeOfChange);
 }

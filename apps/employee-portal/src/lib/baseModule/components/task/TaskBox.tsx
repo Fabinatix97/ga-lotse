@@ -5,11 +5,12 @@
 
 "use client";
 
-import { Chip, Sheet, Stack, Typography } from "@mui/joy";
+import { Box, Chip, Sheet, Stack, Typography } from "@mui/joy";
+import { visuallyHidden } from "@mui/utils";
 import { isDefined } from "remeda";
 
 import { ApiTask } from "@eshg/base-api";
-import { NavigationLink } from "@eshg/lib-portal";
+import { DetailsList, NavigationLink } from "@eshg/lib-portal";
 
 import { OverdueTaskIcon } from "@/lib/baseModule/components/task/OverdueTaskIcon";
 import { resolveProcedureDetailsRoute } from "@/lib/baseModule/moduleRegister/routeResolver";
@@ -22,14 +23,10 @@ import {
 export function TaskBox({ task }: { task: ApiTask }) {
   return (
     <Sheet
-      href={resolveProcedureDetailsRoute({
-        businessModule: task.businessModule,
-        procedureId: task.procedureId,
-      })}
-      component={NavigationLink}
       variant="outlined"
       data-testid="taskbox"
       sx={{
+        position: "relative",
         textDecoration: "none",
         padding: 3,
         borderRadius: "lg",
@@ -42,62 +39,105 @@ export function TaskBox({ task }: { task: ApiTask }) {
           backgroundColor: theme.palette.neutral.plainHoverBg,
         },
       }}
+      role="listitem"
     >
-      <Stack
-        spacing={2}
-        direction="row"
-        justifyContent="space-between"
-        alignContent="center"
-      >
-        <Typography
-          level="title-md"
-          startDecorator={task.isOverdue && <OverdueTaskIcon />}
+      <Box
+        aria-label={`Aufgabe öffnen: ${task.summary}`}
+        href={resolveProcedureDetailsRoute({
+          businessModule: task.businessModule,
+          procedureId: task.procedureId,
+        })}
+        component={NavigationLink}
+        sx={{
+          position: "absolute",
+          width: "100%",
+          height: "100%",
+        }}
+      />
+      <DetailsList>
+        <Stack
+          spacing={2}
+          direction="row"
+          justifyContent="space-between"
+          alignContent="center"
         >
-          {task.summary}
-        </Typography>
-      </Stack>
-      <Typography level="body-md">
-        Fachmodul: {businessModuleNames[task.businessModule]}
-      </Typography>
-      <Typography level="body-md">
-        Typ: {taskTypeNames[task.taskType]}
-      </Typography>
-      <Stack
-        spacing={2}
-        direction="row"
-        justifyContent="space-between"
-        flexWrap="wrap"
-        paddingTop={1}
-      >
-        <Stack spacing={2} direction="row" flexWrap="wrap">
-          <Chip>
-            {task.createdAt.toLocaleString("de-DE", {
-              dateStyle: "short",
-            })}
-          </Chip>
-          <Chip>
-            {task.createdAt.toLocaleTimeString("de-DE", {
-              hour: "2-digit",
-              minute: "2-digit",
-            })}{" "}
-            Uhr
-          </Chip>
-          <Chip color={task.taskStatus === "OPEN" ? "warning" : "primary"}>
-            {task.taskStatus === "OPEN" ? "Offen" : "Geschlossen"}
-          </Chip>
-        </Stack>
-        {isDefined(task.dueAt) && (
+          <Box component="dt" sx={visuallyHidden}>
+            Zusammenfassung
+          </Box>
           <Typography
-            level="body-md"
-            color={task.isOverdue ? "danger" : undefined}
+            level="title-md"
+            startDecorator={task.isOverdue && <OverdueTaskIcon />}
+            component="dd"
           >
-            Frist:{" "}
-            {task.dueAt.toLocaleString("de-DE", {
-              dateStyle: "short",
-            })}
+            {task.summary}
           </Typography>
-        )}
-      </Stack>
+        </Stack>
+        <Stack direction="row" gap={0.5}>
+          <Typography level="body-md" component="dt">
+            Fachmodul:
+          </Typography>
+          <Typography level="body-md" component="dd">
+            {businessModuleNames[task.businessModule]}
+          </Typography>
+        </Stack>
+        <Stack direction="row" gap={0.5}>
+          <Typography level="body-md" component="dt">
+            Typ:
+          </Typography>
+          <Typography level="body-md" component="dd">
+            {taskTypeNames[task.taskType]}
+          </Typography>
+        </Stack>
+        <Stack
+          spacing={2}
+          direction="row"
+          justifyContent="space-between"
+          flexWrap="wrap"
+          paddingTop={1}
+        >
+          <Stack spacing={2} direction="row" flexWrap="wrap">
+            <Box sx={visuallyHidden} component="dt">
+              Datum
+            </Box>
+            <Chip role="definition">
+              {task.createdAt.toLocaleString("de-DE", {
+                dateStyle: "short",
+              })}
+            </Chip>
+            <Box sx={visuallyHidden} component="dt">
+              Uhrzeit
+            </Box>
+            <Chip role="definition">
+              {task.createdAt.toLocaleTimeString("de-DE", {
+                hour: "2-digit",
+                minute: "2-digit",
+              })}{" "}
+              Uhr
+            </Chip>
+            <Box sx={visuallyHidden} component="dt">
+              Status
+            </Box>
+            <Chip
+              color={task.taskStatus === "OPEN" ? "warning" : "primary"}
+              role="definition"
+            >
+              {task.taskStatus === "OPEN" ? "Offen" : "Geschlossen"}
+            </Chip>
+          </Stack>
+          {isDefined(task.dueAt) && (
+            <Stack direction="row" gap={0.5}>
+              <Typography level="body-md" component="dt">
+                Frist:
+              </Typography>
+              <Typography level="body-md" component="dd">
+                {task.dueAt.toLocaleString("de-DE", {
+                  dateStyle: "short",
+                })}
+              </Typography>
+            </Stack>
+          )}
+        </Stack>
+      </DetailsList>
     </Sheet>
   );
 }

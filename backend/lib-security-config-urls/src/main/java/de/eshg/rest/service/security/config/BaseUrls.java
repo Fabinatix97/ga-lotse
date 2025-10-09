@@ -52,6 +52,7 @@ public final class BaseUrls {
         CALENDAR_EVENT_API_EVENT_URL + "/base_event";
     public static final String NOTIFICATION_API_BASE_URL = "/notification-aggregation";
     public static final String LABEL_API = "/labels";
+    public static final String PUBLIC_STREET_API = "/public/streets";
     public static final String STREET_API = "/streets";
     public static final String PERSON_API = "/persons";
     public static final String PERSON_FILE_STATE_URL = "/centralfilestates";

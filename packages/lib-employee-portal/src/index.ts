@@ -77,10 +77,12 @@ export {
   ApiDayOfWeek,
 } from "./components/appointmentBlocks/types";
 export { APPOINTMENT_TYPES } from "./components/appointmentBlocks/translations";
+export { validateAppointmentBlock } from "./components/appointmentBlocks/validateAppointmentBlock";
+export { UpdateAppointmentBlockSidebarContent } from "./components/appointmentBlocks/UpdateAppointmentBlockSidebarContent";
 export {
-  validateAppointmentBlock,
-  type ExaminationDurations,
-} from "./components/appointmentBlocks/validateAppointmentBlock";
+  mapFormValuesToApiValues,
+  type UpdateAppointmentBlockValues,
+} from "./components/appointmentBlocks/UpdateAppointmentBlockSidebar";
 export { EmployeePortalErrorModal } from "./components/boundaries/EmployeePortalErrorModal";
 export { OverlayBoundary } from "./components/boundaries/OverlayBoundary";
 export {
