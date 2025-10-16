@@ -5,10 +5,18 @@
 
 "use client";
 
+import { NextGenerationEULogo } from "@eshg/lib-portal";
+
 import { useGetEmployeePortalMarkdown } from "@/lib/baseModule/api/queries/department";
 import { MarkdownPage } from "@/lib/baseModule/components/markdown/MarkdownPage";
 
 export default function AcknowledgementsPage() {
   const source = useGetEmployeePortalMarkdown("ACKNOWLEDGEMENTS");
-  return <MarkdownPage title="Danksagung" source={source.data} />;
+  return (
+    <MarkdownPage
+      title="Danksagung"
+      source={source.data}
+      footer={<NextGenerationEULogo />}
+    />
+  );
 }

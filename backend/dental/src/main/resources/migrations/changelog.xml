@@ -63,6 +63,7 @@
   <include file="migrations/0053_add_child_age_to_screening_examination_result.xml"/>
   <include file="migrations/0054_add_black_stain_flag.xml"/>
   <include file="migrations/0055_add_gdpr_identification_data_hash.xml"/>
+  <include file="migrations/0056_add_gdpr_identification_hash_not_null_constraint.xml"/>
 
 
 </databaseChangeLog>

@@ -20,7 +20,7 @@ public class GdprDownloadPackage extends BaseEntityWithExternalId {
   private UUID businessProcedureId;
 
   @DataSensitivity(SensitivityLevel.PSEUDONYMIZED)
-  @Column(nullable = true)
+  @Column(nullable = false)
   private String identificationDataHash;
 
   @DataSensitivity(SensitivityLevel.HIGHLY_SENSITIVE)

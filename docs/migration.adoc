@@ -7,6 +7,10 @@ Versions that do not require any manual action are omitted for brevity.
 
 == Version History
 
+=== v2.8.1 / v2.8.2
+
+- v2.8.1 improved security checks concerning GDPR data information request download packages. This requires a database migration for existing download packages, the migration is done automatically by GA Lotse. However, the migration code path is removed with v2.8.2. Therefore, v2.8.1 needs to be deployed and up and running (at least for 20 - 30 minutes) for the migration to happen. If the migration was successful, `No packages without identification_data_hash found` or `Finished identification_data_hash migration` should appear in the log of all business modules. If no download packages exist, skipping the version / migration is fine. Skipping the migration with existing packages (only) results in "dead download links".
+
 === v1.10.2
 
 - Manual action is required **during the deployment** for all environments. The release introduces the svg-sanitizer module. It's actor must be

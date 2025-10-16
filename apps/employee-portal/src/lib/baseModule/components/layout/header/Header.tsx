@@ -8,6 +8,7 @@ import MenuIcon from "@mui/icons-material/Menu";
 import { Box, Typography } from "@mui/joy";
 
 import {
+  OfflineIndicator,
   useIsOffline,
   useLayoutConfig,
   useSidenavDrawer,
@@ -44,6 +45,7 @@ export function Header() {
       zIndex="header"
     >
       <EnvironmentIndicator />
+      <OfflineIndicator />
       <Box
         display="flex"
         sx={{
@@ -91,13 +93,7 @@ export function Header() {
         >
           GA-Lotse
         </Typography>
-        {isOffline ? (
-          <Typography level="h3" component="p" textColor="background.body">
-            Offline
-          </Typography>
-        ) : (
-          <HeaderButtons />
-        )}
+        {!isOffline && <HeaderButtons />}
       </Box>
     </Box>
   );

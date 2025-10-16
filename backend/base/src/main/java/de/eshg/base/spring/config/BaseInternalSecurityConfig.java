@@ -194,10 +194,5 @@ public class BaseInternalSecurityConfig {
 
     auth.requestMatchers(POST, GdprProcedureApi.BASE_URL + DELETE_DOWNLOADS)
         .hasRole(EmployeePermissionRole.BASE_GDPR_PROCEDURE_REVIEW.name());
-
-    auth.requestMatchers(
-            GET,
-            GdprProcedureApi.BASE_URL + GdprProcedureApi.DOWNLOAD_PACKAGE_IDENTIFICATION_DATA_HASH)
-        .hasRole(EmployeePermissionRole.BUSINESS_MODULE_READ_GDPR_PACKAGE_IDENTIFICATION.name());
   }
 }

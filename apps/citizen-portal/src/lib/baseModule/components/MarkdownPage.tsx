@@ -4,6 +4,7 @@
  */
 
 import { Typography } from "@mui/joy";
+import { JSX } from "react";
 
 import { Markdown, defaultComponents } from "@eshg/lib-portal";
 
@@ -26,13 +27,15 @@ const components: typeof defaultComponents = {
 export function MarkdownPage({
   title,
   source,
+  footer,
 }: {
   title: string;
   source: string;
+  footer?: JSX.Element;
 }) {
   return (
     <TitleAndSheetContentLayout pageTitle={title}>
-      <Markdown components={components} source={source} />
+      <Markdown components={components} source={source} footer={footer} />
     </TitleAndSheetContentLayout>
   );
 }

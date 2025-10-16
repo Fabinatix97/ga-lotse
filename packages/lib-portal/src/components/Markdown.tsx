@@ -4,6 +4,7 @@
  */
 
 import { List, ListItem, Typography } from "@mui/joy";
+import { JSX } from "react";
 import ReactMarkdown, { Components } from "react-markdown";
 
 import { ExternalLink } from "./navigation/externalLinks";
@@ -52,16 +53,21 @@ const allowedElements = [
 export function Markdown({
   components,
   source,
+  footer,
 }: {
   components?: Components;
   source: string;
+  footer?: JSX.Element;
 }) {
   return (
     // Please note that this component is used to render markdown content on the client side.
     // It is important to carefully configure this component to keep things secure.
-    // Please double check any changes and contact the security team if in doubt.
-    <ReactMarkdown components={components} allowedElements={allowedElements}>
-      {source}
-    </ReactMarkdown>
+    // Please double-check any changes and contact the security team if in doubt.
+    <>
+      <ReactMarkdown components={components} allowedElements={allowedElements}>
+        {source}
+      </ReactMarkdown>
+      {footer}
+    </>
   );
 }

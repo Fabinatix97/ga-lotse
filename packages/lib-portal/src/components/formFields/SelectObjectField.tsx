@@ -51,6 +51,7 @@ export interface SelectObjectFieldProps<
   ) => ReactNode;
   sx?: SxProps;
   endDecorator?: ReactNode;
+  isOptionEqualToValue?: (option: TValue, value: TValue) => boolean;
 }
 
 export function SelectObjectField<
@@ -76,6 +77,7 @@ export function SelectObjectField<
         options={props.options}
         getOptionLabel={props.getOptionLabel}
         getOptionKey={props.getOptionKey ?? props.getOptionLabel}
+        isOptionEqualToValue={props.isOptionEqualToValue}
         filterOptions={props.disableFiltering ? identity() : undefined}
         multiple={props.multiple}
         placeholder={props.placeholder}

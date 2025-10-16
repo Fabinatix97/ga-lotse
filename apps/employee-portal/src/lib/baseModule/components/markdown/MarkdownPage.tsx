@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { JSX } from "react";
+
 import {
   MainContentLayout,
   StickyToolbarLayout,
@@ -15,15 +17,21 @@ import { StaticTextDocumentPanel } from "@/lib/baseModule/components/StaticTextD
 export function MarkdownPage({
   title,
   source,
+  footer,
 }: {
   title: string;
   source: string;
+  footer?: JSX.Element;
 }) {
   return (
     <StickyToolbarLayout toolbar={<Toolbar title={title} />}>
       <MainContentLayout>
         <StaticTextDocumentPanel>
-          <Markdown components={defaultComponents} source={source} />
+          <Markdown
+            components={defaultComponents}
+            source={source}
+            footer={footer}
+          />
         </StaticTextDocumentPanel>
       </MainContentLayout>
     </StickyToolbarLayout>

@@ -8,8 +8,9 @@ import { FormikProvider, useFormik } from "formik";
 import { ReactNode, useEffect } from "react";
 import { isDefined } from "remeda";
 
-import { ApiContactCategory } from "@eshg/base-api";
+import { ApiContactCategory, ApiLabel } from "@eshg/base-api";
 import {
+  APPOINTMENT_TYPES,
   FormButtonBar,
   ProcedureLabel,
   ProcedureLabelSelection,
@@ -211,6 +212,25 @@ function isAdHocAppointmentForbidden(
   );
 }
 
+function isSameAppointment(
+  appointment1: Appointment | undefined,
+  appointment2: Appointment | undefined,
+) {
+  return (
+    appointment1?.start?.getTime() === appointment2?.start?.getTime() &&
+    appointment1?.end?.getTime() === appointment2?.end?.getTime()
+  );
+}
+
+function containsSpecialNeedsLabel(labels: ApiLabel[]): boolean {
+  return (
+    labels.find(
+      (procedureLabel) =>
+        procedureLabel.name === APPOINTMENT_TYPES.SPECIAL_NEEDS,
+    ) !== undefined
+  );
+}
+
 function UpdateProcedureSidebar(props: UpdateProcedureSidebarProps) {
   const validatePastOrTodayDate = useValidatePastOrTodayDate();
   const labelApi = useLabelApi();
@@ -275,6 +295,18 @@ function UpdateProcedureSidebar(props: UpdateProcedureSidebarProps) {
             <ProcedureLabelSelection
               procedureLabelApi={labelApi}
               procedureLabelApiQueryKey={schoolEntryApiQueryKey}
+              onChange={(labels) => {
+                if (
+                  containsSpecialNeedsLabel(labels) !==
+                    containsSpecialNeedsLabel(values.procedureLabels) &&
+                  !isSameAppointment(
+                    values.appointment as Appointment,
+                    procedure.appointment,
+                  )
+                ) {
+                  void setFieldValue("appointment", null);
+                }
+              }}
             />
             <Divider />
             <SelectContactField
@@ -310,11 +342,18 @@ function UpdateProcedureSidebar(props: UpdateProcedureSidebarProps) {
                     getOptionLabel={getAppointmentLabel}
                     loading={getFreeAppointments.isFetching}
                     disabled={hasNoFreeAppointments || isMissingChildAddress}
+                    validate={(value) =>
+                      procedure.schoolInfoLetterCreatedAt !== undefined &&
+                      value === null
+                        ? "Der Termin darf nicht mehr gelöscht werden."
+                        : undefined
+                    }
                     placeholder={
                       hasNoFreeAppointments
                         ? "Keine freien Termine verfügbar."
                         : undefined
                     }
+                    isOptionEqualToValue={isSameAppointment}
                     onValueChanged={resetIsInvitationSent}
                   />
                 </Box>

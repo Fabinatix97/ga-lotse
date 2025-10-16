@@ -322,11 +322,6 @@ public class GdprProcedureController implements GdprProcedureApi {
         .body(new ByteArrayResource(content));
   }
 
-  @Override
-  public GetIdentificationDataHashResponse getIdentificationDataHash(UUID downloadId) {
-    return new GetIdentificationDataHashResponse(service.getIdentificationDataHash(downloadId));
-  }
-
   private static String downloadPackageFilename(UUID id) {
     return "DSGVO_Stammdaten_Download_Paket_%s.zip".formatted(id);
   }

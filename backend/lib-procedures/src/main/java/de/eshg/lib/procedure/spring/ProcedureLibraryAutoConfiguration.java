@@ -16,7 +16,6 @@ import de.eshg.lib.procedure.file.FileDeletionApprovalRequestNotificationService
 import de.eshg.lib.procedure.file.FileDeletionRequestApprovalRequestDecisionHandler;
 import de.eshg.lib.procedure.file.FileStorageService;
 import de.eshg.lib.procedure.gdpr.DefaultGdprZipEditorProvider;
-import de.eshg.lib.procedure.gdpr.GdprIdentificationDataMigration;
 import de.eshg.lib.procedure.gdpr.GdprValidationTaskController;
 import de.eshg.lib.procedure.gdpr.GdprValidationTaskService;
 import de.eshg.lib.procedure.helper.UserHelper;
@@ -100,7 +99,6 @@ import org.springframework.context.annotation.Import;
   ProcedureLibrarySchedulingConfig.class,
   GdprValidationTaskController.class,
   GdprValidationTaskService.class,
-  GdprIdentificationDataMigration.class,
   DefaultGdprZipEditorProvider.class
 })
 public class ProcedureLibraryAutoConfiguration {

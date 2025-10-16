@@ -189,13 +189,12 @@ dockerCompose {
     }
 }
 
-cyclonedxBom {
+cyclonedxDirectBom {
+    jsonOutput.unsetConvention()
     includeConfigs = ["runtimeClasspath"]
     projectType = "application"
-    schemaVersion = "1.5"
-    destination = file("build/reports")
-    outputName = "bom"
-    outputFormat = "xml"
+    schemaVersion = "VERSION_16"
+    xmlOutput.set(file("build/reports/bom.xml"))
     includeBomSerialNumber = false
 }
 
@@ -219,7 +218,7 @@ project.afterEvaluate {
 
 
 tasks.named('dependencyTrack').configure {
-    dependsOn cyclonedxBom
+    dependsOn cyclonedxDirectBom
 
     doFirst {
         assert project.hasProperty('dependency-track-api-key')

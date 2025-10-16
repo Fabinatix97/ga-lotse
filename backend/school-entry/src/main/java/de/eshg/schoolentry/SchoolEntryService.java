@@ -635,6 +635,11 @@ public class SchoolEntryService {
   }
 
   public void removeAppointment(SchoolEntryProcedure procedure) {
+    if (procedure.getSchoolInfoLetterCreatedAt() != null) {
+      throw new BadRequestException(
+          "Appointments can longer be removed once a school info letter has been created!");
+    }
+
     appointmentBlockSlotUtil.removeAppointment(procedure);
 
     removeCitizenUserAccessIfPresent(procedure);

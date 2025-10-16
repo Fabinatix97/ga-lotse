@@ -8,7 +8,6 @@ package de.eshg.base.gdpr;
 import static de.eshg.lib.aggregation.AggregationHelper.aggregateErrorResponses;
 import static de.eshg.lib.keycloak.CitizenPermissionRole.BUND_ID_USER;
 import static de.eshg.lib.keycloak.CitizenPermissionRole.MUK_USER;
-import static org.apache.commons.lang3.StringUtils.isBlank;
 
 import de.eshg.base.bundid.persistence.BundIdPersonLinkService;
 import de.eshg.base.centralfile.persistence.entity.Facility;
@@ -87,8 +86,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.argon2.Argon2PasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -713,73 +710,5 @@ public class GdprProcedureService {
         facilityRepository.findAllFileStateIdsByReferenceFacility(refExternalIds);
 
     return new GetGdprProcedureFileStateIdsResponse(personFileStateIds, facilityFileStateIds);
-  }
-
-  public String getIdentificationDataHash(UUID downloadId) {
-    Optional<UUID> id = repository.findFirstByDownloadIds(List.of(downloadId));
-    if (id.isEmpty()) {
-      return null;
-    }
-    GdprProcedure procedure = repository.findByExternalId(id.get()).orElseThrow();
-    IdentificationData identificationData = procedure.getIdentificationData();
-    IdentificationData2 identificationData2 =
-        switch (identificationData) {
-          case GdprFacility facility ->
-              isBlank(facility.getDataTransmitterPseudonymId())
-                  ? IdentificationData2.standardEmployee()
-                  : IdentificationData2.mukUser(facility.getDataTransmitterPseudonymId());
-          case GdprPerson person ->
-              isBlank(person.getBpk2())
-                  ? IdentificationData2.standardEmployee()
-                  : IdentificationData2.bundIdUser(person.getBpk2());
-          default -> {
-            log.error("Unexpected value: {}", identificationData);
-            yield null;
-          }
-        };
-    if (identificationData2 == null) return null;
-    return identificationData2.hash();
-  }
-
-  private record IdentificationData2(IdentificationDataType type, String id) {
-    private static final PasswordEncoder argon2 = new Argon2PasswordEncoder(16, 32, 1, 7 * 1024, 5);
-
-    static IdentificationData2 standardEmployee() {
-      return new IdentificationData2(IdentificationDataType.STANDARD_EMPLOYEE, "");
-    }
-
-    static IdentificationData2 bundIdUser(String id) {
-      return new IdentificationData2(IdentificationDataType.BUND_ID_USER, id);
-    }
-
-    static IdentificationData2 mukUser(String id) {
-      return new IdentificationData2(IdentificationDataType.MUK_USER, id);
-    }
-
-    String hash() {
-      return argon2.encode(string());
-    }
-
-    boolean verify(String hash) {
-      return argon2.matches(string(), hash);
-    }
-
-    private String string() {
-      return type.encodedName + id;
-    }
-
-    private enum IdentificationDataType {
-      STANDARD_EMPLOYEE("STANDARD_EMPLOYEE"),
-      BUND_ID_USER("BUND_ID_USER"),
-      MUK_USER("MUK_USER"),
-      ;
-
-      // never change the values of encodedName, their hashes are stored in the database
-      private final String encodedName;
-
-      IdentificationDataType(String encodedName) {
-        this.encodedName = encodedName;
-      }
-    }
   }
 }

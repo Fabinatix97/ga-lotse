@@ -104,7 +104,7 @@ tasks.register('startSyftContainer', DockerStartContainer) {
     targetContainerId createSyftContainer.containerId
 }
 
-tasks.register('cyclonedxBom', DockerWaitContainer) {
+tasks.register('cyclonedxDirectBom', DockerWaitContainer) {
     dependsOn startSyftContainer
     targetContainerId createSyftContainer.containerId
 }
@@ -116,7 +116,7 @@ dependencyTrack {
 }
 
 tasks.named('dependencyTrack').configure {
-    dependsOn cyclonedxBom
+    dependsOn cyclonedxDirectBom
 
     doFirst {
         assert project.hasProperty('dependency-track-api-url')

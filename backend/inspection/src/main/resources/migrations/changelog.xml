@@ -88,5 +88,6 @@
   <include file="migrations/0073_configurator.xml"/>
   <include file="migrations/0074_facility_rename_cfid.xml"/>
   <include file="migrations/0075_add_gdpr_identification_data_hash.xml"/>
+  <include file="migrations/0076_add_gdpr_identification_hash_not_null_constraint.xml"/>
 
 </databaseChangeLog>

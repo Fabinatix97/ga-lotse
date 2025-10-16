@@ -232,6 +232,7 @@ export { validateFileName } from "./components/formFields/file/validators";
 export { useDragAndDrop } from "./components/formFields/file/useDragAndDrop";
 export { ExpandNavigation } from "./components/icons/ExpandNavigation";
 export { StethoscopeIcon } from "./components/icons/StethoscopeIcon";
+export { NextGenerationEULogo } from "./components/icons/NextGenerationEULogo";
 export { CustomAutocomplete } from "./components/inputs/CustomAutocomplete";
 export { YearInput } from "./components/inputs/YearInput";
 export { LiveAnnouncer } from "./components/liveAnnouncer/LiveAnnouncer";

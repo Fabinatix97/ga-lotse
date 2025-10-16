@@ -140,6 +140,7 @@ export {
 } from "./components/formFields/schoolYear";
 export { MainContentLayout } from "./components/layout/MainContentLayout";
 export { StickyToolbarLayout } from "./components/layout/StickyToolbarLayout";
+export { OfflineIndicator } from "./components/OfflineIndicator";
 export { PageGrid } from "./components/page/PageGrid";
 export { RestrictedPage } from "./components/page/RestrictedPage";
 export {

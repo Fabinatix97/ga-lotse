@@ -29,6 +29,7 @@
   <include file="migrations/0019_add_lead_times_to_appointment_availability.xml"/>
   <include file="migrations/0020_move_team_to_appointment_block.xml"/>
   <include file="migrations/0021_add_gdpr_identification_data_hash.xml"/>
+  <include file="migrations/0022_add_gdpr_identification_hash_not_null_constraint.xml"/>
 
 
 </databaseChangeLog>

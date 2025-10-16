@@ -21,7 +21,6 @@ import de.eshg.base.gdpr.api.GetGdprProcedureDetailsPageResponse;
 import de.eshg.base.gdpr.api.GetGdprProcedureFileStateIdsResponse;
 import de.eshg.base.gdpr.api.GetGdprProcedureResponse;
 import de.eshg.base.gdpr.api.GetGdprProceduresResponse;
-import de.eshg.base.gdpr.api.GetIdentificationDataHashResponse;
 import de.eshg.base.gdpr.api.SetMatterOfConcernRequest;
 import de.eshg.base.gdpr.api.StartGdprProcedureRequest;
 import de.eshg.rest.service.security.config.BaseUrls;
@@ -55,8 +54,6 @@ public interface GdprProcedureApi {
   String CANCEL_PROCEDURE = Base.Gdpr.CANCEL_PROCEDURE;
   String CLOSE_PROCEDURE = Base.Gdpr.CLOSE_PROCEDURE;
   String CENTRAL_FILE_DOWNLOAD_PACKAGE = Base.Gdpr.CENTRAL_FILE_DOWNLOAD_PACKAGE;
-  String DOWNLOAD_PACKAGE_IDENTIFICATION_DATA_HASH =
-      "/download/{downloadId}/identification-data-hash";
 
   @PostExchange
   @ApiResponse(responseCode = "200")
@@ -181,10 +178,4 @@ public interface GdprProcedureApi {
   @Operation(
       summary = "Get Gdpr Download Package of central files linked to given Gdpr Procedure Id")
   ResponseEntity<Resource> getCentralFileDownloadPackage(@PathVariable(name = "id") UUID id);
-
-  @GetExchange(DOWNLOAD_PACKAGE_IDENTIFICATION_DATA_HASH)
-  @ApiResponse(responseCode = "200")
-  @Operation(summary = "Get Identification Data Hash to given Gdpr Download Package Id")
-  GetIdentificationDataHashResponse getIdentificationDataHash(
-      @PathVariable(name = "downloadId") UUID downloadId);
 }

@@ -28,6 +28,7 @@
   <include file="migrations/0018_remove_employees_employed.xml"/>
   <include file="migrations/0019_collect_statistics.xml"/>
   <include file="migrations/0020_add_gdpr_identification_data_hash.xml"/>
+  <include file="migrations/0021_add_gdpr_identification_hash_not_null_constraint.xml"/>
 
 
 </databaseChangeLog>
