@@ -222,7 +222,7 @@ public class Person extends SequencedBaseEntityWithExternalId implements Central
     return clone;
   }
 
-  public PersonAddress cloneAddress(PersonAddress address) {
+  public static PersonAddress cloneAddress(PersonAddress address) {
     return switch (address) {
       case null -> null;
       case PostboxPersonAddress postboxAddress -> clonePostBoxAddress(postboxAddress);
@@ -231,14 +231,14 @@ public class Person extends SequencedBaseEntityWithExternalId implements Central
     };
   }
 
-  private PostboxPersonAddress clonePostBoxAddress(PostboxPersonAddress address) {
+  private static PostboxPersonAddress clonePostBoxAddress(PostboxPersonAddress address) {
     PostboxPersonAddress clone = new PostboxPersonAddress();
     setAddressAttributesOnClone(address, clone);
     clone.setPostbox(address.getPostbox());
     return clone;
   }
 
-  private DomesticPersonAddress cloneDomesticAddress(DomesticPersonAddress address) {
+  private static DomesticPersonAddress cloneDomesticAddress(DomesticPersonAddress address) {
     DomesticPersonAddress clone = new DomesticPersonAddress();
     setAddressAttributesOnClone(address, clone);
     clone.setStreet(address.getStreet());

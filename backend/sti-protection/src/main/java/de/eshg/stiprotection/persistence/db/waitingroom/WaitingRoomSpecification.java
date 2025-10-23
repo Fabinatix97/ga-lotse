@@ -5,7 +5,7 @@
 
 package de.eshg.stiprotection.persistence.db.waitingroom;
 
-import de.eshg.base.SortDirection;
+import de.eshg.api.commons.SortDirection;
 import de.eshg.lib.procedure.domain.model.ProcedureStatus;
 import de.eshg.lib.procedure.domain.model.Procedure_;
 import de.eshg.persistence.SpecificationUtil;

@@ -5,7 +5,7 @@
 
 package de.eshg.statistics;
 
-import de.eshg.base.SortDirection;
+import de.eshg.api.commons.SortDirection;
 import de.eshg.domain.model.BaseEntity_;
 import de.eshg.rest.service.error.NotFoundException;
 import de.eshg.statistics.api.geoshape.AbstractGeoShapeChangeRequest;

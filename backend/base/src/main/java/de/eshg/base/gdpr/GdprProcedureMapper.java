@@ -7,7 +7,7 @@ package de.eshg.base.gdpr;
 
 import static de.eshg.base.util.MappingUtil.mapDirection;
 
-import de.eshg.base.SortDirection;
+import de.eshg.api.commons.SortDirection;
 import de.eshg.base.address.AddressDto;
 import de.eshg.base.address.DomesticAddressDto;
 import de.eshg.base.address.PostboxAddressDto;

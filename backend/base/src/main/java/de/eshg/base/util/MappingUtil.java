@@ -5,9 +5,9 @@
 
 package de.eshg.base.util;
 
+import de.eshg.api.commons.SortDirection;
 import de.eshg.base.GenderDto;
 import de.eshg.base.SalutationDto;
-import de.eshg.base.SortDirection;
 import de.eshg.base.centralfile.api.DataOriginDto;
 import de.eshg.base.centralfile.persistence.entity.DataOrigin;
 import de.eshg.mapper.RestMappingUtil;

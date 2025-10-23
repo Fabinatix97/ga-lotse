@@ -6,8 +6,8 @@
 package de.eshg.lib.procedure.procedures;
 
 import static de.eshg.domain.model.SequencedBaseEntity_.ID;
-import static java.util.stream.Collectors.toMap;
 
+import de.cronn.commons.lang.StreamUtil;
 import de.eshg.base.centralfile.FacilityApi;
 import de.eshg.base.centralfile.PersonApi;
 import de.eshg.base.centralfile.api.facility.GetFacilityFileStateResponse;
@@ -300,7 +300,7 @@ public class ProcedureSearchService<ProcedureT extends Procedure<ProcedureT, ?, 
             .getFacilityFileStates(new GetFacilityFileStatesRequest(relatedFacilitiesFileStateIds))
             .facilityFileStates()
             .stream()
-            .collect(toMap(GetFacilityFileStateResponse::id, Function.identity()));
+            .collect(StreamUtil.toLinkedHashMap(GetFacilityFileStateResponse::id));
 
     stopWatch.stop();
 
@@ -324,7 +324,7 @@ public class ProcedureSearchService<ProcedureT extends Procedure<ProcedureT, ?, 
             .getPersonFileStates(new GetPersonFileStatesRequest(relatedPersonFileStateIds))
             .personFileStates()
             .stream()
-            .collect(toMap(GetPersonFileStateResponse::id, Function.identity()));
+            .collect(StreamUtil.toLinkedHashMap(GetPersonFileStateResponse::id));
 
     stopWatch.stop();
     return personFileStatesById;

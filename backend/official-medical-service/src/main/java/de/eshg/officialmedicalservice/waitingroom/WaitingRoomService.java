@@ -14,7 +14,7 @@ import static java.util.Comparator.comparing;
 import static java.util.Comparator.naturalOrder;
 import static java.util.Comparator.nullsLast;
 
-import de.eshg.base.SortDirection;
+import de.eshg.api.commons.SortDirection;
 import de.eshg.base.centralfile.api.facility.GetFacilityFileStateResponse;
 import de.eshg.base.centralfile.api.facility.GetFacilityFileStatesRequest;
 import de.eshg.base.centralfile.api.person.GetPersonFileStateResponse;

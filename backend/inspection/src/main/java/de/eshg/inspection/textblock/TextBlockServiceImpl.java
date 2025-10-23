@@ -8,7 +8,7 @@ package de.eshg.inspection.textblock;
 import static de.eshg.base.util.PaginationUtil.getPageable;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
-import de.eshg.base.SortDirection;
+import de.eshg.api.commons.SortDirection;
 import de.eshg.base.util.PaginationUtil;
 import de.eshg.inspection.textblock.mapper.TextBlockMapper;
 import de.eshg.inspection.textblock.persistence.TextBlock;

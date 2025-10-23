@@ -92,6 +92,6 @@ The LocationSelectionMode is configured with the property
 de.eshg.lib.appointmentblock.locationSelectionMode
 ```
 
-Note: LocationSelectionModes other than `de.eshg.lib.appointmentblock.LocationSelectionMode.NONE`
+Note: LocationSelectionModes other than `de.eshg.lib.appointmentblock.api.LocationSelectionMode.NONE`
 require users to have `BASE_CONTACTS_READ` permission in order to view and create
 AppointmentBlockGroups.

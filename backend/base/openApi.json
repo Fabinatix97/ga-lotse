@@ -3891,6 +3891,182 @@
         "tags" : [ "Person" ]
       }
     },
+    "/persons-without-dob/bulk" : {
+      "post" : {
+        "operationId" : "getPersonsWithoutDateOfBirth",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "type" : "array",
+                "description" : "The Ids of the persons without date of birth.",
+                "items" : {
+                  "type" : "string",
+                  "format" : "uuid"
+                }
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/GetPersonsWithoutDateOfBirthResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Get a list of persons without date of birth",
+        "tags" : [ "PersonWithoutDateOfBirth" ]
+      }
+    },
+    "/persons-without-dob/bulk/delete" : {
+      "post" : {
+        "operationId" : "deletePersonsWithoutDateOfBirth",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "type" : "array",
+                "description" : "The Ids of the persons without date of birth.",
+                "items" : {
+                  "type" : "string",
+                  "format" : "uuid"
+                }
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          }
+        },
+        "summary" : "Delete persons without date of birth",
+        "tags" : [ "PersonWithoutDateOfBirth" ]
+      }
+    },
+    "/persons-without-dob/create" : {
+      "post" : {
+        "operationId" : "addPersonWithoutDateOfBirth",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/AddPersonWithoutDateOfBirthRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/GetPersonWithoutDateOfBirthResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Add a new person without date of birth.",
+        "tags" : [ "PersonWithoutDateOfBirth" ]
+      }
+    },
+    "/persons-without-dob/{id}" : {
+      "delete" : {
+        "operationId" : "deletePersonWithoutDateOfBirth",
+        "parameters" : [ {
+          "description" : "The Id of the person without date of birth.",
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          }
+        },
+        "summary" : "Delete a person without date of birth",
+        "tags" : [ "PersonWithoutDateOfBirth" ]
+      },
+      "get" : {
+        "operationId" : "getPersonWithoutDateOfBirth",
+        "parameters" : [ {
+          "description" : "The Id of the person without date of birth.",
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/GetPersonWithoutDateOfBirthResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Get a person without date of birth",
+        "tags" : [ "PersonWithoutDateOfBirth" ]
+      },
+      "put" : {
+        "operationId" : "updatePersonWithoutDateOfBirth",
+        "parameters" : [ {
+          "description" : "The Id of the person without date of birth.",
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/UpdatePersonWithoutDateOfBirthRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/GetPersonWithoutDateOfBirthResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Update a person without date of birth.",
+        "tags" : [ "PersonWithoutDateOfBirth" ]
+      }
+    },
     "/persons/by-human-readable-id" : {
       "get" : {
         "operationId" : "searchReferencePersonsByHumanReadableId",
@@ -7293,6 +7469,57 @@
           }
         }
       },
+      "AddPersonWithoutDateOfBirthRequest" : {
+        "required" : [ "dataOrigin", "firstName", "lastName" ],
+        "type" : "object",
+        "properties" : {
+          "contactAddress" : {
+            "oneOf" : [ {
+              "$ref" : "#/components/schemas/DomesticAddress"
+            }, {
+              "$ref" : "#/components/schemas/PostboxAddress"
+            } ]
+          },
+          "dataOrigin" : {
+            "$ref" : "#/components/schemas/DataOrigin"
+          },
+          "emailAddresses" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          },
+          "firstName" : {
+            "maxLength" : 80,
+            "minLength" : 1,
+            "type" : "string"
+          },
+          "gender" : {
+            "$ref" : "#/components/schemas/Gender"
+          },
+          "lastName" : {
+            "maxLength" : 120,
+            "minLength" : 1,
+            "type" : "string"
+          },
+          "phoneNumbers" : {
+            "type" : "array",
+            "items" : {
+              "maxLength" : 23,
+              "minLength" : 0,
+              "type" : "string"
+            }
+          },
+          "salutation" : {
+            "$ref" : "#/components/schemas/Salutation"
+          },
+          "title" : {
+            "maxLength" : 119,
+            "minLength" : 1,
+            "type" : "string"
+          }
+        }
+      },
       "AddResourceRequest" : {
         "required" : [ "name", "type" ],
         "type" : "object",
@@ -10074,9 +10301,76 @@
           }
         }
       },
+      "GetPersonWithoutDateOfBirthResponse" : {
+        "required" : [ "dataOrigin", "firstName", "id", "lastName" ],
+        "type" : "object",
+        "properties" : {
+          "contactAddress" : {
+            "oneOf" : [ {
+              "$ref" : "#/components/schemas/DomesticAddress"
+            }, {
+              "$ref" : "#/components/schemas/PostboxAddress"
+            } ]
+          },
+          "dataOrigin" : {
+            "$ref" : "#/components/schemas/DataOrigin"
+          },
+          "emailAddresses" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          },
+          "firstName" : {
+            "maxLength" : 80,
+            "minLength" : 1,
+            "type" : "string"
+          },
+          "gender" : {
+            "$ref" : "#/components/schemas/Gender"
+          },
+          "id" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "lastName" : {
+            "maxLength" : 120,
+            "minLength" : 1,
+            "type" : "string"
+          },
+          "phoneNumbers" : {
+            "type" : "array",
+            "items" : {
+              "maxLength" : 23,
+              "minLength" : 0,
+              "type" : "string"
+            }
+          },
+          "salutation" : {
+            "$ref" : "#/components/schemas/Salutation"
+          },
+          "title" : {
+            "maxLength" : 119,
+            "minLength" : 1,
+            "type" : "string"
+          }
+        }
+      },
       "GetPersonsSortKey" : {
         "type" : "string",
         "enum" : [ "FIRST_NAME", "LAST_NAME", "DATE_OF_BIRTH" ]
+      },
+      "GetPersonsWithoutDateOfBirthResponse" : {
+        "required" : [ "personsWithoutDateOfBirth" ],
+        "type" : "object",
+        "properties" : {
+          "personsWithoutDateOfBirth" : {
+            "type" : "object",
+            "additionalProperties" : {
+              "$ref" : "#/components/schemas/GetPersonWithoutDateOfBirthResponse"
+            }
+          }
+        }
       },
       "GetPrivacyDocumentConfigResponse" : {
         "type" : "object",
@@ -12736,6 +13030,54 @@
           }
         },
         "description" : "Request used for performing a consistent update of a person file state and its associated reference person"
+      },
+      "UpdatePersonWithoutDateOfBirthRequest" : {
+        "required" : [ "firstName", "lastName" ],
+        "type" : "object",
+        "properties" : {
+          "contactAddress" : {
+            "oneOf" : [ {
+              "$ref" : "#/components/schemas/DomesticAddress"
+            }, {
+              "$ref" : "#/components/schemas/PostboxAddress"
+            } ]
+          },
+          "emailAddresses" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          },
+          "firstName" : {
+            "maxLength" : 80,
+            "minLength" : 1,
+            "type" : "string"
+          },
+          "gender" : {
+            "$ref" : "#/components/schemas/Gender"
+          },
+          "lastName" : {
+            "maxLength" : 120,
+            "minLength" : 1,
+            "type" : "string"
+          },
+          "phoneNumbers" : {
+            "type" : "array",
+            "items" : {
+              "maxLength" : 23,
+              "minLength" : 0,
+              "type" : "string"
+            }
+          },
+          "salutation" : {
+            "$ref" : "#/components/schemas/Salutation"
+          },
+          "title" : {
+            "maxLength" : 119,
+            "minLength" : 1,
+            "type" : "string"
+          }
+        }
       },
       "UpdatePersonsRequest" : {
         "required" : [ "updateRequests" ],

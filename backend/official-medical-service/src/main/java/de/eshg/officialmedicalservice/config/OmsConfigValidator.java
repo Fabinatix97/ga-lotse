@@ -108,18 +108,18 @@ public class OmsConfigValidator {
     }
   }
 
-  public void validateLandingContent(MultipartFile landingContent, Language language)
+  public void validateContent(MultipartFile content, Language language, String name)
       throws OmsConfigValidatorException {
-    if (landingContent != null) {
+    if (content != null) {
       try {
-        FileValidator.validateMarkdownFile(landingContent);
+        FileValidator.validateMarkdownFile(content);
       } catch (BadRequestException bre) {
         throw new OmsConfigValidatorException(
             switch (language) {
               case GERMAN -> OmsConfigValidatorException.LANDING_PAGE_DE_DOCUMENT;
               case ENGLISH -> OmsConfigValidatorException.LANDING_PAGE_EN_DOCUMENT;
             },
-            "invalid landing page file (" + language + "): " + bre.getLocalizedMessage());
+            "invalid " + name + " file (" + language + "): " + bre.getLocalizedMessage());
       }
     }
   }

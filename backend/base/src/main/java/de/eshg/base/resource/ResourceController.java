@@ -5,7 +5,7 @@
 
 package de.eshg.base.resource;
 
-import de.eshg.base.SortDirection;
+import de.eshg.api.commons.SortDirection;
 import de.eshg.base.resource.api.*;
 import de.eshg.base.resource.persistence.ResourceService;
 import de.eshg.base.resource.persistence.entity.Resource;

@@ -7,7 +7,7 @@ package de.eshg.base.inventory;
 
 import static de.eshg.base.util.MappingUtil.mapDirection;
 
-import de.eshg.base.SortDirection;
+import de.eshg.api.commons.SortDirection;
 import de.eshg.base.inventory.api.*;
 import de.eshg.base.inventory.api.AddInventoryItemRequest;
 import de.eshg.base.inventory.api.GetInventoryItemsResponse;

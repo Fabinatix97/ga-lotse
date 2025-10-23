@@ -7,7 +7,7 @@ package de.eshg.base.resource;
 
 import static de.eshg.base.util.MappingUtil.mapDirection;
 
-import de.eshg.base.SortDirection;
+import de.eshg.api.commons.SortDirection;
 import de.eshg.base.label.LabelMapper;
 import de.eshg.base.resource.api.*;
 import de.eshg.base.resource.persistence.ResourceService;

@@ -74,9 +74,12 @@ export function formatDateToYear(date: Date, locale = "de-DE") {
 }
 
 export function calculateAge(
-  dateOfBirth: Date,
+  dateOfBirth?: Date,
   referenceDate: Date = new Date(),
 ): number {
+  if (dateOfBirth === undefined) {
+    return 0;
+  }
   return differenceInYears(referenceDate, dateOfBirth);
 }
 

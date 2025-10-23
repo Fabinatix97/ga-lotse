@@ -10,6 +10,7 @@ import de.cronn.assertions.validationfile.junit5.JUnit5ValidationFileAssertions;
 import de.cronn.assertions.validationfile.normalization.ValidationNormalizer;
 import de.cronn.assertions.validationfile.replacements.Replacer;
 import de.eshg.AuthorizationTest;
+import de.eshg.base.ActuatorBeans;
 import de.eshg.base.auth.AuthorizationTestUtil.PermissionRoleAndAccessToken;
 import de.eshg.base.spring.AuthenticationTraits;
 import de.eshg.lib.keycloak.EmployeePermissionRole;
@@ -23,19 +24,27 @@ public interface AuthorizationTestTraits
 
   default void testEndpointAuthorization(
       TestRestTemplate testRestTemplate, RequestMappingHandlerMapping requestMapping) {
-    testEndpointAuthorization(testRestTemplate, requestMapping, null);
+    testEndpointAuthorization(testRestTemplate, requestMapping, null, null);
   }
 
   default void testEndpointAuthorization(
       TestRestTemplate testRestTemplate,
       RequestMappingHandlerMapping requestMapping,
       ValidationNormalizer validationNormalizer) {
+    testEndpointAuthorization(testRestTemplate, requestMapping, null, validationNormalizer);
+  }
+
+  default void testEndpointAuthorization(
+      TestRestTemplate testRestTemplate,
+      RequestMappingHandlerMapping requestMapping,
+      ActuatorBeans actuatorBeans,
+      ValidationNormalizer validationNormalizer) {
     List<PermissionRoleAndAccessToken> roleAndAccessTokens =
         AuthorizationTestUtil.getAccessTokensForAllPermissionRoles(this::login);
 
     assertWithFile(
         AuthorizationTestUtil.getEndpointAuthorizationMatrixAsMarkdown(
-            testRestTemplate, requestMapping, roleAndAccessTokens),
+            testRestTemplate, requestMapping, actuatorBeans, roleAndAccessTokens),
         validationNormalizer,
         FileExtensions.MD);
   }

@@ -37,7 +37,7 @@ export function ConfiguratorLayout(props: ConfiguratorLayoutProps) {
         />
       }
     >
-      <MainContentLayout fullViewportHeight>{props.children}</MainContentLayout>
+      <MainContentLayout>{props.children}</MainContentLayout>
     </StickyToolbarLayout>
   );
 }

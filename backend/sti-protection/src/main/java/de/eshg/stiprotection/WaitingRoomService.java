@@ -5,7 +5,7 @@
 
 package de.eshg.stiprotection;
 
-import de.eshg.base.SortDirection;
+import de.eshg.api.commons.SortDirection;
 import de.eshg.stiprotection.api.waitingroom.WaitingRoomProcedurePaginationAndSortParameters;
 import de.eshg.stiprotection.api.waitingroom.WaitingRoomSortKey;
 import de.eshg.stiprotection.persistence.db.StiProtectionProcedure;

@@ -9,7 +9,7 @@ import static java.util.Comparator.comparing;
 import static java.util.Comparator.comparingLong;
 import static java.util.Comparator.nullsLast;
 
-import de.eshg.base.SortDirection;
+import de.eshg.api.commons.SortDirection;
 import de.eshg.base.centralfile.api.person.GetPersonFileStateResponse;
 import de.eshg.base.centralfile.api.person.GetPersonsSortKey;
 import de.eshg.lib.contact.ContactClient;

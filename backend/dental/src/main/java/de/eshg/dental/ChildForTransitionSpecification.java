@@ -5,7 +5,7 @@
 
 package de.eshg.dental;
 
-import de.eshg.base.SortDirection;
+import de.eshg.api.commons.SortDirection;
 import de.eshg.dental.api.ChildForTransitionSortKey;
 import de.eshg.dental.api.ChildrenForTransitionSortParameters;
 import de.eshg.dental.domain.model.Child;

@@ -13,6 +13,7 @@ import de.eshg.base.user.UserApi;
 import de.eshg.base.user.api.UserDto;
 import de.eshg.lib.appointmentblock.api.CreateDailyAppointmentBlockDto;
 import de.eshg.lib.appointmentblock.api.CreateDailyAppointmentBlockGroupRequest;
+import de.eshg.lib.appointmentblock.api.LocationSelectionMode;
 import de.eshg.lib.appointmentblock.spring.AppointmentBlockConfig;
 import de.eshg.lib.contact.ContactClient;
 import de.eshg.lib.keycloak.TechnicalGroup;

@@ -12,10 +12,11 @@ import {
   useConfirmationDialog,
 } from "@eshg/lib-employee-portal";
 
+import { mapContactAndDifferentBillingAddressToSchoolEntry } from "@/lib/businessModules/schoolEntry/api/addressMapper";
 import {
-  PersonDetails,
-  mapPersonDetailsToForm,
-} from "@/lib/businessModules/schoolEntry/api/models/Person";
+  CustodianDetails,
+  mapCustodianDetailsToForm,
+} from "@/lib/businessModules/schoolEntry/api/models/CustodianDetails";
 import {
   useRemoveCustodian,
   useUpdateCustodian,
@@ -58,7 +59,7 @@ export function useDeleteCustodianWithConfirmation(
 }
 
 interface UpdateCustodianSidebarProps extends SidebarWithFormRefProps {
-  custodian: PersonDetails;
+  custodian: CustodianDetails;
   procedureId: string;
   procedureVersion: number;
 }
@@ -82,16 +83,19 @@ export function UpdateCustodianSidebar({
 
   async function handleSubmit(values: DefaultPersonFormValues) {
     const request = mapToPersonUpdateRequest(values, custodian.version);
-    await updateCustodian.mutateAsync(request, {
-      onSuccess: () => onClose(true),
-    });
+    await updateCustodian.mutateAsync(
+      mapContactAndDifferentBillingAddressToSchoolEntry(request),
+      {
+        onSuccess: () => onClose(true),
+      },
+    );
   }
 
   return (
     <PersonSidebarForm
       mode="edit"
       title="Person bearbeiten"
-      initialValues={mapPersonDetailsToForm(custodian)}
+      initialValues={mapCustodianDetailsToForm(custodian)}
       component={DefaultPersonForm}
       sidebarFormRef={formRef}
       onCancel={() => onClose(false)}

@@ -9,9 +9,10 @@ import { useFormikContext } from "formik";
 import { useEffect } from "react";
 import { isDefined, isEmpty } from "remeda";
 
-import { Alert, RadioGroupField, isNonEmptyString } from "@eshg/lib-portal";
+import { RadioGroupField, isNonEmptyString } from "@eshg/lib-portal";
 import { ApiConcern } from "@eshg/official-medical-service-api";
 
+import { MarkdownAlert } from "@/lib/baseModule/components/MarkdownAlert";
 import {
   useGetAppointmentStandardDurationsQuery,
   useGetConcerns,
@@ -31,17 +32,22 @@ export function ConcernStep() {
   const { t } = useTranslation(["officialMedicalService/appointment"]);
   const { setFieldValue, values } = useFormikContext<AppointmentFormValues>();
 
-  const [{ data }, { data: appointmentTypes }] = useSuspenseQueries({
+  const [
+    {
+      data: { concerns, infobox },
+    },
+    { data: appointmentTypes },
+  ] = useSuspenseQueries({
     queries: [useGetConcerns(), useGetAppointmentStandardDurationsQuery()],
   });
 
   const numberOfCategories = [
-    ...new Set(data.map((concern) => concern.categoryNameDe)),
+    ...new Set(concerns.map((concern) => concern.categoryNameDe)),
   ].length;
 
   useEffect(() => {
     if (!isEmpty(values.concern.index)) {
-      const tmp = data[Number(values.concern.index)];
+      const tmp = concerns[Number(values.concern.index)];
       if (isDefined(tmp)) {
         void (async () => {
           await setFieldValue("concern", {
@@ -59,21 +65,17 @@ export function ConcernStep() {
         })();
       }
     }
-  }, [data, appointmentTypes, setFieldValue, values.concern.index]);
+  }, [concerns, appointmentTypes, setFieldValue, values.concern.index]);
 
   return (
     <ContentSheet data-testid="concern-form">
       <ContentSheetTitle>{t("concern.title")}</ContentSheetTitle>
-      <Alert
-        title={t("concern.infoText.title")}
-        color="primary"
-        message={t("concern.infoText.description")}
-      />
+      {infobox && <MarkdownAlert color="primary" source={infobox} />}
       <Typography level="body-md" data-testid="description">
         {t("concern.description")}
       </Typography>
-      {numberOfCategories > 1 && <ConcernFilters allConcerns={data} />}
-      <ConcernStepRadioGroup data={data} />
+      {numberOfCategories > 1 && <ConcernFilters allConcerns={concerns} />}
+      <ConcernStepRadioGroup data={concerns} />
     </ContentSheet>
   );
 }

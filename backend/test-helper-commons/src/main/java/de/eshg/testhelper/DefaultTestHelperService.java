@@ -5,6 +5,7 @@
 
 package de.eshg.testhelper;
 
+import de.cronn.commons.lang.StreamUtil;
 import de.eshg.testhelper.api.DefaultPopulationResponse;
 import de.eshg.testhelper.api.TestHelperDatabaseConnectionDetailsResponse;
 import de.eshg.testhelper.environment.EnvironmentConfig;
@@ -69,7 +70,7 @@ public class DefaultTestHelperService implements TestHelperWithDatabaseService {
     this.resetActions = assertOrdered(resetActions);
     this.initialResettablePropertiesSnapshots =
         resettableProperties.stream()
-            .collect(Collectors.toMap(Function.identity(), SnapshotUtil::createSnapshot));
+            .collect(StreamUtil.toLinkedHashMap(Function.identity(), SnapshotUtil::createSnapshot));
   }
 
   @Override

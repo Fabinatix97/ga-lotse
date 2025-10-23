@@ -29,7 +29,7 @@ import { ExternalLinkDetailsItem } from "../detailsSection/items/ExternalLinkDet
 interface CentralFilePerson {
   readonly firstName: string;
   readonly lastName: string;
-  readonly dateOfBirth: Date;
+  readonly dateOfBirth?: Date;
   readonly gender?: ApiGender;
   readonly title?: string;
   readonly salutation?: ApiSalutation;

@@ -5,7 +5,7 @@
 
 package de.eshg.schoolentry.mapper;
 
-import de.eshg.base.SortDirection;
+import de.eshg.api.commons.SortDirection;
 import de.eshg.lib.appointmentblock.AppointmentMapper;
 import de.eshg.lib.procedure.domain.model.ProcedureStatus;
 import de.eshg.schoolentry.api.*;

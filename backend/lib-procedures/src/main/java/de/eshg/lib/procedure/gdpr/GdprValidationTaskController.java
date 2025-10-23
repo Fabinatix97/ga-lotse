@@ -9,7 +9,7 @@ import static de.eshg.lib.procedure.mapping.GdprValidationTaskMapper.mapToApi;
 import static de.eshg.lib.procedure.mapping.GdprValidationTaskMapper.mapToDm;
 import static de.eshg.lib.procedure.mapping.GdprValidationTaskMapper.mapToPageSpec;
 
-import de.eshg.base.SortDirection;
+import de.eshg.api.commons.SortDirection;
 import de.eshg.base.gdpr.api.GdprIdentificationDataDto;
 import de.eshg.base.util.PaginationUtil;
 import de.eshg.domain.model.serialization.SerializationService;

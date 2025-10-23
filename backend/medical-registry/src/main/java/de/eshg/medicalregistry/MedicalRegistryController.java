@@ -10,6 +10,7 @@ import static de.eshg.medicalregistry.business.model.MedicalRegistryKeyDocumentT
 import static de.eshg.medicalregistry.business.model.MedicalRegistryKeyDocumentType.WORK_PERMIT;
 import static de.eshg.rest.service.security.config.BaseUrls.MedicalRegistry.CITIZEN_PORTAL_ENDPOINT;
 
+import de.cronn.commons.lang.StreamUtil;
 import de.eshg.api.commons.InlineParameterObject;
 import de.eshg.base.centralfile.api.facility.FacilityDetails;
 import de.eshg.base.centralfile.api.facility.GetFacilityFileStateResponse;
@@ -64,7 +65,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.http.MediaType;
 import org.springframework.transaction.annotation.Transactional;
@@ -358,13 +358,15 @@ public class MedicalRegistryController {
 
     Map<UUID, PersonDetails> personDetails =
         personService.findPersonDetails(medicalRegistryProcedure.getRelatedPersons()).stream()
-            .collect(Collectors.toMap(GetPersonFileStateResponse::id, Function.identity()));
+            .collect(
+                StreamUtil.toLinkedHashMap(GetPersonFileStateResponse::id, Function.identity()));
 
     Map<UUID, FacilityDetails> practiceDetails =
         facilityService
             .findPracticeDetails(medicalRegistryProcedure.getRelatedFacilities())
             .stream()
-            .collect(Collectors.toMap(GetFacilityFileStateResponse::id, facility -> facility));
+            .collect(
+                StreamUtil.toLinkedHashMap(GetFacilityFileStateResponse::id, Function.identity()));
 
     auditLogProcedureDetailAccess(procedureId);
 

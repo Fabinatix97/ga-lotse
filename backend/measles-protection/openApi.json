@@ -4767,7 +4767,7 @@
           "resolvedUsers" : {
             "type" : "object",
             "additionalProperties" : {
-              "$ref" : "#/components/schemas/User"
+              "$ref" : "#/components/schemas/AppointmentBlockUser"
             }
           },
           "start" : {
@@ -4832,6 +4832,28 @@
       "AppointmentBlockSortKey" : {
         "type" : "string",
         "enum" : [ "START", "END" ]
+      },
+      "AppointmentBlockUser" : {
+        "required" : [ "firstName", "lastName", "userId" ],
+        "type" : "object",
+        "properties" : {
+          "firstName" : {
+            "type" : "string",
+            "description" : "The given name(s) of a user.",
+            "example" : "John"
+          },
+          "lastName" : {
+            "type" : "string",
+            "description" : "The last name of a user.",
+            "example" : "Doe"
+          },
+          "userId" : {
+            "type" : "string",
+            "description" : "The Id of the user.",
+            "format" : "uuid",
+            "example" : "UUID_4"
+          }
+        }
       },
       "AppointmentLocation" : {
         "required" : [ "id", "name" ],
@@ -6497,7 +6519,7 @@
             "type" : "string",
             "description" : "Id of the Facility.",
             "format" : "uuid",
-            "example" : "UUID_4"
+            "example" : "UUID_5"
           },
           "name" : {
             "maxLength" : 300,
@@ -6798,7 +6820,7 @@
             "type" : "string",
             "description" : "Id of the Person.",
             "format" : "uuid",
-            "example" : "UUID_4"
+            "example" : "UUID_5"
           },
           "lastName" : {
             "maxLength" : 120,
@@ -8075,7 +8097,7 @@
             "type" : "string",
             "description" : "The unique identifier for the proof submission.",
             "format" : "uuid",
-            "example" : "UUID_5"
+            "example" : "UUID_6"
           },
           "medicalAttestDeadline" : {
             "type" : "string",
@@ -8698,7 +8720,7 @@
             "type" : "string",
             "description" : "The Id of the user.",
             "format" : "uuid",
-            "example" : "UUID_6"
+            "example" : "UUID_4"
           },
           "username" : {
             "minLength" : 1,

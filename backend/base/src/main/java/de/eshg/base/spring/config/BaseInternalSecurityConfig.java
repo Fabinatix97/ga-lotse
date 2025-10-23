@@ -16,6 +16,7 @@ import static org.springframework.http.HttpMethod.PUT;
 
 import de.eshg.base.centralfile.FacilityApi;
 import de.eshg.base.centralfile.PersonApi;
+import de.eshg.base.centralfile.PersonWithoutDateOfBirthApi;
 import de.eshg.base.contact.ContactApi;
 import de.eshg.base.gdpr.GdprProcedureApi;
 import de.eshg.base.inventory.InventoryApi;
@@ -158,6 +159,22 @@ public class BaseInternalSecurityConfig {
     auth.requestMatchers(POST, PersonApi.BASE_URL + "/**")
         .hasRole(EmployeePermissionRole.BASE_PERSONS_WRITE.name());
     auth.requestMatchers(GET, PersonApi.BASE_URL + "/**")
+        .hasRole(EmployeePermissionRole.BASE_PERSONS_READ.name());
+
+    auth.requestMatchers(
+            POST, PersonWithoutDateOfBirthApi.BASE_URL + PersonWithoutDateOfBirthApi.BULK_DELETE)
+        .hasAnyRole(
+            EmployeePermissionRole.BASE_PERSONS_WRITE.name(),
+            EmployeePermissionRole.BASE_PERSONS_DELETE.name());
+    auth.requestMatchers(DELETE, PersonWithoutDateOfBirthApi.BASE_URL + "/**")
+        .hasAnyRole(
+            EmployeePermissionRole.BASE_PERSONS_WRITE.name(),
+            EmployeePermissionRole.BASE_PERSONS_DELETE.name());
+    auth.requestMatchers(POST, PersonWithoutDateOfBirthApi.BASE_URL + "/**")
+        .hasRole(EmployeePermissionRole.BASE_PERSONS_WRITE.name());
+    auth.requestMatchers(PUT, PersonWithoutDateOfBirthApi.BASE_URL + "/**")
+        .hasRole(EmployeePermissionRole.BASE_PERSONS_WRITE.name());
+    auth.requestMatchers(GET, PersonWithoutDateOfBirthApi.BASE_URL + "/**")
         .hasRole(EmployeePermissionRole.BASE_PERSONS_READ.name());
   }
 

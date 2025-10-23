@@ -24,6 +24,8 @@ dependencies {
     implementation 'org.apache.commons:commons-lang3'
     implementation 'com.tngtech.archunit:archunit-junit5:latest.release'
     implementation 'org.bouncycastle:bcpkix-jdk18on:latest.release'
+    implementation 'org.springframework.boot:spring-boot-actuator-autoconfigure'
+    implementation 'org.springframework.boot:spring-boot-test-autoconfigure'
 
     implementation 'org.assertj:assertj-core'
     api 'ch.qos.logback:logback-classic'

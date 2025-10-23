@@ -5,7 +5,7 @@
 
 package de.eshg.schoolentry.domain.specification;
 
-import de.eshg.base.SortDirection;
+import de.eshg.api.commons.SortDirection;
 import de.eshg.lib.procedure.domain.model.ProcedureStatus;
 import de.eshg.persistence.SpecificationUtil;
 import de.eshg.schoolentry.domain.model.SchoolEntryProcedure;

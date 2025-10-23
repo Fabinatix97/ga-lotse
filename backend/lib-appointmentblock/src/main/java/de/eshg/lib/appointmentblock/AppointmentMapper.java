@@ -5,7 +5,7 @@
 
 package de.eshg.lib.appointmentblock;
 
-import de.eshg.base.SortDirection;
+import de.eshg.api.commons.SortDirection;
 import de.eshg.lib.appointmentblock.api.AppointmentBlockSortKey;
 import de.eshg.lib.appointmentblock.api.AppointmentDto;
 import de.eshg.lib.appointmentblock.api.GetAppointmentBlockDto;

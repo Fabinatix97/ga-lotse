@@ -7,6 +7,7 @@ package de.eshg.base.centralfile;
 
 import static de.eshg.base.centralfile.mapper.PersonMapper.mapToPersonDiffApi;
 
+import de.cronn.commons.lang.StreamUtil;
 import de.eshg.base.address.AddressDto;
 import de.eshg.base.address.mapper.AddressMapper;
 import de.eshg.base.centralfile.api.DeleteFileStatesRequest;
@@ -29,7 +30,6 @@ import de.eshg.rest.service.error.NotFoundException;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.time.*;
 import java.util.*;
-import java.util.stream.Collectors;
 import org.hibernate.Hibernate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -152,8 +152,8 @@ public class PersonController implements PersonApi {
     Map<UUID, GetReferencePersonResponse> responses =
         personsWithReferencePerson.stream()
             .collect(
-                Collectors.toMap(
-                    person -> person.getExternalId(),
+                StreamUtil.toLinkedHashMap(
+                    Person::getExternalId,
                     person -> PersonMapper.mapReferencePersonToApi(person.getReferencePerson())));
     return new GetReferencePersonsResponse(responses);
   }
@@ -247,7 +247,7 @@ public class PersonController implements PersonApi {
       outdatedByFileStateId =
           personFileStates.stream()
               .collect(
-                  Collectors.toMap(
+                  StreamUtil.toLinkedHashMap(
                       Person::getExternalId,
                       personFileState ->
                           PersonService.isPersonFileStateOutdated(

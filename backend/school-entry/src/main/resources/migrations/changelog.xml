@@ -117,5 +117,6 @@
   <include file="migrations/0107_move_team_to_appointment_block.xml"/>
   <include file="migrations/0108_add_gdpr_identification_data_hash.xml"/>
   <include file="migrations/0109_add_gdpr_identification_hash_not_null_constraint.xml"/>
+  <include file="migrations/0110_add_custodians_without_date_of_birth.xml"/>
 
 </databaseChangeLog>

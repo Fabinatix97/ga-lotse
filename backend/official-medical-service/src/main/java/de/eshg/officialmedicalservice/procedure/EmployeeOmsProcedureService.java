@@ -15,7 +15,8 @@ import static java.util.Comparator.naturalOrder;
 import static java.util.Comparator.nullsLast;
 import static org.springframework.util.CollectionUtils.isEmpty;
 
-import de.eshg.base.SortDirection;
+import de.cronn.commons.lang.StreamUtil;
+import de.eshg.api.commons.SortDirection;
 import de.eshg.base.centralfile.api.DataOriginDto;
 import de.eshg.base.centralfile.api.facility.AddFacilityFileStateResponse;
 import de.eshg.base.centralfile.api.facility.GetFacilityFileStateResponse;
@@ -1095,7 +1096,7 @@ public class EmployeeOmsProcedureService {
                     .toList()));
 
     return personFileStatesResponse.personFileStates().stream()
-        .collect(Collectors.toMap(GetPersonFileStateResponse::id, person -> person));
+        .collect(StreamUtil.toLinkedHashMap(GetPersonFileStateResponse::id));
   }
 
   private Map<UUID, GetFacilityFileStateResponse> getFacilityMap(List<OmsProcedure> omsProcedures) {
@@ -1115,7 +1116,7 @@ public class EmployeeOmsProcedureService {
         facilityClient.getFacilityFileStates(new GetFacilityFileStatesRequest(centralFileStateIds));
 
     return facilityFileStatesResponse.facilityFileStates().stream()
-        .collect(Collectors.toMap(GetFacilityFileStateResponse::id, facility -> facility));
+        .collect(StreamUtil.toLinkedHashMap(GetFacilityFileStateResponse::id));
   }
 
   private Map<UUID, Long> getIdMap(List<OmsProcedure> omsProcedures) {

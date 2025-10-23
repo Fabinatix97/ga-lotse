@@ -211,7 +211,7 @@ export function mapSchoolInfoLetterToApiRequest(
       ),
       conspicuous: values.hearingExaminationInfoConspicuous === "yes",
       underTreatment: isInSelectedList(
-        values.eyeExaminationInfoOther,
+        values.hearingExaminationInfoOther,
         "underTreatment",
       ),
     },

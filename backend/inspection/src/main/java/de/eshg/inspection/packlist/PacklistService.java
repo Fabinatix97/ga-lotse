@@ -7,6 +7,7 @@ package de.eshg.inspection.packlist;
 
 import static de.eshg.inspection.inspection.InspectionUtils.checkInspectionIsNotClosed;
 
+import de.cronn.commons.lang.StreamUtil;
 import de.eshg.domain.model.GloballyUniqueEntityBase;
 import de.eshg.inspection.inspection.persistence.Inspection;
 import de.eshg.inspection.objecttype.persistence.ObjectType;
@@ -28,7 +29,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 
@@ -68,7 +68,7 @@ public class PacklistService {
 
     Map<UUID, PacklistDefinitionRevision> selectedRevisionsMap =
         pldRevisionRepository.findAllById(selectedPacklistDefinitionRevisionIds).stream()
-            .collect(Collectors.toMap(PacklistDefinitionRevision::getId, Function.identity()));
+            .collect(StreamUtil.toLinkedHashMap(PacklistDefinitionRevision::getId));
 
     // first, some basic user input validation
     List<String> missingIds =

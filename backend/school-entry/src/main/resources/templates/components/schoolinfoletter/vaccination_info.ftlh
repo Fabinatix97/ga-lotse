@@ -15,7 +15,7 @@
     </tr>
     <tr>
       <td>
-        <@forms.checkbox checked=vaccinationInfo?isHash && !(vaccinationInfo.measlesProtectionComplete?? && vaccinationInfo.measlesProtectionComplete) title="Masernschutz unvollständig"/>
+        <@forms.checkbox checked=vaccinationInfo?isHash && (vaccinationInfo.measlesProtectionComplete?? && !vaccinationInfo.measlesProtectionComplete) title="Masernschutz unvollständig"/>
       </td>
       <td colspan="2">
         <@forms.checkbox checked=vaccinationInfo?isHash && vaccinationInfo.measlesContraIndication title="Medizinische Kontraindikation gegen Masernimpfung besteht:"/>

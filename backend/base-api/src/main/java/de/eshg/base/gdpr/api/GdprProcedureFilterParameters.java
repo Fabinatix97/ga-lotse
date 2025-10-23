@@ -5,9 +5,9 @@
 
 package de.eshg.base.gdpr.api;
 
-import de.eshg.base.PaginationParameters;
-import de.eshg.base.SortDirection;
-import de.eshg.base.SortParameters;
+import de.eshg.api.commons.PaginationParameters;
+import de.eshg.api.commons.SortDirection;
+import de.eshg.api.commons.SortParameters;
 import io.swagger.v3.oas.annotations.Parameter;
 import jakarta.validation.constraints.Min;
 

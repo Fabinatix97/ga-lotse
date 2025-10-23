@@ -739,7 +739,7 @@
           "resolvedUsers" : {
             "type" : "object",
             "additionalProperties" : {
-              "$ref" : "#/components/schemas/User"
+              "$ref" : "#/components/schemas/AppointmentBlockUser"
             }
           },
           "start" : {
@@ -817,6 +817,28 @@
       "AppointmentBlockSortKey" : {
         "type" : "string",
         "enum" : [ "START", "END" ]
+      },
+      "AppointmentBlockUser" : {
+        "required" : [ "firstName", "lastName", "userId" ],
+        "type" : "object",
+        "properties" : {
+          "firstName" : {
+            "type" : "string",
+            "description" : "The given name(s) of a user.",
+            "example" : "John"
+          },
+          "lastName" : {
+            "type" : "string",
+            "description" : "The last name of a user.",
+            "example" : "Doe"
+          },
+          "userId" : {
+            "type" : "string",
+            "description" : "The Id of the user.",
+            "format" : "uuid",
+            "example" : "UUID_2"
+          }
+        }
       },
       "AppointmentLocation" : {
         "required" : [ "id", "name" ],
@@ -1296,54 +1318,6 @@
             "description" : "Time at which the appointment block starts.",
             "format" : "date-time",
             "example" : "2016-01-01T01:00:00.123456+01:00"
-          }
-        }
-      },
-      "User" : {
-        "required" : [ "enabled", "firstName", "lastName", "userId", "username" ],
-        "type" : "object",
-        "properties" : {
-          "email" : {
-            "type" : "string",
-            "description" : "The email address of a user.",
-            "example" : "example@mail.de"
-          },
-          "enabled" : {
-            "type" : "boolean",
-            "description" : "True, if the user can login",
-            "example" : false
-          },
-          "externalChatUsername" : {
-            "type" : "string",
-            "description" : "The chat username of the gematik TI-Messenger (matrix chat).",
-            "example" : "@username:server"
-          },
-          "firstName" : {
-            "type" : "string",
-            "description" : "The given name(s) of a user.",
-            "example" : "John"
-          },
-          "lastName" : {
-            "type" : "string",
-            "description" : "The last name of a user.",
-            "example" : "Doe"
-          },
-          "phoneNumber" : {
-            "type" : "string",
-            "description" : "The phone number of a user.",
-            "example" : "+491234567890"
-          },
-          "userId" : {
-            "type" : "string",
-            "description" : "The Id of the user.",
-            "format" : "uuid",
-            "example" : "UUID_2"
-          },
-          "username" : {
-            "minLength" : 1,
-            "type" : "string",
-            "description" : "The username which is displayed in the application and can be used for the login.",
-            "example" : "testuser"
           }
         }
       },

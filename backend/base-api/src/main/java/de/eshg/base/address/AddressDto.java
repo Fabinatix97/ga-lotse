@@ -8,7 +8,7 @@ package de.eshg.base.address;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import de.eshg.base.HasTypeDiscriminator;
+import de.eshg.api.commons.HasTypeDiscriminator;
 import de.eshg.lib.common.CountryCode;
 import io.swagger.v3.oas.annotations.media.Schema;
 

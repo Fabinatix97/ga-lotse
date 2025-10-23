@@ -71,7 +71,7 @@ function MedicalReportSidebar(props: MedicalReportSidebarProps) {
               <TextareaField
                 name="remark"
                 label="Bemerkung"
-                validate={validateLength(1, 600)}
+                validate={validateLength(1, 8500)}
                 required="Bitte eine Bemerkung angeben."
                 sxTextarea={{ minHeight: "473px" }}
               />

@@ -14,6 +14,7 @@ import static de.eshg.base.util.MappingUtil.mapGenderToDm;
 import static de.eshg.base.util.MappingUtil.mapSalutationToApi;
 import static de.eshg.base.util.MappingUtil.mapSalutationToDm;
 
+import de.cronn.commons.lang.StreamUtil;
 import de.eshg.base.address.AddressDto;
 import de.eshg.base.address.DomesticAddressDto;
 import de.eshg.base.address.PostboxAddressDto;
@@ -23,8 +24,6 @@ import de.eshg.base.centralfile.api.facility.*;
 import de.eshg.base.centralfile.persistence.entity.*;
 import de.eshg.base.util.FacilityContactPersonsDiffWrapper;
 import java.util.*;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 import org.apache.commons.lang3.builder.Diff;
 import org.apache.commons.lang3.builder.DiffResult;
 import org.springframework.stereotype.Component;
@@ -123,7 +122,7 @@ public class FacilityMapper {
             facility ->
                 FacilityMapper.mapFacilityToGetFacilityFileStateResponse(
                     facility, isOutdated.getOrDefault(facility.getExternalId(), null)))
-        .collect(Collectors.toMap(GetFacilityFileStateResponse::id, Function.identity()));
+        .collect(StreamUtil.toLinkedHashMap(GetFacilityFileStateResponse::id));
   }
 
   private static List<FacilityContactPersonDto> mapContactPersonsToApi(

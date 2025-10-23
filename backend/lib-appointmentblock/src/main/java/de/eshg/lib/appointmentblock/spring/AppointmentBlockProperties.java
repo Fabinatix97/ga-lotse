@@ -5,7 +5,7 @@
 
 package de.eshg.lib.appointmentblock.spring;
 
-import de.eshg.lib.appointmentblock.LocationSelectionMode;
+import de.eshg.lib.appointmentblock.api.LocationSelectionMode;
 import de.eshg.lib.appointmentblock.persistence.AppointmentType;
 import de.eshg.testhelper.ResettableProperties;
 import jakarta.validation.constraints.NotEmpty;

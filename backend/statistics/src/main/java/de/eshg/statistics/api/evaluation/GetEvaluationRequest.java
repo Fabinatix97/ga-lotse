@@ -5,7 +5,7 @@
 
 package de.eshg.statistics.api.evaluation;
 
-import de.eshg.base.SortDirection;
+import de.eshg.api.commons.SortDirection;
 import de.eshg.statistics.api.AttributeSelectionDto;
 import de.eshg.statistics.api.filter.TableColumnFilterParameter;
 import io.swagger.v3.oas.annotations.media.Schema;

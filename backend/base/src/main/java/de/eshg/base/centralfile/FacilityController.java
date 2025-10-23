@@ -5,6 +5,7 @@
 
 package de.eshg.base.centralfile;
 
+import de.cronn.commons.lang.StreamUtil;
 import de.eshg.base.centralfile.api.*;
 import de.eshg.base.centralfile.api.facility.*;
 import de.eshg.base.centralfile.api.person.SyncFileStateRequest;
@@ -24,7 +25,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.stream.Collectors;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -134,7 +134,7 @@ public class FacilityController implements FacilityApi {
       outdatedByFileStateId =
           facilityFileStates.stream()
               .collect(
-                  Collectors.toMap(
+                  StreamUtil.toLinkedHashMap(
                       Facility::getExternalId,
                       facilityFileState ->
                           FacilityService.isFacilityFileStateOutdated(

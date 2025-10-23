@@ -5,7 +5,7 @@
 
 package de.eshg.inspection.textblock.mapper;
 
-import de.eshg.base.SortDirection;
+import de.eshg.api.commons.SortDirection;
 import de.eshg.base.util.PaginationUtil;
 import de.eshg.inspection.textblock.persistence.TextBlock;
 import de.eshg.lib.editor.api.model.TextBlockDto;

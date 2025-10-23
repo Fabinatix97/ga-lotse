@@ -7,6 +7,7 @@ package de.eshg.lib.foureyes.approval;
 
 import static java.util.function.Predicate.not;
 
+import de.cronn.commons.lang.StreamUtil;
 import de.eshg.lib.foureyes.domain.model.ApprovalRequest;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.metamodel.Bindable;
@@ -64,7 +65,7 @@ public class ApprovalRequestDecisionHandlerRegistry {
     List<Class<?>> approvalRequestEntities = getConcreteApprovalRequestEntityClasses();
 
     return approvalRequestEntities.stream()
-        .collect(Collectors.toMap(Function.identity(), this::getApprovalRequestHandler));
+        .collect(StreamUtil.toLinkedHashMap(Function.identity(), this::getApprovalRequestHandler));
   }
 
   private List<Class<?>> getConcreteApprovalRequestEntityClasses() {

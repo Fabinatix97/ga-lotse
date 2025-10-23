@@ -1,0 +1,108 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<!--
+ Copyright 2025 cronn GmbH
+ SPDX-License-Identifier: Apache-2.0
+-->
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+  <changeSet author="GA-Lotse" id="1760433552163-1">
+    <createTable tableName="person_without_date_of_birth_email_address">
+      <column name="id" type="BIGINT">
+        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_person_without_date_of_birth_email_address"/>
+      </column>
+      <column name="version" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="email_address" type="TEXT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="person_without_date_of_birth_id" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1760433552163-2">
+    <createTable tableName="person_without_date_of_birth_phone_number">
+      <column name="id" type="BIGINT">
+        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_person_without_date_of_birth_phone_number"/>
+      </column>
+      <column name="version" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="phone_number" type="TEXT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="person_without_date_of_birth_id" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1760433552163-3">
+    <createTable tableName="person_without_date_of_birth">
+      <column name="id" type="BIGINT">
+        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_person_without_date_of_birth"/>
+      </column>
+      <column name="version" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="external_id" type="UUID">
+        <constraints nullable="false"/>
+      </column>
+      <column name="created_at" type="TIMESTAMP WITH TIME ZONE">
+        <constraints nullable="false"/>
+      </column>
+      <column name="data_origin" type="DATAORIGIN">
+        <constraints nullable="false"/>
+      </column>
+      <column name="first_name" type="TEXT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="gender" type="GENDER">
+        <constraints nullable="false"/>
+      </column>
+      <column name="last_name" type="TEXT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="modified_at" type="TIMESTAMP WITH TIME ZONE"/>
+      <column name="salutation" type="SALUTATION">
+        <constraints nullable="false"/>
+      </column>
+      <column name="title" type="TEXT"/>
+      <column name="contact_address_id" type="BIGINT"/>
+    </createTable>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1760433552163-4">
+    <addUniqueConstraint columnNames="contact_address_id" constraintName="person_without_date_of_birth_contact_address_id_key" tableName="person_without_date_of_birth"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1760433552163-5">
+    <addUniqueConstraint columnNames="external_id" constraintName="person_without_date_of_birth_external_id_key" tableName="person_without_date_of_birth"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1760433552163-6">
+    <createSequence cacheSize="1" cycle="false" dataType="bigint" incrementBy="50" maxValue="9223372036854775807" minValue="1" sequenceName="person_without_date_of_birth_email_address_seq" startValue="1"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1760433552163-7">
+    <createSequence cacheSize="1" cycle="false" dataType="bigint" incrementBy="50" maxValue="9223372036854775807" minValue="1" sequenceName="person_without_date_of_birth_phone_number_seq" startValue="1"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1760433552163-8">
+    <createSequence cacheSize="1" cycle="false" dataType="bigint" incrementBy="50" maxValue="9223372036854775807" minValue="1" sequenceName="person_without_date_of_birth_seq" startValue="1"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1760433552163-9">
+    <createIndex indexName="idx_person_without_date_of_birth_email_address_person_without_date_of_birth_id" tableName="person_without_date_of_birth_email_address">
+      <column name="person_without_date_of_birth_id"/>
+    </createIndex>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1760433552163-10">
+    <createIndex indexName="idx_person_without_date_of_birth_phone_number_person_without_date_of_birth_id" tableName="person_without_date_of_birth_phone_number">
+      <column name="person_without_date_of_birth_id"/>
+    </createIndex>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1760433552163-11">
+    <addForeignKeyConstraint baseColumnNames="person_without_date_of_birth_id" baseTableName="person_without_date_of_birth_email_address" constraintName="fk_person_without_date_of_birth_email_address_person_without_date_of_birth" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="person_without_date_of_birth" validate="true"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1760433552163-12">
+    <addForeignKeyConstraint baseColumnNames="contact_address_id" baseTableName="person_without_date_of_birth" constraintName="fk_person_without_date_of_birth_person_address" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="person_address" validate="true"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1760433552163-13">
+    <addForeignKeyConstraint baseColumnNames="person_without_date_of_birth_id" baseTableName="person_without_date_of_birth_phone_number" constraintName="fk_person_without_date_of_birth_phone_number_person_without_date_of_birth" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="person_without_date_of_birth" validate="true"/>
+  </changeSet>
+</databaseChangeLog>

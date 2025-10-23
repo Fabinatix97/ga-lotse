@@ -5,6 +5,7 @@
 
 package de.eshg.spatz.dns;
 
+import de.cronn.commons.lang.StreamUtil;
 import de.eshg.spatz.config.SpatzConfigurationProperties;
 import io.micrometer.common.util.StringUtils;
 import java.io.IOException;
@@ -21,7 +22,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
-import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
@@ -230,15 +230,14 @@ public class DnsResolver {
           staticHosts.stream()
               .map(String::toLowerCase)
               .map(DnsRecord::loopBack)
-              .collect(Collectors.toMap(DnsRecord::name, Function.identity()));
+              .collect(StreamUtil.toLinkedHashMap(DnsRecord::name));
       setRecords(List.of());
     }
 
     public void setRecords(Collection<DnsRecord> records) {
       recordsLock.lock();
       try {
-        this.records.putAll(
-            records.stream().collect(Collectors.toMap(DnsRecord::name, Function.identity())));
+        this.records.putAll(records.stream().collect(StreamUtil.toLinkedHashMap(DnsRecord::name)));
         Set<String> hostNames = records.stream().map(DnsRecord::name).collect(Collectors.toSet());
         this.records.keySet().removeIf(Predicate.not(hostNames::contains));
         this.records.putAll(staticRecords);

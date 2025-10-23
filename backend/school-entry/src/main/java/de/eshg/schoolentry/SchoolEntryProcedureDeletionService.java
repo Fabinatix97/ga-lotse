@@ -7,6 +7,7 @@ package de.eshg.schoolentry;
 
 import de.eshg.base.centralfile.FacilityApi;
 import de.eshg.base.centralfile.PersonApi;
+import de.eshg.base.centralfile.PersonWithoutDateOfBirthApi;
 import de.eshg.lib.procedure.cemetery.CemeteryService;
 import de.eshg.lib.procedure.domain.model.Procedure;
 import de.eshg.lib.procedure.domain.model.Procedure_;
@@ -63,6 +64,7 @@ public class SchoolEntryProcedureDeletionService
 
   @PersistenceContext private EntityManager entityManager;
   private final PersonClient personClient;
+  private final PersonWithoutDateOfBirthApi personWithoutDateOfBirthApi;
   private final SchoolEntryProcedureRepository schoolEntryProcedureRepository;
 
   public SchoolEntryProcedureDeletionService(
@@ -71,9 +73,11 @@ public class SchoolEntryProcedureDeletionService
       PersonClient personClient,
       SchoolEntryProcedureRepository schoolEntryProcedureRepository,
       PersonApi personApi,
+      PersonWithoutDateOfBirthApi personWithoutDateOfBirthApi,
       FacilityApi facilityApi) {
     super(procedureRepository, cemeteryService, personApi, facilityApi);
     this.personClient = personClient;
+    this.personWithoutDateOfBirthApi = personWithoutDateOfBirthApi;
     this.schoolEntryProcedureRepository = schoolEntryProcedureRepository;
   }
 
@@ -93,11 +97,35 @@ public class SchoolEntryProcedureDeletionService
     }
   }
 
+  private void deletePersonsWithoutDateOfBirth(List<SchoolEntryProcedure> procedures) {
+    List<UUID> personIds =
+        procedures.stream()
+            .map(SchoolEntryProcedure::getCustodianWithoutDob)
+            .flatMap(List::stream)
+            .toList();
+    personClient.deletePersonsWithoutDateOfBirth(personIds);
+  }
+
+  @Override
+  protected void markRelatedFileStatesForDeletion(SchoolEntryProcedure procedure) {
+    PersonClient.deletePersonsWithoutDateOfBirth(
+        personWithoutDateOfBirthApi, procedure.getCustodianWithoutDob());
+    super.markRelatedFileStatesForDeletion(procedure);
+  }
+
+  @Override
+  protected void deleteRelatedFileStatesDuringArchiving(SchoolEntryProcedure procedure) {
+    PersonClient.deletePersonsWithoutDateOfBirth(
+        personWithoutDateOfBirthApi, procedure.getCustodianWithoutDob());
+    super.deleteRelatedFileStatesDuringArchiving(procedure);
+  }
+
   @Transactional
   public void bulkDeleteAndWriteToCemetery(List<UUID> procedureIds) {
     List<SchoolEntryProcedure> procedures =
         schoolEntryProcedureRepository.findForBatchDeletion(procedureIds);
     markRelatedPersonsForDeletionInCentralFile(procedures);
+    deletePersonsWithoutDateOfBirth(procedures);
 
     List<Long> internalIds = procedures.stream().map(Procedure::getId).toList();
     if (log.isInfoEnabled()) {

@@ -5,7 +5,7 @@
 
 package de.eshg.statistics.api.report;
 
-import de.eshg.base.SortDirection;
+import de.eshg.api.commons.SortDirection;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;

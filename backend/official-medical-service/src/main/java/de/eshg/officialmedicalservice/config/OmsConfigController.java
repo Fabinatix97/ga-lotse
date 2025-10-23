@@ -31,10 +31,13 @@ class OmsConfigController {
       BaseUrls.DepartmentInfoLibrary.CONFIGURATION_API + "/oms-properties";
   static final String CONCERNS_URL = CONFIG_URL + "/concerns";
   static final String LANDING_PAGE_URL = CONFIG_URL + "/landing-page";
+  static final String SELECT_CONCERN_INFOBOX_URL = CONFIG_URL + "/select-concern-infobox";
 
   public static final String PART_CONCERNS = "concerns";
   public static final String PART_LANDING_CONTENT_DE = "landingContent_de";
   public static final String PART_LANDING_CONTENT_EN = "landingContent_en";
+  public static final String PART_SELECT_CONCERN_INFOBOX_DE = "selectConcernInfobox_de";
+  public static final String PART_SELECT_CONCERN_INFOBOX_EN = "selectConcernInfobox_en";
   public static final String PART_CONFIG_REQUEST = "config_request";
 
   private static final Logger log = LoggerFactory.getLogger(OmsConfigController.class);
@@ -69,10 +72,19 @@ class OmsConfigController {
           MultipartFile landingContentDe,
       @RequestPart(value = PART_LANDING_CONTENT_EN, required = false)
           MultipartFile landingContentEn,
+      @RequestPart(value = PART_SELECT_CONCERN_INFOBOX_DE, required = false)
+          MultipartFile selectConcernInfoboxDe,
+      @RequestPart(value = PART_SELECT_CONCERN_INFOBOX_EN, required = false)
+          MultipartFile selectConcernInfoboxEn,
       @RequestPart(value = PART_CONFIG_REQUEST) @Valid PutOmsConfigRequest configRequest) {
 
     omsConfigService.updateConfiguration(
-        concerns, landingContentDe, landingContentEn, configRequest);
+        concerns,
+        landingContentDe,
+        landingContentEn,
+        selectConcernInfoboxDe,
+        selectConcernInfoboxEn,
+        configRequest);
   }
 
   @GetMapping(OmsConfigController.CONCERNS_URL)
@@ -87,5 +99,14 @@ class OmsConfigController {
           "Download the current content of the citizen portal landing page (markdown file, one language)")
   public ResponseEntity<Resource> downloadLandingPage(@PathVariable("lang") Language lang) {
     return omsConfigService.downloadLandingPage(lang);
+  }
+
+  @GetMapping(OmsConfigController.SELECT_CONCERN_INFOBOX_URL + "/{lang}")
+  @Operation(
+      summary =
+          "Download the current infobox of the citizen portal select concern step (markdown file, one language)")
+  public ResponseEntity<Resource> downloadSelectConcernInfobox(
+      @PathVariable("lang") Language lang) {
+    return omsConfigService.downloadSelectConcernInfobox(lang);
   }
 }

@@ -39,7 +39,7 @@
 </#macro>
 
 <#macro content sender logo date >
-<#-- @ftlvariable name="sender" type="de.eshg.schoolentry.pdf.Address" -->
+<#-- @ftlvariable name="sender" type="de.eshg.schoolentry.api.pdf.Address" -->
 <#-- @ftlvariable name="logo" type="de.eshg.lib.document.generator.department.DepartmentLogo" -->
 <#-- @ftlvariable name="date" type="java.lang.String" -->
   <table class="header">

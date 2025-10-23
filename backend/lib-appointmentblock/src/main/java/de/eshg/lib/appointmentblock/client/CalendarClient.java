@@ -5,6 +5,7 @@
 
 package de.eshg.lib.appointmentblock.client;
 
+import de.cronn.commons.lang.StreamUtil;
 import de.eshg.base.calendar.CalendarApi;
 import de.eshg.base.calendar.CalendarEventApi;
 import de.eshg.base.calendar.api.BusinessCaseEventRequest;
@@ -90,7 +91,7 @@ public class CalendarClient {
       List<UserCalendar> userCalendars = getUserCalendarIds(userChanges);
       Map<UUID, UUID> calendarsByUser =
           userCalendars.stream()
-              .collect(Collectors.toMap(UserCalendar::userId, UserCalendar::calendarId));
+              .collect(StreamUtil.toLinkedHashMap(UserCalendar::userId, UserCalendar::calendarId));
       usersToRemove.stream()
           .flatMap(mapToCalendarIfExists(calendarsByUser))
           .forEach(calendarIds::remove);
@@ -128,7 +129,7 @@ public class CalendarClient {
     List<UserCalendar> userCalendars = getUserCalendarIds(userIds);
     Map<UUID, UUID> calendarUserMap =
         userCalendars.stream()
-            .collect(Collectors.toMap(UserCalendar::calendarId, UserCalendar::userId));
+            .collect(StreamUtil.toLinkedHashMap(UserCalendar::calendarId, UserCalendar::userId));
     List<UUID> calendarIds = userCalendars.stream().map(UserCalendar::calendarId).toList();
     List<TimeRange> timeRanges = appointmentBlocks.stream().map(this::mapToTimeRange).toList();
 

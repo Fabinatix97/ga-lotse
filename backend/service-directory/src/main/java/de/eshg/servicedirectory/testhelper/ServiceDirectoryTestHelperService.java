@@ -5,6 +5,7 @@
 
 package de.eshg.servicedirectory.testhelper;
 
+import de.cronn.commons.lang.StreamUtil;
 import de.eshg.libservicedirectoryadminapi.api.GetEntitiesResponse;
 import de.eshg.libservicedirectoryadminapi.api.orgunit.OrgUnitDto;
 import de.eshg.libservicedirectoryadminapi.api.staging.CommitResponseDto;
@@ -119,7 +120,7 @@ public class ServiceDirectoryTestHelperService extends DefaultTestHelperService 
 
   private <K, V> Map<K, V> merge(Map<K, V> a, Map<K, V> b) {
     return Stream.concat(a.entrySet().stream(), b.entrySet().stream())
-        .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+        .collect(StreamUtil.toLinkedHashMap(Map.Entry::getKey, Map.Entry::getValue));
   }
 
   private <T> List<T> merge(List<T> a, List<T> b) {

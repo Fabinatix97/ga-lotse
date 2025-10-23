@@ -161,14 +161,11 @@ public class StreetDirectoryService implements StreetDirectory {
             .map(this::convertToStreetSequence)
             .collect(Collectors.groupingBy(StreetDirectoryService::getNonNullPostalCode));
     return postalCodeToSequences.entrySet().stream()
+        .sorted(Map.Entry.comparingByKey())
         .collect(
-            Collectors.toMap(
+            StreamUtil.toLinkedHashMap(
                 Map.Entry::getKey,
-                entry -> new StreetDirectoryEntry(streetName, entry.getValue()),
-                (a, b) -> {
-                  throw new IllegalStateException("Duplicate key in map");
-                },
-                TreeMap::new));
+                entry -> new StreetDirectoryEntry(streetName, entry.getValue())));
   }
 
   private static String getNonNullPostalCode(StreetSequence sequence) {

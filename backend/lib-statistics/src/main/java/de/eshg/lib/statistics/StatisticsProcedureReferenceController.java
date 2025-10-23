@@ -5,13 +5,13 @@
 
 package de.eshg.lib.statistics;
 
+import de.cronn.commons.lang.StreamUtil;
 import de.eshg.lib.statistics.api.GetProcedureIdsRequest;
 import de.eshg.lib.statistics.api.GetProcedureIdsResponse;
 import de.eshg.lib.statistics.persistence.ProcedureReferenceForStatistics;
 import de.eshg.lib.statistics.persistence.ProcedureReferenceForStatisticsRepository;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
-import java.util.stream.Collectors;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -34,7 +34,7 @@ public class StatisticsProcedureReferenceController implements StatisticsProcedu
     return new GetProcedureIdsResponse(
         procedureReferences.stream()
             .collect(
-                Collectors.toMap(
+                StreamUtil.toLinkedHashMap(
                     ProcedureReferenceForStatistics::getExternalId,
                     ProcedureReferenceForStatistics::getProcedureId)));
   }

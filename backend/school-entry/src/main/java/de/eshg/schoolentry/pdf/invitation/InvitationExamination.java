@@ -5,7 +5,7 @@
 
 package de.eshg.schoolentry.pdf.invitation;
 
-import de.eshg.schoolentry.pdf.Address;
+import de.eshg.schoolentry.api.pdf.Address;
 
 public record InvitationExamination(
     String executionDate,

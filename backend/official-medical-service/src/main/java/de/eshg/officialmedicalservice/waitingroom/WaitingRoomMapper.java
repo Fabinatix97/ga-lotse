@@ -5,7 +5,7 @@
 
 package de.eshg.officialmedicalservice.waitingroom;
 
-import de.eshg.base.SortDirection;
+import de.eshg.api.commons.SortDirection;
 import de.eshg.officialmedicalservice.waitingroom.api.WaitingRoomDto;
 import de.eshg.officialmedicalservice.waitingroom.api.WaitingRoomSortKey;
 import de.eshg.officialmedicalservice.waitingroom.api.WaitingStatusDto;

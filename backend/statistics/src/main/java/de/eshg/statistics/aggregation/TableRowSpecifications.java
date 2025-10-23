@@ -5,7 +5,7 @@
 
 package de.eshg.statistics.aggregation;
 
-import de.eshg.base.SortDirection;
+import de.eshg.api.commons.SortDirection;
 import de.eshg.domain.model.BaseEntity_;
 import de.eshg.statistics.api.filter.BooleanFilterParameterDto;
 import de.eshg.statistics.api.filter.DateFilterParameterDto;

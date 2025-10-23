@@ -5,7 +5,7 @@
 
 package de.eshg.schoolentry.util;
 
-import de.eshg.lib.appointmentblock.LocationSelectionMode;
+import de.eshg.lib.appointmentblock.api.LocationSelectionMode;
 import de.eshg.rest.service.error.BadRequestException;
 import de.eshg.rest.service.error.NotFoundException;
 import de.eshg.schoolentry.domain.model.SchoolEntryProcedure;

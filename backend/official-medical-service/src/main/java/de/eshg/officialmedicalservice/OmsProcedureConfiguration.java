@@ -5,6 +5,7 @@
 
 package de.eshg.officialmedicalservice;
 
+import de.cronn.commons.lang.StreamUtil;
 import de.eshg.domain.model.SequencedBaseEntity;
 import de.eshg.lib.keycloak.ModuleLeaderRole;
 import de.eshg.lib.keycloak.ModuleMemberGroup;
@@ -13,7 +14,6 @@ import de.eshg.officialmedicalservice.procedure.persistence.entity.OmsProcedure;
 import de.eshg.officialmedicalservice.procedure.persistence.entity.OmsTask;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -36,14 +36,16 @@ public class OmsProcedureConfiguration {
       @Override
       public Map<Long, String> getTaskSummaries(List<OmsTask> tasks) {
         return tasks.stream()
-            .collect(Collectors.toMap(SequencedBaseEntity::getId, task -> "Amtsärztlicher Dienst"));
+            .collect(
+                StreamUtil.toLinkedHashMap(
+                    SequencedBaseEntity::getId, task -> "Amtsärztlicher Dienst"));
       }
 
       @Override
       public Map<Long, String> getProcedureSummaries(List<OmsProcedure> procedures) {
         return procedures.stream()
             .collect(
-                Collectors.toMap(
+                StreamUtil.toLinkedHashMap(
                     SequencedBaseEntity::getId, procedure -> "Amtsärztlicher Dienst Vorgang"));
       }
     };

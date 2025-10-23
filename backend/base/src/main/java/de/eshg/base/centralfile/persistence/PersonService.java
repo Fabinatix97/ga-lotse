@@ -420,10 +420,9 @@ public class PersonService {
     referencePerson.setBirthDetails(fileStateUpdate.getBirthDetails());
     referencePerson.setEmailAddresses(fileStateUpdate.getEmailAddresses());
     referencePerson.setPhoneNumbers(fileStateUpdate.getPhoneNumbers());
-    referencePerson.setContactAddress(
-        referencePerson.cloneAddress(fileStateUpdate.getContactAddress()));
+    referencePerson.setContactAddress(Person.cloneAddress(fileStateUpdate.getContactAddress()));
     referencePerson.setDifferentBillingAddress(
-        referencePerson.cloneAddress(fileStateUpdate.getDifferentBillingAddress()));
+        Person.cloneAddress(fileStateUpdate.getDifferentBillingAddress()));
     referencePerson.setModifiedAt(Instant.now(clock));
     referencePerson.setDataOrigin(DataOrigin.EDIT);
     return referencePerson;

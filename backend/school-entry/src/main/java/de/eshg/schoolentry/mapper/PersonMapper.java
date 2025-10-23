@@ -5,6 +5,13 @@
 
 package de.eshg.schoolentry.mapper;
 
+import static de.eshg.schoolentry.mapper.AddressMapper.mapToBaseAddressDto;
+import static de.eshg.schoolentry.mapper.AddressMapper.mapToSchoolEntryAddressDto;
+import static de.eshg.schoolentry.mapper.GenderMapper.mapToBaseGenderDto;
+import static de.eshg.schoolentry.mapper.GenderMapper.mapToSchoolEntryGenderDto;
+import static de.eshg.schoolentry.mapper.SalutationMapper.mapToBaseSalutationDto;
+import static de.eshg.schoolentry.mapper.SalutationMapper.mapToSchoolEntrySalutationDto;
+
 import de.eshg.lib.xlsximport.util.AddressMapper;
 import de.eshg.schoolentry.api.*;
 import de.eshg.schoolentry.business.model.*;
@@ -14,8 +21,34 @@ public final class PersonMapper {
 
   private PersonMapper() {}
 
-  public static List<PersonDetailsDto> mapCustodiansToDto(List<PersonDetailsData> custodiansData) {
-    return custodiansData.stream().map(PersonMapper::mapPersonDetailsToDto).toList();
+  public static List<CustodianDetailsDto> mapCustodiansToDto(
+      List<PersonDetailsData> custodiansData) {
+    return custodiansData.stream().map(PersonMapper::mapPersonDetailsToCustodianDto).toList();
+  }
+
+  public static CustodianDetailsDto mapPersonDetailsToCustodianDto(PersonDetailsData detailsData) {
+    if (detailsData == null) {
+      return null;
+    }
+
+    return new CustodianDetailsDto(
+        detailsData.version(),
+        detailsData.humanReadableId(),
+        detailsData.fileStateId(),
+        detailsData.fileStateOutdated(),
+        detailsData.title(),
+        mapToSchoolEntrySalutationDto(detailsData.salutation()),
+        mapToSchoolEntryGenderDto(detailsData.gender()),
+        detailsData.firstName(),
+        detailsData.lastName(),
+        detailsData.dateOfBirth(),
+        detailsData.nameAtBirth(),
+        detailsData.placeOfBirth(),
+        detailsData.countryOfBirth(),
+        detailsData.emailAddresses(),
+        detailsData.phoneNumbers(),
+        mapToSchoolEntryAddressDto(detailsData.contactAddress()),
+        mapToSchoolEntryAddressDto(detailsData.differentBillingAddress()));
   }
 
   public static PersonDetailsDto mapPersonDetailsToDto(PersonDetailsData detailsData) {
@@ -29,8 +62,8 @@ public final class PersonMapper {
         detailsData.fileStateId(),
         detailsData.fileStateOutdated(),
         detailsData.title(),
-        detailsData.salutation(),
-        detailsData.gender(),
+        mapToSchoolEntrySalutationDto(detailsData.salutation()),
+        mapToSchoolEntryGenderDto(detailsData.gender()),
         detailsData.firstName(),
         detailsData.lastName(),
         detailsData.dateOfBirth(),
@@ -39,8 +72,8 @@ public final class PersonMapper {
         detailsData.countryOfBirth(),
         detailsData.emailAddresses(),
         detailsData.phoneNumbers(),
-        detailsData.contactAddress(),
-        detailsData.differentBillingAddress());
+        mapToSchoolEntryAddressDto(detailsData.contactAddress()),
+        mapToSchoolEntryAddressDto(detailsData.differentBillingAddress()));
   }
 
   public static CreatePersonDto mapImportChildDataToCreatePersonDto(ImportChildData childData) {
@@ -49,7 +82,7 @@ public final class PersonMapper {
     }
 
     return new CreatePersonDto(
-        childData.gender(),
+        mapToSchoolEntryGenderDto(childData.gender()),
         childData.firstName(),
         childData.lastName(),
         childData.dateOfBirth(),
@@ -57,7 +90,7 @@ public final class PersonMapper {
         childData.countryOfBirth(),
         childData.phoneNumber() != null ? List.of(childData.phoneNumber()) : null,
         childData.email() != null ? List.of(childData.email()) : null,
-        AddressMapper.mapToDto(childData.address()));
+        mapToSchoolEntryAddressDto(AddressMapper.mapToDto(childData.address())));
   }
 
   public static ChildDto mapChildToDto(ChildData childData) {
@@ -66,15 +99,18 @@ public final class PersonMapper {
     }
 
     return new ChildDto(
-        childData.firstName(), childData.lastName(), childData.dateOfBirth(), childData.gender());
+        childData.firstName(),
+        childData.lastName(),
+        childData.dateOfBirth(),
+        mapToSchoolEntryGenderDto(childData.gender()));
   }
 
   public static de.eshg.base.centralfile.api.person.PersonDetailsDto mapToPersonDetailsDto(
       CreatePersonDto person) {
     return new de.eshg.base.centralfile.api.person.PersonDetailsDto(
         person.title(),
-        person.salutation(),
-        person.gender(),
+        mapToBaseSalutationDto(person.salutation()),
+        mapToBaseGenderDto(person.gender()),
         person.firstName(),
         person.lastName(),
         person.dateOfBirth(),
@@ -83,16 +119,16 @@ public final class PersonMapper {
         person.countryOfBirth(),
         person.emailAddresses(),
         person.phoneNumbers(),
-        person.contactAddress(),
-        person.differentBillingAddress());
+        mapToBaseAddressDto(person.contactAddress()),
+        mapToBaseAddressDto(person.differentBillingAddress()));
   }
 
   public static de.eshg.base.centralfile.api.person.PersonDetailsDto mapToPersonDetailsDto(
       UpdatePersonRequest child) {
     return new de.eshg.base.centralfile.api.person.PersonDetailsDto(
         child.title(),
-        child.salutation(),
-        child.gender(),
+        mapToBaseSalutationDto(child.salutation()),
+        mapToBaseGenderDto(child.gender()),
         child.firstName(),
         child.lastName(),
         child.dateOfBirth(),
@@ -101,8 +137,8 @@ public final class PersonMapper {
         child.countryOfBirth(),
         child.emailAddresses(),
         child.phoneNumbers(),
-        child.contactAddress(),
-        child.differentBillingAddress());
+        mapToBaseAddressDto(child.contactAddress()),
+        mapToBaseAddressDto(child.differentBillingAddress()));
   }
 
   public static de.eshg.base.centralfile.api.person.PersonDetailsDto mapToPersonDetailsDto(

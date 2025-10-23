@@ -8,6 +8,7 @@ package de.eshg.officialmedicalservice.appointment;
 import static de.eshg.lib.appointmentblock.api.AppointmentTypeDto.OFFICIAL_MEDICAL_SERVICE_LONG;
 import static de.eshg.lib.appointmentblock.api.AppointmentTypeDto.OFFICIAL_MEDICAL_SERVICE_SHORT;
 
+import de.cronn.commons.lang.StreamUtil;
 import de.eshg.base.centralfile.api.person.GetPersonFileStateResponse;
 import de.eshg.base.centralfile.api.person.GetPersonFileStatesRequest;
 import de.eshg.lib.appointmentblock.AbstractAppointmentService;
@@ -47,7 +48,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.UUID;
-import java.util.stream.Collectors;
+import java.util.function.Function;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -456,12 +457,12 @@ public class OmsAppointmentService extends AbstractAppointmentService<OmsAppoint
                     omsAppointmentToCentralFileId.values().stream().distinct().toList()))
             .personFileStates()
             .stream()
-            .collect(Collectors.toMap(GetPersonFileStateResponse::id, person -> person));
+            .collect(StreamUtil.toLinkedHashMap(GetPersonFileStateResponse::id));
 
     return entities.stream()
         .collect(
-            Collectors.toMap(
-                entity -> entity,
+            StreamUtil.toLinkedHashMap(
+                Function.identity(),
                 entity -> {
                   UUID centralFileId = omsAppointmentToCentralFileId.get(entity);
                   if (centralFileId == null) {

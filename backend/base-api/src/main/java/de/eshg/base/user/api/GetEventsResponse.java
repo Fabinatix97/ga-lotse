@@ -5,7 +5,7 @@
 
 package de.eshg.base.user.api;
 
-import de.eshg.base.OffsetPagedResponse;
+import de.eshg.api.commons.OffsetPagedResponse;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import java.util.List;

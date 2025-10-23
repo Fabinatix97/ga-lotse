@@ -12,6 +12,7 @@ import {
   useSidebarWithFormRef,
 } from "@eshg/lib-employee-portal";
 
+import { mapContactAndDifferentBillingAddressToSchoolEntry } from "@/lib/businessModules/schoolEntry/api/addressMapper";
 import {
   PersonDetails,
   mapPersonDetailsToForm,
@@ -42,7 +43,8 @@ function UpdateChildSidebar({
     await updateChild.mutateAsync(
       {
         procedureId,
-        apiUpdatePersonRequest: request,
+        apiUpdatePersonRequest:
+          mapContactAndDifferentBillingAddressToSchoolEntry(request),
       },
       {
         onSuccess: () => onClose(true),

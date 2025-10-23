@@ -5,6 +5,7 @@
 
 package de.eshg.schoolentry;
 
+import de.cronn.commons.lang.StreamUtil;
 import de.eshg.lib.appointmentblock.AbstractAppointmentService;
 import de.eshg.lib.appointmentblock.persistence.entity.Appointment;
 import de.eshg.schoolentry.business.model.ProcedureWithChildData;
@@ -15,7 +16,6 @@ import java.time.Clock;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -51,7 +51,7 @@ public class SchoolEntryAppointmentService
     return personClient
         .augmentWithChildData(entities)
         .collect(
-            Collectors.toMap(
+            StreamUtil.toLinkedHashMap(
                 ProcedureWithChildData::procedure,
                 data ->
                     data.child() == null

@@ -22,7 +22,6 @@ import java.util.Objects;
 import java.util.SequencedMap;
 import java.util.Set;
 import java.util.UUID;
-import java.util.stream.Collectors;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -55,7 +54,7 @@ public class UserHelper {
         userApi.getUsersBulk(new GetUsersRequest(nonNullUserIds, true));
     return getUsersResponse.users().stream()
         .collect(
-            Collectors.toMap(
+            StreamUtil.toLinkedHashMap(
                 UserDto::userId,
                 user -> new UserFirstAndLastName(user.firstName(), user.lastName())));
   }

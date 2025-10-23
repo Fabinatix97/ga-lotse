@@ -11,6 +11,7 @@ import de.eshg.config.domain.MultiLangDocument;
 public class OmsConfigurationData implements IOmsConfiguration {
   private final Document concerns;
   private final MultiLangDocument landingContent;
+  private final MultiLangDocument selectConcernInfobox;
   private final int KeycloakUserCleanupJobOverdueDuration;
   private final int medicalOpinionCutOffDateLeadTime;
   private final boolean citizenPortalAnamnesisEnabled;
@@ -18,11 +19,13 @@ public class OmsConfigurationData implements IOmsConfiguration {
   public OmsConfigurationData(
       Document concerns,
       MultiLangDocument landingContent,
+      MultiLangDocument selectConcernInfobox,
       int keycloakUserCleanupJobOverdueDuration,
       int medicalOpinionCutOffDateLeadTime,
       boolean citizenPortalAnamnesisEnabled) {
     this.concerns = concerns;
     this.landingContent = landingContent;
+    this.selectConcernInfobox = selectConcernInfobox;
     KeycloakUserCleanupJobOverdueDuration = keycloakUserCleanupJobOverdueDuration;
     this.medicalOpinionCutOffDateLeadTime = medicalOpinionCutOffDateLeadTime;
     this.citizenPortalAnamnesisEnabled = citizenPortalAnamnesisEnabled;
@@ -36,6 +39,10 @@ public class OmsConfigurationData implements IOmsConfiguration {
   @Override
   public MultiLangDocument getLandingContent() {
     return landingContent;
+  }
+
+  public MultiLangDocument getSelectConcernInfobox() {
+    return selectConcernInfobox;
   }
 
   @Override

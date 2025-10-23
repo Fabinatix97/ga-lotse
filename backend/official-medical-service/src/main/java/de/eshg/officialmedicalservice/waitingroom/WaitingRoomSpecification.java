@@ -11,7 +11,7 @@ import static de.eshg.officialmedicalservice.waitingroom.api.WaitingRoomSortKey.
 import static de.eshg.officialmedicalservice.waitingroom.api.WaitingRoomSortKey.LASTNAME;
 import static de.eshg.officialmedicalservice.waitingroom.api.WaitingRoomSortKey.PHYSICIAN;
 
-import de.eshg.base.SortDirection;
+import de.eshg.api.commons.SortDirection;
 import de.eshg.lib.procedure.domain.model.ProcedureStatus;
 import de.eshg.officialmedicalservice.procedure.persistence.entity.OmsProcedure;
 import de.eshg.officialmedicalservice.procedure.persistence.entity.OmsProcedure_;

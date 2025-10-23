@@ -9,9 +9,9 @@ import static de.eshg.servicedirectory.ServiceDirectoryAdminService.validateComm
 import static de.eshg.servicedirectory.common.Utils.assertSqlIdentifier;
 import static de.eshg.servicedirectory.common.Utils.snakeToCamelCase;
 import static de.eshg.servicedirectory.common.Utils.snakeToKebabCase;
-import static java.util.stream.Collectors.toMap;
 import static org.apache.commons.lang3.StringUtils.isEmpty;
 
+import de.cronn.commons.lang.StreamUtil;
 import de.eshg.domain.model.GloballyUniqueEntityBase;
 import de.eshg.libservicedirectoryadminapi.api.staging.CommitResponseDto;
 import de.eshg.servicedirectory.actor.mapper.ActorMapperAdminApi;
@@ -169,21 +169,21 @@ public class ServiceDirectoryCommitService {
             actors.stream()
                 .filter(StagedEntity::isPreserved)
                 .collect(
-                    toMap(
+                    StreamUtil.toLinkedHashMap(
                         GloballyUniqueEntityBase::getId,
                         e -> ActorMapperAdminApi.toApi(e.getAuditedEntity()))),
             getDeletedIds(actors),
             orgUnits.stream()
                 .filter(StagedEntity::isPreserved)
                 .collect(
-                    toMap(
+                    StreamUtil.toLinkedHashMap(
                         GloballyUniqueEntityBase::getId,
                         e -> OrgUnitMapper.toApi(e.getAuditedEntity()))),
             getDeletedIds(orgUnits),
             rules.stream()
                 .filter(StagedEntity::isPreserved)
                 .collect(
-                    toMap(
+                    StreamUtil.toLinkedHashMap(
                         GloballyUniqueEntityBase::getId,
                         e -> RuleMapper.toApi(e.getAuditedEntity()))),
             getDeletedIds(rules));
@@ -481,7 +481,7 @@ public class ServiceDirectoryCommitService {
 
   private void updateOrgUnitIds(List<StagedOrgUnit> orgUnits) {
     Map<UUID, StagedOrgUnit> orgUnitsByStagedId =
-        orgUnits.stream().collect(toMap(GloballyUniqueEntityBase::getId, x -> x));
+        orgUnits.stream().collect(StreamUtil.toLinkedHashMap(GloballyUniqueEntityBase::getId));
     List<StagedActor> actors =
         stagedActorRepository.findAllByOrgUnitIdIn(orgUnitsByStagedId.keySet());
     actors.forEach(

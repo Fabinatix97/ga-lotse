@@ -1,0 +1,22 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<!--
+ Copyright 2025 cronn GmbH
+ SPDX-License-Identifier: AGPL-3.0-only
+-->
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+  <changeSet author="GA-Lotse" id="1760534536419-1">
+    <createTable tableName="school_entry_procedure_custodian_without_dob">
+      <column name="school_entry_procedure_id" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="custodian_without_dob" type="UUID"/>
+    </createTable>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1760534536419-2">
+    <addUniqueConstraint columnNames="custodian_without_dob" constraintName="school_entry_procedure_custodian_contact_custodian_without_dob_key" tableName="school_entry_procedure_custodian_without_dob"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1760534536419-3">
+    <addForeignKeyConstraint baseColumnNames="school_entry_procedure_id" baseTableName="school_entry_procedure_custodian_without_dob" constraintName="fk_school_entry_procedure_custodian_without_dob_school_entry_procedure" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="school_entry_procedure" validate="true"/>
+  </changeSet>
+</databaseChangeLog>

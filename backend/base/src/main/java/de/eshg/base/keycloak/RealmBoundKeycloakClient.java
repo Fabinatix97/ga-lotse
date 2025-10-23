@@ -9,7 +9,6 @@ import static de.eshg.base.keycloak.KeycloakProvisioning.FALSE;
 import static de.eshg.base.keycloak.KeycloakProvisioning.TRUE;
 import static de.eshg.base.keycloak.KeycloakTestProvisioning.TEST_HELPER_CLIENT_ID;
 import static de.eshg.base.keycloak.differ.KeycloakDiffer.toJson;
-import static java.util.function.Function.identity;
 
 import com.google.common.annotations.VisibleForTesting;
 import de.cronn.commons.lang.StreamUtil;
@@ -619,7 +618,7 @@ public class RealmBoundKeycloakClient implements AutoCloseable {
 
   protected Map<String, RoleRepresentation> getRoleRepresentationsByName() {
     return getRealm().roles().list().stream()
-        .collect(Collectors.toMap(RoleRepresentation::getName, identity()));
+        .collect(StreamUtil.toLinkedHashMap(RoleRepresentation::getName));
   }
 
   private List<RoleRepresentation> getRoleComposites(RoleResource roleResource) {

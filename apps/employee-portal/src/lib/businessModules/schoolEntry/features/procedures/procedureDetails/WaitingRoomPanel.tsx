@@ -65,7 +65,7 @@ export function WaitingRoomPanel(props: { procedure: ProcedureDetails }) {
             <FormStack dense onSubmit={handleSubmit}>
               <TextareaField
                 name="description"
-                label="z.B. Raum, MTA, Arzt:in"
+                label="z.B. Raum, MFA, Arzt:in"
                 sxTextarea={{ maxHeight: "37px" }}
                 validate={validateLength(0, 60)}
               />

@@ -10,9 +10,9 @@ import static de.eshg.schoolentry.util.SchoolEntrySystemProgressEntryType.SCHOOL
 
 import de.eshg.api.commons.InlineParameterObject;
 import de.eshg.file.common.CustomMediaTypes;
-import de.eshg.lib.appointmentblock.LocationSelectionMode;
 import de.eshg.lib.appointmentblock.api.AppointmentDto;
 import de.eshg.lib.appointmentblock.api.GetFreeAppointmentsResponse;
+import de.eshg.lib.appointmentblock.api.LocationSelectionMode;
 import de.eshg.lib.appointmentblock.spring.AppointmentBlockConfig;
 import de.eshg.lib.auditlog.AuditLogger;
 import de.eshg.lib.procedure.api.ProcedureSearchParameters;
@@ -280,6 +280,19 @@ public class SchoolEntryController {
     return augmentAndMap(procedure);
   }
 
+  @PutMapping("/{procedureId}/custodian-without-dob")
+  @Transactional
+  public ProcedureDetailsDto addCustodianWithoutDateOfBirth(
+      @PathVariable("procedureId") UUID procedureId,
+      @Valid @RequestBody AddCustodianWithoutDateOfBirthRequest request) {
+    SchoolEntryProcedure procedure =
+        schoolEntryService.findProcedureByExternalIdForUpdate(
+            procedureId, request.procedureVersion());
+    ProcedureValidator.validateProcedureStatusNotClosed(procedure);
+    personService.addCustodianToProcedure(procedure, request.custodian());
+    return augmentAndMap(procedure);
+  }
+
   @PutMapping("/{procedureId}/custodian/{custodianCentralFileStateId}")
   @Transactional
   public ProcedureDetailsDto updateCustodian(
@@ -294,6 +307,19 @@ public class SchoolEntryController {
     return augmentAndMap(custodian.getProcedure());
   }
 
+  @PutMapping("/{procedureId}/custodian-without-dob/{custodianId}")
+  @Transactional
+  public ProcedureDetailsDto updateCustodianWithoutDateOfBirth(
+      @PathVariable("procedureId") UUID procedureId,
+      @PathVariable("custodianId") UUID custodianId,
+      @Valid @RequestBody UpdatePersonWithoutDateOfBirthRequest request) {
+    SchoolEntryProcedure procedure =
+        schoolEntryService.findProcedureByExternalIdForUpdate(procedureId, request.version());
+    ProcedureValidator.validateProcedureStatusNotClosed(procedure);
+    personService.updateCustodianWithoutDateOfBirth(procedure, custodianId, request);
+    return augmentAndMap(procedure);
+  }
+
   @DeleteMapping("/{procedureId}/custodian/{custodianCentralFileStateId}")
   @Transactional
   public ProcedureDetailsDto removeCustodian(
@@ -305,6 +331,20 @@ public class SchoolEntryController {
             procedureId, request.procedureVersion());
     ProcedureValidator.validateProcedureStatusNotClosed(procedure);
     personService.removeCustodian(custodianCentralFileStateId, procedure);
+    return augmentAndMap(procedure);
+  }
+
+  @DeleteMapping("/{procedureId}/custodian-without-dob/{custodianId}")
+  @Transactional
+  public ProcedureDetailsDto removeCustodianWithoutDateOfBirth(
+      @PathVariable("procedureId") UUID procedureId,
+      @PathVariable("custodianId") UUID custodianId,
+      @Valid @RequestBody RemoveCustodianRequest request) {
+    SchoolEntryProcedure procedure =
+        schoolEntryService.findProcedureByExternalIdForUpdate(
+            procedureId, request.procedureVersion());
+    ProcedureValidator.validateProcedureStatusNotClosed(procedure);
+    personService.removeCustodianWithoutDateOfBirth(custodianId, procedure);
     return augmentAndMap(procedure);
   }
 

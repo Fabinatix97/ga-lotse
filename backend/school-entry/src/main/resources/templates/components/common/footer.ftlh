@@ -10,7 +10,7 @@
 </#macro>
 
 <#macro content office>
-<#-- @ftlvariable name="office" type="de.eshg.schoolentry.pdf.Address" -->
+<#-- @ftlvariable name="office" type="de.eshg.schoolentry.api.pdf.Address" -->
   <footer>
     <div>
       ${office.name} • ${office.street} ${office.zipCode} ${office.city}

@@ -18,6 +18,7 @@ import {
 } from "@eshg/lib-employee-portal";
 import { ApiAddCustodianRequest } from "@eshg/school-entry-api";
 
+import { mapContactAndDifferentBillingAddressToSchoolEntry } from "@/lib/businessModules/schoolEntry/api/addressMapper";
 import { ProcedureDetails } from "@/lib/businessModules/schoolEntry/api/models/ProcedureDetails";
 import { useAddPersonAsCustodian } from "@/lib/businessModules/schoolEntry/api/mutations/schoolEntryApi";
 
@@ -63,10 +64,7 @@ function ConfiguredPersonSidebar(
 
   async function handleSelect(person: ApiGetReferencePersonResponse) {
     await addPersonAsCustodian.mutateAsync({
-      custodian: {
-        ...person,
-        referenceId: person.id,
-      },
+      custodian: mapContactAndDifferentBillingAddressToSchoolEntry(person),
       procedureVersion: props.procedure.version,
     });
   }
@@ -88,7 +86,9 @@ function mapToRequest(
   procedureVersion: number,
 ): ApiAddCustodianRequest {
   return {
-    custodian: mapToPersonAddRequest(values),
+    custodian: mapContactAndDifferentBillingAddressToSchoolEntry(
+      mapToPersonAddRequest(values),
+    ),
     procedureVersion: procedureVersion,
   };
 }

@@ -5,6 +5,7 @@
 
 package de.eshg.statistics;
 
+import de.cronn.commons.lang.StreamUtil;
 import de.eshg.base.user.UserApi;
 import de.eshg.base.user.api.GetUsersRequest;
 import de.eshg.base.user.api.GetUsersResponse;
@@ -13,7 +14,6 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
-import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -30,8 +30,7 @@ public class StatisticsUserService {
     } else {
       GetUsersResponse getUsersResponse =
           userApiClient.getUsersBulk(new GetUsersRequest(userIds, true));
-      return getUsersResponse.users().stream()
-          .collect(Collectors.toMap(UserDto::userId, userDto -> userDto));
+      return getUsersResponse.users().stream().collect(StreamUtil.toLinkedHashMap(UserDto::userId));
     }
   }
 

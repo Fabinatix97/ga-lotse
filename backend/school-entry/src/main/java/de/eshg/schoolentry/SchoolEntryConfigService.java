@@ -13,7 +13,7 @@ import de.eshg.base.util.MapUtils;
 import de.eshg.config.AuditLogWriter;
 import de.eshg.config.ConfigurationStatus;
 import de.eshg.config.EshgConfigurationService;
-import de.eshg.lib.appointmentblock.LocationSelectionMode;
+import de.eshg.lib.appointmentblock.api.LocationSelectionMode;
 import de.eshg.lib.appointmentblock.persistence.AppointmentBlockRepository;
 import de.eshg.lib.appointmentblock.spring.AppointmentBlockProperties;
 import de.eshg.lib.procedure.domain.repository.ProcedureRepository;

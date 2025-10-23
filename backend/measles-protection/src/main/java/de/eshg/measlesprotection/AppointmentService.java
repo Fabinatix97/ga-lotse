@@ -10,6 +10,7 @@ import static de.eshg.measlesprotection.persistence.support.MeaslesProtectionSys
 import static de.eshg.measlesprotection.persistence.support.MeaslesProtectionSystemProgressEntryType.APPOINTMENT_DELETED;
 import static de.eshg.measlesprotection.persistence.support.MeaslesProtectionSystemProgressEntryType.APPOINTMENT_REBOOKED;
 
+import de.cronn.commons.lang.StreamUtil;
 import de.eshg.base.calendar.CalendarApi;
 import de.eshg.base.calendar.CalendarEventApi;
 import de.eshg.base.calendar.api.BusinessCaseEventRequest;
@@ -250,7 +251,7 @@ public class AppointmentService extends AbstractAppointmentService<MeaslesProtec
     return personClient
         .augmentWithPersonDetails(entities, false)
         .collect(
-            Collectors.toMap(
+            StreamUtil.toLinkedHashMap(
                 ProcedureWithPersonDetailsData::procedure,
                 data ->
                     data.personDetails() == null

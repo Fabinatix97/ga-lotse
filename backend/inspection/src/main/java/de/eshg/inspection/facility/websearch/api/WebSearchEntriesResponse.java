@@ -6,7 +6,7 @@
 package de.eshg.inspection.facility.websearch.api;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import de.eshg.base.PagedResponse;
+import de.eshg.api.commons.PagedResponse;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;

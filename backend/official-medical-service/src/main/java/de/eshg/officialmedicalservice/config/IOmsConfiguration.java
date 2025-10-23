@@ -13,6 +13,8 @@ public interface IOmsConfiguration {
 
   MultiLangDocument getLandingContent();
 
+  MultiLangDocument getSelectConcernInfobox();
+
   int getKeycloakUserCleanupJobOverdueDuration();
 
   int getMedicalOpinionCutOffDateLeadTime();

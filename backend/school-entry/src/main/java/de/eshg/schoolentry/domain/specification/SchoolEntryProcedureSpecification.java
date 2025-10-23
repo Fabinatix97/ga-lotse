@@ -5,7 +5,7 @@
 
 package de.eshg.schoolentry.domain.specification;
 
-import de.eshg.base.SortDirection;
+import de.eshg.api.commons.SortDirection;
 import de.eshg.lib.appointmentblock.persistence.entity.Appointment_;
 import de.eshg.lib.procedure.domain.model.ProcedureStatus;
 import de.eshg.lib.procedure.domain.model.ProcedureType;

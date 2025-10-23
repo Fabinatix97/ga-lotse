@@ -5,15 +5,12 @@
 
 package de.eshg.inspection.client;
 
-import static java.util.function.Function.identity;
-import static java.util.stream.Collectors.toMap;
-
+import de.cronn.commons.lang.StreamUtil;
 import de.eshg.base.user.UserApi;
 import de.eshg.base.user.api.GetUsersRequest;
 import de.eshg.base.user.api.UserDto;
 import jakarta.validation.constraints.NotNull;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -46,7 +43,7 @@ public class UserClient {
     List<UserDto> users = userApi.getUsersBulk(getUsersRequest).users();
 
     Map<UUID, UserDto> userMap =
-        new HashMap<>(users.stream().collect(toMap(UserDto::userId, identity())));
+        users.stream().collect(StreamUtil.toLinkedHashMap(UserDto::userId));
 
     for (UUID userId : userIds) {
       userMap.putIfAbsent(userId, createUnknownUser(userId));

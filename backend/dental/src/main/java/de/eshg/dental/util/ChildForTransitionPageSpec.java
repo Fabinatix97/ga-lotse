@@ -5,7 +5,7 @@
 
 package de.eshg.dental.util;
 
-import de.eshg.base.SortDirection;
+import de.eshg.api.commons.SortDirection;
 import de.eshg.dental.api.ChildForTransitionSortKey;
 
 public record ChildForTransitionPageSpec(

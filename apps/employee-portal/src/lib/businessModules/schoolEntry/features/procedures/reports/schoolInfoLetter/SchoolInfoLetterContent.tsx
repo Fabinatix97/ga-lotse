@@ -216,6 +216,14 @@ export function SchoolInfoLetterContent({
                 defaultValue={data.defaultValuesLetter.physiciansRecommendation}
                 orientation="vertical"
               />
+              <LetterFieldSingleCheckbox
+                defaultValue={
+                  data.defaultValuesLetter
+                    .referredToFurtherConsultationFromSchool
+                }
+                field="referredToFurtherConsultationFromSchool"
+                label="auf weitere Beratung der Schule verwiesen"
+              />
             </Stack>
 
             <LetterFieldTextarea
@@ -230,14 +238,6 @@ export function SchoolInfoLetterContent({
               label="Persönliche Bemerkung"
               defaultValue={data.defaultValuesLetter.customRecommendation}
               minRows={1}
-            />
-
-            <LetterFieldSingleCheckbox
-              defaultValue={
-                data.defaultValuesLetter.referredToFurtherConsultationFromSchool
-              }
-              field="referredToFurtherConsultationFromSchool"
-              label="auf weitere Beratung der Schule verwiesen"
             />
           </Stack>
         </Sheet>

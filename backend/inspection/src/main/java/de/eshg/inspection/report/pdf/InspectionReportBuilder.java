@@ -43,7 +43,10 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.UUID;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
@@ -160,7 +163,11 @@ public class InspectionReportBuilder {
     String contactPerson =
         baseFacility.contactPersons().stream()
             .findFirst()
-            .map(person -> String.join(" ", person.title(), person.firstName(), person.lastName()))
+            .map(
+                person ->
+                    Stream.of(person.title(), person.firstName(), person.lastName())
+                        .filter(Objects::nonNull)
+                        .collect(Collectors.joining(" ")))
             .orElse(null);
     String fileNumber =
         facilityFileNumberService.getFileNumber(baseFacility, inspection.getFileNumberSuffix());

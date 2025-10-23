@@ -16,6 +16,9 @@ import {
   mapBaseAddressToApi,
 } from "@eshg/lib-employee-portal";
 import {
+  AcademicTitle,
+  OptionalFieldValue,
+  TITLE_VALUES,
   formatList,
   formatPostalCodeAndCity,
   formatStreetAndHouseNumber,
@@ -68,6 +71,8 @@ export function mapApiFacilityStateToFacilityFormValues(
   };
 }
 
+const notSpecifiedTitle = TITLE_VALUES[AcademicTitle.NotSpecified]!;
+
 export function createEmptyContactPerson(): BaseFacilityContactPerson {
   return {
     firstName: "",
@@ -75,7 +80,7 @@ export function createEmptyContactPerson(): BaseFacilityContactPerson {
     lastName: "",
     phoneNumber: "",
     role: "",
-    title: "",
+    title: notSpecifiedTitle,
     gender: "",
     salutation: "",
     mainContact: false,
@@ -91,7 +96,7 @@ export function mapApiContactPersonToForm(
     lastName: contactPerson.lastName ?? "",
     phoneNumber: contactPerson.phoneNumber ?? "",
     role: contactPerson.role ?? "",
-    title: contactPerson.title ?? "",
+    title: contactPerson.title ?? notSpecifiedTitle,
     salutation: contactPerson.salutation ?? "",
     gender: contactPerson.gender ?? "",
     mainContact: contactPerson.mainContact ?? false,
@@ -107,9 +112,13 @@ export function mapContactPersonToApi(
     lastName: contactPerson.lastName,
     phoneNumber: mapOptionalValue(contactPerson.phoneNumber)?.trim(),
     role: mapOptionalValue(contactPerson.role)?.trim(),
-    title: mapOptionalValue(contactPerson.title)?.trim(),
+    title: mapTitle(contactPerson.title),
     salutation: mapOptionalValue(contactPerson.salutation),
     gender: mapOptionalValue(contactPerson.gender),
     mainContact: contactPerson.mainContact,
   };
+}
+
+function mapTitle(value: OptionalFieldValue<string>): string | undefined {
+  return value === notSpecifiedTitle ? undefined : value;
 }

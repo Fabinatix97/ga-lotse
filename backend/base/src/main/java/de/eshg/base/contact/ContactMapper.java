@@ -12,7 +12,8 @@ import static de.eshg.base.contact.persistence.entity.InstitutionContactSubCateg
 import static de.eshg.base.history.HistoryChange.newChange;
 import static de.eshg.base.util.MappingUtil.*;
 
-import de.eshg.base.SortDirection;
+import de.cronn.commons.lang.StreamUtil;
+import de.eshg.api.commons.SortDirection;
 import de.eshg.base.address.AddressDto;
 import de.eshg.base.address.DomesticAddressDto;
 import de.eshg.base.address.PostboxAddressDto;
@@ -27,8 +28,6 @@ import de.eshg.base.user.mapper.UserMapper;
 import de.eshg.base.util.PaginationUtil.PageSpec;
 import de.eshg.mapper.RevisionEntryWithChange;
 import java.util.*;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.data.domain.Sort;
 
@@ -199,7 +198,7 @@ public class ContactMapper {
   private static Map<UUID, ContactDto> mapToApiAndGroupById(List<Contact> contacts) {
     return contacts.stream()
         .map(ContactMapper::mapContactToApi)
-        .collect(Collectors.toMap(ContactDto::id, Function.identity()));
+        .collect(StreamUtil.toLinkedHashMap(ContactDto::id));
   }
 
   public static InstitutionContactDto mapInstitutionContactToApi(

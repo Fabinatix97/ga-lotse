@@ -5,12 +5,12 @@
 
 package de.eshg.lib.procedure.procedures;
 
+import de.cronn.commons.lang.StreamUtil;
 import de.eshg.domain.model.SequencedBaseEntity;
 import de.eshg.lib.procedure.domain.model.Procedure;
 import de.eshg.lib.procedure.domain.model.Task;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 public class SimpleSummaryProvider<
         TaskT extends Task<ProcedureT>, ProcedureT extends Procedure<ProcedureT, TaskT, ?, ?>>
@@ -31,12 +31,13 @@ public class SimpleSummaryProvider<
   @Override
   public Map<Long, String> getTaskSummaries(List<TaskT> tasks) {
     return tasks.stream()
-        .collect(Collectors.toMap(SequencedBaseEntity::getId, task -> taskSummary));
+        .collect(StreamUtil.toLinkedHashMap(SequencedBaseEntity::getId, task -> taskSummary));
   }
 
   @Override
   public Map<Long, String> getProcedureSummaries(List<ProcedureT> procedures) {
     return procedures.stream()
-        .collect(Collectors.toMap(SequencedBaseEntity::getId, procedure -> procedureSummary));
+        .collect(
+            StreamUtil.toLinkedHashMap(SequencedBaseEntity::getId, procedure -> procedureSummary));
   }
 }

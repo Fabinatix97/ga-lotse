@@ -12,6 +12,7 @@ import de.eshg.base.contact.api.ContactDto;
 import de.eshg.base.contact.api.InstitutionContactDto;
 import de.eshg.base.department.GetDepartmentInfoResponse;
 import de.eshg.lib.contact.ContactClient;
+import de.eshg.schoolentry.api.pdf.Address;
 import de.eshg.schoolentry.client.DepartmentInfoClient;
 import java.util.Arrays;
 import java.util.List;

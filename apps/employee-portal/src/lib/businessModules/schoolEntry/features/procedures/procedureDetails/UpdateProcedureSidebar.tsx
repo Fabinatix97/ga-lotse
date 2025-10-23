@@ -55,6 +55,7 @@ import {
 } from "@eshg/school-entry-api";
 
 import { useLabelApi } from "@/lib/businessModules/schoolEntry/api/clients";
+import { CustodianDetails } from "@/lib/businessModules/schoolEntry/api/models/CustodianDetails";
 import { Location } from "@/lib/businessModules/schoolEntry/api/models/Location";
 import { PersonDetails } from "@/lib/businessModules/schoolEntry/api/models/Person";
 import { ProcedureDetails } from "@/lib/businessModules/schoolEntry/api/models/ProcedureDetails";
@@ -158,8 +159,8 @@ function getAppointmentLabel(appointment: Appointment) {
   return formatWeekdayDateTimeRange(appointment.start, appointment.end);
 }
 
-function getPersonDetailsLabel(personDetails: PersonDetails) {
-  return `${personDetails.firstName} ${personDetails.lastName}`;
+function getPersonDetailsLabel(custodianDetails: CustodianDetails) {
+  return `${custodianDetails.firstName} ${custodianDetails.lastName}`;
 }
 
 function useUpdateProcedureForm(

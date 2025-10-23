@@ -99,12 +99,17 @@ export function useGetFreeAppointmentsForCitizenAfterCurrentDate(
 
 export function useGetConcerns() {
   const citizenPublicApi = useCitizenPublicApi();
+  const lang = useLang();
 
   return queryOptions({
-    queryKey: citizenPublicApiQueryKey(["getVisibleConcerns"]),
+    queryKey: citizenPublicApiQueryKey(["getVisibleConcerns", lang]),
     queryFn: () => citizenPublicApi.getVisibleConcerns(),
-    select: (data) =>
-      data.categories.flatMap((category) => mapToConcernApiList(category)),
+    select: (data) => ({
+      concerns: data.categories.flatMap((category) =>
+        mapToConcernApiList(category),
+      ),
+      infobox: data.infobox,
+    }),
   });
 }
 

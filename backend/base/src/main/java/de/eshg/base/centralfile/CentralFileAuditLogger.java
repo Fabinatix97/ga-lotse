@@ -6,8 +6,10 @@
 package de.eshg.base.centralfile;
 
 import de.eshg.base.centralfile.persistence.entity.DataOrigin;
+import de.eshg.base.centralfile.persistence.entity.PersonWithoutDateOfBirth;
 import de.eshg.lib.auditlog.AuditLogger;
 import de.eshg.rest.service.security.CurrentUserHelper;
+import java.time.Instant;
 import java.util.Map;
 import org.hibernate.Hibernate;
 import org.springframework.stereotype.Component;
@@ -17,6 +19,7 @@ public class CentralFileAuditLogger {
   private static final String KEY_USER = "durch Benutzer";
   private static final String KEY_ID = "ID";
   private static final String KEY_REFERENCE_ID = "StammdatenID";
+  private static final String CATEGORY_PERSON_WITHOUT_DATE_OF_BIRTH = "Person ohne Geburtsdatum";
 
   private final AuditLogger auditLogger;
 
@@ -92,6 +95,41 @@ public class CentralFileAuditLogger {
         Map.of(
             KEY_ID,
             referenceData.getExternalId().toString(),
+            KEY_USER,
+            CurrentUserHelper.getCurrentUserIdAsStringGracefully().orElse("-")));
+  }
+
+  public void logAddPersonWithoutDateOfBirth(PersonWithoutDateOfBirth person) {
+    auditLogger.log(
+        CATEGORY_PERSON_WITHOUT_DATE_OF_BIRTH,
+        "Anlegen Person ohne Geburtsdatum (%s)".formatted(toLogString(person.getDataOrigin())),
+        Map.of(
+            KEY_ID,
+            person.getExternalId().toString(),
+            KEY_USER,
+            CurrentUserHelper.getCurrentUserIdAsStringGracefully().orElse("-")));
+  }
+
+  public void logDeletePersonWithoutDateOfBirth(PersonWithoutDateOfBirth person, Instant now) {
+    auditLogger.log(
+        CATEGORY_PERSON_WITHOUT_DATE_OF_BIRTH,
+        "Löschen Person ohne Geburtsdatum",
+        Map.of(
+            KEY_ID,
+            person.getExternalId().toString(),
+            "Löschzeitpunkt",
+            String.valueOf(now),
+            KEY_USER,
+            CurrentUserHelper.getCurrentUserIdAsStringGracefully().orElse("-")));
+  }
+
+  public void logEditPersonWithoutDateOfBirth(PersonWithoutDateOfBirth person) {
+    auditLogger.log(
+        CATEGORY_PERSON_WITHOUT_DATE_OF_BIRTH,
+        "Editieren Person ohne Geburtsdatum",
+        Map.of(
+            KEY_ID,
+            person.getExternalId().toString(),
             KEY_USER,
             CurrentUserHelper.getCurrentUserIdAsStringGracefully().orElse("-")));
   }

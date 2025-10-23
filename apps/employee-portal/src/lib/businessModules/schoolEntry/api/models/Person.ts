@@ -6,6 +6,8 @@
 import {
   BaseAddress,
   DefaultPersonFormValues,
+  TaggedDomesticAddress,
+  TaggedPostboxAddress,
   mapApiAddressToForm,
   mapOptional,
   normalizeListInputs,
@@ -13,9 +15,12 @@ import {
 import { parseOptionalValue, toDateString } from "@eshg/lib-portal";
 import {
   ApiCountryCode,
+  ApiCreatePersonContactAddress,
   ApiGender,
   ApiPersonDetails,
   ApiSalutation,
+  ApiSchoolEntryDomesticAddress,
+  ApiSchoolEntryPostboxAddress,
 } from "@eshg/school-entry-api";
 
 interface PersonProps {
@@ -71,9 +76,35 @@ export function mapPersonDetails(response: ApiPersonDetails): PersonDetails {
     countryOfBirth: response.countryOfBirth,
     emailAddresses: response.emailAddresses,
     phoneNumbers: response.phoneNumbers,
-    contactAddress: response.contactAddress,
-    differentBillingAddress: response.differentBillingAddress,
+    contactAddress: mapAddress(response.contactAddress),
+    differentBillingAddress: mapAddress(response.differentBillingAddress),
   };
+}
+
+export function mapAddress(
+  address: ApiCreatePersonContactAddress | undefined,
+): BaseAddress | undefined {
+  switch (address?.type) {
+    case undefined:
+      return undefined;
+    case "SchoolEntryDomesticAddress":
+      return mapDomesticAddress(address);
+    case "SchoolEntryPostboxAddress": {
+      return mapPostboxAddress(address);
+    }
+  }
+}
+
+function mapDomesticAddress(
+  address: ApiSchoolEntryDomesticAddress,
+): TaggedDomesticAddress {
+  return { ...address, type: "DomesticAddress" };
+}
+
+function mapPostboxAddress(
+  address: ApiSchoolEntryPostboxAddress,
+): TaggedPostboxAddress {
+  return { ...address, type: "PostboxAddress" };
 }
 
 export function mapPersonDetailsToForm(

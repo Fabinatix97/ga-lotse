@@ -5,7 +5,7 @@
 
 package de.eshg.lib.procedure.mapping;
 
-import de.eshg.base.SortDirection;
+import de.eshg.api.commons.SortDirection;
 import de.eshg.base.util.PaginationUtil;
 import de.eshg.lib.procedure.domain.model.GdprValidationTask;
 import de.eshg.lib.procedure.domain.model.GdprValidationTaskStatus;

@@ -5,6 +5,7 @@
 
 package de.eshg.schoolentry.statistics;
 
+import de.cronn.commons.lang.StreamUtil;
 import de.eshg.schoolentry.api.CountryCodeDto;
 import de.eshg.schoolentry.domain.model.Anamnesis;
 import de.eshg.schoolentry.domain.model.SchoolEntryCountryCode;
@@ -21,7 +22,6 @@ import java.time.Period;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 import org.jetbrains.annotations.VisibleForTesting;
 import org.springframework.stereotype.Component;
 
@@ -144,7 +144,7 @@ public class AnamnesisStatistics {
     }
     Map<String, Integer> countryCodes =
         Arrays.stream(CountryCodeDto.values())
-            .collect(Collectors.toMap(Enum::name, CountryCodeDto::getCountryGroupCode));
+            .collect(StreamUtil.toLinkedHashMap(Enum::name, CountryCodeDto::getCountryGroupCode));
     SchoolEntryCountryCode schoolEntryCountryCode = anamnesisGetter.apply(anamnesis);
     return Country.convertCountryCodeToValue(countryCodes.get(schoolEntryCountryCode.name()));
   }

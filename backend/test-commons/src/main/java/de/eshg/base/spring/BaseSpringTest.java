@@ -16,12 +16,15 @@ import de.eshg.base.query_validation.QueryValidationTraits;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.TestInfo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.actuate.observability.AutoConfigureObservability;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 
 @Import({ApplicationContextCreationWatcher.class, QueryAndParamsCapturingListener.class})
 @ActiveProfiles({"test-commons", LOCAL_PROFILE_NAME, "dev-config"})
+// Enable observability so that the Prometheus endpoint is visible for AuthorizationTests
+@AutoConfigureObservability
 public abstract class BaseSpringTest extends BaseTest
     implements AuthenticationTraits,
         QueryValidationTraits,

@@ -16,12 +16,15 @@ import static de.eshg.schoolentry.util.SchoolEntrySystemProgressEntryType.CUSTOD
 import de.cronn.commons.lang.StreamUtil;
 import de.eshg.rest.service.error.NotFoundException;
 import de.eshg.schoolentry.api.CreatePersonDto;
+import de.eshg.schoolentry.api.CreatePersonWithoutDateOfBirthDto;
 import de.eshg.schoolentry.api.SyncPersonRequest;
 import de.eshg.schoolentry.api.UpdatePersonRequest;
+import de.eshg.schoolentry.api.UpdatePersonWithoutDateOfBirthRequest;
 import de.eshg.schoolentry.client.PersonClient;
 import de.eshg.schoolentry.domain.model.Person;
 import de.eshg.schoolentry.domain.model.SchoolEntryProcedure;
 import de.eshg.schoolentry.domain.repository.PersonRepository;
+import de.eshg.schoolentry.domain.repository.SchoolEntryProcedureRepository;
 import de.eshg.schoolentry.mapper.PersonMapper;
 import de.eshg.schoolentry.util.ProgressEntryUtil;
 import de.eshg.schoolentry.util.SchoolEntrySystemProgressEntryType;
@@ -38,14 +41,17 @@ public class PersonService {
   private static final Logger log = LoggerFactory.getLogger(PersonService.class);
 
   private final PersonRepository personRepository;
+  private final SchoolEntryProcedureRepository schoolEntryProcedureRepository;
   private final PersonClient personClient;
   private final ProgressEntryUtil progressEntryUtil;
 
   public PersonService(
       PersonRepository personRepository,
+      SchoolEntryProcedureRepository schoolEntryProcedureRepository,
       PersonClient personClient,
       ProgressEntryUtil progressEntryUtil) {
     this.personRepository = personRepository;
+    this.schoolEntryProcedureRepository = schoolEntryProcedureRepository;
     this.personClient = personClient;
     this.progressEntryUtil = progressEntryUtil;
   }
@@ -103,6 +109,14 @@ public class PersonService {
     personRepository.flush();
   }
 
+  public void addCustodianToProcedure(
+      SchoolEntryProcedure procedure, CreatePersonWithoutDateOfBirthDto custodianDto) {
+    UUID custodianId = personClient.createPersonWithoutDateOfBirthInCentralFile(custodianDto);
+    procedure.getCustodianWithoutDob().add(custodianId);
+    progressEntryUtil.addProgressEntry(procedure, CUSTODIAN_ADDED);
+    schoolEntryProcedureRepository.flush();
+  }
+
   public void updateCustodian(UpdatePersonRequest request, UUID centralFileStateId, Person person) {
     UUID newCentralFileStateId =
         personClient.updatePersonInCentralFile(request, centralFileStateId);
@@ -113,6 +127,15 @@ public class PersonService {
           person.getProcedure(), CUSTODIAN_MODIFIED, centralFileStateId);
       personRepository.flush();
     }
+  }
+
+  public void updateCustodianWithoutDateOfBirth(
+      SchoolEntryProcedure procedure,
+      UUID custodianId,
+      UpdatePersonWithoutDateOfBirthRequest request) {
+    personClient.updatePersonWithoutDateOfBirthInCentralFile(custodianId, request);
+    progressEntryUtil.addProgressEntry(procedure, CUSTODIAN_MODIFIED);
+    schoolEntryProcedureRepository.flush();
   }
 
   public void removeCustodian(UUID centralFileStateId, SchoolEntryProcedure procedure) {
@@ -129,6 +152,24 @@ public class PersonService {
 
     progressEntryUtil.addProgressEntry(procedure, CUSTODIAN_REMOVED);
     personRepository.flush();
+  }
+
+  public void removeCustodianWithoutDateOfBirth(UUID custodianId, SchoolEntryProcedure procedure) {
+    try {
+      personClient.deletePersonWithoutDateOfBirth(custodianId);
+    } catch (HttpClientErrorException.NotFound e) {
+      throw personNotFoundException();
+    }
+
+    log.info("Deleted person without date of birth {}", custodianId);
+
+    boolean removed = procedure.getCustodianWithoutDob().remove(custodianId);
+    if (!removed) {
+      throw personNotFoundException();
+    }
+
+    progressEntryUtil.addProgressEntry(procedure, CUSTODIAN_REMOVED);
+    schoolEntryProcedureRepository.flush();
   }
 
   Person findChildForUpdate(UUID procedureId, long version) {

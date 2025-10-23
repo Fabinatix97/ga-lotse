@@ -14,8 +14,8 @@
 
 
 <#-- @ftlvariable name="departmentLogo" type="de.eshg.lib.document.generator.department.DepartmentLogo" -->
-<#-- @ftlvariable name="office" type="de.eshg.schoolentry.pdf.Address" -->
-<#-- @ftlvariable name="school" type="de.eshg.schoolentry.pdf.Address" -->
+<#-- @ftlvariable name="office" type="de.eshg.schoolentry.api.pdf.Address" -->
+<#-- @ftlvariable name="school" type="de.eshg.schoolentry.api.pdf.Address" -->
 <#-- @ftlvariable name="examination" type="de.eshg.schoolentry.api.schoolinfoletter.SchoolInfoLetterExaminationDto" -->
 <#-- @ftlvariable name="date" type="java.lang.String" -->
 
@@ -54,12 +54,12 @@
     <h5>Bemerkung</h5>
     <p>${examination.note!"--keine--"}</p>
 
+    <h4>Masernschutz</h4>
     <@schoolinfoletter_vaccinationInfo.content vaccinationInfo=examination.vaccinationInfo />
 
     <h4>Sehscreening auffällig</h4>
     <@schoolinfoletter_eyeExaminationInfo.content eyeExaminationInfo=examination.eyeExaminationInfo/>
 
-    <div style="page-break-after: always"></div>
     <h4>Hörscreening auffällig</h4>
     <@schoolinfoletter_hearingExaminationInfo.content hearingExaminationInfo=examination.hearingExaminationInfo />
 
@@ -71,6 +71,7 @@
 
     <h4>Schulärztliche Empfehlung</h4>
     <@schoolinfoletter_physiciansRecommendation.content physiciansRecommendation=examination.physiciansRecommendation />
+    <@forms.checkbox checked=examination.parentsWish.referredToFurtherConsultationFromSchool title="auf weitere Beratung der Schule verwiesen" />
 
     <#if (examination.customRecommendation!"")?has_content>
       <h5>Kommentar</h5>
@@ -79,7 +80,7 @@
 
     <h4>Elternwunsch</h4>
     <p>${examination.parentsWish.note!"--keinen--"}</p>
-    <@forms.checkbox checked=examination.parentsWish.referredToFurtherConsultationFromSchool title="auf weitere Beratung der Schule verwiesen" />
+
 
     <div style="margin-top: 2cm;">
       <div>Im Auftrag</div>

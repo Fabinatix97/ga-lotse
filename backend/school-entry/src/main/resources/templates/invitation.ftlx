@@ -4,9 +4,9 @@
         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 
 <#-- @ftlvariable name="departmentLogo" type="de.eshg.lib.document.generator.department.DepartmentLogo" -->
-<#-- @ftlvariable name="office" type="de.eshg.schoolentry.pdf.Address" -->
-<#-- @ftlvariable name="child" type="de.eshg.schoolentry.pdf.Address" -->
-<#-- @ftlvariable name="custodian" type="de.eshg.schoolentry.pdf.Address" -->
+<#-- @ftlvariable name="office" type="de.eshg.schoolentry.api.pdf.Address" -->
+<#-- @ftlvariable name="child" type="de.eshg.schoolentry.api.pdf.Address" -->
+<#-- @ftlvariable name="custodian" type="de.eshg.schoolentry.api.pdf.Address" -->
 <#-- @ftlvariable name="examination" type="de.eshg.schoolentry.pdf.invitation.InvitationExamination" -->
 <#-- @ftlvariable name="invitationInfo" type="de.eshg.schoolentry.pdf.invitation.InvitationInfo" -->
 <#-- @ftlvariable name="accentColorHex" type="java.lang.String" -->

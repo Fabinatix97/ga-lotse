@@ -22,7 +22,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.UUID;
-import java.util.function.Function;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -59,7 +58,7 @@ public class SearchProcedureByPersonMapper
         facilityApi.getFacilityFileStates(new GetFacilityFileStatesRequest(fileStateIds));
 
     return facilityFileStates.facilityFileStates().stream()
-        .collect(StreamUtil.toLinkedHashMap(GetFacilityFileStateResponse::id, Function.identity()));
+        .collect(StreamUtil.toLinkedHashMap(GetFacilityFileStateResponse::id));
   }
 
   private List<UUID> collectFacilityFileStates(

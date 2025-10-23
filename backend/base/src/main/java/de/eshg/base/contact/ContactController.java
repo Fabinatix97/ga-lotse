@@ -9,7 +9,7 @@ import static de.eshg.base.contact.persistence.entity.InstitutionContactCategory
 import static de.eshg.base.contact.persistence.entity.InstitutionContactCategory.SCHOOL;
 
 import de.cronn.commons.lang.StreamUtil;
-import de.eshg.base.SortDirection;
+import de.eshg.api.commons.SortDirection;
 import de.eshg.base.address.AddressDto;
 import de.eshg.base.audit.RevisionPair;
 import de.eshg.base.contact.api.*;

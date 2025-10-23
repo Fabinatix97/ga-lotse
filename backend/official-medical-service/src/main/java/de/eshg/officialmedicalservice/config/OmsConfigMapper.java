@@ -8,6 +8,8 @@ package de.eshg.officialmedicalservice.config;
 import de.eshg.config.api.DocumentDetailsDto;
 import de.eshg.config.api.MultiLangDocumentDto;
 import de.eshg.config.domain.Document;
+import de.eshg.config.domain.MultiLangDocument;
+import de.eshg.config.i18n.MultiLangFileName;
 import de.eshg.officialmedicalservice.config.api.GetOmsConfigResponse;
 import de.eshg.officialmedicalservice.config.api.OmsConfigDto;
 import de.eshg.officialmedicalservice.config.persistence.entity.OmsConfiguration;
@@ -30,7 +32,12 @@ public class OmsConfigMapper {
 
   public GetOmsConfigResponse toInterfaceType(OmsConfiguration omsConfiguration) {
     MultiLangDocumentDto landingContentMultiLangDocumentDto =
-        extractLandingContent(omsConfiguration);
+        mapToDto(
+            omsConfiguration.getLandingContent(), omsConfigService.getLandingContentFileNames());
+    MultiLangDocumentDto selectConcernInfobox =
+        mapToDto(
+            omsConfiguration.getSelectConcernInfobox(),
+            omsConfigService.getSelectConcernInfoboxFileNames());
 
     DocumentDetailsDto concernsDocumentDetailsDto =
         new DocumentDetailsDto(
@@ -40,25 +47,24 @@ public class OmsConfigMapper {
         new OmsConfigDto(
             concernsDocumentDetailsDto,
             landingContentMultiLangDocumentDto,
+            selectConcernInfobox,
             omsConfiguration.getKeycloakUserCleanupJobOverdueDuration(),
             omsConfiguration.getMedicalOpinionCutOffDateLeadTime(),
             omsConfiguration.isCitizenPortalAnamnesisEnabled()));
   }
 
-  private MultiLangDocumentDto extractLandingContent(OmsConfiguration omsConfiguration) {
-    DocumentDetailsDto landingContentDeDocumentDetailsDto =
-        new DocumentDetailsDto(
-            omsConfigService.getLandingContentFileNames().de(),
-            omsConfiguration.getLandingContent().getDeFileSizeBytes());
+  private MultiLangDocumentDto mapToDto(MultiLangDocument document, MultiLangFileName fileNames) {
+    if (document == null) {
+      return null;
+    }
 
-    Integer enFileSizeBytes = omsConfiguration.getLandingContent().getEnFileSizeBytes();
-    DocumentDetailsDto landingContentEnDocumentDetailsDto =
-        (enFileSizeBytes != null
-            ? new DocumentDetailsDto(
-                omsConfigService.getLandingContentFileNames().en(), enFileSizeBytes)
-            : null);
-    return new MultiLangDocumentDto(
-        landingContentDeDocumentDetailsDto, landingContentEnDocumentDetailsDto);
+    DocumentDetailsDto deDocumentDetailsDto =
+        new DocumentDetailsDto(fileNames.de(), document.getDeFileSizeBytes());
+
+    Integer enFileSizeBytes = document.getEnFileSizeBytes();
+    DocumentDetailsDto enDocumentDetailsDto =
+        (enFileSizeBytes != null ? new DocumentDetailsDto(fileNames.en(), enFileSizeBytes) : null);
+    return new MultiLangDocumentDto(deDocumentDetailsDto, enDocumentDetailsDto);
   }
 
   public static ResponseEntity<Resource> documentToEntity(

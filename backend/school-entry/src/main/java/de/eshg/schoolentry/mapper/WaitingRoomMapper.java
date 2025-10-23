@@ -5,7 +5,7 @@
 
 package de.eshg.schoolentry.mapper;
 
-import de.eshg.base.SortDirection;
+import de.eshg.api.commons.SortDirection;
 import de.eshg.schoolentry.api.*;
 import de.eshg.schoolentry.business.model.WaitingRoomProcedureData;
 import de.eshg.schoolentry.domain.model.WaitingRoom;

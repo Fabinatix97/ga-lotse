@@ -7,17 +7,31 @@ package de.eshg.base.auth;
 
 import de.cronn.assertions.validationfile.util.MarkdownTable;
 import de.cronn.commons.lang.StreamUtil;
+import de.eshg.base.ActuatorBeans;
 import de.eshg.lib.keycloak.CitizenPermissionRole;
 import de.eshg.lib.keycloak.EmployeePermissionRole;
 import de.eshg.lib.keycloak.PermissionRole;
 import de.eshg.testhelper.AccessToken;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import org.springframework.boot.actuate.endpoint.web.ExposableWebEndpoint;
+import org.springframework.boot.actuate.endpoint.web.WebEndpointHttpMethod;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.data.util.StreamUtils;
-import org.springframework.http.*;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.mvc.condition.PathPatternsRequestCondition;
 import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
@@ -28,6 +42,8 @@ public final class AuthorizationTestUtil {
   private AuthorizationTestUtil() {}
 
   private static final String DEFAULT_PATH_PARAM_VALUE = "1";
+  private static final String SPRING_PATH_PLACEHOLDER = "{*path}";
+  public static final String SPRING_HEALTH_PATH = "health/" + SPRING_PATH_PLACEHOLDER;
 
   private static final List<String> DEFAULT_IGNORED_PATH_PREFIXES =
       List.of("/v3/api-docs", "/test-helper", "/simulator");
@@ -63,8 +79,12 @@ public final class AuthorizationTestUtil {
   static String getEndpointAuthorizationMatrixAsMarkdown(
       TestRestTemplate testRestTemplate,
       RequestMappingHandlerMapping requestMapping,
+      ActuatorBeans actuatorBeans,
       List<PermissionRoleAndAccessToken> permissionRolesAndAccessTokens) {
     List<Endpoint> endpoints = getAllEndpoints(requestMapping);
+    if (actuatorBeans != null && actuatorBeans.webEndpointsSupplier() != null) {
+      endpoints.addAll(getAllSpringEndpoints(actuatorBeans));
+    }
     List<EndpointAuthAssertion> assertions =
         getAllEndpointAuthAssertions(endpoints, permissionRolesAndAccessTokens);
     List<EndpointAuthAssertionResult> assertionResults =
@@ -93,10 +113,68 @@ public final class AuthorizationTestUtil {
           mapToEndpoints(
               pathPatternsCondition.getPatternValues(), info.getMethodsCondition().getMethods()));
     }
-    endpoints.sort(
-        (s1, s2) ->
-            Comparator.comparing(Endpoint::path).thenComparing(Endpoint::method).compare(s1, s2));
+    endpoints.sort(Comparator.comparing(Endpoint::path).thenComparing(Endpoint::method));
     return endpoints;
+  }
+
+  private static List<Endpoint> getAllSpringEndpoints(ActuatorBeans actuatorBeans) {
+    Map<String, List<String>> placeholderValues = new HashMap<>();
+    placeholderValues.put(
+        SPRING_HEALTH_PATH, new ArrayList<>(actuatorBeans.healthEndpointGroups().getNames()));
+    String actuatorBasePath = actuatorBeans.pathMappedEndpoints().getBasePath();
+    return actuatorBeans.webEndpointsSupplier().getEndpoints().stream()
+        .flatMap(
+            exposableWebEndpoint ->
+                collectEndpoints(exposableWebEndpoint, actuatorBasePath, placeholderValues))
+        .sorted(Comparator.comparing(Endpoint::path).thenComparing(Endpoint::method))
+        .toList();
+  }
+
+  private static Stream<Endpoint> collectEndpoints(
+      ExposableWebEndpoint exposableWebEndpoint,
+      String actuatorBasePath,
+      Map<String, List<String>> healthEndpointGroups) {
+
+    return exposableWebEndpoint.getOperations().stream()
+        .flatMap(
+            exposableOperation -> {
+              String path =
+                  actuatorBasePath + "/" + exposableOperation.getRequestPredicate().getPath();
+              HttpMethod method =
+                  toHttpMethod(exposableOperation.getRequestPredicate().getHttpMethod());
+
+              if (path.contains(SPRING_HEALTH_PATH)) {
+                Stream<Endpoint> healthEndpointGroupValue =
+                    resolveHealthEndpointPlaceholder(healthEndpointGroups, path, method);
+                if (healthEndpointGroupValue != null) {
+                  return healthEndpointGroupValue;
+                }
+              }
+              return Stream.of(new Endpoint(method, path));
+            });
+  }
+
+  private static Stream<Endpoint> resolveHealthEndpointPlaceholder(
+      Map<String, List<String>> healthEndpointGroups, String path, HttpMethod method) {
+    for (Entry<String, List<String>> healthEndpointGroup : healthEndpointGroups.entrySet()) {
+      String healthEndpointGroupKey = healthEndpointGroup.getKey();
+      List<String> healthEndpointGroupValue = healthEndpointGroup.getValue();
+      if (path.contains(healthEndpointGroupKey)) {
+        return healthEndpointGroupValue.stream()
+            .map(
+                finalPathSegment ->
+                    new Endpoint(method, path.replace(SPRING_PATH_PLACEHOLDER, finalPathSegment)));
+      }
+    }
+    return null;
+  }
+
+  private static HttpMethod toHttpMethod(WebEndpointHttpMethod webEndpointHttpMethod) {
+    return switch (webEndpointHttpMethod) {
+      case GET -> HttpMethod.GET;
+      case POST -> HttpMethod.POST;
+      case DELETE -> HttpMethod.DELETE;
+    };
   }
 
   private static List<Endpoint> mapToEndpoints(Set<String> paths, Set<RequestMethod> methods) {

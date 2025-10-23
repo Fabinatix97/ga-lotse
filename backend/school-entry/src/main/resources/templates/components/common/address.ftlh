@@ -1,5 +1,5 @@
 <#macro content address>
-<#-- @ftlvariable name="address" type="de.eshg.schoolentry.pdf.Address" -->
+<#-- @ftlvariable name="address" type="de.eshg.schoolentry.api.pdf.Address" -->
   <div>${address.name}</div>
   <div>${address.street!""}</div>
   <#if address.addressAddition??>

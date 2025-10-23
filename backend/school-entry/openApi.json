@@ -3506,6 +3506,131 @@
         "tags" : [ "SchoolEntry" ]
       }
     },
+    "/school-entries/{procedureId}/custodian-without-dob" : {
+      "put" : {
+        "operationId" : "addCustodianWithoutDateOfBirth",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "procedureId",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/AddCustodianWithoutDateOfBirthRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ProcedureDetails"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "SchoolEntry" ]
+      }
+    },
+    "/school-entries/{procedureId}/custodian-without-dob/{custodianId}" : {
+      "delete" : {
+        "operationId" : "removeCustodianWithoutDateOfBirth",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "procedureId",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }, {
+          "in" : "path",
+          "name" : "custodianId",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/RemoveCustodianRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ProcedureDetails"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "SchoolEntry" ]
+      },
+      "put" : {
+        "operationId" : "updateCustodianWithoutDateOfBirth",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "procedureId",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }, {
+          "in" : "path",
+          "name" : "custodianId",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/UpdatePersonWithoutDateOfBirthRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ProcedureDetails"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "SchoolEntry" ]
+      }
+    },
     "/school-entries/{procedureId}/custodian/{custodianCentralFileStateId}" : {
       "delete" : {
         "operationId" : "removeCustodian",
@@ -5206,6 +5331,19 @@
           }
         }
       },
+      "AddCustodianWithoutDateOfBirthRequest" : {
+        "required" : [ "custodian", "procedureVersion" ],
+        "type" : "object",
+        "properties" : {
+          "custodian" : {
+            "$ref" : "#/components/schemas/CreatePersonWithoutDateOfBirth"
+          },
+          "procedureVersion" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        }
+      },
       "AddGdprValidationTaskRequest" : {
         "required" : [ "gdprProcedureId", "startedAt", "type" ],
         "type" : "object",
@@ -5333,7 +5471,7 @@
         "type" : "object",
         "properties" : {
           "address" : {
-            "$ref" : "#/components/schemas/DomesticAddress"
+            "$ref" : "#/components/schemas/SchoolEntryDomesticAddress"
           },
           "name" : {
             "type" : "string"
@@ -5410,7 +5548,7 @@
           "resolvedUsers" : {
             "type" : "object",
             "additionalProperties" : {
-              "$ref" : "#/components/schemas/User"
+              "$ref" : "#/components/schemas/AppointmentBlockUser"
             }
           },
           "start" : {
@@ -5488,6 +5626,28 @@
       "AppointmentBlockSortKey" : {
         "type" : "string",
         "enum" : [ "START", "END" ]
+      },
+      "AppointmentBlockUser" : {
+        "required" : [ "firstName", "lastName", "userId" ],
+        "type" : "object",
+        "properties" : {
+          "firstName" : {
+            "type" : "string",
+            "description" : "The given name(s) of a user.",
+            "example" : "John"
+          },
+          "lastName" : {
+            "type" : "string",
+            "description" : "The last name of a user.",
+            "example" : "Doe"
+          },
+          "userId" : {
+            "type" : "string",
+            "description" : "The Id of the user.",
+            "format" : "uuid",
+            "example" : "UUID_2"
+          }
+        }
       },
       "AppointmentLocation" : {
         "required" : [ "id", "name" ],
@@ -5803,7 +5963,7 @@
             "example" : "Hermione"
           },
           "gender" : {
-            "$ref" : "#/components/schemas/Gender"
+            "$ref" : "#/components/schemas/SchoolEntryGender"
           },
           "lastName" : {
             "minLength" : 1,
@@ -6179,7 +6339,7 @@
             "type" : "boolean"
           },
           "remark" : {
-            "maxLength" : 600,
+            "maxLength" : 8500,
             "minLength" : 1,
             "type" : "string"
           }
@@ -6191,9 +6351,9 @@
         "properties" : {
           "contactAddress" : {
             "oneOf" : [ {
-              "$ref" : "#/components/schemas/DomesticAddress"
+              "$ref" : "#/components/schemas/SchoolEntryDomesticAddress"
             }, {
-              "$ref" : "#/components/schemas/PostboxAddress"
+              "$ref" : "#/components/schemas/SchoolEntryPostboxAddress"
             } ]
           },
           "countryOfBirth" : {
@@ -6205,9 +6365,9 @@
           },
           "differentBillingAddress" : {
             "oneOf" : [ {
-              "$ref" : "#/components/schemas/DomesticAddress"
+              "$ref" : "#/components/schemas/SchoolEntryDomesticAddress"
             }, {
-              "$ref" : "#/components/schemas/PostboxAddress"
+              "$ref" : "#/components/schemas/SchoolEntryPostboxAddress"
             } ]
           },
           "emailAddresses" : {
@@ -6224,7 +6384,7 @@
             "type" : "string"
           },
           "gender" : {
-            "$ref" : "#/components/schemas/Gender"
+            "$ref" : "#/components/schemas/SchoolEntryGender"
           },
           "lastName" : {
             "maxLength" : 120,
@@ -6254,7 +6414,57 @@
             "format" : "uuid"
           },
           "salutation" : {
-            "$ref" : "#/components/schemas/Salutation"
+            "$ref" : "#/components/schemas/SchoolEntrySalutation"
+          },
+          "title" : {
+            "maxLength" : 119,
+            "minLength" : 1,
+            "type" : "string"
+          }
+        }
+      },
+      "CreatePersonWithoutDateOfBirth" : {
+        "required" : [ "firstName", "lastName" ],
+        "type" : "object",
+        "properties" : {
+          "contactAddress" : {
+            "oneOf" : [ {
+              "$ref" : "#/components/schemas/SchoolEntryDomesticAddress"
+            }, {
+              "$ref" : "#/components/schemas/SchoolEntryPostboxAddress"
+            } ]
+          },
+          "emailAddresses" : {
+            "type" : "array",
+            "items" : {
+              "maxLength" : 254,
+              "minLength" : 6,
+              "type" : "string"
+            }
+          },
+          "firstName" : {
+            "maxLength" : 80,
+            "minLength" : 1,
+            "type" : "string"
+          },
+          "gender" : {
+            "$ref" : "#/components/schemas/SchoolEntryGender"
+          },
+          "lastName" : {
+            "maxLength" : 120,
+            "minLength" : 1,
+            "type" : "string"
+          },
+          "phoneNumbers" : {
+            "type" : "array",
+            "items" : {
+              "maxLength" : 23,
+              "minLength" : 1,
+              "type" : "string"
+            }
+          },
+          "salutation" : {
+            "$ref" : "#/components/schemas/SchoolEntrySalutation"
           },
           "title" : {
             "maxLength" : 119,
@@ -6297,7 +6507,95 @@
             "type" : "string",
             "description" : "Id of the Procedure.",
             "format" : "uuid",
-            "example" : "UUID_2"
+            "example" : "UUID_3"
+          }
+        }
+      },
+      "CustodianDetails" : {
+        "required" : [ "emailAddresses", "fileStateId", "fileStateOutdated", "firstName", "gender", "lastName", "phoneNumbers", "salutation", "version" ],
+        "type" : "object",
+        "properties" : {
+          "contactAddress" : {
+            "oneOf" : [ {
+              "$ref" : "#/components/schemas/SchoolEntryDomesticAddress"
+            }, {
+              "$ref" : "#/components/schemas/SchoolEntryPostboxAddress"
+            } ]
+          },
+          "countryOfBirth" : {
+            "$ref" : "#/components/schemas/CountryCode"
+          },
+          "dateOfBirth" : {
+            "type" : "string",
+            "format" : "date"
+          },
+          "differentBillingAddress" : {
+            "oneOf" : [ {
+              "$ref" : "#/components/schemas/SchoolEntryDomesticAddress"
+            }, {
+              "$ref" : "#/components/schemas/SchoolEntryPostboxAddress"
+            } ]
+          },
+          "emailAddresses" : {
+            "type" : "array",
+            "items" : {
+              "maxLength" : 254,
+              "minLength" : 6,
+              "type" : "string"
+            }
+          },
+          "fileStateId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "fileStateOutdated" : {
+            "type" : "boolean"
+          },
+          "firstName" : {
+            "maxLength" : 80,
+            "minLength" : 1,
+            "type" : "string"
+          },
+          "gender" : {
+            "$ref" : "#/components/schemas/SchoolEntryGender"
+          },
+          "humanReadableId" : {
+            "type" : "string"
+          },
+          "lastName" : {
+            "maxLength" : 120,
+            "minLength" : 1,
+            "type" : "string"
+          },
+          "nameAtBirth" : {
+            "maxLength" : 40,
+            "minLength" : 1,
+            "type" : "string"
+          },
+          "phoneNumbers" : {
+            "type" : "array",
+            "items" : {
+              "maxLength" : 23,
+              "minLength" : 1,
+              "type" : "string"
+            }
+          },
+          "placeOfBirth" : {
+            "maxLength" : 50,
+            "minLength" : 1,
+            "type" : "string"
+          },
+          "salutation" : {
+            "$ref" : "#/components/schemas/SchoolEntrySalutation"
+          },
+          "title" : {
+            "maxLength" : 119,
+            "minLength" : 1,
+            "type" : "string"
+          },
+          "version" : {
+            "type" : "integer",
+            "format" : "int64"
           }
         }
       },
@@ -7532,7 +7830,7 @@
             "type" : "string",
             "description" : "Id of the Facility.",
             "format" : "uuid",
-            "example" : "UUID_2"
+            "example" : "UUID_3"
           },
           "name" : {
             "maxLength" : 300,
@@ -7795,7 +8093,7 @@
             "type" : "string",
             "description" : "Id of the Person.",
             "format" : "uuid",
-            "example" : "UUID_2"
+            "example" : "UUID_3"
           },
           "lastName" : {
             "maxLength" : 120,
@@ -9059,9 +9357,9 @@
         "properties" : {
           "contactAddress" : {
             "oneOf" : [ {
-              "$ref" : "#/components/schemas/DomesticAddress"
+              "$ref" : "#/components/schemas/SchoolEntryDomesticAddress"
             }, {
-              "$ref" : "#/components/schemas/PostboxAddress"
+              "$ref" : "#/components/schemas/SchoolEntryPostboxAddress"
             } ]
           },
           "countryOfBirth" : {
@@ -9075,9 +9373,9 @@
           },
           "differentBillingAddress" : {
             "oneOf" : [ {
-              "$ref" : "#/components/schemas/DomesticAddress"
+              "$ref" : "#/components/schemas/SchoolEntryDomesticAddress"
             }, {
-              "$ref" : "#/components/schemas/PostboxAddress"
+              "$ref" : "#/components/schemas/SchoolEntryPostboxAddress"
             } ]
           },
           "emailAddresses" : {
@@ -9103,7 +9401,7 @@
             "example" : "Hermione"
           },
           "gender" : {
-            "$ref" : "#/components/schemas/Gender"
+            "$ref" : "#/components/schemas/SchoolEntryGender"
           },
           "humanReadableId" : {
             "type" : "string"
@@ -9134,7 +9432,7 @@
             "type" : "string"
           },
           "salutation" : {
-            "$ref" : "#/components/schemas/Salutation"
+            "$ref" : "#/components/schemas/SchoolEntrySalutation"
           },
           "title" : {
             "maxLength" : 119,
@@ -9321,7 +9619,7 @@
           "custodians" : {
             "type" : "array",
             "items" : {
-              "$ref" : "#/components/schemas/PersonDetails"
+              "$ref" : "#/components/schemas/CustodianDetails"
             }
           },
           "deceased" : {
@@ -9338,7 +9636,7 @@
             "type" : "string",
             "description" : "Id of the Procedure.",
             "format" : "uuid",
-            "example" : "UUID_2"
+            "example" : "UUID_3"
           },
           "isDeceased" : {
             "type" : "boolean"
@@ -9682,7 +9980,6 @@
       },
       "Salutation" : {
         "type" : "string",
-        "description" : "A list of categories for the salutation from which specific salutation phrases can be derived. The choice of salutation is free for every citizen and not dependent on gender.",
         "enum" : [ "NOT_SPECIFIED", "NEUTRAL", "FEMALE", "MALE" ]
       },
       "SaveSchoolInfoLetterRequest" : {
@@ -9738,6 +10035,18 @@
           "name" : {
             "type" : "string"
           }
+        }
+      },
+      "SchoolEntryAddress" : {
+        "required" : [ "@type" ],
+        "type" : "object",
+        "properties" : {
+          "@type" : {
+            "type" : "string"
+          }
+        },
+        "discriminator" : {
+          "propertyName" : "@type"
         }
       },
       "SchoolEntryAppointmentBlockPopulationResult" : {
@@ -9802,9 +10111,114 @@
         "example" : "DEU",
         "enum" : [ "AFG", "EGY", "ALB", "ALG", "AND", "ANG", "AUB", "GNQ", "ARA", "ARG", "ARM", "ASE", "ASN", "ETH", "AUS", "BAM", "BAH", "BAL", "BAD", "BAR", "BEL", "BEZ", "BEN", "BHU", "BOL", "BOS", "BOT", "BRA", "BRU", "BUL", "BUF", "BUR", "CHI", "CHV", "COO", "COR", "CIV", "DAN", "DEU", "DOA", "DOM", "DSC", "ECU", "ELS", "BRI", "ERY", "EST", "FID", "FIN", "FRA", "GAB", "GAM", "GEO", "GHA", "GOL", "GRE", "GRI", "GUA", "GUI", "GUS", "GUY", "HAI", "HND", "IND", "INS", "IRQ", "IRA", "IRL", "ISL", "ISR", "ITA", "JAM", "JAP", "JEM", "JOR", "JUG", "KAM", "KAN", "CAN", "KAP", "KAS", "KAT", "KEN", "KIR", "KIB", "KOL", "KOM", "KON", "KOR", "KOS", "KRO", "KUB", "KUW", "LAO", "LSO", "LET", "LEB", "LIB", "LYB", "LIE", "LIT", "LUX", "MAD", "MAW", "MAY", "MAL", "MAI", "MLT", "MAR", "MHL", "MAU", "MAS", "MAZ", "MEX", "MIK", "MAM", "MOL", "MON", "MOG", "MNE", "MOS", "MYA", "NAM", "CHN", "NAU", "NEP", "NEU", "NIC", "NED", "NIG", "NIA", "NOK", "NOR", "OMA", "OST", "PAK", "PAL", "PAU", "PAN", "PAP", "PAR", "PER", "PHI", "POL", "POR", "RUA", "RUM", "RUS", "SAL", "SAB", "SAA", "SAN", "STL", "STP", "SAU", "SCO", "SVE", "HEL", "SEN", "SER", "SEY", "SIL", "SIM", "SIN", "SKN", "SLO", "SOM", "SON", "SPA", "CEY", "STK", "VCT", "STA", "SAR", "SAM", "SUD", "SUK", "SUR", "SWA", "SYR", "TAD", "TAI", "TAN", "THA", "TIB", "TIM", "TOG", "TRT", "CHA", "CZN", "TUN", "TUR", "TKM", "TUV", "UGA", "UKR", "UUU", "UNG", "URU", "USA", "USB", "VAN", "VAT", "VEN", "VAE", "VIE", "WRU", "SCA", "ZYP", "G1", "G2", "G3", "G4", "G5", "G6", "G7", "G8", "G9" ]
       },
+      "SchoolEntryDomesticAddress" : {
+        "required" : [ "city", "country", "postalCode", "street" ],
+        "type" : "object",
+        "description" : "A usual domestic address.",
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/SchoolEntryAddress"
+        }, {
+          "type" : "object",
+          "properties" : {
+            "addressAddition" : {
+              "maxLength" : 100,
+              "minLength" : 1,
+              "type" : "string",
+              "description" : "A descriptive addition to the address.",
+              "example" : "2.OG links"
+            },
+            "city" : {
+              "maxLength" : 50,
+              "minLength" : 1,
+              "type" : "string",
+              "description" : "The city in which the address is located.",
+              "example" : "Berlin"
+            },
+            "country" : {
+              "$ref" : "#/components/schemas/CountryCode"
+            },
+            "differentName" : {
+              "maxLength" : 200,
+              "minLength" : 1,
+              "type" : "string",
+              "description" : "If the name of the addressee deviates from the present name of a Person or Facility, e.g. when a company pays the bill for its employee or a parent company shall be contacted instead of its subsidiary.",
+              "example" : "Parent Company AG"
+            },
+            "houseNumber" : {
+              "maxLength" : 11,
+              "minLength" : 1,
+              "type" : "string",
+              "description" : "The house number of the address, including extensions.",
+              "example" : "1a"
+            },
+            "postalCode" : {
+              "maxLength" : 20,
+              "minLength" : 1,
+              "type" : "string",
+              "description" : "The postal code of the address.",
+              "example" : "10115"
+            },
+            "street" : {
+              "maxLength" : 55,
+              "minLength" : 1,
+              "type" : "string",
+              "description" : "The name of the street of the address, without the house number.",
+              "example" : "Beispielweg"
+            }
+          }
+        } ]
+      },
       "SchoolEntryFeature" : {
         "type" : "string",
         "enum" : [ "DUMMY" ]
+      },
+      "SchoolEntryGender" : {
+        "type" : "string",
+        "description" : "The list of genders as specified in the German Personenstandsgesetz.",
+        "enum" : [ "NOT_SPECIFIED", "DIVERSE", "FEMALE", "MALE" ]
+      },
+      "SchoolEntryPostboxAddress" : {
+        "required" : [ "city", "country", "postalCode", "postbox" ],
+        "type" : "object",
+        "description" : "An address which is a postbox.",
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/SchoolEntryAddress"
+        }, {
+          "type" : "object",
+          "properties" : {
+            "city" : {
+              "maxLength" : 50,
+              "minLength" : 1,
+              "type" : "string",
+              "description" : "The city in which the address is located.",
+              "example" : "Berlin"
+            },
+            "country" : {
+              "$ref" : "#/components/schemas/CountryCode"
+            },
+            "differentName" : {
+              "maxLength" : 200,
+              "minLength" : 1,
+              "type" : "string",
+              "description" : "If the name of the addressee deviates from the present name of a Person or Facility, e.g. when a company pays the bill for its employee or a parent company shall be contacted instead of its subsidiary.",
+              "example" : "Parent Company AG"
+            },
+            "postalCode" : {
+              "maxLength" : 20,
+              "minLength" : 1,
+              "type" : "string",
+              "description" : "The postal code of the address.",
+              "example" : "10115"
+            },
+            "postbox" : {
+              "maxLength" : 21,
+              "minLength" : 1,
+              "type" : "string",
+              "description" : "The number (or name) of the postbox.",
+              "example" : "123"
+            }
+          }
+        } ]
       },
       "SchoolEntryProcedure" : {
         "required" : [ "child", "createdAt", "id", "labels", "modifiedAt", "status", "type", "version" ],
@@ -9825,7 +10239,7 @@
             "type" : "string",
             "description" : "Id of the Procedure.",
             "format" : "uuid",
-            "example" : "UUID_2"
+            "example" : "UUID_3"
           },
           "labels" : {
             "type" : "array",
@@ -9918,6 +10332,11 @@
         "description" : "Type of examination of the child. The type of examination has a number of practical implications. For instance, when an examination is carried out, what is examined and how long the examination lasts.",
         "example" : "REGULAR_EXAMINATION",
         "enum" : [ "REGULAR_EXAMINATION", "CAN_CHILD", "ENTRY_LEVEL", "DRAFT_CITIZEN_OFFICE_IMPORT", "DRAFT_SCHOOL_IMPORT" ]
+      },
+      "SchoolEntrySalutation" : {
+        "type" : "string",
+        "description" : "A list of categories for the salutation from which specific salutation phrases can be derived. The choice of salutation is free for every citizen and not dependent on gender.",
+        "enum" : [ "NOT_SPECIFIED", "NEUTRAL", "FEMALE", "MALE" ]
       },
       "SchoolEntryStatusType" : {
         "type" : "string",
@@ -10650,9 +11069,9 @@
         "properties" : {
           "contactAddress" : {
             "oneOf" : [ {
-              "$ref" : "#/components/schemas/DomesticAddress"
+              "$ref" : "#/components/schemas/SchoolEntryDomesticAddress"
             }, {
-              "$ref" : "#/components/schemas/PostboxAddress"
+              "$ref" : "#/components/schemas/SchoolEntryPostboxAddress"
             } ]
           },
           "countryOfBirth" : {
@@ -10666,9 +11085,9 @@
           },
           "differentBillingAddress" : {
             "oneOf" : [ {
-              "$ref" : "#/components/schemas/DomesticAddress"
+              "$ref" : "#/components/schemas/SchoolEntryDomesticAddress"
             }, {
-              "$ref" : "#/components/schemas/PostboxAddress"
+              "$ref" : "#/components/schemas/SchoolEntryPostboxAddress"
             } ]
           },
           "emailAddresses" : {
@@ -10687,7 +11106,7 @@
             "example" : "Hermione"
           },
           "gender" : {
-            "$ref" : "#/components/schemas/Gender"
+            "$ref" : "#/components/schemas/SchoolEntryGender"
           },
           "lastName" : {
             "maxLength" : 120,
@@ -10715,7 +11134,61 @@
             "type" : "string"
           },
           "salutation" : {
-            "$ref" : "#/components/schemas/Salutation"
+            "$ref" : "#/components/schemas/SchoolEntrySalutation"
+          },
+          "title" : {
+            "maxLength" : 119,
+            "minLength" : 1,
+            "type" : "string"
+          },
+          "version" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        }
+      },
+      "UpdatePersonWithoutDateOfBirthRequest" : {
+        "required" : [ "firstName", "lastName", "version" ],
+        "type" : "object",
+        "properties" : {
+          "contactAddress" : {
+            "oneOf" : [ {
+              "$ref" : "#/components/schemas/SchoolEntryDomesticAddress"
+            }, {
+              "$ref" : "#/components/schemas/SchoolEntryPostboxAddress"
+            } ]
+          },
+          "emailAddresses" : {
+            "type" : "array",
+            "items" : {
+              "maxLength" : 254,
+              "minLength" : 6,
+              "type" : "string"
+            }
+          },
+          "firstName" : {
+            "maxLength" : 80,
+            "minLength" : 1,
+            "type" : "string"
+          },
+          "gender" : {
+            "$ref" : "#/components/schemas/SchoolEntryGender"
+          },
+          "lastName" : {
+            "maxLength" : 120,
+            "minLength" : 1,
+            "type" : "string"
+          },
+          "phoneNumbers" : {
+            "type" : "array",
+            "items" : {
+              "maxLength" : 23,
+              "minLength" : 1,
+              "type" : "string"
+            }
+          },
+          "salutation" : {
+            "$ref" : "#/components/schemas/SchoolEntrySalutation"
           },
           "title" : {
             "maxLength" : 119,
@@ -10895,7 +11368,7 @@
             "type" : "string",
             "description" : "The Id of the user.",
             "format" : "uuid",
-            "example" : "UUID_3"
+            "example" : "UUID_2"
           },
           "username" : {
             "minLength" : 1,
@@ -11113,7 +11586,7 @@
             "type" : "string",
             "description" : "Id of the Procedure.",
             "format" : "uuid",
-            "example" : "UUID_2"
+            "example" : "UUID_3"
           },
           "modifiedAt" : {
             "type" : "string",

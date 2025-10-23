@@ -6,7 +6,7 @@
 package de.eshg.base.inventory;
 
 import de.cronn.commons.lang.StreamUtil;
-import de.eshg.base.SortDirection;
+import de.eshg.api.commons.SortDirection;
 import de.eshg.base.inventory.api.*;
 import de.eshg.base.inventory.persistence.InventoryService;
 import de.eshg.base.inventory.persistence.entity.InventoryItem;

@@ -5,8 +5,8 @@
 
 package de.eshg.dental;
 
-import de.eshg.base.PaginationParameters;
-import de.eshg.base.SortDirection;
+import de.eshg.api.commons.PaginationParameters;
+import de.eshg.api.commons.SortDirection;
 import de.eshg.dental.api.ProphylaxisSessionPaginationAndSortParameters;
 import de.eshg.dental.api.ProphylaxisSessionSortKey;
 import de.eshg.dental.domain.model.ProphylaxisSession;

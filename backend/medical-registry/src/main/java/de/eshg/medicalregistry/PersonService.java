@@ -42,7 +42,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
@@ -214,7 +213,7 @@ public class PersonService {
             .personFileStateIds();
     return IntStream.range(0, rows.size())
         .boxed()
-        .collect(Collectors.toMap(rows::get, fileStateIds::get));
+        .collect(StreamUtil.toLinkedHashMap(rows::get, fileStateIds::get));
   }
 
   UUID updateOrConfirmProfessional(
@@ -238,7 +237,7 @@ public class PersonService {
                 .flatMap(Collection::stream)
                 .toList())
         .stream()
-        .collect(StreamUtil.toLinkedHashMap(GetPersonFileStateResponse::id, Function.identity()));
+        .collect(StreamUtil.toLinkedHashMap(GetPersonFileStateResponse::id));
   }
 
   private UUID confirmPerson(GetPersonFileStateResponse personFileState) {

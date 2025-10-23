@@ -5,7 +5,7 @@
 
 package de.eshg.base.inventory.api;
 
-import de.eshg.base.PagedResponse;
+import de.eshg.api.commons.PagedResponse;
 import de.eshg.base.user.api.UserDto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;

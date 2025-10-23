@@ -5,10 +5,15 @@
 
 package de.eshg.schoolentry.client;
 
+import static de.eshg.schoolentry.mapper.AddressMapper.mapToBaseAddressDto;
+import static de.eshg.schoolentry.mapper.GenderMapper.mapToBaseGenderDto;
+import static de.eshg.schoolentry.mapper.SalutationMapper.mapToBaseSalutationDto;
+
 import com.google.common.collect.Lists;
 import de.cronn.commons.lang.StreamUtil;
-import de.eshg.base.SortDirection;
+import de.eshg.api.commons.SortDirection;
 import de.eshg.base.centralfile.PersonApi;
+import de.eshg.base.centralfile.PersonWithoutDateOfBirthApi;
 import de.eshg.base.centralfile.api.DataOriginDto;
 import de.eshg.base.centralfile.api.DeleteFileStatesRequest;
 import de.eshg.base.centralfile.api.person.*;
@@ -23,6 +28,7 @@ import de.eshg.rest.service.error.ErrorCode;
 import de.eshg.rest.service.error.ErrorResponse;
 import de.eshg.schoolentry.Validator;
 import de.eshg.schoolentry.api.CreatePersonDto;
+import de.eshg.schoolentry.api.CreatePersonWithoutDateOfBirthDto;
 import de.eshg.schoolentry.api.UpdatePersonRequest;
 import de.eshg.schoolentry.business.model.*;
 import de.eshg.schoolentry.domain.model.Person;
@@ -34,6 +40,7 @@ import de.eshg.schoolentry.util.SchoolEntrySystemProgressEntryType;
 import java.util.*;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.jetbrains.annotations.VisibleForTesting;
 import org.slf4j.Logger;
@@ -53,13 +60,18 @@ public class PersonClient {
   private static final int MAX_PERSONS_PER_BATCH = 10_000;
 
   private final PersonApi personApi;
+  private final PersonWithoutDateOfBirthApi personWithoutDateOfBirthApi;
   private final Map<UUID, GetPersonFileStateResponse> personCache = new ConcurrentHashMap<>();
   private final ProgressEntryUtil progressEntryUtil;
   private final Validator validator;
 
   public PersonClient(
-      PersonApi personApi, ProgressEntryUtil progressEntryUtil, Validator validator) {
+      PersonApi personApi,
+      PersonWithoutDateOfBirthApi personWithoutDateOfBirthApi,
+      ProgressEntryUtil progressEntryUtil,
+      Validator validator) {
     this.personApi = personApi;
+    this.personWithoutDateOfBirthApi = personWithoutDateOfBirthApi;
     this.progressEntryUtil = progressEntryUtil;
     this.validator = validator;
   }
@@ -123,6 +135,48 @@ public class PersonClient {
     return id;
   }
 
+  public UUID createPersonWithoutDateOfBirthInCentralFile(
+      CreatePersonWithoutDateOfBirthDto personDetailsData) {
+    AddPersonWithoutDateOfBirthRequest request =
+        new AddPersonWithoutDateOfBirthRequest(
+            personDetailsData.title(),
+            mapToBaseSalutationDto(personDetailsData.salutation()),
+            mapToBaseGenderDto(personDetailsData.gender()),
+            personDetailsData.firstName(),
+            personDetailsData.lastName(),
+            personDetailsData.emailAddresses(),
+            personDetailsData.phoneNumbers(),
+            mapToBaseAddressDto(personDetailsData.contactAddress()),
+            DataOriginDto.MANUAL);
+
+    log.info("Creating person without date in the central file");
+
+    GetPersonWithoutDateOfBirthResponse response =
+        personWithoutDateOfBirthApi.addPersonWithoutDateOfBirth(request);
+    UUID id = response.id();
+
+    log.info("Created person without date of birth in the central file with ID={}", id);
+
+    return id;
+  }
+
+  public void updatePersonWithoutDateOfBirthInCentralFile(
+      UUID id, de.eshg.schoolentry.api.UpdatePersonWithoutDateOfBirthRequest personDetailsData) {
+    de.eshg.base.centralfile.api.person.UpdatePersonWithoutDateOfBirthRequest request =
+        new de.eshg.base.centralfile.api.person.UpdatePersonWithoutDateOfBirthRequest(
+            personDetailsData.title(),
+            mapToBaseSalutationDto(personDetailsData.salutation()),
+            mapToBaseGenderDto(personDetailsData.gender()),
+            personDetailsData.firstName(),
+            personDetailsData.lastName(),
+            personDetailsData.emailAddresses(),
+            personDetailsData.phoneNumbers(),
+            mapToBaseAddressDto(personDetailsData.contactAddress()));
+
+    personWithoutDateOfBirthApi.updatePersonWithoutDateOfBirth(id, request);
+    log.info("Updated person without date of birth in the central file with ID={}", id);
+  }
+
   public List<UUID> createCustodiansInCentralFile(List<ImportCustodianData> custodians) {
     List<AddPersonFileStateRequest> requests =
         mapToPersonFileStateRequest(custodians, DataOrigin.DATA_IMPORT);
@@ -158,6 +212,24 @@ public class PersonClient {
 
   public void markCentralFileStatesForDeletion(UUID... centralFileStates) {
     personApi.markPersonFileStateForDeletion(new DeleteFileStatesRequest(centralFileStates));
+  }
+
+  public void deletePersonWithoutDateOfBirth(UUID personId) {
+    personWithoutDateOfBirthApi.deletePersonWithoutDateOfBirth(personId);
+  }
+
+  public void deletePersonsWithoutDateOfBirth(List<UUID> personIds) {
+    PersonClient.deletePersonsWithoutDateOfBirth(personWithoutDateOfBirthApi, personIds);
+  }
+
+  public static void deletePersonsWithoutDateOfBirth(
+      PersonWithoutDateOfBirthApi api, List<UUID> personIds) {
+    if (personIds.isEmpty()) {
+      log.info("No persons without date of birth to delete.");
+      return;
+    }
+    log.info("Deleting persons without date of birth {}", personIds);
+    api.deletePersonsWithoutDateOfBirth(personIds);
   }
 
   private static List<AddPersonFileStateRequest> mapToFlatRequestList(
@@ -235,7 +307,19 @@ public class PersonClient {
         procedure
             .getCustodians()
             .map(custodian -> extractDetails(custodian, fileStatesById))
-            .toList();
+            .collect(Collectors.toCollection(ArrayList::new));
+
+    if (!procedure.getCustodianWithoutDob().isEmpty()) {
+      GetPersonsWithoutDateOfBirthResponse personsResponse =
+          personWithoutDateOfBirthApi.getPersonsWithoutDateOfBirth(
+              procedure.getCustodianWithoutDob());
+      List<PersonDetailsData> custodiansWithoutDateOfBirth =
+          personsResponse.personsWithoutDateOfBirth().values().stream()
+              .map(PersonClient::mapPersonWithoutDateOfBirthToPersonDetailsData)
+              .toList();
+
+      custodianDetails.addAll(custodiansWithoutDateOfBirth);
+    }
 
     PersonDetailsData childDetails = extractDetails(procedure.getChild(), fileStatesById);
 
@@ -268,6 +352,28 @@ public class PersonClient {
         response.phoneNumbers(),
         response.contactAddress(),
         response.differentBillingAddress());
+  }
+
+  private static PersonDetailsData mapPersonWithoutDateOfBirthToPersonDetailsData(
+      GetPersonWithoutDateOfBirthResponse response) {
+    return new PersonDetailsData(
+        0,
+        null,
+        response.id(),
+        false,
+        response.title(),
+        response.salutation(),
+        response.gender(),
+        response.firstName(),
+        response.lastName(),
+        null,
+        null,
+        null,
+        null,
+        response.emailAddresses(),
+        response.phoneNumbers(),
+        response.contactAddress(),
+        null);
   }
 
   public Map<PersonKeyAttributes, List<ProcedureWithChildData>> augmentWithChildData(

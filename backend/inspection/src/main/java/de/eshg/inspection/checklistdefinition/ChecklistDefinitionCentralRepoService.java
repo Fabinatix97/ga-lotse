@@ -16,6 +16,7 @@ import static de.eshg.rest.service.security.CurrentUserHelper.currentUserHasNoRo
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import de.cronn.commons.lang.StreamUtil;
 import de.eshg.centralrepository.client.JsonToResourceHelper.ResourceStream;
 import de.eshg.inspection.checklistdefinition.api.ChecklistDefinitionCentralRepoRequest;
 import de.eshg.inspection.checklistdefinition.api.ChecklistDefinitionCentralRepoResponse;
@@ -47,7 +48,6 @@ import de.eshg.rest.service.security.CurrentUserHelper;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
-import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.Resource;
@@ -384,7 +384,7 @@ public class ChecklistDefinitionCentralRepoService {
       List<MetadataResponseDto> metadataResponseList) {
     List<Long> centralRepoIds = metadataResponseList.stream().map(MetadataResponseDto::id).toList();
     return checklistDefinitionRepository.findAllByRepositoryIdIn(centralRepoIds).stream()
-        .collect(Collectors.toMap(ChecklistDefinition::getRepositoryId, cld -> cld));
+        .collect(StreamUtil.toLinkedHashMap(ChecklistDefinition::getRepositoryId));
   }
 
   private static void verifyCentralRepositoryVersion(

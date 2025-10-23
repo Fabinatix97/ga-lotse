@@ -6,7 +6,7 @@
 package de.eshg.schoolentry.pdf.medicalreport;
 
 import de.eshg.lib.document.generator.department.DepartmentLogo;
-import de.eshg.schoolentry.pdf.Address;
+import de.eshg.schoolentry.api.pdf.Address;
 
 public record MedicalReportData(
     DepartmentLogo departmentLogo,

@@ -183,7 +183,7 @@ public class MedicalRegistryService {
     Map<MedicalRegistryRow, UUID> practiceIds = facilityService.createFacilitiesInCentralFile(rows);
     return rows.stream()
         .collect(
-            Collectors.toMap(
+            StreamUtil.toLinkedHashMap(
                 Function.identity(),
                 row ->
                     Optional.ofNullable(

@@ -5,7 +5,7 @@
 
 package de.eshg.mapper;
 
-import de.eshg.base.SortDirection;
+import de.eshg.api.commons.SortDirection;
 import org.springframework.data.domain.Sort;
 
 public class RestMappingUtil {

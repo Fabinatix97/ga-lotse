@@ -890,7 +890,7 @@
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/GetConcernsResponse"
+                  "$ref" : "#/components/schemas/GetCitizenConcernsResponse"
                 }
               }
             },
@@ -1248,6 +1248,14 @@
                   "landingContent_en" : {
                     "type" : "string",
                     "format" : "binary"
+                  },
+                  "selectConcernInfobox_de" : {
+                    "type" : "string",
+                    "format" : "binary"
+                  },
+                  "selectConcernInfobox_en" : {
+                    "type" : "string",
+                    "format" : "binary"
                   }
                 },
                 "required" : [ "config_request" ]
@@ -1309,6 +1317,34 @@
           }
         },
         "summary" : "Download the current content of the citizen portal landing page (markdown file, one language)",
+        "tags" : [ "OmsConfig" ]
+      }
+    },
+    "/configuration/oms-properties/select-concern-infobox/{lang}" : {
+      "get" : {
+        "operationId" : "downloadSelectConcernInfobox",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "lang",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/components/schemas/Language"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "type" : "string",
+                  "format" : "binary"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Download the current infobox of the citizen portal select concern step (markdown file, one language)",
         "tags" : [ "OmsConfig" ]
       }
     },
@@ -4886,7 +4922,7 @@
           "resolvedUsers" : {
             "type" : "object",
             "additionalProperties" : {
-              "$ref" : "#/components/schemas/User"
+              "$ref" : "#/components/schemas/AppointmentBlockUser"
             }
           },
           "start" : {
@@ -4951,6 +4987,28 @@
       "AppointmentBlockSortKey" : {
         "type" : "string",
         "enum" : [ "START", "END" ]
+      },
+      "AppointmentBlockUser" : {
+        "required" : [ "firstName", "lastName", "userId" ],
+        "type" : "object",
+        "properties" : {
+          "firstName" : {
+            "type" : "string",
+            "description" : "The given name(s) of a user.",
+            "example" : "John"
+          },
+          "lastName" : {
+            "type" : "string",
+            "description" : "The last name of a user.",
+            "example" : "Doe"
+          },
+          "userId" : {
+            "type" : "string",
+            "description" : "The Id of the user.",
+            "format" : "uuid",
+            "example" : "UUID_2"
+          }
+        }
       },
       "AppointmentLocation" : {
         "required" : [ "id", "name" ],
@@ -6578,6 +6636,21 @@
           }
         }
       },
+      "GetCitizenConcernsResponse" : {
+        "required" : [ "categories" ],
+        "type" : "object",
+        "properties" : {
+          "categories" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/ConcernCategoryConfig"
+            }
+          },
+          "infobox" : {
+            "type" : "string"
+          }
+        }
+      },
       "GetCitizenProcedureDetailsResponse" : {
         "required" : [ "concern", "dateOfBirth", "documents", "firstName", "isAnamnesisAnswered", "isAnamnesisEnabled", "lastName", "medicalOpinionStatus", "procedureId" ],
         "type" : "object",
@@ -6813,7 +6886,7 @@
             "type" : "string",
             "description" : "Id of the Facility.",
             "format" : "uuid",
-            "example" : "UUID_2"
+            "example" : "UUID_3"
           },
           "name" : {
             "maxLength" : 300,
@@ -7092,7 +7165,7 @@
             "type" : "string",
             "description" : "Id of the Person.",
             "format" : "uuid",
-            "example" : "UUID_2"
+            "example" : "UUID_3"
           },
           "lastName" : {
             "maxLength" : 120,
@@ -8086,6 +8159,9 @@
           "medicalOpinionCutOffDateLeadTime" : {
             "type" : "integer",
             "format" : "int32"
+          },
+          "selectConcernInfobox" : {
+            "$ref" : "#/components/schemas/MultiLangDocument"
           }
         }
       },
@@ -8878,6 +8954,12 @@
           "deleteLandingPageEn" : {
             "type" : "boolean"
           },
+          "deleteSelectConcernInfoboxDe" : {
+            "type" : "boolean"
+          },
+          "deleteSelectConcernInfoboxEn" : {
+            "type" : "boolean"
+          },
           "keycloakUserCleanupJobOverdueDuration" : {
             "type" : "integer",
             "format" : "int32"
@@ -9380,7 +9462,7 @@
             "type" : "string",
             "description" : "The Id of the user.",
             "format" : "uuid",
-            "example" : "UUID_3"
+            "example" : "UUID_2"
           },
           "username" : {
             "minLength" : 1,

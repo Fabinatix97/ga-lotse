@@ -19,12 +19,12 @@ import de.eshg.lib.appointmentblock.api.AppointmentDto;
 import de.eshg.lib.appointmentblock.api.AppointmentTypeDto;
 import de.eshg.lib.appointmentblock.api.GetFreeAppointmentsResponse;
 import de.eshg.lib.appointmentblock.persistence.AppointmentType;
+import de.eshg.officialmedicalservice.citizenpublic.api.GetCitizenConcernsResponse;
 import de.eshg.officialmedicalservice.citizenpublic.api.GetOpeningHoursResponse;
 import de.eshg.officialmedicalservice.concern.ConcernService;
 import de.eshg.officialmedicalservice.config.OmsAppointmentStandardDurationService;
 import de.eshg.officialmedicalservice.config.api.OmsAppointmentStandardDurationsDto;
 import de.eshg.officialmedicalservice.document.OmsDocumentService;
-import de.eshg.officialmedicalservice.procedure.api.GetConcernsResponse;
 import de.eshg.officialmedicalservice.procedure.api.PostCitizenProcedureRequest;
 import de.eshg.rest.service.security.config.BaseUrls;
 import io.swagger.v3.oas.annotations.Operation;
@@ -168,7 +168,7 @@ public class CitizenPublicController {
 
   @Operation(summary = "Get all available concerns for the online portal.")
   @GetMapping(path = CONCERNS_URL, produces = MediaType.APPLICATION_JSON_VALUE)
-  public GetConcernsResponse getVisibleConcerns() {
+  public GetCitizenConcernsResponse getVisibleConcerns() {
     return concernService.getConcernsVisibleInOnlinePortal();
   }
 

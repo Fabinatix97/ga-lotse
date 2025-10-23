@@ -9,7 +9,6 @@ import de.cronn.commons.lang.StreamUtil;
 import java.util.Arrays;
 import java.util.Locale;
 import java.util.Map;
-import java.util.function.Function;
 
 public enum Language {
   GERMAN(Locale.GERMAN),
@@ -18,8 +17,7 @@ public enum Language {
 
   public static final Language DEFAULT = GERMAN;
   private static final Map<Locale, Language> LANGUAGE_BY_LOCALE =
-      Arrays.stream(Language.values())
-          .collect(StreamUtil.toLinkedHashMap(Language::getLocale, Function.identity()));
+      Arrays.stream(Language.values()).collect(StreamUtil.toLinkedHashMap(Language::getLocale));
 
   private final Locale locale;
 

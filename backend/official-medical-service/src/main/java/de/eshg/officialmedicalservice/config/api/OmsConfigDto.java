@@ -16,6 +16,7 @@ import jakarta.validation.constraints.PositiveOrZero;
 public record OmsConfigDto(
     @NotNull @Valid DocumentDetailsDto concerns,
     @NotNull @Valid MultiLangDocumentDto landingPageContent,
+    @Valid MultiLangDocumentDto selectConcernInfobox,
     @NotNull @PositiveOrZero Integer keycloakUserCleanupJobOverdueDuration,
     @NotNull @PositiveOrZero Integer medicalOpinionCutOffDateLeadTime,
     @NotNull Boolean citizenPortalAnamnesisEnabled) {}

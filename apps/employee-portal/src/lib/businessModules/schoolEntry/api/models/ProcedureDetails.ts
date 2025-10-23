@@ -8,6 +8,7 @@ import { mapOptionalValue } from "@eshg/lib-portal";
 import { ApiProcedureDetails } from "@eshg/school-entry-api";
 
 import { Appointment, mapAppointment } from "./Appointment";
+import { CustodianDetails, mapCustodianDetails } from "./CustodianDetails";
 import { Location, mapLocation } from "./Location";
 import { PersonDetails, mapPersonDetails } from "./Person";
 import { Procedure, mapProcedure } from "./Procedure";
@@ -21,7 +22,7 @@ export interface ProcedureDetails extends Procedure {
   readonly isInvitationSent: boolean;
   readonly isDeceased: boolean;
   readonly deceased?: Date;
-  readonly custodians: PersonDetails[];
+  readonly custodians: CustodianDetails[];
   readonly waitingRoom: WaitingRoom;
   readonly isDeletable: boolean;
   readonly schoolInfoLetterCreatedAt?: Date;
@@ -43,7 +44,7 @@ export function mapProcedureDetails(
     isInvitationSent: response.isInvitationSent,
     isDeceased: response.isDeceased,
     deceased: mapOptionalValue(response.deceased),
-    custodians: response.custodians.map(mapPersonDetails),
+    custodians: response.custodians.map(mapCustodianDetails),
     waitingRoom: mapWaitingRoom(response.waitingRoom),
     isDeletable: response.isDeletable,
     schoolInfoLetterCreatedAt: response.schoolInfoLetterCreatedAt,

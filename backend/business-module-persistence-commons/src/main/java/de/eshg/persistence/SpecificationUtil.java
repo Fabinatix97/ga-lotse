@@ -5,7 +5,7 @@
 
 package de.eshg.persistence;
 
-import de.eshg.base.SortDirection;
+import de.eshg.api.commons.SortDirection;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.Expression;
 import jakarta.persistence.criteria.Order;

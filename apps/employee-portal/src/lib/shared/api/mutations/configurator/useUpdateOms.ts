@@ -51,17 +51,23 @@ export function useUpdateOms() {
       concerns,
       landingContentDe,
       landingContentEn,
+      selectConcernInfoboxDe,
+      selectConcernInfoboxEn,
       ...configRequest
     }: {
       concerns?: Blob;
       landingContentDe?: Blob;
       landingContentEn?: Blob;
+      selectConcernInfoboxDe?: Blob;
+      selectConcernInfoboxEn?: Blob;
     } & ApiPutOmsConfigRequest) =>
       api.putOmsConfig(
         configRequest,
         concerns,
         landingContentDe,
         landingContentEn,
+        selectConcernInfoboxDe,
+        selectConcernInfoboxEn,
       ),
     onSuccess: () =>
       snackbar.confirmation("Die Änderungen wurden gespeichert."),

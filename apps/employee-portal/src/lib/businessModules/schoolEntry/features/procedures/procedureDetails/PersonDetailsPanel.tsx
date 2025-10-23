@@ -17,6 +17,7 @@ import {
   useSyncBarrier,
 } from "@eshg/lib-employee-portal";
 
+import { CustodianDetails } from "@/lib/businessModules/schoolEntry/api/models/CustodianDetails";
 import { PersonDetails } from "@/lib/businessModules/schoolEntry/api/models/Person";
 import { ProcedureDetails } from "@/lib/businessModules/schoolEntry/api/models/ProcedureDetails";
 import { useUpdateChildSidebar } from "@/lib/businessModules/schoolEntry/features/procedures/procedureDetails/UpdateChildSidebar";
@@ -28,7 +29,7 @@ import { routes } from "@/lib/businessModules/schoolEntry/shared/routes";
 
 interface PersonDetailsPanelProps {
   title: string;
-  person: PersonDetails;
+  person: PersonDetails | CustodianDetails;
   procedure: ProcedureDetails;
   name: string;
   isCustodian?: boolean;
@@ -38,6 +39,13 @@ const COLUMN_STYLE: SxProps = {
   flexGrow: 1,
   maxWidth: (theme) => ({ md: `calc(100%/3 - 2 * ${theme.spacing(2)})` }),
 };
+
+function isCustodianDetails(
+  person: PersonDetails | CustodianDetails,
+  isCustodian: boolean,
+): person is CustodianDetails {
+  return isCustodian;
+}
 
 export function PersonDetailsPanel({
   title,
@@ -87,7 +95,7 @@ export function PersonDetailsPanel({
         buttons={
           procedure.isClosed ? undefined : (
             <SyncBarrier outdated={person.outdated} syncHref={syncRoute}>
-              {isCustodian ? (
+              {isCustodianDetails(person, isCustodian) ? (
                 <ActionsMenu actionItems={custodianActions} />
               ) : (
                 <EditButton

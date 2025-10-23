@@ -5,6 +5,7 @@
 
 package de.eshg.inspection.report.mapper;
 
+import de.cronn.commons.lang.StreamUtil;
 import de.eshg.inspection.common.persistence.MediaFile;
 import de.eshg.inspection.common.persistence.MediaFileRepository;
 import de.eshg.inspection.report.persistence.Report;
@@ -40,7 +41,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -82,8 +82,7 @@ public class ReportEditorMapper {
             reportAudioElement.getAudioChecklistElementIds());
 
     Map<UUID, MediaFile> mediaFileMap =
-        mediaFileList.stream()
-            .collect(Collectors.toMap(MediaFile::getFileExternalId, mediaFile -> mediaFile));
+        mediaFileList.stream().collect(StreamUtil.toLinkedHashMap(MediaFile::getFileExternalId));
 
     List<EditorElementAudioDto> audioDtos =
         reportAudioElement.getAudioChecklistElementIds().stream()
@@ -142,8 +141,7 @@ public class ReportEditorMapper {
             imagesElement.getImageChecklistElementIds());
 
     Map<UUID, MediaFile> mediaFileMap =
-        mediaFileList.stream()
-            .collect(Collectors.toMap(MediaFile::getFileExternalId, mediaFile -> mediaFile));
+        mediaFileList.stream().collect(StreamUtil.toLinkedHashMap(MediaFile::getFileExternalId));
 
     List<EditorElementImageDto> imageDtos =
         imagesElement.getImageChecklistElementIds().stream()

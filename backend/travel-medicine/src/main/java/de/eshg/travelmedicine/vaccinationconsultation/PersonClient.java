@@ -5,6 +5,7 @@
 
 package de.eshg.travelmedicine.vaccinationconsultation;
 
+import de.cronn.commons.lang.StreamUtil;
 import de.eshg.base.address.AddressDto;
 import de.eshg.base.address.DomesticAddressDto;
 import de.eshg.base.centralfile.PersonApi;
@@ -252,7 +253,9 @@ public class PersonClient {
     }
 
     return personFileStates.stream()
-        .collect(Collectors.toMap(GetPersonFileStateResponse::id, PersonClient::mapToPatientDto));
+        .collect(
+            StreamUtil.toLinkedHashMap(
+                GetPersonFileStateResponse::id, PersonClient::mapToPatientDto));
   }
 
   public void markExternalPersonForDeletion(UUID fileStateId) {

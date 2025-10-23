@@ -5,7 +5,7 @@
 
 package de.eshg.dental.api;
 
-import de.eshg.base.PaginationParameters;
+import de.eshg.api.commons.PaginationParameters;
 import jakarta.validation.constraints.Min;
 
 public record ProcedureLabelPaginationParameters(

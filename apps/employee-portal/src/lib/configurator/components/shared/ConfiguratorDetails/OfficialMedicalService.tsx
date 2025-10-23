@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { FormikErrors } from "formik";
 import { notFound } from "next/navigation";
 import { useMemo } from "react";
 
@@ -31,6 +32,7 @@ import { useUpdateOms } from "@/lib/shared/api/mutations/configurator/useUpdateO
 import {
   useDownloadOmsConcerns,
   useDownloadOmsLandingPage,
+  useDownloadOmsSelectConcernInfobox,
   useGetOmsConfig,
 } from "@/lib/shared/api/queries/configurator/officialMedicalService";
 
@@ -41,6 +43,8 @@ export interface OfficialMedicalServiceFormModel {
   concerns: ConfigFile;
   landingContentDe: ConfigFile;
   landingContentEn: ConfigFile;
+  selectConcernInfoboxDe: ConfigFile;
+  selectConcernInfoboxEn: ConfigFile;
 }
 
 const endpointName: ConfiguratorEndpointName = "OFFICIAL_MEDICAL_SERVICE";
@@ -70,6 +74,8 @@ function OfficialMedicalServiceConfiguratorForm(props: {
     concerns,
     landingContentDe,
     landingContentEn,
+    selectConcernInfoboxDe,
+    selectConcernInfoboxEn,
     citizenPortalAnamnesisEnabled,
     keycloakUserCleanupJobOverdueDuration,
     medicalOpinionCutOffDateLeadTime,
@@ -79,11 +85,27 @@ function OfficialMedicalServiceConfiguratorForm(props: {
       landingContentDe: mapFileToRequest(landingContentDe),
       landingContentEn: mapFileToRequest(landingContentEn),
       deleteLandingPageEn: landingContentEn === null,
+      selectConcernInfoboxDe: mapFileToRequest(selectConcernInfoboxDe),
+      selectConcernInfoboxEn: mapFileToRequest(selectConcernInfoboxEn),
+      deleteSelectConcernInfoboxEn: selectConcernInfoboxEn === null,
+      deleteSelectConcernInfoboxDe: selectConcernInfoboxDe === null,
       citizenPortalAnamnesisEnabled: citizenPortalAnamnesisEnabled === "true",
       keycloakUserCleanupJobOverdueDuration:
         +keycloakUserCleanupJobOverdueDuration,
       medicalOpinionCutOffDateLeadTime: +medicalOpinionCutOffDateLeadTime,
     });
+  }
+
+  function validate({
+    selectConcernInfoboxDe,
+    selectConcernInfoboxEn,
+  }: OfficialMedicalServiceFormModel) {
+    const errors: FormikErrors<OfficialMedicalServiceFormModel> = {};
+    if (selectConcernInfoboxDe === null && selectConcernInfoboxEn !== null) {
+      errors.selectConcernInfoboxDe =
+        "Die deutsche Übersetzung ist erforderlich wenn eine englische Übersetzung vorhanden ist.";
+    }
+    return errors;
   }
 
   return (
@@ -103,8 +125,17 @@ function OfficialMedicalServiceConfiguratorForm(props: {
           data.landingPageContent?.en,
           CustomFileType.Md,
         ),
+        selectConcernInfoboxDe: mapOptionalDocument(
+          data.selectConcernInfobox?.de,
+          CustomFileType.Md,
+        ),
+        selectConcernInfoboxEn: mapOptionalDocument(
+          data.selectConcernInfobox?.en,
+          CustomFileType.Md,
+        ),
       }}
       status={currentTabStatus}
+      validate={validate}
       onSubmit={handleSubmit}
     />
   );
@@ -113,6 +144,8 @@ function OfficialMedicalServiceConfiguratorForm(props: {
 function useOmsSheets() {
   const { download: downloadConcerns } = useDownloadOmsConcerns();
   const { download: downloadLandingPage } = useDownloadOmsLandingPage();
+  const { download: downloadSelectConcernInfobox } =
+    useDownloadOmsSelectConcernInfobox();
 
   return useMemo(
     () =>
@@ -178,8 +211,29 @@ function useOmsSheets() {
             }),
           ],
         },
+        {
+          title: "Anliegen auswählen Infobox im Online Portal",
+          description:
+            "Falls kein Text konfiguriert ist wird keine Infobox angezeigt.",
+          sections: [
+            markdownFileSection({
+              title: "Deutsch",
+              name: "selectConcernInfoboxDe",
+              required: false,
+              downloadFile: () =>
+                downloadSelectConcernInfobox(ApiLanguage.German),
+            }),
+            markdownFileSection({
+              title: "Englisch",
+              name: "selectConcernInfoboxEn",
+              required: false,
+              downloadFile: () =>
+                downloadSelectConcernInfobox(ApiLanguage.English),
+            }),
+          ],
+        },
       ] satisfies FormSheet[],
-    [downloadConcerns, downloadLandingPage],
+    [downloadConcerns, downloadLandingPage, downloadSelectConcernInfobox],
   );
 }
 

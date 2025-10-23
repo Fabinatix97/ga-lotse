@@ -7,12 +7,13 @@ package de.eshg.schoolentry.pdf;
 
 import de.eshg.lib.contact.ContactClient;
 import de.eshg.lib.document.generator.DocumentGenerator;
-import de.eshg.lib.document.generator.department.DepartmentLogo;
 import de.eshg.lib.document.generator.department.DepartmentLogoClient;
 import de.eshg.lib.procedure.domain.model.Pdf;
 import de.eshg.lib.procedure.domain.model.PdfMetaData;
 import de.eshg.lib.procedure.file.FileFactory;
 import de.eshg.schoolentry.SchoolInfoLetterService;
+import de.eshg.schoolentry.api.pdf.Address;
+import de.eshg.schoolentry.api.schoolinfoletter.DepartmentLogo;
 import de.eshg.schoolentry.api.schoolinfoletter.SchoolInfoLetterData;
 import de.eshg.schoolentry.business.model.ProcedureDetailsData;
 import de.eshg.schoolentry.client.DepartmentInfoClient;
@@ -78,12 +79,17 @@ public class SchoolInfoLetterGenerator extends AbstractGenerator {
       SchoolEntryProcedure procedure, ProcedureDetailsData procedureDetailsData) {
     Address departmentAddress = getDepartmentAddress();
     Address schoolAddress = getAddressOfInstitution(procedureDetailsData.school().id());
-    DepartmentLogo departmentLogo = departmentLogoClient.getDepartmentLogo();
+    DepartmentLogo departmentLogo = mapToSchoolEntryDto(departmentLogoClient.getDepartmentLogo());
     return new SchoolInfoLetterData(
         LocalDate.now(clock).format(DateTimeFormatter.ofPattern("dd.MM.yyyy")),
         departmentLogo,
         departmentAddress,
         schoolAddress,
         schoolInfoLetterService.getSchoolInfoLetterExamination(procedure, procedureDetailsData));
+  }
+
+  private DepartmentLogo mapToSchoolEntryDto(
+      de.eshg.lib.document.generator.department.DepartmentLogo departmentLogo) {
+    return new DepartmentLogo(departmentLogo.contentType(), departmentLogo.contentAsBase64());
   }
 }

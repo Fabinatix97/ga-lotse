@@ -7,7 +7,6 @@ package de.eshg.base.keycloak;
 
 import static de.eshg.base.keycloak.differ.KeycloakDiffer.toJson;
 import static de.eshg.lib.keycloak.UserAttributePermissions.ADMIN_ONLY;
-import static java.util.function.Function.identity;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -27,7 +26,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.function.BiConsumer;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 import org.keycloak.admin.client.resource.*;
 import org.keycloak.representations.idm.*;
@@ -378,7 +376,7 @@ public class KeycloakTestClient {
   private void addOrRemoveUserRoleMappings(List<KeycloakUser> configuredUsers) {
     Map<String, RoleRepresentation> roleByName =
         keycloakClient.getSystemRoles().stream()
-            .collect(Collectors.toMap(RoleRepresentation::getName, identity()));
+            .collect(StreamUtil.toLinkedHashMap(RoleRepresentation::getName));
 
     configuredUsers.forEach(
         userConfig -> {

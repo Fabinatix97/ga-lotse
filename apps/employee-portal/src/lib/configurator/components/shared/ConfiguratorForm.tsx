@@ -4,7 +4,7 @@
  */
 
 import { Button, Divider, Radio, Sheet, Stack, Typography } from "@mui/joy";
-import { Formik, FormikValues } from "formik";
+import { Formik, FormikErrors, FormikValues } from "formik";
 import { ReactElement, useState } from "react";
 import { isDefined, isEmpty } from "remeda";
 
@@ -157,11 +157,13 @@ function SectionContent({
 export function ConfiguratorForm<T extends FormikValues>({
   sheets,
   initialValues,
+  validate,
   onSubmit,
   status,
 }: {
   sheets: FormSheet[];
   initialValues: T;
+  validate?: (values: T) => void | object | Promise<FormikErrors<T>>;
   onSubmit: (model: T) => Promise<void>;
   status?: ConfiguratorStatus;
 }) {
@@ -175,6 +177,7 @@ export function ConfiguratorForm<T extends FormikValues>({
       validateOnChange={false}
       validateOnMount={false}
       enableReinitialize
+      validate={validate}
       onSubmit={async (model, helpers) => {
         setShowError(false);
         const errors = await helpers.validateForm();
@@ -320,7 +323,7 @@ export function ConfiguratorForm<T extends FormikValues>({
                     <Alert
                       variant="soft"
                       color="warning"
-                      message="Die englischsprachige Datei wurde nicht hochgeladen. Die deutsche Version wird für diese als Fallback genutzt."
+                      message="Eine englischsprachige Datei wurde nicht hochgeladen. Die deutsche Version wird für diese als Fallback genutzt."
                     />
                   )}
                   {status === "INCOMPLETE" && (

@@ -5,7 +5,7 @@
 
 package de.eshg.lib.appointmentblock.persistence;
 
-import de.eshg.base.SortDirection;
+import de.eshg.api.commons.SortDirection;
 import de.eshg.lib.appointmentblock.api.AppointmentBlockSortKey;
 import de.eshg.lib.appointmentblock.persistence.entity.AppointmentBlock;
 import de.eshg.lib.appointmentblock.persistence.entity.AppointmentBlockGroup;

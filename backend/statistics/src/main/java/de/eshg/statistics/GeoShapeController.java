@@ -7,7 +7,7 @@ package de.eshg.statistics;
 
 import static de.eshg.statistics.GeoShapeController.BASE_URL;
 
-import de.eshg.base.SortDirection;
+import de.eshg.api.commons.SortDirection;
 import de.eshg.rest.service.security.config.BaseUrls;
 import de.eshg.statistics.api.geoshape.AbstractGeoShapeChangeRequest;
 import de.eshg.statistics.api.geoshape.GeoShapeDto;

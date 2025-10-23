@@ -5,15 +5,17 @@
 
 package de.eshg.lib.appointmentblock;
 
+import de.cronn.commons.lang.StreamUtil;
 import de.eshg.base.user.UserApi;
 import de.eshg.base.user.api.GetUsersRequest;
 import de.eshg.base.user.api.GetUsersResponse;
-import de.eshg.base.user.api.UserDto;
 import de.eshg.lib.appointmentblock.api.AppointmentBlockBinDto;
 import de.eshg.lib.appointmentblock.api.AppointmentBlockDto;
 import de.eshg.lib.appointmentblock.api.AppointmentBlockSlotDto;
+import de.eshg.lib.appointmentblock.api.AppointmentBlockUserDto;
 import de.eshg.lib.appointmentblock.api.AppointmentDto;
 import de.eshg.lib.appointmentblock.api.AppointmentTypeDto;
+import de.eshg.lib.appointmentblock.mapper.UserMapper;
 import de.eshg.lib.appointmentblock.model.AppointmentBlockSlot;
 import de.eshg.lib.appointmentblock.model.AppointmentBlockSlotWithAppointment;
 import de.eshg.lib.appointmentblock.persistence.AppointmentBlockRepository;
@@ -34,10 +36,12 @@ import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 
@@ -74,7 +78,7 @@ public class AppointmentBlockViewService {
     List<AppointmentBlock> blocks =
         appointmentBlockRepository.findBlocksOverlappingWithTimeRange(timeRangeStart, timeRangeEnd);
 
-    Map<UUID, UserDto> resolvedUsers = getResolvedUsers(blocks);
+    Map<UUID, AppointmentBlockUserDto> resolvedUsers = getResolvedUsers(blocks);
 
     return resolveAppointmentBlocks(blocks, resolvedUsers);
   }
@@ -87,11 +91,11 @@ public class AppointmentBlockViewService {
           "Appointment block with id " + appointmentBlockId + " not found.");
     }
     List<AppointmentBlock> singleBlockList = List.of(blockOptional.get());
-    Map<UUID, UserDto> resolvedUsers = getResolvedUsers(singleBlockList);
+    Map<UUID, AppointmentBlockUserDto> resolvedUsers = getResolvedUsers(singleBlockList);
     return resolveAppointmentBlocks(singleBlockList, resolvedUsers).getFirst();
   }
 
-  private Map<UUID, UserDto> getResolvedUsers(List<AppointmentBlock> blocks) {
+  private Map<UUID, AppointmentBlockUserDto> getResolvedUsers(List<AppointmentBlock> blocks) {
     Set<UUID> allUserIds = new HashSet<>();
     blocks.stream().filter(this::isWithDetails).forEach(block -> addAllUserIds(allUserIds, block));
     if (allUserIds.isEmpty()) {
@@ -100,7 +104,8 @@ public class AppointmentBlockViewService {
 
     GetUsersResponse getUsersResponse = userApi.getUsersBulk(new GetUsersRequest(allUserIds, true));
     return getUsersResponse.users().stream()
-        .collect(Collectors.toMap(UserDto::userId, userDto -> userDto));
+        .map(UserMapper::mapToAppointmentBlockDto)
+        .collect(StreamUtil.toLinkedHashMap(AppointmentBlockUserDto::userId));
   }
 
   private void addAllUserIds(Set<UUID> allUserIds, AppointmentBlock appointmentBlock) {
@@ -117,13 +122,13 @@ public class AppointmentBlockViewService {
   }
 
   private List<AppointmentBlockDto> resolveAppointmentBlocks(
-      List<AppointmentBlock> blocks, Map<UUID, UserDto> resolvedUsers) {
+      List<AppointmentBlock> blocks, Map<UUID, AppointmentBlockUserDto> resolvedUsers) {
     Map<AppointmentBlock, List<List<AppointmentBlockSlotWithAppointment>>>
         blockToBinsWithBookedSlots =
             blocks.stream()
                 .collect(
-                    Collectors.toMap(
-                        block -> block,
+                    StreamUtil.toLinkedHashMap(
+                        Function.identity(),
                         AppointmentBlockViewService::getBinsWithBookedAppointments));
 
     List<Appointment> appointments =
@@ -155,7 +160,7 @@ public class AppointmentBlockViewService {
       AppointmentBlock block,
       List<List<AppointmentBlockSlotWithAppointment>> binsWithBookedSlots,
       Map<Appointment, AppointmentBlockSlotDto> appointmentToSlot,
-      Map<UUID, UserDto> allResolvedUsers) {
+      Map<UUID, AppointmentBlockUserDto> allResolvedUsers) {
     AppointmentBlockGroup appointmentBlockGroup = block.getAppointmentBlockGroup();
     List<AppointmentTypeDto> appointmentTypes =
         appointmentBlockGroup.getTypes().stream()
@@ -170,14 +175,14 @@ public class AppointmentBlockViewService {
       Set<UUID> userIds = new HashSet<>();
       addAllUserIds(userIds, block);
 
-      Map<UUID, UserDto> resolvedUsers =
+      Map<UUID, AppointmentBlockUserDto> resolvedUsers =
           allResolvedUsers.entrySet().stream()
               .filter(entry -> userIds.contains(entry.getKey()))
               .sorted(Comparator.comparing(e -> e.getValue().firstName()))
               .collect(
                   Collectors.toMap(
                       Map.Entry::getKey,
-                      Map.Entry::getValue,
+                      Entry::getValue,
                       (first, second) -> first,
                       LinkedHashMap::new));
 

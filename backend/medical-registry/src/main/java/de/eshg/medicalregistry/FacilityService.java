@@ -112,7 +112,7 @@ public class FacilityService {
               .facilityFileStateIds();
       return IntStream.range(0, relevantRowValues.size())
           .boxed()
-          .collect(Collectors.toMap(relevantRowValues::get, facilityStateIds::get));
+          .collect(StreamUtil.toLinkedHashMap(relevantRowValues::get, facilityStateIds::get));
     }
   }
 

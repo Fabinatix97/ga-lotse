@@ -5,7 +5,7 @@
 
 package de.eshg.dental;
 
-import de.eshg.base.SortDirection;
+import de.eshg.api.commons.SortDirection;
 import de.eshg.dental.api.ChildFilterParameters;
 import de.eshg.dental.api.ChildPaginationAndSortParameters;
 import de.eshg.dental.api.ChildSortKey;

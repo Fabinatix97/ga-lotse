@@ -24,6 +24,9 @@ public class OmsConfigAuditLogMapper {
 
     addRelevantFieldsOfMultiLangDoc(relevantFields, "landingContent", config.getLandingContent());
 
+    addRelevantFieldsOfMultiLangDoc(
+        relevantFields, "selectConcernInfobox", config.getSelectConcernInfobox());
+
     relevantFields.put(
         "keycloakUserCleanupJobOverdueDuration",
         Integer.toString(config.getKeycloakUserCleanupJobOverdueDuration()));

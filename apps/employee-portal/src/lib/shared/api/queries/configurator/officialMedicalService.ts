@@ -21,6 +21,7 @@ export function useGetOmsConfig() {
       data._configuration ?? {
         concerns: undefined,
         landingPageContent: undefined,
+        selectConcernInfobox: undefined,
         citizenPortalAnamnesisEnabled: "",
         keycloakUserCleanupJobOverdueDuration: "",
         medicalOpinionCutOffDateLeadTime: "",
@@ -37,5 +38,12 @@ export function useDownloadOmsLandingPage() {
   const api = useConfiguratorOmsApi();
   return useFileDownload((lang: ApiLanguage) =>
     api.downloadLandingPageRaw({ lang }),
+  );
+}
+
+export function useDownloadOmsSelectConcernInfobox() {
+  const api = useConfiguratorOmsApi();
+  return useFileDownload((lang: ApiLanguage) =>
+    api.downloadSelectConcernInfoboxRaw({ lang }),
   );
 }

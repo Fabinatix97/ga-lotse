@@ -5,7 +5,7 @@
 
 package de.eshg.officialmedicalservice.procedure.api;
 
-import de.eshg.base.PagedResponse;
+import de.eshg.api.commons.PagedResponse;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import java.util.List;

@@ -11,7 +11,7 @@ import static de.eshg.dental.util.ChildSystemProgressEntryType.LABELS_MODIFIED;
 
 import com.google.common.collect.Iterables;
 import de.cronn.commons.lang.StreamUtil;
-import de.eshg.base.SortDirection;
+import de.eshg.api.commons.SortDirection;
 import de.eshg.base.centralfile.api.DataOriginDto;
 import de.eshg.base.centralfile.api.person.GetPersonFileStateResponse;
 import de.eshg.base.centralfile.api.person.GetPersonFileStatesSortParameters;
@@ -787,7 +787,7 @@ public class ChildService {
     Map<String, String> groupTransitionsMap =
         groupTransitions.stream()
             .collect(
-                Collectors.toMap(
+                StreamUtil.toLinkedHashMap(
                     GroupPromotionDto::originGroupName, GroupPromotionDto::targetGroupName));
 
     List<Child> childrenToPromote =
@@ -1085,8 +1085,7 @@ public class ChildService {
     Map<UUID, ChildRepository.InstitutionCounts> institutionCountByInstitution =
         institutionCounts.stream()
             .collect(
-                Collectors.toMap(
-                    ChildRepository.InstitutionCounts::getInstitutionId, Function.identity()));
+                StreamUtil.toLinkedHashMap(ChildRepository.InstitutionCounts::getInstitutionId));
 
     List<UUID> institutionIds = institutionCountByInstitution.keySet().stream().toList();
     Map<UUID, InstitutionContactDto> augmentedInstitutions =
@@ -1094,7 +1093,7 @@ public class ChildService {
             .getBulkContacts(institutionIds)
             .map(InstitutionContactDto.class::cast)
             .filter(contact -> contact.category().equals(contactCategory))
-            .collect(Collectors.toMap(InstitutionContactDto::id, Function.identity()));
+            .collect(StreamUtil.toLinkedHashMap(InstitutionContactDto::id));
 
     Stream<InstitutionContactDto> institutionContacts = augmentedInstitutions.values().stream();
     institutionContacts = searchInstitutions(searchParameters, institutionContacts);

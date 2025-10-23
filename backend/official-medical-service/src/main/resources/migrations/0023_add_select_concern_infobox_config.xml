@@ -1,0 +1,68 @@
+<!--
+ Copyright 2025 cronn GmbH
+ SPDX-License-Identifier: Apache-2.0
+-->
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+  <changeSet author="GA-Lotse" id="1760434164234-1">
+    <addColumn tableName="oms_configuration">
+      <column name="select_concern_infobox_id" type="BIGINT">
+        <constraints nullable="true"/>
+      </column>
+    </addColumn>
+    <addUniqueConstraint columnNames="select_concern_infobox_id" constraintName="oms_configuration_select_concern_infobox_id_key" tableName="oms_configuration"/>
+    <addForeignKeyConstraint baseColumnNames="select_concern_infobox_id" baseTableName="oms_configuration" constraintName="fk_oms_configuration_multi_lang_document" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="multi_lang_document" validate="true"/>
+  </changeSet>
+
+  <changeSet author="GA-Lotse" id="1760434164234-2">
+    <preConditions onFail="MARK_RAN">
+      <sqlCheck expectedResult="1">
+        select count(*) from oms_configuration
+      </sqlCheck>
+    </preConditions>
+
+    <insert tableName="document">
+      <column name="version" value="0"/>
+      <column name="content"><![CDATA[**Schulbezogene Anliegen**
+
+Kommen Sie bitte bei Prüfungen spätestens am Prüfungstag (auch ohne Termin) zu uns oder bei Abgabe einer wissenschaftlichen Arbeit nach vorheriger telefonischer Terminvereinbarung]]></column>
+    </insert>
+
+    <insert tableName="document">
+      <column name="version" value="0"/>
+      <column name="content"><![CDATA[**School-related concern**
+
+For exams, please arrive at the latest on the day of the exam (even without an appointment) or if you are submitting an academic paper, please make an appointment by telephone in advance]]></column>
+    </insert>
+
+    <sql>
+      insert into multi_lang_document (version, de_file_size_bytes, en_file_size_bytes, de_id, en_id)
+      select
+        0 as version,
+        octet_length(d_de.content) as de_file_size_bytes,
+        octet_length(d_en.content) as en_file_size_bytes,
+        d_de.id as de_id,
+        d_en.id as en_id
+      from
+        document d_de,
+        document d_en
+      where
+        d_de.content like '**Schulbezogene Anliegen**%'
+        and d_en.content like '**School-related concern**%'
+    </sql>
+
+    <sql>
+      update oms_configuration
+      set select_concern_infobox_id = (
+        select mld.id
+        from multi_lang_document mld
+               join document d_de on mld.de_id = d_de.id
+        where d_de.content like '**Schulbezogene Anliegen**%'
+        limit 1
+        )
+      where select_concern_infobox_id is null
+    </sql>
+  </changeSet>
+
+</databaseChangeLog>

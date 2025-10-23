@@ -14,6 +14,7 @@ import static de.eshg.base.keycloak.RealmBoundKeycloakClient.BROKER_CLIENT_ID;
 import static de.eshg.base.keycloak.RealmBoundKeycloakClient.assertResponseIs204NoContent;
 
 import com.google.common.annotations.VisibleForTesting;
+import de.cronn.commons.lang.StreamUtil;
 import jakarta.annotation.PostConstruct;
 import jakarta.ws.rs.core.Response;
 import java.time.Duration;
@@ -21,8 +22,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 import org.keycloak.admin.client.resource.ClientResource;
 import org.keycloak.admin.client.resource.RealmResource;
 import org.keycloak.admin.client.resource.UserProfileResource;
@@ -142,9 +141,8 @@ public class MasterKeycloakProvisioning implements AutoCloseable {
           Map<String, RequiredActionProviderRepresentation> existingRequiredActions =
               authentication.getRequiredActions().stream()
                   .collect(
-                      Collectors.toMap(
-                          RequiredActionProviderRepresentation::getProviderId,
-                          Function.identity()));
+                      StreamUtil.toLinkedHashMap(
+                          RequiredActionProviderRepresentation::getProviderId));
           for (SecurityAction action : SecurityAction.values()) {
             log.info(
                 "Updating action {} enabled={} default={}",

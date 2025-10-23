@@ -40,11 +40,14 @@ public class OmsConfigService extends EshgConfigurationService<OmsConfiguration>
   public static final String CONCERNS_FILENAME = "concerns.yaml";
   public static final String LANDING_CONTENT_BASE_FILENAME =
       "landing_content.md"; // language suffixes will be injected
+  public static final String SELECT_CONCERN_INFOBOX_BASE_FILENAME =
+      "select_concern_infobox.md"; // language suffixes will be injected
 
   private final InitialOmsConfiguration initialOmsConfiguration;
   private final AuditLogWriter auditLogWriter;
 
   private final MultiLangFileName landingContentFileNames;
+  private final MultiLangFileName selectConcernInfoboxFileNames;
   private final String concernsFileName;
   private final OmsConfigValidator omsConfigValidator;
 
@@ -60,6 +63,8 @@ public class OmsConfigService extends EshgConfigurationService<OmsConfiguration>
     this.concernsFileName = CONCERNS_FILENAME;
     this.landingContentFileNames =
         MultiLangFileName.fromFilenameWithLanguageTags(LANDING_CONTENT_BASE_FILENAME);
+    this.selectConcernInfoboxFileNames =
+        MultiLangFileName.fromFilenameWithLanguageTags(SELECT_CONCERN_INFOBOX_BASE_FILENAME);
     this.omsConfigValidator = omsConfigValidator;
   }
 
@@ -71,11 +76,8 @@ public class OmsConfigService extends EshgConfigurationService<OmsConfiguration>
     return landingContentFileNames;
   }
 
-  public String getLandingContentFileName(Language language) {
-    return switch (language) {
-      case GERMAN -> landingContentFileNames.de();
-      case ENGLISH -> landingContentFileNames.en();
-    };
+  public MultiLangFileName getSelectConcernInfoboxFileNames() {
+    return selectConcernInfoboxFileNames;
   }
 
   public OmsConfiguration getConfig() {
@@ -128,10 +130,25 @@ public class OmsConfigService extends EshgConfigurationService<OmsConfiguration>
   }
 
   @Transactional
+  public ResponseEntity<Resource> downloadSelectConcernInfobox(Language language) {
+    MultiLangDocument selectConcernInfobox = getConfig().getSelectConcernInfobox();
+    if (selectConcernInfobox == null) {
+      return ResponseEntity.notFound().build();
+    }
+    return MultiLangDocumentHelper.getAsResponseWithFallback(
+        selectConcernInfobox,
+        getSelectConcernInfoboxFileNames(),
+        language,
+        MediaType.TEXT_MARKDOWN);
+  }
+
+  @Transactional
   public void updateConfiguration(
       MultipartFile concerns,
       MultipartFile landingContentDe,
       MultipartFile landingContentEn,
+      MultipartFile selectConcernInfoboxDe,
+      MultipartFile selectConcernInfoboxEn,
       PutOmsConfigRequest configRequest) {
     boolean landingPageEnDeletionRequested =
         Boolean.TRUE.equals(configRequest.deleteLandingPageEn());
@@ -139,11 +156,28 @@ public class OmsConfigService extends EshgConfigurationService<OmsConfiguration>
       throw new BadRequestException(
           "Landing page EN: can't combine a deletion request and new content");
     }
+    boolean selectConcernInfoboxDeDeletionRequested =
+        Boolean.TRUE.equals(configRequest.deleteSelectConcernInfoboxDe());
+    if (selectConcernInfoboxDeDeletionRequested && selectConcernInfoboxDe != null) {
+      throw new BadRequestException(
+          "Select concern infobox DE: can't combine a deletion request and new content");
+    }
+    boolean selectConcernInfoboxEnDeletionRequested =
+        Boolean.TRUE.equals(configRequest.deleteSelectConcernInfoboxEn());
+    if (selectConcernInfoboxEnDeletionRequested && selectConcernInfoboxEn != null) {
+      throw new BadRequestException(
+          "Select concern infobox EN: can't combine a deletion request and new content");
+    }
 
     try {
       omsConfigValidator.validateConcerns(concerns);
-      omsConfigValidator.validateLandingContent(landingContentDe, Language.GERMAN);
-      omsConfigValidator.validateLandingContent(landingContentEn, Language.ENGLISH);
+      omsConfigValidator.validateContent(landingContentDe, Language.GERMAN, "landing page");
+      omsConfigValidator.validateContent(landingContentEn, Language.ENGLISH, "landing page");
+      ;
+      omsConfigValidator.validateContent(
+          selectConcernInfoboxDe, Language.GERMAN, "Select concern infobox");
+      omsConfigValidator.validateContent(
+          selectConcernInfoboxEn, Language.ENGLISH, "Select concern infobox");
     } catch (OmsConfigValidator.OmsConfigValidatorException cve) {
       String jsonInfo =
           "{ \"document\": \""
@@ -158,8 +192,26 @@ public class OmsConfigService extends EshgConfigurationService<OmsConfiguration>
 
     Document updateConcerns = determineUpdateConcerns(concerns, currentConfig);
     MultiLangDocument updateLandingPage =
-        determineUpdateLandingPage(
-            currentConfig, landingContentDe, landingContentEn, landingPageEnDeletionRequested);
+        determineDocumentUpdate(
+            currentConfig.getLandingContent(),
+            landingContentDe,
+            landingContentEn,
+            false,
+            landingPageEnDeletionRequested);
+    MultiLangDocument selectConcernInfobox =
+        determineDocumentUpdate(
+            currentConfig.getSelectConcernInfobox(),
+            selectConcernInfoboxDe,
+            selectConcernInfoboxEn,
+            selectConcernInfoboxDeDeletionRequested,
+            selectConcernInfoboxEnDeletionRequested);
+
+    if (selectConcernInfobox != null
+        && selectConcernInfobox.getDe() == null
+        && selectConcernInfobox.getEn() != null) {
+      throw new BadRequestException(
+          "Select concern infobox: German localization is mandatory if English localization is present");
+    }
 
     Integer updateKeycloakUserCleanupJobOverdueDuration =
         configRequest.keycloakUserCleanupJobOverdueDuration();
@@ -171,6 +223,7 @@ public class OmsConfigService extends EshgConfigurationService<OmsConfiguration>
         new OmsConfigurationData(
             updateConcerns,
             updateLandingPage,
+            selectConcernInfobox,
             updateKeycloakUserCleanupJobOverdueDuration,
             updateMedicalOpinionCutOffDateLeadTime,
             updateCitizenPortalAnamnesisEnabled);
@@ -182,6 +235,7 @@ public class OmsConfigService extends EshgConfigurationService<OmsConfiguration>
 
     currentConfig.setConcerns(updateConcerns);
     currentConfig.setLandingContent(updateLandingPage);
+    currentConfig.setSelectConcernInfobox(selectConcernInfobox);
     currentConfig.setKeycloakUserCleanupJobOverdueDuration(
         configRequest.keycloakUserCleanupJobOverdueDuration());
     currentConfig.setMedicalOpinionCutOffDateLeadTime(
@@ -196,9 +250,9 @@ public class OmsConfigService extends EshgConfigurationService<OmsConfiguration>
       return ConfigurationStatus.INCOMPLETE;
     }
 
-    // it's the landing content which actually determines the configuration status
-    MultiLangDocument landingContent = config.getLandingContent();
-    return MultiLangDocumentMapper.mapToConfigurationStatus(landingContent);
+    // verify that all document localizations are complete
+    return MultiLangDocumentMapper.mapToConfigurationStatus(
+        config.getLandingContent(), config.getSelectConcernInfobox());
   }
 
   private static Document determineUpdateConcerns(
@@ -214,25 +268,38 @@ public class OmsConfigService extends EshgConfigurationService<OmsConfiguration>
     return updateConcerns;
   }
 
-  private static MultiLangDocument determineUpdateLandingPage(
-      OmsConfiguration currentConfig,
-      MultipartFile landingContentDe,
-      MultipartFile landingContentEn,
-      boolean landingPageEnDeletionRequested) {
-    MultiLangDocument updateLandingPage = cloneMultiLangDocument(currentConfig.getLandingContent());
-    if (landingContentDe != null)
-      updateLandingPage.updateDe(getLandingContentBytes(landingContentDe));
-    if (landingContentEn != null)
-      updateLandingPage.updateEn(getLandingContentBytes(landingContentEn));
+  private static MultiLangDocument determineDocumentUpdate(
+      MultiLangDocument currentDocument,
+      MultipartFile updatedContentDe,
+      MultipartFile updatedContentEn,
+      boolean deDeletionRequested,
+      boolean enDeletionRequested) {
+    MultiLangDocument updateDocument = new MultiLangDocument();
 
-    if (landingPageEnDeletionRequested) updateLandingPage.updateEn((byte[]) null);
+    if (currentDocument != null) {
+      Document de = currentDocument.getDe();
+      Document en = currentDocument.getEn();
 
-    return updateLandingPage;
+      if (de != null && !deDeletionRequested) {
+        updateDocument.updateDe(de);
+      }
+      if (en != null && !enDeletionRequested) {
+        updateDocument.updateEn(en);
+      }
+    }
+
+    if (updatedContentDe != null) updateDocument.updateDe(getBytes(updatedContentDe));
+    if (updatedContentEn != null) updateDocument.updateEn(getBytes(updatedContentEn));
+
+    if (updateDocument.getDe() == null && updateDocument.getEn() == null) {
+      return null;
+    }
+    return updateDocument;
   }
 
-  private static byte[] getLandingContentBytes(MultipartFile landingContentDe) {
+  private static byte[] getBytes(MultipartFile file) {
     try {
-      return landingContentDe.getBytes();
+      return file.getBytes();
     } catch (IOException ioe) {
       throw new UncheckedIOException(ioe);
     }
@@ -240,26 +307,8 @@ public class OmsConfigService extends EshgConfigurationService<OmsConfiguration>
 
   private static Document mapToDomain(MultipartFile file) {
     Document document = new Document();
-    document.setContent(getLandingContentBytes(file));
+    document.setContent(getBytes(file));
     return document;
-  }
-
-  private static MultiLangDocument cloneMultiLangDocument(
-      @NotNull MultiLangDocument multiLangDocument) {
-
-    MultiLangDocument cloned = new MultiLangDocument();
-
-    Document de = multiLangDocument.getDe();
-    Document en = multiLangDocument.getEn();
-
-    if (de != null) {
-      cloned.updateDe(de);
-    }
-    if (en != null) {
-      cloned.updateEn(en);
-    }
-
-    return cloned;
   }
 
   private static Document cloneDocument(@NotNull Document document) {

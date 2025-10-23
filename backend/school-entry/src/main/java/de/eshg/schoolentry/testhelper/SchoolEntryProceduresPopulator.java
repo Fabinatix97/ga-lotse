@@ -7,15 +7,14 @@ package de.eshg.schoolentry.testhelper;
 
 import static de.eshg.base.util.ClassNameUtil.getClassNameAsPropertyKey;
 
-import de.eshg.base.GenderDto;
-import de.eshg.base.SalutationDto;
+import de.eshg.base.address.DomesticAddressDto;
 import de.eshg.base.contact.ContactApi;
 import de.eshg.base.contact.api.*;
 import de.eshg.base.icd10.Icd10CodeApi;
 import de.eshg.base.icd10.api.Icd10CodeDto;
 import de.eshg.base.icd10.api.SearchIcd10CodesResponse;
 import de.eshg.base.testhelper.BaseTestHelperApi;
-import de.eshg.lib.appointmentblock.LocationSelectionMode;
+import de.eshg.lib.appointmentblock.api.LocationSelectionMode;
 import de.eshg.lib.appointmentblock.spring.AppointmentBlockConfig;
 import de.eshg.lib.appointmentblock.testhelper.AppointmentBlockGroupsPopulator;
 import de.eshg.schoolentry.ProcedureLabelController;
@@ -201,8 +200,8 @@ public class SchoolEntryProceduresPopulator extends BasePopulator<CreateProcedur
     return new CreatePersonDto(
         null,
         name.title(),
-        optional(faker, randomElement(SalutationDto.values()), 0.9),
-        optional(faker, randomElement(GenderDto.values()), 0.05),
+        optional(faker, randomElement(SchoolEntrySalutationDto.values()), 0.9),
+        optional(faker, randomElement(SchoolEntryGenderDto.values()), 0.05),
         name.firstName(),
         name.lastName(),
         dateOfBirth,
@@ -211,8 +210,20 @@ public class SchoolEntryProceduresPopulator extends BasePopulator<CreateProcedur
         randomCountry(faker),
         optional(faker, randomListOfEmails(1), 0.4),
         optional(faker, randomListOfPhoneNumbers(1), 0.4),
-        optional(faker, BasePopulator::randomAddress, 0.3),
+        optional(faker, SchoolEntryProceduresPopulator::randomSchoolEntryAddress, 0.3),
         null);
+  }
+
+  private static SchoolEntryDomesticAddressDto randomSchoolEntryAddress(Faker faker) {
+    DomesticAddressDto address = BasePopulator.randomAddress(faker);
+    return new SchoolEntryDomesticAddressDto(
+        address.country(),
+        address.city(),
+        address.postalCode(),
+        address.differentName(),
+        address.street(),
+        address.houseNumber(),
+        address.addressAddition());
   }
 
   private void createRandomExaminationsAndAnamnesisForProcedure(UUID procedureId, Faker faker) {

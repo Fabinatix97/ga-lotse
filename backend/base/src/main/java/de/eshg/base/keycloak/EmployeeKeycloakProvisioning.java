@@ -96,7 +96,7 @@ public class EmployeeKeycloakProvisioning extends KeycloakProvisioning<EmployeeK
     keycloakClient.updateClientServiceAccountUserRoles(
         configuredModuleClientSecrets.keySet().stream()
             .map(this::buildServiceAccountUserRolesMap)
-            .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
+            .collect(StreamUtil.toLinkedHashMap(Map.Entry::getKey, Map.Entry::getValue)));
   }
 
   private Map<ModuleClient, String> getConfiguredModuleClientSecrets() {

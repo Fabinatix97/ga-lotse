@@ -34,6 +34,7 @@ import {
   ApiSchoolEntryProcedureType,
 } from "@eshg/school-entry-api";
 
+import { mapContactAndDifferentBillingAddressToSchoolEntry } from "@/lib/businessModules/schoolEntry/api/addressMapper";
 import { useSchoolEntryApi } from "@/lib/businessModules/schoolEntry/api/clients";
 import { useCreateProcedure } from "@/lib/businessModules/schoolEntry/api/mutations/schoolEntryApi";
 import { getProceduresByPersonQuery } from "@/lib/businessModules/schoolEntry/api/queries/schoolEntryApi";
@@ -114,12 +115,19 @@ function ConfiguredPersonSidebar(props: SidebarWithFormRefProps) {
     title: "Neuen Vorgang anlegen",
     onCreate: async ({ searchInputs, createInputs }) => {
       await handleCreate(
-        mapToPersonAddRequest(createInputs),
+        mapContactAndDifferentBillingAddressToSchoolEntry(
+          mapToPersonAddRequest(createInputs),
+        ),
         searchInputs.type,
       );
     },
     onSelect: async ({ searchInputs, person }) => {
-      await handleCreate(mapToPersonAddRequest(person), searchInputs.type);
+      await handleCreate(
+        mapContactAndDifferentBillingAddressToSchoolEntry(
+          mapToPersonAddRequest(person),
+        ),
+        searchInputs.type,
+      );
     },
     submitLabel: "Vorgang anlegen",
     searchFormComponent: EsuSearchFormComponent,

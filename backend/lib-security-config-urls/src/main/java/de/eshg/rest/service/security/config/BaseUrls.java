@@ -55,6 +55,7 @@ public final class BaseUrls {
     public static final String PUBLIC_STREET_API = "/public/streets";
     public static final String STREET_API = "/streets";
     public static final String PERSON_API = "/persons";
+    public static final String PERSON_WITHOUT_DATE_OF_BIRTH_API = "/persons-without-dob";
     public static final String PERSON_FILE_STATE_URL = "/centralfilestates";
     public static final String PERSON_EXTERNAL_DATA_SOURCE_URL = "/external-source";
     public static final String BUNDID_PERSON_LINK_API = "/bundid-person-link";

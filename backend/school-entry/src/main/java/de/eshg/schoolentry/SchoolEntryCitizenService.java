@@ -5,6 +5,7 @@
 
 package de.eshg.schoolentry;
 
+import static de.eshg.schoolentry.mapper.AddressMapper.mapToSchoolEntryDomesticAddressDto;
 import static de.eshg.schoolentry.util.SchoolEntrySystemProgressEntryType.ANAMNESIS_ADDED_BY_CITIZEN;
 import static de.eshg.schoolentry.util.SchoolEntrySystemProgressEntryType.APPOINTMENT_RESCHEDULED_BY_CITIZEN;
 
@@ -25,6 +26,7 @@ import de.eshg.lib.procedure.domain.model.TriggerType;
 import de.eshg.rest.service.error.BadRequestException;
 import de.eshg.rest.service.error.ErrorCode;
 import de.eshg.rest.service.error.NotFoundException;
+import de.eshg.schoolentry.api.SchoolEntryDomesticAddressDto;
 import de.eshg.schoolentry.api.citizen.AppointmentAddressDto;
 import de.eshg.schoolentry.api.citizen.CitizenAnamnesisDto;
 import de.eshg.schoolentry.domain.model.Anamnesis;
@@ -42,7 +44,6 @@ import java.util.function.Predicate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-import org.springframework.util.Assert;
 
 @Service
 public class SchoolEntryCitizenService {
@@ -184,7 +185,7 @@ public class SchoolEntryCitizenService {
   private AppointmentAddressDto mapToAppointmentAddress(GetDepartmentInfoResponse departmentInfo) {
     return new AppointmentAddressDto(
         departmentInfo.name(),
-        new DomesticAddressDto(
+        new SchoolEntryDomesticAddressDto(
             departmentInfo.country(),
             departmentInfo.city(),
             departmentInfo.postalCode(),
@@ -195,8 +196,12 @@ public class SchoolEntryCitizenService {
   }
 
   private AppointmentAddressDto mapToAppointmentAddress(ContactDto contact) {
-    Assert.isInstanceOf(DomesticAddressDto.class, contact.contactAddress());
-    return new AppointmentAddressDto(
-        contact.name(), ((DomesticAddressDto) contact.contactAddress()));
+    if (contact.contactAddress() instanceof DomesticAddressDto domesticAddress) {
+      return new AppointmentAddressDto(
+          contact.name(), mapToSchoolEntryDomesticAddressDto(domesticAddress));
+    } else {
+      throw new IllegalArgumentException(
+          "Unsupported contact address type: %s".formatted(contact.contactAddress().getClass()));
+    }
   }
 }

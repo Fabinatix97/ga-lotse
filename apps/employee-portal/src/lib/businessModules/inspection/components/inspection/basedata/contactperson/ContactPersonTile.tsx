@@ -52,10 +52,9 @@ export function ContactPersonTile({
                       value={SALUTATION_VALUES[contactPerson.salutation]}
                     />
                   )}
-                {isNonNullish(contactPerson?.title) &&
-                  contactPerson.title !== "Keine Angabe" && (
-                    <DetailsItem label="Titel" value={contactPerson.title} />
-                  )}
+                {isNonNullish(contactPerson?.title) && (
+                  <DetailsItem label="Titel" value={contactPerson.title} />
+                )}
               </Grid>
               {isNonNullish(contactPerson?.role) && (
                 <DetailsItem label="Role" value={contactPerson.role} />

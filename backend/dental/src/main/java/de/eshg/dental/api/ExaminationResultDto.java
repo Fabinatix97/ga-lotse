@@ -7,7 +7,7 @@ package de.eshg.dental.api;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import de.eshg.base.HasTypeDiscriminator;
+import de.eshg.api.commons.HasTypeDiscriminator;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 // Note: Using "ExaminationResult" leads to a Typescript compile error

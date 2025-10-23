@@ -5,7 +5,7 @@
 
 package de.eshg.statistics.mapper;
 
-import de.eshg.base.SortDirection;
+import de.eshg.api.commons.SortDirection;
 import de.eshg.base.user.api.UserDto;
 import de.eshg.lib.statistics.api.DataPrivacyCategory;
 import de.eshg.lib.statistics.api.DataRow;

@@ -7,7 +7,7 @@ package de.eshg.schoolentry.domain.model;
 
 import de.eshg.config.domain.Initializable;
 import de.eshg.domain.model.BaseEntity;
-import de.eshg.lib.appointmentblock.LocationSelectionMode;
+import de.eshg.lib.appointmentblock.api.LocationSelectionMode;
 import de.eshg.lib.common.DataSensitivity;
 import de.eshg.lib.common.SensitivityLevel;
 import jakarta.persistence.Column;

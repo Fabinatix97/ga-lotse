@@ -16,7 +16,6 @@ import static de.eshg.lib.procedure.domain.model.Procedure_.tasks;
 import static de.eshg.lib.procedure.domain.model.Task_.currentAssignment;
 import static de.eshg.lib.procedure.domain.model.Task_.procedure;
 import static java.util.function.Predicate.not;
-import static java.util.stream.Collectors.toMap;
 import static org.springframework.data.domain.PageRequest.ofSize;
 import static org.springframework.data.jpa.domain.Specification.allOf;
 
@@ -486,7 +485,9 @@ public class ProcedureController<
 
     Map<UUID, PersonType> personTypeByCentralFileStateId =
         relatedPersons.stream()
-            .collect(toMap(RelatedPerson::getCentralFileStateId, RelatedPerson::getPersonType));
+            .collect(
+                StreamUtil.toLinkedHashMap(
+                    RelatedPerson::getCentralFileStateId, RelatedPerson::getPersonType));
 
     List<DetailedPersonDto> result = new ArrayList<>();
 
@@ -523,7 +524,8 @@ public class ProcedureController<
     Map<UUID, FacilityType> facilityTypeByCentralFileStateId =
         relatedFacilities.stream()
             .collect(
-                toMap(RelatedFacility::getCentralFileStateId, RelatedFacility::getFacilityType));
+                StreamUtil.toLinkedHashMap(
+                    RelatedFacility::getCentralFileStateId, RelatedFacility::getFacilityType));
 
     List<DetailedFacilityDto> result = new ArrayList<>();
 

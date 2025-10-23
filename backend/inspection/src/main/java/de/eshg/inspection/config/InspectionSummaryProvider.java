@@ -8,6 +8,7 @@ package de.eshg.inspection.config;
 import static de.eshg.inspection.inspection.InspectionMapper.mapToInspectionTitle;
 import static de.eshg.inspection.inspection.InspectionMapper.mapToTaskSummary;
 
+import de.cronn.commons.lang.StreamUtil;
 import de.eshg.base.centralfile.api.facility.GetFacilityFileStateResponse;
 import de.eshg.domain.model.SequencedBaseEntity;
 import de.eshg.inspection.facility.FacilityClient;
@@ -18,7 +19,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -37,7 +37,7 @@ class InspectionSummaryProvider implements SummaryProvider<InspectionTask, Inspe
 
     return tasks.stream()
         .collect(
-            Collectors.toMap(
+            StreamUtil.toLinkedHashMap(
                 SequencedBaseEntity::getId,
                 task ->
                     mapToTaskSummary(
@@ -53,7 +53,7 @@ class InspectionSummaryProvider implements SummaryProvider<InspectionTask, Inspe
 
     return procedures.stream()
         .collect(
-            Collectors.toMap(
+            StreamUtil.toLinkedHashMap(
                 Inspection::getId,
                 inspection ->
                     mapToInspectionTitle(
@@ -72,6 +72,7 @@ class InspectionSummaryProvider implements SummaryProvider<InspectionTask, Inspe
 
     return facilityFileStates.stream()
         .collect(
-            Collectors.toMap(GetFacilityFileStateResponse::id, GetFacilityFileStateResponse::name));
+            StreamUtil.toLinkedHashMap(
+                GetFacilityFileStateResponse::id, GetFacilityFileStateResponse::name));
   }
 }

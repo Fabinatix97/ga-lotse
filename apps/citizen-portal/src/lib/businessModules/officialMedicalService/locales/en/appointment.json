@@ -11,10 +11,6 @@
   "concern": {
     "title": "Select concern",
     "description": "The appointment type will be included in the order letter sent to you.",
-    "infoText": {
-      "title": "School-related concern",
-      "description": "For exams, please arrive at the latest on the day of the exam (even without an appointment) or if you are submitting an academic paper, please make an appointment by telephone in advance"
-    },
     "filter": {
       "category": "Category",
       "category_all": "All"

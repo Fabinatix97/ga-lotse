@@ -10,6 +10,7 @@ import static de.eshg.inspection.inspection.InspectionUtils.checkInspectionIsNot
 import static de.eshg.lib.keycloak.EmployeePermissionRole.INSPECTION_LEADER;
 import static java.util.Optional.ofNullable;
 
+import de.cronn.commons.lang.StreamUtil;
 import de.eshg.base.calendar.CalendarApi;
 import de.eshg.base.calendar.CalendarEventApi;
 import de.eshg.base.calendar.api.BusinessCaseEventRequest;
@@ -77,8 +78,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -443,7 +442,7 @@ public class InspectionUpdater {
       Inspection inspection, List<UUID> selectedChecklistDefinitionVersionIds) {
     Map<UUID, ChecklistDefinitionVersion> selectedVersionsMap =
         cldVersionRepository.findAllById(selectedChecklistDefinitionVersionIds).stream()
-            .collect(Collectors.toMap(ChecklistDefinitionVersion::getId, Function.identity()));
+            .collect(StreamUtil.toLinkedHashMap(ChecklistDefinitionVersion::getId));
 
     // first, some basic user input validation
     List<String> missingIds =

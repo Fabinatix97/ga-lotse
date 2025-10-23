@@ -5,7 +5,7 @@
 
 package de.eshg.schoolentry.util;
 
-import de.eshg.base.SortDirection;
+import de.eshg.api.commons.SortDirection;
 
 public record ProcedurePageSpec(
     int pageNumber, int pageSize, ProcedureSortKey sortKey, SortDirection direction) {}

@@ -11,6 +11,8 @@ import de.eshg.config.api.MultiLangDocumentDto;
 import de.eshg.config.domain.MultiLangDocument;
 import de.eshg.config.i18n.MultiLangFileName;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.Objects;
 import org.springframework.web.multipart.MultipartFile;
 
 public class MultiLangDocumentMapper {
@@ -47,8 +49,12 @@ public class MultiLangDocumentMapper {
     return multiLangDocument;
   }
 
-  public static ConfigurationStatus mapToConfigurationStatus(MultiLangDocument multiLangDocument) {
-    if (multiLangDocument.getEn() == null) {
+  public static ConfigurationStatus mapToConfigurationStatus(
+      MultiLangDocument... multiLangDocuments) {
+    if (Arrays.stream(multiLangDocuments)
+        .filter(Objects::nonNull)
+        .map(MultiLangDocument::getEn)
+        .anyMatch(Objects::isNull)) {
       return ConfigurationStatus.PARTIALLY_COMPLETE;
     } else {
       return ConfigurationStatus.COMPLETE;

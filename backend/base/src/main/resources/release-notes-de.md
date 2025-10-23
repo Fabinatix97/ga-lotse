@@ -2,6 +2,15 @@ GA-Lotse ist ein Kooperationsprojekt des Gesundheitsamts Frankfurt am Main mit d
 
 Finanziert von der Europäischen Union – NextGenerationEU
 
+## GA-Lotse 2.9
+_21.10.2025_
+
+Zweiundzwanzigster Release der Anwendung GA-Lotse
+
+### Amtsärztliche Gutachten:
+
+* Anliegen Info-Box im Onlineportal konfigurierbar
+
 ## GA-Lotse 2.8
 _01.10.2025_
 

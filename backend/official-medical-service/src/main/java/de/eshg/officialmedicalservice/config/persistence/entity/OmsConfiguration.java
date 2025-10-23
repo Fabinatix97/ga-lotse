@@ -37,6 +37,10 @@ public class OmsConfiguration extends BaseEntity implements Initializable, IOmsC
   private MultiLangDocument landingContent;
 
   @DataSensitivity(SensitivityLevel.PUBLIC)
+  @OneToOne(cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
+  private MultiLangDocument selectConcernInfobox;
+
+  @DataSensitivity(SensitivityLevel.PUBLIC)
   private int keycloakUserCleanupJobOverdueDuration;
 
   @DataSensitivity(SensitivityLevel.PUBLIC)
@@ -59,6 +63,14 @@ public class OmsConfiguration extends BaseEntity implements Initializable, IOmsC
 
   public void setLandingContent(MultiLangDocument landingContent) {
     this.landingContent = landingContent;
+  }
+
+  public MultiLangDocument getSelectConcernInfobox() {
+    return selectConcernInfobox;
+  }
+
+  public void setSelectConcernInfobox(MultiLangDocument selectConcernInfobox) {
+    this.selectConcernInfobox = selectConcernInfobox;
   }
 
   public int getKeycloakUserCleanupJobOverdueDuration() {

@@ -7,6 +7,7 @@ package de.eshg.statistics.aggregation;
 
 import static de.eshg.statistics.StatisticsApplication.MODULE_NAME;
 
+import de.cronn.commons.lang.StreamUtil;
 import de.eshg.base.statistics.BaseStatisticsApi;
 import de.eshg.base.statistics.api.BaseAttribute;
 import de.eshg.base.statistics.api.BaseDataTableHeader;
@@ -143,7 +144,7 @@ public class DataAggregationService {
         dataSource.attributeCodes().stream()
             .filter(businessDataAttribute -> !businessDataAttribute.baseAttributeCodes().isEmpty())
             .collect(
-                Collectors.toMap(
+                StreamUtil.toLinkedHashMap(
                     BusinessDataAttribute::code, BusinessDataAttribute::baseAttributeCodes));
     Map<Integer, BaseStatisticsData> indexToBaseData =
         retrieveDataFromBase(
@@ -224,7 +225,7 @@ public class DataAggregationService {
                 DataSourceAggregationService.isBaseModuleId(
                     dataTableHeader.attributes().get(index).valueType()))
         .boxed()
-        .collect(Collectors.toMap(index -> index, dataTableHeader.attributes()::get));
+        .collect(StreamUtil.toLinkedHashMap(index -> index, dataTableHeader.attributes()::get));
   }
 
   private BaseStatisticsData retrieveDataTableHeaderFromBase(
@@ -614,7 +615,8 @@ public class DataAggregationService {
     if (currentTableColumn.getValueToMeanings().size() < valueToMeanings.size()) {
       Map<String, String> valueToMeaningMap =
           valueToMeanings.stream()
-              .collect(Collectors.toMap(ValueToMeaning::getValue, ValueToMeaning::getMeaning));
+              .collect(
+                  StreamUtil.toLinkedHashMap(ValueToMeaning::getValue, ValueToMeaning::getMeaning));
 
       if (currentTableColumn.getValueToMeanings().stream()
           .allMatch(
@@ -666,7 +668,8 @@ public class DataAggregationService {
     } else {
       Map<String, String> valueToMeaningMap =
           firstTableColumn.getValueToMeanings().stream()
-              .collect(Collectors.toMap(ValueToMeaning::getValue, ValueToMeaning::getMeaning));
+              .collect(
+                  StreamUtil.toLinkedHashMap(ValueToMeaning::getValue, ValueToMeaning::getMeaning));
       return secondTableColumn.getValueToMeanings().stream()
           .anyMatch(
               otherValueToMeaning ->
@@ -716,7 +719,7 @@ public class DataAggregationService {
       Map<Integer, BaseStatisticsData> indexToBaseData) {
     return indexToBaseData.entrySet().stream()
         .collect(
-            Collectors.toMap(
+            StreamUtil.toLinkedHashMap(
                 Map.Entry::getKey,
                 entry ->
                     createBaseModuleIdMap(

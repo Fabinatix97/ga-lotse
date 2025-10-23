@@ -50,6 +50,13 @@ public class SchoolEntryProcedure
   @DataSensitivity(PSEUDONYMIZED)
   private UUID citizenUserId;
 
+  @Column(unique = true)
+  @DataSensitivity(SensitivityLevel.PSEUDONYMIZED)
+  @ElementCollection(fetch = FetchType.LAZY)
+  @OrderBy
+  @BatchSize(size = 100)
+  private List<UUID> custodianWithoutDob = new ArrayList<>();
+
   @OneToOne(
       optional = false,
       fetch = FetchType.LAZY,
@@ -171,6 +178,19 @@ public class SchoolEntryProcedure
 
   public void setCitizenUserId(UUID citizenUserId) {
     this.citizenUserId = citizenUserId;
+  }
+
+  /**
+   * custodians without a date of birth
+   *
+   * <p>custodians with a date of birth are stored in {@link SchoolEntryProcedure#getRelatedPersons}
+   */
+  public List<UUID> getCustodianWithoutDob() {
+    return custodianWithoutDob;
+  }
+
+  public void setCustodianWithoutDobIds(List<UUID> custodianIds) {
+    this.custodianWithoutDob = custodianIds;
   }
 
   public HearingTestResult getHearingTestResult() {

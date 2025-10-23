@@ -5,6 +5,7 @@
 
 package de.eshg.schoolentry.config;
 
+import de.eshg.schoolentry.api.SchoolEntryFeature;
 import de.eshg.testhelper.FeatureToggle;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.validation.annotation.Validated;

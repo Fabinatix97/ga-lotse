@@ -6,8 +6,8 @@
 package de.eshg.schoolentry.testhelper;
 
 import de.eshg.auditlog.AuditLogClientTestHelperApi;
-import de.eshg.lib.appointmentblock.LocationSelectionMode;
 import de.eshg.lib.appointmentblock.api.CreateAppointmentBlockGroupResponse;
+import de.eshg.lib.appointmentblock.api.LocationSelectionMode;
 import de.eshg.lib.appointmentblock.spring.AppointmentBlockConfig;
 import de.eshg.lib.appointmentblock.testhelper.AppointmentBlockGroupsPopulator;
 import de.eshg.lib.auditlog.AuditLogTestHelperService;
@@ -15,8 +15,8 @@ import de.eshg.schoolentry.SchoolEntryConfigService;
 import de.eshg.schoolentry.api.CreateProcedureResponse;
 import de.eshg.schoolentry.api.GetClosedProceduresResponse;
 import de.eshg.schoolentry.api.SchoolEntryAppointmentBlockPopulationResult;
+import de.eshg.schoolentry.api.SchoolEntryFeature;
 import de.eshg.schoolentry.api.SchoolEntryProcedurePopulationResult;
-import de.eshg.schoolentry.config.SchoolEntryFeature;
 import de.eshg.schoolentry.config.SchoolEntryFeatureToggle;
 import de.eshg.testhelper.ConditionalOnTestHelperEnabled;
 import de.eshg.testhelper.TestHelperController;

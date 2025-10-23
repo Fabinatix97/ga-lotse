@@ -9,6 +9,7 @@ import de.eshg.base.calendar.CalendarApi;
 import de.eshg.base.calendar.CalendarEventApi;
 import de.eshg.base.centralfile.FacilityApi;
 import de.eshg.base.centralfile.PersonApi;
+import de.eshg.base.centralfile.PersonWithoutDateOfBirthApi;
 import de.eshg.base.citizenuser.CitizenAccessCodeUserApi;
 import de.eshg.base.contact.ContactApi;
 import de.eshg.base.department.PublicDepartmentApi;
@@ -73,6 +74,11 @@ class BaseClientAutoConfiguration {
   @Bean
   PersonApi personApiClient() {
     return createClient(PersonApi.class);
+  }
+
+  @Bean
+  PersonWithoutDateOfBirthApi personWithoutDateOfBirthApi() {
+    return createClient(PersonWithoutDateOfBirthApi.class);
   }
 
   @Bean

@@ -5,7 +5,7 @@
 
 package de.eshg.lib.procedure.model.gdpr;
 
-import de.eshg.base.PagedResponse;
+import de.eshg.api.commons.PagedResponse;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;

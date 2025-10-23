@@ -21,7 +21,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.SequencedSet;
 import java.util.UUID;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.slf4j.Logger;
@@ -92,7 +91,7 @@ public class ApprovalRequestMailService {
             .map(Notification::getRecipientUserId)
             .collect(Collectors.toCollection(LinkedHashSet::new));
     return userController.getUsers(collectedUserIds, true).stream()
-        .collect(StreamUtil.toLinkedHashMap(UserDto::userId, Function.identity()));
+        .collect(StreamUtil.toLinkedHashMap(UserDto::userId));
   }
 
   private void sendApprovalRequestMailReminder(SimpleNotification notification) {

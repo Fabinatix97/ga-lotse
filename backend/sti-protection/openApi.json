@@ -4704,7 +4704,7 @@
           "resolvedUsers" : {
             "type" : "object",
             "additionalProperties" : {
-              "$ref" : "#/components/schemas/User"
+              "$ref" : "#/components/schemas/AppointmentBlockUser"
             }
           },
           "start" : {
@@ -4769,6 +4769,28 @@
       "AppointmentBlockSortKey" : {
         "type" : "string",
         "enum" : [ "START", "END" ]
+      },
+      "AppointmentBlockUser" : {
+        "required" : [ "firstName", "lastName", "userId" ],
+        "type" : "object",
+        "properties" : {
+          "firstName" : {
+            "type" : "string",
+            "description" : "The given name(s) of a user.",
+            "example" : "John"
+          },
+          "lastName" : {
+            "type" : "string",
+            "description" : "The last name of a user.",
+            "example" : "Doe"
+          },
+          "userId" : {
+            "type" : "string",
+            "description" : "The Id of the user.",
+            "format" : "uuid",
+            "example" : "UUID_2"
+          }
+        }
       },
       "AppointmentBookingType" : {
         "type" : "string",
@@ -6579,7 +6601,7 @@
             "type" : "string",
             "description" : "Id of the Facility.",
             "format" : "uuid",
-            "example" : "UUID_2"
+            "example" : "UUID_3"
           },
           "name" : {
             "maxLength" : 300,
@@ -6850,7 +6872,7 @@
             "type" : "string",
             "description" : "Id of the Person.",
             "format" : "uuid",
-            "example" : "UUID_2"
+            "example" : "UUID_3"
           },
           "lastName" : {
             "maxLength" : 120,
@@ -8078,7 +8100,7 @@
             "type" : "string",
             "description" : "An unique identifier for the person.",
             "format" : "uuid",
-            "example" : "UUID_3"
+            "example" : "UUID_4"
           },
           "otherKnownLanguages" : {
             "type" : "string",
@@ -9212,7 +9234,7 @@
             "type" : "string",
             "description" : "Unique identifier for referencing the text template.",
             "format" : "uuid",
-            "example" : "UUID_4"
+            "example" : "UUID_5"
           },
           "name" : {
             "minLength" : 1,
@@ -9436,7 +9458,7 @@
             "type" : "string",
             "description" : "The Id of the user.",
             "format" : "uuid",
-            "example" : "UUID_5"
+            "example" : "UUID_2"
           },
           "username" : {
             "minLength" : 1,

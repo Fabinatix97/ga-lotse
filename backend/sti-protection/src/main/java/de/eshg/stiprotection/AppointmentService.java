@@ -5,6 +5,7 @@
 
 package de.eshg.stiprotection;
 
+import de.cronn.commons.lang.StreamUtil;
 import de.eshg.base.calendar.CalendarApi;
 import de.eshg.base.calendar.CalendarEventApi;
 import de.eshg.base.calendar.api.BusinessCaseEventRequest;
@@ -37,7 +38,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
@@ -296,7 +296,8 @@ public class AppointmentService extends AbstractAppointmentService<StiProtection
       List<StiProtectionProcedure> entities) {
     return entities.stream()
         .filter(entity -> entity.getAccessCode() != null)
-        .collect(Collectors.toMap(entity -> entity, StiProtectionProcedure::getAccessCode));
+        .collect(
+            StreamUtil.toLinkedHashMap(entity -> entity, StiProtectionProcedure::getAccessCode));
   }
 
   @Override

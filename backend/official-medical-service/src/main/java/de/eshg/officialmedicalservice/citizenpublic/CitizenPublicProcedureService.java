@@ -93,16 +93,30 @@ public class CitizenPublicProcedureService {
   @Transactional
   public byte[] getLandingPageContent() {
     MultiLangDocument landingContent = omsConfigService.getConfig().getLandingContent();
+    return getDocumentContent(landingContent);
+  }
+
+  @Transactional
+  public byte[] getSelectConcernInfobox() {
+    MultiLangDocument selectedConcernInfobox =
+        omsConfigService.getConfig().getSelectConcernInfobox();
+    if (selectedConcernInfobox == null) {
+      return null;
+    }
+    return getDocumentContent(selectedConcernInfobox);
+  }
+
+  private static byte[] getDocumentContent(MultiLangDocument document) {
     Language language = LanguageContextHolder.getLanguage();
-    Document landingDocument =
+    Document langDocument =
         switch (language) {
-          case ENGLISH -> landingContent.getEn();
-          case GERMAN -> landingContent.getDe();
+          case ENGLISH -> document.getEn();
+          case GERMAN -> document.getDe();
         };
-    if (landingDocument != null) {
-      return landingDocument.getContent();
+    if (langDocument != null) {
+      return langDocument.getContent();
     } else {
-      return landingContent.getDe().getContent();
+      return document.getDe().getContent();
     }
   }
 }

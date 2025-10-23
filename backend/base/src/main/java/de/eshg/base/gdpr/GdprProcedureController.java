@@ -10,7 +10,7 @@ import static de.eshg.base.gdpr.GdprProcedureService.TYPES_REQUIRING_BROADCAST;
 import static de.eshg.lib.aggregation.AggregationHelper.aggregateErrorResponses;
 
 import de.cronn.commons.lang.StreamUtil;
-import de.eshg.base.SortDirection;
+import de.eshg.api.commons.SortDirection;
 import de.eshg.base.centralfile.mapper.FacilityMapper;
 import de.eshg.base.centralfile.mapper.PersonMapper;
 import de.eshg.base.centralfile.persistence.FacilityService;

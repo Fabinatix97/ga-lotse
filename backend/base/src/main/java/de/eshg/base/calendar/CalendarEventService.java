@@ -8,6 +8,7 @@ package de.eshg.base.calendar;
 import static de.eshg.rest.service.security.CurrentUserHelper.currentUserHasNoRole;
 import static de.eshg.rest.service.security.CurrentUserHelper.getCurrentUserId;
 
+import de.cronn.commons.lang.StreamUtil;
 import de.eshg.base.calendar.api.BaseEventRequest;
 import de.eshg.base.calendar.api.BaseEventTypeDto;
 import de.eshg.base.calendar.api.BlockingEventsOfCalendar;
@@ -262,7 +263,9 @@ public class CalendarEventService {
 
     Map<UUID, UUID> calendarIdToResourceId =
         resourceCalendarResponse.resourceCalendars().stream()
-            .collect(Collectors.toMap(ResourceCalendar::calendarId, ResourceCalendar::resourceId));
+            .collect(
+                StreamUtil.toLinkedHashMap(
+                    ResourceCalendar::calendarId, ResourceCalendar::resourceId));
 
     List<BlockingEventsOfCalendar> blockingEventsOfCalendars;
     if (calendarIdToResourceId.isEmpty()) {

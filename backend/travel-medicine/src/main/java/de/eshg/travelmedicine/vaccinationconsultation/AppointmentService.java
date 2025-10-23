@@ -5,6 +5,7 @@
 
 package de.eshg.travelmedicine.vaccinationconsultation;
 
+import de.cronn.commons.lang.StreamUtil;
 import de.eshg.lib.appointmentblock.AbstractAppointmentService;
 import de.eshg.lib.appointmentblock.AppointmentBlockSlotUtil;
 import de.eshg.lib.appointmentblock.EntityWithAppointment;
@@ -23,7 +24,6 @@ import java.time.Instant;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -133,7 +133,7 @@ public class AppointmentService extends AbstractAppointmentService<ProcedureStep
     Map<ProcedureStep, UUID> stepToCentralFileId =
         entities.stream()
             .collect(
-                Collectors.toMap(
+                StreamUtil.toLinkedHashMap(
                     entity -> entity,
                     entity ->
                         entity
@@ -147,7 +147,7 @@ public class AppointmentService extends AbstractAppointmentService<ProcedureStep
 
     return entities.stream()
         .collect(
-            Collectors.toMap(
+            StreamUtil.toLinkedHashMap(
                 entity -> entity,
                 entity -> {
                   UUID centralFileId = stepToCentralFileId.get(entity);

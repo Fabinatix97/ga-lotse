@@ -5,6 +5,7 @@
 
 package de.eshg.base.calendar;
 
+import de.cronn.commons.lang.StreamUtil;
 import de.eshg.base.calendar.api.AddGlobalCalendarRequest;
 import de.eshg.base.calendar.api.CalendarDto;
 import de.eshg.base.calendar.api.CalendarTypeDto;
@@ -222,7 +223,7 @@ public class CalendarService {
       Set<UUID> userIds, Map<String, List<UserDto>> groupsToUsers) {
     Map<UUID, Calendar> userIdToCalendar =
         retrieveUserCalendarsAndCreateIfNecessary(userIds).stream()
-            .collect(Collectors.toMap(Calendar::getUserId, Function.identity()));
+            .collect(StreamUtil.toLinkedHashMap(Calendar::getUserId));
     return groupsToUsers.entrySet().stream()
         .map(entry -> getUserGroupCalendarInfo(entry.getKey(), entry.getValue(), userIdToCalendar))
         .filter(userGroupCalendarInfo -> !userGroupCalendarInfo.userCalendars().isEmpty())

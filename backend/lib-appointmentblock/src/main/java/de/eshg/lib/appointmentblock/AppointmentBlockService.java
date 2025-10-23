@@ -8,7 +8,7 @@ package de.eshg.lib.appointmentblock;
 import static de.eshg.lib.appointmentblock.AppointmentTypeMapper.toInterfaceType;
 import static java.time.temporal.ChronoUnit.DAYS;
 
-import de.eshg.base.SortDirection;
+import de.eshg.api.commons.SortDirection;
 import de.eshg.base.user.UserApi;
 import de.eshg.base.util.CollectionUtils;
 import de.eshg.lib.appointmentblock.api.AppointmentBlockPaginationAndSortParameters;
