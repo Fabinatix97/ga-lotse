@@ -65,7 +65,6 @@ export function AdditionalInformationFormSection(
   if (!(isFluoridation || isScreening)) {
     throw new Error("Either screening or fluoridation must be active");
   }
-
   if (isFluoridation && !isScreening) {
     return (
       <ExaminationSection title="Zusatzinfos">

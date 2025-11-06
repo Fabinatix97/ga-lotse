@@ -160,6 +160,7 @@ public final class BaseUrls {
     public static final String PROCEDURE_LABEL_CONTROLLER = "/school-entry-procedure-labels";
     public static final String COUNTRY_CODES_CONTROLLER = "/country-codes";
     public static final String IMPORT_CONTROLLER = "/import";
+    public static final String VACCINATION_CHECK = "/vaccination-check";
 
     private SchoolEntry() {}
   }

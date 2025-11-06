@@ -13,6 +13,7 @@ import {
 } from "@eshg/lib-portal";
 import {
   ApiAddCustodianRequest,
+  type ApiAddCustodianWithoutDateOfBirthRequest,
   ApiAnamnesis,
   ApiCloseProcedureRequest,
   ApiCreateAppointmentsBulkRequest,
@@ -258,6 +259,24 @@ export function useAddPersonAsCustodian(procedureId: string) {
   });
 }
 
+export function useAddPersonWithoutDateOfBirthAsCustodian(procedureId: string) {
+  const schoolEntryApi = useSchoolEntryApi();
+  const { queryKey } = getProcedureQuery(schoolEntryApi, procedureId);
+  const queryClient = useQueryClient();
+  const snackbar = useSnackbar();
+  return useHandledMutation({
+    meta: {
+      updatesQuery: queryKey,
+    },
+    mutationFn: (request: ApiAddCustodianWithoutDateOfBirthRequest) =>
+      schoolEntryApi.addCustodianWithoutDateOfBirth(procedureId, request),
+    onSuccess: (response) => {
+      queryClient.setQueryData(queryKey, response);
+      snackbar.confirmation("PSB erfolgreich angelegt.");
+    },
+  });
+}
+
 export function useUpdateCustodian(
   procedureId: string,
   custodianCentralFileStateId: string,
@@ -286,6 +305,34 @@ export function useUpdateCustodian(
   });
 }
 
+export function useUpdateCustodianWithoutDateOfBirth(
+  procedureId: string,
+  custodianCentralFileStateId: string,
+) {
+  const schoolEntryApi = useSchoolEntryApi();
+  const snackbar = useSnackbar();
+  const { queryKey } = getProcedureQuery(schoolEntryApi, procedureId);
+  const queryClient = useQueryClient();
+
+  return useHandledMutation({
+    meta: {
+      updatesQuery: queryKey,
+    },
+    mutationFn: (request: ApiUpdatePersonRequest) =>
+      schoolEntryApi.updateCustodianWithoutDateOfBirth(
+        procedureId,
+        custodianCentralFileStateId,
+        request,
+      ),
+    onSuccess: (response) => {
+      queryClient.setQueryData(queryKey, response);
+      snackbar.confirmation(
+        "Die Änderungen zum PSB wurden erfolgreich gespeichert.",
+      );
+    },
+  });
+}
+
 export function useRemoveCustodian(
   procedureId: string,
   custodianCentralFileStateId: string,
@@ -301,6 +348,31 @@ export function useRemoveCustodian(
         .removeCustodianRaw({
           procedureId,
           custodianCentralFileStateId,
+          apiRemoveCustodianRequest: request,
+        })
+        .then(unwrapRawResponse),
+    onSuccess: (response) => {
+      queryClient.setQueryData(queryKey, response);
+      snackbar.confirmation("PSB erfolgreich entfernt.");
+    },
+  });
+}
+
+export function useRemoveCustodianWithoutDateOfBirth(
+  procedureId: string,
+  custodianId: string,
+) {
+  const schoolEntryApi = useSchoolEntryApi();
+  const { queryKey } = getProcedureQuery(schoolEntryApi, procedureId);
+  const queryClient = useQueryClient();
+  const snackbar = useSnackbar();
+  return useHandledMutation({
+    meta: { updatesQuery: queryKey },
+    mutationFn: (request: ApiRemoveCustodianRequest) =>
+      schoolEntryApi
+        .removeCustodianWithoutDateOfBirthRaw({
+          procedureId,
+          custodianId,
           apiRemoveCustodianRequest: request,
         })
         .then(unwrapRawResponse),

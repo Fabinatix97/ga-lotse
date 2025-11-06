@@ -5,8 +5,9 @@
 
 package de.eshg.dental.api;
 
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
-import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
-public record CloseChildrenBulkRequest(@NotEmpty List<UUID> childIds) {}
+public record CloseChildrenBulkRequest(@NotEmpty @Valid Map<UUID, Long> childIdsAndVersion) {}

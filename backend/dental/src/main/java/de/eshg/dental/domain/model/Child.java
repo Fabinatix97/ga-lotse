@@ -156,7 +156,8 @@ public class Child extends Procedure<Child, ChildTask, Person, Facility> {
     if (getLatestFluoridationConsentAtDate(dateOfExamination) == null) {
       return null;
     }
-    return getLatestFluoridationConsentAtDate(dateOfExamination).isConsented();
+    return getLatestFluoridationConsentAtDate(dateOfExamination).getConsented()
+        == BooleanWithUnknown.TRUE;
   }
 
   public boolean isFluoridationConsentGivenAtDate(LocalDate dateOfExamination) {

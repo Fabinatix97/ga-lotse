@@ -21,6 +21,7 @@ export interface SearchPersonFormValues {
 }
 
 export type SearchPersonFormProps<TValues> = FormikProps<TValues> & {
+  onCreateWithoutSearch: (values: TValues) => void;
   title: string;
   onBack?: () => void;
   onCancel: () => void;
@@ -30,6 +31,7 @@ type SearchPersonSidebarProps<TValues extends SearchPersonFormValues> = {
   onCancel: () => void;
   onBack?: () => void;
   onSearch: (values: TValues) => void;
+  onCreateWithoutSearch: (values: TValues) => void;
   searching: boolean;
   searchFormTitle: string;
   sidebarFormRef: Ref<SidebarFormHandle>;
@@ -70,6 +72,7 @@ export function SearchPersonSidebar<
             title={props.searchFormTitle}
             onBack={props.onBack}
             onCancel={props.onCancel}
+            onCreateWithoutSearch={props.onCreateWithoutSearch}
           />
         </SidebarForm>
       )}

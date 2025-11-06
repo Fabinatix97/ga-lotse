@@ -28,14 +28,10 @@ export function useCloseGroupsInBulk() {
 
 export function useCloseChildrenInBulk() {
   const { childApi } = useDentalApi();
-  const snackbar = useSnackbar();
 
   return useHandledMutation({
     mutationFn: (request: ApiCloseChildrenBulkRequest) =>
       childApi.closeChildrenInBulk(request),
-    onSuccess: () => {
-      snackbar.confirmation("Kita-Zeit erfolgreich beendet.");
-    },
   });
 }
 
@@ -55,13 +51,9 @@ export function usePromoteGroupsInBulk() {
 
 export function usePromoteChildrenInBulk() {
   const { childApi } = useDentalApi();
-  const snackbar = useSnackbar();
 
   return useHandledMutation({
     mutationFn: (request: ApiPromoteChildrenBulkRequest) =>
       childApi.promoteChildrenInBulk(request),
-    onSuccess: () => {
-      snackbar.confirmation("Kita-Zeit erfolgreich fortgeführt.");
-    },
   });
 }

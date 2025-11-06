@@ -7,6 +7,8 @@ package de.eshg.measlesprotection;
 
 import de.eshg.api.commons.InlineParameterObject;
 import de.eshg.base.centralfile.api.facility.PutFacilityRequest;
+import de.eshg.base.feature.BaseFeature;
+import de.eshg.base.feature.BaseFeatureTogglesApi;
 import de.eshg.lib.auditlog.AuditLogger;
 import de.eshg.measlesprotection.api.CaseStatusDto;
 import de.eshg.measlesprotection.api.GetMeaslesProtectionProceduresFilterOptions;
@@ -30,6 +32,7 @@ import de.eshg.measlesprotection.persistence.centralfile.ProcedureDetailsData;
 import de.eshg.measlesprotection.persistence.db.MeaslesProtectionProcedure;
 import de.eshg.measlesprotection.persistence.support.ResultPage;
 import de.eshg.measlesprotection.validation.ProtectedProcedure;
+import de.eshg.rest.service.error.BadRequestException;
 import de.eshg.rest.service.security.CurrentUserHelper;
 import de.eshg.rest.service.security.config.BaseUrls;
 import io.swagger.v3.oas.annotations.Operation;
@@ -59,14 +62,17 @@ public class ProtectionProcedureController {
   private final MeaslesProtectionService measlesProtectionService;
   private final GetProceduresForPersonMapper getProceduresForPersonMapper;
   private final AuditLogger auditLogger;
+  private final BaseFeatureTogglesApi baseFeatureTogglesApi;
 
   public ProtectionProcedureController(
       MeaslesProtectionService measlesProtectionService,
       GetProceduresForPersonMapper getProceduresForPersonMapper,
-      AuditLogger auditLogger) {
+      AuditLogger auditLogger,
+      BaseFeatureTogglesApi baseFeatureTogglesApi) {
     this.measlesProtectionService = measlesProtectionService;
     this.getProceduresForPersonMapper = getProceduresForPersonMapper;
     this.auditLogger = auditLogger;
+    this.baseFeatureTogglesApi = baseFeatureTogglesApi;
   }
 
   @PutMapping("/{id}")
@@ -84,6 +90,19 @@ public class ProtectionProcedureController {
       @PathVariable("id") @ProtectedProcedure UUID id, @Valid @RequestBody CaseStatusDto request) {
     ProcedureDetailsData procedureDetails = measlesProtectionService.updateCaseStatus(id, request);
     return ToDtoMappers.toProcedureDetails(procedureDetails);
+  }
+
+  @PostMapping("/{id}/vaccination-check")
+  public ProtectionProcedureDto requestVaccinationStatusUpdate(
+      @PathVariable("id") @ProtectedProcedure UUID procedureId) {
+    if (!baseFeatureTogglesApi
+        .getFeatureToggles()
+        .enabledNewFeatures()
+        .contains(BaseFeature.VACCINATION_CHECK)) {
+      throw new BadRequestException("New feature VACCINATION_CHECK is not enabled");
+    }
+    throw new BadRequestException(
+        "No vaccination status update possible for procedure %s".formatted(procedureId));
   }
 
   @GetMapping("/{id}")

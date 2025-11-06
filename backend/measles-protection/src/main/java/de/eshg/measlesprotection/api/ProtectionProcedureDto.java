@@ -42,4 +42,6 @@ public sealed interface ProtectionProcedureDto
   ProcedureStatusDto procedureStatus();
 
   boolean isOpen();
+
+  MeaslesVaccinationStatusDto measlesVaccinationStatusFromSchoolEntry();
 }

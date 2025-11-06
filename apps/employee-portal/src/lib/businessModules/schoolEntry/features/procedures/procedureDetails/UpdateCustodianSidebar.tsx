@@ -3,8 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { isEmptyish, isNullish } from "remeda";
+
 import {
-  DefaultPersonForm,
   DefaultPersonFormValues,
   PersonSidebarForm,
   SidebarWithFormRefProps,
@@ -19,14 +20,27 @@ import {
 } from "@/lib/businessModules/schoolEntry/api/models/CustodianDetails";
 import {
   useRemoveCustodian,
+  useRemoveCustodianWithoutDateOfBirth,
   useUpdateCustodian,
+  useUpdateCustodianWithoutDateOfBirth,
 } from "@/lib/businessModules/schoolEntry/api/mutations/schoolEntryApi";
+import { CustodianForm } from "@/lib/businessModules/schoolEntry/features/procedures/procedureDetails/CustodianForm";
 
 export function useDeleteCustodianWithConfirmation(
   procedureId: string,
-  fileStateId: string,
+  custodianId: string,
+  withoutDateOfBirth: boolean,
 ) {
-  const removeCustodian = useRemoveCustodian(procedureId, fileStateId);
+  const removeCustodianWithDateOfBirth = useRemoveCustodian(
+    procedureId,
+    custodianId,
+  );
+  const removeCustodianWithoutDateOfBirth =
+    useRemoveCustodianWithoutDateOfBirth(procedureId, custodianId);
+
+  const removeCustodian = withoutDateOfBirth
+    ? removeCustodianWithoutDateOfBirth
+    : removeCustodianWithDateOfBirth;
 
   async function handleConfirm(
     procedureVersion: number,
@@ -75,20 +89,35 @@ export function UpdateCustodianSidebar({
     procedureId,
     custodian.fileStateId,
   );
+  const updateCustodianWithoutDateOfBirth =
+    useUpdateCustodianWithoutDateOfBirth(procedureId, custodian.fileStateId);
 
   const { deleteCustodian } = useDeleteCustodianWithConfirmation(
     procedureId,
     custodian.fileStateId,
+    isNullish(custodian.dateOfBirth),
   );
 
   async function handleSubmit(values: DefaultPersonFormValues) {
-    const request = mapToPersonUpdateRequest(values, custodian.version);
-    await updateCustodian.mutateAsync(
-      mapContactAndDifferentBillingAddressToSchoolEntry(request),
-      {
-        onSuccess: () => onClose(true),
-      },
-    );
+    if (isEmptyish(values.dateOfBirth)) {
+      await updateCustodianWithoutDateOfBirth.mutateAsync(
+        mapContactAndDifferentBillingAddressToSchoolEntry(
+          mapToPersonUpdateRequest(values, procedureVersion),
+        ),
+        {
+          onSuccess: () => onClose(true),
+        },
+      );
+    } else {
+      await updateCustodian.mutateAsync(
+        mapContactAndDifferentBillingAddressToSchoolEntry(
+          mapToPersonUpdateRequest(values, custodian.version),
+        ),
+        {
+          onSuccess: () => onClose(true),
+        },
+      );
+    }
   }
 
   return (
@@ -96,7 +125,7 @@ export function UpdateCustodianSidebar({
       mode="edit"
       title="Person bearbeiten"
       initialValues={mapCustodianDetailsToForm(custodian)}
-      component={DefaultPersonForm}
+      component={CustodianForm}
       sidebarFormRef={formRef}
       onCancel={() => onClose(false)}
       onSubmit={handleSubmit}

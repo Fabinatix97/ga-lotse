@@ -7,7 +7,7 @@ import { Divider, Stack, Typography } from "@mui/joy";
 import { FormikProvider, useFormik } from "formik";
 import { isDefined } from "remeda";
 
-import { UpdateChildRequest } from "@eshg/dental-api";
+import { ApiBooleanWithUnknown, UpdateChildRequest } from "@eshg/dental-api";
 import {
   FormButtonBar,
   ProcedureLabel,
@@ -23,8 +23,10 @@ import {
 import {
   BooleanSelectField,
   DateField,
+  SelectField,
   isEmptyString,
   mapOptionalValue,
+  toDateString,
   useSnackbar,
   useValidatePastOrTodayDate,
 } from "@eshg/lib-portal";
@@ -32,6 +34,7 @@ import {
 import { Institution } from "../../../../api/models/Institution";
 import { SearchGroupField } from "../../../../components/group/SearchGroupField";
 import { childApiQueryKey } from "../../../../config/apiQueryKeys";
+import { FLUORIDATION_CONSENTED_OPTIONS } from "../../../../config/child";
 import { SCHOOL_OR_DAYCARE_CONTACT } from "../../../../config/contacts";
 import { useDentalApi } from "../../../../contexts/dental";
 import {
@@ -110,7 +113,7 @@ function UpdateAnnualChildSidebar(props: UpdateAnnualChildSidebarProps) {
   const { procedureLabelApi } = useDentalApi();
   const annualChild = props.child;
   const form = useUpdateAnnualChildForm(annualChild, () => props.onClose(true));
-  const { isSubmitting, values } = form;
+  const { isSubmitting, values, setFieldValue } = form;
 
   return (
     <FormikProvider value={form}>
@@ -138,16 +141,29 @@ function UpdateAnnualChildSidebar(props: UpdateAnnualChildSidebarProps) {
               Einverständnis zur Fluoridierung
             </Typography>
             <Stack direction="row" gap={2} flexWrap="wrap">
-              <BooleanSelectField
+              <SelectField
                 name="fluoridationConsent.consented"
                 label="Einverständnis"
+                options={FLUORIDATION_CONSENTED_OPTIONS}
                 required={
                   isDefined(values.fluoridationConsent?.dateOfConsent) &&
                   !isEmptyString(values.fluoridationConsent.dateOfConsent)
-                    ? 'Bitte "Ja" oder "Nein" auswählen.'
+                    ? "Bitte Einverständnis auswählen."
                     : undefined
                 }
-                allowDeselection
+                onChange={(value) => {
+                  if (value === ApiBooleanWithUnknown.Unknown) {
+                    void setFieldValue(
+                      "fluoridationConsent.dateOfConsent",
+                      toDateString(new Date()),
+                    );
+                    void setFieldValue("fluoridationConsent.hasAllergy", "");
+                  }
+                  if (isEmptyString(value)) {
+                    void setFieldValue("fluoridationConsent.dateOfConsent", "");
+                    void setFieldValue("fluoridationConsent.hasAllergy", "");
+                  }
+                }}
               />
               <DateField
                 name="fluoridationConsent.dateOfConsent"
@@ -161,16 +177,25 @@ function UpdateAnnualChildSidebar(props: UpdateAnnualChildSidebarProps) {
                     ? "Bitte das Datum der Einverständniserklärung angeben."
                     : undefined
                 }
-              />
-              <BooleanSelectField
-                name="fluoridationConsent.hasAllergy"
-                label="Allergie"
-                allowDeselection
-                sx={{ width: "120px" }}
-                validate={(value) =>
-                  validateAllergy(value, form.values.fluoridationConsent)
+                disabled={
+                  values.fluoridationConsent?.consented ===
+                  ApiBooleanWithUnknown.Unknown
                 }
               />
+              {(values.fluoridationConsent?.consented ===
+                ApiBooleanWithUnknown.True ||
+                values.fluoridationConsent?.consented ===
+                  ApiBooleanWithUnknown.False) && (
+                <BooleanSelectField
+                  name="fluoridationConsent.hasAllergy"
+                  label="Allergie"
+                  allowDeselection
+                  sx={{ width: "120px" }}
+                  validate={(value) =>
+                    validateAllergy(value, form.values.fluoridationConsent)
+                  }
+                />
+              )}
             </Stack>
           </Stack>
         </SidebarContent>

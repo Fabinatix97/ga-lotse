@@ -26,6 +26,7 @@ public interface PersonWithoutDateOfBirthApi {
 
   String BASE_URL = BaseUrls.Base.PERSON_WITHOUT_DATE_OF_BIRTH_API;
   String BULK_DELETE = "/bulk/delete";
+  String BULK_MARK_FOR_DELETION = "/bulk/mark-for-deletion";
 
   @PostExchange("/create")
   @ApiResponse(responseCode = "200")
@@ -58,6 +59,19 @@ public interface PersonWithoutDateOfBirthApi {
   @ApiResponse(responseCode = "200")
   @Operation(summary = "Delete persons without date of birth")
   void deletePersonsWithoutDateOfBirth(
+      @Parameter(description = "The Ids of the persons without date of birth.") @Valid @RequestBody
+          List<UUID> id);
+
+  @PostExchange(BULK_MARK_FOR_DELETION)
+  @ApiResponse(responseCode = "200")
+  @Operation(
+      summary =
+          """
+      Mark persons for deletion at a later time.
+      This can be used to clean up draft procedures or appointments and spam data.
+      The entries will be deleted after a grace period, to allow for recovery.
+      """)
+  void markPersonsWithoutDateOfBirthForDeletion(
       @Parameter(description = "The Ids of the persons without date of birth.") @Valid @RequestBody
           List<UUID> id);
 

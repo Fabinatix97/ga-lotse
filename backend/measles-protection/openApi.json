@@ -3499,6 +3499,37 @@
         "tags" : [ "ProofSubmission" ]
       }
     },
+    "/protection-procedures/{id}/vaccination-check" : {
+      "post" : {
+        "operationId" : "requestVaccinationStatusUpdate",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "oneOf" : [ {
+                    "$ref" : "#/components/schemas/DraftMeaslesProcedure"
+                  }, {
+                    "$ref" : "#/components/schemas/MeaslesProtectionProcedure"
+                  } ]
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "ProtectionProcedure" ]
+      }
+    },
     "/protection-procedures/{procedureId}/book-appointment" : {
       "post" : {
         "operationId" : "bookAppointmentForProcedure",
@@ -5795,6 +5826,9 @@
             "isOpen" : {
               "type" : "boolean"
             },
+            "measlesVaccinationStatusFromSchoolEntry" : {
+              "$ref" : "#/components/schemas/MeaslesVaccinationStatus"
+            },
             "procedureStatus" : {
               "$ref" : "#/components/schemas/ProcedureStatus"
             },
@@ -7563,6 +7597,9 @@
             "isOpen" : {
               "type" : "boolean"
             },
+            "measlesVaccinationStatusFromSchoolEntry" : {
+              "$ref" : "#/components/schemas/MeaslesVaccinationStatus"
+            },
             "monetaryFines" : {
               "type" : "array",
               "items" : {
@@ -7599,6 +7636,52 @@
             }
           }
         }
+      },
+      "MeaslesVaccination" : {
+        "required" : [ "complete" ],
+        "type" : "object",
+        "properties" : {
+          "complete" : {
+            "type" : "boolean"
+          },
+          "measlesContraIndication" : {
+            "type" : "boolean"
+          },
+          "measlesContraIndicationIsPermanent" : {
+            "type" : "boolean"
+          },
+          "measlesContraIndicationUntil" : {
+            "type" : "string",
+            "format" : "date"
+          },
+          "mmr" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "vaccinationPassPresented" : {
+            "type" : "boolean"
+          }
+        }
+      },
+      "MeaslesVaccinationStatus" : {
+        "required" : [ "update" ],
+        "type" : "object",
+        "properties" : {
+          "lastUpdated" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "update" : {
+            "$ref" : "#/components/schemas/MeaslesVaccinationStatusUpdateMode"
+          },
+          "vaccination" : {
+            "$ref" : "#/components/schemas/MeaslesVaccination"
+          }
+        }
+      },
+      "MeaslesVaccinationStatusUpdateMode" : {
+        "type" : "string",
+        "enum" : [ "NONE", "POSSIBLE", "PENDING" ]
       },
       "Measure" : {
         "type" : "string",

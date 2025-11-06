@@ -5,6 +5,8 @@
 
 import { Chip, ChipProps } from "@mui/joy";
 
+import { ApiBooleanWithUnknown } from "@eshg/dental-api";
+
 import { ExaminationResult } from "../../../../api/models/ExaminationResult";
 import { FluoridationConsent } from "../../../../utils/childDetails/FluoridationConsent";
 
@@ -55,7 +57,8 @@ function getStatus(
   if (result === undefined) {
     if (
       fluoridationConsent === undefined ||
-      fluoridationConsent.consented === false
+      fluoridationConsent.consented === ApiBooleanWithUnknown.False ||
+      fluoridationConsent.consented === ApiBooleanWithUnknown.Unknown
     ) {
       return "NoConsent";
     }
@@ -68,7 +71,8 @@ function getStatus(
     case "fluoridation": {
       if (
         fluoridationConsent === undefined ||
-        fluoridationConsent.consented === false
+        fluoridationConsent.consented === ApiBooleanWithUnknown.False ||
+        fluoridationConsent.consented === ApiBooleanWithUnknown.Unknown
       ) {
         return "NoConsent";
       }

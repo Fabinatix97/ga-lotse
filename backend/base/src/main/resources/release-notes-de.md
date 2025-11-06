@@ -2,6 +2,25 @@ GA-Lotse ist ein Kooperationsprojekt des Gesundheitsamts Frankfurt am Main mit d
 
 Finanziert von der Europäischen Union – NextGenerationEU
 
+## GA-Lotse 2.10
+_29.10.2025_
+
+Dreiundzwanzigster Release der Anwendung GA-Lotse
+
+### Grundfunktionen:
+
+* Anlegen von Personensorgeberechtigten auch ohne Geburtstag möglich
+
+### Zahnärztlicher Dienst:
+
+* Persistenter Filter bei Maßnahmenübersicht
+* Persistenter Filter bei Kinderübersicht
+
+### Einschulungsuntersuchungen:
+
+* Persistenter Filter im Wartezimmer
+* Wechsel zwischen Konfiguration zum Bürgeramtsimport jederzeit möglich
+
 ## GA-Lotse 2.9
 _21.10.2025_
 

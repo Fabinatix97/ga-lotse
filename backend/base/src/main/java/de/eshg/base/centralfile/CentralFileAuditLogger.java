@@ -9,7 +9,6 @@ import de.eshg.base.centralfile.persistence.entity.DataOrigin;
 import de.eshg.base.centralfile.persistence.entity.PersonWithoutDateOfBirth;
 import de.eshg.lib.auditlog.AuditLogger;
 import de.eshg.rest.service.security.CurrentUserHelper;
-import java.time.Instant;
 import java.util.Map;
 import org.hibernate.Hibernate;
 import org.springframework.stereotype.Component;
@@ -110,15 +109,15 @@ public class CentralFileAuditLogger {
             CurrentUserHelper.getCurrentUserIdAsStringGracefully().orElse("-")));
   }
 
-  public void logDeletePersonWithoutDateOfBirth(PersonWithoutDateOfBirth person, Instant now) {
+  public void logDeletePersonWithoutDateOfBirth(PersonWithoutDateOfBirth person) {
     auditLogger.log(
         CATEGORY_PERSON_WITHOUT_DATE_OF_BIRTH,
-        "Löschen Person ohne Geburtsdatum",
+        "Markieren zur Löschung Person ohne Geburtsdatum",
         Map.of(
             KEY_ID,
             person.getExternalId().toString(),
             "Löschzeitpunkt",
-            String.valueOf(now),
+            String.valueOf(person.getDeleteAt()),
             KEY_USER,
             CurrentUserHelper.getCurrentUserIdAsStringGracefully().orElse("-")));
   }

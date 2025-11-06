@@ -130,12 +130,18 @@ spec:
         - name: application
           image: "{{ .Values.image.registry }}/{{ .Values.image.repository }}/keycloak:{{ .Values.image.tag }}"
           securityContext: {{- .Values.containerSecurityContext | toYaml | nindent 12 }}
+          startupProbe:
+            httpGet:
+              path: /health
+              port: 9000
+              scheme: HTTPS
+            periodSeconds: 1
+            failureThreshold: 30
           livenessProbe:
             httpGet:
               path: /health
               port: 9000
               scheme: HTTPS
-            initialDelaySeconds: 30
             timeoutSeconds: 10
             periodSeconds: 10
             successThreshold: 1
@@ -145,7 +151,6 @@ spec:
               path: /health
               port: 9000
               scheme: HTTPS
-            initialDelaySeconds: 30
             timeoutSeconds: 10
             periodSeconds: 10
             successThreshold: 1

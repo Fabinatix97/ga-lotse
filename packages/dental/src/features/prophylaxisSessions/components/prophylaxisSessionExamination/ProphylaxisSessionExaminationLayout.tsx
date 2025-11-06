@@ -6,6 +6,7 @@
 import { useRouter } from "next/navigation";
 import { isDefined } from "remeda";
 
+import { ApiBooleanWithUnknown } from "@eshg/dental-api";
 import {
   StickyToolbarLayout,
   useConfirmLeaveDirtyFormEffect,
@@ -68,6 +69,17 @@ export function ProphylaxisSessionExaminationLayout(
   const isToBeExamined =
     participantsToBeExamined.find((p) => p.id === participant.id) !== undefined;
 
+  function isFluoridationConsentCurrentlyGiven() {
+    if (participant.currentFluoridationConsent === undefined) {
+      return false;
+    }
+    const relevantConsents = participant.allFluoridationConsents.filter(
+      (fluoridationConsent) =>
+        fluoridationConsent.dateOfConsent <= dateOfExamination,
+    );
+    return relevantConsents[0]?.consented === ApiBooleanWithUnknown.True;
+  }
+
   return (
     <StickyToolbarLayout
       toolbar={
@@ -99,9 +111,7 @@ export function ProphylaxisSessionExaminationLayout(
         <ExaminationFormLayout
           isScreening={isScreening}
           isFluoridation={isFluoridation}
-          isFluoridationConsentGiven={
-            participant.currentFluoridationConsent?.consented
-          }
+          isFluoridationConsentGiven={isFluoridationConsentCurrentlyGiven()}
           dateAndTime={dateOfExamination}
           groupName={participant.groupName ?? ""}
           institution={participant.institution}

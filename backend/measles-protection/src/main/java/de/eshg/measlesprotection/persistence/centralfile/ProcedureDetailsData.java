@@ -10,6 +10,7 @@ import de.eshg.lib.appointmentblock.api.AppointmentDto;
 import de.eshg.lib.procedure.domain.model.ProcedureStatus;
 import de.eshg.measlesprotection.api.AccessRestrictionDto;
 import de.eshg.measlesprotection.api.CaseStatusDto;
+import de.eshg.measlesprotection.api.MeaslesVaccinationStatusDto;
 import de.eshg.measlesprotection.api.MonetaryFineDto;
 import de.eshg.measlesprotection.api.ProofSubmissionDto;
 import de.eshg.measlesprotection.api.ReportDataDto;
@@ -30,6 +31,7 @@ public record ProcedureDetailsData(
     ReportDataDto reportDataDto,
     List<MonetaryFineDto> monetaryFines,
     AccessRestrictionDto accessRestriction,
+    MeaslesVaccinationStatusDto measlesVaccinationStatusFromSchoolEntry,
     CaseStatusDto caseStatusDto,
     AppointmentDto appointmentDto,
     de.eshg.measlesprotection.persistence.db.MeaslesProtectionProcedure procedure) {}

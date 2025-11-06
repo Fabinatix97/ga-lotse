@@ -73,12 +73,17 @@ spec:
           securityContext: {{- .Values.containerSecurityContext | toYaml | nindent 12 }}
           resources:
           {{- toYaml (default dict .Values.synapse.resources) | nindent 12 }}
+          startupProbe:
+            httpGet:
+              path: /health
+              port: {{ .Values.synapse.port }}
+            periodSeconds: 1
+            failureThreshold: 90
           livenessProbe:
             httpGet:
               path: /health
               port: {{ .Values.synapse.port }}
             periodSeconds: 10
-            initialDelaySeconds: 90
             failureThreshold: 1
             timeoutSeconds: 10
           readinessProbe:
@@ -86,7 +91,6 @@ spec:
               path: /_matrix/client/versions
               port: {{ .Values.synapse.port }}
             periodSeconds: 10
-            initialDelaySeconds: 90
             failureThreshold: 1
             timeoutSeconds: 10
           env:

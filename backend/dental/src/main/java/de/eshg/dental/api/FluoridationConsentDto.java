@@ -13,10 +13,10 @@ import java.time.LocalDate;
 @Schema(name = "FluoridationConsent")
 public record FluoridationConsentDto(
     @NotNull @PastOrPresent LocalDate dateOfConsent,
-    @NotNull boolean consented,
+    BooleanWithUnknownDto consented,
     Boolean hasAllergy) {
 
-  public FluoridationConsentDto(LocalDate dateOfConsent, boolean consented) {
+  public FluoridationConsentDto(LocalDate dateOfConsent, BooleanWithUnknownDto consented) {
     this(dateOfConsent, consented, null);
   }
 }

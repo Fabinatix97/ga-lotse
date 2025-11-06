@@ -14,6 +14,7 @@ import de.eshg.base.centralfile.persistence.PersonWithoutDateOfBirthService;
 import de.eshg.base.centralfile.persistence.entity.PersonWithoutDateOfBirth;
 import de.eshg.domain.model.SequencedBaseEntityWithExternalId;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import java.time.Duration;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -66,13 +67,19 @@ public class PersonWithoutDateOfBirthController implements PersonWithoutDateOfBi
   @Override
   @Transactional
   public void deletePersonWithoutDateOfBirth(UUID id) {
-    personWithoutDateOfBirthService.deletePersonWithoutDateOfBirth(List.of(id));
+    personWithoutDateOfBirthService.markForDeletion(List.of(id), Duration.ZERO);
   }
 
   @Override
   @Transactional
-  public void deletePersonsWithoutDateOfBirth(List<UUID> id) {
-    personWithoutDateOfBirthService.deletePersonWithoutDateOfBirth(id);
+  public void deletePersonsWithoutDateOfBirth(List<UUID> ids) {
+    personWithoutDateOfBirthService.markForDeletion(ids, Duration.ZERO);
+  }
+
+  @Override
+  @Transactional
+  public void markPersonsWithoutDateOfBirthForDeletion(List<UUID> ids) {
+    personWithoutDateOfBirthService.markForDeletion(ids, Duration.ofDays(365));
   }
 
   @Override

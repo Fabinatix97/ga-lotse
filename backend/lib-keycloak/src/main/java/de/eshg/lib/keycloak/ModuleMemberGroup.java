@@ -43,7 +43,8 @@ public enum ModuleMemberGroup implements KeycloakGroup {
       getStandardRoles(),
       List.of(
           EmployeePermissionRole.BASE_CONTACTS_WRITE,
-          EmployeePermissionRole.MEASLES_PROTECTION_ADMIN)),
+          EmployeePermissionRole.MEASLES_PROTECTION_ADMIN,
+          EmployeePermissionRole.SCHOOL_ENTRY_VACCINATION_CHECK)),
   STATISTICS(
       "Statistik",
       EmployeePermissionRole.STATISTICS_STATISTICS_READ,

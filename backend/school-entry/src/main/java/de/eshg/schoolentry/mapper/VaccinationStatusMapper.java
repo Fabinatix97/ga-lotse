@@ -6,6 +6,7 @@
 package de.eshg.schoolentry.mapper;
 
 import de.eshg.schoolentry.api.*;
+import de.eshg.schoolentry.api.vaccination.MeaslesVaccinationDto;
 import de.eshg.schoolentry.domain.model.BooleanWithUnknown;
 import de.eshg.schoolentry.domain.model.OtherVaccination;
 import de.eshg.schoolentry.domain.model.VaccinationSchemeValue;
@@ -45,6 +46,16 @@ public final class VaccinationStatusMapper {
         vaccinationStatus.getMeaslesContraIndicationIsPermanent(),
         vaccinationStatus.getMeaslesContraIndicationUntil(),
         vaccinationStatus.getNote());
+  }
+
+  public static MeaslesVaccinationDto mapToMeaslesVaccinationStatusDto(
+      VaccinationStatus vaccinationStatus) {
+    return new MeaslesVaccinationDto(
+        vaccinationStatus.getMmr(),
+        vaccinationStatus.getVaccinationPassPresented(),
+        vaccinationStatus.getMeaslesContraIndication(),
+        vaccinationStatus.getMeaslesContraIndicationIsPermanent(),
+        vaccinationStatus.getMeaslesContraIndicationUntil());
   }
 
   private static List<OtherVaccinationDto> mapToDto(List<OtherVaccination> otherVaccinations) {

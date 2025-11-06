@@ -20,7 +20,11 @@ import { createColumnHelper } from "@tanstack/react-table";
 import { useEffect, useState } from "react";
 import { isDefined } from "remeda";
 
-import { ApiProphylaxisStatus, ApiReasonForAbsence } from "@eshg/dental-api";
+import {
+  ApiBooleanWithUnknown,
+  ApiProphylaxisStatus,
+  ApiReasonForAbsence,
+} from "@eshg/dental-api";
 import {
   ActionsItem,
   ActionsMenu,
@@ -30,7 +34,6 @@ import {
   OverlayBoundary,
   TablePage,
   TableSortingProps,
-  formatBoolean,
   useConfirmationDialog,
   useTableControl,
 } from "@eshg/lib-employee-portal";
@@ -44,6 +47,7 @@ import { FluoridationExaminationResult } from "../../../../api/models/Examinatio
 import { ExaminationStatusChip } from "../../../../components/examination/ExaminationStatusChip";
 import { routes } from "../../../../config/routes";
 import { FluoridationConsent } from "../../../../utils/childDetails/FluoridationConsent";
+import { formatBooleanWithUnknown } from "../../../../utils/formatters";
 import { ProphylaxisSessionExamination } from "../../api/models/ProphylaxisSessionExamination";
 import { useDeleteProphylaxisSessionParticipantOptions } from "../../api/mutations/details";
 import {
@@ -412,7 +416,8 @@ function columnDefs(
       ? [
           columnHelper.accessor("currentFluoridationConsent", {
             header: "Fluoridierungseinverständnis",
-            cell: (props) => formatBoolean(props.getValue()?.consented),
+            cell: (props) =>
+              formatBooleanWithUnknown(props.getValue()?.consented),
             enableSorting: true,
             meta: {
               canNavigate: { parentRow: true },
@@ -501,7 +506,10 @@ function canChangeToFluorideVarnishApplied(
     return true;
   }
 
-  if (!examination.currentFluoridationConsent?.consented) {
+  if (
+    examination.currentFluoridationConsent?.consented !==
+    ApiBooleanWithUnknown.True
+  ) {
     return false;
   }
 
@@ -576,7 +584,8 @@ function UpdateAllFluoridationButton() {
   const participantsToBeUpdated = allParticipants
     .filter(
       (participant) =>
-        participant.currentFluoridationConsent?.consented === true,
+        participant.currentFluoridationConsent?.consented ===
+        ApiBooleanWithUnknown.True,
     )
     .filter((participant) => participant.result === undefined)
     .map((p) => p.examinationId);

@@ -25,13 +25,13 @@ import {
   formatSchoolYear,
   getSortDirection,
   getSortKey,
-  useFilterDictionary,
   useGdprValidationTasksAlert,
   useGetGdprValidationBannerQuery,
+  usePersistentFilterDictionary,
+  usePersistentTableControl,
   usePersonSearch,
   useRowSelection,
   useSyncRowSelection,
-  useTableControl,
 } from "@eshg/lib-employee-portal";
 import {
   UnstyledTabList,
@@ -65,11 +65,12 @@ const initialSorting: ColumnSort = {
 export function ChildrenTable() {
   const personSearch = usePersonSearch();
 
-  const tableControl = useTableControl({
+  const tableControl = usePersistentTableControl("ZAD_CHILDREN_TABLE_CONTROL", {
     serverSideSorting: true,
     sortFieldName: "sortKey",
     sortDirectionName: "sortDirection",
     initialSorting: initialSorting,
+    defaultPageSize: "50",
   });
 
   const {
@@ -82,7 +83,8 @@ export function ChildrenTable() {
     filterButtonProps,
     filterSettingsSheetProps,
     activeFilters,
-  } = useFilterDictionary<keyof ChildrenFilters, ChildrenFilters>({
+  } = usePersistentFilterDictionary<keyof ChildrenFilters, ChildrenFilters>({
+    key: "ZAD_CHILDREN_TABLE_FILTER",
     onChangeFilters: () => {
       tableControl.paginationProps.onPageChange(0);
       personSearch.reset();

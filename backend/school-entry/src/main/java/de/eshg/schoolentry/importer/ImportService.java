@@ -16,7 +16,6 @@ import de.eshg.lib.xlsximport.XlsxColumn;
 import de.eshg.lib.xlsximport.XlsxImport;
 import de.eshg.lib.xlsximport.model.ImportResult;
 import de.eshg.schoolentry.LabelService;
-import de.eshg.schoolentry.SchoolEntryConfigService;
 import de.eshg.schoolentry.SchoolEntryProcedureDeletionService;
 import de.eshg.schoolentry.SchoolEntryService;
 import de.eshg.schoolentry.Validator;
@@ -68,7 +67,6 @@ public class ImportService {
   private final SchoolEntryProperties schoolEntryProperties;
   private final ProcedureTypeAssignmentHelper procedureTypeAssignmentHelper;
   private final SchoolEntryProcedureRepository schoolEntryProcedureRepository;
-  private final SchoolEntryConfigService schoolEntryConfigService;
 
   public ImportService(
       Clock clock,
@@ -81,8 +79,7 @@ public class ImportService {
       ProgressEntryUtil progressEntryUtil,
       SchoolEntryProperties schoolEntryProperties,
       ProcedureTypeAssignmentHelper procedureTypeAssignmentHelper,
-      SchoolEntryProcedureRepository schoolEntryProcedureRepository,
-      SchoolEntryConfigService schoolEntryConfigService) {
+      SchoolEntryProcedureRepository schoolEntryProcedureRepository) {
     this.clock = clock;
     this.validator = validator;
     this.schoolEntryService = schoolEntryService;
@@ -94,7 +91,6 @@ public class ImportService {
     this.procedureSearchService = procedureSearchService;
     this.personClient = personClient;
     this.progressEntryUtil = progressEntryUtil;
-    this.schoolEntryConfigService = schoolEntryConfigService;
   }
 
   public ImportResult importProceduresFromFile(
@@ -163,8 +159,7 @@ public class ImportService {
         schoolId,
         locationId,
         schoolYear,
-        this,
-        schoolEntryConfigService);
+        this);
   }
 
   private CitizenOrSchoolListImporter<SchoolListRow, SchoolListColumn> newSchoolListImporter(
@@ -183,8 +178,7 @@ public class ImportService {
         schoolId,
         locationId,
         schoolYear,
-        this,
-        schoolEntryConfigService);
+        this);
   }
 
   private PastProcedureListImporter newPastProcedureListImporter(

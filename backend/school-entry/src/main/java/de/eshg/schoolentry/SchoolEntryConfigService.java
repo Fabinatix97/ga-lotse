@@ -76,7 +76,6 @@ public class SchoolEntryConfigService extends EshgConfigurationService<SchoolEnt
           config.getLocationSelectionMode(),
           isLocationSelectionModeReadOnly(),
           config.isDirectProcedureTypeAssignmentOnImport(),
-          isDirectProcedureTypeAssignmentOnImportReadOnly(),
           config.getPdfDocumentAccentColor());
     } else {
       return null;
@@ -130,11 +129,6 @@ public class SchoolEntryConfigService extends EshgConfigurationService<SchoolEnt
 
   private void updateDirectProcedureTypeAssignmentOnImport(
       SchoolEntryConfig persistentConfig, boolean directProcedureTypeAssignmentOnImport) {
-    if (directProcedureTypeAssignmentOnImport
-            != persistentConfig.isDirectProcedureTypeAssignmentOnImport()
-        && isDirectProcedureTypeAssignmentOnImportReadOnly()) {
-      throw new BadRequestException("DirectProcedureTypeAssignmentOnImport is read only");
-    }
     persistentConfig.setInitialized(true);
     persistentConfig.setDirectProcedureTypeAssignmentOnImport(
         directProcedureTypeAssignmentOnImport);
@@ -148,10 +142,6 @@ public class SchoolEntryConfigService extends EshgConfigurationService<SchoolEnt
 
   private ConfigurationStatus mapToConfigurationStatus(SchoolEntryConfig config) {
     return config.isInitialized() ? ConfigurationStatus.COMPLETE : ConfigurationStatus.INCOMPLETE;
-  }
-
-  private boolean isDirectProcedureTypeAssignmentOnImportReadOnly() {
-    return procedureRepository.count() > 0;
   }
 
   private boolean isLocationSelectionModeReadOnly() {

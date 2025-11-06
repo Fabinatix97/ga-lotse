@@ -5,10 +5,10 @@
 
 import { isDefined } from "remeda";
 
-import { formatBoolean } from "@eshg/lib-employee-portal";
 import { GENDER_VALUES } from "@eshg/lib-portal";
 
 import { EXAMINATION_STATUS } from "../../../../translations/examination";
+import { formatBooleanWithUnknown } from "../../../../utils/formatters";
 import { ProphylaxisSessionExamination } from "../../api/models/ProphylaxisSessionExamination";
 
 export interface ParticipantSorting {
@@ -99,8 +99,12 @@ function compareFluoridation(
   b: ParticipantSortAttributes,
   sortDirection: ParticipantSortDirection,
 ): number {
-  const aValue = formatBoolean(a.currentFluoridationConsent?.consented);
-  const bValue = formatBoolean(b.currentFluoridationConsent?.consented);
+  const aValue = formatBooleanWithUnknown(
+    a.currentFluoridationConsent?.consented,
+  );
+  const bValue = formatBooleanWithUnknown(
+    b.currentFluoridationConsent?.consented,
+  );
 
   return compareAndSortEmptyStringToEnd(aValue, bValue, sortDirection);
 }

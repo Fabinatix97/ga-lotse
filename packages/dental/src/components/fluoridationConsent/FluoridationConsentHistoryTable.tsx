@@ -8,12 +8,10 @@
 import { createColumnHelper } from "@tanstack/react-table";
 
 import { ApiFluoridationConsent } from "@eshg/dental-api";
-import {
-  DataTable,
-  TableSheet,
-  formatBoolean,
-} from "@eshg/lib-employee-portal";
+import { DataTable, TableSheet } from "@eshg/lib-employee-portal";
 import { formatDate } from "@eshg/lib-portal";
+
+import { formatBooleanWithUnknown } from "../../utils/formatters";
 
 interface FluoridationConsentHistoryTableProps {
   fluoridationConsent: ApiFluoridationConsent[];
@@ -38,7 +36,7 @@ const columnHelper = createColumnHelper<ApiFluoridationConsent>();
 const COLUMNS = [
   columnHelper.accessor("consented", {
     header: "Einverständnis",
-    cell: (props) => formatBoolean(props.getValue()),
+    cell: (props) => formatBooleanWithUnknown(props.getValue()),
     meta: {
       width: 80,
     },

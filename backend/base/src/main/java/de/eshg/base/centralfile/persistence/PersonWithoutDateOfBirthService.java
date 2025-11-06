@@ -14,6 +14,7 @@ import de.eshg.base.centralfile.persistence.entity.PersonWithoutDateOfBirth;
 import de.eshg.base.centralfile.persistence.repository.PersonWithoutDateOfBirthRepository;
 import de.eshg.rest.service.error.NotFoundException;
 import java.time.Clock;
+import java.time.Duration;
 import java.time.Instant;
 import java.util.*;
 import org.apache.logging.log4j.LogManager;
@@ -60,14 +61,15 @@ public class PersonWithoutDateOfBirthService {
     return personWithoutDateOfBirthRepository.findAllByExternalIdIn(ids);
   }
 
-  public void deletePersonWithoutDateOfBirth(List<UUID> ids) {
+  public void markForDeletion(List<UUID> ids, Duration delay) {
+    Instant timestamp = Instant.now(clock).plus(delay);
     for (UUID id : ids) {
       PersonWithoutDateOfBirth personWithoutDateOfBirth =
           personWithoutDateOfBirthRepository
               .findByExternalId(id)
               .orElseThrow(() -> new NotFoundException(PERSON_WITHOUT_DATE_OF_BIRTH_NOT_FOUND));
-      personWithoutDateOfBirthRepository.delete(personWithoutDateOfBirth);
-      logger.logDeletePersonWithoutDateOfBirth(personWithoutDateOfBirth, clock.instant());
+      personWithoutDateOfBirth.setDeleteAt(timestamp);
+      logger.logDeletePersonWithoutDateOfBirth(personWithoutDateOfBirth);
     }
 
     personWithoutDateOfBirthRepository.flush();
@@ -91,6 +93,10 @@ public class PersonWithoutDateOfBirthService {
     logger.logEditPersonWithoutDateOfBirth(person);
 
     return person;
+  }
+
+  public int deleteExpiredEntries(Instant expirationTime) {
+    return personWithoutDateOfBirthRepository.deleteByDeleteAtBefore(expirationTime);
   }
 
   private void applyPersonUpdate(

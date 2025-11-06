@@ -6,6 +6,7 @@
 package de.eshg.dental;
 
 import static de.eshg.dental.ExaminationService.calculateAgeOfChild;
+import static de.eshg.dental.mapper.BooleanWithUnknownMapper.mapToBooleanWithUnknown;
 import static de.eshg.dental.util.ChildSystemProgressEntryType.DATA_EXPORTED;
 import static de.eshg.dental.util.ChildSystemProgressEntryType.LABELS_MODIFIED;
 
@@ -39,9 +40,11 @@ import de.eshg.dental.api.SchoolYearTransitionSearchParameters;
 import de.eshg.dental.api.SchoolYearTransitionSortKey;
 import de.eshg.dental.api.SchoolYearTransitionStatusDto;
 import de.eshg.dental.api.SyncPersonRequest;
+import de.eshg.dental.api.UpdateBulkResponse;
 import de.eshg.dental.api.UpdateChildRequest;
 import de.eshg.dental.api.UpdateFluoridationConsentBulkRequest;
 import de.eshg.dental.api.UpdatePersonRequest;
+import de.eshg.dental.business.model.BulkUpdateChildrenStatistics;
 import de.eshg.dental.business.model.ChildWithPersonAndContactData;
 import de.eshg.dental.business.model.ChildWithPersonData;
 import de.eshg.dental.business.model.PagedChildren;
@@ -698,7 +701,7 @@ public class ChildService {
 
   private boolean fluoridationConsentsMatch(
       FluoridationConsent fluoridationConsent1, FluoridationConsent fluoridationConsent2) {
-    return fluoridationConsent1.isConsented() == fluoridationConsent2.isConsented()
+    return fluoridationConsent1.getConsented().equals(fluoridationConsent2.getConsented())
         && Objects.equals(fluoridationConsent1.hasAllergy(), fluoridationConsent2.hasAllergy())
         && fluoridationConsent1.getDateOfConsent().equals(fluoridationConsent2.getDateOfConsent());
   }
@@ -708,7 +711,7 @@ public class ChildService {
 
     FluoridationConsent fluoridationConsent = new FluoridationConsent();
     fluoridationConsent.setDateOfConsent(request.dateOfConsent());
-    fluoridationConsent.setConsented(request.consented());
+    fluoridationConsent.setConsented(mapToBooleanWithUnknown(request.consented()));
 
     for (Child child : children) {
       updateFluoridationConsent(child, fluoridationConsent);
@@ -742,6 +745,28 @@ public class ChildService {
         .toList();
   }
 
+  public UpdateBulkResponse closeChildrenInBulkWithVersionControl(
+      Map<UUID, Long> childIdsAndVersion) {
+    List<Child> children =
+        childRepository
+            .findByExternalIdsForUpdate(childIdsAndVersion.keySet().stream().toList())
+            .toList();
+    BulkUpdateChildrenStatistics stats = new BulkUpdateChildrenStatistics();
+    for (Child child : children) {
+      try {
+        validateSingleChildIsOpenAndOfCurrentYear(child);
+        ValidationUtil.validateVersion(childIdsAndVersion.get(child.getExternalId()), child);
+      } catch (Exception e) {
+        log.info("Error in closing children in bulk: ", e);
+        stats.countError();
+        continue;
+      }
+      closeChild(child);
+      stats.countUpdated();
+    }
+    return stats.mapToResponse();
+  }
+
   public void closeChildrenInBulk(List<UUID> childIds, boolean isXlsxImport) {
     List<Child> childrenToClose = childRepository.findByExternalIdsForUpdate(childIds).toList();
     // xlsx-import must be able to close children of all previous years
@@ -773,10 +798,57 @@ public class ChildService {
     Validator.validateAllChildrenAreOpenAndOfYear(childrenToClose, Year.now(clock).minusYears(1));
   }
 
-  public List<UUID> promoteChildrenInBulk(List<UUID> childIds) {
-    List<Child> childrenToPromote = childRepository.findByExternalIdsForUpdate(childIds).toList();
-    validateAllChildrenAreOpenAndOfCurrentYear(childrenToPromote);
-    return promoteChildren(childrenToPromote, Function.identity());
+  private void validateSingleChildIsOpenAndOfCurrentYear(Child child) {
+    if (!child.getYear().equals(Year.now(clock).minusYears(1))
+        || !child.getProcedureStatus().equals(ProcedureStatus.OPEN)) {
+      throw new BadRequestException("Child is not from current year or an open procedure");
+    }
+  }
+
+  public UpdateBulkResponse promoteChildrenInBulk(Map<UUID, Long> childIdsAndVersion) {
+    List<Child> children =
+        childRepository
+            .findByExternalIdsForUpdate(childIdsAndVersion.keySet().stream().toList())
+            .toList();
+    BulkUpdateChildrenStatistics stats = new BulkUpdateChildrenStatistics();
+    List<Child> childrenToPromote = new ArrayList<>();
+    for (Child child : children) {
+      try {
+        validateSingleChildIsOpenAndOfCurrentYear(child);
+        ValidationUtil.validateVersion(childIdsAndVersion.get(child.getExternalId()), child);
+      } catch (Exception e) {
+        log.info("Error in bulk children promotion: ", e);
+        stats.countError();
+        continue;
+      }
+      childrenToPromote.add(child);
+    }
+    return promoteChildren(childrenToPromote, Function.identity(), stats);
+  }
+
+  private UpdateBulkResponse promoteChildren(
+      List<Child> childrenToPromote,
+      Function<String, String> groupNameTransitions,
+      BulkUpdateChildrenStatistics stats) {
+    logPromotedChildren(childrenToPromote);
+
+    if (childrenToPromote.isEmpty()) {
+      return stats.mapToResponse();
+    }
+
+    Year newSchoolYear = Year.now(clock);
+    List<UUID> newFileStateIds =
+        personClient.duplicatePersonFileStates(childrenToPromote).personFileStateIds();
+
+    for (int i = 0; i < childrenToPromote.size(); i++) {
+      promoteChild(
+          childrenToPromote.get(i), groupNameTransitions, newFileStateIds.get(i), newSchoolYear);
+      stats.countUpdated();
+    }
+
+    closeChildrenInBulk(childrenToPromote.stream().map(Child::getExternalId).toList(), false);
+
+    return stats.mapToResponse();
   }
 
   public List<UUID> promoteGroupsInBulk(
@@ -794,15 +866,12 @@ public class ChildService {
         childRepository.findByInstitutionIdAndGroupNameAndYearForUpdate(
             institutionId, groupTransitionsMap.keySet().stream().toList(), currentSchoolYear);
 
-    return promoteChildren(childrenToPromote, groupTransitionsMap::get);
+    return promoteSchoolChildren(childrenToPromote, groupTransitionsMap::get);
   }
 
-  private List<UUID> promoteChildren(
+  private List<UUID> promoteSchoolChildren(
       List<Child> childrenToPromote, Function<String, String> groupNameTransitions) {
-    log.info(
-        "Promoting {} {}",
-        childrenToPromote.size(),
-        childrenToPromote.size() == 1 ? "child" : "children");
+    logPromotedChildren(childrenToPromote);
 
     if (childrenToPromote.isEmpty()) {
       return List.of();
@@ -814,24 +883,42 @@ public class ChildService {
 
     List<UUID> promotedChildren = new ArrayList<>();
     for (int i = 0; i < childrenToPromote.size(); i++) {
-      Child childToPromote = childrenToPromote.get(i);
-      UUID fileStateId = newFileStateIds.get(i);
-      String newGroupName = groupNameTransitions.apply(childToPromote.getGroupName());
-
-      Child promotedChild = createChild(fileStateId);
-      promotedChild.setYear(newSchoolYear);
-      promotedChild.setGroupName(newGroupName);
-      promotedChild.setInstitutionId(childToPromote.getInstitutionId());
-      promotedChild.setProcedureLabels(new ArrayList<>(childToPromote.getProcedureLabels()));
-      promotedChild.setNote(childToPromote.getNote());
-      childRepository.save(promotedChild);
-
+      Child promotedChild =
+          promoteChild(
+              childrenToPromote.get(i),
+              groupNameTransitions,
+              newFileStateIds.get(i),
+              newSchoolYear);
       promotedChildren.add(promotedChild.getExternalId());
     }
 
     closeChildrenInBulk(childrenToPromote.stream().map(Child::getExternalId).toList(), false);
 
     return promotedChildren;
+  }
+
+  private Child promoteChild(
+      Child childToPromote,
+      Function<String, String> groupNameTransitions,
+      UUID fileStateId,
+      Year newSchoolYear) {
+    String newGroupName = groupNameTransitions.apply(childToPromote.getGroupName());
+
+    Child promotedChild = createChild(fileStateId);
+    promotedChild.setYear(newSchoolYear);
+    promotedChild.setGroupName(newGroupName);
+    promotedChild.setInstitutionId(childToPromote.getInstitutionId());
+    promotedChild.setProcedureLabels(new ArrayList<>(childToPromote.getProcedureLabels()));
+    promotedChild.setNote(childToPromote.getNote());
+    childRepository.save(promotedChild);
+    return promotedChild;
+  }
+
+  private static void logPromotedChildren(List<Child> childrenToPromote) {
+    log.info(
+        "Promoting {} {}",
+        childrenToPromote.size(),
+        childrenToPromote.size() == 1 ? "child" : "children");
   }
 
   void updateChildPersonAndFlush(Child child, UpdatePersonRequest request) {
@@ -958,7 +1045,8 @@ public class ChildService {
         personData.lastName(),
         personData.gender(),
         childData.getGroupName(),
-        personData.dateOfBirth());
+        personData.dateOfBirth(),
+        childData.getVersion());
   }
 
   private List<ChildForTransitionDto> getChildrenForTransitionWithPersonAttributeSortKey(

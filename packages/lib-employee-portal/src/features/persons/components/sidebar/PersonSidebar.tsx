@@ -5,7 +5,7 @@
 
 import { DefaultError, UseQueryOptions, useQuery } from "@tanstack/react-query";
 import { ComponentType, ReactNode, useEffect, useState } from "react";
-import { isDefined } from "remeda";
+import { isDefined, isEmpty } from "remeda";
 
 import { ApiGetReferencePersonResponse } from "@eshg/base-api";
 
@@ -215,6 +215,17 @@ export function PersonSidebar<
             mode: "search_results",
           }))
         }
+        onCreateWithoutSearch={(values) => {
+          setState((previous) => ({
+            ...previous,
+            searchState: values,
+            createState: mapCreateState({
+              inputs: values,
+              addressRequired: props.addressRequired,
+            }),
+            mode: "create",
+          }));
+        }}
       />
     );
   }
@@ -257,6 +268,7 @@ export function PersonSidebar<
         title={props.title}
         subtitle="Person anlegen"
         submitLabel={props.submitLabel}
+        mode="create"
         sidebarFormRef={props.formRef}
         addressRequired={props.addressRequired}
         canChooseAddressType={props.canChooseAddressType}
@@ -266,7 +278,7 @@ export function PersonSidebar<
         onBack={() =>
           setState((previous) => ({
             ...previous,
-            mode: "search_results",
+            mode: isEmpty(previous.searchResult) ? "search" : "search_results",
           }))
         }
         onSubmit={async (values) =>

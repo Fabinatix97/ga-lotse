@@ -351,6 +351,8 @@ export {
   useSearchReferencePersonsQuery,
 } from "./features/persons/api/queries";
 export { PersonCardContent } from "./features/persons/components/PersonCardContent";
+export { AddressFormSection } from "./features/persons/components/form/AddressFormSection";
+export { ContactInfoFormSection } from "./features/persons/components/form/ContactInfoFormSection";
 export {
   DefaultPersonForm,
   type DefaultPersonFormValues,
@@ -385,6 +387,7 @@ export type {
 export {
   mapReferencePersonToForm,
   mapToPersonAddRequest,
+  mapToPersonWithoutDateOfBirthAddRequest,
   mapToPersonUpdateRequest,
   normalizeListInputs,
 } from "./features/persons/utils/mappers";

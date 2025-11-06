@@ -27,6 +27,7 @@ public record MeaslesProtectionProcedureDto(
     @Valid AccessRestrictionDto accessRestriction,
     @NotNull ProcedureStatusDto procedureStatus,
     @NotNull boolean isOpen,
+    @Valid MeaslesVaccinationStatusDto measlesVaccinationStatusFromSchoolEntry,
     @NotNull CaseStatusDto caseStatus,
     @Valid AppointmentDto appointment)
     implements ProtectionProcedureDto {

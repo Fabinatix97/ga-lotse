@@ -3,10 +3,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiFluoridationConsent } from "@eshg/dental-api";
+import {
+  ApiBooleanWithUnknown,
+  ApiFluoridationConsent,
+} from "@eshg/dental-api";
 import {
   OptionalFieldValue,
-  isEmptyString,
   mapOptionalValue,
   parseOptionalValue,
   toDateString,
@@ -14,7 +16,7 @@ import {
 } from "@eshg/lib-portal";
 
 export interface FluoridationConsent {
-  consented: boolean;
+  consented: OptionalFieldValue<ApiBooleanWithUnknown>;
   dateOfConsent: OptionalFieldValue<string>;
   hasAllergy: OptionalFieldValue<boolean>;
 }
@@ -26,14 +28,11 @@ export function mapFluoridationConsentToRequest(
     return undefined;
   }
 
-  return !isEmptyString(fluoridationConsent.consented) &&
-    !isEmptyString(fluoridationConsent.dateOfConsent)
-    ? {
-        consented: fluoridationConsent.consented,
-        dateOfConsent: toUtcDate(fluoridationConsent.dateOfConsent),
-        hasAllergy: mapOptionalValue(fluoridationConsent.hasAllergy),
-      }
-    : undefined;
+  return {
+    consented: mapOptionalValue(fluoridationConsent.consented),
+    dateOfConsent: toUtcDate(fluoridationConsent.dateOfConsent),
+    hasAllergy: mapOptionalValue(fluoridationConsent.hasAllergy),
+  };
 }
 
 export function mapFluoridationConsentToFormValues(
@@ -41,7 +40,7 @@ export function mapFluoridationConsentToFormValues(
 ): FluoridationConsent | undefined {
   if (response === undefined) return undefined;
   return {
-    consented: response.consented,
+    consented: parseOptionalValue(response.consented),
     dateOfConsent: toDateString(response.dateOfConsent),
     hasAllergy: parseOptionalValue(response.hasAllergy),
   };

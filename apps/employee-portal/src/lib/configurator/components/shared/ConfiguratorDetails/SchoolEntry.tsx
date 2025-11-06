@@ -106,12 +106,6 @@ function SchoolEntryConfiguratorForm(props: {
           },
           {
             title: "Vorgangsimport",
-            alert: {
-              color: "warning",
-              message: config.directProcedureTypeAssignmentOnImportReadOnly
-                ? "Es sind keine Änderungen mehr möglich, da bereits mindestens ein Vorgang erstellt wurde."
-                : "Änderungen an den Einstellungen sind nur möglich, solange noch kein Vorgang erstellt wurde.",
-            },
             description:
               "Aktivieren Sie diese Option, wenn kein Bürgeramtsimport nötig oder vorhanden ist, um die Daten direkt nach dem Schullistenimport zu vervollständigen.",
             content: {
@@ -123,8 +117,6 @@ function SchoolEntryConfiguratorForm(props: {
                       name: FormNames.DIRECT_PROCEDURE_TYPE_ASSIGNMENT,
                       type: "checkbox",
                       label: "Direkter Vorgangsimport",
-                      readonly:
-                        config.directProcedureTypeAssignmentOnImportReadOnly,
                     },
                   ],
                 },
@@ -162,10 +154,7 @@ function SchoolEntryConfiguratorForm(props: {
         ] satisfies FormSection[],
       },
     ],
-    [
-      config.directProcedureTypeAssignmentOnImportReadOnly,
-      config.locationSelectionModeReadOnly,
-    ],
+    [config.locationSelectionModeReadOnly],
   );
 
   return (

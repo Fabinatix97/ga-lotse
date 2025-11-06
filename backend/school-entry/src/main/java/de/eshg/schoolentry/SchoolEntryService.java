@@ -757,7 +757,12 @@ public class SchoolEntryService {
       updateLocationId(procedure, procedure.getLocationId(), request.locationId());
     } else {
       if (request.locationId() != null) {
-        throw ExceptionUtil.badRequestExceptionForbiddenLocationId();
+        if (request.locationId().equals(procedure.getLocationId())) {
+          log.info("locationId removed for procedure {}", procedure.getExternalId());
+          updateLocationId(procedure, procedure.getLocationId(), null);
+        } else {
+          throw ExceptionUtil.badRequestExceptionForbiddenLocationId();
+        }
       }
     }
 

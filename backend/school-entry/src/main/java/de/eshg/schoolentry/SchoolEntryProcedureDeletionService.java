@@ -108,7 +108,7 @@ public class SchoolEntryProcedureDeletionService
 
   @Override
   protected void markRelatedFileStatesForDeletion(SchoolEntryProcedure procedure) {
-    PersonClient.deletePersonsWithoutDateOfBirth(
+    PersonClient.markPersonsWithoutDateOfBirthForDeletion(
         personWithoutDateOfBirthApi, procedure.getCustodianWithoutDob());
     super.markRelatedFileStatesForDeletion(procedure);
   }

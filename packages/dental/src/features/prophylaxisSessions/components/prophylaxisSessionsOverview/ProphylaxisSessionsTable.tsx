@@ -22,8 +22,8 @@ import {
   formatBoolean,
   getSortDirection,
   getSortKey,
-  useFilterDictionary,
-  useTableControl,
+  usePersistentFilterDictionary,
+  usePersistentTableControl,
 } from "@eshg/lib-employee-portal";
 import { formatDateTime, useToggleableState } from "@eshg/lib-portal";
 
@@ -48,12 +48,16 @@ const INITIAL_SORTING: ColumnSort = {
 export function ProphylaxisSessionsTable() {
   const [activePanel, toggleActivePanel] = useToggleableState<"filters">();
 
-  const tableControl = useTableControl({
-    serverSideSorting: true,
-    sortFieldName: "sortKey",
-    sortDirectionName: "sortDirection",
-    initialSorting: INITIAL_SORTING,
-  });
+  const tableControl = usePersistentTableControl(
+    "ZAD_PROPHYLAXIS_SESSIONS_TABLE_CONTROL",
+    {
+      serverSideSorting: true,
+      sortFieldName: "sortKey",
+      sortDirectionName: "sortDirection",
+      initialSorting: INITIAL_SORTING,
+      defaultPageSize: "50",
+    },
+  );
 
   const {
     filterValues,
@@ -64,10 +68,11 @@ export function ProphylaxisSessionsTable() {
     filterButtonProps,
     filterSettingsSheetProps,
     activeFilters,
-  } = useFilterDictionary<
+  } = usePersistentFilterDictionary<
     keyof ProphylaxisSessionFilters,
     ProphylaxisSessionFilters
   >({
+    key: "ZAD_PROPHYLAXIS_SESSIONS_TABLE_FILTER",
     onChangeFilters: () => {
       tableControl.paginationProps.onPageChange(0);
     },

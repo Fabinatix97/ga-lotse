@@ -140,6 +140,9 @@ spec:
               value: "{{ $.Values.backend.upload.maxFileUploadSizeInBytes }}"
             {{- $containerTemplate := printf "module.%s.container" $index -}}
             {{- include $containerTemplate (dict "Values" $.Values "v" $module "Release" $.Release) | indent 12 }}
+          {{- if $.Values.springBootStartupProbe.enabled }}
+          startupProbe: {{- omit $.Values.springBootStartupProbe "enabled" | toYaml | nindent 12 }}
+          {{- end }}
           {{- if $.Values.springBootLivenessProbe.enabled }}
           livenessProbe: {{- omit $.Values.springBootLivenessProbe "enabled" | toYaml | nindent 12 }}
           {{- end }}

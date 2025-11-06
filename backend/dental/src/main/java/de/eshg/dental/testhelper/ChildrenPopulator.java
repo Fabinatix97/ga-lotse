@@ -6,6 +6,7 @@
 package de.eshg.dental.testhelper;
 
 import static de.eshg.base.util.ClassNameUtil.getClassNameAsPropertyKey;
+import static de.eshg.dental.mapper.BooleanWithUnknownMapper.mapToBooleanWithUnknownDto;
 
 import de.eshg.base.GenderDto;
 import de.eshg.base.SalutationDto;
@@ -107,7 +108,8 @@ public class ChildrenPopulator extends DentalPopulator<CreateChildResponse> {
     LocalDate dateOfConsent =
         LocalDate.of(year - 1, 1, 1).plusDays(faker.number().numberBetween(1, 350));
 
-    return new FluoridationConsentDto(dateOfConsent, consented, hasAllergy);
+    return new FluoridationConsentDto(
+        dateOfConsent, mapToBooleanWithUnknownDto(consented), hasAllergy);
   }
 
   private CreateChildRequest randomChild(Faker faker) {

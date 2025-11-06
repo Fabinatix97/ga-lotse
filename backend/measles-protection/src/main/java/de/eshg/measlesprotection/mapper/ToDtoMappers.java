@@ -150,6 +150,7 @@ public final class ToDtoMappers {
           procedureDetailsData.reportDataDto(),
           ProcedureMapper.toInterfaceType(procedureStatus),
           ProcedureStatus.isOpen(procedureStatus),
+          procedureDetailsData.measlesVaccinationStatusFromSchoolEntry(),
           procedureDetailsData.caseStatusDto());
     } else {
       return toMeaslesProtectionProcedure(procedureDetailsData);
@@ -171,6 +172,7 @@ public final class ToDtoMappers {
         detailsData.accessRestriction(),
         ProcedureMapper.toInterfaceType(procedureStatus),
         ProcedureStatus.isOpen(procedureStatus),
+        detailsData.measlesVaccinationStatusFromSchoolEntry(),
         detailsData.caseStatusDto(),
         detailsData.appointmentDto());
   }

@@ -684,6 +684,9 @@ data:
         proxy_pass http://$targetHostName$uri$is_args$args;
         proxy_read_timeout 120;
       }
+      location /api/school-entry/vaccination-check {
+        return 404;
+      }
       location /api/school-entry/ {
         set $targetHostName schoolentry.frankfurt.svc.cluster.local;
         include auth_api_request.conf;
@@ -1565,13 +1568,19 @@ spec:
             - ALL
           privileged: false
           readOnlyRootFilesystem: true
+        startupProbe:
+          failureThreshold: 90
+          httpGet:
+            path: /actuator/health
+            port: 8081
+            scheme: HTTP
+          periodSeconds: 1
         livenessProbe:
           failureThreshold: 3
           httpGet:
             path: /actuator/health/liveness
             port: 8081
             scheme: HTTP
-          initialDelaySeconds: 90
           periodSeconds: 10
           successThreshold: 1
           timeoutSeconds: 10
@@ -1581,7 +1590,6 @@ spec:
             path: /actuator/health/readiness
             port: 8081
             scheme: HTTP
-          initialDelaySeconds: 30
           periodSeconds: 10
           successThreshold: 1
           timeoutSeconds: 1
@@ -3621,12 +3629,18 @@ spec:
             - ALL
           privileged: false
           readOnlyRootFilesystem: true
+        startupProbe:
+          httpGet:
+            path: /health
+            port: 9000
+            scheme: HTTPS
+          periodSeconds: 1
+          failureThreshold: 30
         livenessProbe:
           httpGet:
             path: /health
             port: 9000
             scheme: HTTPS
-          initialDelaySeconds: 30
           timeoutSeconds: 10
           periodSeconds: 10
           successThreshold: 1
@@ -3636,7 +3650,6 @@ spec:
             path: /health
             port: 9000
             scheme: HTTPS
-          initialDelaySeconds: 30
           timeoutSeconds: 10
           periodSeconds: 10
           successThreshold: 1
@@ -3793,13 +3806,19 @@ spec:
             - ALL
           privileged: false
           readOnlyRootFilesystem: true
+        startupProbe:
+          failureThreshold: 90
+          httpGet:
+            path: /actuator/health
+            port: 8081
+            scheme: HTTP
+          periodSeconds: 1
         livenessProbe:
           failureThreshold: 3
           httpGet:
             path: /actuator/health/liveness
             port: 8081
             scheme: HTTP
-          initialDelaySeconds: 90
           periodSeconds: 10
           successThreshold: 1
           timeoutSeconds: 10
@@ -3809,7 +3828,6 @@ spec:
             path: /actuator/health/readiness
             port: 8081
             scheme: HTTP
-          initialDelaySeconds: 30
           periodSeconds: 10
           successThreshold: 1
           timeoutSeconds: 1
@@ -4393,13 +4411,19 @@ spec:
           value: "http://svgsanitizer.frankfurt.svc.cluster.local"
         - name: eshg.keycloak.test-client.max-number-of-parallel-threads
           value: "2"
+        startupProbe:
+          failureThreshold: 90
+          httpGet:
+            path: /actuator/health
+            port: 8081
+            scheme: HTTP
+          periodSeconds: 1
         livenessProbe:
           failureThreshold: 3
           httpGet:
             path: /actuator/health/liveness
             port: 8081
             scheme: HTTP
-          initialDelaySeconds: 90
           periodSeconds: 10
           successThreshold: 1
           timeoutSeconds: 10
@@ -4409,7 +4433,6 @@ spec:
             path: /actuator/health/readiness
             port: 8081
             scheme: HTTP
-          initialDelaySeconds: 30
           periodSeconds: 10
           successThreshold: 1
           timeoutSeconds: 1
@@ -4740,13 +4763,19 @@ spec:
             secretKeyRef:
               name: keycloak-test-user-secrets
               key: test-users-secret-override
+        startupProbe:
+          failureThreshold: 90
+          httpGet:
+            path: /actuator/health
+            port: 8081
+            scheme: HTTP
+          periodSeconds: 1
         livenessProbe:
           failureThreshold: 3
           httpGet:
             path: /actuator/health/liveness
             port: 8081
             scheme: HTTP
-          initialDelaySeconds: 90
           periodSeconds: 10
           successThreshold: 1
           timeoutSeconds: 10
@@ -4756,7 +4785,6 @@ spec:
             path: /actuator/health/readiness
             port: 8081
             scheme: HTTP
-          initialDelaySeconds: 30
           periodSeconds: 10
           successThreshold: 1
           timeoutSeconds: 1
@@ -5086,13 +5114,19 @@ spec:
             secretKeyRef:
               name: keycloak-test-user-secrets
               key: test-users-secret-override
+        startupProbe:
+          failureThreshold: 90
+          httpGet:
+            path: /actuator/health
+            port: 8081
+            scheme: HTTP
+          periodSeconds: 1
         livenessProbe:
           failureThreshold: 3
           httpGet:
             path: /actuator/health/liveness
             port: 8081
             scheme: HTTP
-          initialDelaySeconds: 90
           periodSeconds: 10
           successThreshold: 1
           timeoutSeconds: 10
@@ -5102,7 +5136,6 @@ spec:
             path: /actuator/health/readiness
             port: 8081
             scheme: HTTP
-          initialDelaySeconds: 30
           periodSeconds: 10
           successThreshold: 1
           timeoutSeconds: 1
@@ -5321,12 +5354,17 @@ spec:
           requests:
             cpu: 10m
             memory: 64Mi
+        startupProbe:
+          httpGet:
+            path: /health
+            port: 8080
+          periodSeconds: 1
+          failureThreshold: 20
         livenessProbe:
           httpGet:
             path: /health
             port: 8080
           periodSeconds: 10
-          initialDelaySeconds: 20
           failureThreshold: 1
           timeoutSeconds: 10
         readinessProbe:
@@ -5334,7 +5372,6 @@ spec:
             path: /health
             port: 8080
           periodSeconds: 10
-          initialDelaySeconds: 20
           failureThreshold: 1
           timeoutSeconds: 10
         env:

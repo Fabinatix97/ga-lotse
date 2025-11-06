@@ -4,14 +4,15 @@
  */
 
 import Button from "@mui/joy/Button";
+import { isDefined } from "remeda";
 
 import {
   ButtonBar,
   DrawerProps,
   SidebarActions,
   SidebarContent,
+  UpdateResultSummary,
   UseSidebarResult,
-  getEntityId,
   useSidebar,
 } from "@eshg/lib-employee-portal";
 
@@ -36,39 +37,62 @@ function DaycarePromotionSidebar({
   promotionChildren,
   onClose,
 }: DaycarePromotionSidebarProps) {
-  const promoteChildrenInBulk = usePromoteChildrenInBulk();
+  const { mutateAsync, data, isSuccess } = usePromoteChildrenInBulk();
 
   async function handlePromotionDaycare() {
-    await promoteChildrenInBulk.mutateAsync(
-      {
-        childIds: promotionChildren.map(getEntityId),
-      },
-      {
-        onSuccess: () => onClose(),
-      },
-    );
+    await mutateAsync({
+      childIdsAndVersion: Object.fromEntries(
+        promotionChildren.map((child) => [child.id, child.version]),
+      ),
+    });
   }
+
   return (
     <>
       <SidebarContent title="Schuljahreswechsel">
-        <SchoolYearTransitionChildrenList
-          institutionName={institutionName}
-          info="Folgende Kinder bleiben in der Kita"
-          infoColor="primary"
-          rows={promotionChildren}
-        />
+        {isSuccess && isDefined(data) ? (
+          <UpdateResultSummary
+            items={[
+              {
+                type: "success",
+                value: `${data.numUpdated} erfolgreich geändert`,
+              },
+              {
+                type: "error",
+                value: `${data.numError} fehlgeschlagen`,
+              },
+            ]}
+          />
+        ) : (
+          <SchoolYearTransitionChildrenList
+            institutionName={institutionName}
+            info="Folgende Kinder bleiben in der Kita"
+            infoColor="primary"
+            rows={promotionChildren}
+          />
+        )}
       </SidebarContent>
       <SidebarActions>
-        <ButtonBar
-          right={
-            <>
-              <Button color="neutral" variant="soft" onClick={() => onClose()}>
-                Abbrechen
-              </Button>
-              <Button onClick={handlePromotionDaycare}>Durchführen</Button>
-            </>
-          }
-        />
+        {isSuccess && isDefined(data) ? (
+          <ButtonBar
+            right={<Button onClick={() => onClose()}>Fertig</Button>}
+          />
+        ) : (
+          <ButtonBar
+            right={
+              <>
+                <Button
+                  color="neutral"
+                  variant="soft"
+                  onClick={() => onClose()}
+                >
+                  Abbrechen
+                </Button>
+                <Button onClick={handlePromotionDaycare}>Durchführen</Button>
+              </>
+            }
+          />
+        )}
       </SidebarActions>
     </>
   );

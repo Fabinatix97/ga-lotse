@@ -5,6 +5,9 @@
 
 package de.eshg.dental.mapper;
 
+import static de.eshg.dental.mapper.BooleanWithUnknownMapper.mapToDomain;
+import static de.eshg.dental.mapper.BooleanWithUnknownMapper.mapToDto;
+
 import de.eshg.base.centralfile.api.person.PersonDetailsDto;
 import de.eshg.dental.api.AnnualInstitutionDto;
 import de.eshg.dental.api.ChildDetailsDto;
@@ -105,7 +108,10 @@ public final class ChildMapper {
       return List.of();
     }
     return fluoridationConsent.stream()
-        .map(f -> new FluoridationConsentDto(f.getDateOfConsent(), f.isConsented(), f.hasAllergy()))
+        .map(
+            f ->
+                new FluoridationConsentDto(
+                    f.getDateOfConsent(), mapToDto(f.getConsented()), f.hasAllergy()))
         .toList();
   }
 
@@ -116,7 +122,7 @@ public final class ChildMapper {
 
     FluoridationConsent fluoridationConsent = new FluoridationConsent();
     fluoridationConsent.setDateOfConsent(dto.dateOfConsent());
-    fluoridationConsent.setConsented(dto.consented());
+    fluoridationConsent.setConsented(mapToDomain(dto.consented()));
     fluoridationConsent.setHasAllergy(dto.hasAllergy());
     return fluoridationConsent;
   }

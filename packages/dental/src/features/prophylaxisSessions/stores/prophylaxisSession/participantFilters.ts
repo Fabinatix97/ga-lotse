@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { ApiBooleanWithUnknown } from "@eshg/dental-api";
+
 import { ProphylaxisSessionExamination } from "../../api/models/ProphylaxisSessionExamination";
 
 export interface ParticipantFilters {
@@ -51,9 +53,16 @@ function matchesFluoridationConsent(
   }
 
   if (filter === "NOT_AVAILABLE") {
-    return participant.currentFluoridationConsent === undefined;
+    return (
+      participant.currentFluoridationConsent === undefined ||
+      participant.currentFluoridationConsent.consented ===
+        ApiBooleanWithUnknown.Unknown
+    );
   }
 
   const requiresConsent = filter === "YES";
-  return participant.currentFluoridationConsent?.consented === requiresConsent;
+  return (
+    participant.currentFluoridationConsent?.consented ===
+    (requiresConsent ? ApiBooleanWithUnknown.True : ApiBooleanWithUnknown.False)
+  );
 }

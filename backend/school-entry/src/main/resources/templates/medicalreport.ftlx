@@ -105,6 +105,7 @@
           border: 0.2mm solid;
           height: 70mm;
           padding: 3mm;
+          page-break-inside: avoid;
       }
 
       .box-header {

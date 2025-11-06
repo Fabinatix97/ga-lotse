@@ -3,15 +3,16 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import Button from "@mui/joy/Button";
+import { Button } from "@mui/joy";
+import { isDefined } from "remeda";
 
 import {
   ButtonBar,
   DrawerProps,
   SidebarActions,
   SidebarContent,
+  UpdateResultSummary,
   UseSidebarResult,
-  getEntityId,
   useSidebar,
 } from "@eshg/lib-employee-portal";
 
@@ -36,39 +37,64 @@ function DaycareLeavingSidebar({
   leavingChildren,
   onClose,
 }: DaycareLeavingSidebarProps) {
-  const closeChildrenInBulk = useCloseChildrenInBulk();
+  const { mutateAsync, data, isSuccess } = useCloseChildrenInBulk();
 
   async function handleLeavingDaycare() {
-    await closeChildrenInBulk.mutateAsync(
-      {
-        childIds: leavingChildren.map(getEntityId),
-      },
-      {
-        onSuccess: () => onClose(),
-      },
-    );
+    await mutateAsync({
+      childIdsAndVersion: Object.fromEntries(
+        leavingChildren.map((child) => [child.id, child.version]),
+      ),
+    });
   }
+
   return (
     <>
       <SidebarContent title="Schuljahreswechsel">
-        <SchoolYearTransitionChildrenList
-          institutionName={institutionName}
-          info="Folgende Kinder verlassen die Kita und wechseln in den Status abgeschlossen"
-          infoColor="success"
-          rows={leavingChildren}
-        />
+        {isSuccess && isDefined(data) ? (
+          <UpdateResultSummary
+            items={[
+              {
+                type: "success",
+                value: `${data.numUpdated} erfolgreich geändert`,
+              },
+              {
+                type: "error",
+                value: `${data.numError} fehlgeschlagen`,
+              },
+            ]}
+          />
+        ) : (
+          <SchoolYearTransitionChildrenList
+            institutionName={institutionName}
+            info="Folgende Kinder verlassen die Kita und wechseln in den Status abgeschlossen"
+            infoColor="success"
+            rows={leavingChildren}
+          />
+        )}
       </SidebarContent>
       <SidebarActions>
-        <ButtonBar
-          right={
-            <>
-              <Button color="neutral" variant="soft" onClick={() => onClose()}>
-                Abbrechen
-              </Button>
-              <Button onClick={handleLeavingDaycare}>Kita-Zeit beenden</Button>
-            </>
-          }
-        />
+        {isSuccess && isDefined(data) ? (
+          <ButtonBar
+            right={<Button onClick={() => onClose()}>Fertig</Button>}
+          />
+        ) : (
+          <ButtonBar
+            right={
+              <>
+                <Button
+                  color="neutral"
+                  variant="soft"
+                  onClick={() => onClose()}
+                >
+                  Abbrechen
+                </Button>
+                <Button onClick={handleLeavingDaycare}>
+                  Kita-Zeit beenden
+                </Button>
+              </>
+            }
+          />
+        )}
       </SidebarActions>
     </>
   );

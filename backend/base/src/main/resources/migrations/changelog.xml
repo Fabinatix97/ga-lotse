@@ -72,4 +72,5 @@
   <include file="migrations/0062_rename_icd_10_columns.xml"/>
   <include file="/migrations/0063_facility_contact_person_replace_Kein_Angabe_title_with_null.xml"/>
   <include file="migrations/0064_add_person_without_date_of_birth.xml"/>
+  <include file="/migrations/0065_add_delete_at_to_person_without_date_of_birth.xml"/>
 </databaseChangeLog>

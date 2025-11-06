@@ -14,6 +14,7 @@ import de.eshg.base.contact.api.InstitutionContactCategoryDto;
 import de.eshg.base.contact.api.InstitutionContactDto;
 import de.eshg.base.user.UserApi;
 import de.eshg.base.user.api.UserDto;
+import de.eshg.dental.api.BooleanWithUnknownDto;
 import de.eshg.dental.api.ChildFilterParameters;
 import de.eshg.dental.api.DentitionTypeDto;
 import de.eshg.dental.api.FluoridationConsentDto;
@@ -37,6 +38,7 @@ import de.eshg.lib.procedure.domain.model.ProcedureStatus;
 import de.eshg.rest.service.error.BadRequestException;
 import java.beans.PropertyDescriptor;
 import java.time.Clock;
+import java.time.LocalDate;
 import java.time.Year;
 import java.util.EnumSet;
 import java.util.HashSet;
@@ -138,10 +140,24 @@ public class Validator {
   }
 
   public void validateFluoridationConsent(FluoridationConsentDto fluoridationConsent) {
-    if (fluoridationConsent != null
-        && fluoridationConsent.consented()
+    if (fluoridationConsent == null) {
+      return;
+    }
+
+    if (fluoridationConsent.consented() == BooleanWithUnknownDto.TRUE
         && Boolean.TRUE.equals(fluoridationConsent.hasAllergy())) {
       throw new BadRequestException("Child cannot have an allergy and fluoridation consent.");
+    }
+
+    if (fluoridationConsent.consented() == BooleanWithUnknownDto.UNKNOWN) {
+      if (fluoridationConsent.hasAllergy() != null) {
+        throw new BadRequestException(
+            "Child cannot have an allergy and fluoridation consent unknown.");
+      }
+      if (!fluoridationConsent.dateOfConsent().isEqual(LocalDate.now(clock))) {
+        throw new BadRequestException(
+            "Fluoridation consent unknown can only be set with today's date.");
+      }
     }
   }
 

@@ -3,6 +3,8 @@
 # SPDX-License-Identifier: AGPL-3.0-only
 
 
+start=$(date +%s)
+
 set -euo pipefail
 
 function usage() {
@@ -27,6 +29,7 @@ productionConfig=""
 tlsPort=443
 versionTag="latest"
 CI_REGISTRY=${CI_REGISTRY:-}
+LOCAL_KUBECTL_CONTEXT_NAME="k3d-ga-lotse"
 
 if ! args=$(getopt -a -o hnv:r:t:p: --long help,no-build,version-tag:,remote-registry:,tls-port:,production-config: -- "$@"); then
   usage
@@ -179,6 +182,15 @@ EOF
 
   waitForCRD certificates.cert-manager.io
   waitForCRD ingressroutetcps.traefik.io
+else
+  echo "Cluster 'ga-lotse' already exists"
+fi
+
+CURRENT_CONTEXT=$(kubectl config current-context)
+if [[ "$CURRENT_CONTEXT" != "$LOCAL_KUBECTL_CONTEXT_NAME" ]]; then
+  echo "You are on context '$CURRENT_CONTEXT'. This script should only run on cluster '$LOCAL_KUBECTL_CONTEXT_NAME'."
+  echo "Aborting to prevent accidental deployment."
+  exit 1
 fi
 
 echo "Install central services"
@@ -265,3 +277,7 @@ echo
 echo "To clean everything up run:"
 echo "k3d cluster delete ga-lotse && k3d registry delete ga-lotse-registry"
 echo
+
+end=$(date +%s)
+runtime=$((end - start))
+echo "Total deployment time: $runtime seconds"

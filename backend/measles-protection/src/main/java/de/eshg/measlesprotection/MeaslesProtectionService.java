@@ -32,6 +32,7 @@ import de.eshg.measlesprotection.api.GetMeaslesProtectionProceduresFilterOptions
 import de.eshg.measlesprotection.api.GetMeaslesProtectionProceduresPaginationOptions;
 import de.eshg.measlesprotection.api.GetMeaslesProtectionProceduresSortOptions;
 import de.eshg.measlesprotection.api.MPFacilityTypeDto;
+import de.eshg.measlesprotection.api.MeaslesVaccinationStatusDto;
 import de.eshg.measlesprotection.api.PatchAffectedPersonRequest;
 import de.eshg.measlesprotection.api.PatchCustodianRequest;
 import de.eshg.measlesprotection.api.SyncAffectedPersonRequest;
@@ -96,6 +97,7 @@ public class MeaslesProtectionService {
 
   private final PersonClient personClient;
   private final FacilityClient facilityClient;
+  private final VaccinationCheckService vaccinationCheckService;
   private final MeaslesProtectionProcedureRepository measlesProtectionProcedureRepository;
   private final PersonRepository personRepository;
   private final ProcedureFinder procedureFinder;
@@ -105,6 +107,7 @@ public class MeaslesProtectionService {
   public MeaslesProtectionService(
       PersonClient personClient,
       FacilityClient facilityClient,
+      VaccinationCheckService vaccinationCheckService,
       MeaslesProtectionProcedureRepository measlesProtectionProcedureRepository,
       PersonRepository personRepository,
       ProcedureFinder procedureFinder,
@@ -112,6 +115,7 @@ public class MeaslesProtectionService {
       Clock clock) {
     this.personClient = personClient;
     this.facilityClient = facilityClient;
+    this.vaccinationCheckService = vaccinationCheckService;
     this.measlesProtectionProcedureRepository = measlesProtectionProcedureRepository;
     this.personRepository = personRepository;
     this.procedureFinder = procedureFinder;
@@ -129,7 +133,10 @@ public class MeaslesProtectionService {
     Map<UUID, GetFacilityFileStateResponse> facilitiesById =
         facilityClient.fetchAllRelatedFacilities(List.of(procedure));
     ProcedureWithPersonDetailsData personDetails = personClient.augmentWithPersonDetails(procedure);
-    return augmentWithFacilityDetails(personDetails, facilitiesById);
+    MeaslesVaccinationStatusDto measlesVaccinationStatusFromSchoolEntry =
+        vaccinationCheckService.checkVaccinationStatus(personDetails.personDetails().id());
+    return augmentWithVaccinationStatusAndFacilityDetails(
+        personDetails, measlesVaccinationStatusFromSchoolEntry, facilitiesById);
   }
 
   @Transactional(readOnly = true)
@@ -263,6 +270,13 @@ public class MeaslesProtectionService {
   private static ProcedureDetailsData augmentWithFacilityDetails(
       ProcedureWithPersonDetailsData personDetails,
       Map<UUID, GetFacilityFileStateResponse> facilitiesById) {
+    return augmentWithVaccinationStatusAndFacilityDetails(personDetails, null, facilitiesById);
+  }
+
+  private static ProcedureDetailsData augmentWithVaccinationStatusAndFacilityDetails(
+      ProcedureWithPersonDetailsData personDetails,
+      MeaslesVaccinationStatusDto measlesVaccinationStatusFromSchoolEntry,
+      Map<UUID, GetFacilityFileStateResponse> facilitiesById) {
     MeaslesProtectionProcedure procedure = personDetails.procedure();
     Optional<UUID> centralFileFacilityId = procedure.getFacilityIdFromCentralFile();
 
@@ -284,6 +298,7 @@ public class MeaslesProtectionService {
         ReportDataMapper.toInterfaceType(procedure.getReportData()),
         MonetaryFineMapper.toInterfaceType(procedure.getMonetaryFines()),
         AccessRestrictionMapper.toInterfaceType(procedure.getAccessRestriction()),
+        measlesVaccinationStatusFromSchoolEntry,
         CaseStatusMapper.toInterfaceType(procedure.getCaseStatus()),
         AppointmentMapper.mapAppointmentToDto(procedure.getAppointment()),
         procedure);

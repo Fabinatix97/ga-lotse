@@ -5,6 +5,7 @@
 
 import AddIcon from "@mui/icons-material/Add";
 import { Button } from "@mui/joy";
+import { isEmptyish } from "remeda";
 
 import { ApiGetReferencePersonResponse } from "@eshg/base-api";
 import {
@@ -13,14 +14,25 @@ import {
   DetailsSection,
   PersonSidebar,
   SidebarWithFormRefProps,
+  defaultPersonFormValues,
+  defaultSearchPersonValues,
   mapToPersonAddRequest,
+  mapToPersonWithoutDateOfBirthAddRequest,
   useSidebarWithFormRef,
 } from "@eshg/lib-employee-portal";
-import { ApiAddCustodianRequest } from "@eshg/school-entry-api";
+import {
+  ApiAddCustodianRequest,
+  ApiAddCustodianWithoutDateOfBirthRequest,
+} from "@eshg/school-entry-api";
 
 import { mapContactAndDifferentBillingAddressToSchoolEntry } from "@/lib/businessModules/schoolEntry/api/addressMapper";
 import { ProcedureDetails } from "@/lib/businessModules/schoolEntry/api/models/ProcedureDetails";
-import { useAddPersonAsCustodian } from "@/lib/businessModules/schoolEntry/api/mutations/schoolEntryApi";
+import {
+  useAddPersonAsCustodian,
+  useAddPersonWithoutDateOfBirthAsCustodian,
+} from "@/lib/businessModules/schoolEntry/api/mutations/schoolEntryApi";
+import { CustodianForm } from "@/lib/businessModules/schoolEntry/features/procedures/procedureDetails/CustodianForm";
+import { SearchCustodianForm } from "@/lib/businessModules/schoolEntry/features/procedures/procedureDetails/SearchCustodianForm";
 
 export function AddCustodianPanel(props: { procedure: ProcedureDetails }) {
   const personSidebar = useSidebarWithFormRef({
@@ -55,11 +67,19 @@ function ConfiguredPersonSidebar(
   } & SidebarWithFormRefProps,
 ) {
   const addPersonAsCustodian = useAddPersonAsCustodian(props.procedure.id);
+  const addPersonWithoutDateOfBirthAsCustodian =
+    useAddPersonWithoutDateOfBirthAsCustodian(props.procedure.id);
 
   async function handleCreate(values: DefaultPersonFormValues) {
-    await addPersonAsCustodian.mutateAsync(
-      mapToRequest(values, props.procedure.version),
-    );
+    if (isEmptyish(values.dateOfBirth)) {
+      await addPersonWithoutDateOfBirthAsCustodian.mutateAsync(
+        mapToRequestWithoutDateOfBirth(values, props.procedure.version),
+      );
+    } else {
+      await addPersonAsCustodian.mutateAsync(
+        mapToRequest(values, props.procedure.version),
+      );
+    }
   }
 
   async function handleSelect(person: ApiGetReferencePersonResponse) {
@@ -74,6 +94,10 @@ function ConfiguredPersonSidebar(
       title="PSB hinzufügen"
       submitLabel="Hinzufügen"
       formRef={props.formRef}
+      searchFormComponent={SearchCustodianForm}
+      initialSearchState={defaultSearchPersonValues()}
+      createFormComponent={CustodianForm}
+      initialCreateState={defaultPersonFormValues}
       onCreate={({ createInputs }) => handleCreate(createInputs)}
       onSelect={({ person }) => handleSelect(person)}
       onClose={props.onClose}
@@ -88,6 +112,18 @@ function mapToRequest(
   return {
     custodian: mapContactAndDifferentBillingAddressToSchoolEntry(
       mapToPersonAddRequest(values),
+    ),
+    procedureVersion: procedureVersion,
+  };
+}
+
+function mapToRequestWithoutDateOfBirth(
+  values: DefaultPersonFormValues,
+  procedureVersion: number,
+): ApiAddCustodianWithoutDateOfBirthRequest {
+  return {
+    custodian: mapContactAndDifferentBillingAddressToSchoolEntry(
+      mapToPersonWithoutDateOfBirthAddRequest(values),
     ),
     procedureVersion: procedureVersion,
   };

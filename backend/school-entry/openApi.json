@@ -5179,6 +5179,35 @@
         "tags" : [ "TestHelper" ]
       }
     },
+    "/vaccination-check" : {
+      "post" : {
+        "operationId" : "checkVaccinationStatus",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/VaccinationCheckRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/VaccinationCheckResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Check if vaccinated",
+        "tags" : [ "VaccinationCheck" ]
+      }
+    },
     "/value-evaluation/{procedureId}/percentiles" : {
       "get" : {
         "description" : "To calculate the percentiles, in addition to the data provided, the child's age and gender are also required.",
@@ -9108,6 +9137,32 @@
         "type" : "string",
         "enum" : [ "LETTER", "PHONE_CALL", "NOTE", "EMAIL", "IMAGE", "DOCUMENT" ]
       },
+      "MeaslesVaccination" : {
+        "required" : [ "complete" ],
+        "type" : "object",
+        "properties" : {
+          "complete" : {
+            "type" : "boolean"
+          },
+          "measlesContraIndication" : {
+            "type" : "boolean"
+          },
+          "measlesContraIndicationIsPermanent" : {
+            "type" : "boolean"
+          },
+          "measlesContraIndicationUntil" : {
+            "type" : "string",
+            "format" : "date"
+          },
+          "mmr" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "vaccinationPassPresented" : {
+            "type" : "boolean"
+          }
+        }
+      },
       "Measurements" : {
         "type" : "object",
         "properties" : {
@@ -10085,13 +10140,10 @@
         "description" : "A request containing the standard durations. All standard durations must be set."
       },
       "SchoolEntryConfig" : {
-        "required" : [ "directProcedureTypeAssignmentOnImport", "directProcedureTypeAssignmentOnImportReadOnly", "locationSelectionMode", "locationSelectionModeReadOnly", "pdfDocumentAccentColor" ],
+        "required" : [ "directProcedureTypeAssignmentOnImport", "locationSelectionMode", "locationSelectionModeReadOnly", "pdfDocumentAccentColor" ],
         "type" : "object",
         "properties" : {
           "directProcedureTypeAssignmentOnImport" : {
-            "type" : "boolean"
-          },
-          "directProcedureTypeAssignmentOnImportReadOnly" : {
             "type" : "boolean"
           },
           "locationSelectionMode" : {
@@ -11375,6 +11427,27 @@
             "type" : "string",
             "description" : "The username which is displayed in the application and can be used for the login.",
             "example" : "testuser"
+          }
+        }
+      },
+      "VaccinationCheckRequest" : {
+        "required" : [ "fileStateIds" ],
+        "type" : "object",
+        "properties" : {
+          "fileStateIds" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "format" : "uuid"
+            }
+          }
+        }
+      },
+      "VaccinationCheckResponse" : {
+        "type" : "object",
+        "properties" : {
+          "status" : {
+            "$ref" : "#/components/schemas/MeaslesVaccination"
           }
         }
       },

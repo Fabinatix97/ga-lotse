@@ -26,6 +26,7 @@ public record DraftMeaslesProcedureDto(
     @Valid ReportDataDto reportData,
     @NotNull ProcedureStatusDto procedureStatus,
     @NotNull boolean isOpen,
+    @Valid MeaslesVaccinationStatusDto measlesVaccinationStatusFromSchoolEntry,
     CaseStatusDto caseStatus)
     implements ProtectionProcedureDto {
   public static final String SCHEMA_NAME = "DraftMeaslesProcedure";

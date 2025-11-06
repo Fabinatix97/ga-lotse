@@ -7,7 +7,7 @@
 
 import { SxProps } from "@mui/joy/styles/types";
 
-import { CheckboxGroupField } from "@eshg/lib-portal";
+import { CheckboxGroupField, validatePipe } from "@eshg/lib-portal";
 
 import {
   WEEKDAY_TYPES,
@@ -21,6 +21,7 @@ interface CheckboxGroupProps {
   sx?: SxProps;
   onChange?: (options: WeekdayCheckboxOption[]) => void;
   required?: boolean;
+  validate?: (value: string[] | undefined) => string | undefined;
 }
 
 function requiredValidation(options: string[] = []) {
@@ -40,7 +41,10 @@ export function WeekdayCheckboxGroup({
   return (
     <CheckboxGroupField
       label={required ? `${label} *` : label}
-      validate={required ? requiredValidation : undefined}
+      validate={validatePipe(
+        required ? requiredValidation : undefined,
+        props.validate,
+      )}
       name={props.name}
       options={options.map((option) => ({
         label: option.label,

@@ -26,9 +26,6 @@ export function useGetSchoolEntryConfig() {
           data._configuration?.pdfDocumentAccentColor ?? "",
       } satisfies SchoolEntryFormModel,
 
-      directProcedureTypeAssignmentOnImportReadOnly:
-        data._configuration?.directProcedureTypeAssignmentOnImportReadOnly ??
-        false,
       locationSelectionModeReadOnly:
         data._configuration?.locationSelectionModeReadOnly ?? false,
     }),

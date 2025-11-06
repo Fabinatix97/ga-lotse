@@ -232,6 +232,16 @@ public class PersonClient {
     api.deletePersonsWithoutDateOfBirth(personIds);
   }
 
+  public static void markPersonsWithoutDateOfBirthForDeletion(
+      PersonWithoutDateOfBirthApi api, List<UUID> personIds) {
+    if (personIds.isEmpty()) {
+      log.info("No persons without date of birth to mark for deletion.");
+      return;
+    }
+    log.info("Marking persons without date of birth {} for deletion", personIds);
+    api.markPersonsWithoutDateOfBirthForDeletion(personIds);
+  }
+
   private static List<AddPersonFileStateRequest> mapToFlatRequestList(
       List<ImportProcedureData> procedureData, DataOrigin dataOrigin) {
     return procedureData.stream()

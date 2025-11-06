@@ -393,6 +393,15 @@ businessmodules:
   centralrepository:
     enabled: false
 
+springBootStartupProbe:
+  enabled: true
+  failureThreshold: 90
+  httpGet:
+    path: /actuator/health
+    port: 8081
+    scheme: HTTP
+  periodSeconds: 1
+
 springBootLivenessProbe:
   enabled: true
   failureThreshold: 3
@@ -400,7 +409,6 @@ springBootLivenessProbe:
     path: /actuator/health/liveness
     port: 8081
     scheme: HTTP
-  initialDelaySeconds: 90
   periodSeconds: 10
   successThreshold: 1
   timeoutSeconds: 10
@@ -412,7 +420,6 @@ springBootReadinessProbe:
     path: /actuator/health/readiness
     port: 8081
     scheme: HTTP
-  initialDelaySeconds: 30
   periodSeconds: 10
   successThreshold: 1
   timeoutSeconds: 1

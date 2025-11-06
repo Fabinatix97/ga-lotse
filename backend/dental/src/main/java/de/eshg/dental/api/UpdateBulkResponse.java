@@ -5,8 +5,7 @@
 
 package de.eshg.dental.api;
 
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
-import java.util.List;
-import java.util.UUID;
 
-public record PromoteBulkResponse(@NotNull List<UUID> childIds) {}
+public record UpdateBulkResponse(@NotNull @Min(0) int numUpdated, @NotNull @Min(0) int numError) {}

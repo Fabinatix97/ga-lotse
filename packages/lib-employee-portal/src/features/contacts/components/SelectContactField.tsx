@@ -12,7 +12,7 @@ import {
   Validator,
 } from "@eshg/lib-portal";
 
-import { getEntityId } from "../../../api/models/BaseEntity";
+import { getEntityId, isSameEntity } from "../../../api/models/BaseEntity";
 import { useSearchContacts } from "../api/queries";
 
 interface SelectContactFieldProps {
@@ -41,6 +41,7 @@ export function SelectContactField(props: SelectContactFieldProps) {
       getOptionLabel={props.getOptionLabel ?? ((contact) => contact.name)}
       getOptionKey={getEntityId}
       options={contacts}
+      isOptionEqualToValue={isSameEntity}
       loading={query.isLoading}
       disableFiltering
       validate={props.validate}

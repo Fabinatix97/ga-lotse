@@ -72,14 +72,6 @@ public class ArchivingJob<ProcedureT extends Procedure<ProcedureT, ?, ?, ?>> {
         withinGracePeriod);
 
     if (!withinGracePeriod) {
-      List<ProcedureT> proceduresRelevantForUpdate =
-          procedureRepository.findAll(
-              archivableProceduresSpecifications
-                  .procedureIsArchivable()
-                  .and(archivableProceduresSpecifications.procedureHasArchivingRelevanceDefault()));
-
-      logger.info("Procedures to be updated: {}", getProcedureIds(proceduresRelevantForUpdate));
-
       updateProcedures();
     }
 
@@ -111,6 +103,8 @@ public class ArchivingJob<ProcedureT extends Procedure<ProcedureT, ?, ?, ?>> {
             archivableProceduresSpecifications
                 .procedureIsArchivable()
                 .and(archivableProceduresSpecifications.procedureHasArchivingRelevanceDefault()));
+
+    logger.info("Procedures to be updated: {}", getProcedureIds(proceduresRelevantForUpdate));
 
     for (ProcedureT procedure : proceduresRelevantForUpdate) {
       ArchivingRelevance configuredDefaultRelevance =

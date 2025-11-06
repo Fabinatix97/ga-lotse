@@ -17,7 +17,7 @@ import {
 } from "date-fns";
 import { useFormikContext } from "formik";
 import { useEffect } from "react";
-import { isDefined, isEmpty, unique } from "remeda";
+import { intersection, isDefined, isEmpty, unique } from "remeda";
 
 import {
   DateField,
@@ -25,6 +25,8 @@ import {
   NestedFormProps,
   createFieldNameMapper,
   isDateString,
+  isNonEmptyString,
+  validatePipe,
   validateTodayOrFutureDate,
 } from "@eshg/lib-portal";
 
@@ -131,6 +133,22 @@ export function AppointmentBlockFormWithDays(
     appointmentBlock?.endDate,
   ]);
 
+  const weekdaysInInterval =
+    isNonEmptyString(appointmentBlock?.startDate) &&
+    isNonEmptyString(appointmentBlock?.endDate)
+      ? getDaysOfWeekInInterval(
+          new Date(appointmentBlock.startDate),
+          new Date(appointmentBlock.endDate),
+        )
+      : [];
+
+  function validateWeekdayIncluded() {
+    if (weekdaysInInterval.length === 0) {
+      return "Der gewählte Zeitraum darf nicht nur Samstag und Sonntag umfassen.";
+    }
+    return undefined;
+  }
+
   return (
     <Box
       display="contents"
@@ -149,8 +167,11 @@ export function AppointmentBlockFormWithDays(
               name={fieldName("startDate")}
               label="Startdatum"
               required="Bitte ein Startdatum angeben."
-              validate={validateTodayOrFutureDate(
-                "Das Datum liegt in der Vergangenheit.",
+              validate={validatePipe(
+                validateTodayOrFutureDate(
+                  "Das Datum liegt in der Vergangenheit.",
+                ),
+                validateWeekdayIncluded,
               )}
               onChange={(value) => {
                 if (
@@ -168,8 +189,11 @@ export function AppointmentBlockFormWithDays(
               name={endDateFieldName}
               label="Enddatum"
               required="Bitte ein Enddatum angeben."
-              validate={validateTodayOrFutureDate(
-                "Das Datum liegt in der Vergangenheit.",
+              validate={validatePipe(
+                validateTodayOrFutureDate(
+                  "Das Datum liegt in der Vergangenheit.",
+                ),
+                validateWeekdayIncluded,
               )}
             />
           </Grid>
@@ -194,6 +218,12 @@ export function AppointmentBlockFormWithDays(
               name={daysOfWeekFieldName}
               options={daysOfWeekOptions}
               label="Wochentage"
+              validate={(values) =>
+                isDefined(values) &&
+                isEmpty(intersection(weekdaysInInterval, values))
+                  ? "Die ausgewählten Wochentage sind nicht im angegebenen Zeitraum enthalten."
+                  : undefined
+              }
               required
               sx={{ mt: 1 }}
             />

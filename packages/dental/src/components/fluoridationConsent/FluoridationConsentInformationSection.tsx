@@ -7,7 +7,10 @@ import { Stack } from "@mui/joy";
 import { useId } from "react";
 import { isDefined } from "remeda";
 
-import { ApiFluoridationConsent } from "@eshg/dental-api";
+import {
+  ApiBooleanWithUnknown,
+  ApiFluoridationConsent,
+} from "@eshg/dental-api";
 import {
   DetailsItem,
   DetailsRow,
@@ -15,6 +18,7 @@ import {
 } from "@eshg/lib-employee-portal";
 import { DetailsList, formatDate, formatOptional } from "@eshg/lib-portal";
 
+import { formatBooleanWithUnknown } from "../../utils/formatters";
 import {
   ExaminationSectionHeader,
   ExaminationSectionSecondaryTitle,
@@ -67,19 +71,21 @@ export function FluoridationConsentInformationSection(
         <DetailsRow>
           <DetailsItem
             label="Einverständnis"
-            value={formatBoolean(fluoridationConsent.consented)}
+            value={formatBooleanWithUnknown(fluoridationConsent.consented)}
           />
           <DetailsItem
             label="Datum"
             value={formatDate(fluoridationConsent.dateOfConsent)}
           />
-          <DetailsItem
-            label="Allergie"
-            value={formatOptional(
-              fluoridationConsent.hasAllergy,
-              formatBoolean,
-            )}
-          />
+          {fluoridationConsent.consented !== ApiBooleanWithUnknown.Unknown && (
+            <DetailsItem
+              label="Allergie"
+              value={formatOptional(
+                fluoridationConsent.hasAllergy,
+                formatBoolean,
+              )}
+            />
+          )}
         </DetailsRow>
       </DetailsList>
     </Stack>

@@ -109,6 +109,9 @@ spec:
         - name: application
           image: "{{ .Values.image.registry }}/{{ .Values.image.repository }}/local-service-directory:{{ .Values.image.tag }}"
           securityContext: {{- .Values.containerSecurityContext | toYaml | nindent 12 }}
+          {{- if .Values.springBootStartupProbe.enabled }}
+          startupProbe: {{- omit .Values.springBootStartupProbe "enabled" | toYaml | nindent 12 }}
+          {{- end }}
           {{- if .Values.springBootLivenessProbe.enabled }}
           livenessProbe: {{- omit .Values.springBootLivenessProbe "enabled" | toYaml | nindent 12 }}
           {{- end }}

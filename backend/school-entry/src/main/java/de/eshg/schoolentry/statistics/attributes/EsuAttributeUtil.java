@@ -31,7 +31,7 @@ public class EsuAttributeUtil {
 
   static List<ValueOptionInternal> createVaccinationCountOptions() {
     List<ValueOptionInternal> options = new ArrayList<>();
-    addNumberValueOptions(options, 1, 8);
+    addNumberValueOptions(options, 0, 8);
     options.add(new ValueOptionInternal("9", UNKNOWN, true));
     return options;
   }

@@ -9,4 +9,5 @@ dependencies {
     api project(':lib-appointmentblock-api')
     api project(':api-commons')
     api project(':lib-security-config-urls')
+    api project(':test-helper-commons-api')
 }

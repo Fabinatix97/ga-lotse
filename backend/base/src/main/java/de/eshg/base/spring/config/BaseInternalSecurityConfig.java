@@ -162,7 +162,10 @@ public class BaseInternalSecurityConfig {
         .hasRole(EmployeePermissionRole.BASE_PERSONS_READ.name());
 
     auth.requestMatchers(
-            POST, PersonWithoutDateOfBirthApi.BASE_URL + PersonWithoutDateOfBirthApi.BULK_DELETE)
+            POST,
+            PersonWithoutDateOfBirthApi.BASE_URL + PersonWithoutDateOfBirthApi.BULK_DELETE,
+            PersonWithoutDateOfBirthApi.BASE_URL
+                + PersonWithoutDateOfBirthApi.BULK_MARK_FOR_DELETION)
         .hasAnyRole(
             EmployeePermissionRole.BASE_PERSONS_WRITE.name(),
             EmployeePermissionRole.BASE_PERSONS_DELETE.name());

@@ -77,6 +77,7 @@ export function ExaminationChildDetailsSection(
             procedureLabels: props.procedureLabels,
             currentFluoridationConsent: props.allFluoridationConsents[0],
           }}
+          dateOfExamination={props.dateOfExamination}
         />
       )}
     >
@@ -123,6 +124,7 @@ export function ExaminationChildDetailsSection(
 interface DetailsSectionHeaderProps extends ExaminationTitleProps {
   institution?: Institution;
   participantDetails: ParticipantDetails;
+  dateOfExamination: Date;
 }
 
 function DetailsSectionHeader(props: DetailsSectionHeaderProps) {
@@ -152,6 +154,7 @@ function DetailsSectionHeader(props: DetailsSectionHeaderProps) {
               institution: props.institution,
               participantDetails: props.participantDetails,
               setParticipantDetails,
+              dateOfExamination: props.dateOfExamination,
             })
           }
         />

@@ -15,7 +15,7 @@ import {
   TableSheet,
   getSortDirection,
   getSortKey,
-  useTableControl,
+  usePersistentTableControl,
 } from "@eshg/lib-employee-portal";
 import { formatDate } from "@eshg/lib-portal";
 import { ApiWaitingRoomSortKey } from "@eshg/school-entry-api";
@@ -32,12 +32,15 @@ const initialSorting: ColumnSort = {
 };
 
 export function WaitingRoomTable() {
-  const tableControl = useTableControl({
-    serverSideSorting: true,
-    sortFieldName: "sortKey",
-    sortDirectionName: "sortDirection",
-    initialSorting,
-  });
+  const tableControl = usePersistentTableControl(
+    "ESU_WAITING_ROOM_TABLE_CONTROL",
+    {
+      serverSideSorting: true,
+      sortFieldName: "sortKey",
+      sortDirectionName: "sortDirection",
+      initialSorting,
+    },
+  );
 
   const procedures = useGetWaitingRoomProcedures({
     pageNumber: tableControl.paginationProps.pageNumber,
@@ -47,7 +50,7 @@ export function WaitingRoomTable() {
   });
 
   return (
-    <TablePage fullHeight>
+    <TablePage fullHeight data-testid="waitingRoomTable">
       <TableSheet
         loading={procedures.isFetching}
         footer={

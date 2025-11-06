@@ -9,7 +9,7 @@ import { Stack, Typography } from "@mui/joy";
 import { Formik } from "formik";
 import { isDefined } from "remeda";
 
-import { ApiGender } from "@eshg/dental-api";
+import { ApiBooleanWithUnknown, ApiGender } from "@eshg/dental-api";
 import {
   FormButtonBar,
   ProcedureLabel,
@@ -22,12 +22,14 @@ import {
   useSidebarWithFormRef,
 } from "@eshg/lib-employee-portal";
 import {
+  Alert,
   BooleanSelectField,
   DateField,
   GENDER_OPTIONS,
   InputField,
   SelectField,
   isEmptyString,
+  isNonEmptyString,
   toDateString,
   toUtcDate,
   useValidatePastOrTodayDate,
@@ -36,6 +38,7 @@ import {
 
 import { Institution } from "../../api/models/Institution";
 import { childApiQueryKey } from "../../config/apiQueryKeys";
+import { FLUORIDATION_CONSENTED_OPTIONS } from "../../config/child";
 import { useDentalApi } from "../../contexts/dental";
 import { ParticipantDetails } from "../../features/prophylaxisSessions/api/models/ProphylaxisSessionExamination";
 import {
@@ -66,6 +69,7 @@ interface UpdateParticipantDetailsSidebarProps extends SidebarWithFormRefProps {
   institution?: Institution;
   participantDetails: ParticipantDetails;
   setParticipantDetails: (participantDetails: ParticipantDetails) => void;
+  dateOfExamination: Date;
 }
 
 function UpdateParticipantDetailsSidebar(
@@ -100,7 +104,7 @@ function UpdateParticipantDetailsSidebar(
 
   return (
     <Formik initialValues={INITIAL_VALUES} onSubmit={handleSubmit}>
-      {({ values, isSubmitting }) => (
+      {({ values, isSubmitting, setFieldValue }) => (
         <SidebarForm ref={props.formRef}>
           <SidebarContent title="Details zum Kind">
             <Stack gap={3}>
@@ -136,16 +140,29 @@ function UpdateParticipantDetailsSidebar(
                 procedureLabelApiQueryKey={childApiQueryKey}
               />
               <Typography>Fluoridierung</Typography>
-              <BooleanSelectField
+              <SelectField
                 name="fluoridationConsent.consented"
                 label="Einverständnis"
+                options={FLUORIDATION_CONSENTED_OPTIONS}
                 required={
                   isDefined(values.fluoridationConsent?.dateOfConsent) &&
                   !isEmptyString(values.fluoridationConsent.dateOfConsent)
-                    ? 'Bitte "Ja" oder "Nein" auswählen.'
+                    ? "Bitte Einverständnis auswählen."
                     : undefined
                 }
-                allowDeselection
+                onChange={(value) => {
+                  if (value === ApiBooleanWithUnknown.Unknown) {
+                    void setFieldValue(
+                      "fluoridationConsent.dateOfConsent",
+                      toDateString(new Date()),
+                    );
+                    void setFieldValue("fluoridationConsent.hasAllergy", "");
+                  }
+                  if (isEmptyString(value)) {
+                    void setFieldValue("fluoridationConsent.dateOfConsent", "");
+                    void setFieldValue("fluoridationConsent.hasAllergy", "");
+                  }
+                }}
               />
               <DateField
                 name="fluoridationConsent.dateOfConsent"
@@ -159,15 +176,32 @@ function UpdateParticipantDetailsSidebar(
                     ? "Bitte das Datum der Einverständniserklärung angeben."
                     : undefined
                 }
-              />
-              <BooleanSelectField
-                name="fluoridationConsent.hasAllergy"
-                label="Allergie"
-                allowDeselection
-                validate={(value) =>
-                  validateAllergy(value, values.fluoridationConsent)
+                disabled={
+                  values.fluoridationConsent?.consented ===
+                  ApiBooleanWithUnknown.Unknown
                 }
               />
+              {isNonEmptyString(values.fluoridationConsent?.dateOfConsent) &&
+                props.dateOfExamination <
+                  new Date(values.fluoridationConsent.dateOfConsent) && (
+                  <Alert
+                    color="warning"
+                    message="Das Datum liegt nach dem Datum der Maßnahme und die Einverständnis ist nicht relevant für die Durchführung der Fluoridierung."
+                  />
+                )}
+              {(values.fluoridationConsent?.consented ===
+                ApiBooleanWithUnknown.True ||
+                values.fluoridationConsent?.consented ===
+                  ApiBooleanWithUnknown.False) && (
+                <BooleanSelectField
+                  name="fluoridationConsent.hasAllergy"
+                  label="Allergie"
+                  allowDeselection
+                  validate={(value) =>
+                    validateAllergy(value, values.fluoridationConsent)
+                  }
+                />
+              )}
             </Stack>
           </SidebarContent>
           <SidebarActions>

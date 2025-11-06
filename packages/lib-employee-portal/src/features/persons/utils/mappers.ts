@@ -7,6 +7,7 @@ import { isDefined } from "remeda";
 
 import {
   ApiAddPersonFileStateRequest,
+  ApiAddPersonWithoutDateOfBirthRequest,
   ApiGetReferencePersonResponse,
   ApiPersonDetails,
 } from "@eshg/base-api";
@@ -81,6 +82,24 @@ export function mapToPersonAddRequest(
   return isReferencePerson(person)
     ? mapReferencePersonToAddRequest(person)
     : mapCreatePersonToAddRequest(person);
+}
+
+export function mapToPersonWithoutDateOfBirthAddRequest(
+  person: DefaultPersonFormValues,
+): ApiAddPersonWithoutDateOfBirthRequest {
+  return {
+    dataOrigin: "MANUAL",
+    title: mapOptionalValue(person.title),
+    salutation: mapOptionalValue(person.salutation),
+    gender: mapOptionalValue(person.gender),
+    firstName: person.firstName,
+    lastName: person.lastName,
+    phoneNumbers: dropBlankStrings(person.phoneNumbers),
+    emailAddresses: dropBlankStrings(person.emailAddresses),
+    contactAddress: isDefined(person.contactAddress)
+      ? mapBaseAddressToApi(person.contactAddress)
+      : undefined,
+  };
 }
 
 export function mapToPersonUpdateRequest(

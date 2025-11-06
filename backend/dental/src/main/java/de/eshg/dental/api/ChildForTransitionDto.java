@@ -18,4 +18,5 @@ public record ChildForTransitionDto(
     @NotNull String lastName,
     GenderDto gender,
     String groupName,
-    @NotNull LocalDate dateOfBirth) {}
+    @NotNull LocalDate dateOfBirth,
+    @NotNull Long version) {}

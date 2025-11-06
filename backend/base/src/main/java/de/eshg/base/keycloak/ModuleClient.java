@@ -12,6 +12,7 @@ import static de.eshg.lib.keycloak.EmployeePermissionRole.BASE_FACILITIES_DELETE
 import static de.eshg.lib.keycloak.EmployeePermissionRole.BASE_GDPR_VALIDATION_TASK_CLEANUP;
 import static de.eshg.lib.keycloak.EmployeePermissionRole.BASE_MAIL_SEND;
 import static de.eshg.lib.keycloak.EmployeePermissionRole.BASE_PERSONS_DELETE;
+import static de.eshg.lib.keycloak.EmployeePermissionRole.SCHOOL_ENTRY_VACCINATION_CHECK;
 import static de.eshg.lib.keycloak.EmployeePermissionRole.STANDARD_EMPLOYEE;
 import static de.eshg.lib.keycloak.EmployeePermissionRole.STATISTICS_STATISTICS_TECHNICAL_USER;
 
@@ -28,7 +29,12 @@ public enum ModuleClient {
   INSPECTION("inspection", List.of(BASE_MAIL_SEND, BASE_PERSONS_DELETE, BASE_FACILITIES_DELETE)),
   LOCAL_SERVICE_DIRECTORY("local-service-directory"),
   MEASLES_PROTECTION(
-      "measles-protection", List.of(BASE_MAIL_SEND, BASE_PERSONS_DELETE, BASE_FACILITIES_DELETE)),
+      "measles-protection",
+      List.of(
+          BASE_MAIL_SEND,
+          BASE_PERSONS_DELETE,
+          BASE_FACILITIES_DELETE,
+          SCHOOL_ENTRY_VACCINATION_CHECK)),
   SCHOOL_ENTRY(
       "school-entry", List.of(BASE_MAIL_SEND, BASE_PERSONS_DELETE, BASE_FACILITIES_DELETE)),
   STATISTICS("statistics", List.of(STATISTICS_STATISTICS_TECHNICAL_USER)),

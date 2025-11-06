@@ -4,6 +4,7 @@
  */
 
 import { SxProps } from "@mui/joy/styles/types";
+import { isNullish } from "remeda";
 
 import {
   ActionsItem,
@@ -68,6 +69,7 @@ export function PersonDetailsPanel({
   const { deleteCustodian } = useDeleteCustodianWithConfirmation(
     procedure.id,
     person.fileStateId,
+    isNullish(person.dateOfBirth),
   );
   const custodianActions: ActionsItem[] = [
     {

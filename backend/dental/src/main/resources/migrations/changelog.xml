@@ -64,6 +64,6 @@
   <include file="migrations/0054_add_black_stain_flag.xml"/>
   <include file="migrations/0055_add_gdpr_identification_data_hash.xml"/>
   <include file="migrations/0056_add_gdpr_identification_hash_not_null_constraint.xml"/>
-
+  <include file="migrations/0057_fluoridation_consent_with_unknown.xml"/>
 
 </databaseChangeLog>

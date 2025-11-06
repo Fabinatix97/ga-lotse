@@ -6,6 +6,7 @@
 package de.eshg.base.user.mapper;
 
 import static de.eshg.lib.keycloak.EmployeePermissionRole.BASE_GDPR_PROCEDURE_REVIEW;
+import static de.eshg.lib.keycloak.EmployeePermissionRole.SCHOOL_ENTRY_VACCINATION_CHECK;
 
 import de.eshg.base.SalutationDto;
 import de.eshg.base.calendar.api.DetailedEventWithoutCalendarId;
@@ -211,6 +212,7 @@ public class UserMapper {
       case OFFICIAL_MEDICAL_SERVICE_ADMIN -> EmployeePermissionRole.OFFICIAL_MEDICAL_SERVICE_ADMIN;
       case BASE_GDPR_VALIDATION_TASK_CLEANUP ->
           EmployeePermissionRole.BASE_GDPR_VALIDATION_TASK_CLEANUP;
+      case SCHOOL_ENTRY_VACCINATION_CHECK -> SCHOOL_ENTRY_VACCINATION_CHECK;
     };
   }
 
@@ -297,6 +299,7 @@ public class UserMapper {
       case MEDICAL_REGISTRY_IMPORT -> UserRoleDto.MEDICAL_REGISTRY_IMPORT;
       case OFFICIAL_MEDICAL_SERVICE_LEADER -> UserRoleDto.OFFICIAL_MEDICAL_SERVICE_LEADER;
       case OFFICIAL_MEDICAL_SERVICE_ADMIN -> UserRoleDto.OFFICIAL_MEDICAL_SERVICE_ADMIN;
+      case SCHOOL_ENTRY_VACCINATION_CHECK -> UserRoleDto.SCHOOL_ENTRY_VACCINATION_CHECK;
     };
   }
 

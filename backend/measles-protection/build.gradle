@@ -8,6 +8,7 @@ plugins {
 
 dependencies {
     implementation project(':lib-base-client')
+    implementation project(':lib-school-entry-client')
     implementation project(':lib-procedures')
     implementation project(':lib-appointmentblock')
     implementation project(':lib-calendar')
@@ -16,6 +17,7 @@ dependencies {
     implementation project(':business-module-persistence-commons')
     implementation project(':file-commons')
     implementation project(":lib-statistics")
+    implementation project(':rest-oauth-client-commons')
 
     implementation 'org.apache.poi:poi:latest.release'
     implementation 'org.apache.poi:poi-ooxml:latest.release'
@@ -46,4 +48,10 @@ dockerCompose {
 
 dependencyTrack {
     projectId = project.findProperty('dependency-track-project-id-measles-protection') ?: "unspecified"
+}
+
+evaluationDependsOn(':school-entry')
+
+tasks.named("test") {
+    dependsOn(project(":school-entry").tasks.named("composeUp"))
 }

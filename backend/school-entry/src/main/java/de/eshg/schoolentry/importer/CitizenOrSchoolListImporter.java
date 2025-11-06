@@ -21,7 +21,6 @@ import de.eshg.lib.xlsximport.FeedbackColumnAccessor;
 import de.eshg.lib.xlsximport.RowReader;
 import de.eshg.lib.xlsximport.XlsxColumn;
 import de.eshg.lib.xlsximport.model.AddressData;
-import de.eshg.schoolentry.SchoolEntryConfigService;
 import de.eshg.schoolentry.business.model.ImportProcedureData;
 import de.eshg.schoolentry.business.model.MergeProcedureData;
 import de.eshg.schoolentry.business.model.ProcedureWithChildData;
@@ -46,7 +45,6 @@ public class CitizenOrSchoolListImporter<R extends SchoolEntryRow<R>, C extends 
   private final RowValueMapper<R> rowValueMapper;
   private final ImportType importType;
   private final UUID locationId;
-  private final SchoolEntryConfigService schoolEntryConfigService;
 
   public CitizenOrSchoolListImporter(
       XSSFSheet sheet,
@@ -57,15 +55,13 @@ public class CitizenOrSchoolListImporter<R extends SchoolEntryRow<R>, C extends 
       UUID schoolId,
       UUID locationId,
       Year schoolYear,
-      ImportService importService,
-      SchoolEntryConfigService schoolEntryConfigService) {
+      ImportService importService) {
     super(sheet, rowReader, feedbackColumnAccessor, schoolId, schoolYear, importService);
     Assert.isTrue(
         EnumSet.of(SCHOOL_LIST, CITIZEN_LIST).contains(importType), "Unexpected import type");
     this.importType = importType;
     this.rowValueMapper = rowValueMapper;
     this.locationId = locationId;
-    this.schoolEntryConfigService = schoolEntryConfigService;
   }
 
   @Override
@@ -82,9 +78,6 @@ public class CitizenOrSchoolListImporter<R extends SchoolEntryRow<R>, C extends 
           row, DUPLICATE_IN_ASSET, procedures.getFirst().procedure().getExternalId());
       stats.countMergeFailed();
     } else {
-      Assert.isTrue(
-          !schoolEntryConfigService.isDirectProcedureTypeAssignmentOnImport(),
-          "Procedures of a draft type should not exist when direct procedure type assignment is enabled.");
       ProcedureWithChildData procedure = procedures.getFirst();
       UUID procedureId = procedure.procedure().getExternalId();
       if (mergeCandidateMatchesImportValues(procedure, row)) {
@@ -117,7 +110,7 @@ public class CitizenOrSchoolListImporter<R extends SchoolEntryRow<R>, C extends 
   private boolean mergeCandidateMatchesImportValues(
       ProcedureWithChildData mergeCandidate, R values) {
     AddressDto address = mergeCandidate.child().address();
-    if (address instanceof PostboxAddressDto) {
+    if (address == null || address instanceof PostboxAddressDto) {
       return false;
     }
     DomesticAddressDto domesticAddressDto = (DomesticAddressDto) address;

@@ -11,6 +11,8 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import java.time.Instant;
 import java.time.LocalDate;
+import org.hibernate.annotations.JdbcType;
+import org.hibernate.dialect.PostgreSQLEnumJdbcType;
 import org.springframework.data.annotation.LastModifiedDate;
 
 @Embeddable
@@ -23,8 +25,9 @@ public class FluoridationConsent {
   @Column(nullable = false)
   private LocalDate dateOfConsent;
 
+  @JdbcType(PostgreSQLEnumJdbcType.class)
   @Column(nullable = false)
-  private boolean consented;
+  private BooleanWithUnknown consented;
 
   private Boolean hasAllergy;
 
@@ -36,11 +39,11 @@ public class FluoridationConsent {
     this.dateOfConsent = dateOfConsent;
   }
 
-  public boolean isConsented() {
+  public BooleanWithUnknown getConsented() {
     return consented;
   }
 
-  public void setConsented(boolean consented) {
+  public void setConsented(BooleanWithUnknown consented) {
     this.consented = consented;
   }
 

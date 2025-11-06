@@ -11,6 +11,7 @@ import de.eshg.base.centralfile.FacilityApi;
 import de.eshg.base.centralfile.PersonApi;
 import de.eshg.base.centralfile.PersonWithoutDateOfBirthApi;
 import de.eshg.base.citizenuser.CitizenAccessCodeUserApi;
+import de.eshg.base.config.PublicConfigApi;
 import de.eshg.base.contact.ContactApi;
 import de.eshg.base.department.PublicDepartmentApi;
 import de.eshg.base.feature.BaseFeatureTogglesApi;
@@ -135,6 +136,11 @@ class BaseClientAutoConfiguration {
   @Bean
   GdprProcedureApi gdprApiClient() {
     return createClient(GdprProcedureApi.class);
+  }
+
+  @Bean
+  PublicConfigApi publicConfigApi() {
+    return createClient(PublicConfigApi.class);
   }
 
   @Bean

@@ -5,7 +5,7 @@
 
 import { isDefined } from "remeda";
 
-import { ApiTooth } from "@eshg/dental-api";
+import { ApiBooleanWithUnknown, ApiTooth } from "@eshg/dental-api";
 
 import { ALL_TEETH, OPTIONAL_TEETH, RELATED_TEETH } from "../../config/teeth";
 
@@ -21,7 +21,7 @@ export type ExaminationStatus = "OPEN" | "CLOSED" | "NOT_PRESENT";
 interface ExaminationProperties {
   isScreening: boolean;
   isFluoridation: boolean;
-  isFluoridationConsentGiven?: boolean;
+  isFluoridationConsentGiven?: ApiBooleanWithUnknown;
 }
 
 export function mapToExaminationStatus(
@@ -33,8 +33,11 @@ export function mapToExaminationStatus(
   }: ExaminationProperties,
 ): ExaminationStatus {
   const isNeitherScreeningNorFluoridation = !isScreening && !isFluoridation;
+  const isScreeningWithoutFluoridation = isScreening && !isFluoridation;
   const isUnfeasibleFluoridationOnly =
-    !isScreening && isFluoridation && !isFluoridationConsentGiven;
+    !isScreening &&
+    isFluoridation &&
+    isFluoridationConsentGiven !== ApiBooleanWithUnknown.True;
   const isUnfeasibleExamination =
     isNeitherScreeningNorFluoridation || isUnfeasibleFluoridationOnly;
 
@@ -44,7 +47,11 @@ export function mapToExaminationStatus(
   if (examinationResult.type === "absence") {
     return "NOT_PRESENT";
   }
-  return requiredFieldsDefined(examinationResult, isUnfeasibleFluoridationOnly)
+  return requiredFieldsDefined(
+    examinationResult,
+    isUnfeasibleFluoridationOnly,
+    isScreeningWithoutFluoridation,
+  )
     ? "CLOSED"
     : "OPEN";
 }
@@ -52,13 +59,16 @@ export function mapToExaminationStatus(
 function requiredFieldsDefined(
   examinationResult: ScreeningExaminationResult | FluoridationExaminationResult,
   isUnfeasibleFluoridation: boolean,
+  isScreeningWithoutFluoridation: boolean,
 ) {
   const isFluoridationApplied = isDefined(
     examinationResult.fluorideVarnishApplied,
   );
-  const isFluoridationComplete =
-    isUnfeasibleFluoridation || isFluoridationApplied;
 
+  const isFluoridationComplete =
+    isScreeningWithoutFluoridation ||
+    isUnfeasibleFluoridation ||
+    isFluoridationApplied;
   switch (examinationResult.type) {
     case "screening":
       return (

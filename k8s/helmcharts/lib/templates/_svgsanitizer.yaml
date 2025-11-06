@@ -62,12 +62,17 @@ spec:
           securityContext: {{- .Values.containerSecurityContext | toYaml | nindent 12 }}
           resources:
           {{- toYaml (default dict .Values.svgsanitizer.resources) | nindent 12 }}
+          startupProbe:
+            httpGet:
+              path: /health
+              port: 8080
+            periodSeconds: 1
+            failureThreshold: 20
           livenessProbe:
             httpGet:
               path: /health
               port: 8080
             periodSeconds: 10
-            initialDelaySeconds: 20
             failureThreshold: 1
             timeoutSeconds: 10
           readinessProbe:
@@ -75,7 +80,6 @@ spec:
               path: /health
               port: 8080
             periodSeconds: 10
-            initialDelaySeconds: 20
             failureThreshold: 1
             timeoutSeconds: 10
           env:

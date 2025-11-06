@@ -296,25 +296,25 @@ public class ChildController {
 
   @PostMapping("/school-year-transition/close-children")
   @Transactional
-  public void closeChildrenInBulk(@Valid @RequestBody CloseChildrenBulkRequest request) {
-    childService.closeChildrenInBulk(request.childIds(), false);
+  public UpdateBulkResponse closeChildrenInBulk(
+      @Valid @RequestBody CloseChildrenBulkRequest request) {
+    return childService.closeChildrenInBulkWithVersionControl(request.childIdsAndVersion());
   }
 
   @PostMapping("/school-year-transition/promote-groups")
   @Transactional
-  public PromoteBulkResponse promoteGroupsInBulk(
+  public PromoteGroupsBulkResponse promoteGroupsInBulk(
       @Valid @RequestBody PromoteGroupsBulkRequest request) {
     List<UUID> childIds =
         childService.promoteGroupsInBulk(request.institutionId(), request.groupPromotions());
-    return new PromoteBulkResponse(childIds);
+    return new PromoteGroupsBulkResponse(childIds);
   }
 
   @PostMapping("/school-year-transition/promote-children")
   @Transactional
-  public PromoteBulkResponse promoteChildrenInBulk(
+  public UpdateBulkResponse promoteChildrenInBulk(
       @Valid @RequestBody PromoteChildrenBulkRequest request) {
-    List<UUID> childIds = childService.promoteChildrenInBulk(request.childIds());
-    return new PromoteBulkResponse(childIds);
+    return childService.promoteChildrenInBulk(request.childIdsAndVersion());
   }
 
   @GetMapping("/schools-for-transition")

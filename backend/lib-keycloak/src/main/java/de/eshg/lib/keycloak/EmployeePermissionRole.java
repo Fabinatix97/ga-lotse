@@ -389,7 +389,12 @@ public enum EmployeePermissionRole implements PermissionRole {
       Module.MEDS_ABROAD,
       BASE_PERSONS_READ,
       BASE_PERSONS_WRITE,
-      BASE_CALENDAR_BUSINESS_EVENTS_WRITE);
+      BASE_CALENDAR_BUSINESS_EVENTS_WRITE),
+
+  SCHOOL_ENTRY_VACCINATION_CHECK(
+      READ_PERMISSION_TEMPLATE.formatted("Impfstatus"),
+      "Berechtigung zum Abrufen des Impfstatus",
+      Module.SCHOOL_ENTRY);
 
   private final String keycloakNameWithoutPrefix;
   private final String description;

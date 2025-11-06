@@ -1719,12 +1719,18 @@ spec:
             - ALL
           privileged: false
           readOnlyRootFilesystem: true
+        startupProbe:
+          httpGet:
+            path: /health
+            port: 9000
+            scheme: HTTPS
+          periodSeconds: 1
+          failureThreshold: 30
         livenessProbe:
           httpGet:
             path: /health
             port: 9000
             scheme: HTTPS
-          initialDelaySeconds: 30
           timeoutSeconds: 10
           periodSeconds: 10
           successThreshold: 1
@@ -1734,7 +1740,6 @@ spec:
             path: /health
             port: 9000
             scheme: HTTPS
-          initialDelaySeconds: 30
           timeoutSeconds: 10
           periodSeconds: 10
           successThreshold: 1
@@ -1891,13 +1896,19 @@ spec:
             - ALL
           privileged: false
           readOnlyRootFilesystem: true
+        startupProbe:
+          failureThreshold: 90
+          httpGet:
+            path: /actuator/health
+            port: 8081
+            scheme: HTTP
+          periodSeconds: 1
         livenessProbe:
           failureThreshold: 3
           httpGet:
             path: /actuator/health/liveness
             port: 8081
             scheme: HTTP
-          initialDelaySeconds: 90
           periodSeconds: 10
           successThreshold: 1
           timeoutSeconds: 10
@@ -1907,7 +1918,6 @@ spec:
             path: /actuator/health/readiness
             port: 8081
             scheme: HTTP
-          initialDelaySeconds: 30
           periodSeconds: 10
           successThreshold: 1
           timeoutSeconds: 1
@@ -2206,13 +2216,19 @@ spec:
           value: "https://keycloak.central.svc.cluster.local"
         - name: eshg.keycloak.internal.url
           value: "https://keycloak.central.svc.cluster.local"
+        startupProbe:
+          failureThreshold: 90
+          httpGet:
+            path: /actuator/health
+            port: 8081
+            scheme: HTTP
+          periodSeconds: 1
         livenessProbe:
           failureThreshold: 3
           httpGet:
             path: /actuator/health/liveness
             port: 8081
             scheme: HTTP
-          initialDelaySeconds: 90
           periodSeconds: 10
           successThreshold: 1
           timeoutSeconds: 10
@@ -2222,7 +2238,6 @@ spec:
             path: /actuator/health/readiness
             port: 8081
             scheme: HTTP
-          initialDelaySeconds: 30
           periodSeconds: 10
           successThreshold: 1
           timeoutSeconds: 1
@@ -2520,13 +2535,19 @@ spec:
           privileged: false
           readOnlyRootFilesystem: true
         imagePullPolicy: Always
+        startupProbe:
+          failureThreshold: 90
+          httpGet:
+            path: /actuator/health
+            port: 8081
+            scheme: HTTP
+          periodSeconds: 1
         livenessProbe:
           failureThreshold: 3
           httpGet:
             path: /actuator/health/liveness
             port: 8081
             scheme: HTTP
-          initialDelaySeconds: 90
           periodSeconds: 10
           successThreshold: 1
           timeoutSeconds: 10
@@ -2536,7 +2557,6 @@ spec:
             path: /actuator/health/readiness
             port: 8081
             scheme: HTTP
-          initialDelaySeconds: 30
           periodSeconds: 10
           successThreshold: 1
           timeoutSeconds: 1
@@ -2719,13 +2739,19 @@ spec:
             - ALL
           privileged: false
           readOnlyRootFilesystem: true
+        startupProbe:
+          failureThreshold: 90
+          httpGet:
+            path: /actuator/health
+            port: 8081
+            scheme: HTTP
+          periodSeconds: 1
         livenessProbe:
           failureThreshold: 3
           httpGet:
             path: /actuator/health/liveness
             port: 8081
             scheme: HTTP
-          initialDelaySeconds: 90
           periodSeconds: 10
           successThreshold: 1
           timeoutSeconds: 10
@@ -2735,7 +2761,6 @@ spec:
             path: /actuator/health/readiness
             port: 8081
             scheme: HTTP
-          initialDelaySeconds: 30
           periodSeconds: 10
           successThreshold: 1
           timeoutSeconds: 1

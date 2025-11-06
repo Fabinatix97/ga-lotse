@@ -13,6 +13,7 @@ export interface ChildForTransition {
   readonly gender?: ApiGender;
   readonly dateOfBirth: Date;
   readonly groupName?: string;
+  readonly version: number;
 }
 
 export function mapChildForTransitionResult(
@@ -25,5 +26,6 @@ export function mapChildForTransitionResult(
     gender: response.gender,
     dateOfBirth: response.dateOfBirth,
     groupName: response.groupName,
+    version: response.version,
   };
 }

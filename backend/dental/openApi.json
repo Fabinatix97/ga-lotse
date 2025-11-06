@@ -985,6 +985,13 @@
         },
         "responses" : {
           "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/UpdateBulkResponse"
+                }
+              }
+            },
             "description" : "OK"
           }
         },
@@ -1030,7 +1037,7 @@
             "content" : {
               "*/*" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/PromoteBulkResponse"
+                  "$ref" : "#/components/schemas/UpdateBulkResponse"
                 }
               }
             },
@@ -1058,7 +1065,7 @@
             "content" : {
               "*/*" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/PromoteBulkResponse"
+                  "$ref" : "#/components/schemas/PromoteGroupsBulkResponse"
                 }
               }
             },
@@ -3981,6 +3988,10 @@
           }
         }
       },
+      "BooleanWithUnknown" : {
+        "type" : "string",
+        "enum" : [ "TRUE", "FALSE", "UNKNOWN" ]
+      },
       "BulkUpdateProceduresArchivingRelevanceRequest" : {
         "required" : [ "archivingRelevance", "procedures" ],
         "type" : "object",
@@ -4275,7 +4286,7 @@
         }
       },
       "ChildForTransition" : {
-        "required" : [ "dateOfBirth", "firstName", "id", "lastName" ],
+        "required" : [ "dateOfBirth", "firstName", "id", "lastName", "version" ],
         "type" : "object",
         "properties" : {
           "dateOfBirth" : {
@@ -4297,6 +4308,10 @@
           },
           "lastName" : {
             "type" : "string"
+          },
+          "version" : {
+            "type" : "integer",
+            "format" : "int64"
           }
         }
       },
@@ -4372,15 +4387,15 @@
         }
       },
       "CloseChildrenBulkRequest" : {
-        "required" : [ "childIds" ],
+        "required" : [ "childIdsAndVersion" ],
         "type" : "object",
         "properties" : {
-          "childIds" : {
-            "minItems" : 1,
-            "type" : "array",
-            "items" : {
-              "type" : "string",
-              "format" : "uuid"
+          "childIdsAndVersion" : {
+            "minProperties" : 1,
+            "type" : "object",
+            "additionalProperties" : {
+              "type" : "integer",
+              "format" : "int64"
             }
           }
         }
@@ -5060,11 +5075,11 @@
         "enum" : [ "JPEG", "PNG", "PDF", "EML" ]
       },
       "FluoridationConsent" : {
-        "required" : [ "consented", "dateOfConsent" ],
+        "required" : [ "dateOfConsent" ],
         "type" : "object",
         "properties" : {
           "consented" : {
-            "type" : "boolean"
+            "$ref" : "#/components/schemas/BooleanWithUnknown"
           },
           "dateOfConsent" : {
             "type" : "string",
@@ -6936,28 +6951,15 @@
         "default" : "ASC",
         "enum" : [ "ASC", "DESC" ]
       },
-      "PromoteBulkResponse" : {
-        "required" : [ "childIds" ],
-        "type" : "object",
-        "properties" : {
-          "childIds" : {
-            "type" : "array",
-            "items" : {
-              "type" : "string",
-              "format" : "uuid"
-            }
-          }
-        }
-      },
       "PromoteChildrenBulkRequest" : {
-        "required" : [ "childIds" ],
+        "required" : [ "childIdsAndVersion" ],
         "type" : "object",
         "properties" : {
-          "childIds" : {
-            "type" : "array",
-            "items" : {
-              "type" : "string",
-              "format" : "uuid"
+          "childIdsAndVersion" : {
+            "type" : "object",
+            "additionalProperties" : {
+              "type" : "integer",
+              "format" : "int64"
             }
           }
         }
@@ -6975,6 +6977,19 @@
           "institutionId" : {
             "type" : "string",
             "format" : "uuid"
+          }
+        }
+      },
+      "PromoteGroupsBulkResponse" : {
+        "required" : [ "childIds" ],
+        "type" : "object",
+        "properties" : {
+          "childIds" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "format" : "uuid"
+            }
           }
         }
       },
@@ -7575,6 +7590,22 @@
       "TriggerType" : {
         "type" : "string",
         "enum" : [ "SYSTEM_AUTOMATIC", "EMPLOYEE", "CITIZEN" ]
+      },
+      "UpdateBulkResponse" : {
+        "required" : [ "numError", "numUpdated" ],
+        "type" : "object",
+        "properties" : {
+          "numError" : {
+            "minimum" : 0,
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "numUpdated" : {
+            "minimum" : 0,
+            "type" : "integer",
+            "format" : "int32"
+          }
+        }
       },
       "UpdateChildDetailsInBulkRequest" : {
         "required" : [ "childId", "dateOfBirth", "firstName", "lastName", "procedureLabels", "version" ],

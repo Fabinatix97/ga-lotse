@@ -34,6 +34,9 @@ public class PersonWithoutDateOfBirth extends SequencedBaseEntityWithExternalId 
   @DataSensitivity(SensitivityLevel.PROTECTED)
   private Instant modifiedAt;
 
+  @DataSensitivity(SensitivityLevel.PROTECTED)
+  private Instant deleteAt;
+
   @Column(nullable = false)
   @DataSensitivity(SensitivityLevel.SENSITIVE)
   String firstName;
@@ -98,6 +101,14 @@ public class PersonWithoutDateOfBirth extends SequencedBaseEntityWithExternalId 
 
   public void setModifiedAt(Instant date) {
     this.modifiedAt = date;
+  }
+
+  public Instant getDeleteAt() {
+    return deleteAt;
+  }
+
+  public void setDeleteAt(Instant deleteAt) {
+    this.deleteAt = deleteAt;
   }
 
   public DataOrigin getDataOrigin() {
