@@ -23,6 +23,7 @@ import de.eshg.base.centralfile.api.person.GetPersonFileStatesRequest;
 import de.eshg.base.centralfile.api.person.GetPersonFileStatesResponse;
 import de.eshg.lib.common.CountryCode;
 import de.eshg.lib.procedure.domain.model.RelatedPerson;
+import de.eshg.lib.xlsximport.util.AddressMapper;
 import de.eshg.rest.service.error.BadRequestException;
 import de.eshg.rest.service.error.ErrorCode;
 import de.eshg.rest.service.error.ErrorResponse;
@@ -82,6 +83,18 @@ public class PersonClient {
       return List.of();
     }
 
+    List<UUID> personWithDateOfBirthIds =
+        createPersonsWithDateOfBirthInCentralFile(procedureData, dataOrigin);
+
+    List<UUID> personWithoutDateOfBirthIds =
+        createPersonsWithoutDateOfBirthInCentralFile(procedureData, dataOrigin);
+
+    return mapFromFlatResponseList(
+        procedureData, personWithDateOfBirthIds, personWithoutDateOfBirthIds);
+  }
+
+  private List<UUID> createPersonsWithDateOfBirthInCentralFile(
+      List<ImportProcedureData> procedureData, DataOrigin dataOrigin) {
     log.info("Creating persons in the central file");
 
     List<AddPersonFileStateRequest> personsToAdd = mapToFlatRequestList(procedureData, dataOrigin);
@@ -103,7 +116,36 @@ public class PersonClient {
         ids.size(),
         shortenForLoggingIfNecessary(ids));
 
-    return mapFromFlatResponseList(procedureData, ids);
+    return ids;
+  }
+
+  private List<UUID> createPersonsWithoutDateOfBirthInCentralFile(
+      List<ImportProcedureData> procedureData, DataOrigin dataOrigin) {
+    log.info("Creating persons without date of birth in the central file");
+
+    List<AddPersonWithoutDateOfBirthRequest> personsToAdd =
+        mapToAddPersonWithoutDateOfBirthRequest(procedureData, dataOrigin);
+
+    List<UUID> ids =
+        Lists.partition(personsToAdd, MAX_PERSONS_PER_BATCH).stream()
+            .flatMap(
+                personsToAddPartition -> {
+                  AddPersonsWithoutDateOfBirthRequest request =
+                      new AddPersonsWithoutDateOfBirthRequest(personsToAddPartition);
+
+                  GetPersonsWithoutDateOfBirthResponse response =
+                      personWithoutDateOfBirthApi.addPersonsWithoutDateOfBirth(request);
+                  return response.personsWithoutDateOfBirth().stream()
+                      .map(GetPersonWithoutDateOfBirthResponse::id);
+                })
+            .toList();
+
+    log.info(
+        "Created {} persons without date of birth in the central file with IDs={}",
+        ids.size(),
+        shortenForLoggingIfNecessary(ids));
+
+    return ids;
   }
 
   @VisibleForTesting
@@ -185,6 +227,18 @@ public class PersonClient {
     return response.personFileStateIds();
   }
 
+  public List<UUID> createCustodiansWithoutDateOfBirthInCentralFile(
+      List<ImportCustodianData> custodians) {
+    List<AddPersonWithoutDateOfBirthRequest> persons =
+        mapToPersonWithoutDateOfBirthFileStateRequest(custodians, DataOrigin.DATA_IMPORT).toList();
+    GetPersonsWithoutDateOfBirthResponse response =
+        personWithoutDateOfBirthApi.addPersonsWithoutDateOfBirth(
+            new AddPersonsWithoutDateOfBirthRequest(persons));
+    return response.personsWithoutDateOfBirth().stream()
+        .map(GetPersonWithoutDateOfBirthResponse::id)
+        .toList();
+  }
+
   public UUID updatePersonInCentralFile(UpdatePersonRequest custodian, UUID centralFileStateId) {
     return updatePersonFileStateAndReference(
         centralFileStateId, PersonMapper.mapToPersonDetailsDto(custodian));
@@ -249,21 +303,42 @@ public class PersonClient {
             procedure ->
                 Stream.concat(
                     Stream.of(mapToPersonFileStateRequest(procedure.child(), dataOrigin)),
-                    mapToPersonFileStateRequest(procedure.custodians(), dataOrigin).stream()))
+                    mapToPersonFileStateRequest(procedure.custodiansWithDateOfBirth(), dataOrigin)
+                        .stream()))
+        .toList();
+  }
+
+  private static List<AddPersonWithoutDateOfBirthRequest> mapToAddPersonWithoutDateOfBirthRequest(
+      List<ImportProcedureData> procedureData, DataOrigin dataOrigin) {
+    return procedureData.stream()
+        .flatMap(
+            procedure ->
+                mapToPersonWithoutDateOfBirthFileStateRequest(
+                    procedure.custodiansWithoutDateOfBirth(), dataOrigin))
         .toList();
   }
 
   private static List<ProcedureIds> mapFromFlatResponseList(
-      List<ImportProcedureData> procedureData, List<UUID> ids) {
-    Iterator<UUID> idIterator = ids.iterator();
+      List<ImportProcedureData> procedureData,
+      List<UUID> personWithDateOfBirthIds,
+      List<UUID> personWithoutDateOfBirthIds) {
+    Iterator<UUID> personWithDateOfBirthIdIterator = personWithDateOfBirthIds.iterator();
+    Iterator<UUID> personWithoutDateOfBirthIdIterator = personWithoutDateOfBirthIds.iterator();
     return procedureData.stream()
         .map(
             procedure -> {
-              UUID childId = idIterator.next();
-              List<UUID> custodianIds =
-                  procedure.custodians().stream().map(custodian -> idIterator.next()).toList();
+              UUID childId = personWithDateOfBirthIdIterator.next();
+              List<UUID> custodianWithDateOfBirthIds =
+                  procedure.custodiansWithDateOfBirth().stream()
+                      .map(custodian -> personWithDateOfBirthIdIterator.next())
+                      .toList();
+              List<UUID> custodianWithoutDateOfBirthIds =
+                  procedure.custodiansWithoutDateOfBirth().stream()
+                      .map(custodian -> personWithoutDateOfBirthIdIterator.next())
+                      .toList();
 
-              return new ProcedureIds(childId, custodianIds);
+              return new ProcedureIds(
+                  childId, custodianWithDateOfBirthIds, custodianWithoutDateOfBirthIds);
             })
         .toList();
   }
@@ -289,6 +364,27 @@ public class PersonClient {
       ImportCustodianData custodian, DataOrigin dataOrigin) {
     return new AddPersonFileStateRequest(
         PersonMapper.mapToPersonDetailsDto(custodian), mapToDto(dataOrigin));
+  }
+
+  private static Stream<AddPersonWithoutDateOfBirthRequest>
+      mapToPersonWithoutDateOfBirthFileStateRequest(
+          List<ImportCustodianData> custodians, DataOrigin dataOrigin) {
+    return custodians.stream()
+        .map(custodian -> mapToPersonWithoutDateOfBirthFileStateRequest(custodian, dataOrigin));
+  }
+
+  private static AddPersonWithoutDateOfBirthRequest mapToPersonWithoutDateOfBirthFileStateRequest(
+      ImportCustodianData custodian, DataOrigin dataOrigin) {
+    return new AddPersonWithoutDateOfBirthRequest(
+        custodian.title(),
+        custodian.salutation(),
+        custodian.gender(),
+        custodian.firstName(),
+        custodian.lastName(),
+        List.of(),
+        List.of(),
+        AddressMapper.mapToDto(custodian.address()),
+        mapToDto(dataOrigin));
   }
 
   private static DataOriginDto mapToDto(DataOrigin dataOrigin) {
@@ -324,7 +420,7 @@ public class PersonClient {
           personWithoutDateOfBirthApi.getPersonsWithoutDateOfBirth(
               procedure.getCustodianWithoutDob());
       List<PersonDetailsData> custodiansWithoutDateOfBirth =
-          personsResponse.personsWithoutDateOfBirth().values().stream()
+          personsResponse.personsWithoutDateOfBirth().stream()
               .map(PersonClient::mapPersonWithoutDateOfBirthToPersonDetailsData)
               .toList();
 

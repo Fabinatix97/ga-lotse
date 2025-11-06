@@ -7,7 +7,6 @@ package de.eshg.inspection.objecttype.persistence;
 
 import de.eshg.inspection.objecttype.ObjectTypeProperties;
 import de.eshg.persistence.TransactionHelper;
-import jakarta.annotation.PostConstruct;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Component;
@@ -28,7 +27,6 @@ public class CreateObjectTypeTask {
     this.transactionHelper = transactionHelper;
   }
 
-  @PostConstruct
   public void createObjectTypes() {
     transactionHelper.executeInTransaction(
         () -> {

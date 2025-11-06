@@ -257,7 +257,8 @@ public class ImportService {
       resolvedMergeDataList.removeIf(
           mergeData -> failedProcedureIds.contains(mergeData.procedure().getExternalId()));
 
-      createCustodiansInBulk(resolvedMergeDataList);
+      createCustodiansWithDateOfBirthInBulk(resolvedMergeDataList);
+      createCustodiansWithoutDateOfBirthInBulk(resolvedMergeDataList);
 
       for (ResolvedMergeProcedureData mergeData : resolvedMergeDataList) {
         mergeDataForProcedure(mergeData, schoolId, locationId, schoolYear);
@@ -298,7 +299,8 @@ public class ImportService {
                       procedure,
                       mergeProcedureData.placeOfBirth(),
                       mergeProcedureData.countryOfBirth(),
-                      mergeProcedureData.custodians(),
+                      mergeProcedureData.custodiansWithDateOfBirth(),
+                      mergeProcedureData.custodiansWithoutDateOfBirth(),
                       mergeProcedureData.phoneNumber(),
                       mergeProcedureData.email(),
                       mergeProcedureData.isEntryLevel(),
@@ -308,21 +310,22 @@ public class ImportService {
     return merges;
   }
 
-  private static List<ImportCustodianDataWithProcedure> collectCustodiansWithProcedure(
-      List<ResolvedMergeProcedureData> merges) {
+  private static List<ImportCustodianDataWithProcedure>
+      collectCustodiansWithDateOfBirthWithProcedure(List<ResolvedMergeProcedureData> merges) {
     return merges.stream()
         .flatMap(
             mergeData ->
-                mergeData.custodians().stream()
+                mergeData.custodiansWithDateOfBirth().stream()
                     .map(
                         custodian ->
                             new ImportCustodianDataWithProcedure(custodian, mergeData.procedure())))
         .toList();
   }
 
-  private void createCustodiansInBulk(List<ResolvedMergeProcedureData> mergeDataList) {
+  private void createCustodiansWithDateOfBirthInBulk(
+      List<ResolvedMergeProcedureData> mergeDataList) {
     List<ImportCustodianDataWithProcedure> custodiansWithProcedure =
-        collectCustodiansWithProcedure(mergeDataList);
+        collectCustodiansWithDateOfBirthWithProcedure(mergeDataList);
     if (custodiansWithProcedure.isEmpty()) {
       return;
     }
@@ -337,6 +340,40 @@ public class ImportService {
     for (int i = 0; i < custodianIds.size(); i++) {
       ImportCustodianDataWithProcedure custodian = custodiansWithProcedure.get(i);
       SchoolEntryService.buildCustodian(custodianIds.get(i), custodian.procedure());
+    }
+  }
+
+  private static List<ImportCustodianDataWithProcedure>
+      collectCustodiansWithoutDateOfBirthWithProcedure(List<ResolvedMergeProcedureData> merges) {
+    return merges.stream()
+        .flatMap(
+            mergeData ->
+                mergeData.custodiansWithoutDateOfBirth().stream()
+                    .map(
+                        custodian ->
+                            new ImportCustodianDataWithProcedure(custodian, mergeData.procedure())))
+        .toList();
+  }
+
+  private void createCustodiansWithoutDateOfBirthInBulk(
+      List<ResolvedMergeProcedureData> mergeDataList) {
+    List<ImportCustodianDataWithProcedure> custodiansWithProcedure =
+        collectCustodiansWithoutDateOfBirthWithProcedure(mergeDataList);
+    if (custodiansWithProcedure.isEmpty()) {
+      return;
+    }
+    List<ImportCustodianData> custodians =
+        custodiansWithProcedure.stream().map(ImportCustodianDataWithProcedure::custodian).toList();
+    List<UUID> custodianIds =
+        personClient.createCustodiansWithoutDateOfBirthInCentralFile(custodians);
+    Assert.isTrue(
+        custodiansWithProcedure.size() == custodianIds.size(),
+        () ->
+            "Unexpected number of created custodians without date of birth. Expected %d but got %d"
+                .formatted(custodiansWithProcedure.size(), custodianIds.size()));
+    for (int i = 0; i < custodianIds.size(); i++) {
+      ImportCustodianDataWithProcedure custodian = custodiansWithProcedure.get(i);
+      custodian.procedure().getCustodianWithoutDob().add(custodianIds.get(i));
     }
   }
 

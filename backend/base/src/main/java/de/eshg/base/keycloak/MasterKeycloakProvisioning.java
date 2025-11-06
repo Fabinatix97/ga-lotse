@@ -109,6 +109,7 @@ public class MasterKeycloakProvisioning implements AutoCloseable {
     realmRepresentation.setAdminEventsEnabled(true);
     realmRepresentation.setEventsEnabled(true);
     realmRepresentation.setBruteForceProtected(true);
+    realmRepresentation.setRevokeRefreshToken(true);
     realmRepresentation.setPasswordPolicy(PASSWORD_POLICY);
     realmRepresentation.setWebAuthnPolicyRpEntityName("GA Lotse Keycloak Admin");
     realmRepresentation.setWebAuthnPolicySignatureAlgorithms(

@@ -18,6 +18,14 @@ public final class CitizenListRow extends SchoolEntryRow<CitizenListRow> {
     return custodians;
   }
 
+  public List<ImportCustodianData> getCustodiansWithDateOfBirth() {
+    return custodians.stream().filter(c -> c.dateOfBirth() != null).toList();
+  }
+
+  public List<ImportCustodianData> getCustodiansWithoutDateOfBirth() {
+    return custodians.stream().filter(c -> c.dateOfBirth() == null).toList();
+  }
+
   public void setCustodians(List<ImportCustodianData> custodians) {
     this.custodians = custodians;
   }

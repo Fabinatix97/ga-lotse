@@ -95,7 +95,7 @@ public abstract class BasePopulator<R> {
     return faker -> randomElement(faker, elements);
   }
 
-  protected static <E> E randomElement(Faker faker, E[] elements) {
+  public static <E> E randomElement(Faker faker, E[] elements) {
     return randomElement(faker, Arrays.asList(elements));
   }
 
@@ -162,7 +162,7 @@ public abstract class BasePopulator<R> {
         optional(faker, address.secondaryAddress(), 0.1));
   }
 
-  protected static <E> E optional(Faker faker, E value) {
+  public static <E> E optional(Faker faker, E value) {
     return optional(faker, value, 0.1);
   }
 

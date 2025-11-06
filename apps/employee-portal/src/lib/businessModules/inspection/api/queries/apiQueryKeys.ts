@@ -78,3 +78,7 @@ export const packlistDefinitionApiQueryKey = queryKeyFactory(
 export const inspectionFeatureTogglesApiQueryKey = queryKeyFactory(
   apiQueryKey(["featureTogglesApi"]),
 );
+
+export const samplesApiQueryKey = queryKeyFactory(
+  apiQueryKey(["inspectionSampleApi"]),
+);

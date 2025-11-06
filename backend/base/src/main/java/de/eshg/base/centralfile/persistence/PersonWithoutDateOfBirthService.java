@@ -41,12 +41,13 @@ public class PersonWithoutDateOfBirthService {
     this.logger = logger;
   }
 
-  public PersonWithoutDateOfBirth addPersonWithoutDateOfBirth(PersonWithoutDateOfBirth person) {
-    person.setCreatedAt(clock.instant());
-    PersonWithoutDateOfBirth personWithoutDateOfBirth =
-        personWithoutDateOfBirthRepository.save(person);
+  public List<PersonWithoutDateOfBirth> addPersonsWithoutDateOfBirth(
+      List<PersonWithoutDateOfBirth> persons) {
 
-    logger.logAddPersonWithoutDateOfBirth(personWithoutDateOfBirth);
+    List<PersonWithoutDateOfBirth> personWithoutDateOfBirth =
+        personWithoutDateOfBirthRepository.saveAll(persons);
+
+    personWithoutDateOfBirth.forEach(logger::logAddPersonWithoutDateOfBirth);
 
     return personWithoutDateOfBirth;
   }

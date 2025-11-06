@@ -11,6 +11,9 @@ import {
   ApiInspectionAnnouncementType,
   ApiInspectionPhase,
   ApiInspectionResult,
+  ApiInspectionSampleEvaluationType,
+  ApiInspectionSamplePreclassification,
+  ApiInspectionSampleType,
   ApiInspectionType,
   ApiWebSearchEntryStatus,
 } from "@eshg/inspection-api";
@@ -139,3 +142,44 @@ export const inspectionBannedFacilityFilterNames = {
   ["true"]: "Ja",
   ["false"]: "Nein",
 } satisfies Record<string, string>;
+
+const inspectionSampleType: Record<ApiInspectionSampleType, string> = {
+  [ApiInspectionSampleType.DrinkingWater]: "Trinkwasser",
+  [ApiInspectionSampleType.BathWater]: "Badewasser",
+};
+
+export function translateInspectionSampleType(type: ApiInspectionSampleType) {
+  return inspectionSampleType[type];
+}
+
+const inspectionSampleEvaluationType: Record<
+  ApiInspectionSampleEvaluationType,
+  string
+> = {
+  [ApiInspectionSampleEvaluationType.Laboratory]: "Labor",
+  [ApiInspectionSampleEvaluationType.OnSite]: "Vor Ort",
+};
+
+export function translateInspectionSampleEvaluationType(
+  type: ApiInspectionSampleEvaluationType,
+) {
+  return inspectionSampleEvaluationType[type];
+}
+
+const inspectionSamplePreclassification: Record<
+  ApiInspectionSamplePreclassification,
+  string
+> = {
+  [ApiInspectionSamplePreclassification.Pending]: "Bewertung ausstehend",
+  [ApiInspectionSamplePreclassification.TooHigh]: "zu hoch",
+  [ApiInspectionSamplePreclassification.TooLow]: "zu niedrig",
+  [ApiInspectionSamplePreclassification.WithinNorm]: "ok",
+  [ApiInspectionSamplePreclassification.NoNormSpecified]:
+    "keine Bewertung spezifiziert",
+};
+
+export function translateInspectionSamplePreclassification(
+  type: ApiInspectionSamplePreclassification,
+) {
+  return inspectionSamplePreclassification[type];
+}

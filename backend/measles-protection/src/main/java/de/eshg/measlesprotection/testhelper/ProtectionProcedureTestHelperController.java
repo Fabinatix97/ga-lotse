@@ -26,22 +26,25 @@ import org.springframework.web.service.annotation.PostExchange;
 @RestController
 @ConditionalOnTestHelperEnabled
 public class ProtectionProcedureTestHelperController extends TestHelperController
-    implements AuditLogClientTestHelperApi {
+    implements AuditLogClientTestHelperApi, MeaslesProtectionTestHelperApi {
 
   private final ProtectionProcedurePopulator populator;
   private final AuditLogTestHelperService auditLogTestHelperService;
   private final MeaslesProtectionFeatureToggle measlesProtectionFeatureToggle;
+  private final PolytuneMock polytuneMock;
 
   public ProtectionProcedureTestHelperController(
       DefaultTestHelperService testHelperService,
       ProtectionProcedurePopulator populator,
       MeaslesProtectionFeatureToggle measlesProtectionFeatureToggle,
       AuditLogTestHelperService auditLogTestHelperService,
-      EnvironmentConfig environmentConfig) {
+      EnvironmentConfig environmentConfig,
+      PolytuneMock polytuneMock) {
     super(testHelperService, environmentConfig);
     this.populator = populator;
     this.measlesProtectionFeatureToggle = measlesProtectionFeatureToggle;
     this.auditLogTestHelperService = auditLogTestHelperService;
+    this.polytuneMock = polytuneMock;
   }
 
   @PostExchange("/population/procedures")
@@ -62,5 +65,21 @@ public class ProtectionProcedureTestHelperController extends TestHelperControlle
   @Override
   public void runAuditLogArchivingJob() {
     auditLogTestHelperService.runAuditLogArchivingJob();
+  }
+
+  @Override
+  public void initializePolytuneMock(@Valid @RequestBody PolytuneMockIntitializeRequest request) {
+    polytuneMock.initialize(request);
+  }
+
+  @Override
+  public GetPolytuneMockInteractionsResponse getPolytuneMockInteractions() {
+    return new GetPolytuneMockInteractionsResponse(polytuneMock.getInteractions());
+  }
+
+  @Override
+  public void simulatePolytuneMockError(
+      @Valid @RequestBody PolytuneMockSimulateErrorRequest request) {
+    polytuneMock.simulateError(request);
   }
 }

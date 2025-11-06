@@ -9,8 +9,10 @@ import de.eshg.lib.common.DataSensitivity;
 import de.eshg.lib.common.SensitivityLevel;
 import de.eshg.lib.procedure.domain.model.PersonType;
 import de.eshg.lib.procedure.domain.model.RelatedPerson;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Index;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.Transient;
 import org.hibernate.annotations.JdbcType;
@@ -23,6 +25,10 @@ public class Person extends RelatedPerson<MeaslesProtectionProcedure> {
   @DataSensitivity(SensitivityLevel.PSEUDONYMIZED)
   @JdbcType(PostgreSQLEnumJdbcType.class)
   private RoleStatus roleStatus;
+
+  @OneToOne(mappedBy = "person", cascade = CascadeType.PERSIST, orphanRemoval = true)
+  @DataSensitivity(SensitivityLevel.PROTECTED)
+  private SchoolEntryMeaslesVaccinationStatus measlesVaccinationStatus;
 
   @Transient
   public boolean isPatient() {
@@ -40,5 +46,14 @@ public class Person extends RelatedPerson<MeaslesProtectionProcedure> {
 
   public RoleStatus getRoleStatus() {
     return roleStatus;
+  }
+
+  public SchoolEntryMeaslesVaccinationStatus getMeaslesVaccinationStatus() {
+    return measlesVaccinationStatus;
+  }
+
+  public void setMeaslesVaccinationStatus(
+      SchoolEntryMeaslesVaccinationStatus measlesVaccinationStatus) {
+    this.measlesVaccinationStatus = measlesVaccinationStatus;
   }
 }

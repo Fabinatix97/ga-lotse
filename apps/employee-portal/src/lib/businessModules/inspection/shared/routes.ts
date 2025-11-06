@@ -69,6 +69,8 @@ export const routes = {
       `${proceduresPath}/${procedureId}/planning`,
     execution: (procedureId: string) =>
       `${proceduresPath}/${procedureId}/execution`,
+    measurements: (procedureId: string) =>
+      `${proceduresPath}/${procedureId}/measurements`,
     reportResult: (procedureId: string) =>
       `${proceduresPath}/${procedureId}/reportresult`,
     reportEditor: (procedureId: string, reportId: string) =>

@@ -16,6 +16,7 @@ import {
 import { CryptoApi } from "matrix-js-sdk/lib/crypto-api";
 import { KnownMembership } from "matrix-js-sdk/lib/types";
 import { useCallback } from "react";
+import { difference, isEmpty } from "remeda";
 
 import { getCryptoApi } from "@/lib/businessModules/chat/matrix/crypto";
 import { useChatClientContext } from "@/lib/businessModules/chat/shared/ChatClientProvider";
@@ -243,6 +244,19 @@ export function useCreateNewChat() {
           // Here are a few checks added to verify if the local user list is in sync with server user list
           // and to ensure that the users invited to the room will be able to decrypt the messages.
           // (otherwise wrong encryption keys will be sent with the first chat messagge...)
+          const desiredMembers = [
+            matrixClient.getUserId(),
+            ...(opts.invite ?? []),
+          ];
+          await retryOperation(
+            () => room.getMembers().map((member) => member.userId),
+            (members) => isEmpty(difference(desiredMembers, members)),
+            30,
+            1000,
+            true,
+            "Not all room members loaded",
+          );
+
           await room.getEncryptionTargetMembers();
           const membersLoaded = await retryOperation(
             () => room.membersLoaded(),

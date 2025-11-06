@@ -291,6 +291,10 @@ public enum EmployeePermissionRole implements PermissionRole {
       "Kern-Checklisten-Definition in Zentralen Diensten bereitstellen", Module.INSPECTION),
   INSPECTION_IMPORT("Vorgänge importieren", Module.INSPECTION),
 
+  SCHOOL_ENTRY_VACCINATED_FILE_STATES(
+      "Abholen aller Sachstand-IDs, die nachgewiesen vollständig geimpft sind",
+      Module.SCHOOL_ENTRY),
+
   SCHOOL_ENTRY_ADMIN(
       ADMIN_KEYCLOAK_NAME.formatted("Einschulungsuntersuchung"),
       "Standardberechtigung für das Fachmodul",

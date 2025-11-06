@@ -89,5 +89,7 @@
   <include file="migrations/0074_facility_rename_cfid.xml"/>
   <include file="migrations/0075_add_gdpr_identification_data_hash.xml"/>
   <include file="migrations/0076_add_gdpr_identification_hash_not_null_constraint.xml"/>
+  <include file="migrations/0077_inspection_samples.xml"/>
+  <include file="migrations/0078_object_type_hierarchy.xml"/>
 
 </databaseChangeLog>

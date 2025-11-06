@@ -526,3 +526,16 @@ export function useSyncAffectedPerson() {
     },
   });
 }
+
+export function useRequestVaccinationStatusUpdate(procedureId: string) {
+  const api = useProtectionProcedureApi();
+  const queryClient = useQueryClient();
+  const queryKey = measlesProtectionApiQueryKey(["procedures", procedureId]);
+  return useHandledMutation({
+    meta: { updatesQuery: queryKey },
+    mutationFn: (procedureId: string) => {
+      return api.requestVaccinationStatusUpdate(procedureId);
+    },
+    onSuccess: (response) => queryClient.setQueryData(queryKey, response),
+  });
+}

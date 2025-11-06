@@ -18,6 +18,7 @@ import {
   ApiMeaslesProtectionProcedure,
 } from "@eshg/measles-protection-api";
 
+import { VaccinationStatusSection } from "@/lib/businessModules/measlesProtection/components/procedures/procedureDetails/VaccinationStatusSection";
 import { WrappedSelectField } from "@/lib/businessModules/measlesProtection/shared/WrappedSelectField";
 import { InfoTile } from "@/lib/shared/components/infoTile/InfoTile";
 
@@ -110,7 +111,18 @@ export function UpdateProcedureSection({
             <UpdateProcedureSectionFields errorMessages={errorMessages} />
           </Stack>
         </InfoTile>
-        <EditActions isDraft={isDraft} isOpen={!procedureClosed} />
+        <VaccinationStatusSection
+          procedureId={procedure.id}
+          measlesVaccinationStatus={
+            procedure.measlesVaccinationStatusFromSchoolEntry
+          }
+        />
+        <EditActions
+          isDraft={isDraft}
+          isOpen={!procedureClosed}
+          isUpdatePending
+          procedureId={procedure.id}
+        />
       </Stack>
     </ProcedureForm>
   );
@@ -154,6 +166,8 @@ function EditActions({
 }: Readonly<{
   isOpen: boolean;
   isDraft?: boolean;
+  isUpdatePending?: boolean;
+  procedureId: string;
 }>) {
   const { isSubmitting } = useFormikContext<UpdateProcedureForm>();
 

@@ -5,14 +5,19 @@
 
 package de.eshg.inspection.objecttype;
 
+import de.eshg.inspection.feature.InspectionFeature;
+import de.eshg.inspection.feature.InspectionFeatureToggle;
 import de.eshg.inspection.inspection.InspectionService;
 import de.eshg.inspection.inspection.api.InspectionType;
+import de.eshg.inspection.objecttype.api.GetObjectTypesHierarchyResponse;
 import de.eshg.inspection.objecttype.api.GetObjectTypesResponse;
 import de.eshg.inspection.objecttype.api.ObjectTypeDto;
 import de.eshg.inspection.objecttype.api.SingleObjectTypeResponse;
 import de.eshg.inspection.objecttype.api.UpdateObjectTypeRequest;
 import de.eshg.inspection.objecttype.persistence.ObjectType;
+import de.eshg.inspection.objecttype.persistence.ObjectTypeHierarchyTreeNodeRepository;
 import de.eshg.inspection.objecttype.persistence.ObjectTypeRepository;
+import de.eshg.rest.service.error.BadRequestException;
 import de.eshg.rest.service.error.NotFoundException;
 import de.eshg.rest.service.security.config.BaseUrls;
 import io.swagger.v3.oas.annotations.Operation;
@@ -41,12 +46,19 @@ public class ObjectTypeController {
   private static final Logger log = LoggerFactory.getLogger(ObjectTypeController.class);
 
   private final ObjectTypeRepository objectTypeRepository;
+  private final ObjectTypeHierarchyTreeNodeRepository objectTypeHierarchyTreeNodeRepository;
   private final InspectionService inspectionService;
+  private final InspectionFeatureToggle inspectionFeatureToggle;
 
   public ObjectTypeController(
-      ObjectTypeRepository objectTypeRepository, InspectionService inspectionService) {
+      ObjectTypeRepository objectTypeRepository,
+      ObjectTypeHierarchyTreeNodeRepository objectTypeHierarchyTreeNodeRepository,
+      InspectionService inspectionService,
+      InspectionFeatureToggle inspectionFeatureToggle) {
     this.objectTypeRepository = objectTypeRepository;
+    this.objectTypeHierarchyTreeNodeRepository = objectTypeHierarchyTreeNodeRepository;
     this.inspectionService = inspectionService;
+    this.inspectionFeatureToggle = inspectionFeatureToggle;
   }
 
   @GetMapping
@@ -58,6 +70,20 @@ public class ObjectTypeController {
             .map(ObjectTypeMapper::toDto)
             .sorted(Comparator.comparing(ObjectTypeDto::name))
             .toList());
+  }
+
+  @GetMapping(path = "/hierarchy")
+  @Operation(summary = "Get the tree of all objecttypes")
+  @Transactional(readOnly = true)
+  public GetObjectTypesHierarchyResponse getObjectTypesHierarchy() {
+    if (!inspectionFeatureToggle.isNewFeatureEnabled(InspectionFeature.OBJECT_TYPE_HIERARCHY)) {
+      throw new BadRequestException("Feature toggle for object type hierarchy is not enabled!");
+    }
+    return new GetObjectTypesHierarchyResponse(
+        objectTypeHierarchyTreeNodeRepository
+            .findByRootNode(true)
+            .map(ObjectTypeMapper::toDto)
+            .orElseThrow());
   }
 
   @GetMapping(path = "/{id}")

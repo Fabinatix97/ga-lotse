@@ -7,8 +7,7 @@ package de.eshg.base.centralfile.api.person;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
-import java.util.Map;
-import java.util.UUID;
+import java.util.List;
 
 public record GetPersonsWithoutDateOfBirthResponse(
-    @NotNull @Valid Map<UUID, GetPersonWithoutDateOfBirthResponse> personsWithoutDateOfBirth) {}
+    @NotNull @Valid List<GetPersonWithoutDateOfBirthResponse> personsWithoutDateOfBirth) {}

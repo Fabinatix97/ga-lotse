@@ -5,7 +5,7 @@
 
 package de.eshg.inspection.testhelper;
 
-import de.eshg.inspection.objecttype.persistence.CreateObjectTypeTask;
+import de.eshg.inspection.objecttype.persistence.CreateObjectTypeHierarchyTask;
 import de.eshg.testhelper.ConditionalOnTestHelperEnabled;
 import de.eshg.testhelper.TestHelperServiceResetAction;
 import org.springframework.core.annotation.Order;
@@ -15,19 +15,19 @@ import org.springframework.stereotype.Component;
 @Component
 @Order(50)
 public class InspectionTestHelperResetAction implements TestHelperServiceResetAction {
-  private final CreateObjectTypeTask createObjectTypeTask;
+  private final CreateObjectTypeHierarchyTask createObjectTypeHierarchyTask;
   private final ChecklistDefinitionTestDataProvider checklistDefinitionTestDataProvider;
 
   public InspectionTestHelperResetAction(
-      CreateObjectTypeTask createObjectTypeTask,
-      ChecklistDefinitionTestDataProvider checklistDefinitionTestDataProvider) {
-    this.createObjectTypeTask = createObjectTypeTask;
+      ChecklistDefinitionTestDataProvider checklistDefinitionTestDataProvider,
+      CreateObjectTypeHierarchyTask createObjectTypeHierarchyTask) {
     this.checklistDefinitionTestDataProvider = checklistDefinitionTestDataProvider;
+    this.createObjectTypeHierarchyTask = createObjectTypeHierarchyTask;
   }
 
   @Override
   public void reset() {
-    createObjectTypeTask.createObjectTypes();
+    createObjectTypeHierarchyTask.createObjectTypeHierarchy();
     checklistDefinitionTestDataProvider.clearTestCLDs();
   }
 }

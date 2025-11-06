@@ -10,6 +10,7 @@ import static java.util.Optional.ofNullable;
 import de.eshg.base.calendar.CalendarEventApi;
 import de.eshg.base.calendar.api.GetBusinessCaseEventResponse;
 import de.eshg.base.centralfile.api.facility.GetFacilityFileStateResponse;
+import de.eshg.base.contact.api.ContactDto;
 import de.eshg.base.inventory.InventoryApi;
 import de.eshg.base.resource.ResourceApi;
 import de.eshg.base.resource.api.ResourceDto;
@@ -17,6 +18,7 @@ import de.eshg.base.user.api.UserDto;
 import de.eshg.inspection.checklist.ChecklistService;
 import de.eshg.inspection.checklist.persistence.Checklist;
 import de.eshg.inspection.checklistdefinition.persistence.ChecklistDefinitionVersion;
+import de.eshg.inspection.client.ContactClient;
 import de.eshg.inspection.client.UserClient;
 import de.eshg.inspection.facility.FacilityClient;
 import de.eshg.inspection.facility.FacilityFileNumberService;
@@ -47,6 +49,13 @@ import de.eshg.inspection.inspection.persistence.InspectionTravelTime;
 import de.eshg.inspection.packlist.persistence.Packlist;
 import de.eshg.inspection.packlistdefinition.persistence.PacklistDefinitionRevision;
 import de.eshg.inspection.report.persistence.Report;
+import de.eshg.inspection.sample.InspectionSampleMapper;
+import de.eshg.inspection.sample.api.InspectionSampleDto;
+import de.eshg.inspection.sample.persistence.InspectionSample;
+import de.eshg.inspection.sample.persistence.InspectionSampleActorReference;
+import de.eshg.inspection.sample.persistence.InspectionSampleActorReferenceType;
+import de.eshg.inspection.sample.persistence.InspectionSampleEvaluationType;
+import de.eshg.inspection.sample.persistence.InspectionSampleType;
 import de.eshg.inspection.util.Holder;
 import de.eshg.lib.procedure.domain.model.Pdf;
 import de.eshg.lib.procedure.domain.model.Task;
@@ -56,8 +65,12 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -74,6 +87,7 @@ public class InspectionMapper {
   private final CalendarEventApi calendarEventApi;
   private final FacilityClient facilityClient;
   private final FacilityFileNumberService facilityFileNumberService;
+  private final ContactClient contactClient;
 
   public InspectionMapper(
       InventoryApi inventoryApi,
@@ -81,13 +95,15 @@ public class InspectionMapper {
       UserClient userClient,
       CalendarEventApi calendarEventApi,
       FacilityClient facilityClient,
-      FacilityFileNumberService facilityFileNumberService) {
+      FacilityFileNumberService facilityFileNumberService,
+      ContactClient contactClient) {
     this.inventoryApi = inventoryApi;
     this.resourceApi = resourceApi;
     this.userClient = userClient;
     this.calendarEventApi = calendarEventApi;
     this.facilityClient = facilityClient;
     this.facilityFileNumberService = facilityFileNumberService;
+    this.contactClient = contactClient;
   }
 
   public static String mapToTaskSummary(String facilityName, TaskType taskType) {
@@ -325,6 +341,80 @@ public class InspectionMapper {
       List<PacklistDefinitionRevision> revisions) {
     return new InspectionAvailablePLDRevisionsResponse(
         revisions.stream().map(InspectionMapper::mapToDto).toList());
+  }
+
+  public List<InspectionSampleDto> mapSamples(Inspection inspection) {
+    GetFacilityFileStateResponse facilityFileState =
+        samplesActorsContainInspectedFacility(inspection.getSamples())
+            ? facilityClient.getFacilityFileState(inspection.getCentralFileStateId())
+            : null;
+
+    Map<UUID, UserDto> userMap =
+        userClient.getUsersAsMap(getUserIdsForSamples(inspection.getSamples()));
+
+    Map<UUID, ContactDto> contactMap =
+        contactClient.getContactsAsMap(getContactIdsForSamples(inspection.getSamples()));
+
+    return getSortedSamples(inspection.getSamples())
+        .map(
+            sample ->
+                InspectionSampleMapper.mapToDto(sample, facilityFileState, userMap, contactMap))
+        .toList();
+  }
+
+  public static Set<UUID> getReferencedIdsForSamplesFromActorsOfType(
+      List<InspectionSample> samples, InspectionSampleActorReferenceType type) {
+    return samples.stream()
+        .flatMap(sample -> Stream.of(sample.getSamplingActor(), sample.getEvaluatingActor()))
+        .filter(Objects::nonNull)
+        .filter(actor -> actor.getType() == type)
+        .map(InspectionSampleActorReference::getReferencedId)
+        .collect(Collectors.toSet());
+  }
+
+  public static Set<UUID> getUserIdsForSamples(List<InspectionSample> samples) {
+    return getReferencedIdsForSamplesFromActorsOfType(
+        samples, InspectionSampleActorReferenceType.USER);
+  }
+
+  public static Set<UUID> getContactIdsForSamples(List<InspectionSample> samples) {
+    return getReferencedIdsForSamplesFromActorsOfType(
+        samples, InspectionSampleActorReferenceType.CONTACT);
+  }
+
+  public static boolean samplesActorsContainInspectedFacility(List<InspectionSample> samples) {
+    return samples.stream()
+        .flatMap(sample -> Stream.of(sample.getSamplingActor(), sample.getEvaluatingActor()))
+        .filter(Objects::nonNull)
+        .anyMatch(
+            actor -> actor.getType() == InspectionSampleActorReferenceType.INSPECTED_FACILITY);
+  }
+
+  public static Stream<InspectionSample> getSortedSamples(List<InspectionSample> samples) {
+    return samples.stream()
+        .sorted(
+            Comparator.comparing(
+                    InspectionSample::getPointOfWithdrawal, Comparator.nullsLast(String::compareTo))
+                .thenComparing(
+                    InspectionSample::getNameOfSamplingPoint,
+                    Comparator.nullsLast(String::compareTo))
+                .thenComparing(
+                    InspectionSample::getTypeOfSample,
+                    Comparator.nullsLast(InspectionSampleType::compareTo))
+                .thenComparing(
+                    InspectionSample::getEvaluationType,
+                    Comparator.nullsLast(InspectionSampleEvaluationType::compareTo))
+                .thenComparing(
+                    InspectionSample::getTimeOfSampling, Comparator.nullsLast(Instant::compareTo))
+                .thenComparing(
+                    InspectionSample::getCreatedAt, Comparator.nullsLast(Instant::compareTo))
+                .thenComparing(
+                    InspectionSample::getModifiedAt, Comparator.nullsLast(Instant::compareTo))
+                .thenComparing(
+                    InspectionSample::getTimeOfEvaluation, Comparator.nullsLast(Instant::compareTo))
+                .thenComparing(InspectionSample::getLabel, Comparator.nullsLast(String::compareTo))
+                .thenComparing(
+                    InspectionSample::getSampleExternalId, Comparator.nullsLast(UUID::compareTo)));
   }
 
   private static InspectionPLDRevisionDto mapToDto(PacklistDefinitionRevision r) {

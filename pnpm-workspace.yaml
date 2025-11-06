@@ -14,10 +14,10 @@ catalogs:
     "eslint-config-next": "15.4.7"
 
   react:
-    "react": "19.1.1"
-    "@types/react": "19.1.16"
-    "react-dom": "19.1.1"
-    "@types/react-dom": "19.1.9"
+    "react": "19.2.0"
+    "@types/react": "19.2.2"
+    "react-dom": "19.2.0"
+    "@types/react-dom": "19.2.2"
 
   joy:
     "@mui/joy": "5.0.0-beta.52"
@@ -30,9 +30,9 @@ catalogs:
     "@fontsource/source-code-pro": "5.2.7"
 
   i18next:
-    "i18next": "25.5.2"
+    "i18next": "25.6.0"
     "i18next-resources-to-backend": "1.2.1"
-    "react-i18next": "16.0.0"
+    "react-i18next": "16.2.1"
 
   fullcalendar:
     "@fullcalendar/core": "6.1.19"
@@ -43,14 +43,14 @@ catalogs:
     "@fullcalendar/timegrid": "6.1.19"
 
   eslint:
-    "eslint": "9.36.0"
-    "typescript-eslint": "8.45.0"
+    "eslint": "9.38.0"
+    "typescript-eslint": "8.46.2"
     "@eslint/compat": "1.4.0"
     "@eslint/eslintrc": "3.3.1"
-    "@eslint/js": "9.36.0"
+    "@eslint/js": "9.38.0"
     "eslint-config-prettier": "10.1.8"
     "eslint-plugin-import": "2.32.0"
-    "eslint-plugin-unused-imports": "4.2.0"
+    "eslint-plugin-unused-imports": "4.3.0"
     "eslint-plugin-promise": "7.2.1"
 
   prettier:
@@ -58,12 +58,12 @@ catalogs:
     "@trivago/prettier-plugin-sort-imports": "5.2.2"
 
   vite:
-    "vite": "7.1.7"
+    "vite": "7.1.12"
 
   vitest:
-    "vitest": "3.2.4"
-    "@vitest/coverage-istanbul": "3.2.4"
-    "@vitejs/plugin-react": "5.0.4"
+    "vitest": "4.0.4"
+    "@vitest/coverage-istanbul": "4.0.4"
+    "@vitejs/plugin-react": "5.1.0"
     "vite-tsconfig-paths": "5.1.4"
     "@cronn/vitest-file-snapshots": "0.15.0"
 
@@ -76,9 +76,9 @@ catalogs:
 
   common:
     "typescript": "5.9.3"
-    "@types/node": "22.18.8"
-    "@tanstack/react-query": "5.90.2"
-    "@tanstack/eslint-plugin-query": "5.91.0"
+    "@types/node": "22.18.13"
+    "@tanstack/react-query": "5.90.5"
+    "@tanstack/eslint-plugin-query": "5.91.2"
     "@tanstack/react-table": "8.21.3"
     "date-fns": "4.1.0"
     "formik": "2.4.6"
@@ -90,7 +90,7 @@ catalogs:
     "drauu": "0.4.3"
     "tsup": "8.5.0"
     "zustand": "5.0.8"
-    "@keycloak/keycloak-admin-client": "26.4.0"
+    "@keycloak/keycloak-admin-client": "26.4.2"
 
     "tsx": "4.20.6"
     "pdf-parse-new": "1.4.1"

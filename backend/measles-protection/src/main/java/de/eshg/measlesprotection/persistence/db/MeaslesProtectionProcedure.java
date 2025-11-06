@@ -98,9 +98,13 @@ public class MeaslesProtectionProcedure
 
   @Transient
   public UUID getPatientIdFromCentralFile() {
+    return getPatient().getCentralFileStateId();
+  }
+
+  @Transient
+  public Person getPatient() {
     return getRelatedPersons().stream()
         .filter(Person::isPatient)
-        .map(Person::getCentralFileStateId)
         .collect(StreamUtil.toSingleElement());
   }
 

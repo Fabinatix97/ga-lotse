@@ -6,18 +6,17 @@
 package de.eshg.base.centralfile;
 
 import de.eshg.base.centralfile.api.person.AddPersonWithoutDateOfBirthRequest;
+import de.eshg.base.centralfile.api.person.AddPersonsWithoutDateOfBirthRequest;
 import de.eshg.base.centralfile.api.person.GetPersonWithoutDateOfBirthResponse;
 import de.eshg.base.centralfile.api.person.GetPersonsWithoutDateOfBirthResponse;
 import de.eshg.base.centralfile.api.person.UpdatePersonWithoutDateOfBirthRequest;
 import de.eshg.base.centralfile.mapper.PersonWithoutDateOfBirthMapper;
 import de.eshg.base.centralfile.persistence.PersonWithoutDateOfBirthService;
 import de.eshg.base.centralfile.persistence.entity.PersonWithoutDateOfBirth;
-import de.eshg.domain.model.SequencedBaseEntityWithExternalId;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.time.Duration;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -39,8 +38,24 @@ public class PersonWithoutDateOfBirthController implements PersonWithoutDateOfBi
     PersonWithoutDateOfBirth newPerson =
         PersonWithoutDateOfBirthMapper.mapPersonWithoutDateOfBirthToDm(request);
     PersonWithoutDateOfBirth persistedPerson =
-        personWithoutDateOfBirthService.addPersonWithoutDateOfBirth(newPerson);
+        personWithoutDateOfBirthService.addPersonsWithoutDateOfBirth(List.of(newPerson)).getFirst();
     return PersonWithoutDateOfBirthMapper.mapPersonWithoutDateOfBirthToApi(persistedPerson);
+  }
+
+  @Override
+  @Transactional
+  public GetPersonsWithoutDateOfBirthResponse addPersonsWithoutDateOfBirth(
+      AddPersonsWithoutDateOfBirthRequest request) {
+    List<PersonWithoutDateOfBirth> newPerson =
+        request.persons().stream()
+            .map(PersonWithoutDateOfBirthMapper::mapPersonWithoutDateOfBirthToDm)
+            .toList();
+    List<PersonWithoutDateOfBirth> persistedPerson =
+        personWithoutDateOfBirthService.addPersonsWithoutDateOfBirth(newPerson);
+    return new GetPersonsWithoutDateOfBirthResponse(
+        persistedPerson.stream()
+            .map(PersonWithoutDateOfBirthMapper::mapPersonWithoutDateOfBirthToApi)
+            .toList());
   }
 
   @Override
@@ -58,10 +73,8 @@ public class PersonWithoutDateOfBirthController implements PersonWithoutDateOfBi
         personWithoutDateOfBirthService.getBulkPersonsWithoutDateOfBirth(ids);
     return new GetPersonsWithoutDateOfBirthResponse(
         persons.stream()
-            .collect(
-                Collectors.toMap(
-                    SequencedBaseEntityWithExternalId::getExternalId,
-                    PersonWithoutDateOfBirthMapper::mapPersonWithoutDateOfBirthToApi)));
+            .map(PersonWithoutDateOfBirthMapper::mapPersonWithoutDateOfBirthToApi)
+            .toList());
   }
 
   @Override

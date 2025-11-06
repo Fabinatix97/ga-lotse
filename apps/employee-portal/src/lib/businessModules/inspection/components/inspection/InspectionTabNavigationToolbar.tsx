@@ -8,6 +8,7 @@
 import {
   History,
   OtherHousesOutlined,
+  ScaleOutlined,
   SubjectOutlined,
   TextSnippetOutlined,
   TimelapseOutlined,
@@ -16,6 +17,7 @@ import {
 import { Stack } from "@mui/joy";
 
 import { ApiUserRole } from "@eshg/base-api";
+import { ApiInspectionFeature } from "@eshg/inspection-api";
 import {
   TabNavigationItem,
   TabNavigationToolbar,
@@ -24,6 +26,7 @@ import {
 } from "@eshg/lib-employee-portal";
 import { useIsMobile } from "@eshg/lib-portal";
 
+import { useIsNewFeatureEnabled } from "@/lib/businessModules/inspection/api/queries/feature";
 import { useGetInspection } from "@/lib/businessModules/inspection/api/queries/inspection";
 import { InspectionLockInfo } from "@/lib/businessModules/inspection/components/inspection/InspectionLockInfo";
 import { InspectionTabHeader } from "@/lib/businessModules/inspection/components/inspection/InspectionTabHeader";
@@ -39,7 +42,10 @@ export function InspectionTabNavigationToolbar({
     ApiUserRole.InspectionProcedureEdit,
   );
   const { data: inspection } = useGetInspection(inspectionId);
-  const tabItems = createTabItems(inspectionId);
+  const measurementEnabled = useIsNewFeatureEnabled(
+    ApiInspectionFeature.Samples,
+  );
+  const tabItems = createTabItems(inspectionId, measurementEnabled);
   const isMobile = useIsMobile();
 
   return (
@@ -65,7 +71,10 @@ export function InspectionTabNavigationToolbar({
   );
 }
 
-function createTabItems(id: string): TabNavigationItem[] {
+function createTabItems(
+  id: string,
+  measurementEnabled: boolean,
+): TabNavigationItem[] {
   return [
     {
       tabButtonName: "Vorgangsdaten",
@@ -82,6 +91,13 @@ function createTabItems(id: string): TabNavigationItem[] {
       href: routes.procedures.execution(id),
       decorator: <OtherHousesOutlined />,
     },
+    measurementEnabled
+      ? {
+          tabButtonName: "Messungen",
+          href: routes.procedures.measurements(id),
+          decorator: <ScaleOutlined />,
+        }
+      : null,
     {
       tabButtonName: "Bericht/Ergebnis",
       href: routes.procedures.reportResult(id),

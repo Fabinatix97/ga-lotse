@@ -1,0 +1,151 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<!--
+ Copyright 2025 SCOOP Software GmbH, cronn GmbH
+ SPDX-License-Identifier: AGPL-3.0-only
+-->
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+  <changeSet author="GA-Lotse" id="1761671680885-1">
+    <ext:createPostgresEnumType name="inspectionsampleevaluationtype" values="LABORATORY, ON_SITE"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1761671680885-2">
+    <ext:createPostgresEnumType name="inspectionsampletype" values="BATH_WATER, DRINKING_WATER"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1761671680885-3">
+    <ext:createPostgresEnumType name="inspectionsampleactorreferencetype" values="CONTACT, INSPECTED_FACILITY, USER"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1761671680885-4">
+    <ext:createPostgresEnumType name="inspectionsamplepreclassification" values="NO_NORM_SPECIFIED, PENDING, TOO_HIGH, TOO_LOW, WITHIN_NORM"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1761671680885-5">
+    <createTable tableName="inspection_sample_measurement_parameters">
+      <column name="inspection_sample_id" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="measurement_parameters_id" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1761671680885-6">
+    <createTable tableName="inspection_sample">
+      <column autoIncrement="true" name="id" type="BIGINT">
+        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_inspection_sample"/>
+      </column>
+      <column name="version" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="created_at" type="TIMESTAMP WITH TIME ZONE">
+        <constraints nullable="false"/>
+      </column>
+      <column name="evaluation_type" type="INSPECTIONSAMPLEEVALUATIONTYPE">
+        <constraints nullable="false"/>
+      </column>
+      <column name="label" type="TEXT"/>
+      <column name="modified_at" type="TIMESTAMP WITH TIME ZONE">
+        <constraints nullable="false"/>
+      </column>
+      <column name="name_of_sampling_point" type="TEXT"/>
+      <column name="point_of_withdrawal" type="TEXT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="sample_external_id" type="UUID">
+        <constraints nullable="false"/>
+      </column>
+      <column name="time_of_evaluation" type="TIMESTAMP WITH TIME ZONE"/>
+      <column name="time_of_sampling" type="TIMESTAMP WITH TIME ZONE"/>
+      <column name="type_of_sample" type="INSPECTIONSAMPLETYPE">
+        <constraints nullable="false"/>
+      </column>
+      <column name="evaluating_actor_id" type="BIGINT"/>
+      <column name="inspection_id" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="sampling_actor_id" type="BIGINT"/>
+    </createTable>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1761671680885-7">
+    <createTable tableName="inspection_sample_actor_reference">
+      <column autoIncrement="true" name="id" type="BIGINT">
+        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_inspection_sample_actor_reference"/>
+      </column>
+      <column name="version" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="referenced_id" type="UUID"/>
+      <column name="type" type="INSPECTIONSAMPLEACTORREFERENCETYPE">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1761671680885-8">
+    <createTable tableName="inspection_sample_measurement_parameter">
+      <column autoIncrement="true" name="id" type="BIGINT">
+        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_inspection_sample_measurement_parameter"/>
+      </column>
+      <column name="version" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="measurement_parameter_external_id" type="UUID">
+        <constraints nullable="false"/>
+      </column>
+      <column name="measurement_value" type="FLOAT8"/>
+      <column name="parameter_group" type="TEXT"/>
+      <column name="parameter_name" type="TEXT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="preclassification" type="INSPECTIONSAMPLEPRECLASSIFICATION">
+        <constraints nullable="false"/>
+      </column>
+      <column name="sample_external_id" type="UUID">
+        <constraints nullable="false"/>
+      </column>
+      <column name="user_assessment" type="TEXT"/>
+    </createTable>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1761671680885-9">
+    <addUniqueConstraint columnNames="measurement_parameters_id" constraintName="inspection_sample_measurement_par_measurement_parameters_id_key" tableName="inspection_sample_measurement_parameters"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1761671680885-10">
+    <addUniqueConstraint columnNames="evaluating_actor_id" constraintName="inspection_sample_evaluating_actor_id_key" tableName="inspection_sample"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1761671680885-11">
+    <addUniqueConstraint columnNames="sample_external_id" constraintName="inspection_sample_sample_external_id_key" tableName="inspection_sample"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1761671680885-12">
+    <addUniqueConstraint columnNames="sampling_actor_id" constraintName="inspection_sample_sampling_actor_id_key" tableName="inspection_sample"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1761671680885-13">
+    <addUniqueConstraint columnNames="measurement_parameter_external_id" constraintName="inspection_sample_measurement_measurement_parameter_externa_key" tableName="inspection_sample_measurement_parameter"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1761671680885-14">
+    <createTable tableName="inspection_sample_source">
+      <column autoIncrement="true" name="id" type="BIGINT">
+        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_inspection_sample_source"/>
+      </column>
+      <column name="version" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1761671680885-15">
+    <createIndex indexName="idx_inspection_sample_inspection_id" tableName="inspection_sample">
+      <column name="inspection_id"/>
+    </createIndex>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1761671680885-16">
+    <addForeignKeyConstraint baseColumnNames="inspection_id" baseTableName="inspection_sample" constraintName="fk_inspection_sample_inspection" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="inspection" validate="true"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1761671680885-17">
+    <addForeignKeyConstraint baseColumnNames="evaluating_actor_id" baseTableName="inspection_sample" constraintName="fk_inspection_sample_inspection_sample_evaluating_actor_reference" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="inspection_sample_actor_reference" validate="true"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1761671680885-18">
+    <addForeignKeyConstraint baseColumnNames="sampling_actor_id" baseTableName="inspection_sample" constraintName="fk_inspection_sample_inspection_sample_sampling_actor_reference" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="inspection_sample_actor_reference" validate="true"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1761671680885-19">
+    <addForeignKeyConstraint baseColumnNames="inspection_sample_id" baseTableName="inspection_sample_measurement_parameters" constraintName="fk_inspection_sample_measurement_parameters_inspection_sample" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="inspection_sample" validate="true"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1761671680885-20">
+    <addForeignKeyConstraint baseColumnNames="measurement_parameters_id" baseTableName="inspection_sample_measurement_parameters" constraintName="fk_inspection_sample_measurement_parameters_inspection_sample_measurement_parameter" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="inspection_sample_measurement_parameter" validate="true"/>
+  </changeSet>
+</databaseChangeLog>

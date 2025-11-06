@@ -11,6 +11,12 @@
   {{- fail "Unsupported configuration: database.k8sDeployment can only be enabled if database.selfmanaged is enabled as well" }}
 {{- end }}
 
+{{- if not (empty $settings.provider) }}
+  {{- if and (ne $settings.provider "cnpg") (ne $settings.provider "stackgres") }}
+    {{- fail "Unsupported configuration: database.provider can only be nil, \"cnpg\" or \"stackgres\". Nil has the same behavior as \"stackgres\"" }}
+  {{- end }}
+{{- end }}
+
 {{ if not $settings.selfmanaged }}
 
 ---
@@ -21,6 +27,10 @@ metadata:
   name: {{ $name }}-db
   namespace: {{ $.Release.Namespace }}
 spec:
+  {{- if eq $settings.provider "cnpg" }}
+  compositionRef:
+    name: vshnpostgrescnpg.vshn.appcat.vshn.io
+  {{- end }}
   parameters:
     service:
       majorVersion: "15"

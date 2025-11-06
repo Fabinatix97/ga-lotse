@@ -8,6 +8,7 @@ package de.eshg.schoolentry.domain.repository;
 import de.eshg.lib.procedure.domain.model.PersonType;
 import de.eshg.schoolentry.domain.model.Person;
 import jakarta.persistence.LockModeType;
+import java.util.List;
 import java.util.UUID;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Lock;
@@ -27,4 +28,9 @@ public interface PersonRepository extends JpaRepository<Person, Long> {
       "select p from Person p where p.procedure.externalId = :procedureId and p.centralFileStateId = :fileStateId")
   Person findByProcedureExternalIdAndFileStateIdForUpdate(
       @Param("procedureId") UUID procedureId, @Param("fileStateId") UUID fileStateId);
+
+  @Query(
+      "select p.centralFileStateId from Person p where p.personType = PersonType.PATIENT "
+          + "and p.procedure.vaccinationStatus.mmr >= 2 and p.procedure.vaccinationStatus.mmr < 9 and p.procedure.vaccinationStatus.vaccinationPassPresented = true")
+  List<UUID> findAllVaccinatedChildrenFileStateIds();
 }

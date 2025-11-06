@@ -6,8 +6,10 @@
 package de.eshg.inspection.objecttype;
 
 import de.eshg.inspection.objecttype.api.ObjectTypeDto;
+import de.eshg.inspection.objecttype.api.ObjectTypeHierarchyTreeNodeDto;
 import de.eshg.inspection.objecttype.api.UpdateObjectTypeRequest;
 import de.eshg.inspection.objecttype.persistence.ObjectType;
+import de.eshg.inspection.objecttype.persistence.ObjectTypeHierarchyTreeNode;
 
 public class ObjectTypeMapper {
 
@@ -26,6 +28,16 @@ public class ObjectTypeMapper {
         objectType.getStandardBufferTime(),
         objectType.isEmailAnnouncement(),
         objectType.getLegalBasis());
+  }
+
+  public static ObjectTypeHierarchyTreeNodeDto toDto(ObjectTypeHierarchyTreeNode treeNode) {
+    if (treeNode == null) {
+      return null;
+    }
+    return new ObjectTypeHierarchyTreeNodeDto(
+        treeNode.getName(),
+        treeNode.getSubNodes().stream().map(ObjectTypeMapper::toDto).toList(),
+        treeNode.getObjectTypes().stream().map(ObjectTypeMapper::toDto).toList());
   }
 
   public static ObjectType mapUpdateRequest(

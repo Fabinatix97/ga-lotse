@@ -36,7 +36,7 @@ public class DentalProphylaxisSessionDataSource
     super(
         DATA_SOURCE_ID,
         DATA_SOURCE_NAME,
-        DataSourceSensitivity.SENSITIVE,
+        DataSourceSensitivity.INTERNAL_USAGE,
         null,
         DentalProphylaxisSessionAttributes.values());
     this.prophylaxisSessionRepository = prophylaxisSessionRepository;

@@ -3539,6 +3539,251 @@
         "tags" : [ "InspectionIncident" ]
       }
     },
+    "/inspections/{inspectionId}/samples" : {
+      "get" : {
+        "operationId" : "getSamples",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "inspectionId",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/GetInspectionSamplesResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Get all samples of an inspection",
+        "tags" : [ "InspectionSample" ]
+      },
+      "post" : {
+        "operationId" : "createSample",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "inspectionId",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/CreateInspectionSampleRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/InspectionSample"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Creates a new sample",
+        "tags" : [ "InspectionSample" ]
+      }
+    },
+    "/inspections/{inspectionId}/samples/{sampleId}" : {
+      "delete" : {
+        "operationId" : "deleteSample",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "inspectionId",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }, {
+          "in" : "path",
+          "name" : "sampleId",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          }
+        },
+        "summary" : "Delete a sample",
+        "tags" : [ "InspectionSample" ]
+      },
+      "put" : {
+        "operationId" : "updateSample",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "inspectionId",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }, {
+          "in" : "path",
+          "name" : "sampleId",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/UpdateInspectionSampleRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/InspectionSample"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Update a sample",
+        "tags" : [ "InspectionSample" ]
+      }
+    },
+    "/inspections/{inspectionId}/samples/{sampleId}/measurement-parameters/{measurementParameterId}/user-assessment" : {
+      "post" : {
+        "operationId" : "updateSampleMeasurementParameterUserAssessment",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "inspectionId",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }, {
+          "in" : "path",
+          "name" : "sampleId",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }, {
+          "in" : "path",
+          "name" : "measurementParameterId",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/UpdateInspectionSampleMeasurementParameterUserAssessmentRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/InspectionSampleMeasurementParameter"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Update a sample's measurement parameter's value",
+        "tags" : [ "InspectionSample" ]
+      }
+    },
+    "/inspections/{inspectionId}/samples/{sampleId}/measurement-parameters/{measurementParameterId}/value" : {
+      "post" : {
+        "operationId" : "updateSampleMeasurementParameterValue",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "inspectionId",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }, {
+          "in" : "path",
+          "name" : "sampleId",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }, {
+          "in" : "path",
+          "name" : "measurementParameterId",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/UpdateInspectionSampleMeasurementParameterValueRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/InspectionSampleMeasurementParameter"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Update a sample's measurement parameter's value",
+        "tags" : [ "InspectionSample" ]
+      }
+    },
     "/objecttypes" : {
       "get" : {
         "operationId" : "getObjectTypes",
@@ -3555,6 +3800,25 @@
           }
         },
         "summary" : "Get all objecttypes",
+        "tags" : [ "ObjectType" ]
+      }
+    },
+    "/objecttypes/hierarchy" : {
+      "get" : {
+        "operationId" : "getObjectTypesHierarchy",
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/GetObjectTypesHierarchyResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Get the tree of all objecttypes",
         "tags" : [ "ObjectType" ]
       }
     },
@@ -6515,6 +6779,23 @@
         "type" : "string",
         "enum" : [ "COMPLETE", "PARTIALLY_COMPLETE", "INCOMPLETE" ]
       },
+      "Contact" : {
+        "required" : [ "@type" ],
+        "type" : "object",
+        "properties" : {
+          "@type" : {
+            "type" : "string"
+          }
+        },
+        "discriminator" : {
+          "propertyName" : "@type"
+        }
+      },
+      "ContactCategory" : {
+        "type" : "string",
+        "description" : "The list of possible types under which an Institution in the Contact Management can be categorized.",
+        "enum" : [ "LABORATORY", "SCHOOL", "DOCTORS_OFFICE", "HEALTH_DEPARTMENT", "MISC", "DAYCARE" ]
+      },
       "ContactDetails" : {
         "required" : [ "contactType", "salutation" ],
         "type" : "object",
@@ -6551,6 +6832,11 @@
             "$ref" : "#/components/schemas/Title"
           }
         }
+      },
+      "ContactSubCategory" : {
+        "type" : "string",
+        "description" : "The list of possible sub-types under which an Institution in the Contact Management can be categorized.",
+        "enum" : [ "BERUFSSCHULE", "FOERDERSCHULE", "GRUNDSCHULE", "GRUND_HAUPTSCHULE", "GRUND_HAUPT_REALSCHULE", "GYMNASIUM", "HAUPTSCHULE", "HAUPT_REALSCHULE", "INTEGRIERTE_GESAMTSCHULE", "KOOPERATIVE_GESAMTSCHULE", "REALSCHULE" ]
       },
       "ContactType" : {
         "type" : "string",
@@ -6615,6 +6901,77 @@
           "title" : {
             "minLength" : 1,
             "type" : "string"
+          }
+        }
+      },
+      "CreateInspectionSampleMeasurementParameterRequest" : {
+        "required" : [ "externalId", "parameterName" ],
+        "type" : "object",
+        "properties" : {
+          "externalId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "parameterGroup" : {
+            "type" : "string"
+          },
+          "parameterName" : {
+            "type" : "string"
+          }
+        }
+      },
+      "CreateInspectionSampleRequest" : {
+        "required" : [ "evaluatingActor", "evaluationType", "externalId", "measurementParameters", "pointOfWithdrawal", "samplingActor", "typeOfSample" ],
+        "type" : "object",
+        "properties" : {
+          "evaluatingActor" : {
+            "oneOf" : [ {
+              "$ref" : "#/components/schemas/InspectionSampleContactReference"
+            }, {
+              "$ref" : "#/components/schemas/InspectionSampleInspectedFacilityReference"
+            }, {
+              "$ref" : "#/components/schemas/InspectionSampleUserReference"
+            } ]
+          },
+          "evaluationType" : {
+            "$ref" : "#/components/schemas/InspectionSampleEvaluationType"
+          },
+          "externalId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "measurementParameters" : {
+            "minItems" : 1,
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/CreateInspectionSampleMeasurementParameterRequest"
+            }
+          },
+          "nameOfSamplingPoint" : {
+            "type" : "string"
+          },
+          "pointOfWithdrawal" : {
+            "type" : "string"
+          },
+          "samplingActor" : {
+            "oneOf" : [ {
+              "$ref" : "#/components/schemas/InspectionSampleContactReference"
+            }, {
+              "$ref" : "#/components/schemas/InspectionSampleInspectedFacilityReference"
+            }, {
+              "$ref" : "#/components/schemas/InspectionSampleUserReference"
+            } ]
+          },
+          "timeOfEvaluation" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "timeOfSampling" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "typeOfSample" : {
+            "$ref" : "#/components/schemas/InspectionSampleType"
           }
         }
       },
@@ -7966,6 +8323,18 @@
           }
         }
       },
+      "GetInspectionSamplesResponse" : {
+        "required" : [ "samples" ],
+        "type" : "object",
+        "properties" : {
+          "samples" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/InspectionSample"
+            }
+          }
+        }
+      },
       "GetInternalConfigDepartmentInfoResponse" : {
         "type" : "object",
         "properties" : {
@@ -8011,6 +8380,15 @@
             "items" : {
               "$ref" : "#/components/schemas/ChecklistDefinitionCentralRepoMetadata"
             }
+          }
+        }
+      },
+      "GetObjectTypesHierarchyResponse" : {
+        "required" : [ "root" ],
+        "type" : "object",
+        "properties" : {
+          "root" : {
+            "$ref" : "#/components/schemas/ObjectTypeHierarchyTreeNode"
           }
         }
       },
@@ -9249,7 +9627,7 @@
       },
       "InspectionFeature" : {
         "type" : "string",
-        "enum" : [ "STATISTIC_ANONYMIZATION" ]
+        "enum" : [ "STATISTIC_ANONYMIZATION", "SAMPLES", "OBJECT_TYPE_HIERARCHY" ]
       },
       "InspectionFollowupInfo" : {
         "type" : "object",
@@ -9406,6 +9784,218 @@
         "type" : "string",
         "enum" : [ "OPEN", "SUCCESSFUL", "FAILED", "SUCCESSFUL_WITH_INCIDENTS" ]
       },
+      "InspectionSample" : {
+        "required" : [ "createdAt", "evaluatingActor", "evaluationType", "inspectionId", "measurementParameters", "pointOfWithdrawal", "sampleId", "samplingActor", "typeOfSample" ],
+        "type" : "object",
+        "properties" : {
+          "createdAt" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "evaluatingActor" : {
+            "oneOf" : [ {
+              "$ref" : "#/components/schemas/InspectionSampleContact"
+            }, {
+              "$ref" : "#/components/schemas/InspectionSampleInspectedFacility"
+            }, {
+              "$ref" : "#/components/schemas/InspectionSampleUser"
+            } ]
+          },
+          "evaluationType" : {
+            "$ref" : "#/components/schemas/InspectionSampleEvaluationType"
+          },
+          "inspectionId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "label" : {
+            "type" : "string"
+          },
+          "measurementParameters" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/InspectionSampleMeasurementParameter"
+            }
+          },
+          "nameOfSamplingPoint" : {
+            "type" : "string"
+          },
+          "pointOfWithdrawal" : {
+            "type" : "string"
+          },
+          "sampleId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "samplingActor" : {
+            "oneOf" : [ {
+              "$ref" : "#/components/schemas/InspectionSampleContact"
+            }, {
+              "$ref" : "#/components/schemas/InspectionSampleInspectedFacility"
+            }, {
+              "$ref" : "#/components/schemas/InspectionSampleUser"
+            } ]
+          },
+          "timeOfEvaluation" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "timeOfSampling" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "typeOfSample" : {
+            "$ref" : "#/components/schemas/InspectionSampleType"
+          }
+        }
+      },
+      "InspectionSampleActor" : {
+        "required" : [ "@type" ],
+        "type" : "object",
+        "properties" : {
+          "@type" : {
+            "type" : "string"
+          }
+        },
+        "discriminator" : {
+          "propertyName" : "@type"
+        }
+      },
+      "InspectionSampleActorReference" : {
+        "required" : [ "@type" ],
+        "type" : "object",
+        "properties" : {
+          "@type" : {
+            "type" : "string"
+          }
+        },
+        "discriminator" : {
+          "propertyName" : "@type"
+        }
+      },
+      "InspectionSampleContact" : {
+        "required" : [ "contact" ],
+        "type" : "object",
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/InspectionSampleActor"
+        }, {
+          "type" : "object",
+          "properties" : {
+            "contact" : {
+              "oneOf" : [ {
+                "$ref" : "#/components/schemas/InstitutionContact"
+              }, {
+                "$ref" : "#/components/schemas/PersonContact"
+              } ]
+            }
+          }
+        } ]
+      },
+      "InspectionSampleContactReference" : {
+        "required" : [ "contactId" ],
+        "type" : "object",
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/InspectionSampleActorReference"
+        }, {
+          "type" : "object",
+          "properties" : {
+            "contactId" : {
+              "type" : "string",
+              "format" : "uuid"
+            }
+          }
+        } ]
+      },
+      "InspectionSampleEvaluationType" : {
+        "type" : "string",
+        "enum" : [ "ON_SITE", "LABORATORY" ]
+      },
+      "InspectionSampleInspectedFacility" : {
+        "required" : [ "facilityFileState" ],
+        "type" : "object",
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/InspectionSampleActor"
+        }, {
+          "type" : "object",
+          "properties" : {
+            "facilityFileState" : {
+              "$ref" : "#/components/schemas/GetFacilityFileStateResponse"
+            }
+          }
+        } ]
+      },
+      "InspectionSampleInspectedFacilityReference" : {
+        "type" : "object",
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/InspectionSampleActorReference"
+        } ]
+      },
+      "InspectionSampleMeasurementParameter" : {
+        "required" : [ "externalId", "parameterName" ],
+        "type" : "object",
+        "properties" : {
+          "externalId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "measurementValue" : {
+            "type" : "number",
+            "format" : "double"
+          },
+          "parameterGroup" : {
+            "type" : "string"
+          },
+          "parameterName" : {
+            "type" : "string"
+          },
+          "preclassification" : {
+            "$ref" : "#/components/schemas/InspectionSamplePreclassification"
+          },
+          "unit" : {
+            "type" : "string"
+          },
+          "userAssessment" : {
+            "type" : "string"
+          }
+        }
+      },
+      "InspectionSamplePreclassification" : {
+        "type" : "string",
+        "enum" : [ "PENDING", "TOO_LOW", "WITHIN_NORM", "TOO_HIGH", "NO_NORM_SPECIFIED" ]
+      },
+      "InspectionSampleType" : {
+        "type" : "string",
+        "enum" : [ "DRINKING_WATER", "BATH_WATER" ]
+      },
+      "InspectionSampleUser" : {
+        "required" : [ "user" ],
+        "type" : "object",
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/InspectionSampleActor"
+        }, {
+          "type" : "object",
+          "properties" : {
+            "user" : {
+              "$ref" : "#/components/schemas/User"
+            }
+          }
+        } ]
+      },
+      "InspectionSampleUserReference" : {
+        "required" : [ "userId" ],
+        "type" : "object",
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/InspectionSampleActorReference"
+        }, {
+          "type" : "object",
+          "properties" : {
+            "userId" : {
+              "type" : "string",
+              "format" : "uuid"
+            }
+          }
+        } ]
+      },
       "InspectionSyncFileStateRequest" : {
         "required" : [ "facilityVersion" ],
         "type" : "object",
@@ -9440,6 +10030,71 @@
       "InspectionType" : {
         "type" : "string",
         "enum" : [ "REGULAR", "REGULAR_AFTER_INCIDENTS", "REVIEW", "INITIAL", "COMPLAINT", "DOCUMENT_INSPECTION", "IMPORT" ]
+      },
+      "InstitutionContact" : {
+        "required" : [ "emailAddresses", "id", "name", "phoneNumbers" ],
+        "type" : "object",
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/Contact"
+        }, {
+          "type" : "object",
+          "properties" : {
+            "category" : {
+              "$ref" : "#/components/schemas/ContactCategory"
+            },
+            "contactAddress" : {
+              "oneOf" : [ {
+                "$ref" : "#/components/schemas/DomesticAddress"
+              }, {
+                "$ref" : "#/components/schemas/PostboxAddress"
+              } ]
+            },
+            "differentBillingAddress" : {
+              "oneOf" : [ {
+                "$ref" : "#/components/schemas/DomesticAddress"
+              }, {
+                "$ref" : "#/components/schemas/PostboxAddress"
+              } ]
+            },
+            "emailAddresses" : {
+              "type" : "array",
+              "description" : "A list of email addresses of the Contact.",
+              "example" : "['mail1@address.de','mail2@address.de','mail3@address.de']",
+              "items" : {
+                "type" : "string"
+              }
+            },
+            "id" : {
+              "type" : "string",
+              "description" : "Id of the Contact.",
+              "format" : "uuid",
+              "example" : "UUID_2"
+            },
+            "mergedIntoId" : {
+              "type" : "string",
+              "description" : "Id of the Contact into which this Contact has been merged. Contact details are taken from this Id automatically, the Contact history remains with the old Id.",
+              "format" : "uuid",
+              "example" : "UUID_1"
+            },
+            "name" : {
+              "minLength" : 1,
+              "type" : "string",
+              "description" : "The name of the Institution.",
+              "example" : "123 Example Laboratory"
+            },
+            "phoneNumbers" : {
+              "type" : "array",
+              "description" : "A list of telephone numbers of the Contact.",
+              "example" : "['+4912345678901','+4912345678902','+4912345678903']",
+              "items" : {
+                "type" : "string"
+              }
+            },
+            "subCategory" : {
+              "$ref" : "#/components/schemas/ContactSubCategory"
+            }
+          }
+        } ]
       },
       "InterceptionType" : {
         "type" : "string",
@@ -9709,6 +10364,28 @@
           }
         }
       },
+      "ObjectTypeHierarchyTreeNode" : {
+        "required" : [ "name", "objectTypes", "subNodes" ],
+        "type" : "object",
+        "properties" : {
+          "name" : {
+            "minLength" : 1,
+            "type" : "string"
+          },
+          "objectTypes" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/ObjectType"
+            }
+          },
+          "subNodes" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/ObjectTypeHierarchyTreeNode"
+            }
+          }
+        }
+      },
       "ObjectTypeRef" : {
         "required" : [ "id", "name" ],
         "type" : "object",
@@ -9921,6 +10598,86 @@
           "properties" : {
             "pdfMetaData" : {
               "$ref" : "#/components/schemas/PdfMetaData"
+            }
+          }
+        } ]
+      },
+      "PersonContact" : {
+        "required" : [ "emailAddresses", "id", "name", "phoneNumbers" ],
+        "type" : "object",
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/Contact"
+        }, {
+          "type" : "object",
+          "properties" : {
+            "contactAddress" : {
+              "oneOf" : [ {
+                "$ref" : "#/components/schemas/DomesticAddress"
+              }, {
+                "$ref" : "#/components/schemas/PostboxAddress"
+              } ]
+            },
+            "differentBillingAddress" : {
+              "oneOf" : [ {
+                "$ref" : "#/components/schemas/DomesticAddress"
+              }, {
+                "$ref" : "#/components/schemas/PostboxAddress"
+              } ]
+            },
+            "emailAddresses" : {
+              "type" : "array",
+              "description" : "A list of email addresses of the Contact.",
+              "example" : "['mail1@address.de','mail2@address.de','mail3@address.de']",
+              "items" : {
+                "type" : "string"
+              }
+            },
+            "externalChatUsername" : {
+              "type" : "string",
+              "description" : "The chat username of the gematik TI-Messenger (matrix chat).",
+              "example" : "@username:server"
+            },
+            "firstName" : {
+              "type" : "string",
+              "description" : "The given name(s) of the Person.",
+              "example" : "John"
+            },
+            "gender" : {
+              "$ref" : "#/components/schemas/Gender"
+            },
+            "id" : {
+              "type" : "string",
+              "description" : "Id of the Contact.",
+              "format" : "uuid",
+              "example" : "UUID_2"
+            },
+            "mergedIntoId" : {
+              "type" : "string",
+              "description" : "Id of the Contact into which this Contact has been merged. Contact details are taken from this Id automatically, the Contact history remains with the old Id.",
+              "format" : "uuid",
+              "example" : "UUID_1"
+            },
+            "name" : {
+              "minLength" : 1,
+              "type" : "string",
+              "description" : "The last name of the Person.",
+              "example" : "Doe"
+            },
+            "phoneNumbers" : {
+              "type" : "array",
+              "description" : "A list of telephone numbers of the Contact.",
+              "example" : "['+4912345678901','+4912345678902','+4912345678903']",
+              "items" : {
+                "type" : "string"
+              }
+            },
+            "salutation" : {
+              "$ref" : "#/components/schemas/Salutation"
+            },
+            "title" : {
+              "type" : "string",
+              "description" : "The academic title of a Person.",
+              "example" : "Prof. Dr."
             }
           }
         } ]
@@ -10881,6 +11638,81 @@
           },
           "type" : {
             "$ref" : "#/components/schemas/InspectionType"
+          }
+        }
+      },
+      "UpdateInspectionSampleMeasurementParameterUserAssessmentRequest" : {
+        "type" : "object",
+        "properties" : {
+          "userAssessment" : {
+            "type" : "string"
+          }
+        }
+      },
+      "UpdateInspectionSampleMeasurementParameterValueRequest" : {
+        "required" : [ "value" ],
+        "type" : "object",
+        "properties" : {
+          "value" : {
+            "type" : "number",
+            "format" : "double"
+          }
+        }
+      },
+      "UpdateInspectionSampleRequest" : {
+        "required" : [ "evaluatingActor", "evaluationType", "measurementParametersToAdd", "measurementParametersToDelete", "pointOfWithdrawal", "samplingActor", "typeOfSample" ],
+        "type" : "object",
+        "properties" : {
+          "evaluatingActor" : {
+            "oneOf" : [ {
+              "$ref" : "#/components/schemas/InspectionSampleContactReference"
+            }, {
+              "$ref" : "#/components/schemas/InspectionSampleInspectedFacilityReference"
+            }, {
+              "$ref" : "#/components/schemas/InspectionSampleUserReference"
+            } ]
+          },
+          "evaluationType" : {
+            "$ref" : "#/components/schemas/InspectionSampleEvaluationType"
+          },
+          "measurementParametersToAdd" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/CreateInspectionSampleMeasurementParameterRequest"
+            }
+          },
+          "measurementParametersToDelete" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "format" : "uuid"
+            }
+          },
+          "nameOfSamplingPoint" : {
+            "type" : "string"
+          },
+          "pointOfWithdrawal" : {
+            "type" : "string"
+          },
+          "samplingActor" : {
+            "oneOf" : [ {
+              "$ref" : "#/components/schemas/InspectionSampleContactReference"
+            }, {
+              "$ref" : "#/components/schemas/InspectionSampleInspectedFacilityReference"
+            }, {
+              "$ref" : "#/components/schemas/InspectionSampleUserReference"
+            } ]
+          },
+          "timeOfEvaluation" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "timeOfSampling" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "typeOfSample" : {
+            "$ref" : "#/components/schemas/InspectionSampleType"
           }
         }
       },

@@ -8,6 +8,7 @@ package de.eshg.schoolentry.config;
 import de.eshg.lib.keycloak.EmployeePermissionRole;
 import de.eshg.rest.service.security.AuthorizationCustomizer;
 import de.eshg.rest.service.security.config.BaseUrls.SchoolEntry;
+import de.eshg.schoolentry.VaccinatedFileStatesController;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -18,6 +19,8 @@ public class SchoolEntryInternalSecurityConfig {
   public AuthorizationCustomizer schoolEntryAuthorizationCustomizer() {
     return auth ->
         auth.requestMatchers(HttpMethod.POST, SchoolEntry.VACCINATION_CHECK)
-            .hasRole(EmployeePermissionRole.SCHOOL_ENTRY_VACCINATION_CHECK.name());
+            .hasRole(EmployeePermissionRole.SCHOOL_ENTRY_VACCINATION_CHECK.name())
+            .requestMatchers(HttpMethod.GET, VaccinatedFileStatesController.BASE_URL)
+            .hasRole(EmployeePermissionRole.SCHOOL_ENTRY_VACCINATED_FILE_STATES.name());
   }
 }

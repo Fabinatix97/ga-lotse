@@ -12,7 +12,6 @@ import de.eshg.schoolentry.domain.repository.SchoolEntryProcedureRepository;
 import de.eshg.schoolentry.mapper.VaccinationStatusMapper;
 import java.util.List;
 import java.util.UUID;
-import java.util.function.Predicate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -36,7 +35,6 @@ public class VaccinationCheckService {
         procedures.stream()
             .map(SchoolEntryProcedure::getVaccinationStatus)
             .map(VaccinationStatusMapper::mapToMeaslesVaccinationStatusDto)
-            .filter(Predicate.not(MeaslesVaccinationDto::isEmpty))
             .distinct()
             .toList();
     if (results.size() == 1) {

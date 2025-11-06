@@ -306,8 +306,13 @@ public abstract class RowReader<R extends RowData<R>, C extends XlsxColumn> {
   }
 
   protected LocalDate cellAsDateOfBirth(
-      ColumnAccessor<C> col, C column, ErrorHandler errorHandler) {
+      ColumnAccessor<C> col, C column, boolean optional, ErrorHandler errorHandler) {
     Cell cell = col.get(column);
+
+    if (isOptionalBlank(cell, optional)) {
+      return null;
+    }
+
     LocalDate dateOfBirth =
         Objects.equals(cell.getCellType(), CellType.STRING)
             ? cellAsDateString(cell, errorHandler)

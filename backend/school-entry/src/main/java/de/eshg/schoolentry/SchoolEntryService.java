@@ -124,6 +124,7 @@ public class SchoolEntryService {
         saveSchoolEntryProcedure(
             createdId,
             List.of(),
+            List.of(),
             ProcedureMapper.mapToDomain(request.type()),
             null,
             null,
@@ -175,7 +176,8 @@ public class SchoolEntryService {
       SchoolEntryProcedure schoolEntryProcedure =
           saveSchoolEntryProcedure(
               procedureIds.childId(),
-              procedureIds.custodianIds(),
+              procedureIds.custodianWithDateOfBirthIds(),
+              procedureIds.custodianWithoutDateOfBirthIds(),
               procedure.procedureType(),
               schoolId,
               null,
@@ -227,7 +229,8 @@ public class SchoolEntryService {
       SchoolEntryProcedure schoolEntryProcedure =
           saveSchoolEntryProcedure(
               procedureIds.childId(),
-              procedureIds.custodianIds(),
+              procedureIds.custodianWithDateOfBirthIds(),
+              procedureIds.custodianWithoutDateOfBirthIds(),
               procedureType,
               schoolId,
               locationId,
@@ -275,7 +278,8 @@ public class SchoolEntryService {
 
   private SchoolEntryProcedure saveSchoolEntryProcedure(
       UUID childIdFromCentralFile,
-      List<UUID> custodianIdsFromCentralFile,
+      List<UUID> custodianWithDateOfBirthIdsFromCentralFile,
+      List<UUID> custodianWithoutDateOfBirthIdsFromCentralFile,
       ProcedureType type,
       UUID schoolId,
       UUID locationId,
@@ -303,9 +307,13 @@ public class SchoolEntryService {
 
     buildChild(childIdFromCentralFile, schoolEntryProcedure);
 
-    for (UUID custodianId : custodianIdsFromCentralFile) {
+    for (UUID custodianId : custodianWithDateOfBirthIdsFromCentralFile) {
       buildCustodian(custodianId, schoolEntryProcedure);
     }
+
+    schoolEntryProcedure
+        .getCustodianWithoutDob()
+        .addAll(custodianWithoutDateOfBirthIdsFromCentralFile);
 
     schoolEntryProcedure.setHearingTestResult(hearingTestResult);
     schoolEntryProcedure.setEyeExaminationResult(eyeExaminationResult);

@@ -41,7 +41,7 @@ public class ChildRowReader extends RowReader<ChildRow, ChildColumn> {
     return new ImportChildData(
         cellAsString(col, LAST_NAME, errorHandler),
         cellAsString(col, FIRST_NAME, errorHandler),
-        cellAsDateOfBirth(col, DATE_OF_BIRTH, errorHandler),
+        cellAsDateOfBirth(col, DATE_OF_BIRTH, false, errorHandler),
         cellAsGender(col, GENDER, errorHandler),
         cellAsString(col, GROUP, isGroupNameOptional, false, errorHandler),
         readAddressData(col, CHILD_ADDRESS_COLUMNS, errorHandler, false));

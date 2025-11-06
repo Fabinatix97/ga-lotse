@@ -21,6 +21,7 @@ import {
   InspectionGeoApi,
   InspectionIncidentApi,
   InspectionPropertiesConfigApi,
+  InspectionSampleApi,
   ObjectTypeApi,
   PacklistApi,
   PacklistDefinitionApi,
@@ -158,4 +159,9 @@ export function useGdprValidationTaskApi() {
 export function useConfigApi() {
   const configuration = useConfiguration();
   return new InspectionPropertiesConfigApi(configuration);
+}
+
+export function useSampleApi() {
+  const configuration = useConfiguration();
+  return new InspectionSampleApi(configuration);
 }

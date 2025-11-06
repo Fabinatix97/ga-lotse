@@ -12,7 +12,8 @@ import java.util.List;
 
 public record ImportProcedureData(
     CreatePersonDto child,
-    List<ImportCustodianData> custodians,
+    List<ImportCustodianData> custodiansWithDateOfBirth,
+    List<ImportCustodianData> custodiansWithoutDateOfBirth,
     ProcedureType procedureType,
     LocalDate examinationDate,
     boolean isEntryLevel,
@@ -28,6 +29,7 @@ public record ImportProcedureData(
       boolean hasInformationBlock) {
     this(
         child,
+        List.of(),
         List.of(),
         procedureType,
         examinationDate,

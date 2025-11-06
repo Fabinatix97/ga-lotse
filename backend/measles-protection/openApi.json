@@ -4038,6 +4038,70 @@
         "tags" : [ "TestHelper" ]
       }
     },
+    "/test-helper/polytune-mock" : {
+      "get" : {
+        "description" : "The interactions (and also the mock itself) are automatically reset after every test.",
+        "operationId" : "getPolytuneMockInteractions",
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/GetPolytuneMockInteractionsResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Get all polytune mock interactions recorded during the current test",
+        "tags" : [ "TestHelper" ]
+      },
+      "post" : {
+        "description" : "The polytune mock can be initialized with a map of simulated vaccination check results by fileStateIds. Also, a calculation duration can be set which then applies for *all* simulated calculations. If the mock is initialized with an empty request, a default behavior (no vaccination results, zero calculation time) is assumed. If the mock is not initialized at all, every subsequent call to the mocked API will fail with an exception.",
+        "operationId" : "initializePolytuneMock",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/PolytuneMockIntitializeRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          }
+        },
+        "summary" : "Initialize the polytune mock",
+        "tags" : [ "TestHelper" ]
+      }
+    },
+    "/test-helper/polytune-mock/error" : {
+      "post" : {
+        "description" : "Defines an error which will be returned during the next call to the mocked polytune API. Any subsequent API call after the next one will again work as normal (without the simulated error).",
+        "operationId" : "simulatePolytuneMockError",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/PolytuneMockSimulateErrorRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          }
+        },
+        "summary" : "Simulate a polytune error",
+        "tags" : [ "TestHelper" ]
+      }
+    },
     "/test-helper/population" : {
       "post" : {
         "operationId" : "populateDefaults",
@@ -6910,6 +6974,21 @@
           }
         }
       },
+      "GetPolytuneMockInteractionsResponse" : {
+        "type" : "object",
+        "properties" : {
+          "interactions" : {
+            "type" : "array",
+            "items" : {
+              "oneOf" : [ {
+                "$ref" : "#/components/schemas/GetResult"
+              }, {
+                "$ref" : "#/components/schemas/Schedule"
+              } ]
+            }
+          }
+        }
+      },
       "GetPrivacyDocumentConfigResponse" : {
         "type" : "object",
         "properties" : {
@@ -7166,6 +7245,30 @@
         "type" : "string",
         "default" : "ASC",
         "enum" : [ "ASC", "DESC" ]
+      },
+      "GetResult" : {
+        "type" : "object",
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/PolytuneMockInteraction"
+        }, {
+          "type" : "object",
+          "properties" : {
+            "httpStatus" : {
+              "$ref" : "#/components/schemas/PolytuneMockHttpStatus"
+            },
+            "requestId" : {
+              "type" : "string",
+              "format" : "uuid"
+            },
+            "response" : {
+              "$ref" : "#/components/schemas/PolytuneMeaslesVaccinationCheckResponse"
+            },
+            "time" : {
+              "type" : "string",
+              "format" : "date-time"
+            }
+          }
+        } ]
       },
       "GetTaskByUserResponse" : {
         "required" : [ "resolvedUsers", "tasksByUser" ],
@@ -7854,6 +7957,92 @@
         "type" : "string",
         "enum" : [ "PATIENT", "PARENT", "PROFESSIONAL", "EMPLOYEE" ]
       },
+      "PolytuneMeaslesVaccinationCheckResponse" : {
+        "type" : "object",
+        "properties" : {
+          "result" : {
+            "$ref" : "#/components/schemas/PolytuneMeaslesVaccinationCheckResult"
+          },
+          "status" : {
+            "$ref" : "#/components/schemas/PolytuneMeaslesVaccinationCheckStatus"
+          }
+        }
+      },
+      "PolytuneMeaslesVaccinationCheckResult" : {
+        "type" : "object",
+        "properties" : {
+          "match" : {
+            "type" : "boolean"
+          }
+        }
+      },
+      "PolytuneMeaslesVaccinationCheckStatus" : {
+        "type" : "string",
+        "enum" : [ "PENDING", "COMPLETED" ]
+      },
+      "PolytuneMockHttpErrorStatus" : {
+        "type" : "string",
+        "enum" : [ "BAD_REQUEST", "NOT_FOUND", "INTERNAL_SERVER_ERROR" ]
+      },
+      "PolytuneMockHttpStatus" : {
+        "type" : "string",
+        "enum" : [ "OK", "BAD_REQUEST", "NOT_FOUND", "INTERNAL_SERVER_ERROR" ]
+      },
+      "PolytuneMockInteraction" : {
+        "required" : [ "@type" ],
+        "type" : "object",
+        "properties" : {
+          "@type" : {
+            "type" : "string"
+          }
+        },
+        "discriminator" : {
+          "propertyName" : "@type"
+        }
+      },
+      "PolytuneMockIntitializeRequest" : {
+        "type" : "object",
+        "properties" : {
+          "calculationTime" : {
+            "type" : "string"
+          },
+          "results" : {
+            "type" : "object",
+            "additionalProperties" : {
+              "$ref" : "#/components/schemas/PolytuneMeaslesVaccinationCheckResult"
+            }
+          }
+        }
+      },
+      "PolytuneMockSimulateErrorRequest" : {
+        "required" : [ "errorMessage", "errorType" ],
+        "type" : "object",
+        "properties" : {
+          "errorMessage" : {
+            "type" : "string"
+          },
+          "errorType" : {
+            "$ref" : "#/components/schemas/PolytuneMockHttpErrorStatus"
+          }
+        }
+      },
+      "PolytuneScheduleMeaslesVaccinationCheckRequest" : {
+        "required" : [ "fileStateIds", "requestId" ],
+        "type" : "object",
+        "properties" : {
+          "fileStateIds" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "format" : "uuid"
+            }
+          },
+          "requestId" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }
+      },
       "Population" : {
         "required" : [ "numberOfPopulatedEntities", "totalNumberOfEntities" ],
         "type" : "object",
@@ -8337,6 +8526,26 @@
             "description" : "Indicates whether the letter was sent with a delivery certificate."
           }
         }
+      },
+      "Schedule" : {
+        "type" : "object",
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/PolytuneMockInteraction"
+        }, {
+          "type" : "object",
+          "properties" : {
+            "httpStatus" : {
+              "$ref" : "#/components/schemas/PolytuneMockHttpStatus"
+            },
+            "request" : {
+              "$ref" : "#/components/schemas/PolytuneScheduleMeaslesVaccinationCheckRequest"
+            },
+            "time" : {
+              "type" : "string",
+              "format" : "date-time"
+            }
+          }
+        } ]
       },
       "SelfAssignTaskRequest" : {
         "required" : [ "taskVersion" ],

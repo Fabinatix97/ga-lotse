@@ -23,6 +23,7 @@ import {
   reportingReasonNames,
   roleStatusNames,
 } from "@/lib/businessModules/measlesProtection/components/procedures/constants";
+import { VaccinationStatusSection } from "@/lib/businessModules/measlesProtection/components/procedures/procedureDetails/VaccinationStatusSection";
 import { ReopenProcedureModal } from "@/lib/businessModules/measlesProtection/components/procedures/proceduresTable/ReopenProcedureModal";
 import { useProceduresContext } from "@/lib/businessModules/measlesProtection/shared/ProceduresContext";
 import { InfoTile } from "@/lib/shared/components/infoTile/InfoTile";
@@ -105,20 +106,28 @@ export function AdditionalInfoSection({
           </Stack>
         </DetailsList>
       </InfoTile>
+      <VaccinationStatusSection
+        procedureId={procedure.id}
+        measlesVaccinationStatus={
+          procedure.measlesVaccinationStatusFromSchoolEntry
+        }
+      />
       <Sheet component="section">
         {!procedure.isOpen ? (
           <Button color="danger" fullWidth onClick={handleReopenProcedure}>
             Vorgang wiedereröffnen
           </Button>
         ) : (
-          <Button
-            disabled={closeProcedure.isPending}
-            loading={closeProcedure.isPending}
-            fullWidth
-            onClick={() => setIsRequestingFinalize(true)}
-          >
-            Vorgang abschließen
-          </Button>
+          <Stack gap={3}>
+            <Button
+              disabled={closeProcedure.isPending}
+              loading={closeProcedure.isPending}
+              fullWidth
+              onClick={() => setIsRequestingFinalize(true)}
+            >
+              Vorgang abschließen
+            </Button>
+          </Stack>
         )}
       </Sheet>
       <ConfirmationDialog

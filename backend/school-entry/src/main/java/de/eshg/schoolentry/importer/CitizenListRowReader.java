@@ -77,7 +77,7 @@ class CitizenListRowReader extends RowReader<CitizenListRow, CitizenListColumn> 
     String lastName = cellAsString(col, LAST_NAME, errorHandler);
     String firstName = cellAsString(col, FIRST_NAME, errorHandler);
     AddressData addressData = readAddressData(col, CHILD_ADDRESS_COLUMNS, errorHandler, true);
-    LocalDate birthDate = cellAsDateOfBirth(col, DATE_OF_BIRTH, errorHandler);
+    LocalDate birthDate = cellAsDateOfBirth(col, DATE_OF_BIRTH, false, errorHandler);
     String placeOfBirth = cellAsString(col, PLACE_OF_BIRTH, true, false, errorHandler);
     CountryCode countryCode = cellAsCountryCode(col, COUNTRY_OF_BIRTH, errorHandler);
     GenderDto genderDto = cellAsGender(col, GENDER, errorHandler);
@@ -94,7 +94,7 @@ class CitizenListRowReader extends RowReader<CitizenListRow, CitizenListColumn> 
         String firstName = cellAsString(col, custodian.firstName(), errorHandler);
         String lastName = cellAsString(col, custodian.lastName(), errorHandler);
         AddressData address = readAddressData(col, custodian.address(), errorHandler, false);
-        LocalDate dateOfBirth = cellAsDateOfBirth(col, custodian.dateOfBirth(), errorHandler);
+        LocalDate dateOfBirth = cellAsDateOfBirth(col, custodian.dateOfBirth(), true, errorHandler);
         String title = cellAsString(col, custodian.title(), true, false, errorHandler);
         SalutationDto salutation = cellAsSalutation(col, custodian.salutation(), errorHandler);
         GenderDto gender = cellAsGender(col, custodian.gender(), errorHandler);

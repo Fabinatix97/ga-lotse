@@ -1,0 +1,723 @@
+{
+	"name": "ROOT",
+	"children": [
+		{
+			"name": "Medizinische Einrichtungen",
+			"originalIndex": "0",
+			"children": [
+				{
+					"name": "Krankenhaus",
+					"originalIndex": "1",
+					"children": [
+						{
+							"name": "Krankenhaus der Grundversorgung",
+							"originalIndex": "2"
+						},
+						{
+							"name": "Krankenhaus der Zentralversorgung",
+							"originalIndex": "3"
+						},
+						{
+							"name": "Krankenhaus der Maximalversorgung",
+							"originalIndex": "4"
+						},
+						{
+							"name": "Fachkrankenhaus",
+							"originalIndex": "5"
+						},
+						{
+							"name": "Krankenhaus des Maßregelvollzugs",
+							"originalIndex": "6"
+						}
+					]
+				},
+				{
+					"name": "Einrichtungen für ambulantes Operieren",
+					"originalIndex": "7"
+				},
+				{
+					"name": "Vorsorge- oder Rehabilitationseinrichtungen",
+					"originalIndex": "8"
+				},
+				{
+					"name": "Dialyseeinrichtungen",
+					"originalIndex": "9"
+				},
+				{
+					"name": "Tageskliniken",
+					"originalIndex": "10"
+				},
+				{
+					"name": "Entbindungseinrichtungen",
+					"originalIndex": "11"
+				},
+				{
+					"name": "Arztpraxis",
+					"originalIndex": "12",
+					"children": [
+						{
+							"name": "Vertragspraxis",
+							"originalIndex": "13"
+						},
+						{
+							"name": "Privatpraxis",
+							"originalIndex": "14"
+						},
+						{
+							"name": "Medizinisches Versorgungszentrum",
+							"originalIndex": "15"
+						}
+					]
+				},
+				{
+					"name": "Zahnarztpraxis",
+					"originalIndex": "16"
+				},
+				{
+					"name": "Psychotherapeutische Praxis",
+					"originalIndex": "17"
+				},
+				{
+					"name": "Sonstige Heilberufepraxis",
+					"originalIndex": "18",
+					"children": [
+						{
+							"name": "Heilpraktiker Praxis",
+							"originalIndex": "19"
+						},
+						{
+							"name": "Physiotherapeutische Praxis",
+							"originalIndex": "20"
+						},
+						{
+							"name": "Ergotherapeutische Praxis",
+							"originalIndex": "21"
+						},
+						{
+							"name": "Logopädische Praxis",
+							"originalIndex": "22"
+						},
+						{
+							"name": "Einrichtungen der Fußpflege",
+							"originalIndex": "23"
+						},
+						{
+							"name": "Podologiepraxis",
+							"originalIndex": "24"
+						},
+						{
+							"name": "Hebammen Praxis",
+							"originalIndex": "25"
+						}
+					]
+				},
+				{
+					"name": "Rettungsdienst",
+					"originalIndex": "26"
+				},
+				{
+					"name": "Einrichtungen des Zivil- und Katastrophenschutzes",
+					"originalIndex": "27"
+				},
+				{
+					"name": "Blutspendeeinrichtungen",
+					"originalIndex": "28"
+				},
+				{
+					"name": "Krankenfahrdienst",
+					"originalIndex": "29"
+				},
+				{
+					"name": "Drogenkonsumraum",
+					"originalIndex": "30"
+				},
+				{
+					"name": "Apotheken",
+					"originalIndex": "31"
+				},
+				{
+					"name": "Arbeitskräfteüberlassung",
+					"originalIndex": "32"
+				},
+				{
+					"name": "Sonstige medizinische Einrichtung",
+					"originalIndex": "33"
+				}
+			]
+		},
+		{
+			"name": "Pflege- und Betreuungseinrichtung",
+			"originalIndex": "34",
+			"children": [
+				{
+					"name": "Vollstationäre Pflegeeinrichtung",
+					"originalIndex": "35",
+					"children": [
+						{
+							"name": "Altenwohnheim",
+							"originalIndex": "36"
+						},
+						{
+							"name": "Altenheim",
+							"originalIndex": "37"
+						},
+						{
+							"name": "Altenpflegeheim",
+							"originalIndex": "38"
+						},
+						{
+							"name": "Pflegeheim",
+							"originalIndex": "39"
+						},
+						{
+							"name": "Stationäres Hospiz",
+							"originalIndex": "40"
+						}
+					]
+				},
+				{
+					"name": "Stationäre Eingliederungshilfe",
+					"originalIndex": "41"
+				},
+				{
+					"name": "Teilstationäre Pflegeeinrichtung",
+					"originalIndex": "42",
+					"children": [
+						{
+							"name": "Tagespflege",
+							"originalIndex": "43"
+						},
+						{
+							"name": "Nachtpflege",
+							"originalIndex": "44"
+						}
+					]
+				},
+				{
+					"name": "Teilstationäre Eingliederungshilfe",
+					"originalIndex": "45"
+				},
+				{
+					"name": "Ambulanter Pflegedienst",
+					"originalIndex": "46",
+					"children": [
+						{
+							"name": "Ambulanter Intensivpflegedienst",
+							"originalIndex": "47"
+						},
+						{
+							"name": "Intensivpflege-Wohngemeinschaft",
+							"originalIndex": "48"
+						}
+					]
+				},
+				{
+					"name": "Ambulante Betreuungseinrichtung",
+					"originalIndex": "49"
+				},
+				{
+					"name": "Ambulantes Hospiz",
+					"originalIndex": "50"
+				},
+				{
+					"name": "Ambulante Eingliederungshilfe",
+					"originalIndex": "51"
+				}
+			]
+		},
+		{
+			"name": "Bildungs- und Kinderbetreuungseinrichtungen",
+			"originalIndex": "52",
+			"children": [
+				{
+					"name": "Ausbildungseinrichtung",
+					"originalIndex": "53",
+					"children": [
+						{
+							"name": "Schule",
+							"originalIndex": "54"
+						},
+						{
+							"name": "Hochschule",
+							"originalIndex": "55"
+						},
+						{
+							"name": "Berufsschule",
+							"originalIndex": "56"
+						},
+						{
+							"name": "sonstige Ausbildungseinrichtung",
+							"originalIndex": "57"
+						}
+					]
+				},
+				{
+					"name": "Kinderbetreuungseinrichtung",
+					"originalIndex": "58",
+					"children": [
+						{
+							"name": "Kindertageseinrichtung",
+							"originalIndex": "59"
+						},
+						{
+							"name": "Kinderhort",
+							"originalIndex": "60"
+						},
+						{
+							"name": "Kindertagespflege",
+							"originalIndex": "61"
+						},
+						{
+							"name": "Kinderheim",
+							"originalIndex": "62"
+						},
+						{
+							"name": "Ferienlager",
+							"originalIndex": "63"
+						},
+						{
+							"name": "Sonstige Kinderbetreuungseinrichtung",
+							"originalIndex": "64"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Massenunterkunft",
+			"originalIndex": "65",
+			"children": [
+				{
+					"name": "Obdachlosenunterkunft",
+					"originalIndex": "66",
+					"children": [
+						{
+							"name": "Notunterkunft",
+							"originalIndex": "67"
+						},
+						{
+							"name": "Gemeinschaftsunterkunft für Obdachlose",
+							"originalIndex": "68"
+						},
+						{
+							"name": "Wohnungslosenhilfe-Einrichtung",
+							"originalIndex": "69"
+						},
+						{
+							"name": "Übergangswohnheim",
+							"originalIndex": "70"
+						}
+					]
+				},
+				{
+					"name": "Gemeinschaftsunterkünfte für Geflüchtete",
+					"originalIndex": "71",
+					"children": [
+						{
+							"name": "Erstaufnahmeeinrichtung",
+							"originalIndex": "72"
+						},
+						{
+							"name": "Gemeinschaftsunterkünfte für Asylsuchende",
+							"originalIndex": "73"
+						},
+						{
+							"name": "Abschiebehaftanstalt",
+							"originalIndex": "74"
+						}
+					]
+				},
+				{
+					"name": "Justizvollzugsanstalt",
+					"originalIndex": "75",
+					"children": [
+						{
+							"name": "Untersuchungshaftanstalt",
+							"originalIndex": "76"
+						},
+						{
+							"name": "Jugendstrafanstalt",
+							"originalIndex": "77"
+						},
+						{
+							"name": "Strafvollzugsanstalt",
+							"originalIndex": "78"
+						},
+						{
+							"name": "Vollzugsanstalt für Ersatzfreiheitsstrafe",
+							"originalIndex": "79"
+						}
+					]
+				},
+				{
+					"name": "Kaserne",
+					"originalIndex": "80"
+				},
+				{
+					"name": "Frauenhäuser",
+					"originalIndex": "81"
+				},
+				{
+					"name": "Katastrophen-Notunterkünfte",
+					"originalIndex": "82"
+				},
+				{
+					"name": "Sonstige Massenunterkunft",
+					"originalIndex": "83"
+				}
+			]
+		},
+		{
+			"name": "Lebensmittelbetrieb",
+			"originalIndex": "84",
+			"children": [
+				{
+					"name": "Gaststätte",
+					"originalIndex": "85"
+				},
+				{
+					"name": "Imbiss",
+					"originalIndex": "86"
+				},
+				{
+					"name": "Kantine",
+					"originalIndex": "87"
+				}
+			]
+		},
+		{
+			"name": "Medizinische Untersuchungsstelle",
+			"originalIndex": "88",
+			"children": [
+				{
+					"name": "Medizinaluntersuchungsamt",
+					"originalIndex": "89",
+					"children": [
+						{
+							"name": "Kommunales Labor",
+							"originalIndex": "90"
+						},
+						{
+							"name": "Landeslabor",
+							"originalIndex": "91"
+						},
+						{
+							"name": "Bundeslabor",
+							"originalIndex": "92"
+						}
+					]
+				},
+				{
+					"name": "Krankenhauslabor",
+					"originalIndex": "93"
+				},
+				{
+					"name": "Pathologisch-anatomische Einrichtung",
+					"originalIndex": "94"
+				},
+				{
+					"name": "Privates Labor",
+					"originalIndex": "95"
+				},
+				{
+					"name": "Teststelle",
+					"originalIndex": "96",
+					"children": [
+						{
+							"name": "Sonstige Untersuchungsstelle",
+							"originalIndex": "97"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Einrichtung des öffentlichen Gesundheitswesens",
+			"originalIndex": "98",
+			"children": [
+				{
+					"name": "Einrichtungen des öffentlichen Gesundheitsdienstes",
+					"originalIndex": "99",
+					"children": [
+						{
+							"name": "Gesundheitsamt",
+							"originalIndex": "100"
+						},
+						{
+							"name": "Gesundheitsamt der Bundeswehr",
+							"originalIndex": "101"
+						},
+						{
+							"name": "Medizinische Einrichtung des ÖGDs",
+							"originalIndex": "102"
+						},
+						{
+							"name": "Landesbehörde für öffentliche Gesundheit",
+							"originalIndex": "103"
+						},
+						{
+							"name": "Bundesbehörde für öffentliche Gesundheit",
+							"originalIndex": "104"
+						}
+					]
+				},
+				{
+					"name": "Krankenkasse",
+					"originalIndex": "105"
+				}
+			]
+		},
+		{
+			"name": "Sonstige Einrichtungen",
+			"originalIndex": "106",
+			"children": [
+				{
+					"name": "Unterkunft",
+					"originalIndex": "107",
+					"children": [
+						{
+							"name": "Hotel",
+							"originalIndex": "108"
+						},
+						{
+							"name": "Ferienwohnung",
+							"originalIndex": "109"
+						},
+						{
+							"name": "Campingplatz",
+							"originalIndex": "110"
+						},
+						{
+							"name": "Kreuzfahrtschiff",
+							"originalIndex": "111"
+						}
+					]
+				},
+				{
+					"name": "Einrichtungen der Körperpflege",
+					"originalIndex": "112",
+					"children": [
+						{
+							"name": "Tätowier- und Piercingstudio",
+							"originalIndex": "113"
+						},
+						{
+							"name": "Haarpflegebetrieb",
+							"originalIndex": "114",
+							"children": [
+								{
+									"name": "Friseur",
+									"originalIndex": "115"
+								},
+								{
+									"name": "Barbershop",
+									"originalIndex": "116"
+								}
+							]
+						},
+						{
+							"name": "Kosmetik",
+							"originalIndex": "117"
+						},
+						{
+							"name": "Nagelstudio",
+							"originalIndex": "118"
+						},
+						{
+							"name": "Kosmetische Fußpflegepraxis",
+							"originalIndex": "119"
+						},
+						{
+							"name": "Fitnessstudio",
+							"originalIndex": "120"
+						},
+						{
+							"name": "Sonnenstudio",
+							"originalIndex": "121"
+						},
+						{
+							"name": "Sauna- und Wellnessanlage",
+							"originalIndex": "122"
+						}
+					]
+				},
+				{
+					"name": "Einrichtungen des Prostitutionsgewerbes",
+					"originalIndex": "123",
+					"children": [
+						{
+							"name": "Prostitutionsstätte",
+							"originalIndex": "124"
+						},
+						{
+							"name": "Prostitutionsfahrzeug",
+							"originalIndex": "125"
+						},
+						{
+							"name": "Prostitutionsveranstaltung",
+							"originalIndex": "126"
+						}
+					]
+				},
+				{
+					"name": "Großveranstaltungen",
+					"originalIndex": "127",
+					"children": [
+						{
+							"name": "Messen und Kongresse",
+							"originalIndex": "128"
+						},
+						{
+							"name": "Kultursveranstaltungen",
+							"originalIndex": "129"
+						},
+						{
+							"name": "Sportgroßveranstaltungen",
+							"originalIndex": "130"
+						},
+						{
+							"name": "Volksfest",
+							"originalIndex": "131"
+						},
+						{
+							"name": "Versammlung",
+							"originalIndex": "132"
+						}
+					]
+				},
+				{
+					"name": "Verkehrsmittel",
+					"originalIndex": "133",
+					"children": [
+						{
+							"name": "Schifffahrt",
+							"originalIndex": "134"
+						},
+						{
+							"name": "Reisebus",
+							"originalIndex": "135"
+						},
+						{
+							"name": "Nahverkehrsmittel",
+							"originalIndex": "136"
+						},
+						{
+							"name": "Fernzug",
+							"originalIndex": "137"
+						},
+						{
+							"name": "Fähre",
+							"originalIndex": "138"
+						},
+						{
+							"name": "Flugzeug",
+							"originalIndex": "139"
+						}
+					]
+				},
+				{
+					"name": "Sport-, Freizeit- und Erholungsanlagen",
+					"originalIndex": "140",
+					"children": [
+						{
+							"name": "Sportplatz",
+							"originalIndex": "141"
+						},
+						{
+							"name": "Spielplatz",
+							"originalIndex": "142"
+						},
+						{
+							"name": "Kleingartenanlage",
+							"originalIndex": "143"
+						}
+					]
+				},
+				{
+					"name": "Schwimm- und Badestellen",
+					"originalIndex": "144",
+					"children": [
+						{
+							"name": "Schwimmbad",
+							"originalIndex": "145"
+						},
+						{
+							"name": "Binnenbadestelle",
+							"originalIndex": "146"
+						},
+						{
+							"name": "Küstenbadestelle",
+							"originalIndex": "147"
+						}
+					]
+				},
+				{
+					"name": "Sakralbau",
+					"originalIndex": "148"
+				},
+				{
+					"name": "Einrichtung des Bestattungswesens",
+					"originalIndex": "149",
+					"children": [
+						{
+							"name": "Bestattungsunternehmen",
+							"originalIndex": "150"
+						},
+						{
+							"name": "Krematorium",
+							"originalIndex": "151"
+						},
+						{
+							"name": "Friedhof",
+							"originalIndex": "152"
+						}
+					]
+				},
+				{
+					"name": "Abfallbeseitigungsanlage",
+					"originalIndex": "153"
+				},
+				{
+					"name": "Kläranlage",
+					"originalIndex": "154"
+				},
+				{
+					"name": "Sonstige Einrichtungen mit relevanter Wasser-Aeorosolierung",
+					"originalIndex": "155",
+					"children": [
+						{
+							"name": "Kühltürme",
+							"originalIndex": "156"
+						},
+						{
+							"name": "Verdunstungskühlanlagen",
+							"originalIndex": "157"
+						},
+						{
+							"name": "Autowaschanlage",
+							"originalIndex": "158"
+						}
+					]
+				},
+				{
+					"name": "Diskothek",
+					"originalIndex": "159"
+				},
+				{
+					"name": "Arbeitsstätten",
+					"originalIndex": "160",
+					"children": [
+						{
+							"name": "Arbeitsstätte mit vorwiegend Bürotätigkeiten",
+							"originalIndex": "161"
+						},
+						{
+							"name": "Arbeitsstätte mit vorwiegend handwerklichen Tätigkeiten",
+							"originalIndex": "162"
+						}
+					]
+				}
+			]
+		}
+	]
+}

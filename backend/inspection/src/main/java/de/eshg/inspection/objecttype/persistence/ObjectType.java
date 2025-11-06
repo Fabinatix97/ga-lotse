@@ -52,6 +52,10 @@ public class ObjectType extends GloballyUniqueEntityBase {
   @DataSensitivity(SensitivityLevel.PUBLIC)
   private String legalBasis;
 
+  @Column
+  @DataSensitivity(SensitivityLevel.PUBLIC)
+  private Integer originalIndex;
+
   public String getName() {
     return name;
   }
@@ -106,6 +110,14 @@ public class ObjectType extends GloballyUniqueEntityBase {
 
   public void setLegalBasis(String legalBasis) {
     this.legalBasis = legalBasis;
+  }
+
+  public Integer getOriginalIndex() {
+    return originalIndex;
+  }
+
+  public void setOriginalIndex(Integer originalIndex) {
+    this.originalIndex = originalIndex;
   }
 
   /**

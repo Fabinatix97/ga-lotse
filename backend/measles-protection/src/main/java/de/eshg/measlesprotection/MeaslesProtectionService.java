@@ -123,20 +123,24 @@ public class MeaslesProtectionService {
     this.clock = clock;
   }
 
-  @Transactional(readOnly = true)
+  @Transactional
   public ProcedureDetailsData findAndAugmentProcedureByExternalId(UUID procedureId) {
     MeaslesProtectionProcedure procedure = procedureFinder.findProcedureByExternalId(procedureId);
     return augmentProcedure(procedure);
   }
 
   private ProcedureDetailsData augmentProcedure(MeaslesProtectionProcedure procedure) {
+    return augmentProcedure(
+        procedure, vaccinationCheckService.checkVaccinationStatus(procedure.getPatient()));
+  }
+
+  private ProcedureDetailsData augmentProcedure(
+      MeaslesProtectionProcedure procedure, MeaslesVaccinationStatusDto measlesVaccinationStatus) {
     Map<UUID, GetFacilityFileStateResponse> facilitiesById =
         facilityClient.fetchAllRelatedFacilities(List.of(procedure));
     ProcedureWithPersonDetailsData personDetails = personClient.augmentWithPersonDetails(procedure);
-    MeaslesVaccinationStatusDto measlesVaccinationStatusFromSchoolEntry =
-        vaccinationCheckService.checkVaccinationStatus(personDetails.personDetails().id());
     return augmentWithVaccinationStatusAndFacilityDetails(
-        personDetails, measlesVaccinationStatusFromSchoolEntry, facilitiesById);
+        personDetails, measlesVaccinationStatus, facilitiesById);
   }
 
   @Transactional(readOnly = true)
@@ -582,5 +586,12 @@ public class MeaslesProtectionService {
         personClient.syncPersonFileState(
             custodianIdFromCentralFile, syncCustodianRequest.referenceVersion());
     custodian.setCentralFileStateId(updatedFileStateId);
+  }
+
+  @Transactional
+  public ProcedureDetailsData requestVaccinationStatusUpdate(UUID procedureId) {
+    MeaslesProtectionProcedure procedure = procedureFinder.findProcedureByExternalId(procedureId);
+    return augmentProcedure(
+        procedure, vaccinationCheckService.requestVaccinationStatusUpdate(procedure.getPatient()));
   }
 }

@@ -161,6 +161,7 @@ public final class BaseUrls {
     public static final String COUNTRY_CODES_CONTROLLER = "/country-codes";
     public static final String IMPORT_CONTROLLER = "/import";
     public static final String VACCINATION_CHECK = "/vaccination-check";
+    public static final String VACCINATED_FILE_STATES_CONTROLLER = "/vaccinated-ids";
 
     private SchoolEntry() {}
   }

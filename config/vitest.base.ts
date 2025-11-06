@@ -8,7 +8,7 @@ import tsconfigPaths from "vite-tsconfig-paths";
 import { ViteUserConfig, configDefaults } from "vitest/config";
 
 export const VITEST_OUT_DIR = "./build/vitest";
-export const VITEST_COVERAGE_EXCLUDES = ["**/*.d.ts"];
+export const VITEST_COVERAGE_EXCLUDES = ["**/*.d.ts", "**/*.md"];
 
 // https://vitejs.dev/config/
 export const VITEST_BASE_CONFIG: ViteUserConfig = {
@@ -20,7 +20,6 @@ export const VITEST_BASE_CONFIG: ViteUserConfig = {
     globals: true,
     coverage: {
       provider: "istanbul",
-      all: true,
       reportsDirectory: `${VITEST_OUT_DIR}/coverage`,
       reporter: ["text-summary", "html"],
       include: ["src/**/*"],

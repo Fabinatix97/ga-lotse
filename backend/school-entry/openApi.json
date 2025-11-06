@@ -5179,6 +5179,25 @@
         "tags" : [ "TestHelper" ]
       }
     },
+    "/vaccinated-ids" : {
+      "get" : {
+        "operationId" : "getVaccinatedFileStateIds",
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/GetVaccinatedFileStateIdsResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Get the ids of all file states which have two measles vaccinations or more and for which the vaccination pass was presented",
+        "tags" : [ "VaccinatedFileStates" ]
+      }
+    },
     "/vaccination-check" : {
       "post" : {
         "operationId" : "checkVaccinationStatus",
@@ -8577,6 +8596,19 @@
         "type" : "string",
         "default" : "ASC",
         "enum" : [ "ASC", "DESC" ]
+      },
+      "GetVaccinatedFileStateIdsResponse" : {
+        "required" : [ "fileStateIds" ],
+        "type" : "object",
+        "properties" : {
+          "fileStateIds" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "format" : "uuid"
+            }
+          }
+        }
       },
       "GetWaitingRoomProceduresResponse" : {
         "required" : [ "elements", "totalNumberOfElements" ],

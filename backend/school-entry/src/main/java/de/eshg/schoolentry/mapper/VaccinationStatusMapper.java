@@ -50,12 +50,41 @@ public final class VaccinationStatusMapper {
 
   public static MeaslesVaccinationDto mapToMeaslesVaccinationStatusDto(
       VaccinationStatus vaccinationStatus) {
-    return new MeaslesVaccinationDto(
-        vaccinationStatus.getMmr(),
-        vaccinationStatus.getVaccinationPassPresented(),
-        vaccinationStatus.getMeaslesContraIndication(),
-        vaccinationStatus.getMeaslesContraIndicationIsPermanent(),
-        vaccinationStatus.getMeaslesContraIndicationUntil());
+    if (vaccinationStatus == null || allMappableFieldsNull(vaccinationStatus)) {
+      return null;
+    } else {
+      return new MeaslesVaccinationDto(
+          isFullyVaccinated(vaccinationStatus),
+          effectiveMmr(vaccinationStatus.getMmr()),
+          vaccinationStatus.getVaccinationPassPresented(),
+          vaccinationStatus.getMeaslesContraIndication(),
+          vaccinationStatus.getMeaslesContraIndicationIsPermanent(),
+          vaccinationStatus.getMeaslesContraIndicationUntil());
+    }
+  }
+
+  private static boolean allMappableFieldsNull(VaccinationStatus status) {
+    return effectiveMmr(status.getMmr()) == null
+        && status.getVaccinationPassPresented() == null
+        && status.getMeaslesContraIndication() == null
+        && status.getMeaslesContraIndicationIsPermanent() == null
+        && status.getMeaslesContraIndicationUntil() == null;
+  }
+
+  private static boolean isFullyVaccinated(VaccinationStatus status) {
+    return status.getVaccinationPassPresented() != null
+        && status.getVaccinationPassPresented()
+        && status.getMmr() != null
+        && status.getMmr() >= 2
+        && status.getMmr() <= 8;
+  }
+
+  private static Integer effectiveMmr(Integer mmr) {
+    if (mmr == null || mmr > 8) {
+      return null;
+    } else {
+      return mmr;
+    }
   }
 
   private static List<OtherVaccinationDto> mapToDto(List<OtherVaccination> otherVaccinations) {

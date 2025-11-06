@@ -6,6 +6,7 @@
 package de.eshg.base.user.mapper;
 
 import static de.eshg.lib.keycloak.EmployeePermissionRole.BASE_GDPR_PROCEDURE_REVIEW;
+import static de.eshg.lib.keycloak.EmployeePermissionRole.SCHOOL_ENTRY_VACCINATED_FILE_STATES;
 import static de.eshg.lib.keycloak.EmployeePermissionRole.SCHOOL_ENTRY_VACCINATION_CHECK;
 
 import de.eshg.base.SalutationDto;
@@ -179,6 +180,7 @@ public class UserMapper {
       case INSPECTION_CENTRALREPOSITORY_WRITE_CORECHECKLISTS ->
           EmployeePermissionRole.INSPECTION_CENTRALREPOSITORY_WRITE_CORECHECKLISTS;
       case INSPECTION_IMPORT -> EmployeePermissionRole.INSPECTION_IMPORT;
+      case SCHOOL_ENTRY_VACCINATED_FILE_STATES -> SCHOOL_ENTRY_VACCINATED_FILE_STATES;
       case TRAVEL_MEDICINE_ADMIN -> EmployeePermissionRole.TRAVEL_MEDICINE_ADMIN;
       case MEASLES_PROTECTION_ADMIN -> EmployeePermissionRole.MEASLES_PROTECTION_ADMIN;
       case CHAT_USER -> EmployeePermissionRole.CHAT_USER;
@@ -260,6 +262,7 @@ public class UserMapper {
       case STATISTICS_STATISTICS_WRITE -> UserRoleDto.STATISTICS_STATISTICS_WRITE;
       case STATISTICS_STATISTICS_ADMIN -> UserRoleDto.STATISTICS_STATISTICS_ADMIN;
       case STATISTICS_STATISTICS_TECHNICAL_USER -> UserRoleDto.STATISTICS_STATISTICS_TECHNICAL_USER;
+      case SCHOOL_ENTRY_VACCINATED_FILE_STATES -> UserRoleDto.SCHOOL_ENTRY_VACCINATED_FILE_STATES;
       case SCHOOL_ENTRY_ADMIN -> UserRoleDto.SCHOOL_ENTRY_ADMIN;
       case AUDITLOG_FILE_SEND -> UserRoleDto.AUDITLOG_FILE_SEND;
       case AUDITLOG_DECRYPT_AND_ACCESS -> UserRoleDto.AUDITLOG_DECRYPT_AND_ACCESS;

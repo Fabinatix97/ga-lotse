@@ -36,7 +36,7 @@ class SchoolListRowReader extends RowReader<SchoolListRow, SchoolListColumn> {
     return new ImportChildData(
         cellAsString(col, FIRST_NAME, errorHandler),
         cellAsString(col, LAST_NAME, errorHandler),
-        cellAsDateOfBirth(col, DATE_OF_BIRTH, errorHandler),
+        cellAsDateOfBirth(col, DATE_OF_BIRTH, false, errorHandler),
         cellAsGender(col, GENDER, errorHandler),
         readAddressData(
             col,

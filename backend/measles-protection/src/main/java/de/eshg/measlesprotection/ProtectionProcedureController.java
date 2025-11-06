@@ -32,6 +32,7 @@ import de.eshg.measlesprotection.persistence.centralfile.ProcedureDetailsData;
 import de.eshg.measlesprotection.persistence.db.MeaslesProtectionProcedure;
 import de.eshg.measlesprotection.persistence.support.ResultPage;
 import de.eshg.measlesprotection.validation.ProtectedProcedure;
+import de.eshg.persistence.IntentionalWritingTransaction;
 import de.eshg.rest.service.error.BadRequestException;
 import de.eshg.rest.service.security.CurrentUserHelper;
 import de.eshg.rest.service.security.config.BaseUrls;
@@ -40,6 +41,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -95,18 +97,22 @@ public class ProtectionProcedureController {
   @PostMapping("/{id}/vaccination-check")
   public ProtectionProcedureDto requestVaccinationStatusUpdate(
       @PathVariable("id") @ProtectedProcedure UUID procedureId) {
-    if (!baseFeatureTogglesApi
-        .getFeatureToggles()
-        .enabledNewFeatures()
-        .contains(BaseFeature.VACCINATION_CHECK)) {
+    Set<BaseFeature> features = baseFeatureTogglesApi.getFeatureToggles().enabledNewFeatures();
+    if (!features.contains(BaseFeature.VACCINATION_CHECK)) {
       throw new BadRequestException("New feature VACCINATION_CHECK is not enabled");
     }
-    throw new BadRequestException(
-        "No vaccination status update possible for procedure %s".formatted(procedureId));
+    if (!features.contains(BaseFeature.POLYTUNE)) {
+      throw new BadRequestException("New feature POLYTUNE is not enabled");
+    }
+    return ToDtoMappers.toProcedureDetails(
+        measlesProtectionService.requestVaccinationStatusUpdate(procedureId));
   }
 
   @GetMapping("/{id}")
   @Operation(summary = "Get measles protection procedure by id.")
+  @IntentionalWritingTransaction(
+      reason =
+          "Writing is required in polytune mode when a new polytune result is obtained (which then has to be persisted in the database)")
   public ProtectionProcedureDto getProcedure(@PathVariable("id") UUID id) {
     ProcedureDetailsData procedureDetails =
         measlesProtectionService.findAndAugmentProcedureByExternalId(id);

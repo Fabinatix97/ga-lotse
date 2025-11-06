@@ -34,6 +34,12 @@ public interface PersonWithoutDateOfBirthApi {
   GetPersonWithoutDateOfBirthResponse addPersonWithoutDateOfBirth(
       @RequestBody @Valid AddPersonWithoutDateOfBirthRequest request);
 
+  @PostExchange("/bulk/create")
+  @ApiResponse(responseCode = "200")
+  @Operation(summary = "Add new persons without date of birth.")
+  GetPersonsWithoutDateOfBirthResponse addPersonsWithoutDateOfBirth(
+      @RequestBody @Valid AddPersonsWithoutDateOfBirthRequest request);
+
   @GetExchange("/{id}")
   @ApiResponse(responseCode = "200")
   @Operation(summary = "Get a person without date of birth")

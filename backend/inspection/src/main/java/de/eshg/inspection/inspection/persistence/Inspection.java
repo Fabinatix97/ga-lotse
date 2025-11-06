@@ -19,6 +19,8 @@ import de.eshg.inspection.inspection.api.InspectionType;
 import de.eshg.inspection.packlist.persistence.Packlist;
 import de.eshg.inspection.packlist.persistence.Packlist_;
 import de.eshg.inspection.report.persistence.Report;
+import de.eshg.inspection.sample.persistence.InspectionSample;
+import de.eshg.inspection.sample.persistence.InspectionSample_;
 import de.eshg.lib.common.DataSensitivity;
 import de.eshg.lib.common.SensitivityLevel;
 import de.eshg.lib.procedure.domain.model.Procedure;
@@ -190,6 +192,16 @@ public class Inspection
   @Column
   @DataSensitivity(SensitivityLevel.PSEUDONYMIZED)
   private Integer fileNumberSuffix;
+
+  @NotNull
+  @OneToMany(
+      fetch = FetchType.LAZY,
+      mappedBy = InspectionSample_.INSPECTION,
+      cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE},
+      orphanRemoval = true)
+  @OrderBy
+  @DataSensitivity(SensitivityLevel.PSEUDONYMIZED)
+  private final List<InspectionSample> samples = new ArrayList<>();
 
   public InspectionType getType() {
     return type;
@@ -510,5 +522,20 @@ public class Inspection
 
   public void setFileNumberSuffix(Integer fileNumberSuffix) {
     this.fileNumberSuffix = fileNumberSuffix;
+  }
+
+  public @NotNull List<InspectionSample> getSamples() {
+    return samples;
+  }
+
+  public void addSample(InspectionSample sample) {
+    samples.add(sample);
+    sample.setInspection(this);
+  }
+
+  public void addSamples(List<InspectionSample> samples) {
+    for (InspectionSample sample : samples) {
+      addSample(sample);
+    }
   }
 }

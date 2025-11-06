@@ -16,7 +16,8 @@ public class CitizenListRowValueMapper implements RowValueMapper<CitizenListRow>
   public ImportProcedureData mapValuesToImportData(CitizenListRow values) {
     return new ImportProcedureData(
         PersonMapper.mapImportChildDataToCreatePersonDto(values.getChild()),
-        values.getCustodians(),
+        values.getCustodiansWithDateOfBirth(),
+        values.getCustodiansWithoutDateOfBirth(),
         ProcedureType.DRAFT_CITIZEN_OFFICE_IMPORT,
         null,
         false,
@@ -30,7 +31,8 @@ public class CitizenListRowValueMapper implements RowValueMapper<CitizenListRow>
         values.getEntityId(),
         values.getChild().placeOfBirth(),
         values.getChild().countryOfBirth(),
-        values.getCustodians(),
+        values.getCustodiansWithDateOfBirth(),
+        values.getCustodiansWithoutDateOfBirth(),
         values.getChild().phoneNumber(),
         null,
         null,
