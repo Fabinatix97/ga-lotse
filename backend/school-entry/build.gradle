@@ -20,6 +20,8 @@ dependencies {
     implementation project(":lib-xlsx-import")
     implementation project(':business-module-persistence-commons')
     implementation project(':file-commons')
+    implementation project(':lib-scheduling')
+    implementation project(':rest-oauth-client-commons')
 
     implementation 'org.apache.commons:commons-math3:latest.release'
     implementation 'de.cronn:reflection-util:latest.release'

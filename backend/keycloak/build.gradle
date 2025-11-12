@@ -29,7 +29,7 @@ dependencies {
     implementation(project(':keycloak-api')) {
         transitive = false
     }
-    keycloakProviders('de.arbeitsagentur.opdt:keycloak-extension-bundid:1.0.0-25.0') {
+    keycloakProviders('de.arbeitsagentur.opdt:keycloak-extension-bundid:2.4.3-26.2') {
         transitive = false
     }
 }

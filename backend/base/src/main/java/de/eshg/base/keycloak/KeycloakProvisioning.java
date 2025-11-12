@@ -105,7 +105,7 @@ public abstract class KeycloakProvisioning<T extends RealmBoundKeycloakClient> {
     realmRepresentation.setSsoSessionIdleTimeout(
         Math.toIntExact(keycloakProperties.sessionTimeout().toSeconds()));
     realmRepresentation.setBruteForceProtected(true);
-    realmRepresentation.setRevokeRefreshToken(true);
+    realmRepresentation.setRevokeRefreshToken(false);
     realmRepresentation.setWebAuthnPolicyPasswordlessRequireResidentKey("Yes");
     realmRepresentation.setWebAuthnPolicyPasswordlessUserVerificationRequirement("required");
     realmRepresentation.setWebAuthnPolicyPasswordlessSignatureAlgorithms(

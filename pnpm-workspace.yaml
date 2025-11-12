@@ -68,11 +68,11 @@ catalogs:
     "@cronn/vitest-file-snapshots": "0.15.0"
 
   playwright:
-    "@playwright/test": "1.55.1"
-    "@axe-core/playwright": "4.10.2"
-    "axe-core": "4.10.3"
+    "@playwright/test": "1.56.1"
+    "@axe-core/playwright": "4.11.0"
+    "axe-core": "4.11.0"
     "axe-html-reporter": "2.2.11"
-    "@cronn/playwright-file-snapshots": "0.21.0"
+    "@cronn/playwright-file-snapshots": "0.24.1"
 
   common:
     "typescript": "5.9.3"

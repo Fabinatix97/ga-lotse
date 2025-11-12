@@ -36,7 +36,6 @@ import {
   FormPlus,
   InputField,
   SelectField,
-  useSnackbar,
 } from "@eshg/lib-portal";
 
 import { useUserApi } from "@/lib/baseModule/api/clients";
@@ -79,7 +78,6 @@ function InspectionEditSampleSidebar({
   procedureId,
   sampleId,
 }: Readonly<InspectionEditSampleSidebarProps>) {
-  const snackbar = useSnackbar();
   const sidebarFormRef = useRef<SidebarFormHandle>(null);
 
   const userApi = useUserApi();
@@ -110,7 +108,6 @@ function InspectionEditSampleSidebar({
       },
       {
         onSuccess: () => {
-          snackbar.confirmation("Probe wurde gespeichert.");
           handleClose();
         },
       },

@@ -54,6 +54,7 @@ export function SamplesTile({ procedureId }: Readonly<SamplesTileProps>) {
 
   return (
     <InfoTile
+      data-testid="samplesTile"
       name={"measurements" + procedureId}
       title="Proben"
       controls={addAction}

@@ -35,7 +35,6 @@ import {
   FormPlus,
   InputField,
   SelectField,
-  useSnackbar,
 } from "@eshg/lib-portal";
 
 import { useUserApi } from "@/lib/baseModule/api/clients";
@@ -72,7 +71,6 @@ function InspectionAddSampleSidebar({
   onClose,
   procedureId,
 }: Readonly<InspectionAddSampleSidebarProps>) {
-  const snackbar = useSnackbar();
   const sidebarFormRef = useRef<SidebarFormHandle>(null);
 
   const userApi = useUserApi();
@@ -96,7 +94,6 @@ function InspectionAddSampleSidebar({
       { inspectionId: procedureId, apiCreateInspectionSampleRequest: payload },
       {
         onSuccess: () => {
-          snackbar.confirmation("Probe wurde erzeugt.");
           handleClose();
         },
       },
@@ -252,7 +249,8 @@ function InspectionAddSampleSidebar({
                     alignItems="center"
                   >
                     <Input
-                      name="parameterName"
+                      data-testid={"parameterName-" + elementIndex}
+                      name={"parameterName-" + elementIndex}
                       slotProps={{
                         input: {
                           ref: (el) => setInputElementRef(el!, elementIndex),

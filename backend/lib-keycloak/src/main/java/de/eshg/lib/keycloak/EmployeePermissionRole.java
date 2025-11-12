@@ -395,6 +395,11 @@ public enum EmployeePermissionRole implements PermissionRole {
       BASE_PERSONS_WRITE,
       BASE_CALENDAR_BUSINESS_EVENTS_WRITE),
 
+  BASE_PERSON_MIGRATE_PERSON_WITHOUT_DATE_OF_BIRTH(
+      "Technischer User Personen ohne Geburtsdatum Migration",
+      "Technischer User des Einschulungsuntersuchungsmoduls, für inter-modul PSB ohne Geburtsdatum Datenmigration, nicht für menschliche User bestimmt",
+      Module.BASE),
+
   SCHOOL_ENTRY_VACCINATION_CHECK(
       READ_PERMISSION_TEMPLATE.formatted("Impfstatus"),
       "Berechtigung zum Abrufen des Impfstatus",

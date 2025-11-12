@@ -27,7 +27,7 @@ dependencies {
     implementation 'org.slf4j:slf4j-api'
     implementation 'org.springframework:spring-tx'
     implementation 'org.springframework.boot:spring-boot-autoconfigure'
-    implementation 'io.swagger.core.v3:swagger-core-jakarta:latest.release'
+    implementation libs.swagger.core.jakarta
     implementation 'io.micrometer:micrometer-registry-prometheus'
     compileOnly 'org.jetbrains:annotations:latest.release'
     compileOnly 'com.bucket4j:bucket4j-core:latest.release'

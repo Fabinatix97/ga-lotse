@@ -31,7 +31,8 @@ dependencies {
     implementation project(':base-api')
     api project(':test-helper-commons-api')
 
-    api 'net.datafaker:datafaker:latest.release'
+    // generated values change with 2.5.x - see ISSUE-9927
+    api 'net.datafaker:datafaker:2.4.4'
 
     testImplementation project(':business-module-commons')
     testImplementation project(':rest-service-commons')

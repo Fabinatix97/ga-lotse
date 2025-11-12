@@ -12,6 +12,7 @@ import static de.eshg.lib.keycloak.EmployeePermissionRole.BASE_FACILITIES_DELETE
 import static de.eshg.lib.keycloak.EmployeePermissionRole.BASE_GDPR_VALIDATION_TASK_CLEANUP;
 import static de.eshg.lib.keycloak.EmployeePermissionRole.BASE_MAIL_SEND;
 import static de.eshg.lib.keycloak.EmployeePermissionRole.BASE_PERSONS_DELETE;
+import static de.eshg.lib.keycloak.EmployeePermissionRole.BASE_PERSON_MIGRATE_PERSON_WITHOUT_DATE_OF_BIRTH;
 import static de.eshg.lib.keycloak.EmployeePermissionRole.SCHOOL_ENTRY_VACCINATION_CHECK;
 import static de.eshg.lib.keycloak.EmployeePermissionRole.STANDARD_EMPLOYEE;
 import static de.eshg.lib.keycloak.EmployeePermissionRole.STATISTICS_STATISTICS_TECHNICAL_USER;
@@ -36,7 +37,12 @@ public enum ModuleClient {
           BASE_FACILITIES_DELETE,
           SCHOOL_ENTRY_VACCINATION_CHECK)),
   SCHOOL_ENTRY(
-      "school-entry", List.of(BASE_MAIL_SEND, BASE_PERSONS_DELETE, BASE_FACILITIES_DELETE)),
+      "school-entry",
+      List.of(
+          BASE_MAIL_SEND,
+          BASE_PERSONS_DELETE,
+          BASE_FACILITIES_DELETE,
+          BASE_PERSON_MIGRATE_PERSON_WITHOUT_DATE_OF_BIRTH)),
   STATISTICS("statistics", List.of(STATISTICS_STATISTICS_TECHNICAL_USER)),
   TRAVEL_MEDICINE(
       "travel-medicine",

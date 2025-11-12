@@ -222,7 +222,7 @@ public class LsdKeycloakProvisioning {
     realmRepresentation.setSsoSessionIdleTimeout(
         (int) lsdKeycloakSetupProperties.sessionTimeout().toSeconds());
     realmRepresentation.setBruteForceProtected(true);
-    realmRepresentation.setRevokeRefreshToken(true);
+    realmRepresentation.setRevokeRefreshToken(false);
     setAttribute(
         realmRepresentation,
         "adminEventsExpiration",

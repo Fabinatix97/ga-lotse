@@ -140,9 +140,16 @@ public class BaseInternalSecurityConfig {
           auth) {
     auth.requestMatchers(
             POST, PersonApi.BASE_URL + PersonApi.FILE_STATES_URL + BaseUrls.Base.BULK_GET_URL_END)
-        .hasRole(EmployeePermissionRole.BASE_PERSONS_READ.name());
+        .hasAnyRole(
+            EmployeePermissionRole.BASE_PERSONS_READ.name(),
+            EmployeePermissionRole.BASE_PERSON_MIGRATE_PERSON_WITHOUT_DATE_OF_BIRTH.name());
     auth.requestMatchers(POST, PersonApi.BASE_URL + PersonApi.FILE_STATES_URL + ARCHIVE_DELETION)
         .hasRole(EmployeePermissionRole.BASE_PERSONS_DELETE.name());
+    auth.requestMatchers(
+            POST, PersonApi.BASE_URL + PersonApi.FILE_STATES_URL + "/mark-for-deletion")
+        .hasAnyRole(
+            EmployeePermissionRole.BASE_PERSONS_WRITE.name(),
+            EmployeePermissionRole.BASE_PERSON_MIGRATE_PERSON_WITHOUT_DATE_OF_BIRTH.name());
 
     auth.requestMatchers(
             POST,
@@ -173,6 +180,10 @@ public class BaseInternalSecurityConfig {
         .hasAnyRole(
             EmployeePermissionRole.BASE_PERSONS_WRITE.name(),
             EmployeePermissionRole.BASE_PERSONS_DELETE.name());
+    auth.requestMatchers(POST, PersonWithoutDateOfBirthApi.BASE_URL + "/bulk/create")
+        .hasAnyRole(
+            EmployeePermissionRole.BASE_PERSONS_WRITE.name(),
+            EmployeePermissionRole.BASE_PERSON_MIGRATE_PERSON_WITHOUT_DATE_OF_BIRTH.name());
     auth.requestMatchers(POST, PersonWithoutDateOfBirthApi.BASE_URL + "/**")
         .hasRole(EmployeePermissionRole.BASE_PERSONS_WRITE.name());
     auth.requestMatchers(PUT, PersonWithoutDateOfBirthApi.BASE_URL + "/**")

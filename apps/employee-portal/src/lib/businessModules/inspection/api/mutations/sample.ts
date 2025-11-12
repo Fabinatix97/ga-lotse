@@ -34,7 +34,7 @@ export function useCreateSample() {
       if (data.serviceWorkerResponse) {
         snackbar.notification("Zwischengespeichert");
       } else {
-        snackbar.confirmation("Probe gespeichert");
+        snackbar.confirmation("Probe hinzugefügt");
       }
     },
   });
