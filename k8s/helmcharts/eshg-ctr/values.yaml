@@ -258,6 +258,8 @@ businessmodules:
     enabled: false
   officialmedicalservice:
     enabled: false
+  prostituteprotection:
+    enabled: false
 
 springBootStartupProbe:
   enabled: true

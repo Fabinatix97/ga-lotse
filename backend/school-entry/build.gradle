@@ -28,6 +28,7 @@ dependencies {
 
     implementation 'com.google.guava:guava:latest.release'
     implementation 'org.springdoc:springdoc-openapi-starter-common:latest.release'
+    implementation 'com.bucket4j:bucket4j-core:latest.release'
     annotationProcessor 'org.hibernate.orm:hibernate-jpamodelgen'
 
     compileOnly 'org.jetbrains:annotations:latest.release'

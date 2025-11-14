@@ -5,6 +5,7 @@ ch.qos.logback:logback-classic:1.5.20=compileClasspath,productionRuntimeClasspat
 ch.qos.logback:logback-core:1.5.20=compileClasspath,productionRuntimeClasspath,runtimeClasspath,testCompileClasspath,testRuntimeClasspath
 com.adobe.xmp:xmpcore:6.1.11=productionRuntimeClasspath,runtimeClasspath,testRuntimeClasspath
 com.beust:jcommander:1.82=testCompileClasspath,testRuntimeClasspath
+com.bucket4j:bucket4j-core:8.10.1=compileClasspath,productionRuntimeClasspath,runtimeClasspath,testCompileClasspath,testRuntimeClasspath
 com.drewnoakes:metadata-extractor:2.19.0=productionRuntimeClasspath,runtimeClasspath,testRuntimeClasspath
 com.fasterxml.jackson.core:jackson-annotations:2.19.2=compileClasspath,productionRuntimeClasspath,runtimeClasspath,testCompileClasspath,testRuntimeClasspath
 com.fasterxml.jackson.core:jackson-core:2.19.2=compileClasspath,productionRuntimeClasspath,runtimeClasspath,testCompileClasspath,testRuntimeClasspath

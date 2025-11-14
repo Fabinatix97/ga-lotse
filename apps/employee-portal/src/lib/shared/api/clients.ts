@@ -78,6 +78,8 @@ const businessModuleBackendUrls = {
   [ApiBusinessModule.OfficialMedicalService]:
     "PUBLIC_OFFICIAL_MEDICAL_SERVICE_BACKEND_URL",
   [ApiBusinessModule.MedsAbroad]: "PUBLIC_MEDS_ABROAD_BACKEND_URL",
+  [ApiBusinessModule.ProstituteProtection]:
+    "PUBLIC_PROSTITUTE_PROTECTION_BACKEND_URL",
 } as const satisfies Record<ApiBusinessModule, keyof ApiConfiguration>;
 
 function useConfigurationByBusinessModule<TConfiguration>(
@@ -113,7 +115,7 @@ export function useStatisticsProcedureReferenceApi(
 // note: STI_PROTECTION and SEX_WORK have different paths
 
 // eslint-disable-next-line unused-imports/no-unused-vars
-const { DENTAL, ...configBusinessModuleBackendUrls } =
+const { DENTAL, PROSTITUTE_PROTECTION, ...configBusinessModuleBackendUrls } =
   businessModuleBackendUrls;
 const configuratorModuleBackendUrls = {
   ...configBusinessModuleBackendUrls,

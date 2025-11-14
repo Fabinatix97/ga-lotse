@@ -9,4 +9,5 @@ public enum InspectionFeature {
   STATISTIC_ANONYMIZATION,
   SAMPLES,
   OBJECT_TYPE_HIERARCHY,
+  TEIS_DATA,
 }

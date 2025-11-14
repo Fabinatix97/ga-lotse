@@ -26,7 +26,9 @@ import { useGetConfig } from "@/lib/shared/api/queries/publicConfig";
 
 const businessModules = Object.freeze(
   Object.values(ApiBusinessModule).filter(
-    (businessModule) => businessModule !== ApiBusinessModule.MedsAbroad,
+    (businessModule) =>
+      businessModule !== ApiBusinessModule.MedsAbroad &&
+      businessModule !== ApiBusinessModule.ProstituteProtection,
   ),
 );
 

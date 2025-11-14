@@ -61,6 +61,8 @@ businessmodules:
     enabled: false
   medsabroad:
     enabled: false
+  prostituteprotection:
+    enabled: false
 
 development:
   injectSelfSignedCA: true

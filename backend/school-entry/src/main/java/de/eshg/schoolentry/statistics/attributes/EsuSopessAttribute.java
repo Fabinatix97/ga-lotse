@@ -7,9 +7,11 @@ package de.eshg.schoolentry.statistics.attributes;
 
 import static de.eshg.lib.statistics.util.ConvertToValueOptionHelper.convertToValueOptions;
 
+import de.eshg.lib.statistics.api.DataPrivacyCategory;
 import de.eshg.lib.statistics.api.ValueOptionInternal;
 import de.eshg.lib.statistics.attributes.AttributeData;
 import de.eshg.lib.statistics.attributes.IntegerAttribute;
+import de.eshg.lib.statistics.attributes.SensitiveParameters;
 import de.eshg.lib.statistics.attributes.TextAttribute;
 import de.eshg.lib.statistics.attributes.ValueWithOptionsAttribute;
 import de.eshg.schoolentry.statistics.options.*;
@@ -17,108 +19,134 @@ import java.util.List;
 
 public enum EsuSopessAttribute implements EsuAttributes {
   KOORD(
-      IntegerAttribute.create(
+      IntegerAttribute.createSensitive(
           "Körperkoordination (Sprungzahl)",
           "KOORD",
           EsuSopessAttribute.CATEGORY_S1_SOPESS,
           true,
-          EsuAttributeUtil.createUnknownOption("99"))),
+          null,
+          EsuAttributeUtil.createUnknownOption("99"),
+          new SensitiveParameters(null, 0.2))),
 
   KOORD1(
-      ValueWithOptionsAttribute.create(
+      ValueWithOptionsAttribute.createSensitive(
           "Körperkoordniation Bewertung",
           "KOORD1",
           EsuSopessAttribute.CATEGORY_S1_SOPESS,
           true,
-          convertToValueOptions(EvaluationResult.values()))),
+          convertToValueOptions(EvaluationResult.values()),
+          new SensitiveParameters(null, 0.2),
+          null)),
 
   GROMO(
-      ValueWithOptionsAttribute.create(
+      ValueWithOptionsAttribute.createSensitive(
           "Ergebnis Grobmotorik",
           "GROMO",
           EsuSopessAttribute.CATEGORY_S1_SOPESS,
           true,
-          convertToValueOptions(ExaminationResultFiveOptions.values()))),
+          convertToValueOptions(ExaminationResultFiveOptions.values()),
+          new SensitiveParameters(null, 0.2),
+          null)),
 
   KW_RM_GROMO(
-      ValueWithOptionsAttribute.create(
+      ValueWithOptionsAttribute.createSensitive(
           "Rückmeldung Arztbrief Grobmotorik",
           "KW_RM_GROMO",
           EsuSopessAttribute.CATEGORY_S1_SOPESS,
           false,
-          convertToValueOptions(DoctorLetterValue.values()))),
+          convertToValueOptions(DoctorLetterValue.values()),
+          new SensitiveParameters(null, 0.2),
+          null)),
 
   VISMOT(
-      IntegerAttribute.create(
+      IntegerAttribute.createSensitive(
           "Visuomotorik",
           "VISMOT",
           EsuSopessAttribute.CATEGORY_S1_SOPESS,
           true,
-          EsuAttributeUtil.createUnknownOption("99"))),
+          null,
+          EsuAttributeUtil.createUnknownOption("99"),
+          new SensitiveParameters(null, 0.2))),
 
   VISMOT1(
-      ValueWithOptionsAttribute.create(
+      ValueWithOptionsAttribute.createSensitive(
           "Visuomotorik Bewertung",
           "VISMOT1",
           EsuSopessAttribute.CATEGORY_S1_SOPESS,
           true,
-          convertToValueOptions(EvaluationResult.values()))),
+          convertToValueOptions(EvaluationResult.values()),
+          new SensitiveParameters(null, 0.2),
+          null)),
 
   FEIMO(
-      ValueWithOptionsAttribute.create(
+      ValueWithOptionsAttribute.createSensitive(
           "Ergebnis Feinmotorik",
           "FEIMO",
           EsuSopessAttribute.CATEGORY_S1_SOPESS,
           true,
-          convertToValueOptions(ExaminationResultFiveOptions.values()))),
+          convertToValueOptions(ExaminationResultFiveOptions.values()),
+          new SensitiveParameters(null, 0.2),
+          null)),
 
   KW_RM_FEIMO(
-      ValueWithOptionsAttribute.create(
+      ValueWithOptionsAttribute.createSensitive(
           "Rückmeldung Arztbrief Feinmotorik",
           "KW_RM_FEIMO",
           EsuSopessAttribute.CATEGORY_S1_SOPESS,
           false,
-          convertToValueOptions(DoctorLetterValue.values()))),
+          convertToValueOptions(DoctorLetterValue.values()),
+          new SensitiveParameters(null, 0.2),
+          null)),
 
   HAND(
-      ValueWithOptionsAttribute.create(
+      ValueWithOptionsAttribute.createSensitive(
           "Händigkeit",
           "HAND",
           EsuSopessAttribute.CATEGORY_S1_SOPESS,
           false,
-          convertToValueOptions(Hand.values()))),
+          convertToValueOptions(Hand.values()),
+          new SensitiveParameters(null, 0.2),
+          null)),
 
   VISPER(
-      IntegerAttribute.create(
+      IntegerAttribute.createSensitive(
           "Visuelle Perzeption",
           "VISPER",
           EsuSopessAttribute.CATEGORY_S1_SOPESS,
           true,
-          EsuAttributeUtil.createUnknownOption("99"))),
+          null,
+          EsuAttributeUtil.createUnknownOption("99"),
+          new SensitiveParameters(null, 0.2))),
 
   VISPER1(
-      ValueWithOptionsAttribute.create(
+      ValueWithOptionsAttribute.createSensitive(
           "Visuelle Perzeption Bewertung",
           "VISPER1",
           EsuSopessAttribute.CATEGORY_S1_SOPESS,
           true,
-          convertToValueOptions(EvaluationResult.values()))),
+          convertToValueOptions(EvaluationResult.values()),
+          new SensitiveParameters(null, 0.2),
+          null)),
 
   VISWA(
-      ValueWithOptionsAttribute.create(
+      ValueWithOptionsAttribute.createSensitive(
           "Ergebnis Visuelle Wahrnehmung",
           "VISWA",
           EsuSopessAttribute.CATEGORY_S1_SOPESS,
           true,
-          convertToValueOptions(ExaminationResultFiveOptions.values()))),
+          convertToValueOptions(ExaminationResultFiveOptions.values()),
+          new SensitiveParameters(null, 0.2),
+          null)),
 
   KW_RM_VISWA(
-      ValueWithOptionsAttribute.create(
+      ValueWithOptionsAttribute.createSensitive(
           "Rückmeldung Arztbrief Visuelle Wahrnehmung",
           "KW_RM_VISWA",
           EsuSopessAttribute.CATEGORY_S1_SOPESS,
           false,
-          convertToValueOptions(DoctorLetterValue.values()))),
+          convertToValueOptions(DoctorLetterValue.values()),
+          new SensitiveParameters(null, 0.2),
+          null)),
 
   ESPR(
       ValueWithOptionsAttribute.create(
@@ -126,7 +154,8 @@ public enum EsuSopessAttribute implements EsuAttributes {
           "ESPR",
           EsuSopessAttribute.CATEGORY_S1_SOPESS,
           true,
-          convertToValueOptions(FirstLanguage.values()))),
+          convertToValueOptions(FirstLanguage.values()),
+          DataPrivacyCategory.QUASI_IDENTIFYING)),
 
   FAMSPR(
       ValueWithOptionsAttribute.create(
@@ -134,288 +163,359 @@ public enum EsuSopessAttribute implements EsuAttributes {
           "FAMSPR",
           EsuSopessAttribute.CATEGORY_S1_SOPESS,
           true,
-          convertToValueOptions(Language.values()))),
+          convertToValueOptions(Language.values()),
+          DataPrivacyCategory.QUASI_IDENTIFYING)),
 
   SPRBP(
-      ValueWithOptionsAttribute.create(
+      ValueWithOptionsAttribute.createSensitive(
           "Sprachkenntnisse Hauptbezugsperson",
           "SPRBP",
           EsuSopessAttribute.CATEGORY_S1_SOPESS,
           true,
-          convertToValueOptions(GuardianLanguageKnowledge.values()))),
+          convertToValueOptions(GuardianLanguageKnowledge.values()),
+          new SensitiveParameters(null, 0.2),
+          null)),
 
   SPRDEU(
-      ValueWithOptionsAttribute.create(
+      ValueWithOptionsAttribute.createSensitive(
           "Sprachkenntnisse Kind",
           "SPRDEU",
           EsuSopessAttribute.CATEGORY_S1_SOPESS,
           true,
-          convertToValueOptions(ChildLanguageKnowledge.values()))),
+          convertToValueOptions(ChildLanguageKnowledge.values()),
+          new SensitiveParameters(null, 0.2),
+          null)),
 
   WOHND(
-      TextAttribute.create(
+      TextAttribute.createSensitive(
           "bei Einreise: in Deutschland seit (Neue Variable ab S1_2023)",
           "WOHND",
           EsuSopessAttribute.CATEGORY_S1_SOPESS,
-          true)),
+          true,
+          null,
+          new SensitiveParameters(null, 0.2))),
 
   DYS_S_Z(
-      ValueWithOptionsAttribute.create(
+      ValueWithOptionsAttribute.createSensitive(
           "Artikulation/ Dyslalie Buchstaben S + Z",
           "DYS_S_Z",
           EsuSopessAttribute.CATEGORY_S1_SOPESS,
           true,
-          convertToValueOptions(Articulation.values()))),
+          convertToValueOptions(Articulation.values()),
+          new SensitiveParameters(null, 0.2),
+          null)),
 
   DYS_SCH(
-      ValueWithOptionsAttribute.create(
+      ValueWithOptionsAttribute.createSensitive(
           "Artikulation/ Dyslalie Lautbildung SCH",
           "DYS_SCH",
           EsuSopessAttribute.CATEGORY_S1_SOPESS,
           true,
-          convertToValueOptions(Articulation.values()))),
+          convertToValueOptions(Articulation.values()),
+          new SensitiveParameters(null, 0.2),
+          null)),
 
   DYS_T_D(
-      ValueWithOptionsAttribute.create(
+      ValueWithOptionsAttribute.createSensitive(
           "Artikulation/ Dyslalie Buchstaben T + D",
           "DYS_T_D",
           EsuSopessAttribute.CATEGORY_S1_SOPESS,
           true,
-          convertToValueOptions(Articulation.values()))),
+          convertToValueOptions(Articulation.values()),
+          new SensitiveParameters(null, 0.2),
+          null)),
 
   DYS_CH(
-      ValueWithOptionsAttribute.create(
+      ValueWithOptionsAttribute.createSensitive(
           "Artikulation/ Dyslalie Lautbildung CH",
           "DYS_CH",
           EsuSopessAttribute.CATEGORY_S1_SOPESS,
           true,
-          convertToValueOptions(Articulation.values()))),
+          convertToValueOptions(Articulation.values()),
+          new SensitiveParameters(null, 0.2),
+          null)),
 
   DYS_G_K(
-      ValueWithOptionsAttribute.create(
+      ValueWithOptionsAttribute.createSensitive(
           "Artikulation/ Dyslalie Buchstaben G + K",
           "DYS_G_K",
           EsuSopessAttribute.CATEGORY_S1_SOPESS,
           true,
-          convertToValueOptions(Articulation.values()))),
+          convertToValueOptions(Articulation.values()),
+          new SensitiveParameters(null, 0.2),
+          null)),
 
   DYS_L_N(
-      ValueWithOptionsAttribute.create(
+      ValueWithOptionsAttribute.createSensitive(
           "Artikulation/ Dyslalie Buchstaben L + N",
           "DYS_L_N",
           EsuSopessAttribute.CATEGORY_S1_SOPESS,
           true,
-          convertToValueOptions(Articulation.values()))),
+          convertToValueOptions(Articulation.values()),
+          new SensitiveParameters(null, 0.2),
+          null)),
 
   DYS_R(
-      ValueWithOptionsAttribute.create(
+      ValueWithOptionsAttribute.createSensitive(
           "Artikulation/ Dyslalie Buchstabe R",
           "DYS_R",
           EsuSopessAttribute.CATEGORY_S1_SOPESS,
           true,
-          convertToValueOptions(Articulation.values()))),
+          convertToValueOptions(Articulation.values()),
+          new SensitiveParameters(null, 0.2),
+          null)),
 
   DYS_F_PF(
-      ValueWithOptionsAttribute.create(
+      ValueWithOptionsAttribute.createSensitive(
           "Artikulation/ Dyslalie Buchstabe F, Lautbildung PF",
           "DYS_F_PF",
           EsuSopessAttribute.CATEGORY_S1_SOPESS,
           true,
-          convertToValueOptions(Articulation.values()))),
+          convertToValueOptions(Articulation.values()),
+          new SensitiveParameters(null, 0.2),
+          null)),
 
   DYS_B(
-      ValueWithOptionsAttribute.create(
+      ValueWithOptionsAttribute.createSensitive(
           "Artikulation/ Dyslalie Buchstabe B",
           "DYS_B",
           EsuSopessAttribute.CATEGORY_S1_SOPESS,
           true,
-          convertToValueOptions(Articulation.values()))),
+          convertToValueOptions(Articulation.values()),
+          new SensitiveParameters(null, 0.2),
+          null)),
 
   DYS_TR_DR_KR_GR(
-      ValueWithOptionsAttribute.create(
+      ValueWithOptionsAttribute.createSensitive(
           "Artikulation/ Dyslalie Lautbildung tr, dr, kr + gr",
           "DYS_tr_dr_kr_gr",
           EsuSopessAttribute.CATEGORY_S1_SOPESS,
           true,
-          convertToValueOptions(Articulation.values()))),
+          convertToValueOptions(Articulation.values()),
+          new SensitiveParameters(null, 0.2),
+          null)),
 
   DYS(
-      ValueWithOptionsAttribute.create(
+      ValueWithOptionsAttribute.createSensitive(
           "Ergebnis (Summe - Punkte) Artikulation, Dyslalie",
           "DYS",
           EsuSopessAttribute.CATEGORY_S1_SOPESS,
           true,
-          EsuAttributeUtil.createDyslaliaOptions())),
+          EsuAttributeUtil.createDyslaliaOptions(),
+          new SensitiveParameters(null, 0.2),
+          null)),
 
   DYS1(
-      ValueWithOptionsAttribute.create(
+      ValueWithOptionsAttribute.createSensitive(
           "Artikulation, Dyslalie Bewertung",
           "DYS1",
           EsuSopessAttribute.CATEGORY_S1_SOPESS,
           true,
           List.of(
               new ValueOptionInternal("A", "auffällig", false),
-              new ValueOptionInternal("U", "unauffällig", false)))),
+              new ValueOptionInternal("U", "unauffällig", false)),
+          new SensitiveParameters(null, 0.2),
+          null)),
 
   SPR(
-      ValueWithOptionsAttribute.create(
+      ValueWithOptionsAttribute.createSensitive(
           "Ergebnis Sprache",
           "SPR",
           EsuSopessAttribute.CATEGORY_S1_SOPESS,
           true,
-          convertToValueOptions(ExaminationResultFiveOptions.values()))),
+          convertToValueOptions(ExaminationResultFiveOptions.values()),
+          new SensitiveParameters(null, 0.2),
+          null)),
 
   KW_RM_SPR(
-      ValueWithOptionsAttribute.create(
+      ValueWithOptionsAttribute.createSensitive(
           "Rückmeldung Arztbrief Sprache",
           "KW_RM_SPR",
           EsuSopessAttribute.CATEGORY_S1_SOPESS,
           false,
-          convertToValueOptions(DoctorLetterValue.values()))),
+          convertToValueOptions(DoctorLetterValue.values()),
+          new SensitiveParameters(null, 0.2),
+          null)),
 
   PSWOE(
-      IntegerAttribute.create(
+      IntegerAttribute.createSensitive(
           "Pseudowörter",
           "PSWOE",
           EsuSopessAttribute.CATEGORY_S1_SOPESS,
           true,
-          EsuAttributeUtil.createUnknownOption("9"))),
+          null,
+          EsuAttributeUtil.createUnknownOption("9"),
+          new SensitiveParameters(null, 0.2))),
 
   PSWOE1(
-      ValueWithOptionsAttribute.create(
+      ValueWithOptionsAttribute.createSensitive(
           "Pseudowörter Bewertung",
           "PSWOE1",
           EsuSopessAttribute.CATEGORY_S1_SOPESS,
           true,
-          convertToValueOptions(EvaluationResult.values()))),
+          convertToValueOptions(EvaluationResult.values()),
+          new SensitiveParameters(null, 0.2),
+          null)),
 
   PRAEP(
-      IntegerAttribute.create(
+      IntegerAttribute.createSensitive(
           "Präpositionen",
           "PRAEP",
           EsuSopessAttribute.CATEGORY_S1_SOPESS,
           true,
-          EsuAttributeUtil.createUnknownOption("9"))),
+          null,
+          EsuAttributeUtil.createUnknownOption("9"),
+          new SensitiveParameters(null, 0.2))),
 
   PRAEP1(
-      ValueWithOptionsAttribute.create(
+      ValueWithOptionsAttribute.createSensitive(
           "Präpositionen Bewertung",
           "PRAEP1",
           EsuSopessAttribute.CATEGORY_S1_SOPESS,
           true,
-          convertToValueOptions(EvaluationResult.values()))),
+          convertToValueOptions(EvaluationResult.values()),
+          new SensitiveParameters(null, 0.2),
+          null)),
 
   PLUR(
-      IntegerAttribute.create(
+      IntegerAttribute.createSensitive(
           "Plurale",
           "PLUR",
           EsuSopessAttribute.CATEGORY_S1_SOPESS,
           true,
-          EsuAttributeUtil.createUnknownOption("9"))),
+          null,
+          EsuAttributeUtil.createUnknownOption("9"),
+          new SensitiveParameters(null, 0.2))),
 
   PLUR1(
-      ValueWithOptionsAttribute.create(
+      ValueWithOptionsAttribute.createSensitive(
           "Plurale Bewertung",
           "PLUR1",
           EsuSopessAttribute.CATEGORY_S1_SOPESS,
           true,
-          convertToValueOptions(EvaluationResult.values()))),
+          convertToValueOptions(EvaluationResult.values()),
+          new SensitiveParameters(null, 0.2),
+          null)),
 
   AUDWA(
-      ValueWithOptionsAttribute.create(
+      ValueWithOptionsAttribute.createSensitive(
           "Ergebnis Auditive Infoverarbeitung",
           "AUDWA",
           EsuSopessAttribute.CATEGORY_S1_SOPESS,
           true,
-          convertToValueOptions(ExaminationResultFiveOptions.values()))),
+          convertToValueOptions(ExaminationResultFiveOptions.values()),
+          new SensitiveParameters(null, 0.2),
+          null)),
 
   KW_RM_AUSWA(
-      ValueWithOptionsAttribute.create(
+      ValueWithOptionsAttribute.createSensitive(
           "Rückmeldung Arztbrief Auditive Infoverarbeitung",
           "KW_RM_AUSWA",
           EsuSopessAttribute.CATEGORY_S1_SOPESS,
           false,
-          convertToValueOptions(DoctorLetterValue.values()))),
+          convertToValueOptions(DoctorLetterValue.values()),
+          new SensitiveParameters(null, 0.2),
+          null)),
 
   ZAEHL(
-      IntegerAttribute.create(
+      IntegerAttribute.createSensitive(
           "Zählen",
           "ZAEHL",
           EsuSopessAttribute.CATEGORY_S1_SOPESS,
           true,
-          EsuAttributeUtil.createUnknownOption("99"))),
+          null,
+          EsuAttributeUtil.createUnknownOption("99"),
+          new SensitiveParameters(null, 0.2))),
 
   ZAEHL1(
-      ValueWithOptionsAttribute.create(
+      ValueWithOptionsAttribute.createSensitive(
           "Zählen Bewertung",
           "ZAEHL1",
           EsuSopessAttribute.CATEGORY_S1_SOPESS,
           true,
-          convertToValueOptions(EvaluationResult.values()))),
+          convertToValueOptions(EvaluationResult.values()),
+          new SensitiveParameters(null, 0.2),
+          null)),
 
   MENG(
-      IntegerAttribute.create(
+      IntegerAttribute.createSensitive(
           "Mengenvorwissen",
           "MENG",
           EsuSopessAttribute.CATEGORY_S1_SOPESS,
           true,
-          EsuAttributeUtil.createUnknownOption("99"))),
+          null,
+          EsuAttributeUtil.createUnknownOption("99"),
+          new SensitiveParameters(null, 0.2))),
 
   MENG1(
-      ValueWithOptionsAttribute.create(
+      ValueWithOptionsAttribute.createSensitive(
           "Mengenvorwissen Bewertung",
           "MENG1",
           EsuSopessAttribute.CATEGORY_S1_SOPESS,
           true,
-          convertToValueOptions(EvaluationResult.values()))),
+          convertToValueOptions(EvaluationResult.values()),
+          new SensitiveParameters(null, 0.2),
+          null)),
 
   WISSDE(
-      ValueWithOptionsAttribute.create(
+      ValueWithOptionsAttribute.createSensitive(
           "Ergebnis Wissen/ Denken",
           "WISSDE",
           EsuSopessAttribute.CATEGORY_S1_SOPESS,
           true,
-          convertToValueOptions(ExaminationResultFiveOptions.values()))),
+          convertToValueOptions(ExaminationResultFiveOptions.values()),
+          new SensitiveParameters(null, 0.2),
+          null)),
 
   KW_RM_WISSDE(
-      ValueWithOptionsAttribute.create(
+      ValueWithOptionsAttribute.createSensitive(
           "Rückmeldung Arztbrief Wissen/ Denken",
           "KW_RM_WISSDE",
           EsuSopessAttribute.CATEGORY_S1_SOPESS,
           false,
-          convertToValueOptions(DoctorLetterValue.values()))),
+          convertToValueOptions(DoctorLetterValue.values()),
+          new SensitiveParameters(null, 0.2),
+          null)),
 
   SELAUFM(
-      IntegerAttribute.create(
+      IntegerAttribute.createSensitive(
           "Selektive Aufmerksamkeit",
           "SELAUFM",
           EsuSopessAttribute.CATEGORY_S1_SOPESS,
           true,
-          EsuAttributeUtil.createUnknownOption("99"))),
+          null,
+          EsuAttributeUtil.createUnknownOption("99"),
+          new SensitiveParameters(null, 0.2))),
 
   SELAUFM1(
-      ValueWithOptionsAttribute.create(
+      ValueWithOptionsAttribute.createSensitive(
           "Selektive Aufmerksamkeit Bewertung",
           "SELAUFM1",
           EsuSopessAttribute.CATEGORY_S1_SOPESS,
           true,
-          convertToValueOptions(EvaluationResult.values()))),
+          convertToValueOptions(EvaluationResult.values()),
+          new SensitiveParameters(null, 0.2),
+          null)),
 
   PSYVER(
-      ValueWithOptionsAttribute.create(
+      ValueWithOptionsAttribute.createSensitive(
           "Ergebnis psychisches Verhalten",
           "PSYVER",
           EsuSopessAttribute.CATEGORY_S1_SOPESS,
           true,
-          convertToValueOptions(ExaminationResultFiveOptions.values()))),
+          convertToValueOptions(ExaminationResultFiveOptions.values()),
+          new SensitiveParameters(null, 0.2),
+          null)),
 
   KW_RM_PSYVER(
-      ValueWithOptionsAttribute.create(
+      ValueWithOptionsAttribute.createSensitive(
           "Rückmeldung Arztbrief psychisches Verhalten",
           "KW_RM_PSYVER",
           EsuSopessAttribute.CATEGORY_S1_SOPESS,
           false,
-          convertToValueOptions(DoctorLetterValue.values()))),
+          convertToValueOptions(DoctorLetterValue.values()),
+          new SensitiveParameters(null, 0.2),
+          null)),
   ;
 
   private static final String CATEGORY_S1_SOPESS = "S1-Sopess";

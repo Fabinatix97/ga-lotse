@@ -17,6 +17,7 @@ export const businessModuleNames = {
   [ApiBusinessModule.Dental]: DENTAL_MODULE_NAME,
   [ApiBusinessModule.OfficialMedicalService]: "Amtsärztlicher Dienst",
   [ApiBusinessModule.MedsAbroad]: "Reisen mit BtM",
+  [ApiBusinessModule.ProstituteProtection]: "ProstSchG",
 } satisfies Record<ApiBusinessModule, string>;
 
 export const taskTypeNames = {

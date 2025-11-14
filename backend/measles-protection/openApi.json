@@ -3589,6 +3589,27 @@
         "tags" : [ "StatusTransition" ]
       }
     },
+    "/protection-procedures/{procedureId}/close-vaccinated" : {
+      "put" : {
+        "operationId" : "closeVaccinated",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "procedureId",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          }
+        },
+        "summary" : "Closes measles protection procedure draft when a complete vaccination could be found in school-entry",
+        "tags" : [ "StatusTransition" ]
+      }
+    },
     "/protection-procedures/{procedureId}/custodian/{custodianId}/edit" : {
       "post" : {
         "operationId" : "editCustodian",
@@ -5140,7 +5161,7 @@
       },
       "BusinessModule" : {
         "type" : "string",
-        "enum" : [ "INSPECTION", "SCHOOL_ENTRY", "TRAVEL_MEDICINE", "MEASLES_PROTECTION", "STI_PROTECTION", "MEDICAL_REGISTRY", "DENTAL", "OFFICIAL_MEDICAL_SERVICE", "MEDS_ABROAD" ]
+        "enum" : [ "INSPECTION", "SCHOOL_ENTRY", "TRAVEL_MEDICINE", "MEASLES_PROTECTION", "STI_PROTECTION", "MEDICAL_REGISTRY", "DENTAL", "OFFICIAL_MEDICAL_SERVICE", "MEDS_ABROAD", "PROSTITUTE_PROTECTION" ]
       },
       "BusinessProcedureInclusionStatus" : {
         "type" : "string",

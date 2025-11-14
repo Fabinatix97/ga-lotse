@@ -52,6 +52,10 @@ public enum EmployeePermissionRole implements PermissionRole {
       LEADER_KEYCLOAK_NAME,
       LEADER_DESCRIPTION.formatted("Reisen mit Betäubungsmitteln"),
       Module.MEDS_ABROAD),
+  PROSTITUTE_PROTECTION_LEADER(
+      LEADER_KEYCLOAK_NAME,
+      LEADER_DESCRIPTION.formatted("Prostituiertenschutzgesetz"),
+      Module.PROSTITUTE_PROTECTION),
 
   BASE_PERSONS_READ(
       READ_PERMISSION_TEMPLATE.formatted("Personen (Stammdaten-Konverter)"),
@@ -395,6 +399,12 @@ public enum EmployeePermissionRole implements PermissionRole {
       BASE_PERSONS_WRITE,
       BASE_CALENDAR_BUSINESS_EVENTS_WRITE),
 
+  PROSTITUTE_PROTECTION_ADMIN(
+      ADMIN_KEYCLOAK_NAME.formatted("Prostituiertenschutzgesetz"),
+      "Standardberechtigung für das Fachmodul",
+      Module.PROSTITUTE_PROTECTION,
+      BASE_CALENDAR_BUSINESS_EVENTS_WRITE),
+
   BASE_PERSON_MIGRATE_PERSON_WITHOUT_DATE_OF_BIRTH(
       "Technischer User Personen ohne Geburtsdatum Migration",
       "Technischer User des Einschulungsuntersuchungsmoduls, für inter-modul PSB ohne Geburtsdatum Datenmigration, nicht für menschliche User bestimmt",
@@ -459,7 +469,8 @@ public enum EmployeePermissionRole implements PermissionRole {
     OPEN_DATA("Open Data"),
     OFFICIAL_MEDICAL_SERVICE("Amtsärztlicher Dienst"),
     CONFIGURATION("Konfigurator"),
-    MEDS_ABROAD("Reisen mit Betäubungsmitteln");
+    MEDS_ABROAD("Reisen mit Betäubungsmitteln"),
+    PROSTITUTE_PROTECTION("Prostituiertenschutzgesetz");
 
     private final String displayName;
 

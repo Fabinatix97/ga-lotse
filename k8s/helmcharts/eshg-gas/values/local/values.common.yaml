@@ -81,6 +81,8 @@ businessmodules:
     enabled: true
   medsabroad:
     enabled: true
+  prostituteprotection:
+    enabled: true
 
 initContainerSecurityContext:
   seLinuxOptions:

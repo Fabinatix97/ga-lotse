@@ -1,0 +1,311 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<!--
+ Copyright 2025 SCOOP Software GmbH, cronn GmbH
+ SPDX-License-Identifier: AGPL-3.0-only
+-->
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+  <changeSet author="GA-Lotse" id="1762340505034-1">
+    <createTable tableName="teis_eu_parameter">
+      <column name="zid" type="TEXT">
+        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_teis_eu_parameter"/>
+      </column>
+      <column name="aktiv" type="BOOLEAN">
+        <constraints nullable="false"/>
+      </column>
+      <column name="bezeichnung" type="TEXT"/>
+      <column name="casnummer" type="TEXT"/>
+      <column name="filterkuerzel" type="TEXT"/>
+      <column name="kurzbezeichnung" type="TEXT"/>
+      <column name="pruefung" type="INTEGER"/>
+      <column name="einheit_zid" type="TEXT"/>
+      <column name="parameter_zid" type="TEXT"/>
+    </createTable>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1762340505034-2">
+    <createTable tableName="teis_parameter">
+      <column name="zid" type="TEXT">
+        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_teis_parameter"/>
+      </column>
+      <column name="aktiv" type="BOOLEAN">
+        <constraints nullable="false"/>
+      </column>
+      <column name="bezeichnung" type="TEXT"/>
+      <column name="casnummer" type="TEXT"/>
+      <column name="filterkuerzel" type="TEXT"/>
+      <column name="histkurzbezeichnung" type="TEXT"/>
+      <column name="hygrisnummer" type="TEXT"/>
+      <column name="kurzbezeichnung" type="TEXT"/>
+      <column name="pzsumme" type="INTEGER"/>
+      <column name="stichwort" type="TEXT"/>
+      <column name="synonym1" type="TEXT"/>
+      <column name="synonym2" type="TEXT"/>
+      <column name="synonym3" type="TEXT"/>
+      <column name="synonym4" type="TEXT"/>
+      <column name="synonym5" type="TEXT"/>
+      <column name="einheit_zid" type="TEXT"/>
+    </createTable>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1762340505034-3">
+    <createTable tableName="teis_probenahmehaeufigkeit">
+      <column name="zid" type="TEXT">
+        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_teis_probenahmehaeufigkeit"/>
+      </column>
+      <column name="aktiv" type="BOOLEAN">
+        <constraints nullable="false"/>
+      </column>
+      <column name="fixanzahl" type="INTEGER"/>
+      <column name="fixbasis" type="INTEGER"/>
+      <column name="operator_max" type="TEXT"/>
+      <column name="operator_min" type="TEXT"/>
+      <column name="varanzahl" type="INTEGER"/>
+      <column name="varbasis" type="INTEGER"/>
+      <column name="wasser_volumen_max" type="INTEGER"/>
+      <column name="wasser_volumen_min" type="INTEGER"/>
+      <column name="parameterart_zid" type="TEXT"/>
+      <column name="verordnung_zid" type="TEXT"/>
+    </createTable>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1762340505034-4">
+    <createTable tableName="teis_umrechnung">
+      <column name="zid" type="TEXT">
+        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_teis_umrechnung"/>
+      </column>
+      <column name="aktiv" type="BOOLEAN">
+        <constraints nullable="false"/>
+      </column>
+      <column name="wert" type="FLOAT8"/>
+      <column name="einheit_nach_zid" type="TEXT"/>
+      <column name="einheit_von_zid" type="TEXT"/>
+    </createTable>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1762340505034-5">
+    <createTable tableName="teis_untersuchungsparameter">
+      <column name="zid" type="TEXT">
+        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_teis_untersuchungsparameter"/>
+      </column>
+      <column name="aktiv" type="BOOLEAN">
+        <constraints nullable="false"/>
+      </column>
+      <column name="grenzwert_text" type="TEXT"/>
+      <column name="obgrenzwert" type="FLOAT8"/>
+      <column name="position" type="INTEGER"/>
+      <column name="stichwort" type="TEXT"/>
+      <column name="untgrenzwert" type="FLOAT8"/>
+      <column name="einheit_zid" type="TEXT"/>
+      <column name="parameter_zid" type="TEXT"/>
+      <column name="parameterart_zid" type="TEXT"/>
+      <column name="untersuchungsumfang_zid" type="TEXT"/>
+    </createTable>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1762340505034-6">
+    <createTable tableName="teis_analyseverfahren">
+      <column name="zid" type="TEXT">
+        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_teis_analyseverfahren"/>
+      </column>
+      <column name="aktiv" type="BOOLEAN">
+        <constraints nullable="false"/>
+      </column>
+      <column name="bezeichnung1" type="TEXT"/>
+      <column name="kurzbezeichnung" type="TEXT"/>
+      <column name="stichwort" type="TEXT"/>
+    </createTable>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1762340505034-7">
+    <createTable tableName="teis_aufbereitungsverfahren">
+      <column name="zid" type="TEXT">
+        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_teis_aufbereitungsverfahren"/>
+      </column>
+      <column name="aktiv" type="BOOLEAN">
+        <constraints nullable="false"/>
+      </column>
+      <column name="bezeichnung1" type="TEXT"/>
+      <column name="bezeichnung2" type="TEXT"/>
+      <column name="kurzbezeichnung" type="TEXT"/>
+    </createTable>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1762340505034-8">
+    <createTable tableName="teis_einheit">
+      <column name="zid" type="TEXT">
+        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_teis_einheit"/>
+      </column>
+      <column name="aktiv" type="BOOLEAN">
+        <constraints nullable="false"/>
+      </column>
+      <column name="filterkuerzel" type="TEXT"/>
+      <column name="kurzbezeichnung" type="TEXT">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1762340505034-9">
+    <createTable tableName="teis_gesundheitsamt">
+      <column name="zid" type="TEXT">
+        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_teis_gesundheitsamt"/>
+      </column>
+      <column name="aktiv" type="BOOLEAN">
+        <constraints nullable="false"/>
+      </column>
+      <column name="bezeichnung1" type="TEXT"/>
+      <column name="kurzbezeichnung" type="TEXT"/>
+      <column name="ort" type="TEXT"/>
+      <column name="plz" type="TEXT"/>
+      <column name="strasse" type="TEXT"/>
+    </createTable>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1762340505034-10">
+    <createTable tableName="teis_land">
+      <column name="zid" type="TEXT">
+        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_teis_land"/>
+      </column>
+      <column name="aktiv" type="BOOLEAN">
+        <constraints nullable="false"/>
+      </column>
+      <column name="bezeichnung" type="TEXT"/>
+      <column name="kurzbezeichnung" type="TEXT"/>
+    </createTable>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1762340505034-11">
+    <createTable tableName="teis_liste">
+      <column name="zid" type="TEXT">
+        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_teis_liste"/>
+      </column>
+      <column name="aktiv" type="BOOLEAN">
+        <constraints nullable="false"/>
+      </column>
+      <column name="stichwort" type="TEXT"/>
+      <column name="bezeichnung" type="TEXT"/>
+      <column name="kurzbezeichnung" type="TEXT"/>
+      <column name="liste" type="TEXT"/>
+      <column name="nummer" type="INTEGER"/>
+    </createTable>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1762340505034-12">
+    <createTable tableName="teis_messwerttext">
+      <column name="zid" type="TEXT">
+        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_teis_messwerttext"/>
+      </column>
+      <column name="aktiv" type="BOOLEAN">
+        <constraints nullable="false"/>
+      </column>
+      <column name="filterkuerzel" type="TEXT"/>
+      <column name="kurzbezeichnung" type="TEXT"/>
+      <column name="wert" type="INTEGER"/>
+    </createTable>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1762340505034-13">
+    <createTable tableName="teis_untersuchungsumfang">
+      <column name="zid" type="TEXT">
+        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_teis_untersuchungsumfang"/>
+      </column>
+      <column name="aktiv" type="BOOLEAN">
+        <constraints nullable="false"/>
+      </column>
+      <column name="bezeichnung" type="TEXT"/>
+      <column name="kurzbezeichnung" type="TEXT"/>
+      <column name="notiz" type="TEXT"/>
+      <column name="stichwort" type="TEXT"/>
+    </createTable>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1762340505034-14">
+    <createTable tableName="teis_verwaltungsbezirk">
+      <column name="zid" type="TEXT">
+        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_teis_verwaltungsbezirk"/>
+      </column>
+      <column name="aktiv" type="BOOLEAN">
+        <constraints nullable="false"/>
+      </column>
+      <column name="bezeichnung1" type="TEXT"/>
+      <column name="kurzbezeichnung" type="TEXT"/>
+      <column name="stichwort" type="TEXT"/>
+    </createTable>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1762340505034-15">
+    <createIndex indexName="idx_teis_eu_parameter_einheit_zid" tableName="teis_eu_parameter">
+      <column name="einheit_zid"/>
+    </createIndex>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1762340505034-16">
+    <createIndex indexName="idx_teis_eu_parameter_parameter_zid" tableName="teis_eu_parameter">
+      <column name="parameter_zid"/>
+    </createIndex>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1762340505034-17">
+    <createIndex indexName="idx_teis_parameter_einheit_zid" tableName="teis_parameter">
+      <column name="einheit_zid"/>
+    </createIndex>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1762340505034-18">
+    <createIndex indexName="idx_teis_probenahmehaeufigkeit_parameterart_zid" tableName="teis_probenahmehaeufigkeit">
+      <column name="parameterart_zid"/>
+    </createIndex>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1762340505034-19">
+    <createIndex indexName="idx_teis_probenahmehaeufigkeit_verordnung_zid" tableName="teis_probenahmehaeufigkeit">
+      <column name="verordnung_zid"/>
+    </createIndex>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1762340505034-20">
+    <createIndex indexName="idx_teis_umrechnung_einheit_nach_zid" tableName="teis_umrechnung">
+      <column name="einheit_nach_zid"/>
+    </createIndex>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1762340505034-21">
+    <createIndex indexName="idx_teis_umrechnung_einheit_von_zid" tableName="teis_umrechnung">
+      <column name="einheit_von_zid"/>
+    </createIndex>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1762340505034-22">
+    <createIndex indexName="idx_teis_untersuchungsparameter_einheit_zid" tableName="teis_untersuchungsparameter">
+      <column name="einheit_zid"/>
+    </createIndex>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1762340505034-23">
+    <createIndex indexName="idx_teis_untersuchungsparameter_parameter_zid" tableName="teis_untersuchungsparameter">
+      <column name="parameter_zid"/>
+    </createIndex>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1762340505034-24">
+    <createIndex indexName="idx_teis_untersuchungsparameter_parameterart_zid" tableName="teis_untersuchungsparameter">
+      <column name="parameterart_zid"/>
+    </createIndex>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1762340505034-25">
+    <createIndex indexName="idx_teis_untersuchungsparameter_untersuchungsumfang_zid" tableName="teis_untersuchungsparameter">
+      <column name="untersuchungsumfang_zid"/>
+    </createIndex>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1762340505034-26">
+    <addForeignKeyConstraint baseColumnNames="einheit_zid" baseTableName="teis_eu_parameter" constraintName="fk_teis_eu_parameter_teis_einheit" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="zid" referencedTableName="teis_einheit" validate="true"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1762340505034-27">
+    <addForeignKeyConstraint baseColumnNames="parameter_zid" baseTableName="teis_eu_parameter" constraintName="fk_teis_eu_parameter_teis_parameter" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="zid" referencedTableName="teis_parameter" validate="true"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1762340505034-28">
+    <addForeignKeyConstraint baseColumnNames="einheit_zid" baseTableName="teis_parameter" constraintName="fk_teis_parameter_teis_einheit" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="zid" referencedTableName="teis_einheit" validate="true"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1762340505034-29">
+    <addForeignKeyConstraint baseColumnNames="parameterart_zid" baseTableName="teis_probenahmehaeufigkeit" constraintName="fk_teis_probenahmehaeufigkeit_parameterart" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="zid" referencedTableName="teis_liste" validate="true"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1762340505034-30">
+    <addForeignKeyConstraint baseColumnNames="verordnung_zid" baseTableName="teis_probenahmehaeufigkeit" constraintName="fk_teis_probenahmehaeufigkeit_verordnung" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="zid" referencedTableName="teis_liste" validate="true"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1762340505034-31">
+    <addForeignKeyConstraint baseColumnNames="einheit_nach_zid" baseTableName="teis_umrechnung" constraintName="fk_teis_umrechnung_einheit_nach" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="zid" referencedTableName="teis_einheit" validate="true"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1762340505034-32">
+    <addForeignKeyConstraint baseColumnNames="einheit_von_zid" baseTableName="teis_umrechnung" constraintName="fk_teis_umrechnung_einheit_von" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="zid" referencedTableName="teis_einheit" validate="true"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1762340505034-33">
+    <addForeignKeyConstraint baseColumnNames="einheit_zid" baseTableName="teis_untersuchungsparameter" constraintName="fk_teis_untersuchungsparameter_teis_einheit" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="zid" referencedTableName="teis_einheit" validate="true"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1762340505034-34">
+    <addForeignKeyConstraint baseColumnNames="parameterart_zid" baseTableName="teis_untersuchungsparameter" constraintName="fk_teis_untersuchungsparameter_teis_liste" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="zid" referencedTableName="teis_liste" validate="true"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1762340505034-35">
+    <addForeignKeyConstraint baseColumnNames="parameter_zid" baseTableName="teis_untersuchungsparameter" constraintName="fk_teis_untersuchungsparameter_teis_parameter" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="zid" referencedTableName="teis_parameter" validate="true"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1762340505034-36">
+    <addForeignKeyConstraint baseColumnNames="untersuchungsumfang_zid" baseTableName="teis_untersuchungsparameter" constraintName="fk_teis_untersuchungsparameter_teis_untersuchungsumfang" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="zid" referencedTableName="teis_untersuchungsumfang" validate="true"/>
+  </changeSet>
+</databaseChangeLog>

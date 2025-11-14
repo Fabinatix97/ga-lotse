@@ -390,6 +390,12 @@ businessmodules:
       - lsd
       - base
     imageName: meds-abroad
+  prostituteprotection:
+    enabled: false
+    waitFor:
+      - lsd
+      - base
+    imageName: prostitute-protection
   centralrepository:
     enabled: false
 

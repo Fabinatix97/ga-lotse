@@ -27,7 +27,9 @@ import { useGdprValidationTaskApi } from "@/lib/shared/api/clients";
 
 const businessModules = Object.freeze(
   Object.values(ApiBusinessModule).filter(
-    (businessModule) => businessModule !== ApiBusinessModule.MedsAbroad,
+    (businessModule) =>
+      businessModule !== ApiBusinessModule.MedsAbroad &&
+      businessModule !== ApiBusinessModule.ProstituteProtection,
   ),
 );
 

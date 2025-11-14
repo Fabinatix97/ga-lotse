@@ -9,9 +9,13 @@ import de.eshg.testhelper.ResettableProperties;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
+import java.time.Duration;
 import java.time.MonthDay;
 import java.time.Period;
+import java.time.temporal.ChronoUnit;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.convert.DurationUnit;
 import org.springframework.validation.annotation.Validated;
 
 @Validated
@@ -25,6 +29,9 @@ public final class SchoolEntryProperties implements ResettableProperties {
   private @NotNull Integer maxNumberOfImportRows = 10_000;
   private boolean directProcedureTypeAssignmentOnImport;
   private @NotBlank String pdfDocumentAccentColor;
+  private @NotNull @DurationUnit(ChronoUnit.MINUTES) Duration
+      vaccinationCheckRateLimitIntervalMinutes = Duration.ofMinutes(60);
+  private @Positive int vaccinationCheckRateLimitCapacity = 180;
 
   public Period getBulkCreateAppointmentsMinLeadTime() {
     return bulkCreateAppointmentsMinLeadTime;
@@ -86,5 +93,22 @@ public final class SchoolEntryProperties implements ResettableProperties {
 
   public void setPdfDocumentAccentColor(String pdfDocumentAccentColor) {
     this.pdfDocumentAccentColor = pdfDocumentAccentColor;
+  }
+
+  public Duration getVaccinationCheckRateLimitIntervalMinutes() {
+    return vaccinationCheckRateLimitIntervalMinutes;
+  }
+
+  public void setVaccinationCheckRateLimitIntervalMinutes(
+      Duration vaccinationCheckRateLimitIntervalMinutes) {
+    this.vaccinationCheckRateLimitIntervalMinutes = vaccinationCheckRateLimitIntervalMinutes;
+  }
+
+  public int getVaccinationCheckRateLimitCapacity() {
+    return vaccinationCheckRateLimitCapacity;
+  }
+
+  public void setVaccinationCheckRateLimitCapacity(int vaccinationCheckRateLimitCapacity) {
+    this.vaccinationCheckRateLimitCapacity = vaccinationCheckRateLimitCapacity;
   }
 }

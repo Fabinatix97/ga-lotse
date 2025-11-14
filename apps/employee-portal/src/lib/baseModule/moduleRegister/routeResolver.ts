@@ -45,6 +45,8 @@ export function resolveProcedureDetailsRoute({
       return officialMedicalServiceRoutes.procedures.byId(procedureId).details;
     case "MEDS_ABROAD":
       return "";
+    case "PROSTITUTE_PROTECTION":
+      return "";
   }
 }
 
@@ -72,6 +74,8 @@ export function resolveProcedureProgressEntriesRoute(
       return officialMedicalServiceRoutes.procedures.byId(procedureId)
         .progressEntries;
     case "MEDS_ABROAD":
+      return "";
+    case "PROSTITUTE_PROTECTION":
       return "";
   }
 }

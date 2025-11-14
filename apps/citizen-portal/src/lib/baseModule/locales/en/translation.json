@@ -25,7 +25,8 @@
     "OFFICIAL_MEDICAL_SERVICE": "Official medical service",
     "TRAVEL_MEDICINE": "Travel medicine advice",
     "STI_PROTECTION": "HIV/STI counseling service",
-    "MEDS_ABROAD": "Travelling with Narcotics"
+    "MEDS_ABROAD": "Travelling with Narcotics",
+    "PROSTITUTE_PROTECTION": "Prostitute protection"
   },
   "common": {
     "email": "E-Mail",

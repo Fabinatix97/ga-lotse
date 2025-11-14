@@ -31,6 +31,8 @@ export const BUSINESS_MODULE_URLS = {
   [ApiBusinessModule.OfficialMedicalService]:
     "PUBLIC_OFFICIAL_MEDICAL_SERVICE_BACKEND_URL",
   [ApiBusinessModule.MedsAbroad]: "PUBLIC_MEDS_ABROAD_BACKEND_URL",
+  [ApiBusinessModule.ProstituteProtection]:
+    "PUBLIC_PROSTITUTE_PROTECTION_BACKEND_URL",
 } as const satisfies Record<ApiBusinessModule, keyof ApiConfiguration>;
 
 function useConfiguration() {

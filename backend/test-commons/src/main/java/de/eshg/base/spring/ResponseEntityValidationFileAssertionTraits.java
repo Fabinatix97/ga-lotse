@@ -7,6 +7,7 @@ package de.eshg.base.spring;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import de.cronn.assertions.validationfile.FileExtensions;
 import de.cronn.assertions.validationfile.junit5.JUnit5ValidationFileAssertions;
 import de.cronn.assertions.validationfile.normalization.ValidationNormalizer;
@@ -117,7 +118,10 @@ public interface ResponseEntityValidationFileAssertionTraits
 
   private String toJson(Object actual) {
     try {
-      return objectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(actual);
+      return objectMapper()
+          .writerWithDefaultPrettyPrinter()
+          .withoutFeatures(SerializationFeature.FAIL_ON_EMPTY_BEANS)
+          .writeValueAsString(actual);
     } catch (JsonProcessingException e) {
       throw new RuntimeException(e);
     }

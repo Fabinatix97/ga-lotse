@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-package de.eshg.measlesprotection;
+package de.eshg.measlesprotection.vaccinationcheck;
 
 import de.eshg.measlesprotection.polytune.PolytuneMeaslesVaccinationCheckApi;
 import de.eshg.measlesprotection.polytune.PolytuneMeaslesVaccinationCheckResponse;

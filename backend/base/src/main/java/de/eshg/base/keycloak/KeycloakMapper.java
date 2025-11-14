@@ -68,6 +68,7 @@ public class KeycloakMapper {
       case DENTAL -> ModuleMemberGroup.DENTAL;
       case OFFICIAL_MEDICAL_SERVICE -> ModuleMemberGroup.OFFICIAL_MEDICAL_SERVICE;
       case MEDS_ABROAD -> ModuleMemberGroup.MEDS_ABROAD;
+      case PROSTITUTE_PROTECTION -> ModuleMemberGroup.PROSTITUTE_PROTECTION;
     };
   }
 

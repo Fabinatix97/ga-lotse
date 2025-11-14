@@ -69,6 +69,7 @@ data:
   official-medical-service-module-client-secret: Zml4ZWQtc2VjcmV0LWZvci1zbmFwc2hvdA==
   opendata-module-client-secret: Zml4ZWQtc2VjcmV0LWZvci1zbmFwc2hvdA==
   meds-abroad-module-client-secret: Zml4ZWQtc2VjcmV0LWZvci1zbmFwc2hvdA==
+  prostitute-protection-module-client-secret: Zml4ZWQtc2VjcmV0LWZvci1zbmFwc2hvdA==
   synapse-admin-password: Zml4ZWQtc2VjcmV0LWZvci1zbmFwc2hvdA==
   synapse-registration-shared-secret: Zml4ZWQtc2VjcmV0LWZvci1zbmFwc2hvdA==
   synapse-macaroon-secret: Zml4ZWQtc2VjcmV0LWZvci1zbmFwc2hvdA==
@@ -606,6 +607,15 @@ data:
               "active": true,
               "manualCertificate": false,
               "commonName": "opendata.frankfurt.svc.cluster.local",
+              "certificate": null,
+              "networkId": "frankfurt"
+            },
+            {
+              "readableName": "prostituteprotection",
+              "type": "FM",
+              "active": true,
+              "manualCertificate": false,
+              "commonName": "prostituteprotection.frankfurt.svc.cluster.local",
               "certificate": null,
               "networkId": "frankfurt"
             },

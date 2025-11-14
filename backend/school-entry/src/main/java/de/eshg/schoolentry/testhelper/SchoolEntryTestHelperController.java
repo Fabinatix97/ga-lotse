@@ -12,11 +12,14 @@ import de.eshg.lib.appointmentblock.spring.AppointmentBlockConfig;
 import de.eshg.lib.appointmentblock.testhelper.AppointmentBlockGroupsPopulator;
 import de.eshg.lib.auditlog.AuditLogTestHelperService;
 import de.eshg.schoolentry.SchoolEntryConfigService;
+import de.eshg.schoolentry.SchoolEntryGuard;
 import de.eshg.schoolentry.api.CreateProcedureResponse;
 import de.eshg.schoolentry.api.GetClosedProceduresResponse;
 import de.eshg.schoolentry.api.SchoolEntryAppointmentBlockPopulationResult;
 import de.eshg.schoolentry.api.SchoolEntryFeature;
 import de.eshg.schoolentry.api.SchoolEntryProcedurePopulationResult;
+import de.eshg.schoolentry.api.testhelper.ConsumeRateLimitTokensRequest;
+import de.eshg.schoolentry.api.testhelper.SchoolEntryTestHelperApi;
 import de.eshg.schoolentry.config.SchoolEntryFeatureToggle;
 import de.eshg.testhelper.ConditionalOnTestHelperEnabled;
 import de.eshg.testhelper.TestHelperController;
@@ -36,7 +39,7 @@ import org.springframework.web.service.annotation.PostExchange;
 @RestController
 @ConditionalOnTestHelperEnabled
 public class SchoolEntryTestHelperController extends TestHelperController
-    implements AuditLogClientTestHelperApi {
+    implements AuditLogClientTestHelperApi, SchoolEntryTestHelperApi {
 
   private final SchoolEntryTestHelperService schoolEntryTestHelperService;
   private final SchoolEntryFeatureToggle schoolEntryFeatureToggle;
@@ -45,6 +48,7 @@ public class SchoolEntryTestHelperController extends TestHelperController
   private final AuditLogTestHelperService auditLogTestHelperService;
   private final SchoolEntryConfigService schoolEntryConfigService;
   private final AppointmentBlockConfig appointmentBlockConfig;
+  private final SchoolEntryGuard guard;
 
   public SchoolEntryTestHelperController(
       SchoolEntryTestHelperService schoolEntryTestHelperService,
@@ -54,7 +58,8 @@ public class SchoolEntryTestHelperController extends TestHelperController
       AuditLogTestHelperService auditLogTestHelperService,
       SchoolEntryConfigService schoolEntryConfigService,
       AppointmentBlockConfig appointmentBlockConfig,
-      EnvironmentConfig environmentConfig) {
+      EnvironmentConfig environmentConfig,
+      SchoolEntryGuard guard) {
     super(schoolEntryTestHelperService, environmentConfig);
     this.schoolEntryTestHelperService = schoolEntryTestHelperService;
     this.schoolEntryFeatureToggle = schoolEntryFeatureToggle;
@@ -63,6 +68,7 @@ public class SchoolEntryTestHelperController extends TestHelperController
     this.auditLogTestHelperService = auditLogTestHelperService;
     this.schoolEntryConfigService = schoolEntryConfigService;
     this.appointmentBlockConfig = appointmentBlockConfig;
+    this.guard = guard;
   }
 
   @GetExchange("/school-entries/{procedureId}/citizen-user-id")
@@ -129,5 +135,14 @@ public class SchoolEntryTestHelperController extends TestHelperController
   @Override
   public void runAuditLogArchivingJob() {
     auditLogTestHelperService.runAuditLogArchivingJob();
+  }
+
+  @Override
+  public void consumeRateLimitTokens(ConsumeRateLimitTokensRequest request) {
+    if (request.vaccinationCheckTokens() != null) {
+      for (int i = 0; i < request.vaccinationCheckTokens(); i++) {
+        guard.guardVaccinationCheck();
+      }
+    }
   }
 }

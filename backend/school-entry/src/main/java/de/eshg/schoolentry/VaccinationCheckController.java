@@ -19,12 +19,15 @@ import org.springframework.web.bind.annotation.RestController;
 public class VaccinationCheckController implements VaccinationCheckApi {
 
   private final VaccinationCheckService vaccinationCheckService;
+  private final SchoolEntryGuard guard;
   private final BaseFeatureTogglesApi baseFeatureTogglesApi;
 
   public VaccinationCheckController(
       VaccinationCheckService vaccinationCheckService,
+      SchoolEntryGuard guard,
       BaseFeatureTogglesApi baseFeatureTogglesApi) {
     this.vaccinationCheckService = vaccinationCheckService;
+    this.guard = guard;
     this.baseFeatureTogglesApi = baseFeatureTogglesApi;
   }
 
@@ -36,6 +39,7 @@ public class VaccinationCheckController implements VaccinationCheckApi {
         .contains(BaseFeature.VACCINATION_CHECK)) {
       throw new BadRequestException("New feature VACCINATION_CHECK is not enabled");
     }
+    guard.guardVaccinationCheck();
     return vaccinationCheckService.checkVaccinationStatus(request.fileStateIds());
   }
 }

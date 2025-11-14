@@ -64,7 +64,12 @@ public enum ModuleMemberGroup implements KeycloakGroup {
   MEDS_ABROAD(
       "Reisen mit Betäubungsmitteln",
       getStandardRoles(),
-      List.of(EmployeePermissionRole.MEDS_ABROAD_ADMIN));
+      List.of(EmployeePermissionRole.MEDS_ABROAD_ADMIN)),
+  PROSTITUTE_PROTECTION(
+      "Prostituiertenschutzgesetz",
+      getStandardRoles(),
+      List.of(EmployeePermissionRole.PROSTITUTE_PROTECTION_ADMIN)),
+  ;
 
   private final String keycloakNameWithoutPrefix;
   private final List<EmployeePermissionRole> roles;

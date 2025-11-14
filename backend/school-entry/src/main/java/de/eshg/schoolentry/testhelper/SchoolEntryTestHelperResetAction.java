@@ -5,6 +5,7 @@
 
 package de.eshg.schoolentry.testhelper;
 
+import de.eshg.schoolentry.SchoolEntryGuard;
 import de.eshg.schoolentry.population.CreateLabelsTask;
 import de.eshg.testhelper.ConditionalOnTestHelperEnabled;
 import de.eshg.testhelper.TestHelperServiceResetAction;
@@ -17,13 +18,17 @@ import org.springframework.stereotype.Component;
 public class SchoolEntryTestHelperResetAction implements TestHelperServiceResetAction {
 
   private final CreateLabelsTask createLabelsTask;
+  private final SchoolEntryGuard schoolEntryGuard;
 
-  public SchoolEntryTestHelperResetAction(CreateLabelsTask createLabelsTask) {
+  public SchoolEntryTestHelperResetAction(
+      CreateLabelsTask createLabelsTask, SchoolEntryGuard schoolEntryGuard) {
     this.createLabelsTask = createLabelsTask;
+    this.schoolEntryGuard = schoolEntryGuard;
   }
 
   @Override
   public void reset() {
     createLabelsTask.createLabels();
+    schoolEntryGuard.resetRateLimits();
   }
 }

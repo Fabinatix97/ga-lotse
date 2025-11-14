@@ -54,7 +54,11 @@ public enum ModuleLeaderGroup implements KeycloakGroup {
   MEDS_ABROAD(
       "Reisen mit Betäubungsmitteln",
       ModuleMemberGroup.MEDS_ABROAD,
-      EmployeePermissionRole.MEDS_ABROAD_LEADER);
+      EmployeePermissionRole.MEDS_ABROAD_LEADER),
+  PROSTITUTE_PROTECTION(
+      "Prostituiertenschutzgesetz",
+      ModuleMemberGroup.PROSTITUTE_PROTECTION,
+      EmployeePermissionRole.PROSTITUTE_PROTECTION_LEADER);
 
   private final String keycloakNameWithoutPrefix;
   private final List<EmployeePermissionRole> roles;
@@ -94,6 +98,7 @@ public enum ModuleLeaderGroup implements KeycloakGroup {
       case OPEN_DATA -> ModuleLeaderGroup.OPEN_DATA;
       case OFFICIAL_MEDICAL_SERVICE -> ModuleLeaderGroup.OFFICIAL_MEDICAL_SERVICE;
       case MEDS_ABROAD -> ModuleLeaderGroup.MEDS_ABROAD;
+      case PROSTITUTE_PROTECTION -> ModuleLeaderGroup.PROSTITUTE_PROTECTION;
     };
   }
 

@@ -23,6 +23,9 @@ export const archivingRoutes = defineRoutes("/archiving", (archivingRoute) => ({
     [ApiBusinessModule.TravelMedicine]: archivingRoute("/travel-medicine"),
     [ApiBusinessModule.StiProtection]: archivingRoute("/sti-protection"),
     [ApiBusinessModule.MedsAbroad]: archivingRoute("/meds-abroad"),
+    [ApiBusinessModule.ProstituteProtection]: archivingRoute(
+      "/prostitute-protection",
+    ),
   } satisfies BusinessModuleRoutes,
 }));
 
@@ -45,6 +48,9 @@ export const archivingAdminRoutes = defineRoutes(
         archivingAdminRoute("/travel-medicine"),
       [ApiBusinessModule.StiProtection]: archivingAdminRoute("/sti-protection"),
       [ApiBusinessModule.MedsAbroad]: archivingAdminRoute("/meds-abroad"),
+      [ApiBusinessModule.ProstituteProtection]: archivingAdminRoute(
+        "/prostitute-protection",
+      ),
     } satisfies BusinessModuleRoutes,
   }),
 );

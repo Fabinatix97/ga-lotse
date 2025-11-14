@@ -4810,6 +4810,27 @@
         "tags" : [ "TestHelper" ]
       }
     },
+    "/test-helper/consume-rate-limit-tokens" : {
+      "post" : {
+        "operationId" : "consumeRateLimitTokens",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/ConsumeRateLimitTokensRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "TestHelper" ]
+      }
+    },
     "/test-helper/direct-procedure-type-assignment-on-import" : {
       "post" : {
         "operationId" : "enableDirectProcedureTypeAssignmentOnImport",
@@ -5916,7 +5937,7 @@
       },
       "BusinessModule" : {
         "type" : "string",
-        "enum" : [ "INSPECTION", "SCHOOL_ENTRY", "TRAVEL_MEDICINE", "MEASLES_PROTECTION", "STI_PROTECTION", "MEDICAL_REGISTRY", "DENTAL", "OFFICIAL_MEDICAL_SERVICE", "MEDS_ABROAD" ]
+        "enum" : [ "INSPECTION", "SCHOOL_ENTRY", "TRAVEL_MEDICINE", "MEASLES_PROTECTION", "STI_PROTECTION", "MEDICAL_REGISTRY", "DENTAL", "OFFICIAL_MEDICAL_SERVICE", "MEDS_ABROAD", "PROSTITUTE_PROTECTION" ]
       },
       "BusinessProcedureInclusionStatus" : {
         "type" : "string",
@@ -6140,6 +6161,15 @@
       "ConfigurationStatus" : {
         "type" : "string",
         "enum" : [ "COMPLETE", "PARTIALLY_COMPLETE", "INCOMPLETE" ]
+      },
+      "ConsumeRateLimitTokensRequest" : {
+        "type" : "object",
+        "properties" : {
+          "vaccinationCheckTokens" : {
+            "type" : "integer",
+            "format" : "int32"
+          }
+        }
       },
       "ContactDetails" : {
         "required" : [ "contactType", "salutation" ],
@@ -11467,6 +11497,8 @@
         "type" : "object",
         "properties" : {
           "fileStateIds" : {
+            "maxItems" : 50,
+            "minItems" : 0,
             "type" : "array",
             "items" : {
               "type" : "string",

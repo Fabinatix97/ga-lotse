@@ -21,6 +21,7 @@ declare module "@eshg/lib-portal" {
     PUBLIC_DENTAL_BACKEND_URL: string;
     PUBLIC_OFFICIAL_MEDICAL_SERVICE_BACKEND_URL: string;
     PUBLIC_MEDS_ABROAD_BACKEND_URL: string;
+    PUBLIC_PROSTITUTE_PROTECTION_BACKEND_URL: string;
     PUBLIC_PDF_CONVERTER_URL: string;
   }
 }

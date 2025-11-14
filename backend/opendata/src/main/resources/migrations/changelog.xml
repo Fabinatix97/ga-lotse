@@ -17,5 +17,6 @@
   <include file="migrations/0007_terms_of_use_i18n.xml"/>
   <include file="migrations/0008_add_meds_abroad_module.xml"/>
   <include file="migrations/0009_terms_of_use_as_markdown.xml"/>
+  <include file="migrations/0010_add_prostitute_protection_module.xml"/>
 
 </databaseChangeLog>

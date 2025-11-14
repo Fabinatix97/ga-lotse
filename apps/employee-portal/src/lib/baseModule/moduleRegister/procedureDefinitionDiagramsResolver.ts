@@ -36,5 +36,7 @@ export function resolveProcedureDefinitionDiagram(
       return stiProtectionProcedureDefinitionDiagram;
     case "DENTAL":
       return undefined;
+    case "PROSTITUTE_PROTECTION":
+      return undefined;
   }
 }

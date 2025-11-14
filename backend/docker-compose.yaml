@@ -67,6 +67,7 @@ services:
       - de.eshg.business-modules.clients[DENTAL].url=http://dental:8080
       - de.eshg.business-modules.clients[OFFICIAL_MEDICAL_SERVICE].url=http://official-medical-service:8080
       - de.eshg.business-modules.clients[MEDS_ABROAD].url=http://meds-abroad:8080
+      - de.eshg.business-modules.clients[PROSTITUTE_PROTECTION].url=http://prostitute-protection:8080
       - de.eshg.auditlog.service-url=http://auditlog:8080
       - de.eshg.base.svg-sanitizer-base-url=http://svg-sanitizer:8080
     depends_on:
@@ -614,3 +615,30 @@ services:
     image: ga-lotse/svg-sanitizer
     ports:
       - 8101:8080
+
+  prostitute-protection:
+    image: ga-lotse/prostitute-protection
+    extends:
+      file: docker-compose-common.yaml
+      service: eshg-service-base
+    environment:
+      - spring.datasource.url=jdbc:postgresql://prostitute-protection-db/prostitute_protection
+      - de.eshg.base.service-url=http://base:8080
+      - eshg.keycloak.internal.url=http://keycloak:8080
+      - de.eshg.auditlog.service-url=http://auditlog:8080
+    depends_on:
+      prostitute-protection-db:
+        condition: service_healthy
+    ports:
+      - 8102:8080
+
+  prostitute-protection-db:
+    extends:
+      file: docker-compose-common.yaml
+      service: eshg-postgres-base
+    ports:
+      - 5451:5432
+    environment:
+      POSTGRES_DB: prostitute_protection
+      POSTGRES_USER: testuser
+      POSTGRES_PASSWORD: testpassword

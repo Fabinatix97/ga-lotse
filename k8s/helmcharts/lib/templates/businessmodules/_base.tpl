@@ -186,6 +186,11 @@
     secretKeyRef:
       name: keycloak-client-secrets
       key: meds-abroad-module-client-secret
+- name: eshg.keycloak.employee-realm.module-client-secrets.prostitute-protection
+  valueFrom:
+    secretKeyRef:
+      name: keycloak-client-secrets
+      key: prostitute-protection-module-client-secret
 - name: spring.security.oauth2.client.registration.module-client.client-id
   value: system-base
 - name: spring.security.oauth2.client.registration.module-client.client-secret
@@ -275,6 +280,10 @@
 {{- if .Values.businessmodules.medsabroad.enabled }}
 - name: de.eshg.business-modules.clients.MEDS_ABROAD.url
   value: "http://medsabroad{{ .Values.domains.clusterLocalSuffix }}"
+{{- end }}
+{{- if .Values.businessmodules.prostituteprotection.enabled }}
+- name: de.eshg.business-modules.clients.PROSTITUTE_PROTECTION.url
+  value: "http://prostituteprotection{{ .Values.domains.clusterLocalSuffix }}"
 {{- end }}
 {{- if .Values.svgsanitizer.enabled }}
 - name: de.eshg.base.svg-sanitizer-base-url

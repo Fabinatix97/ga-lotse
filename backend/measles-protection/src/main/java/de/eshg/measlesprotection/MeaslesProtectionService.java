@@ -69,6 +69,7 @@ import de.eshg.measlesprotection.persistence.db.ReportData;
 import de.eshg.measlesprotection.persistence.db.RoleStatus;
 import de.eshg.measlesprotection.persistence.support.MeaslesProtectionProcedureSpecification;
 import de.eshg.measlesprotection.persistence.support.ResultPage;
+import de.eshg.measlesprotection.vaccinationcheck.VaccinationCheckService;
 import de.eshg.rest.service.error.BadRequestException;
 import java.time.Clock;
 import java.time.Instant;

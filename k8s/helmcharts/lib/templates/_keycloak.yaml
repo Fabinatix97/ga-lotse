@@ -296,6 +296,7 @@ data:
   official-medical-service-module-client-secret: {{ include "getOrCreateSecretValue" (list $ "keycloak-client-secrets" "official-medical-service-module-client-secret") }}
   opendata-module-client-secret: {{ include "getOrCreateSecretValue" (list $ "keycloak-client-secrets" "opendata-module-client-secret") }}
   meds-abroad-module-client-secret: {{ include "getOrCreateSecretValue" (list $ "keycloak-client-secrets" "meds-abroad-module-client-secret") }}
+  prostitute-protection-module-client-secret: {{ include "getOrCreateSecretValue" (list $ "keycloak-client-secrets" "prostitute-protection-module-client-secret") }}
 
   synapse-admin-password: {{ include "getOrCreateSecretValue" (list $ "keycloak-client-secrets" "synapse-admin-password") }}
   synapse-registration-shared-secret: {{ include "getOrCreateSecretValue" (list $ "keycloak-client-secrets" "synapse-registration-shared-secret") }}

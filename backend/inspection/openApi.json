@@ -5912,7 +5912,7 @@
       },
       "BusinessModule" : {
         "type" : "string",
-        "enum" : [ "INSPECTION", "SCHOOL_ENTRY", "TRAVEL_MEDICINE", "MEASLES_PROTECTION", "STI_PROTECTION", "MEDICAL_REGISTRY", "DENTAL", "OFFICIAL_MEDICAL_SERVICE", "MEDS_ABROAD" ]
+        "enum" : [ "INSPECTION", "SCHOOL_ENTRY", "TRAVEL_MEDICINE", "MEASLES_PROTECTION", "STI_PROTECTION", "MEDICAL_REGISTRY", "DENTAL", "OFFICIAL_MEDICAL_SERVICE", "MEDS_ABROAD", "PROSTITUTE_PROTECTION" ]
       },
       "BusinessProcedureInclusionStatus" : {
         "type" : "string",
@@ -9627,7 +9627,7 @@
       },
       "InspectionFeature" : {
         "type" : "string",
-        "enum" : [ "STATISTIC_ANONYMIZATION", "SAMPLES", "OBJECT_TYPE_HIERARCHY" ]
+        "enum" : [ "STATISTIC_ANONYMIZATION", "SAMPLES", "OBJECT_TYPE_HIERARCHY", "TEIS_DATA" ]
       },
       "InspectionFollowupInfo" : {
         "type" : "object",

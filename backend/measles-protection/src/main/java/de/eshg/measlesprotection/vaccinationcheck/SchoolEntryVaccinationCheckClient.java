@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-package de.eshg.measlesprotection;
+package de.eshg.measlesprotection.vaccinationcheck;
 
 import de.eshg.lib.rest.oauth.client.commons.ModuleClientAuthenticator;
 import de.eshg.schoolentry.api.vaccination.VaccinationCheckApi;

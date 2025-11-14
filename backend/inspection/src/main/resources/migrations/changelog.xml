@@ -91,5 +91,6 @@
   <include file="migrations/0076_add_gdpr_identification_hash_not_null_constraint.xml"/>
   <include file="migrations/0077_inspection_samples.xml"/>
   <include file="migrations/0078_object_type_hierarchy.xml"/>
+  <include file="migrations/0079_teis.xml"/>
 
 </databaseChangeLog>

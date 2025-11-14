@@ -5,13 +5,19 @@
 
 package de.eshg.schoolentry.statistics.attributes;
 
+import de.eshg.lib.statistics.api.DataPrivacyCategory;
 import de.eshg.lib.statistics.attributes.AttributeData;
 import de.eshg.lib.statistics.attributes.TextAttribute;
 
 public enum EsuProcedureAttribute implements EsuAttributes {
   UNTERSDAT(
       TextAttribute.create(
-          "Untersuchungsdatum", "UntersDat", EsuProcedureAttribute.CATEGORY_PROCEDURE_INFOS, true));
+          "Untersuchungsdatum",
+          "UntersDat",
+          EsuProcedureAttribute.CATEGORY_PROCEDURE_INFOS,
+          true,
+          null,
+          DataPrivacyCategory.QUASI_IDENTIFYING));
 
   private static final String CATEGORY_PROCEDURE_INFOS = "Vorgang";
 

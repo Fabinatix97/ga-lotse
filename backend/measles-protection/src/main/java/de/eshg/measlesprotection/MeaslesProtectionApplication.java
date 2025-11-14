@@ -16,7 +16,10 @@ import org.springframework.context.annotation.Import;
 
 @SpringBootApplication
 @Import(MeaslesProtectionPublicSecurityConfig.class)
-@EnableConfigurationProperties(MeaslesProtectionFeatureToggle.class)
+@EnableConfigurationProperties({
+  MeaslesProtectionFeatureToggle.class,
+  MeaslesProtectionProperties.class
+})
 public class MeaslesProtectionApplication {
 
   @Bean

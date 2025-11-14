@@ -77,6 +77,7 @@ The set of all preview features is defined in the `application-preview-features.
 | dental-db                   | 5432          | 5448          |
 | official-medical-service-db | 5432          | 5449          |
 | meds-abroad-db              | 5432          | 5450          |
+| prostitute-protection-db    | 5432          | 5451          |
 | synapse                     | 8008          | 8008          |
 | base                        | 8080          | 8080          |
 | inspection                  | 8080          | 8081          |
@@ -92,6 +93,7 @@ The set of all preview features is defined in the `application-preview-features.
 | dental                      | 8080          | 8098          |
 | official-medical-service    | 8080          | 8099          |
 | meds-abroad                 | 8080          | 8100          |
+| prostitute-protection       | 8080          | 8102          |
 | chat-management             | 8080          | 8088          |
 | local-service-directory     | 8080          | 8089          |
 | central-repository          | 8080          | 8091          |

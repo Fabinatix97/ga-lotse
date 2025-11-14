@@ -19,4 +19,6 @@ export const systemProgressEntryTypeTitles: Record<string, string> = {
   APPOINTMENT_BOOKED: "Termin gebucht",
   APPOINTMENT_REBOOKED: "Termin geändert",
   APPOINTMENT_DELETED: "Termin gelöscht",
+  CLOSED_BECAUSE_VACCINATION_FOUND_IN_SCHOOL_ENTRY:
+    "Vollständige Masernimpfung aus ESU-Fachverfahren bekannt",
 };
