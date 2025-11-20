@@ -128,7 +128,7 @@ interface UseAlertResult {
 }
 
 interface AlertOpenOptions
-  extends Pick<AlertProps, "title" | "message" | "action">,
+  extends Pick<AlertProps, "title" | "message" | "action" | "messageComponent">,
     AlertOptions {}
 
 /**

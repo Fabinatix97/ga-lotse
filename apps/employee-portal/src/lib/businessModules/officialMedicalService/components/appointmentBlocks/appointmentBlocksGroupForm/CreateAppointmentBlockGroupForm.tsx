@@ -15,6 +15,7 @@ import {
 import {
   OptionalFieldValue,
   isTimeString,
+  mapOptionalValue,
   mapRequiredValue,
 } from "@eshg/lib-portal";
 import {
@@ -36,6 +37,7 @@ const INITIAL_VALUES: CreateAppointmentBlockGroupValues = {
   parallelExaminations: 1,
   appointmentBlocks: [emptyAppointmentBlockGroup()],
   physicians: [],
+  room: "",
 };
 
 export function mapFormValues(
@@ -46,6 +48,7 @@ export function mapFormValues(
     parallelExaminations: mapRequiredValue(values.parallelExaminations),
     appointmentBlocks: values.appointmentBlocks.map(mapAppointmentBlock),
     physicians: values.physicians,
+    room: mapOptionalValue(values.room),
   };
 }
 
@@ -67,6 +70,7 @@ export interface CreateAppointmentBlockGroupValues {
   parallelExaminations: OptionalFieldValue<number>;
   appointmentBlocks: AppointmentBlockGroupValuesWithDays[];
   physicians: string[];
+  room: string;
 }
 
 export function CreateAppointmentBlockGroupForm() {

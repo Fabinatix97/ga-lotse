@@ -3,13 +3,14 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Divider, Stack } from "@mui/joy";
+import { Divider, Grid, Stack } from "@mui/joy";
 import { Formik, FormikErrors } from "formik";
 import { isDefined, isEmpty } from "remeda";
 
 import {
   AppointmentBlockGroupFields,
   AppointmentBlockGroupValuesWithDays,
+  AppointmentRoomField,
   AppointmentStaffSelection,
   FormButtonBar,
   FormSheet,
@@ -20,7 +21,9 @@ import {
 import { OptionalFieldValue } from "@eshg/lib-portal";
 import { ApiAppointmentType, ApiUser } from "@eshg/sti-protection-api";
 
+import { appointmentBlockApiQueryKey } from "@/lib/businessModules/schoolEntry/api/queries/apiQueryKeys";
 import { useAppointmentBlockApi } from "@/lib/businessModules/stiProtection/api/clients";
+import { mapAppointmentBlockApi } from "@/lib/businessModules/stiProtection/api/mapAppointmentBlockApi";
 import { getValidateDailyAppointmentBlocksForGroupQuery } from "@/lib/businessModules/stiProtection/api/queries/appointmentBlocks";
 import { mapFormValues } from "@/lib/businessModules/stiProtection/components/appointmentBlocks/CreateAppointmentBlockGroupForm";
 import { routes } from "@/lib/businessModules/stiProtection/shared/routes";
@@ -34,6 +37,7 @@ export interface AppointmentBlockGroupValues {
   consultants: string[];
   physicians: string[];
   locationId: OptionalFieldValue<string>;
+  room: string;
 }
 
 export interface StiProtectionAppointmentValues {
@@ -42,6 +46,7 @@ export interface StiProtectionAppointmentValues {
   physicians: string[];
   mfas?: string[];
   locationId: OptionalFieldValue<string>;
+  room: string;
   appointmentBlocks: AppointmentBlockGroupValuesWithDays[];
   consultants: string[];
 }
@@ -130,6 +135,16 @@ export function AppointmentBlockGroupForm({
               }
             />
           </Stack>
+          <Grid container>
+            <Grid xs={6}>
+              <AppointmentRoomField
+                appointmentBlockApi={mapAppointmentBlockApi(
+                  appointmentBlockApi,
+                )}
+                queryKey={appointmentBlockApiQueryKey}
+              />
+            </Grid>
+          </Grid>
           <Divider />
           <FormButtonBar
             submitLabel="Planen"

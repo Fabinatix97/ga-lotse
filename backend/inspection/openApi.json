@@ -1505,6 +1505,27 @@
           }
         }, {
           "in" : "query",
+          "name" : "unfinishedSamples",
+          "required" : false,
+          "schema" : {
+            "type" : "boolean"
+          }
+        }, {
+          "in" : "query",
+          "name" : "suspiciousSamples",
+          "required" : false,
+          "schema" : {
+            "type" : "boolean"
+          }
+        }, {
+          "in" : "query",
+          "name" : "pointOfWithdrawal",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "in" : "query",
           "name" : "pageNumber",
           "required" : false,
           "schema" : {
@@ -2838,6 +2859,33 @@
         },
         "summary" : "Get geo coordinates of an address",
         "tags" : [ "InspectionGeo" ]
+      }
+    },
+    "/inspections/parameter-autocomplete" : {
+      "get" : {
+        "operationId" : "autocompleteParameter",
+        "parameters" : [ {
+          "in" : "query",
+          "name" : "prefix",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/AutocompleteParameterResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Autocomplete parameters for measurement parameters",
+        "tags" : [ "InspectionParameterAutocomplete" ]
       }
     },
     "/inspections/report/{reportId}" : {
@@ -5227,6 +5275,25 @@
         "tags" : [ "TestHelper" ]
       }
     },
+    "/test-helper/recreate-teis-data" : {
+      "post" : {
+        "operationId" : "recreateTeisData",
+        "parameters" : [ {
+          "in" : "query",
+          "name" : "mode",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/components/schemas/TeisDataCreationMode"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "TestHelper" ]
+      }
+    },
     "/test-helper/request-interceptor" : {
       "post" : {
         "operationId" : "interceptNextRequest",
@@ -5863,6 +5930,31 @@
           "taskVersion" : {
             "type" : "integer",
             "format" : "int64"
+          }
+        }
+      },
+      "AutocompleteParameter" : {
+        "required" : [ "name", "zid" ],
+        "type" : "object",
+        "properties" : {
+          "name" : {
+            "type" : "string"
+          },
+          "zid" : {
+            "minLength" : 1,
+            "type" : "string"
+          }
+        }
+      },
+      "AutocompleteParameterResponse" : {
+        "required" : [ "elements" ],
+        "type" : "object",
+        "properties" : {
+          "elements" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/AutocompleteParameter"
+            }
           }
         }
       },
@@ -6905,7 +6997,7 @@
         }
       },
       "CreateInspectionSampleMeasurementParameterRequest" : {
-        "required" : [ "externalId", "parameterName" ],
+        "required" : [ "externalId", "uParameterZid" ],
         "type" : "object",
         "properties" : {
           "externalId" : {
@@ -6915,7 +7007,7 @@
           "parameterGroup" : {
             "type" : "string"
           },
-          "parameterName" : {
+          "uParameterZid" : {
             "type" : "string"
           }
         }
@@ -10832,7 +10924,7 @@
       },
       "ProcedureType" : {
         "type" : "string",
-        "enum" : [ "REGULAR_EXAMINATION", "CAN_CHILD", "ENTRY_LEVEL", "DRAFT_CITIZEN_OFFICE_IMPORT", "DRAFT_SCHOOL_IMPORT", "INSPECTION", "TM_VACCINATION_CONSULTATION", "MEASLES_PROTECTION", "STI_PROTECTION", "MEDICAL_REGISTRY_ENTRY", "MEDICAL_REGISTRY_CITIZEN_DRAFT", "MEDICAL_REGISTRY_EMPLOYEE_DRAFT", "DENTAL_CHILD", "OFFICIAL_MEDICAL_SERVICE", "MEDS_ABROAD" ]
+        "enum" : [ "REGULAR_EXAMINATION", "CAN_CHILD", "ENTRY_LEVEL", "DRAFT_CITIZEN_OFFICE_IMPORT", "DRAFT_SCHOOL_IMPORT", "INSPECTION", "TM_VACCINATION_CONSULTATION", "MEASLES_PROTECTION", "STI_PROTECTION", "MEDICAL_REGISTRY_ENTRY", "MEDICAL_REGISTRY_CITIZEN_DRAFT", "MEDICAL_REGISTRY_EMPLOYEE_DRAFT", "DENTAL_CHILD", "OFFICIAL_MEDICAL_SERVICE", "MEDS_ABROAD", "PROSTITUTE_PROTECTION" ]
       },
       "ProcedureWithDuration" : {
         "required" : [ "createdAt", "id" ],
@@ -11212,7 +11304,11 @@
       },
       "TaskType" : {
         "type" : "string",
-        "enum" : [ "BOOK_APPOINTMENT", "PERFORM_SCHOOL_ENTRY_EXAMINATION", "INSPECTION_PLANNING", "INSPECTION_EXECUTION", "INSPECTION_REPORT", "TRAVEL_MEDICINE", "MEASLES_PROTECTION", "STI_PROTECTION", "OFFICIAL_MEDICAL_SERVICE", "MEDS_ABROAD" ]
+        "enum" : [ "BOOK_APPOINTMENT", "PERFORM_SCHOOL_ENTRY_EXAMINATION", "INSPECTION_PLANNING", "INSPECTION_EXECUTION", "INSPECTION_REPORT", "TRAVEL_MEDICINE", "MEASLES_PROTECTION", "STI_PROTECTION", "OFFICIAL_MEDICAL_SERVICE", "MEDS_ABROAD", "PROSTITUTE_PROTECTION" ]
+      },
+      "TeisDataCreationMode" : {
+        "type" : "string",
+        "enum" : [ "REAL_DATA", "TEST_DATA" ]
       },
       "TestHelperClockSetRequest" : {
         "required" : [ "newInstant" ],
@@ -11650,7 +11746,6 @@
         }
       },
       "UpdateInspectionSampleMeasurementParameterValueRequest" : {
-        "required" : [ "value" ],
         "type" : "object",
         "properties" : {
           "value" : {

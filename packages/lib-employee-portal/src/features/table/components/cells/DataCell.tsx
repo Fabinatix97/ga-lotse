@@ -8,11 +8,15 @@ import { styled } from "@mui/joy";
 import { StyledCellProps, getRowCellStyles } from "../../utils/cellStyles";
 
 export const DataCell = styled("td")<
-  { canNavigate: boolean; isClickableElement: boolean } & StyledCellProps
->(({ theme, meta, canNavigate, isClickableElement }) => {
+  {
+    canNavigate: boolean;
+    isClickableElement: boolean;
+    rowDepth: number;
+  } & StyledCellProps
+>(({ theme, meta, canNavigate, isClickableElement, rowDepth }) => {
   return {
     // higher specificity needed to override default style from Joy table
-    ".MuiTable-root &": getRowCellStyles(meta, theme),
+    ".MuiTable-root &": getRowCellStyles(meta, theme, rowDepth),
     "&:hover": canNavigate
       ? {
           cursor: "pointer",

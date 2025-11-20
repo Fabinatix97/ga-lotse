@@ -32,6 +32,12 @@ public class SchoolEntryConfig extends BaseEntity implements Initializable {
   @Column(nullable = false)
   private String pdfDocumentAccentColor;
 
+  @Column(nullable = false)
+  private boolean invitationIncludePerson;
+
+  @Column(nullable = false)
+  private boolean invitationIncludeRoom;
+
   @Override
   public boolean isInitialized() {
     return initialized;
@@ -65,5 +71,21 @@ public class SchoolEntryConfig extends BaseEntity implements Initializable {
 
   public void setPdfDocumentAccentColor(String pdfDocumentAccentColor) {
     this.pdfDocumentAccentColor = pdfDocumentAccentColor;
+  }
+
+  public boolean isInvitationIncludePerson() {
+    return invitationIncludePerson;
+  }
+
+  public void setInvitationIncludePerson(boolean invitationIncludePerson) {
+    this.invitationIncludePerson = invitationIncludePerson;
+  }
+
+  public boolean isInvitationIncludeRoom() {
+    return invitationIncludeRoom;
+  }
+
+  public void setInvitationIncludeRoom(boolean invitationIncludeRoom) {
+    this.invitationIncludeRoom = invitationIncludeRoom;
   }
 }

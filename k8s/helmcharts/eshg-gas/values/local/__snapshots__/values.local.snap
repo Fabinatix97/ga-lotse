@@ -2480,6 +2480,8 @@ spec:
           value: "https://cp.frankfurt.svc.cluster.local/api/opendata"
         - name: PUBLIC_PDF_CONVERTER_URL
           value: https://pcp.central.svc.cluster.local
+        - name: PUBLIC_PROSTITUTE_PROTECTION_BACKEND_URL
+          value: "https://cp.frankfurt.svc.cluster.local/api/prostitute-protection"
         imagePullPolicy: Always
       - name: spatz
         securityContext:
@@ -3287,6 +3289,8 @@ spec:
           value: https://ep.frankfurt.svc.cluster.local/api/official-medical-service
         - name: PUBLIC_MEDS_ABROAD_BACKEND_URL
           value: https://ep.frankfurt.svc.cluster.local/api/meds-abroad
+        - name: PUBLIC_PROSTITUTE_PROTECTION_BACKEND_URL
+          value: https://ep.frankfurt.svc.cluster.local/api/prostitute-protection
         - name: PUBLIC_CHAT_MANAGEMENT_BACKEND_URL
           value: https://ep.frankfurt.svc.cluster.local/api/chat-management
         - name: PUBLIC_PDF_CONVERTER_URL

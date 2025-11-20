@@ -126,6 +126,10 @@ public class AppointmentBlockService {
                     "Appointment block with id " + appointmentBlockId + " not found."));
   }
 
+  public List<String> findAllRooms() {
+    return appointmentBlockRepository.findDistinctRooms();
+  }
+
   public PagedAppointmentBlockGroups findFutureAppointmentBlockGroups(
       AppointmentBlockPaginationAndSortParameters parameters) {
     AppointmentBlockGroupPageSpec pageSpec = createPageSpec(parameters);
@@ -196,13 +200,23 @@ public class AppointmentBlockService {
       AppointmentType appointmentType,
       UUID locationId,
       Boolean availableForCitizen,
-      Boolean availableForBulkBooking) {
+      Boolean availableForBulkBooking,
+      UUID physician,
+      UUID mfa,
+      String room) {
     Instant start = earliestStart == null ? Instant.now(clock) : earliestStart;
 
     List<AppointmentBlock> appointmentBlocks =
         appointmentBlockRepository
-            .findBlockByAvailabilityAndAppointmentTypeAndLocationAndAppointmentBlockEndGreaterThan(
-                appointmentType, locationId, start, availableForCitizen, availableForBulkBooking);
+            .findBlockByAvailabilityAndAppointmentTypeAndLocationAndStaffAndRoomAndAppointmentBlockEndGreaterThan(
+                appointmentType,
+                locationId,
+                start,
+                availableForCitizen,
+                availableForBulkBooking,
+                physician,
+                mfa,
+                room);
 
     return filterAndMapAppointments(latestStart, appointmentType, appointmentBlocks, start);
   }
@@ -295,6 +309,7 @@ public class AppointmentBlockService {
             null,
             null,
             null,
+            null,
             locationId,
             null,
             null);
@@ -354,9 +369,16 @@ public class AppointmentBlockService {
       appointmentBlock.setAppointmentBlockStart(createAppointmentBlockRequest.start());
       appointmentBlock.setAppointmentBlockEnd(createAppointmentBlockRequest.end());
       appointmentBlock.setParallelExaminations(request.parallelExaminations());
-      appointmentBlock.setPhysicians(request.physicians());
-      appointmentBlock.setMfas(request.mfas());
-      appointmentBlock.setConsultants(request.consultants());
+      if (request.physicians() != null) {
+        appointmentBlock.setPhysicians(request.physicians());
+      }
+      if (request.mfas() != null) {
+        appointmentBlock.setMfas(request.mfas());
+      }
+      if (request.consultants() != null) {
+        appointmentBlock.setConsultants(request.consultants());
+      }
+      appointmentBlock.setRoom(request.room() != null ? request.room().trim() : null);
       appointmentBlockGroup.addAppointmentBlock(appointmentBlock);
     }
 
@@ -544,6 +566,7 @@ public class AppointmentBlockService {
     appointmentBlock.setPhysicians(request.physicians());
     appointmentBlock.setMfas(request.mfas());
     appointmentBlock.setConsultants(request.consultants());
+    appointmentBlock.setRoom(request.room() != null ? request.room().trim() : null);
   }
 
   public ValidateAppointmentBlockGroupResponse validateUpdateAppointmentBlock(

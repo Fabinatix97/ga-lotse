@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Divider, Stack } from "@mui/joy";
+import { Divider, Grid, Stack } from "@mui/joy";
 import { Formik, FormikErrors } from "formik";
 import { isDefined } from "remeda";
 
@@ -11,6 +11,7 @@ import { ApiUser } from "@eshg/base-api";
 import {
   ApiAppointmentType,
   AppointmentBlockGroupFields,
+  AppointmentRoomField,
   AppointmentStaffSelection,
   FormButtonBar,
   FormSheet,
@@ -19,6 +20,7 @@ import {
 } from "@eshg/lib-employee-portal";
 
 import { useAppointmentBlockApi } from "@/lib/businessModules/officialMedicalService/api/clients";
+import { mapAppointmentBlockApi } from "@/lib/businessModules/officialMedicalService/api/mapAppointmentBlockApi";
 import { getValidateDailyAppointmentBlocksForGroupQuery } from "@/lib/businessModules/officialMedicalService/api/queries/appointmentBlocksApi";
 import {
   CreateAppointmentBlockGroupValues,
@@ -26,6 +28,7 @@ import {
 } from "@/lib/businessModules/officialMedicalService/components/appointmentBlocks/appointmentBlocksGroupForm/CreateAppointmentBlockGroupForm";
 import { APPOINTMENT_TYPE_OPTIONS } from "@/lib/businessModules/officialMedicalService/components/appointmentBlocks/options";
 import { routes } from "@/lib/businessModules/officialMedicalService/shared/routes";
+import { appointmentBlockApiQueryKey } from "@/lib/businessModules/schoolEntry/api/queries/apiQueryKeys";
 
 function validateForm(
   values: CreateAppointmentBlockGroupValues,
@@ -95,6 +98,14 @@ export function AppointmentBlockGroupForm(
               }
             />
           </Stack>
+          <Grid container>
+            <Grid xs={6}>
+              <AppointmentRoomField
+                appointmentBlockApi={mapAppointmentBlockApi(appointmentApi)}
+                queryKey={appointmentBlockApiQueryKey}
+              />
+            </Grid>
+          </Grid>
           <Divider />
           <FormButtonBar
             submitLabel="Planen"

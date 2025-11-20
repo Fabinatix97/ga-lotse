@@ -5,6 +5,7 @@
 
 package de.eshg.inspection.facility;
 
+import static java.util.Locale.ROOT;
 import static java.util.stream.Collectors.toUnmodifiableMap;
 import static org.apache.commons.lang3.StringUtils.containsIgnoreCase;
 import static org.apache.commons.lang3.StringUtils.isBlank;
@@ -54,6 +55,11 @@ import de.eshg.inspection.inspection.persistence.Inspection_;
 import de.eshg.inspection.objecttype.api.ObjectTypeRefDto;
 import de.eshg.inspection.objecttype.persistence.ObjectType;
 import de.eshg.inspection.objecttype.persistence.ObjectType_;
+import de.eshg.inspection.sample.persistence.InspectionSample;
+import de.eshg.inspection.sample.persistence.InspectionSampleMeasurementParameter;
+import de.eshg.inspection.sample.persistence.InspectionSampleMeasurementParameter_;
+import de.eshg.inspection.sample.persistence.InspectionSamplePreclassification;
+import de.eshg.inspection.sample.persistence.InspectionSample_;
 import de.eshg.lib.common.CountryCode;
 import de.eshg.lib.procedure.domain.model.ProcedureStatus;
 import de.eshg.lib.procedure.mapping.ProcedureMapper;
@@ -372,7 +378,10 @@ public class FacilityService {
             inspectionIdsWithInspectionDuplicate,
             null,
             centralFileStateIdsForFileNumber,
-            fileNumberSuffix);
+            fileNumberSuffix,
+            params.unfinishedSamples(),
+            params.suspiciousSamples(),
+            params.pointOfWithdrawal());
 
     FindPendingFacilitiesResult inspectionDatabaseResult =
         findPendingFacilities(
@@ -978,6 +987,7 @@ public class FacilityService {
   private List<Predicate> buildPredicates(
       Instant now,
       CriteriaBuilder cb,
+      CriteriaQuery<?> cq,
       RootAndJoins rootAndJoins,
       PendingFacilitiesInspectionDatabaseFilters filters) {
     Set<ProcedureStatus> procedureStatus = FacilityMapper.toDomainType(filters.status);
@@ -1092,6 +1102,30 @@ public class FacilityService {
               cb.literal(filters.fileNumberSuffix)));
     }
 
+    if (filters.unfinishedSamples != null) {
+      Predicate unfinishedSamplesPredicate = buildUnfinishedSamplesPredicate(cb, cq, rootAndJoins);
+      if (filters.unfinishedSamples) {
+        predicates.add(unfinishedSamplesPredicate);
+      } else {
+        predicates.add(cb.not(unfinishedSamplesPredicate));
+      }
+    }
+
+    if (filters.suspiciousSamples != null) {
+      Predicate suspiciousSamplesPredicate = buildSuspiciousSamplesPredicate(cb, cq, rootAndJoins);
+      if (filters.suspiciousSamples) {
+        predicates.add(suspiciousSamplesPredicate);
+      } else {
+        predicates.add(cb.not(suspiciousSamplesPredicate));
+      }
+    }
+
+    if (filters.pointOfWithdrawal != null) {
+      Predicate pointOfWithdrawalPredicate =
+          buildPointOfWithdrawalPredicate(cb, cq, rootAndJoins, filters.pointOfWithdrawal);
+      predicates.add(pointOfWithdrawalPredicate);
+    }
+
     return predicates;
   }
 
@@ -1112,7 +1146,10 @@ public class FacilityService {
       @NotNull List<Long> inspectionIds,
       @Nullable UUID facilityExternalId,
       @Nullable List<UUID> facilityCentralFileStateIds,
-      @Nullable Integer fileNumberSuffix) {}
+      @Nullable Integer fileNumberSuffix,
+      @Nullable Boolean unfinishedSamples,
+      @Nullable Boolean suspiciousSamples,
+      @Nullable String pointOfWithdrawal) {}
 
   private FindPendingFacilitiesResult findPendingFacilities(
       Instant now,
@@ -1133,8 +1170,9 @@ public class FacilityService {
     RootAndJoins rootAndJoinsForCount = createRootAndJoins(countQuery);
 
     // We create the filter predicates for both queries.
-    List<Predicate> predicates = buildPredicates(now, cb, rootAndJoins, filters);
-    List<Predicate> predicatesForCount = buildPredicates(now, cb, rootAndJoinsForCount, filters);
+    List<Predicate> predicates = buildPredicates(now, cb, cq, rootAndJoins, filters);
+    List<Predicate> predicatesForCount =
+        buildPredicates(now, cb, cq, rootAndJoinsForCount, filters);
 
     // For the incidents we need a special subquery because it is not stored as an integer in the
     // inspection, but rather we have to count the number of entries in the incidents table that
@@ -1398,6 +1436,84 @@ public class FacilityService {
     return incidentsSubquery;
   }
 
+  private Predicate buildUnfinishedSamplesPredicate(
+      CriteriaBuilder cb, CriteriaQuery<?> cq, RootAndJoins rootAndJoins) {
+    Subquery<Long> unfinishedSamplesSubquery = cq.subquery(Long.class);
+    Root<Inspection> samplesSubRoot = unfinishedSamplesSubquery.from(Inspection.class);
+    ListJoin<Inspection, InspectionSample> subSamplesJoin =
+        samplesSubRoot.join(Inspection_.samples);
+    ListJoin<InspectionSample, InspectionSampleMeasurementParameter> subMeasurementParametersJoin =
+        subSamplesJoin.join(InspectionSample_.measurementParameters);
+
+    return cb.exists(
+        unfinishedSamplesSubquery
+            .select(cb.literal(1L))
+            .where(
+                cb.and(
+                    cb.equal(
+                        rootAndJoins.inspectionRoot.get(Inspection_.id),
+                        samplesSubRoot.get(Inspection_.id)),
+                    cb.isNull(
+                        subMeasurementParametersJoin.get(
+                            InspectionSampleMeasurementParameter_.measurementValue)))));
+  }
+
+  private Predicate buildSuspiciousSamplesPredicate(
+      CriteriaBuilder cb, CriteriaQuery<?> cq, RootAndJoins rootAndJoins) {
+    Subquery<Long> suspiciousSamplesSubquery = cq.subquery(Long.class);
+    Root<Inspection> samplesSubRoot = suspiciousSamplesSubquery.from(Inspection.class);
+    ListJoin<Inspection, InspectionSample> subSamplesJoin =
+        samplesSubRoot.join(Inspection_.samples);
+    ListJoin<InspectionSample, InspectionSampleMeasurementParameter> subMeasurementParametersJoin =
+        subSamplesJoin.join(InspectionSample_.measurementParameters);
+
+    return cb.exists(
+        suspiciousSamplesSubquery
+            .select(cb.literal(1L))
+            .where(
+                cb.and(
+                    cb.equal(
+                        rootAndJoins.inspectionRoot.get(Inspection_.id),
+                        samplesSubRoot.get(Inspection_.id)),
+                    cb.or(
+                        cb.equal(
+                            subMeasurementParametersJoin.get(
+                                InspectionSampleMeasurementParameter_.preclassification),
+                            cb.literal(InspectionSamplePreclassification.TOO_LOW)),
+                        cb.equal(
+                            subMeasurementParametersJoin.get(
+                                InspectionSampleMeasurementParameter_.preclassification),
+                            cb.literal(InspectionSamplePreclassification.TOO_HIGH))))));
+  }
+
+  private Predicate buildPointOfWithdrawalPredicate(
+      CriteriaBuilder cb,
+      CriteriaQuery<?> cq,
+      RootAndJoins rootAndJoins,
+      String pointOfWithdrawal) {
+    Subquery<Long> pointOfWithdrawalSubquery = cq.subquery(Long.class);
+    Root<Inspection> samplesSubRoot = pointOfWithdrawalSubquery.from(Inspection.class);
+    ListJoin<Inspection, InspectionSample> subSamplesJoin =
+        samplesSubRoot.join(Inspection_.samples);
+    return cb.exists(
+        pointOfWithdrawalSubquery
+            .select(cb.literal(1L))
+            .where(
+                cb.and(
+                    cb.equal(
+                        rootAndJoins.inspectionRoot.get(Inspection_.id),
+                        samplesSubRoot.get(Inspection_.id)),
+                    cb.like(
+                        cb.lower(subSamplesJoin.get(InspectionSample_.pointOfWithdrawal)),
+                        cb.literal(prepareStringForLike(pointOfWithdrawal))))));
+  }
+
+  private static String prepareStringForLike(String s) {
+    return "%"
+        + s.replace("\\", "\\\\").replace("%", "\\%").replace("_", "\\_").toLowerCase(ROOT)
+        + "%";
+  }
+
   private List<PendingFacilityView> findEqualFacilities(
       Instant now,
       PendingFacilitiesInspectionDatabaseFilters filters,
@@ -1409,7 +1525,8 @@ public class FacilityService {
 
     RootAndJoins rootAndJoins = createRootAndJoins(cq);
 
-    List<Predicate> predicates = new ArrayList<>(buildPredicates(now, cb, rootAndJoins, filters));
+    List<Predicate> predicates =
+        new ArrayList<>(buildPredicates(now, cb, cq, rootAndJoins, filters));
 
     // For the incidents we need a special subquery because it is not stored as an integer in the
     // inspection, but rather we have to count the number of entries in the incidents table that
@@ -1442,7 +1559,8 @@ public class FacilityService {
 
     RootAndJoins rootAndJoins = createRootAndJoins(cq);
 
-    List<Predicate> predicates = new ArrayList<>(buildPredicates(now, cb, rootAndJoins, filters));
+    List<Predicate> predicates =
+        new ArrayList<>(buildPredicates(now, cb, cq, rootAndJoins, filters));
 
     // For the incidents we need a special subquery because it is not stored as an integer in the
     // inspection, but rather we have to count the number of entries in the incidents table that
@@ -1892,6 +2010,9 @@ public class FacilityService {
                     List.of(),
                     List.of(),
                     externalId,
+                    null,
+                    null,
+                    null,
                     null,
                     null),
                 null,

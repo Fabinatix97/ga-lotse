@@ -12,7 +12,11 @@ import {
   AppointmentBlockGroupValuesWithDays,
   emptyAppointmentBlockGroup,
 } from "@eshg/lib-employee-portal";
-import { isTimeString, mapRequiredValue } from "@eshg/lib-portal";
+import {
+  isTimeString,
+  mapOptionalValue,
+  mapRequiredValue,
+} from "@eshg/lib-portal";
 import {
   ApiCreateDailyAppointmentBlock,
   ApiCreateDailyAppointmentBlockGroupRequest,
@@ -40,6 +44,7 @@ const INITIAL_VALUES: AppointmentBlockGroupValues = {
   appointmentBlocks: [emptyAppointmentBlockGroup()],
   mfas: [],
   physicians: [],
+  room: "",
 };
 
 export function mapFormValues(
@@ -51,6 +56,7 @@ export function mapFormValues(
     appointmentBlocks: values.appointmentBlocks.map(mapAppointmentBlock),
     physicians: values.physicians,
     mfas: values.mfas,
+    room: mapOptionalValue(values.room),
   };
 }
 

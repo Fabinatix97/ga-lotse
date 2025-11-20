@@ -32,19 +32,21 @@ export interface ChildDetails extends Child, Versioned {
 
 export function mapChildDetails(response: ApiChildDetails): ChildDetails {
   const institutions = response.institutions.map(mapAnnualInstitution);
+  const currentFluoridationConsent = getCurrentFluoridationConsent(
+    response.fluoridationConsents,
+  );
 
   return {
     ...mapVersioned(response),
     ...mapChild({
       ...response,
       institution: getCurrentInstitution(institutions),
+      fluoridationConsent: currentFluoridationConsent?.consented ?? "UNKNOWN",
     }),
     personDetails: mapPersonDetails(response),
     institutions,
     examinations: response.examinations.map(mapChildExamination),
-    currentFluoridationConsent: getCurrentFluoridationConsent(
-      response.fluoridationConsents,
-    ),
+    currentFluoridationConsent,
     allFluoridationConsents: response.fluoridationConsents,
     procedureLabels: response.procedureLabels,
     note: response.note,

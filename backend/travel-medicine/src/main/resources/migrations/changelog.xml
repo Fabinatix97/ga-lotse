@@ -92,6 +92,9 @@
   <include file="migrations/0082_move_team_to_appointment_block.xml"/>
   <include file="migrations/0083_add_gdpr_identification_data_hash.xml"/>
   <include file="migrations/0084_add_gdpr_identification_hash_not_null_constraint.xml"/>
+  <include file="migrations/0085_add_ppr_appointment_type.xml"/>
+  <include file="migrations/0086_add_room_to_appointment_block.xml"/>
+  <include file="migrations/0087_add_new_procedure_type_prostitute_protection.xml"/>
 
 
 </databaseChangeLog>

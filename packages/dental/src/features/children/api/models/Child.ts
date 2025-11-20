@@ -3,7 +3,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiChild, ApiGender, ApiProcedureStatus } from "@eshg/dental-api";
+import {
+  type ApiBooleanWithUnknown,
+  ApiChild,
+  ApiGender,
+  ApiProcedureStatus,
+} from "@eshg/dental-api";
 import {
   BaseEntity,
   ProcedureLabel,
@@ -26,6 +31,7 @@ export interface Child extends BaseEntity {
   readonly institution: Institution;
   readonly isClosed: boolean;
   readonly procedureLabels: ProcedureLabel[];
+  readonly fluoridationConsent: ApiBooleanWithUnknown;
 }
 
 export function mapChild(response: ApiChild): Child {
@@ -40,5 +46,6 @@ export function mapChild(response: ApiChild): Child {
     institution: mapInstitution(response.institution),
     isClosed: response.status === ApiProcedureStatus.Closed,
     procedureLabels: mapProcedureLabels(response.procedureLabels),
+    fluoridationConsent: response.fluoridationConsent,
   };
 }

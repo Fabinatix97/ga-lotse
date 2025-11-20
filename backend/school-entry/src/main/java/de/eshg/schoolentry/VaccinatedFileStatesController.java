@@ -10,6 +10,7 @@ import de.eshg.base.feature.BaseFeatureTogglesApi;
 import de.eshg.rest.service.error.BadRequestException;
 import de.eshg.schoolentry.api.vaccination.GetVaccinatedFileStateIdsResponse;
 import de.eshg.schoolentry.api.vaccination.VaccinatedFileStatesApi;
+import de.eshg.schoolentry.config.SchoolEntryProperties;
 import de.eshg.schoolentry.domain.repository.PersonRepository;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.Set;
@@ -21,11 +22,15 @@ import org.springframework.web.bind.annotation.RestController;
 public class VaccinatedFileStatesController implements VaccinatedFileStatesApi {
 
   private final BaseFeatureTogglesApi baseFeatureTogglesApi;
+  private final SchoolEntryProperties properties;
   private final PersonRepository personRepository;
 
   public VaccinatedFileStatesController(
-      BaseFeatureTogglesApi baseFeatureTogglesApi, PersonRepository personRepository) {
+      BaseFeatureTogglesApi baseFeatureTogglesApi,
+      SchoolEntryProperties properties,
+      PersonRepository personRepository) {
     this.baseFeatureTogglesApi = baseFeatureTogglesApi;
+    this.properties = properties;
     this.personRepository = personRepository;
   }
 
@@ -43,8 +48,8 @@ public class VaccinatedFileStatesController implements VaccinatedFileStatesApi {
     if (!enabledNewFeatures.contains(BaseFeature.VACCINATION_CHECK)) {
       throw new BadRequestException("New feature VACCINATION_CHECK is not enabled");
     }
-    if (!enabledNewFeatures.contains(BaseFeature.POLYTUNE)) {
-      throw new BadRequestException("New feature POLYTUNE is not enabled");
+    if (!properties.isPolytuneActive()) {
+      throw new BadRequestException("Vaccination check is not in polytune mode");
     }
   }
 }

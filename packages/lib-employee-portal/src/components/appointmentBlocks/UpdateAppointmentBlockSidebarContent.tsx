@@ -15,6 +15,7 @@ import { SidebarContent } from "../../features/drawer/components/SidebarContent"
 import { TimeField } from "../formFields/TimeField";
 
 import { AppointmentBlock } from "./AppointmentBlockGroup";
+import { AppointmentRoomField } from "./AppointmentRoomField";
 import { AppointmentStaffSelection } from "./AppointmentStaffSelection";
 import {
   UpdateAppointmentBlockValues,
@@ -101,6 +102,10 @@ export function UpdateAppointmentBlockSidebarContent(props: {
             singleColumn
           />
         )}
+        <AppointmentRoomField
+          appointmentBlockApi={props.appointmentBlockApi}
+          queryKey={props.appointmentBlockApiQueryKey}
+        />
       </Stack>
     </SidebarContent>
   );

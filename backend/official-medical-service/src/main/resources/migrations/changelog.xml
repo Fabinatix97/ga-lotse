@@ -31,5 +31,8 @@
   <include file="migrations/0021_add_gdpr_identification_data_hash.xml"/>
   <include file="migrations/0022_add_gdpr_identification_hash_not_null_constraint.xml"/>
   <include file="migrations/0023_add_select_concern_infobox_config.xml"/>
+  <include file="migrations/0024_add_ppr_appointment_type.xml"/>
+  <include file="migrations/0025_add_room_to_appointment_block.xml"/>
+  <include file="migrations/0026_add_new_procedure_type_prostitute_protection.xml"/>
 
 </databaseChangeLog>

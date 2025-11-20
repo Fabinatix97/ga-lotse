@@ -19,6 +19,8 @@
     ":official-medical-service",
     ":official-medical-service-api",
     ":opendata-api",
+    ":prostitute-protection",
+    ":prostitute-protection-api",
     ":school-entry-api",
     ":statistics-api",
     ":sti-protection-api",

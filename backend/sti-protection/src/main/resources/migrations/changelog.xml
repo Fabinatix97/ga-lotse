@@ -27,5 +27,8 @@
   <include file="migrations/0017_move_team_to_appointment_block.xml"/>
   <include file="migrations/0018_add_gdpr_identification_data_hash.xml"/>
   <include file="migrations/0019_add_gdpr_identification_hash_not_null_constraint.xml"/>
+  <include file="migrations/0020_add_ppr_appointment_type.xml"/>
+  <include file="migrations/0021_add_room_to_appointment_block.xml"/>
+  <include file="migrations/0022_add_new_procedure_type_prostitute_protection.xml"/>
 
 </databaseChangeLog>

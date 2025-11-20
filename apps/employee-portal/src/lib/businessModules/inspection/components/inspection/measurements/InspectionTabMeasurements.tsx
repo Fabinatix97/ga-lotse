@@ -8,7 +8,6 @@
 import { Box, useTheme } from "@mui/joy";
 import { useSuspenseQueries } from "@tanstack/react-query";
 
-import { ApiInspection } from "@eshg/inspection-api";
 import { useWindowDimensions } from "@eshg/lib-portal";
 
 import { useUserApi } from "@/lib/baseModule/api/clients";
@@ -49,7 +48,7 @@ export function InspectionTabMeasurements({
             height: "min-content",
           }}
         >
-          <RightColumnElements inspection={inspection} />
+          <SamplesTile procedureId={inspection.externalId} />
         </Box>
       </Box>
     );
@@ -64,13 +63,9 @@ export function InspectionTabMeasurements({
             paddingBottom: 2,
           }}
         >
-          <RightColumnElements inspection={inspection} />
+          <SamplesTile procedureId={inspection.externalId} />
         </Box>
       </Box>
     );
   }
-}
-
-function RightColumnElements({ inspection }: { inspection: ApiInspection }) {
-  return <SamplesTile procedureId={inspection.externalId} />;
 }

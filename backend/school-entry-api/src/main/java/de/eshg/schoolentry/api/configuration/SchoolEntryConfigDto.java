@@ -15,4 +15,6 @@ public record SchoolEntryConfigDto(
     @NotNull LocationSelectionMode locationSelectionMode,
     @NotNull boolean locationSelectionModeReadOnly,
     @NotNull boolean directProcedureTypeAssignmentOnImport,
-    @NotNull @HexColor String pdfDocumentAccentColor) {}
+    @NotNull @HexColor String pdfDocumentAccentColor,
+    @NotNull boolean invitationIncludePerson,
+    @NotNull boolean invitationIncludeRoom) {}

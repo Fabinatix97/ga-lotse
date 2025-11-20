@@ -11,6 +11,7 @@ import { omsConfigRouterEndpoints } from "@/lib/businessModules/officialMedicalS
 import { esuConfigRouterEndpoints } from "@/lib/businessModules/schoolEntry/shared/configuratorConfig";
 import { stiConfigRouterEndpoints } from "@/lib/businessModules/stiProtection/shared/configuratorConfig";
 import { travelMedicineConfigRouterEndpoints } from "@/lib/businessModules/travelMedicine/shared/configuratorConfig";
+import { prostituteProtectionConfigRouterEndpoints } from "@/lib/configurator/shared/prostituteProtectionConfigRouterEndpoints";
 import { opendataConfigRouterEndpoints } from "@/lib/opendata/configuratorConfig";
 
 import { medsAbroadConfigRouterEndpoints } from "./medsAbroadConfigRouterEndpoints";
@@ -41,6 +42,8 @@ export function getEndpointNamesByModule(
       return medsAbroadConfigRouterEndpoints;
     case "INSPECTION":
       return inspectionConfigRouterEndpoints;
+    case "PROSTITUTE_PROTECTION":
+      return prostituteProtectionConfigRouterEndpoints;
   }
 }
 

@@ -20,7 +20,8 @@ public enum AppointmentType {
   RESULTS_REVIEW,
   OFFICIAL_MEDICAL_SERVICE_SHORT,
   OFFICIAL_MEDICAL_SERVICE_LONG,
-  MEDS_ABROAD_CERTIFICATION;
+  MEDS_ABROAD_CERTIFICATION,
+  PROSTITUTE_PROTECTION_CONSULTATION;
 
   public String toCamelCaseName() {
     return toCamelCase(name(), false, '_');

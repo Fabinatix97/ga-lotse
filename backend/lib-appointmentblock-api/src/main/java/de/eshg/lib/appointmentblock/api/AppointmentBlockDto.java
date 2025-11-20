@@ -38,6 +38,7 @@ public record AppointmentBlockDto(
     @NotNull List<UUID> physicians,
     @NotNull List<UUID> mfas,
     @NotNull List<UUID> consultants,
+    String room,
     UUID creatorId,
     @NotNull @Valid Map<UUID, AppointmentBlockUserDto> resolvedUsers,
     @NotNull @Valid List<AppointmentDto> bookedAppointments,

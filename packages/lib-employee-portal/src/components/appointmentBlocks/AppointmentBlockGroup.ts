@@ -27,6 +27,7 @@ export interface AppointmentBlock extends BaseEntity {
   readonly mfas?: string[];
   readonly physicians?: string[];
   readonly consultants?: string[];
+  readonly room?: string;
 }
 
 export interface AppointmentBlockGroup extends AppointmentBlock {

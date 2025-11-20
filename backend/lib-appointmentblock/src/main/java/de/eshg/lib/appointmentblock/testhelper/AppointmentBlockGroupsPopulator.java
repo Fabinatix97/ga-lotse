@@ -122,6 +122,7 @@ public class AppointmentBlockGroupsPopulator
     List<UUID> physicianIds = getRandomUserIdAsList(faker, groupPhysicians);
     List<UUID> mfaIds = getRandomUserIdAsList(faker, groupMfas);
     List<UUID> consultantIds = getRandomUserIdAsList(faker, groupConsultants);
+    String room = optional(faker, randomElement(faker, List.of("Raum A", "Raum B", "Raum C")), 0.6);
 
     UUID locationId =
         switch (appointmentBlockConfig.getLocationSelectionMode()) {
@@ -139,6 +140,7 @@ public class AppointmentBlockGroupsPopulator
             physicianIds,
             mfaIds,
             consultantIds,
+            room,
             locationId,
             true,
             true);

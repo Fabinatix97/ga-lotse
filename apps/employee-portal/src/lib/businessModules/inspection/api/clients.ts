@@ -20,6 +20,7 @@ import {
   InspectionFeatureTogglesApi,
   InspectionGeoApi,
   InspectionIncidentApi,
+  InspectionParameterAutocompleteApi,
   InspectionPropertiesConfigApi,
   InspectionSampleApi,
   ObjectTypeApi,
@@ -164,4 +165,9 @@ export function useConfigApi() {
 export function useSampleApi() {
   const configuration = useConfiguration();
   return new InspectionSampleApi(configuration);
+}
+
+export function useParameterAutocompleteApi() {
+  const configuration = useConfiguration();
+  return new InspectionParameterAutocompleteApi(configuration);
 }

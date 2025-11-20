@@ -16,6 +16,7 @@
     "@eshg/official-medical-service": "workspace:*",
     "@eshg/official-medical-service-api": "workspace:*",
     "@eshg/opendata-api": "workspace:*",
+    "@eshg/prostitute-protection-api": "workspace:*",
     "@eshg/school-entry-api": "workspace:*",
     "@eshg/sti-protection-api": "workspace:*",
     "@eshg/travel-medicine-api": "workspace:*",

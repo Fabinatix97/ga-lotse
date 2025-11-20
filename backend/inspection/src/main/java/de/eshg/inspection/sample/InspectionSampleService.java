@@ -19,6 +19,7 @@ import de.eshg.inspection.inspection.InspectionMapper;
 import de.eshg.inspection.inspection.InspectionService;
 import de.eshg.inspection.inspection.InspectionUpdater;
 import de.eshg.inspection.inspection.persistence.Inspection;
+import de.eshg.inspection.sample.api.AutocompleteParameterResponse;
 import de.eshg.inspection.sample.api.CreateInspectionSampleMeasurementParameterRequest;
 import de.eshg.inspection.sample.api.CreateInspectionSampleRequest;
 import de.eshg.inspection.sample.api.GetInspectionSamplesResponse;
@@ -37,6 +38,8 @@ import de.eshg.inspection.sample.persistence.InspectionSampleMeasurementParamete
 import de.eshg.inspection.sample.persistence.InspectionSampleMeasurementParameterRepository;
 import de.eshg.inspection.sample.persistence.InspectionSamplePreclassification;
 import de.eshg.inspection.sample.persistence.InspectionSampleType;
+import de.eshg.inspection.teis.persistence.TeisUntersuchungsparameter;
+import de.eshg.inspection.teis.persistence.TeisUntersuchungsparameterRepository;
 import de.eshg.rest.service.error.BadRequestException;
 import de.eshg.rest.service.error.NotFoundException;
 import java.time.Clock;
@@ -61,6 +64,8 @@ public class InspectionSampleService {
   private final FacilityClient facilityClient;
   private final UserClient userClient;
   private final ContactClient contactClient;
+  private final InspectionSampleMapper inspectionSampleMapper;
+  private final TeisUntersuchungsparameterRepository teisUntersuchungsparameterRepository;
 
   public InspectionSampleService(
       InspectionService inspectionService,
@@ -70,7 +75,9 @@ public class InspectionSampleService {
       Clock clock,
       FacilityClient facilityClient,
       UserClient userClient,
-      ContactClient contactClient) {
+      ContactClient contactClient,
+      InspectionSampleMapper inspectionSampleMapper,
+      TeisUntersuchungsparameterRepository teisUntersuchungsparameterRepository) {
     this.inspectionService = inspectionService;
     this.inspectionUpdater = inspectionUpdater;
     this.inspectionMapper = inspectionMapper;
@@ -80,6 +87,8 @@ public class InspectionSampleService {
     this.facilityClient = facilityClient;
     this.userClient = userClient;
     this.contactClient = contactClient;
+    this.inspectionSampleMapper = inspectionSampleMapper;
+    this.teisUntersuchungsparameterRepository = teisUntersuchungsparameterRepository;
   }
 
   public GetInspectionSamplesResponse getSamples(UUID inspectionId) {
@@ -248,8 +257,6 @@ public class InspectionSampleService {
     return InspectionSampleMapper.mapToDto(measurementParameter);
   }
 
-  // private void removeMeasurementParameter(InspectionSample sample, me)
-
   public void deleteSample(UUID inspectionId, UUID sampleId) {
     Inspection inspection = inspectionService.loadInspectionForUpdate(inspectionId);
     checkInspectionIsNotClosed(
@@ -264,14 +271,31 @@ public class InspectionSampleService {
     inspectionUpdater.updateModified(inspection);
   }
 
+  public AutocompleteParameterResponse getParameterAutocomplete(String prefix) {
+    List<TeisUntersuchungsparameter> untersuchungsparameterList =
+        teisUntersuchungsparameterRepository.findAutocomplete(prefix + "%", 100);
+    return new AutocompleteParameterResponse(
+        untersuchungsparameterList.stream()
+            .map(InspectionSampleMapper::mapToAutocompleteParameterDto)
+            .toList());
+  }
+
   private void determinePreclassification(
       InspectionSampleMeasurementParameter measurementParameter) {
 
-    // TODO Replace this with the proper preclassification logic!
-    if (measurementParameter.getMeasurementValue() < 1.0) {
-      measurementParameter.setPreclassification(InspectionSamplePreclassification.TOO_LOW);
-    } else if (measurementParameter.getMeasurementValue() > 5.0) {
+    Double upperLimit = measurementParameter.getTeisUntersuchungsparameter().getObgrenzwert();
+    Double lowerLimit = measurementParameter.getTeisUntersuchungsparameter().getUntgrenzwert();
+    Double value = measurementParameter.getMeasurementValue();
+
+    if (upperLimit == null && lowerLimit == null) {
+      measurementParameter.setPreclassification(
+          InspectionSamplePreclassification.NO_NORM_SPECIFIED);
+    } else if (value == null) {
+      measurementParameter.setPreclassification(InspectionSamplePreclassification.PENDING);
+    } else if (upperLimit != null && value > upperLimit) {
       measurementParameter.setPreclassification(InspectionSamplePreclassification.TOO_HIGH);
+    } else if (lowerLimit != null && value < lowerLimit) {
+      measurementParameter.setPreclassification(InspectionSamplePreclassification.TOO_LOW);
     } else {
       measurementParameter.setPreclassification(InspectionSamplePreclassification.WITHIN_NORM);
     }
@@ -289,7 +313,7 @@ public class InspectionSampleService {
     for (CreateInspectionSampleMeasurementParameterRequest measurementParameterDto :
         measurementParametersToAdd) {
       InspectionSampleMeasurementParameter measurementParameter =
-          InspectionSampleMapper.mapToPersistenceObject(measurementParameterDto);
+          inspectionSampleMapper.mapToPersistenceObject(measurementParameterDto);
       sample.addMeasurementParameter(measurementParameter);
     }
   }

@@ -33,14 +33,13 @@ RUN sed -i -e 's/keycloak:x:0:root/keycloak:x:10001:/g' /etc/group && \
 USER 10001:10001
 
 COPY --chown=10001:10001 --from=keycloak-builder /opt/keycloak/ /opt/keycloak/
-COPY ./resources/healthcheck.sh /
 
 ENV KC_HEALTH_ENABLED=true \
     KC_FEATURES_DISABLED=impersonation,organization \
     KC_DB=postgres \
     KC_CACHE=local
 
-HEALTHCHECK --start-period=120s --interval=5s CMD [ "/healthcheck.sh" ]
+HEALTHCHECK --start-period=120s --interval=5s CMD [ "bash", "-c", "{ printf 'HEAD /health/ready HTTP/1.0\r\n\r\n' >&0; grep 'HTTP/1.0 200'; } 0<>/dev/tcp/localhost/9000" ]
 
 LABEL org.opencontainers.image.source="https://gitlab.com/ga-ffm/ga-lotse/ga-lotse-code" \
       org.opencontainers.image.description="Custom Keycloak image with plugin support and health checks"

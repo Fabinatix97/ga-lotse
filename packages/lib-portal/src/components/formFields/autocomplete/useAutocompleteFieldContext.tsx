@@ -4,6 +4,7 @@
  */
 
 import { AutocompleteProps, CircularProgress } from "@mui/joy";
+import { SxProps } from "@mui/joy/styles/types";
 import { FocusEvent, ReactNode, SyntheticEvent, useMemo } from "react";
 
 import { FieldProps } from "../../../types/form";
@@ -32,6 +33,7 @@ export interface CommonAutocompleteFieldProps<T>
   onChange?: (value: T) => void;
   isOptionEqualToValue?: (option: string, value: string) => boolean;
   onBlur?: (e: FocusEvent) => void;
+  sx?: SxProps;
 }
 
 interface UseAutocompleteFieldContextReturn<T> {
@@ -50,6 +52,7 @@ interface UseAutocompleteFieldContextReturn<T> {
     | "renderOption"
     | "color"
     | "isOptionEqualToValue"
+    | "sx"
   >;
 }
 
@@ -70,6 +73,7 @@ export function useAutocompleteFieldContext<T>(
       required: field.required,
       error: field.error,
       helperText: field.helperText,
+      sx: props.sx,
     },
     autocompleteProps: {
       name: props.name,
@@ -77,6 +81,7 @@ export function useAutocompleteFieldContext<T>(
         field.input.onBlur(e);
         props.onBlur?.(e);
       },
+      sx: props.sx,
       disableClearable: field.required,
       loading: props.loading,
       placeholder: props.placeholder,

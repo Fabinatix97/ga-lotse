@@ -17,6 +17,7 @@ import { isEmpty } from "remeda";
 import { useSnackbar } from "@eshg/lib-portal";
 
 import { FormGroupGrid } from "../form/FormGroupGrid";
+import { SingleUserField } from "../formFields/SingleUserField";
 import { NamedUser, UserField } from "../formFields/UserField";
 
 const BUTTON_STYLES: SxProps = {
@@ -34,11 +35,18 @@ interface StaffSelection {
   consultants?: string[];
 }
 
-interface AppointmentStaffSelectionProps {
+interface BaseAppointmentStaffSelectionProps {
   physicianOptions?: NamedUser[];
   physicianRequired?: string;
   medicalAssistantOptions?: NamedUser[];
   consultantOptions?: NamedUser[];
+  singleColumn?: boolean;
+  singleSelection?: boolean;
+}
+
+interface MultiAppointmentStaffSelectionProps
+  extends BaseAppointmentStaffSelectionProps {
+  singleSelection?: false;
   validateAppointmentBlocks: () => void;
   getCheckAvailabilityQuery: () => UndefinedInitialDataOptions<
     ValidateAppointmentBlockGroupsAvailabilityResponse,
@@ -46,8 +54,16 @@ interface AppointmentStaffSelectionProps {
     ValidateAppointmentBlockGroupsAvailabilityResponse,
     readonly unknown[]
   >;
-  singleColumn?: boolean;
 }
+
+interface SingleAppointmentStaffSelectionProps
+  extends BaseAppointmentStaffSelectionProps {
+  singleSelection: true;
+}
+
+type AppointmentStaffSelectionProps =
+  | MultiAppointmentStaffSelectionProps
+  | SingleAppointmentStaffSelectionProps;
 
 export function AppointmentStaffSelection(
   props: Readonly<AppointmentStaffSelectionProps>,
@@ -60,6 +76,10 @@ export function AppointmentStaffSelection(
   const { values: staffSelection } = useFormikContext<StaffSelection>();
 
   async function validateAvailability() {
+    if (props.singleSelection) {
+      return;
+    }
+
     try {
       props.validateAppointmentBlocks();
     } catch {
@@ -101,54 +121,69 @@ export function AppointmentStaffSelection(
 
   const size = props.singleColumn ? 12 : 6;
 
+  const validationProps = { freeStaff, blockedStaff };
+  const physicianProps = {
+    name: "physicians",
+    label: "Arzt/Ärztin",
+    placeholder: "auswählen",
+    options: props.physicianOptions ?? [],
+    required: props.physicianRequired,
+  };
+
+  const mfaProps = {
+    name: "mfas",
+    label: "MFA",
+    placeholder: "auswählen",
+    options: props.medicalAssistantOptions ?? [],
+  };
+
+  const consultantProps = {
+    name: "consultants",
+    label: "Berater:in",
+    placeholder: "auswählen",
+    options: props.consultantOptions ?? [],
+  };
+
   return (
     <FormGroupGrid>
       {props.physicianOptions && (
         <Grid xs={size}>
-          <UserField
-            name="physicians"
-            label="Arzt/Ärztin"
-            placeholder="auswählen"
-            options={props.physicianOptions}
-            required={props.physicianRequired}
-            freeStaff={freeStaff}
-            blockedStaff={blockedStaff}
-          />
+          {props.singleSelection ? (
+            <SingleUserField {...physicianProps} />
+          ) : (
+            <UserField {...physicianProps} {...validationProps} />
+          )}
         </Grid>
       )}
       {props.medicalAssistantOptions && (
         <Grid xs={size}>
-          <UserField
-            name="mfas"
-            label="MFA"
-            placeholder="auswählen"
-            options={props.medicalAssistantOptions}
-            freeStaff={freeStaff}
-            blockedStaff={blockedStaff}
-          />
+          {props.singleSelection ? (
+            <SingleUserField {...mfaProps} />
+          ) : (
+            <UserField {...mfaProps} {...validationProps} />
+          )}
         </Grid>
       )}
       {props.consultantOptions && (
         <Grid xs={size}>
-          <UserField
-            name="consultants"
-            label="Berater:in"
-            placeholder="auswählen"
-            options={props.consultantOptions}
-            freeStaff={freeStaff}
-            blockedStaff={blockedStaff}
-          />
+          {props.singleSelection ? (
+            <SingleUserField {...consultantProps} />
+          ) : (
+            <UserField {...consultantProps} {...validationProps} />
+          )}
         </Grid>
       )}
-      <Grid xs={size}>
-        <Button
-          variant="outlined"
-          sx={BUTTON_STYLES}
-          onClick={() => validateAvailability()}
-        >
-          Verfügbarkeit prüfen
-        </Button>
-      </Grid>
+      {!props.singleSelection && (
+        <Grid xs={size}>
+          <Button
+            variant="outlined"
+            sx={BUTTON_STYLES}
+            onClick={() => validateAvailability()}
+          >
+            Verfügbarkeit prüfen
+          </Button>
+        </Grid>
+      )}
     </FormGroupGrid>
   );
 }

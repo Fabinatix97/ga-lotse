@@ -35,5 +35,7 @@ function mapToApi(
     directProcedureTypeAssignmentOnImport:
       model.directProcedureTypeAssignmentOnImport,
     pdfDocumentAccentColor: model.pdfDocumentAccentColor,
+    invitationIncludePerson: model.invitationIncludePerson,
+    invitationIncludeRoom: model.invitationIncludeRoom,
   };
 }

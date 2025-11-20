@@ -10,9 +10,9 @@ import static de.eshg.lib.keycloak.EmployeePermissionRole.AUDITLOG_PUBLIC_KEYS_R
 import static de.eshg.lib.keycloak.EmployeePermissionRole.BASE_ACCESS_CODE_USER_ADMIN;
 import static de.eshg.lib.keycloak.EmployeePermissionRole.BASE_FACILITIES_DELETE;
 import static de.eshg.lib.keycloak.EmployeePermissionRole.BASE_GDPR_VALIDATION_TASK_CLEANUP;
+import static de.eshg.lib.keycloak.EmployeePermissionRole.BASE_INTER_MODULE_MIGRATION;
 import static de.eshg.lib.keycloak.EmployeePermissionRole.BASE_MAIL_SEND;
 import static de.eshg.lib.keycloak.EmployeePermissionRole.BASE_PERSONS_DELETE;
-import static de.eshg.lib.keycloak.EmployeePermissionRole.BASE_PERSON_MIGRATE_PERSON_WITHOUT_DATE_OF_BIRTH;
 import static de.eshg.lib.keycloak.EmployeePermissionRole.SCHOOL_ENTRY_VACCINATION_CHECK;
 import static de.eshg.lib.keycloak.EmployeePermissionRole.STANDARD_EMPLOYEE;
 import static de.eshg.lib.keycloak.EmployeePermissionRole.STATISTICS_STATISTICS_TECHNICAL_USER;
@@ -37,12 +37,7 @@ public enum ModuleClient {
           BASE_FACILITIES_DELETE,
           SCHOOL_ENTRY_VACCINATION_CHECK)),
   SCHOOL_ENTRY(
-      "school-entry",
-      List.of(
-          BASE_MAIL_SEND,
-          BASE_PERSONS_DELETE,
-          BASE_FACILITIES_DELETE,
-          BASE_PERSON_MIGRATE_PERSON_WITHOUT_DATE_OF_BIRTH)),
+      "school-entry", List.of(BASE_MAIL_SEND, BASE_PERSONS_DELETE, BASE_FACILITIES_DELETE)),
   STATISTICS("statistics", List.of(STATISTICS_STATISTICS_TECHNICAL_USER)),
   TRAVEL_MEDICINE(
       "travel-medicine",
@@ -60,7 +55,13 @@ public enum ModuleClient {
           BASE_ACCESS_CODE_USER_ADMIN)),
   MEDICAL_REGISTRY(
       "medical-registry", List.of(BASE_MAIL_SEND, BASE_PERSONS_DELETE, BASE_FACILITIES_DELETE)),
-  DENTAL("dental", List.of(BASE_MAIL_SEND, BASE_PERSONS_DELETE, BASE_FACILITIES_DELETE)),
+  DENTAL(
+      "dental",
+      List.of(
+          BASE_MAIL_SEND,
+          BASE_PERSONS_DELETE,
+          BASE_FACILITIES_DELETE,
+          BASE_INTER_MODULE_MIGRATION)),
   OFFICIAL_MEDICAL_SERVICE(
       "official-medical-service", List.of(BASE_MAIL_SEND, BASE_ACCESS_CODE_USER_ADMIN)),
   MEDS_ABROAD("meds-abroad", List.of(EmployeePermissionRole.BASE_MAIL_SEND)),

@@ -22,6 +22,7 @@ export function useBulkAppointmentCreationMessage(): UseBulkAppointmentCreationM
       } else {
         alert.warning({
           title: "Terminzuweisung teilweise fehlgeschlagen",
+          messageComponent: "div",
           message: (
             <>
               {createdMessage(response.numCreated)}
@@ -35,6 +36,7 @@ export function useBulkAppointmentCreationMessage(): UseBulkAppointmentCreationM
     } else {
       alert.error({
         title: "Es konnten keine Termine vergeben werden.",
+        messageComponent: "div",
         message: (
           <>
             {unmodifiedMessage(response.numUnmodified)}

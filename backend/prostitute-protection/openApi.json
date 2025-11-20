@@ -9,6 +9,2793 @@
     "url" : "http://localhost:8102"
   } ],
   "paths" : {
+    "/appointment-blocks/appointment-block-groups" : {
+      "get" : {
+        "operationId" : "getAppointmentBlockGroups",
+        "parameters" : [ {
+          "in" : "query",
+          "name" : "sortKey",
+          "required" : false,
+          "schema" : {
+            "$ref" : "#/components/schemas/AppointmentBlockSortKey"
+          }
+        }, {
+          "in" : "query",
+          "name" : "sortDirection",
+          "required" : false,
+          "schema" : {
+            "$ref" : "#/components/schemas/SortDirection"
+          }
+        }, {
+          "in" : "query",
+          "name" : "pageNumber",
+          "required" : false,
+          "schema" : {
+            "minimum" : 0,
+            "type" : "integer",
+            "format" : "int32"
+          }
+        }, {
+          "in" : "query",
+          "name" : "pageSize",
+          "required" : false,
+          "schema" : {
+            "minimum" : 1,
+            "type" : "integer",
+            "format" : "int32"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/GetAppointmentBlockGroupsResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Get all appointment block groups.",
+        "tags" : [ "AppointmentBlock" ]
+      }
+    },
+    "/appointment-blocks/appointment/overview" : {
+      "get" : {
+        "operationId" : "getAppointments",
+        "parameters" : [ {
+          "in" : "query",
+          "name" : "timeRangeStart",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "date-time"
+          }
+        }, {
+          "in" : "query",
+          "name" : "timeRangeEnd",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "date-time"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/GetAppointmentsResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Get appointments in a certain time range (one month)",
+        "tags" : [ "AppointmentBlock" ]
+      }
+    },
+    "/appointment-blocks/appointment/{appointmentId}" : {
+      "get" : {
+        "operationId" : "getAppointment",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "appointmentId",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/AppointmentBlockSlot"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Get appointment",
+        "tags" : [ "AppointmentBlock" ]
+      }
+    },
+    "/appointment-blocks/daily-appointment-block-groups" : {
+      "post" : {
+        "operationId" : "createDailyAppointmentBlocksForGroup",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/CreateDailyAppointmentBlockGroupRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/CreateAppointmentBlockGroupResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Create appointment group with blocks for week days.",
+        "tags" : [ "AppointmentBlock" ]
+      }
+    },
+    "/appointment-blocks/daily-appointment-block-groups/validate" : {
+      "post" : {
+        "operationId" : "validateDailyAppointmentBlocksForGroup",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/CreateDailyAppointmentBlockGroupRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ValidateAppointmentBlockGroupResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Validate appointment group with blocks for week days.",
+        "tags" : [ "AppointmentBlock" ]
+      }
+    },
+    "/appointment-blocks/free-appointments" : {
+      "get" : {
+        "operationId" : "getFreeAppointments",
+        "parameters" : [ {
+          "in" : "query",
+          "name" : "appointmentType",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/components/schemas/AppointmentType"
+          }
+        }, {
+          "in" : "query",
+          "name" : "earliestDate",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "format" : "date-time"
+          }
+        }, {
+          "in" : "query",
+          "name" : "physicianId",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/GetFreeAppointmentsResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Get free appointments for an appointment type.",
+        "tags" : [ "AppointmentBlock" ]
+      }
+    },
+    "/appointment-blocks/overview" : {
+      "get" : {
+        "operationId" : "getAppointmentBlocks",
+        "parameters" : [ {
+          "in" : "query",
+          "name" : "timeRangeStart",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "date-time"
+          }
+        }, {
+          "in" : "query",
+          "name" : "timeRangeEnd",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "date-time"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/GetAppointmentBlocksResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Get appointment blocks in a certain time range (one week)",
+        "tags" : [ "AppointmentBlock" ]
+      }
+    },
+    "/appointment-blocks/rooms" : {
+      "get" : {
+        "operationId" : "getAppointmentBlockRooms",
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/GetAppointmentBlockRoomsResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Returns all assigned rooms for appointmentBlocks",
+        "tags" : [ "AppointmentBlock" ]
+      }
+    },
+    "/appointment-blocks/{appointmentBlockId}" : {
+      "delete" : {
+        "operationId" : "deleteAppointmentBlock",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "appointmentBlockId",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          }
+        },
+        "summary" : "Delete appointment block.",
+        "tags" : [ "AppointmentBlock" ]
+      },
+      "get" : {
+        "operationId" : "getAppointmentBlock",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "appointmentBlockId",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/AppointmentBlock"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Get appointment block",
+        "tags" : [ "AppointmentBlock" ]
+      },
+      "put" : {
+        "operationId" : "updateAppointmentBlock",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "appointmentBlockId",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/UpdateAppointmentBlockRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/AppointmentBlock"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Update appointment block",
+        "tags" : [ "AppointmentBlock" ]
+      }
+    },
+    "/appointment-blocks/{appointmentBlockId}/validate" : {
+      "put" : {
+        "operationId" : "validateUpdateAppointmentBlock",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "appointmentBlockId",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/UpdateAppointmentBlockRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ValidateAppointmentBlockGroupResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Validate for appointment block update",
+        "tags" : [ "AppointmentBlock" ]
+      }
+    },
+    "/appointment-standard-duration" : {
+      "get" : {
+        "operationId" : "getStandardDurations",
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ProstituteProtectionAppointmentStandardDurations"
+                }
+              }
+            },
+            "description" : "A response containing the standard duration if initialized."
+          }
+        },
+        "summary" : "Get the standard duration for prostitute protection consultation appointments",
+        "tags" : [ "ProstituteProtectionAppointmentStandardDuration" ]
+      }
+    },
+    "/approval-requests/{approvalRequestId}" : {
+      "get" : {
+        "operationId" : "getApprovalRequest",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "approvalRequestId",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ApprovalRequest"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "ApprovalRequest" ]
+      }
+    },
+    "/approval-requests/{approvalRequestId}/decision" : {
+      "put" : {
+        "operationId" : "decideApprovalRequest",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "approvalRequestId",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/Decision"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "ApprovalRequest" ]
+      }
+    },
+    "/archiving/config" : {
+      "get" : {
+        "operationId" : "getArchivingConfiguration",
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/GetArchivingConfigurationResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Get archiving configuration",
+        "tags" : [ "Archiving" ]
+      }
+    },
+    "/archiving/procedures" : {
+      "get" : {
+        "operationId" : "getArchivableProcedures",
+        "parameters" : [ {
+          "description" : "Filter logic:\n- If `procedureType` is submitted, only procedures are returned which have one of the submitted types.\n- If not submitted, no filtering takes place\n",
+          "in" : "query",
+          "name" : "procedureType",
+          "required" : false,
+          "schema" : {
+            "uniqueItems" : true,
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/ProcedureType"
+            }
+          }
+        }, {
+          "description" : "Filter logic:\n- If `closedAtDay` is set, only procedures are returned which were closed at that date\n- If not submitted, no filtering takes place\n",
+          "in" : "query",
+          "name" : "closedAtDay",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "format" : "date"
+          }
+        }, {
+          "description" : "Filter logic:\n- If `defaultArchivingRelevance` is submitted, only procedures are returned which have one of the submitted default archiving relevances.\n- If not submitted, no filtering takes place\n",
+          "in" : "query",
+          "name" : "defaultArchivingRelevance",
+          "required" : false,
+          "schema" : {
+            "uniqueItems" : true,
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/ArchivingRelevance"
+            }
+          }
+        }, {
+          "description" : "The following sorting options are available:\n- `CLOSED_AT`: Sorting by closedAt attribute\n- `PROCEDURE_TYPE`: Sorting by procedureType attribute\n",
+          "in" : "query",
+          "name" : "sortBy",
+          "required" : false,
+          "schema" : {
+            "$ref" : "#/components/schemas/GetArchivableProceduresSortBy"
+          }
+        }, {
+          "description" : "Sorting order.",
+          "in" : "query",
+          "name" : "sortOrder",
+          "required" : false,
+          "schema" : {
+            "$ref" : "#/components/schemas/GetArchivableProceduresSortOrder"
+          }
+        }, {
+          "description" : "Limit of returned procedures",
+          "in" : "query",
+          "name" : "pageSize",
+          "required" : false,
+          "schema" : {
+            "maximum" : 200,
+            "minimum" : 1,
+            "type" : "integer",
+            "format" : "int32",
+            "default" : 50
+          }
+        }, {
+          "description" : "Offset used for pagination",
+          "in" : "query",
+          "name" : "pageNumber",
+          "required" : false,
+          "schema" : {
+            "maximum" : 2000,
+            "minimum" : 0,
+            "type" : "integer",
+            "format" : "int32",
+            "default" : 0
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/GetArchivableProceduresResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Get archivable procedures",
+        "tags" : [ "Archiving" ]
+      }
+    },
+    "/archiving/procedures/bulk-update-archiving-relevance" : {
+      "post" : {
+        "operationId" : "bulkUpdateProceduresArchivingRelevance",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/BulkUpdateProceduresArchivingRelevanceRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/BulkUpdateProceduresArchivingRelevanceResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Bulk update procedures archiving relevance",
+        "tags" : [ "Archiving" ]
+      }
+    },
+    "/archiving/procedures/{procedureId}" : {
+      "get" : {
+        "operationId" : "downloadArchivableProcedure",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "procedureId",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/octet-stream" : { }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Get archivable procedure",
+        "tags" : [ "Archiving" ]
+      }
+    },
+    "/archiving/relevant-procedures" : {
+      "get" : {
+        "operationId" : "getRelevantArchivableProcedures",
+        "parameters" : [ {
+          "description" : "Filter logic:\n- If `closedAtDay` is set, only procedures are returned which were closed at that date\n- If not submitted, no filtering takes place\n",
+          "in" : "query",
+          "name" : "closedAtDay",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "format" : "date"
+          }
+        }, {
+          "description" : "Filter logic:\n- If `exported` is true, only procedures are returned which have already been exported.\n- If `exported` is false, only procedures are returned which have not been exported, yet.\n- If not submitted, no filtering takes place\n",
+          "in" : "query",
+          "name" : "exported",
+          "required" : false,
+          "schema" : {
+            "type" : "boolean"
+          }
+        }, {
+          "description" : "The following sorting options are available:\n- `CLOSED_AT`: Sorting by closedAt attribute\n- `EXPORTED_AT`: Sorting by exportedAt attribute\n",
+          "in" : "query",
+          "name" : "sortBy",
+          "required" : false,
+          "schema" : {
+            "$ref" : "#/components/schemas/GetRelevantArchivableProceduresSortBy"
+          }
+        }, {
+          "description" : "Sorting order.",
+          "in" : "query",
+          "name" : "sortOrder",
+          "required" : false,
+          "schema" : {
+            "$ref" : "#/components/schemas/GetRelevantArchivableProceduresSortOrder"
+          }
+        }, {
+          "description" : "Limit of returned procedures",
+          "in" : "query",
+          "name" : "pageSize",
+          "required" : false,
+          "schema" : {
+            "maximum" : 200,
+            "minimum" : 1,
+            "type" : "integer",
+            "format" : "int32",
+            "default" : 50
+          }
+        }, {
+          "description" : "Offset used for pagination",
+          "in" : "query",
+          "name" : "pageNumber",
+          "required" : false,
+          "schema" : {
+            "maximum" : 2000,
+            "minimum" : 0,
+            "type" : "integer",
+            "format" : "int32",
+            "default" : 0
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/GetRelevantArchivableProceduresResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Get relevant archivable procedures",
+        "tags" : [ "Archiving" ]
+      }
+    },
+    "/archiving/relevant-procedures/export" : {
+      "post" : {
+        "operationId" : "exportRelevantProcedures",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/ExportArchivingRelevantProceduresRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/octet-stream" : {
+                "schema" : {
+                  "type" : "string",
+                  "format" : "binary"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "Archiving" ]
+      }
+    },
+    "/citizen/public/department-info" : {
+      "get" : {
+        "operationId" : "getDepartmentInfo",
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/GetDepartmentInfoResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Get department info.",
+        "tags" : [ "ProstituteProtectionPublicCitizen" ]
+      }
+    },
+    "/citizen/public/opening-hours" : {
+      "get" : {
+        "operationId" : "getOpeningHours",
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/GetOpeningHoursResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Get the official opening hours.",
+        "tags" : [ "ProstituteProtectionPublicCitizen" ]
+      }
+    },
+    "/configuration" : {
+      "get" : {
+        "operationId" : "getConfiguration",
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/GetConfigurationStatusResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "ConfigStatus" ]
+      }
+    },
+    "/configuration/appointment-standard-duration" : {
+      "get" : {
+        "operationId" : "getStandardDurationsConfig",
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/GetProstituteProtectionAppointmentStandardDurationsResponse"
+                }
+              }
+            },
+            "description" : "A response containing the standard duration if initialized, or an empty response body otherwise."
+          }
+        },
+        "summary" : "Get the standard duration for prostitute protection consultation appointments",
+        "tags" : [ "ProstituteProtectionAppointmentStandardDurationConfig" ]
+      },
+      "put" : {
+        "operationId" : "updateStandardDurations",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/ProstituteProtectionAppointmentStandardDurations"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          }
+        },
+        "summary" : "Update the standard duration for prostitute protection consultation appointments",
+        "tags" : [ "ProstituteProtectionAppointmentStandardDurationConfig" ]
+      }
+    },
+    "/configuration/department-info" : {
+      "get" : {
+        "operationId" : "getInternalConfigDepartmentInfo",
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/GetInternalConfigDepartmentInfoResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "DepartmentInfoConfig" ]
+      },
+      "put" : {
+        "operationId" : "updateInternalConfigDepartmentInfo",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/UpdateInternalConfigDepartmentInfoRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "DepartmentInfoConfig" ]
+      }
+    },
+    "/configuration/opening-hours" : {
+      "get" : {
+        "operationId" : "getConfigOpeningHours",
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/GetOpeningHoursConfigResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "OpeningHours" ]
+      },
+      "put" : {
+        "operationId" : "updateConfigOpeningHours",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/OpeningHours"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "OpeningHours" ]
+      }
+    },
+    "/configuration/privacy-documents/privacy-notice" : {
+      "get" : {
+        "operationId" : "getPrivacyNoticeConfig",
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/GetPrivacyDocumentConfigResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "PrivacyDocument" ]
+      },
+      "put" : {
+        "operationId" : "updatePrivacyNoticeConfig",
+        "requestBody" : {
+          "content" : {
+            "multipart/form-data" : {
+              "schema" : {
+                "type" : "object",
+                "properties" : {
+                  "de" : {
+                    "type" : "string",
+                    "format" : "binary"
+                  },
+                  "en" : {
+                    "type" : "string",
+                    "format" : "binary"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "PrivacyDocument" ]
+      }
+    },
+    "/configuration/privacy-documents/privacy-notice/{lang}" : {
+      "get" : {
+        "operationId" : "downloadPrivacyNotice",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "lang",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/components/schemas/Language"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/octet-stream" : {
+                "schema" : {
+                  "type" : "string",
+                  "format" : "binary"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "PrivacyDocument" ]
+      }
+    },
+    "/configuration/privacy-documents/privacy-policy" : {
+      "get" : {
+        "operationId" : "getPrivacyPolicyConfig",
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/GetPrivacyDocumentConfigResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "PrivacyDocument" ]
+      },
+      "put" : {
+        "operationId" : "updatePrivacyPolicyConfig",
+        "requestBody" : {
+          "content" : {
+            "multipart/form-data" : {
+              "schema" : {
+                "type" : "object",
+                "properties" : {
+                  "de" : {
+                    "type" : "string",
+                    "format" : "binary"
+                  },
+                  "en" : {
+                    "type" : "string",
+                    "format" : "binary"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "PrivacyDocument" ]
+      }
+    },
+    "/configuration/privacy-documents/privacy-policy/{lang}" : {
+      "get" : {
+        "operationId" : "downloadPrivacyPolicy",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "lang",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/components/schemas/Language"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/octet-stream" : {
+                "schema" : {
+                  "type" : "string",
+                  "format" : "binary"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "PrivacyDocument" ]
+      }
+    },
+    "/files/{fileId}" : {
+      "delete" : {
+        "operationId" : "deleteFile",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "fileId",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          }
+        },
+        "summary" : "Soft deletes the specified file",
+        "tags" : [ "File" ]
+      },
+      "get" : {
+        "operationId" : "getFile",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "fileId",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "oneOf" : [ {
+                    "$ref" : "#/components/schemas/Image"
+                  }, {
+                    "$ref" : "#/components/schemas/Mail"
+                  }, {
+                    "$ref" : "#/components/schemas/Pdf"
+                  } ]
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Retrieves the meta data of the specified file",
+        "tags" : [ "File" ]
+      }
+    },
+    "/files/{fileId}/deletion-request" : {
+      "post" : {
+        "operationId" : "requestFileDeletion",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "fileId",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/CreateApprovalRequestRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ApprovalRequest"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Request deletion of a file entry",
+        "tags" : [ "File" ]
+      }
+    },
+    "/files/{fileId}/download" : {
+      "get" : {
+        "operationId" : "downloadFile",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "fileId",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/octet-stream" : {
+                "schema" : {
+                  "type" : "string",
+                  "format" : "binary"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "File" ]
+      }
+    },
+    "/files/{fileId}/meta-data" : {
+      "put" : {
+        "operationId" : "updateFileMetaData",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "fileId",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "oneOf" : [ {
+                  "$ref" : "#/components/schemas/ImageMetaData"
+                }, {
+                  "$ref" : "#/components/schemas/MailMetaData"
+                }, {
+                  "$ref" : "#/components/schemas/PdfMetaData"
+                } ]
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "oneOf" : [ {
+                    "$ref" : "#/components/schemas/Image"
+                  }, {
+                    "$ref" : "#/components/schemas/Mail"
+                  }, {
+                    "$ref" : "#/components/schemas/Pdf"
+                  } ]
+                }
+              }
+            },
+            "description" : "Updated file"
+          }
+        },
+        "summary" : "Updates the meta data of the specified file",
+        "tags" : [ "File" ]
+      }
+    },
+    "/files/{fileId}/meta-data/history" : {
+      "get" : {
+        "operationId" : "getMetaDataHistory",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "fileId",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/GetMetaDataHistoryResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "File" ]
+      }
+    },
+    "/gdpr-validation-tasks" : {
+      "get" : {
+        "operationId" : "getAllGdprValidationTasks",
+        "parameters" : [ {
+          "in" : "query",
+          "name" : "status",
+          "required" : false,
+          "schema" : {
+            "$ref" : "#/components/schemas/GdprValidationTaskStatus"
+          }
+        }, {
+          "in" : "query",
+          "name" : "sortKey",
+          "required" : false,
+          "schema" : {
+            "$ref" : "#/components/schemas/GdprValidationTaskSortKey"
+          }
+        }, {
+          "in" : "query",
+          "name" : "sortDirection",
+          "required" : false,
+          "schema" : {
+            "$ref" : "#/components/schemas/SortDirection"
+          }
+        }, {
+          "in" : "query",
+          "name" : "pageNumber",
+          "required" : false,
+          "schema" : {
+            "minimum" : 0,
+            "type" : "integer",
+            "format" : "int32"
+          }
+        }, {
+          "in" : "query",
+          "name" : "pageSize",
+          "required" : false,
+          "schema" : {
+            "minimum" : 1,
+            "type" : "integer",
+            "format" : "int32"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/GetAllValidationTasksResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Get all GDPR validation tasks",
+        "tags" : [ "GdprValidationTask" ]
+      },
+      "post" : {
+        "operationId" : "addGdprValidationTask",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/AddGdprValidationTaskRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Add a GDPR validation task"
+          }
+        },
+        "summary" : "Add a GDPR validation task",
+        "tags" : [ "GdprValidationTask" ]
+      }
+    },
+    "/gdpr-validation-tasks/download-packages/{downloadId}" : {
+      "get" : {
+        "operationId" : "getGdprDownloadPackage",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "downloadId",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "type" : "string",
+                  "format" : "binary"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Get Gdpr Download Package by its downloadId",
+        "tags" : [ "GdprValidationTask" ]
+      }
+    },
+    "/gdpr-validation-tasks/notification-banner" : {
+      "get" : {
+        "operationId" : "getGdprNotificationBanner",
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/GetGdprNotificationBannerResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Get data for GDPR notification banner",
+        "tags" : [ "GdprValidationTask" ]
+      }
+    },
+    "/gdpr-validation-tasks/{gdprProcedureId}" : {
+      "delete" : {
+        "operationId" : "deleteGdprValidationTaskAndDownloadPackages",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "gdprProcedureId",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/DeleteDownloadPackagesRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          }
+        },
+        "summary" : "Delete the GDPR validation task with gdprProcedureId and GDPR download packages with ids from request",
+        "tags" : [ "GdprValidationTask" ]
+      },
+      "get" : {
+        "operationId" : "getGdprValidationTask",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "gdprProcedureId",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/GetGdprValidationTaskResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Get Gdpr Validation Task by Gdpr Procedure Id",
+        "tags" : [ "GdprValidationTask" ]
+      }
+    },
+    "/gdpr-validation-tasks/{gdprProcedureId}/business-procedures" : {
+      "get" : {
+        "operationId" : "getGdprValidationTaskDetails",
+        "parameters" : [ {
+          "description" : "The Id of the GDPR procedure.",
+          "in" : "path",
+          "name" : "gdprProcedureId",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/GetGdprValidationTaskDetailsResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Get a GDPR validation task by id",
+        "tags" : [ "GdprValidationTask" ]
+      }
+    },
+    "/gdpr-validation-tasks/{gdprProcedureId}/business-procedures/{businessProcedureId}" : {
+      "delete" : {
+        "operationId" : "deleteBusinessProcedure",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "gdprProcedureId",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }, {
+          "in" : "path",
+          "name" : "businessProcedureId",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          }
+        },
+        "summary" : "Delete the businessProcedure with businessProcedureId for validationTask with gdprProcedureId with type right of erasure",
+        "tags" : [ "GdprValidationTask" ]
+      }
+    },
+    "/gdpr-validation-tasks/{gdprProcedureId}/business-procedures/{businessProcedureId}/downloadPackage" : {
+      "post" : {
+        "operationId" : "addDownloadPackage",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "gdprProcedureId",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }, {
+          "in" : "path",
+          "name" : "businessProcedureId",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          }
+        },
+        "summary" : "Creates a downloadPackage for validationTask with gdprProcedureId with the data from the procedure with businessProcedureId",
+        "tags" : [ "GdprValidationTask" ]
+      }
+    },
+    "/gdpr-validation-tasks/{gdprProcedureId}/close" : {
+      "post" : {
+        "operationId" : "closeGdprValidationTask",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "gdprProcedureId",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Close a GDPR validation task"
+          }
+        },
+        "summary" : "Close a GDPR validation task",
+        "tags" : [ "GdprValidationTask" ]
+      }
+    },
+    "/gdpr-validation-tasks/{gdprProcedureId}/download-packages" : {
+      "get" : {
+        "operationId" : "getGdprDownloadPackagesInfo",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "gdprProcedureId",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/GetGdprDownloadPackagesInfoResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Get approved Gdpr Download Packages by Gdpr Procedure Id",
+        "tags" : [ "GdprValidationTask" ]
+      }
+    },
+    "/inbox-procedures" : {
+      "get" : {
+        "description" : "Get all inbox procedures with filter, sort, and pagination options\n",
+        "operationId" : "getInboxProcedures",
+        "parameters" : [ {
+          "description" : "Filter logic:\n- If `inboxProcedureType` is submitted, only inbox procedures are returned which have one of the submitted types.\n- If not submitted, no filtering takes place.\n",
+          "in" : "query",
+          "name" : "inboxProcedureType",
+          "required" : false,
+          "schema" : {
+            "uniqueItems" : true,
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/ProcedureType"
+            }
+          }
+        }, {
+          "description" : "Filter logic:\n- If true, inbox procedures which have no type are returned in addition to the types specified by 'inboxProcedureType'.\n- If false or not submitted, inbox procedures which have no type are not returned.\n",
+          "in" : "query",
+          "name" : "includeUntyped",
+          "required" : false,
+          "schema" : {
+            "type" : "boolean"
+          }
+        }, {
+          "description" : "Filter logic:\n- If `inboxProcedureStatus` is submitted, only inbox procedures are returned which have one of the submitted statuses.\n- If not submitted, no filtering takes place.\n",
+          "in" : "query",
+          "name" : "inboxProcedureStatus",
+          "required" : false,
+          "schema" : {
+            "uniqueItems" : true,
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/InboxProcedureStatus"
+            }
+          }
+        }, {
+          "description" : "The following sorting options are available:\n- `CREATED_AT`: Sorting by createdAt attribute\n- `MODIFIED_AT`: Sorting by modifiedAt attribute\n",
+          "in" : "query",
+          "name" : "sortBy",
+          "required" : false,
+          "schema" : {
+            "$ref" : "#/components/schemas/GetInboxProceduresSortBy"
+          }
+        }, {
+          "description" : "Sorting order.",
+          "in" : "query",
+          "name" : "sortOrder",
+          "required" : false,
+          "schema" : {
+            "$ref" : "#/components/schemas/GetInboxProceduresSortOrder"
+          }
+        }, {
+          "description" : "Number of the requested page",
+          "in" : "query",
+          "name" : "pageNumber",
+          "required" : false,
+          "schema" : {
+            "minimum" : 0,
+            "type" : "integer",
+            "format" : "int32",
+            "default" : 0
+          }
+        }, {
+          "description" : "Amount of requested inbox procedures",
+          "in" : "query",
+          "name" : "pageSize",
+          "required" : false,
+          "schema" : {
+            "maximum" : 200,
+            "minimum" : 1,
+            "type" : "integer",
+            "format" : "int32",
+            "default" : 25
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/GetInboxProceduresResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Get inbox procedures",
+        "tags" : [ "InboxProcedure" ]
+      },
+      "post" : {
+        "description" : "Creates an inbox procedure with an optional file upload.\n\n       Permitted file formats:\n        - Image formats: jpeg, png\n        - PDF formats: pdf/a\n        - Mail formats: eml",
+        "operationId" : "addInboxProcedure",
+        "requestBody" : {
+          "content" : {
+            "multipart/form-data" : {
+              "schema" : {
+                "type" : "object",
+                "properties" : {
+                  "createInboxProcedureRequest" : {
+                    "$ref" : "#/components/schemas/CreateInboxProcedureRequest"
+                  },
+                  "file" : {
+                    "type" : "string",
+                    "format" : "binary"
+                  },
+                  "fileMetaData" : {
+                    "$ref" : "#/components/schemas/FileMetaData"
+                  }
+                },
+                "required" : [ "createInboxProcedureRequest" ]
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/InboxProcedure"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Add inbox procedure",
+        "tags" : [ "InboxProcedure" ]
+      }
+    },
+    "/inbox-procedures/{inboxProcedureId}" : {
+      "get" : {
+        "operationId" : "getInboxProcedure",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "inboxProcedureId",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/GetInboxProcedureResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Get inbox procedure with detailed information",
+        "tags" : [ "InboxProcedure" ]
+      }
+    },
+    "/inbox-procedures/{inboxProcedureId}/inbox-procedure-status" : {
+      "put" : {
+        "operationId" : "updateInboxProcedureStatus",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "inboxProcedureId",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/InboxProcedureStatus"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/InboxProcedure"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Update status of inbox procedure",
+        "tags" : [ "InboxProcedure" ]
+      }
+    },
+    "/procedure-metrics" : {
+      "get" : {
+        "operationId" : "getProcedureMetrics",
+        "parameters" : [ {
+          "in" : "query",
+          "name" : "timeRangeStart",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "date-time"
+          }
+        }, {
+          "in" : "query",
+          "name" : "timeRangeEnd",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "date-time"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/GetProcedureMetricsResponse"
+                }
+              }
+            },
+            "description" : "the metrics of procedures"
+          }
+        },
+        "summary" : "Get procedure metrics for procedures created in the given time range",
+        "tags" : [ "Procedure" ]
+      }
+    },
+    "/procedures" : {
+      "get" : {
+        "description" : "GET operation for retrieving basic information of procedures for the procedure overview.\n",
+        "operationId" : "getProcedures",
+        "parameters" : [ {
+          "description" : "Only procedures are returned where the assigneeId of at least one task equals the `assignedToId`.\nIf not submitted, no filtering takes place.\n",
+          "in" : "query",
+          "name" : "assignedToId",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }, {
+          "description" : "Filter logic:\n- If `procedureType` is submitted, only procedures are returned which have one of the submitted types.\n- If not submitted, no filtering takes place\n",
+          "in" : "query",
+          "name" : "procedureType",
+          "required" : false,
+          "schema" : {
+            "uniqueItems" : true,
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/ProcedureType"
+            }
+          }
+        }, {
+          "description" : "Filter logic:\n- If `procedureStatus` is submitted, only procedures are returned which have one of the submitted statuses.\n- If not submitted, no filtering takes place\n",
+          "in" : "query",
+          "name" : "procedureStatus",
+          "required" : false,
+          "schema" : {
+            "uniqueItems" : true,
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/ProcedureStatus"
+            }
+          }
+        }, {
+          "description" : "The following sorting options are available:\n- `CREATED_AT`: Sorting by createdAt attribute\n- `MODIFIED_AT`: Sorting by modifiedAt attribute\n",
+          "in" : "query",
+          "name" : "sortBy",
+          "required" : false,
+          "schema" : {
+            "$ref" : "#/components/schemas/GetProceduresSortBy"
+          }
+        }, {
+          "description" : "Sorting order.",
+          "in" : "query",
+          "name" : "sortOrder",
+          "required" : false,
+          "schema" : {
+            "$ref" : "#/components/schemas/GetProceduresSortOrder"
+          }
+        }, {
+          "description" : "Limit of returned procedures",
+          "in" : "query",
+          "name" : "pageSize",
+          "required" : false,
+          "schema" : {
+            "maximum" : 200,
+            "minimum" : 1,
+            "type" : "integer",
+            "format" : "int32",
+            "default" : 50
+          }
+        }, {
+          "description" : "Offset used for pagination",
+          "in" : "query",
+          "name" : "pageNumber",
+          "required" : false,
+          "schema" : {
+            "maximum" : 2000,
+            "minimum" : 0,
+            "type" : "integer",
+            "format" : "int32",
+            "default" : 0
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/GetProceduresResponse"
+                }
+              }
+            },
+            "description" : "the users recent procedures"
+          }
+        },
+        "summary" : "Get recent procedures for user",
+        "tags" : [ "Procedure" ]
+      }
+    },
+    "/procedures/check-file-state-usage" : {
+      "post" : {
+        "operationId" : "checkFileStateUsage",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/CheckFileStateUsageRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/CheckFileStateUsageResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Identify which file state IDs are still used by active procedures.",
+        "tags" : [ "Procedure" ]
+      }
+    },
+    "/procedures/recent" : {
+      "get" : {
+        "operationId" : "getSelfRecentProcedures",
+        "parameters" : [ {
+          "in" : "query",
+          "name" : "procedureType",
+          "required" : false,
+          "schema" : {
+            "uniqueItems" : true,
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/ProcedureType"
+            }
+          }
+        }, {
+          "in" : "query",
+          "name" : "procedureStatus",
+          "required" : false,
+          "schema" : {
+            "uniqueItems" : true,
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/ProcedureStatus"
+            }
+          }
+        }, {
+          "in" : "query",
+          "name" : "limit",
+          "required" : false,
+          "schema" : {
+            "maximum" : 200,
+            "minimum" : 1,
+            "type" : "integer",
+            "format" : "int32",
+            "default" : 50
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/GetRecentProceduresResponse"
+                }
+              }
+            },
+            "description" : "the current users recent procedures"
+          }
+        },
+        "summary" : "Get recent procedures for the current user",
+        "tags" : [ "Procedure" ]
+      }
+    },
+    "/procedures/search" : {
+      "get" : {
+        "operationId" : "searchProcedures",
+        "parameters" : [ {
+          "in" : "query",
+          "name" : "query",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/GetProceduresResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "Procedure" ]
+      }
+    },
+    "/procedures/{id}" : {
+      "get" : {
+        "operationId" : "getDetailedProcedure",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/GetDetailedProcedureResponse"
+                }
+              }
+            },
+            "description" : "a single procedure with details"
+          }
+        },
+        "summary" : "Get a single procedure with details",
+        "tags" : [ "Procedure" ]
+      }
+    },
+    "/procedures/{id}/approval-requests" : {
+      "get" : {
+        "operationId" : "getApprovalRequests",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/GetProcedureApprovalRequestsResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Get all approval requests related to this procedure",
+        "tags" : [ "Procedure" ]
+      }
+    },
+    "/procedures/{id}/files" : {
+      "get" : {
+        "description" : "This returns all relevant (highest version per keydocument type and non-deleted) files sorted by descending creation date.\nThat is:\n * if an progress entry has a keydocument type set, then its files are only returned if it also has the highest keydocument version of the respective key document type.\n * if an progress entry does not have a keydocument type, then its files are always returned.\n",
+        "operationId" : "getProcedureFileDetails",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/GetProcedureFileDetailsResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Get relevant procedure files",
+        "tags" : [ "Procedure" ]
+      }
+    },
+    "/procedures/{procedureId}/progress-entries" : {
+      "get" : {
+        "operationId" : "getProgressEntries",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "procedureId",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }, {
+          "description" : "Filter on progressEntryType",
+          "in" : "query",
+          "name" : "progressEntryType",
+          "required" : false,
+          "schema" : {
+            "uniqueItems" : true,
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          }
+        }, {
+          "description" : "Filter on child class of progressEntry",
+          "in" : "query",
+          "name" : "progressEntryClass",
+          "required" : false,
+          "schema" : {
+            "uniqueItems" : true,
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/ProgressEntryClass"
+            }
+          }
+        }, {
+          "description" : "If `initiatedBy` is set with a `userId` then the following is returned:\n* Only progressEntries with `createdBy`=`userId` in case `ManualProgressEntry` or `ProcessedInboxProgressEntry`\n* Only progressEntries with `triggeredBy`=`userId` in case `SystemProgressEntry`\n",
+          "in" : "query",
+          "name" : "initiatedBy",
+          "required" : false,
+          "schema" : {
+            "uniqueItems" : true,
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "format" : "uuid"
+            }
+          }
+        }, {
+          "description" : "Filter on triggerType.\nIf this is set, only SystemProgressEntries are returned since only SystemProgressEntries have this attribute.\n",
+          "in" : "query",
+          "name" : "triggerType",
+          "required" : false,
+          "schema" : {
+            "uniqueItems" : true,
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/TriggerType"
+            }
+          }
+        }, {
+          "description" : "Sorting on either modifiedAt or createdAt ",
+          "in" : "query",
+          "name" : "sortBy",
+          "required" : false,
+          "schema" : {
+            "$ref" : "#/components/schemas/ProgressEntrySortBy"
+          }
+        }, {
+          "description" : "Sorting order. Possible options  \"ASC\" for ascending and \"DESC\" for descending.",
+          "in" : "query",
+          "name" : "sortOrder",
+          "required" : false,
+          "schema" : {
+            "$ref" : "#/components/schemas/ProgressEntrySortOrder"
+          }
+        }, {
+          "description" : "Maximum number of elements to return",
+          "in" : "query",
+          "name" : "pageSize",
+          "required" : false,
+          "schema" : {
+            "maximum" : 200,
+            "minimum" : 1,
+            "type" : "integer",
+            "format" : "int32",
+            "default" : 50
+          }
+        }, {
+          "description" : "Index of page to be returned",
+          "in" : "query",
+          "name" : "pageNumber",
+          "required" : false,
+          "schema" : {
+            "minimum" : 0,
+            "type" : "integer",
+            "format" : "int32",
+            "default" : 0
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/GetProgressEntriesResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Get list of procedure's progress entries",
+        "tags" : [ "ProgressEntry" ]
+      },
+      "post" : {
+        "description" : "Creates a manual progress entry with an optional file upload.\n\n       Permitted file formats:\n        - Image formats: jpeg, png\n        - PDF formats: pdf/a\n        - Mail formats: eml",
+        "operationId" : "addProgressEntry",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "procedureId",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "multipart/form-data" : {
+              "schema" : {
+                "type" : "object",
+                "properties" : {
+                  "createManualProgressEntryRequest" : {
+                    "$ref" : "#/components/schemas/CreateManualProgressEntryRequest"
+                  },
+                  "file" : {
+                    "type" : "string",
+                    "format" : "binary"
+                  },
+                  "fileMetaData" : {
+                    "$ref" : "#/components/schemas/FileMetaData"
+                  }
+                },
+                "required" : [ "createManualProgressEntryRequest" ]
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ManualProgressEntry"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Create a manual progress entry",
+        "tags" : [ "ProgressEntry" ]
+      }
+    },
+    "/procedures/{procedureId}/progress-entries/{progressEntryId}" : {
+      "delete" : {
+        "operationId" : "removeProgressEntry",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "procedureId",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }, {
+          "in" : "path",
+          "name" : "progressEntryId",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          }
+        },
+        "summary" : "Remove a manual progress entry",
+        "tags" : [ "ProgressEntry" ]
+      },
+      "get" : {
+        "operationId" : "getProgressEntry",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "procedureId",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }, {
+          "in" : "path",
+          "name" : "progressEntryId",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/GetProgressEntryResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Get a progress entry",
+        "tags" : [ "ProgressEntry" ]
+      },
+      "patch" : {
+        "operationId" : "patchProgressEntry",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "procedureId",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }, {
+          "in" : "path",
+          "name" : "progressEntryId",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/PatchManualProgressEntryRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ManualProgressEntry"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Modify a manual progress entry",
+        "tags" : [ "ProgressEntry" ]
+      }
+    },
+    "/procedures/{procedureId}/progress-entries/{progressEntryId}/deletion-request" : {
+      "post" : {
+        "operationId" : "requestProgressEntryDeletion",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "procedureId",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }, {
+          "in" : "path",
+          "name" : "progressEntryId",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/CreateApprovalRequestRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ApprovalRequest"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Request deletion of a manual progress entry",
+        "tags" : [ "ProgressEntry" ]
+      }
+    },
+    "/procedures/{procedureId}/progress-entries/{progressEntryId}/history" : {
+      "get" : {
+        "operationId" : "getManualProgressEntryHistory",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "procedureId",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }, {
+          "in" : "path",
+          "name" : "progressEntryId",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/GetManualProgressEntryHistoryResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Get the history of a manual progress entry",
+        "tags" : [ "ProgressEntry" ]
+      }
+    },
+    "/prostitute-protection-procedures" : {
+      "get" : {
+        "operationId" : "getProstituteProtectionProcedures",
+        "parameters" : [ {
+          "in" : "query",
+          "name" : "sortKey",
+          "required" : false,
+          "schema" : {
+            "$ref" : "#/components/schemas/ProstitutionProtectionProcedureSortKey"
+          }
+        }, {
+          "in" : "query",
+          "name" : "sortDirection",
+          "required" : false,
+          "schema" : {
+            "$ref" : "#/components/schemas/SortDirection"
+          }
+        }, {
+          "description" : "Offset used for pagination",
+          "in" : "query",
+          "name" : "pageNumber",
+          "required" : false,
+          "schema" : {
+            "maximum" : 2000,
+            "minimum" : 0,
+            "type" : "integer",
+            "format" : "int32",
+            "default" : 0
+          }
+        }, {
+          "description" : "Limit of returned procedures",
+          "in" : "query",
+          "name" : "pageSize",
+          "required" : false,
+          "schema" : {
+            "maximum" : 200,
+            "minimum" : 1,
+            "type" : "integer",
+            "format" : "int32",
+            "default" : 25
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/GetProstituteProtectionProceduresResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Get prostitute protection procedures. Sort and page the results.",
+        "tags" : [ "ProstituteProtection" ]
+      },
+      "post" : {
+        "operationId" : "createProstituteProtectionProcedure",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/CreateProstituteProtectionProcedureRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/CreateProstituteProtectionProcedureResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Create a new prostitute-protection procedure.",
+        "tags" : [ "ProstituteProtection" ]
+      }
+    },
+    "/task-metrics" : {
+      "get" : {
+        "operationId" : "getTaskMetrics",
+        "parameters" : [ {
+          "in" : "query",
+          "name" : "procedureType",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/components/schemas/ProcedureType"
+          }
+        }, {
+          "in" : "query",
+          "name" : "timeRangeStart",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "date-time"
+          }
+        }, {
+          "in" : "query",
+          "name" : "timeRangeEnd",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "date-time"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/GetTaskMetricsResponse"
+                }
+              }
+            },
+            "description" : "the metrics of a specific procedure type"
+          }
+        },
+        "summary" : "Get tasks metrics for a procedure type of a business module for procedures created in the given time range",
+        "tags" : [ "Task" ]
+      }
+    },
+    "/tasks" : {
+      "get" : {
+        "operationId" : "getTasks",
+        "parameters" : [ {
+          "in" : "query",
+          "name" : "assigneeId",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }, {
+          "in" : "query",
+          "name" : "assignedById",
+          "required" : false,
+          "schema" : {
+            "uniqueItems" : true,
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "format" : "uuid"
+            }
+          }
+        }, {
+          "in" : "query",
+          "name" : "taskTypes",
+          "required" : false,
+          "schema" : {
+            "uniqueItems" : true,
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/TaskType"
+            }
+          }
+        }, {
+          "in" : "query",
+          "name" : "taskStatus",
+          "required" : false,
+          "schema" : {
+            "uniqueItems" : true,
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/TaskStatus"
+            }
+          }
+        }, {
+          "in" : "query",
+          "name" : "sortKey",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/components/schemas/GetTasksSortBy"
+          }
+        }, {
+          "in" : "query",
+          "name" : "sortOrder",
+          "required" : false,
+          "schema" : {
+            "$ref" : "#/components/schemas/GetTasksSortOrder"
+          }
+        }, {
+          "in" : "query",
+          "name" : "limit",
+          "required" : false,
+          "schema" : {
+            "maximum" : 2200,
+            "minimum" : 1,
+            "type" : "integer",
+            "format" : "int32",
+            "default" : 50
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/TaskResponse"
+                }
+              }
+            },
+            "description" : "tasks"
+          }
+        },
+        "summary" : "Get tasks",
+        "tags" : [ "Task" ]
+      }
+    },
+    "/tasks/dashboard" : {
+      "get" : {
+        "operationId" : "getTasksForDashboard",
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/TaskResponse"
+                }
+              }
+            },
+            "description" : "tasks"
+          }
+        },
+        "summary" : "Get tasks for the dashboard",
+        "tags" : [ "Task" ]
+      }
+    },
+    "/tasks/team-view" : {
+      "get" : {
+        "description" : "Returns all _open_ tasks per module group member.",
+        "operationId" : "getTasksByAssignee",
+        "parameters" : [ {
+          "description" : "If provided, `assignee` must be member of the module group.\nIf not provided, all tasks for all members of the module group are returned.\n",
+          "in" : "query",
+          "name" : "assigneeId",
+          "required" : false,
+          "schema" : {
+            "uniqueItems" : true,
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "format" : "uuid"
+            }
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/GetTaskByUserResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "Task" ]
+      }
+    },
+    "/tasks/{taskId}/assignment" : {
+      "put" : {
+        "operationId" : "assignTask",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "taskId",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/AssignTaskRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Task"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "Task" ]
+      }
+    },
+    "/tasks/{taskId}/self-assignment" : {
+      "put" : {
+        "operationId" : "selfAssignTask",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "taskId",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/SelfAssignTaskRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Task"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "Task" ]
+      }
+    },
     "/test-helper/population" : {
       "post" : {
         "operationId" : "populateDefaults",
@@ -193,6 +2980,72 @@
   },
   "components" : {
     "schemas" : {
+      "AbstractFile" : {
+        "required" : [ "@type", "createdAt", "deletable", "deleted", "fileId", "fileName", "fileSizeBytes", "fileType", "locked", "modifiedAt" ],
+        "type" : "object",
+        "discriminator" : {
+          "propertyName" : "@type"
+        },
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/AbstractFileReference"
+        }, {
+          "type" : "object",
+          "properties" : {
+            "@type" : {
+              "type" : "string"
+            },
+            "createdAt" : {
+              "type" : "string",
+              "format" : "date-time"
+            },
+            "createdBy" : {
+              "type" : "string",
+              "format" : "uuid"
+            },
+            "fileName" : {
+              "type" : "string"
+            },
+            "fileSizeBytes" : {
+              "type" : "integer",
+              "format" : "int32"
+            },
+            "fileType" : {
+              "$ref" : "#/components/schemas/FileType"
+            },
+            "locked" : {
+              "type" : "boolean"
+            },
+            "modifiedAt" : {
+              "type" : "string",
+              "format" : "date-time"
+            }
+          }
+        }, {
+          "$ref" : "#/components/schemas/ApprovalRequestEntity"
+        } ]
+      },
+      "AbstractFileReference" : {
+        "required" : [ "@type", "deletable", "deleted", "fileId" ],
+        "type" : "object",
+        "properties" : {
+          "@type" : {
+            "type" : "string"
+          },
+          "deletable" : {
+            "type" : "boolean"
+          },
+          "deleted" : {
+            "type" : "boolean"
+          },
+          "fileId" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        },
+        "discriminator" : {
+          "propertyName" : "@type"
+        }
+      },
       "AddBarrierTestHelperResponse" : {
         "required" : [ "barrierId" ],
         "type" : "object",
@@ -203,6 +3056,706 @@
             "format" : "int64"
           }
         }
+      },
+      "AddGdprValidationTaskRequest" : {
+        "required" : [ "gdprProcedureId", "startedAt", "type" ],
+        "type" : "object",
+        "properties" : {
+          "gdprProcedureId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "startedAt" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "type" : {
+            "$ref" : "#/components/schemas/GdprProcedureType"
+          }
+        }
+      },
+      "Address" : {
+        "required" : [ "@type" ],
+        "type" : "object",
+        "properties" : {
+          "@type" : {
+            "type" : "string"
+          }
+        },
+        "discriminator" : {
+          "propertyName" : "@type"
+        }
+      },
+      "Appointment" : {
+        "required" : [ "end", "start" ],
+        "type" : "object",
+        "properties" : {
+          "end" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "start" : {
+            "type" : "string",
+            "format" : "date-time"
+          }
+        },
+        "description" : "Appointment of a procedure."
+      },
+      "AppointmentBlock" : {
+        "required" : [ "appointmentBlockBins", "bookedAppointments", "consultants", "end", "id", "mfas", "parallelExaminations", "physicians", "resolvedUsers", "start", "types" ],
+        "type" : "object",
+        "properties" : {
+          "appointmentBlockBins" : {
+            "maxItems" : 10,
+            "minItems" : 1,
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/AppointmentBlockBin"
+            }
+          },
+          "availableForBulkBooking" : {
+            "type" : "boolean"
+          },
+          "availableForCitizen" : {
+            "type" : "boolean"
+          },
+          "bookedAppointments" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Appointment"
+            }
+          },
+          "consultants" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "format" : "uuid"
+            }
+          },
+          "creatorId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "end" : {
+            "type" : "string",
+            "description" : "Time at which the appointment block ends.",
+            "format" : "date-time",
+            "example" : "2016-01-01T01:45:00.123456+01:00"
+          },
+          "id" : {
+            "type" : "string",
+            "description" : "Id of the AppointmentBlock.",
+            "format" : "uuid",
+            "example" : "UUID_1"
+          },
+          "mfas" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "format" : "uuid"
+            }
+          },
+          "parallelExaminations" : {
+            "maximum" : 10,
+            "minimum" : 1,
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "physicians" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "format" : "uuid"
+            }
+          },
+          "resolvedUsers" : {
+            "type" : "object",
+            "additionalProperties" : {
+              "$ref" : "#/components/schemas/AppointmentBlockUser"
+            }
+          },
+          "room" : {
+            "type" : "string"
+          },
+          "start" : {
+            "type" : "string",
+            "description" : "Time at which the appointment block starts.",
+            "format" : "date-time",
+            "example" : "2016-01-01T01:00:00.123456+01:00"
+          },
+          "types" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/AppointmentType"
+            }
+          }
+        }
+      },
+      "AppointmentBlockBin" : {
+        "required" : [ "appointmentBlockSlots" ],
+        "type" : "object",
+        "properties" : {
+          "appointmentBlockSlots" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/AppointmentBlockSlot"
+            }
+          }
+        },
+        "description" : "A bin represents a single sequence of slots in an appointment block, meaning there are no parallel slots within a bin. Multiple bins can occur within a block."
+      },
+      "AppointmentBlockSlot" : {
+        "required" : [ "booked", "end", "start" ],
+        "type" : "object",
+        "properties" : {
+          "appointmentId" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "appointmentType" : {
+            "$ref" : "#/components/schemas/AppointmentType"
+          },
+          "booked" : {
+            "type" : "boolean"
+          },
+          "end" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "information" : {
+            "type" : "string"
+          },
+          "procedureId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "start" : {
+            "type" : "string",
+            "format" : "date-time"
+          }
+        },
+        "description" : "A free time slot or a booked appointment"
+      },
+      "AppointmentBlockSortKey" : {
+        "type" : "string",
+        "enum" : [ "START", "END" ]
+      },
+      "AppointmentBlockUser" : {
+        "required" : [ "firstName", "lastName", "userId" ],
+        "type" : "object",
+        "properties" : {
+          "firstName" : {
+            "type" : "string",
+            "description" : "The given name(s) of a user.",
+            "example" : "John"
+          },
+          "lastName" : {
+            "type" : "string",
+            "description" : "The last name of a user.",
+            "example" : "Doe"
+          },
+          "userId" : {
+            "type" : "string",
+            "description" : "The Id of the user.",
+            "format" : "uuid",
+            "example" : "UUID_2"
+          }
+        }
+      },
+      "AppointmentLocation" : {
+        "required" : [ "id", "name" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "name" : {
+            "minLength" : 1,
+            "type" : "string"
+          }
+        }
+      },
+      "AppointmentType" : {
+        "type" : "string",
+        "enum" : [ "CONSULTATION", "VACCINATION", "REGULAR_EXAMINATION", "CAN_CHILD", "ENTRY_LEVEL", "SPECIAL_NEEDS", "PROOF_SUBMISSION", "HIV_STI_CONSULTATION", "SEX_WORK", "RESULTS_REVIEW", "OFFICIAL_MEDICAL_SERVICE_SHORT", "OFFICIAL_MEDICAL_SERVICE_LONG", "MEDS_ABROAD_CERTIFICATION", "PROSTITUTE_PROTECTION_CONSULTATION" ]
+      },
+      "ApprovalRequest" : {
+        "required" : [ "approvalRequestId", "createdAt", "createdBy", "operation", "reason", "status" ],
+        "type" : "object",
+        "properties" : {
+          "approvalRequestId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "createdAt" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "createdBy" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "decidedAt" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "decidedBy" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "decision" : {
+            "$ref" : "#/components/schemas/Decision"
+          },
+          "entity" : {
+            "oneOf" : [ {
+              "$ref" : "#/components/schemas/ManualProgressEntry"
+            }, {
+              "$ref" : "#/components/schemas/Image"
+            }, {
+              "$ref" : "#/components/schemas/Mail"
+            }, {
+              "$ref" : "#/components/schemas/Pdf"
+            } ]
+          },
+          "operation" : {
+            "$ref" : "#/components/schemas/Operation"
+          },
+          "reason" : {
+            "type" : "string"
+          },
+          "status" : {
+            "$ref" : "#/components/schemas/ApprovalRequestStatus"
+          }
+        }
+      },
+      "ApprovalRequestEntity" : {
+        "required" : [ "@type" ],
+        "type" : "object",
+        "properties" : {
+          "@type" : {
+            "type" : "string"
+          }
+        },
+        "discriminator" : {
+          "propertyName" : "@type"
+        }
+      },
+      "ApprovalRequestStatus" : {
+        "type" : "string",
+        "enum" : [ "OPEN", "CLOSED" ]
+      },
+      "ArchivingDetails" : {
+        "required" : [ "archivingPeriodYears", "archivingRelevance" ],
+        "type" : "object",
+        "properties" : {
+          "archivingPeriodYears" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "archivingRelevance" : {
+            "$ref" : "#/components/schemas/ArchivingRelevance"
+          }
+        }
+      },
+      "ArchivingRelevance" : {
+        "type" : "string",
+        "enum" : [ "DEFAULT", "RELEVANT", "IRRELEVANT" ]
+      },
+      "ArchivingRelevanceSettings" : {
+        "required" : [ "archivingRelevance", "defaultArchivingRelevance" ],
+        "type" : "object",
+        "properties" : {
+          "archivingRelevance" : {
+            "$ref" : "#/components/schemas/ArchivingRelevance"
+          },
+          "defaultArchivingRelevance" : {
+            "$ref" : "#/components/schemas/ArchivingRelevance"
+          }
+        }
+      },
+      "AssignTaskRequest" : {
+        "required" : [ "assignee", "taskVersion" ],
+        "type" : "object",
+        "properties" : {
+          "assignee" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "dueAt" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "taskVersion" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        }
+      },
+      "BulkUpdateProceduresArchivingRelevanceRequest" : {
+        "required" : [ "archivingRelevance", "procedures" ],
+        "type" : "object",
+        "properties" : {
+          "archivingRelevance" : {
+            "$ref" : "#/components/schemas/ArchivingRelevance"
+          },
+          "procedures" : {
+            "maxItems" : 200,
+            "minItems" : 1,
+            "uniqueItems" : true,
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "format" : "uuid"
+            }
+          }
+        }
+      },
+      "BulkUpdateProceduresArchivingRelevanceResponse" : {
+        "required" : [ "archivingRelevance", "failedProcedures", "updatedProcedures" ],
+        "type" : "object",
+        "properties" : {
+          "archivingRelevance" : {
+            "$ref" : "#/components/schemas/ArchivingRelevance"
+          },
+          "failedProcedures" : {
+            "uniqueItems" : true,
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "format" : "uuid"
+            }
+          },
+          "updatedProcedures" : {
+            "uniqueItems" : true,
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "format" : "uuid"
+            }
+          }
+        }
+      },
+      "BusinessModule" : {
+        "type" : "string",
+        "enum" : [ "INSPECTION", "SCHOOL_ENTRY", "TRAVEL_MEDICINE", "MEASLES_PROTECTION", "STI_PROTECTION", "MEDICAL_REGISTRY", "DENTAL", "OFFICIAL_MEDICAL_SERVICE", "MEDS_ABROAD", "PROSTITUTE_PROTECTION" ]
+      },
+      "BusinessProcedureInclusionStatus" : {
+        "type" : "string",
+        "enum" : [ "INCLUDED", "UNDECIDED" ]
+      },
+      "BusinessProcedureWithInclusionStatus" : {
+        "required" : [ "businessProcedure", "inclusionStatus" ],
+        "type" : "object",
+        "properties" : {
+          "businessProcedure" : {
+            "$ref" : "#/components/schemas/Procedure"
+          },
+          "inclusionStatus" : {
+            "$ref" : "#/components/schemas/BusinessProcedureInclusionStatus"
+          }
+        }
+      },
+      "CheckFileStateUsageRequest" : {
+        "required" : [ "fileStatesIds" ],
+        "type" : "object",
+        "properties" : {
+          "fileStatesIds" : {
+            "maxItems" : 2147483647,
+            "minItems" : 1,
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "format" : "uuid"
+            }
+          }
+        }
+      },
+      "CheckFileStateUsageResponse" : {
+        "required" : [ "inUse" ],
+        "type" : "object",
+        "properties" : {
+          "inUse" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "format" : "uuid"
+            }
+          }
+        }
+      },
+      "ConfigurationStatus" : {
+        "type" : "string",
+        "enum" : [ "COMPLETE", "PARTIALLY_COMPLETE", "INCOMPLETE" ]
+      },
+      "ConsultationType" : {
+        "type" : "string",
+        "enum" : [ "INITIAL", "FOLLOW_UP" ]
+      },
+      "ContactDetails" : {
+        "required" : [ "contactType", "salutation" ],
+        "type" : "object",
+        "properties" : {
+          "address" : {
+            "$ref" : "#/components/schemas/InboxProcedureAddress"
+          },
+          "contactType" : {
+            "$ref" : "#/components/schemas/ContactType"
+          },
+          "dateOfBirth" : {
+            "type" : "string",
+            "format" : "date"
+          },
+          "emailAddress" : {
+            "type" : "string"
+          },
+          "facilityName" : {
+            "type" : "string"
+          },
+          "firstName" : {
+            "type" : "string"
+          },
+          "lastName" : {
+            "type" : "string"
+          },
+          "phoneNumber" : {
+            "type" : "string"
+          },
+          "salutation" : {
+            "$ref" : "#/components/schemas/Salutation"
+          },
+          "title" : {
+            "$ref" : "#/components/schemas/Title"
+          }
+        }
+      },
+      "ContactType" : {
+        "type" : "string",
+        "enum" : [ "PRIVATE_PERSON", "FACILITY" ]
+      },
+      "CountryCode" : {
+        "type" : "string",
+        "description" : "List of country codes in ISO 3166-1 alpha-2 format. With custom extensions for stateless, non-standard countries, and unknown countries.",
+        "enum" : [ "AD", "AE", "AF", "AG", "AI", "AL", "AM", "AO", "AQ", "AR", "AS", "AT", "AU", "AW", "AX", "AZ", "BA", "BB", "BD", "BE", "BF", "BG", "BH", "BI", "BJ", "BL", "BM", "BN", "BO", "BQ", "BR", "BS", "BT", "BV", "BW", "BY", "BZ", "CA", "CC", "CD", "CF", "CG", "CH", "CI", "CK", "CL", "CM", "CN", "CO", "CR", "CU", "CV", "CW", "CX", "CY", "CZ", "DE", "DJ", "DK", "DM", "DO", "DZ", "EC", "EE", "EG", "EH", "ER", "ES", "ET", "FI", "FJ", "FK", "FM", "FO", "FR", "GA", "GB", "GD", "GE", "GF", "GG", "GH", "GI", "GL", "GM", "GN", "GP", "GQ", "GR", "GS", "GT", "GU", "GW", "GY", "HK", "HM", "HN", "HR", "HT", "HU", "ID", "IE", "IL", "IM", "IN", "IO", "IQ", "IR", "IS", "IT", "JE", "JM", "JO", "JP", "KE", "KG", "KH", "KI", "KM", "KN", "KP", "KR", "KW", "KY", "KZ", "LA", "LB", "LC", "LI", "LK", "LR", "LS", "LT", "LU", "LV", "LY", "MA", "MC", "MD", "ME", "MF", "MG", "MH", "MK", "ML", "MM", "MN", "MO", "MP", "MQ", "MR", "MS", "MT", "MU", "MV", "MW", "MX", "MY", "MZ", "NA", "NC", "NE", "NF", "NG", "NI", "NL", "NO", "NP", "NR", "NU", "NZ", "OM", "PA", "PE", "PF", "PG", "PH", "PK", "PL", "PM", "PN", "PR", "PS", "PT", "PW", "PY", "QA", "RE", "RO", "RS", "RU", "RW", "SA", "SB", "SC", "SD", "SE", "SG", "SH", "SI", "SJ", "SK", "SL", "SM", "SN", "SO", "SR", "SS", "ST", "SV", "SX", "SY", "SZ", "TC", "TD", "TF", "TG", "TH", "TJ", "TK", "TL", "TM", "TN", "TO", "TR", "TT", "TV", "TW", "TZ", "UA", "UG", "UM", "US", "UY", "UZ", "VA", "VC", "VE", "VG", "VI", "VN", "VU", "WF", "WS", "YE", "YT", "ZA", "ZM", "ZW", "XK", "UNKNOWN", "STATELESS" ]
+      },
+      "CreateAppointmentBlockGroupResponse" : {
+        "required" : [ "appointmentBlockIds", "id" ],
+        "type" : "object",
+        "properties" : {
+          "appointmentBlockIds" : {
+            "minItems" : 1,
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "format" : "uuid"
+            }
+          },
+          "id" : {
+            "type" : "string",
+            "description" : "Id of the AppointmentBlockGroup.",
+            "format" : "uuid",
+            "example" : "UUID_1"
+          }
+        }
+      },
+      "CreateApprovalRequestRequest" : {
+        "required" : [ "reason" ],
+        "type" : "object",
+        "properties" : {
+          "reason" : {
+            "type" : "string"
+          }
+        }
+      },
+      "CreateDailyAppointmentBlock" : {
+        "required" : [ "daysOfWeek", "end", "start" ],
+        "type" : "object",
+        "properties" : {
+          "daysOfWeek" : {
+            "minItems" : 1,
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/DayOfWeek"
+            }
+          },
+          "end" : {
+            "type" : "string",
+            "description" : "Time at which the appointment block ends.",
+            "format" : "date-time",
+            "example" : "2016-01-01T01:45:00.123456+01:00"
+          },
+          "start" : {
+            "type" : "string",
+            "description" : "Time at which the appointment block starts.",
+            "format" : "date-time",
+            "example" : "2016-01-01T01:00:00.123456+01:00"
+          }
+        }
+      },
+      "CreateDailyAppointmentBlockGroupRequest" : {
+        "required" : [ "appointmentBlocks", "parallelExaminations", "types" ],
+        "type" : "object",
+        "properties" : {
+          "appointmentBlocks" : {
+            "minItems" : 1,
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/CreateDailyAppointmentBlock"
+            }
+          },
+          "availableForBulkBooking" : {
+            "type" : "boolean"
+          },
+          "availableForCitizen" : {
+            "type" : "boolean"
+          },
+          "consultants" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "format" : "uuid"
+            }
+          },
+          "locationId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "mfas" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "format" : "uuid"
+            }
+          },
+          "parallelExaminations" : {
+            "maximum" : 10,
+            "minimum" : 1,
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "physicians" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "format" : "uuid"
+            }
+          },
+          "room" : {
+            "maxLength" : 60,
+            "minLength" : 1,
+            "type" : "string"
+          },
+          "types" : {
+            "maxItems" : 2147483647,
+            "minItems" : 1,
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/AppointmentType"
+            }
+          }
+        }
+      },
+      "CreateInboxProcedureRequest" : {
+        "required" : [ "contactDetails", "inboxProgressEntry" ],
+        "type" : "object",
+        "properties" : {
+          "contactDetails" : {
+            "$ref" : "#/components/schemas/ContactDetails"
+          },
+          "inboxProcedureType" : {
+            "$ref" : "#/components/schemas/ProcedureType"
+          },
+          "inboxProgressEntry" : {
+            "$ref" : "#/components/schemas/CreateInboxProgressEntry"
+          }
+        }
+      },
+      "CreateInboxProgressEntry" : {
+        "required" : [ "inboxProgressEntryType" ],
+        "type" : "object",
+        "properties" : {
+          "inboxProgressEntryType" : {
+            "$ref" : "#/components/schemas/InboxProgressEntryType"
+          },
+          "messageText" : {
+            "type" : "string"
+          },
+          "subject" : {
+            "type" : "string"
+          }
+        }
+      },
+      "CreateManualProgressEntryRequest" : {
+        "required" : [ "manualProgressEntryType" ],
+        "type" : "object",
+        "properties" : {
+          "keyDocumentType" : {
+            "type" : "string"
+          },
+          "manualProgressEntryType" : {
+            "$ref" : "#/components/schemas/ManualProgressEntryType"
+          },
+          "note" : {
+            "type" : "string"
+          }
+        }
+      },
+      "CreateProstituteProtectionProcedureRequest" : {
+        "required" : [ "languages", "lastName" ],
+        "type" : "object",
+        "properties" : {
+          "alias" : {
+            "type" : "string"
+          },
+          "consultationType" : {
+            "$ref" : "#/components/schemas/ConsultationType"
+          },
+          "dateOfBirth" : {
+            "type" : "string",
+            "format" : "date"
+          },
+          "firstName" : {
+            "maxLength" : 80,
+            "minLength" : 1,
+            "type" : "string"
+          },
+          "languages" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/PersonLanguage"
+            }
+          },
+          "lastName" : {
+            "maxLength" : 120,
+            "minLength" : 1,
+            "type" : "string"
+          }
+        }
+      },
+      "CreateProstituteProtectionProcedureResponse" : {
+        "required" : [ "id" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string",
+            "description" : "Id of the procedure.",
+            "format" : "uuid",
+            "example" : "UUID_3"
+          }
+        }
+      },
+      "DataOrigin" : {
+        "type" : "string",
+        "description" : "A list of possible origins of Persons and Facility in the Central Files. EDIT will only be set automatically on changes. EXTERNAL is for entries that come, e.g., from the citizen portal. IMPORT is reserved for automatic imports. MANUAL shall be set for every creation or connection done by an employee.",
+        "enum" : [ "MANUAL", "EXTERNAL", "IMPORT", "EDIT" ]
+      },
+      "DayOfWeek" : {
+        "type" : "string",
+        "enum" : [ "MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY", "SUNDAY" ]
+      },
+      "Decision" : {
+        "type" : "string",
+        "enum" : [ "GRANTED", "DENIED" ]
       },
       "DefaultPopulationResponse" : {
         "type" : "object",
@@ -215,9 +3768,1570 @@
           }
         }
       },
+      "DeleteDownloadPackagesRequest" : {
+        "required" : [ "downloadIds" ],
+        "type" : "object",
+        "properties" : {
+          "downloadIds" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "format" : "uuid"
+            }
+          }
+        }
+      },
+      "DepartmentInfo" : {
+        "required" : [ "abbreviation", "city", "country", "email", "homepage", "houseNumber", "latitude", "longitude", "name", "phoneNumber", "postalCode", "street" ],
+        "type" : "object",
+        "properties" : {
+          "abbreviation" : {
+            "minLength" : 1,
+            "type" : "string"
+          },
+          "city" : {
+            "minLength" : 1,
+            "type" : "string"
+          },
+          "country" : {
+            "$ref" : "#/components/schemas/CountryCode"
+          },
+          "email" : {
+            "minLength" : 1,
+            "type" : "string"
+          },
+          "homepage" : {
+            "minLength" : 1,
+            "type" : "string"
+          },
+          "houseNumber" : {
+            "minLength" : 1,
+            "type" : "string"
+          },
+          "latitude" : {
+            "type" : "number",
+            "format" : "double"
+          },
+          "longitude" : {
+            "type" : "number",
+            "format" : "double"
+          },
+          "name" : {
+            "minLength" : 1,
+            "type" : "string"
+          },
+          "phoneNumber" : {
+            "minLength" : 1,
+            "type" : "string"
+          },
+          "postalCode" : {
+            "minLength" : 1,
+            "type" : "string"
+          },
+          "street" : {
+            "minLength" : 1,
+            "type" : "string"
+          }
+        }
+      },
+      "DetailedFacility" : {
+        "required" : [ "facilityFileState", "facilityType" ],
+        "type" : "object",
+        "properties" : {
+          "facilityFileState" : {
+            "$ref" : "#/components/schemas/GetFacilityFileStateResponse"
+          },
+          "facilityType" : {
+            "$ref" : "#/components/schemas/FacilityType"
+          }
+        }
+      },
+      "DetailedPerson" : {
+        "required" : [ "person", "personType" ],
+        "type" : "object",
+        "properties" : {
+          "person" : {
+            "$ref" : "#/components/schemas/GetPersonFileStateResponse"
+          },
+          "personType" : {
+            "$ref" : "#/components/schemas/PersonType"
+          }
+        }
+      },
+      "DetailedTask" : {
+        "required" : [ "task" ],
+        "type" : "object",
+        "properties" : {
+          "assignedByName" : {
+            "type" : "string"
+          },
+          "assigneeName" : {
+            "type" : "string"
+          },
+          "task" : {
+            "$ref" : "#/components/schemas/Task"
+          }
+        }
+      },
+      "DocumentDetails" : {
+        "required" : [ "fileName", "fileSizeBytes" ],
+        "type" : "object",
+        "properties" : {
+          "fileName" : {
+            "type" : "string"
+          },
+          "fileSizeBytes" : {
+            "type" : "integer",
+            "format" : "int32"
+          }
+        }
+      },
+      "DomesticAddress" : {
+        "required" : [ "city", "country", "postalCode", "street" ],
+        "type" : "object",
+        "description" : "A usual domestic address.",
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/Address"
+        }, {
+          "type" : "object",
+          "properties" : {
+            "addressAddition" : {
+              "maxLength" : 100,
+              "minLength" : 1,
+              "type" : "string",
+              "description" : "A descriptive addition to the address.",
+              "example" : "2.OG links"
+            },
+            "city" : {
+              "maxLength" : 50,
+              "minLength" : 1,
+              "type" : "string",
+              "description" : "The city in which the address is located.",
+              "example" : "Berlin"
+            },
+            "country" : {
+              "$ref" : "#/components/schemas/CountryCode"
+            },
+            "differentName" : {
+              "maxLength" : 200,
+              "minLength" : 1,
+              "type" : "string",
+              "description" : "If the name of the addressee deviates from the present name of a Person or Facility, e.g. when a company pays the bill for its employee or a parent company shall be contacted instead of its subsidiary.",
+              "example" : "Parent Company AG"
+            },
+            "houseNumber" : {
+              "maxLength" : 11,
+              "minLength" : 1,
+              "type" : "string",
+              "description" : "The house number of the address, including extensions.",
+              "example" : "1a"
+            },
+            "postalCode" : {
+              "maxLength" : 20,
+              "minLength" : 1,
+              "type" : "string",
+              "description" : "The postal code of the address.",
+              "example" : "10115"
+            },
+            "street" : {
+              "maxLength" : 55,
+              "minLength" : 1,
+              "type" : "string",
+              "description" : "The name of the street of the address, without the house number.",
+              "example" : "Beispielweg"
+            }
+          }
+        } ]
+      },
+      "ExportArchivingRelevantProceduresRequest" : {
+        "required" : [ "procedures" ],
+        "type" : "object",
+        "properties" : {
+          "procedures" : {
+            "maxItems" : 2147483647,
+            "minItems" : 1,
+            "uniqueItems" : true,
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "format" : "uuid"
+            }
+          }
+        }
+      },
+      "FacilityContactPerson" : {
+        "required" : [ "lastName" ],
+        "type" : "object",
+        "properties" : {
+          "emailAddress" : {
+            "maxLength" : 254,
+            "minLength" : 6,
+            "type" : "string",
+            "description" : "The email addresses of the Contact Person.",
+            "example" : "mail1@address.de"
+          },
+          "firstName" : {
+            "maxLength" : 80,
+            "minLength" : 1,
+            "type" : "string",
+            "description" : "The given name(s) of the Contact Person.",
+            "example" : "John"
+          },
+          "gender" : {
+            "$ref" : "#/components/schemas/Gender"
+          },
+          "lastName" : {
+            "maxLength" : 120,
+            "minLength" : 1,
+            "type" : "string",
+            "description" : "The last name of the Contact Person.",
+            "example" : "Doe"
+          },
+          "mainContact" : {
+            "type" : "boolean"
+          },
+          "phoneNumber" : {
+            "maxLength" : 23,
+            "minLength" : 1,
+            "type" : "string",
+            "description" : "The phone number of the Contact Person.",
+            "example" : "+491234567890"
+          },
+          "role" : {
+            "maxLength" : 255,
+            "minLength" : 1,
+            "type" : "string",
+            "description" : "The role of the Contact Person in the Facility.",
+            "example" : "CEO"
+          },
+          "salutation" : {
+            "$ref" : "#/components/schemas/Salutation"
+          },
+          "title" : {
+            "maxLength" : 119,
+            "minLength" : 1,
+            "type" : "string",
+            "description" : "The academic title of the Contact Person.",
+            "example" : "Prof. Dr."
+          }
+        }
+      },
+      "FacilityType" : {
+        "type" : "string",
+        "enum" : [ "SCHOOL", "INSPECTION", "DAYCARE", "HOSPITAL", "MEDICAL_PRACTICE", "REFUGEE_ACCOMMODATION", "OTHER" ]
+      },
+      "FileMetaData" : {
+        "type" : "object",
+        "properties" : {
+          "description" : {
+            "type" : "string"
+          }
+        }
+      },
+      "FileType" : {
+        "type" : "string",
+        "enum" : [ "JPEG", "PNG", "PDF", "EML" ]
+      },
+      "GdprDownloadPackageInfo" : {
+        "required" : [ "id" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }
+      },
+      "GdprFacility" : {
+        "required" : [ "address", "name" ],
+        "type" : "object",
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/GdprIdentificationData"
+        }, {
+          "type" : "object",
+          "properties" : {
+            "address" : {
+              "oneOf" : [ {
+                "$ref" : "#/components/schemas/DomesticAddress"
+              }, {
+                "$ref" : "#/components/schemas/PostboxAddress"
+              } ]
+            },
+            "dataTransmitterPseudonymId" : {
+              "type" : "string",
+              "description" : "The 'DatenübermittlerPseudonymId' of the MUK user",
+              "example" : "du-986b2b54ab89cf4ed674ad8c3126b966b54d4872"
+            },
+            "emailAddress" : {
+              "maxLength" : 254,
+              "minLength" : 6,
+              "type" : "string",
+              "description" : "The email addresses of the Facility.",
+              "example" : "mail@address.de"
+            },
+            "name" : {
+              "maxLength" : 300,
+              "minLength" : 1,
+              "type" : "string",
+              "description" : "The name of the Facility.",
+              "example" : "123 Example Facility"
+            },
+            "phoneNumber" : {
+              "maxLength" : 23,
+              "minLength" : 1,
+              "type" : "string",
+              "description" : "The phone number of the Facility.",
+              "example" : "+491234567890"
+            }
+          }
+        } ]
+      },
+      "GdprIdentificationData" : {
+        "required" : [ "@type" ],
+        "type" : "object",
+        "properties" : {
+          "@type" : {
+            "type" : "string"
+          }
+        },
+        "discriminator" : {
+          "propertyName" : "@type"
+        }
+      },
+      "GdprPerson" : {
+        "required" : [ "address", "dateOfBirth", "firstName", "lastName" ],
+        "type" : "object",
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/GdprIdentificationData"
+        }, {
+          "type" : "object",
+          "properties" : {
+            "address" : {
+              "oneOf" : [ {
+                "$ref" : "#/components/schemas/DomesticAddress"
+              }, {
+                "$ref" : "#/components/schemas/PostboxAddress"
+              } ]
+            },
+            "bpk2" : {
+              "type" : "string",
+              "description" : "The bpk2 of the BundId user",
+              "example" : "VnMEBMXsiCWZ34v1JCulQABe6-ts1yDSrbH3zII8BF0"
+            },
+            "dateOfBirth" : {
+              "type" : "string",
+              "description" : "The date of birth of the Person.",
+              "format" : "date",
+              "example" : "2000-01-01"
+            },
+            "emailAddress" : {
+              "maxLength" : 254,
+              "minLength" : 6,
+              "type" : "string",
+              "description" : "The email addresses of the Person.",
+              "example" : "mail@address.de"
+            },
+            "firstName" : {
+              "maxLength" : 80,
+              "minLength" : 1,
+              "type" : "string",
+              "description" : "The given name(s) of the Person.",
+              "example" : "John"
+            },
+            "lastName" : {
+              "maxLength" : 120,
+              "minLength" : 1,
+              "type" : "string",
+              "description" : "The last name of the Person.",
+              "example" : "Doe"
+            },
+            "phoneNumber" : {
+              "maxLength" : 23,
+              "minLength" : 0,
+              "type" : "string",
+              "description" : "The phone number of the Person.",
+              "example" : "+491234567890"
+            },
+            "salutation" : {
+              "$ref" : "#/components/schemas/Salutation"
+            },
+            "title" : {
+              "maxLength" : 119,
+              "minLength" : 1,
+              "type" : "string",
+              "description" : "The academic title of the Person.",
+              "example" : "Prof. Dr."
+            }
+          }
+        } ]
+      },
+      "GdprProcedureType" : {
+        "type" : "string",
+        "description" : "A list of types of GDPR procedures.",
+        "enum" : [ "RIGHT_OF_ACCESS", "RIGHT_TO_ERASURE" ]
+      },
+      "GdprValidationTask" : {
+        "required" : [ "dueDate", "gdprProcedureId", "identificationData", "status", "type" ],
+        "type" : "object",
+        "properties" : {
+          "dueDate" : {
+            "type" : "string",
+            "format" : "date"
+          },
+          "gdprProcedureId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "identificationData" : {
+            "oneOf" : [ {
+              "$ref" : "#/components/schemas/GdprFacility"
+            }, {
+              "$ref" : "#/components/schemas/GdprPerson"
+            } ]
+          },
+          "status" : {
+            "$ref" : "#/components/schemas/GdprValidationTaskStatus"
+          },
+          "type" : {
+            "$ref" : "#/components/schemas/GdprProcedureType"
+          }
+        }
+      },
+      "GdprValidationTaskSortKey" : {
+        "type" : "string",
+        "enum" : [ "CREATED_AT" ]
+      },
+      "GdprValidationTaskStatus" : {
+        "type" : "string",
+        "enum" : [ "OPEN", "CLOSED" ]
+      },
+      "Gender" : {
+        "type" : "string",
+        "description" : "The list of genders as specified in the German Personenstandsgesetz.",
+        "enum" : [ "NOT_SPECIFIED", "DIVERSE", "FEMALE", "MALE" ]
+      },
+      "GenericFileReference" : {
+        "required" : [ "@type", "deletable", "deleted", "fileId" ],
+        "type" : "object",
+        "discriminator" : {
+          "propertyName" : "@type"
+        },
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/AbstractFileReference"
+        }, {
+          "type" : "object",
+          "properties" : {
+            "@type" : {
+              "type" : "string"
+            }
+          }
+        } ]
+      },
+      "GetAllValidationTasksResponse" : {
+        "required" : [ "elements", "totalNumberOfElements" ],
+        "type" : "object",
+        "properties" : {
+          "elements" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/GdprValidationTask"
+            }
+          },
+          "totalNumberOfElements" : {
+            "minimum" : 0,
+            "type" : "integer",
+            "format" : "int64"
+          }
+        }
+      },
+      "GetAppointmentBlock" : {
+        "required" : [ "end", "id", "parallelExaminations", "start" ],
+        "type" : "object",
+        "properties" : {
+          "bookedDuration" : {
+            "type" : "string",
+            "description" : "A duration in ISO 8601"
+          },
+          "end" : {
+            "type" : "string",
+            "description" : "Time at which the appointment block ends.",
+            "format" : "date-time",
+            "example" : "2016-01-01T01:45:00.123456+01:00"
+          },
+          "freeDuration" : {
+            "type" : "string",
+            "description" : "A duration in ISO 8601"
+          },
+          "id" : {
+            "type" : "string",
+            "description" : "Id of the AppointmentBlock.",
+            "format" : "uuid",
+            "example" : "UUID_1"
+          },
+          "parallelExaminations" : {
+            "maximum" : 10,
+            "minimum" : 1,
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "start" : {
+            "type" : "string",
+            "description" : "Time at which the appointment block starts.",
+            "format" : "date-time",
+            "example" : "2016-01-01T01:00:00.123456+01:00"
+          }
+        },
+        "description" : "A planned appointment block. Appointment blocks offer a set of bookable appointments at different times within the timeframe of the appointment block."
+      },
+      "GetAppointmentBlockGroup" : {
+        "required" : [ "appointmentBlocks", "id", "types" ],
+        "type" : "object",
+        "properties" : {
+          "appointmentBlocks" : {
+            "minItems" : 1,
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/GetAppointmentBlock"
+            }
+          },
+          "availableForBulkBooking" : {
+            "type" : "boolean"
+          },
+          "availableForCitizen" : {
+            "type" : "boolean"
+          },
+          "id" : {
+            "type" : "string",
+            "description" : "Id of the AppointmentBlockGroup.",
+            "format" : "uuid",
+            "example" : "UUID_1"
+          },
+          "location" : {
+            "$ref" : "#/components/schemas/AppointmentLocation"
+          },
+          "types" : {
+            "maxItems" : 2147483647,
+            "minItems" : 1,
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/AppointmentType"
+            }
+          }
+        }
+      },
+      "GetAppointmentBlockGroupsResponse" : {
+        "required" : [ "elements", "totalNumberOfElements" ],
+        "type" : "object",
+        "properties" : {
+          "elements" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/GetAppointmentBlockGroup"
+            }
+          },
+          "totalNumberOfElements" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        }
+      },
+      "GetAppointmentBlockRoomsResponse" : {
+        "required" : [ "rooms" ],
+        "type" : "object",
+        "properties" : {
+          "rooms" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          }
+        }
+      },
+      "GetAppointmentBlocksResponse" : {
+        "required" : [ "appointmentBlocks" ],
+        "type" : "object",
+        "properties" : {
+          "appointmentBlocks" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/AppointmentBlock"
+            }
+          }
+        }
+      },
+      "GetAppointmentsResponse" : {
+        "required" : [ "appointmentBlockSlots" ],
+        "type" : "object",
+        "properties" : {
+          "appointmentBlockSlots" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/AppointmentBlockSlot"
+            }
+          }
+        }
+      },
+      "GetArchivableProceduresResponse" : {
+        "required" : [ "procedures", "totalElements", "totalPages" ],
+        "type" : "object",
+        "properties" : {
+          "procedures" : {
+            "maxItems" : 200,
+            "minItems" : 0,
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Procedure"
+            }
+          },
+          "totalElements" : {
+            "type" : "integer",
+            "description" : "Total number of result elements for the given filter criteria",
+            "format" : "int64"
+          },
+          "totalPages" : {
+            "type" : "integer",
+            "description" : "Total number of result pages for the given filter criteria",
+            "format" : "int32"
+          }
+        }
+      },
+      "GetArchivableProceduresSortBy" : {
+        "type" : "string",
+        "default" : "CLOSED_AT",
+        "enum" : [ "CLOSED_AT", "PROCEDURE_TYPE" ]
+      },
+      "GetArchivableProceduresSortOrder" : {
+        "type" : "string",
+        "default" : "ASC",
+        "enum" : [ "ASC", "DESC" ]
+      },
+      "GetArchivingConfigurationResponse" : {
+        "required" : [ "archivingDetails", "gracePeriodMonths" ],
+        "type" : "object",
+        "properties" : {
+          "archivingDetails" : {
+            "minProperties" : 1,
+            "type" : "object",
+            "additionalProperties" : {
+              "$ref" : "#/components/schemas/ArchivingDetails"
+            }
+          },
+          "gracePeriodMonths" : {
+            "type" : "integer",
+            "format" : "int32"
+          }
+        }
+      },
+      "GetConfigurationStatusResponse" : {
+        "required" : [ "endpointStates", "moduleState" ],
+        "type" : "object",
+        "properties" : {
+          "endpointStates" : {
+            "minProperties" : 1,
+            "type" : "object",
+            "additionalProperties" : {
+              "$ref" : "#/components/schemas/ConfigurationStatus"
+            }
+          },
+          "moduleState" : {
+            "$ref" : "#/components/schemas/ConfigurationStatus"
+          }
+        }
+      },
+      "GetDepartmentInfoResponse" : {
+        "required" : [ "city", "country", "email", "homepage", "houseNumber", "location", "name", "phoneNumber", "postalCode", "street" ],
+        "type" : "object",
+        "properties" : {
+          "abbreviation" : {
+            "type" : "string",
+            "description" : "The abbreviation of the name of the department",
+            "example" : "LTG"
+          },
+          "city" : {
+            "minLength" : 1,
+            "type" : "string",
+            "description" : "The name of the city where the department is located",
+            "example" : "Berlin"
+          },
+          "country" : {
+            "$ref" : "#/components/schemas/CountryCode"
+          },
+          "email" : {
+            "minLength" : 1,
+            "type" : "string",
+            "description" : "The email address of the department",
+            "example" : "mail@address.de"
+          },
+          "homepage" : {
+            "minLength" : 1,
+            "type" : "string",
+            "description" : "The domain of the department's official homepage, excluding protocols",
+            "example" : "department-homepage.de"
+          },
+          "houseNumber" : {
+            "minLength" : 1,
+            "type" : "string",
+            "description" : "The house number at the department's address, including any extensions or suffixes",
+            "example" : "1b"
+          },
+          "location" : {
+            "$ref" : "#/components/schemas/Location"
+          },
+          "name" : {
+            "minLength" : 1,
+            "type" : "string",
+            "description" : "The name of the department",
+            "example" : "Gesundheitsamt Landkreis Testgebiet"
+          },
+          "phoneNumber" : {
+            "minLength" : 1,
+            "type" : "string",
+            "description" : "The primary contact telephone number for the department",
+            "example" : "+491234567890"
+          },
+          "postalCode" : {
+            "minLength" : 1,
+            "type" : "string",
+            "description" : "The postal code for the department’s address",
+            "example" : "12345"
+          },
+          "street" : {
+            "minLength" : 1,
+            "type" : "string",
+            "description" : "The street name for the department’s address, not including the house number",
+            "example" : "Beispielweg"
+          }
+        }
+      },
+      "GetDetailedProcedureResponse" : {
+        "required" : [ "facilities", "persons", "procedure", "tasks" ],
+        "type" : "object",
+        "properties" : {
+          "facilities" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/DetailedFacility"
+            }
+          },
+          "persons" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/DetailedPerson"
+            }
+          },
+          "procedure" : {
+            "$ref" : "#/components/schemas/Procedure"
+          },
+          "tasks" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/DetailedTask"
+            }
+          }
+        }
+      },
+      "GetFacilityFileStateResponse" : {
+        "required" : [ "contactPersons", "dataOrigin", "emailAddresses", "id", "name", "phoneNumbers", "referenceVersion" ],
+        "type" : "object",
+        "properties" : {
+          "contactAddress" : {
+            "oneOf" : [ {
+              "$ref" : "#/components/schemas/DomesticAddress"
+            }, {
+              "$ref" : "#/components/schemas/PostboxAddress"
+            } ]
+          },
+          "contactPersons" : {
+            "type" : "array",
+            "description" : "A list of contact persons of the Facility.",
+            "items" : {
+              "$ref" : "#/components/schemas/FacilityContactPerson"
+            }
+          },
+          "dataOrigin" : {
+            "$ref" : "#/components/schemas/DataOrigin"
+          },
+          "differentBillingAddress" : {
+            "oneOf" : [ {
+              "$ref" : "#/components/schemas/DomesticAddress"
+            }, {
+              "$ref" : "#/components/schemas/PostboxAddress"
+            } ]
+          },
+          "emailAddresses" : {
+            "type" : "array",
+            "description" : "A list of email addresses of the Facility.",
+            "example" : "['mail1@address.de','mail2@address.de','mail3@address.de']",
+            "items" : {
+              "type" : "string"
+            }
+          },
+          "id" : {
+            "type" : "string",
+            "description" : "Id of the Facility.",
+            "format" : "uuid",
+            "example" : "UUID_4"
+          },
+          "name" : {
+            "maxLength" : 300,
+            "minLength" : 1,
+            "type" : "string",
+            "description" : "The name of the Facility.",
+            "example" : "Example Facility"
+          },
+          "outdated" : {
+            "type" : "boolean",
+            "description" : "A flag that signals if a File State differs from the referenceFacility it is connected to.",
+            "example" : true
+          },
+          "phoneNumbers" : {
+            "type" : "array",
+            "description" : "A list of telephone numbers of the Facility.",
+            "example" : "['+4912345678901','+4912345678902','+4912345678903']",
+            "items" : {
+              "maxLength" : 23,
+              "minLength" : 1,
+              "type" : "string"
+            }
+          },
+          "referenceVersion" : {
+            "type" : "integer",
+            "description" : "The version of referenceData that was present when the FileState was created. Can be increased if a newer version is irrelevant for the Procedure and the outdated flag shall be suppressed.",
+            "format" : "int64",
+            "example" : 1
+          }
+        }
+      },
+      "GetFreeAppointmentsResponse" : {
+        "required" : [ "appointments" ],
+        "type" : "object",
+        "properties" : {
+          "appointments" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Appointment"
+            }
+          }
+        }
+      },
+      "GetGdprDownloadPackagesInfoResponse" : {
+        "required" : [ "downloadPackages" ],
+        "type" : "object",
+        "properties" : {
+          "downloadPackages" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/GdprDownloadPackageInfo"
+            }
+          }
+        }
+      },
+      "GetGdprNotificationBannerResponse" : {
+        "required" : [ "openValidationTasksCount" ],
+        "type" : "object",
+        "properties" : {
+          "earliestDueDate" : {
+            "type" : "string",
+            "format" : "date"
+          },
+          "openValidationTasksCount" : {
+            "minimum" : 0,
+            "type" : "integer",
+            "format" : "int32"
+          }
+        }
+      },
+      "GetGdprValidationTaskDetailsResponse" : {
+        "required" : [ "proceduresWithStatus", "validationTask" ],
+        "type" : "object",
+        "properties" : {
+          "proceduresWithStatus" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/BusinessProcedureWithInclusionStatus"
+            }
+          },
+          "validationTask" : {
+            "$ref" : "#/components/schemas/GdprValidationTask"
+          }
+        }
+      },
+      "GetGdprValidationTaskResponse" : {
+        "required" : [ "status" ],
+        "type" : "object",
+        "properties" : {
+          "status" : {
+            "$ref" : "#/components/schemas/GdprValidationTaskStatus"
+          }
+        }
+      },
+      "GetInboxProcedureResponse" : {
+        "required" : [ "inboxProcedure", "resolvedUsers" ],
+        "type" : "object",
+        "properties" : {
+          "inboxProcedure" : {
+            "$ref" : "#/components/schemas/InboxProcedure"
+          },
+          "resolvedUsers" : {
+            "type" : "object",
+            "additionalProperties" : {
+              "$ref" : "#/components/schemas/User"
+            }
+          }
+        }
+      },
+      "GetInboxProceduresResponse" : {
+        "required" : [ "inboxProcedures", "totalElements", "totalPages" ],
+        "type" : "object",
+        "properties" : {
+          "inboxProcedures" : {
+            "maxItems" : 200,
+            "minItems" : 0,
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/InboxProcedure"
+            }
+          },
+          "totalElements" : {
+            "type" : "integer",
+            "description" : "Total number of result elements for the given filter criteria",
+            "format" : "int64"
+          },
+          "totalPages" : {
+            "type" : "integer",
+            "description" : "Total number of result pages for the given filter criteria",
+            "format" : "int32"
+          }
+        }
+      },
+      "GetInboxProceduresSortBy" : {
+        "type" : "string",
+        "default" : "CREATED_AT",
+        "enum" : [ "CREATED_AT" ]
+      },
+      "GetInboxProceduresSortOrder" : {
+        "type" : "string",
+        "default" : "ASC",
+        "enum" : [ "ASC", "DESC" ]
+      },
+      "GetInternalConfigDepartmentInfoResponse" : {
+        "type" : "object",
+        "properties" : {
+          "departmentInfo" : {
+            "$ref" : "#/components/schemas/DepartmentInfo"
+          }
+        }
+      },
+      "GetManualProgressEntryHistoryResponse" : {
+        "type" : "object",
+        "properties" : {
+          "manualProgressEntryHistory" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/ManualProgressEntryHistory"
+            }
+          }
+        }
+      },
+      "GetMetaDataHistoryResponse" : {
+        "type" : "object",
+        "properties" : {
+          "metaDataHistory" : {
+            "type" : "array",
+            "items" : {
+              "oneOf" : [ {
+                "$ref" : "#/components/schemas/ImageMetaDataHistory"
+              }, {
+                "$ref" : "#/components/schemas/MailMetaDataHistory"
+              }, {
+                "$ref" : "#/components/schemas/PdfMetaDataHistory"
+              } ]
+            }
+          }
+        }
+      },
+      "GetOpeningHoursConfigResponse" : {
+        "type" : "object",
+        "properties" : {
+          "openingHoursDto" : {
+            "$ref" : "#/components/schemas/OpeningHours"
+          }
+        }
+      },
+      "GetOpeningHoursResponse" : {
+        "required" : [ "de", "en" ],
+        "type" : "object",
+        "properties" : {
+          "de" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          },
+          "en" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          }
+        }
+      },
+      "GetPersonFileStateResponse" : {
+        "required" : [ "dataOrigin", "dateOfBirth", "emailAddresses", "firstName", "gender", "humanReadableId", "id", "lastName", "phoneNumbers", "referenceVersion", "salutation" ],
+        "type" : "object",
+        "properties" : {
+          "contactAddress" : {
+            "oneOf" : [ {
+              "$ref" : "#/components/schemas/DomesticAddress"
+            }, {
+              "$ref" : "#/components/schemas/PostboxAddress"
+            } ]
+          },
+          "countryOfBirth" : {
+            "$ref" : "#/components/schemas/CountryCode"
+          },
+          "dataOrigin" : {
+            "$ref" : "#/components/schemas/DataOrigin"
+          },
+          "dateOfBirth" : {
+            "type" : "string",
+            "description" : "The date of birth of the Person.",
+            "format" : "date",
+            "example" : "2000-01-01"
+          },
+          "differentBillingAddress" : {
+            "oneOf" : [ {
+              "$ref" : "#/components/schemas/DomesticAddress"
+            }, {
+              "$ref" : "#/components/schemas/PostboxAddress"
+            } ]
+          },
+          "emailAddresses" : {
+            "type" : "array",
+            "description" : "A list of email addresses of the Person.",
+            "example" : "['mail1@address.de','mail2@address.de','mail3@address.de']",
+            "items" : {
+              "type" : "string"
+            }
+          },
+          "firstName" : {
+            "maxLength" : 80,
+            "minLength" : 1,
+            "type" : "string",
+            "description" : "The given name(s) of the Person.",
+            "example" : "John"
+          },
+          "gender" : {
+            "$ref" : "#/components/schemas/Gender"
+          },
+          "humanReadableId" : {
+            "maxLength" : 8,
+            "minLength" : 8,
+            "type" : "string"
+          },
+          "id" : {
+            "type" : "string",
+            "description" : "Id of the Person.",
+            "format" : "uuid",
+            "example" : "UUID_4"
+          },
+          "lastName" : {
+            "maxLength" : 120,
+            "minLength" : 1,
+            "type" : "string",
+            "description" : "The last name of the Person.",
+            "example" : "Doe"
+          },
+          "nameAtBirth" : {
+            "maxLength" : 40,
+            "minLength" : 1,
+            "type" : "string",
+            "description" : "The last name at birth of the Person.",
+            "example" : "Smith"
+          },
+          "outdated" : {
+            "type" : "boolean",
+            "description" : "A flag that signals if a File State differs from the referencePerson it is connected to. Set to 'null' if unchecked.",
+            "example" : true
+          },
+          "phoneNumbers" : {
+            "type" : "array",
+            "description" : "A list of telephone numbers of the Person.",
+            "example" : "['+4912345678901','+4912345678902','+4912345678903']",
+            "items" : {
+              "maxLength" : 23,
+              "minLength" : 1,
+              "type" : "string"
+            }
+          },
+          "placeOfBirth" : {
+            "maxLength" : 50,
+            "minLength" : 1,
+            "type" : "string",
+            "description" : "The place of birth (without country) of the Person.",
+            "example" : "Berlin"
+          },
+          "referenceVersion" : {
+            "type" : "integer",
+            "description" : "The version of referenceData that was present when the FileState was created. Can be increased if a newer version is irrelevant for the Procedure and the outdated flag shall be suppressed.",
+            "format" : "int64",
+            "example" : 1
+          },
+          "salutation" : {
+            "$ref" : "#/components/schemas/Salutation"
+          },
+          "title" : {
+            "maxLength" : 119,
+            "minLength" : 1,
+            "type" : "string",
+            "description" : "The academic title of a Person.",
+            "example" : "Prof. Dr."
+          }
+        }
+      },
+      "GetPrivacyDocumentConfigResponse" : {
+        "type" : "object",
+        "properties" : {
+          "privacyDocument" : {
+            "$ref" : "#/components/schemas/MultiLangDocument"
+          }
+        }
+      },
+      "GetProcedureApprovalRequestsResponse" : {
+        "required" : [ "approvalRequests", "resolvedUsers" ],
+        "type" : "object",
+        "properties" : {
+          "approvalRequests" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/ApprovalRequest"
+            }
+          },
+          "resolvedUsers" : {
+            "type" : "object",
+            "additionalProperties" : {
+              "$ref" : "#/components/schemas/User"
+            }
+          }
+        }
+      },
+      "GetProcedureFileDetailsResponse" : {
+        "required" : [ "fileDetails", "procedureId" ],
+        "type" : "object",
+        "properties" : {
+          "fileDetails" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/ProgressEntryReferenceFilePair"
+            }
+          },
+          "procedureId" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }
+      },
+      "GetProcedureMetricsResponse" : {
+        "required" : [ "procedureMetrics" ],
+        "type" : "object",
+        "properties" : {
+          "procedureMetrics" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/ProcedureMetric"
+            }
+          }
+        }
+      },
+      "GetProceduresResponse" : {
+        "required" : [ "procedures", "totalElements", "totalPages" ],
+        "type" : "object",
+        "properties" : {
+          "procedures" : {
+            "maxItems" : 200,
+            "minItems" : 0,
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Procedure"
+            }
+          },
+          "totalElements" : {
+            "type" : "integer",
+            "description" : "Total number of result elements for the given filter criteria",
+            "format" : "int64"
+          },
+          "totalPages" : {
+            "type" : "integer",
+            "description" : "Total number of result pages for the given filter criteria",
+            "format" : "int32"
+          }
+        }
+      },
+      "GetProceduresSortBy" : {
+        "type" : "string",
+        "default" : "CREATED_AT",
+        "enum" : [ "MODIFIED_AT", "CREATED_AT" ]
+      },
+      "GetProceduresSortOrder" : {
+        "type" : "string",
+        "default" : "ASC",
+        "enum" : [ "ASC", "DESC" ]
+      },
+      "GetProgressEntriesResponse" : {
+        "required" : [ "progressEntries", "resolvedUsers", "totalElements", "totalPages" ],
+        "type" : "object",
+        "properties" : {
+          "progressEntries" : {
+            "maxItems" : 200,
+            "minItems" : 0,
+            "type" : "array",
+            "items" : {
+              "oneOf" : [ {
+                "$ref" : "#/components/schemas/ManualProgressEntry"
+              }, {
+                "$ref" : "#/components/schemas/ProcessedInboxProgressEntry"
+              }, {
+                "$ref" : "#/components/schemas/SystemProgressEntry"
+              } ]
+            }
+          },
+          "resolvedUsers" : {
+            "type" : "object",
+            "additionalProperties" : {
+              "$ref" : "#/components/schemas/User"
+            }
+          },
+          "totalElements" : {
+            "type" : "integer",
+            "description" : "Total number of result elements for the given filter criteria",
+            "format" : "int64"
+          },
+          "totalPages" : {
+            "type" : "integer",
+            "description" : "Total number of result pages for the given filter criteria",
+            "format" : "int32"
+          }
+        }
+      },
+      "GetProgressEntryResponse" : {
+        "required" : [ "progressEntry", "relatedKeyDocumentProgressEntries", "resolvedUsers" ],
+        "type" : "object",
+        "properties" : {
+          "progressEntry" : {
+            "oneOf" : [ {
+              "$ref" : "#/components/schemas/ManualProgressEntry"
+            }, {
+              "$ref" : "#/components/schemas/ProcessedInboxProgressEntry"
+            }, {
+              "$ref" : "#/components/schemas/SystemProgressEntry"
+            } ]
+          },
+          "relatedKeyDocumentProgressEntries" : {
+            "type" : "array",
+            "items" : {
+              "oneOf" : [ {
+                "$ref" : "#/components/schemas/ManualProgressEntry"
+              }, {
+                "$ref" : "#/components/schemas/SystemProgressEntry"
+              } ]
+            }
+          },
+          "resolvedUsers" : {
+            "type" : "object",
+            "additionalProperties" : {
+              "$ref" : "#/components/schemas/User"
+            }
+          }
+        }
+      },
+      "GetProstituteProtectionAppointmentStandardDurationsResponse" : {
+        "type" : "object",
+        "properties" : {
+          "standardDurations" : {
+            "$ref" : "#/components/schemas/ProstituteProtectionAppointmentStandardDurations"
+          }
+        }
+      },
+      "GetProstituteProtectionProceduresResponse" : {
+        "required" : [ "elements", "totalNumberOfElements" ],
+        "type" : "object",
+        "properties" : {
+          "elements" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/ProstituteProtectionProcedureOverview"
+            }
+          },
+          "totalNumberOfElements" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        }
+      },
+      "GetRecentProceduresResponse" : {
+        "required" : [ "procedures" ],
+        "type" : "object",
+        "properties" : {
+          "procedures" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Procedure"
+            }
+          }
+        }
+      },
+      "GetRelevantArchivableProceduresResponse" : {
+        "required" : [ "fileSizeBytes", "procedures", "totalElements", "totalPages" ],
+        "type" : "object",
+        "properties" : {
+          "fileSizeBytes" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "procedures" : {
+            "maxItems" : 200,
+            "minItems" : 0,
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Procedure"
+            }
+          },
+          "totalElements" : {
+            "type" : "integer",
+            "description" : "Total number of result elements for the given filter criteria",
+            "format" : "int64"
+          },
+          "totalPages" : {
+            "type" : "integer",
+            "description" : "Total number of result pages for the given filter criteria",
+            "format" : "int32"
+          }
+        }
+      },
+      "GetRelevantArchivableProceduresSortBy" : {
+        "type" : "string",
+        "default" : "CLOSED_AT",
+        "enum" : [ "CLOSED_AT", "EXPORTED_AT" ]
+      },
+      "GetRelevantArchivableProceduresSortOrder" : {
+        "type" : "string",
+        "default" : "ASC",
+        "enum" : [ "ASC", "DESC" ]
+      },
+      "GetTaskByUserResponse" : {
+        "required" : [ "resolvedUsers", "tasksByUser" ],
+        "type" : "object",
+        "properties" : {
+          "resolvedUsers" : {
+            "type" : "object",
+            "additionalProperties" : {
+              "$ref" : "#/components/schemas/User"
+            }
+          },
+          "tasksByUser" : {
+            "type" : "object",
+            "additionalProperties" : {
+              "type" : "array",
+              "items" : {
+                "$ref" : "#/components/schemas/Task"
+              }
+            }
+          }
+        }
+      },
+      "GetTaskMetricsResponse" : {
+        "required" : [ "businessModule", "closedProcedureCount", "fastestProcedures", "procedureType", "slowestProcedures", "taskMetrics" ],
+        "type" : "object",
+        "properties" : {
+          "businessModule" : {
+            "$ref" : "#/components/schemas/BusinessModule"
+          },
+          "closedProcedureCount" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "fastestProcedures" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/ProcedureWithDuration"
+            }
+          },
+          "procedureType" : {
+            "$ref" : "#/components/schemas/ProcedureType"
+          },
+          "slowestProcedures" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/ProcedureWithDuration"
+            }
+          },
+          "taskMetrics" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/TaskMetric"
+            }
+          }
+        }
+      },
+      "GetTasksSortBy" : {
+        "type" : "string",
+        "enum" : [ "PRIORITY", "CREATED_AT", "MODIFIED_AT" ]
+      },
+      "GetTasksSortOrder" : {
+        "type" : "string",
+        "default" : "ASC",
+        "enum" : [ "ASC", "DESC" ]
+      },
       "HttpMethod" : {
         "type" : "string",
         "enum" : [ "GET", "HEAD", "POST", "PUT", "PATCH", "DELETE", "OPTIONS", "TRACE" ]
+      },
+      "Image" : {
+        "required" : [ "@type", "createdAt", "deletable", "deleted", "fileId", "fileName", "fileSizeBytes", "fileType", "locked", "modifiedAt" ],
+        "type" : "object",
+        "discriminator" : {
+          "propertyName" : "@type"
+        },
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/AbstractFile"
+        }, {
+          "type" : "object",
+          "properties" : {
+            "@type" : {
+              "type" : "string"
+            },
+            "metaData" : {
+              "$ref" : "#/components/schemas/ImageMetaData"
+            }
+          }
+        } ]
+      },
+      "ImageMetaData" : {
+        "type" : "object",
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/MetaData"
+        }, {
+          "type" : "object",
+          "properties" : {
+            "createdDate" : {
+              "type" : "string",
+              "format" : "date-time"
+            }
+          }
+        } ]
+      },
+      "ImageMetaDataHistory" : {
+        "required" : [ "changedAt" ],
+        "type" : "object",
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/MetaDataHistory"
+        }, {
+          "type" : "object",
+          "properties" : {
+            "imageMetaData" : {
+              "$ref" : "#/components/schemas/ImageMetaData"
+            }
+          }
+        } ]
+      },
+      "InboxProcedure" : {
+        "required" : [ "contactDetails", "createdAt", "createdBy", "inboxProcedureId", "inboxProcedureStatus", "inboxProgressEntry" ],
+        "type" : "object",
+        "properties" : {
+          "closedAt" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "contactDetails" : {
+            "$ref" : "#/components/schemas/ContactDetails"
+          },
+          "createdAt" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "createdBy" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "inboxProcedureId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "inboxProcedureStatus" : {
+            "$ref" : "#/components/schemas/InboxProcedureStatus"
+          },
+          "inboxProcedureType" : {
+            "$ref" : "#/components/schemas/ProcedureType"
+          },
+          "inboxProgressEntry" : {
+            "$ref" : "#/components/schemas/InboxProgressEntry"
+          }
+        }
+      },
+      "InboxProcedureAddress" : {
+        "type" : "object",
+        "properties" : {
+          "addressAddition" : {
+            "type" : "string"
+          },
+          "city" : {
+            "type" : "string"
+          },
+          "country" : {
+            "type" : "string"
+          },
+          "houseNumber" : {
+            "type" : "string"
+          },
+          "postalCode" : {
+            "type" : "string"
+          },
+          "postboxNumber" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "street" : {
+            "type" : "string"
+          }
+        }
+      },
+      "InboxProcedureStatus" : {
+        "type" : "string",
+        "enum" : [ "OPEN", "CLOSED" ]
+      },
+      "InboxProgressEntry" : {
+        "required" : [ "inboxProgressEntryId", "inboxProgressEntryType" ],
+        "type" : "object",
+        "properties" : {
+          "fileReference" : {
+            "oneOf" : [ {
+              "$ref" : "#/components/schemas/GenericFileReference"
+            }, {
+              "$ref" : "#/components/schemas/Image"
+            }, {
+              "$ref" : "#/components/schemas/Mail"
+            }, {
+              "$ref" : "#/components/schemas/Pdf"
+            } ]
+          },
+          "inboxProgressEntryId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "inboxProgressEntryType" : {
+            "$ref" : "#/components/schemas/InboxProgressEntryType"
+          },
+          "messageText" : {
+            "type" : "string"
+          },
+          "subject" : {
+            "type" : "string"
+          }
+        }
+      },
+      "InboxProgressEntryType" : {
+        "type" : "string",
+        "enum" : [ "LETTER", "PHONE_CALL", "EMAIL" ]
       },
       "InsertRequestInterceptionTestHelperRequest" : {
         "required" : [ "type" ],
@@ -235,6 +5349,300 @@
         "type" : "string",
         "enum" : [ "BAD_REQUEST", "UNAUTHORIZED", "FORBIDDEN", "NOT_FOUND", "INTERNAL_SERVER_ERROR" ]
       },
+      "KeyDocumentAwareProgressEntry" : {
+        "required" : [ "@type" ],
+        "type" : "object",
+        "properties" : {
+          "@type" : {
+            "type" : "string"
+          },
+          "keyDocumentType" : {
+            "type" : "string"
+          },
+          "keyDocumentVersion" : {
+            "type" : "integer",
+            "format" : "int32"
+          }
+        },
+        "discriminator" : {
+          "propertyName" : "@type"
+        }
+      },
+      "Language" : {
+        "type" : "string",
+        "enum" : [ "GERMAN", "ENGLISH" ]
+      },
+      "Location" : {
+        "required" : [ "latitude", "longitude" ],
+        "type" : "object",
+        "properties" : {
+          "latitude" : {
+            "type" : "number",
+            "description" : "Geographic coordinate that specifies the north–south angular location of a point on the surface of the Earth.",
+            "format" : "double",
+            "example" : 52.51627
+          },
+          "longitude" : {
+            "type" : "number",
+            "description" : "Geographic coordinate that specifies the east–west angular position of a point on the surface of the Earth.",
+            "format" : "double",
+            "example" : 13.377703
+          }
+        },
+        "description" : "Location defined by latitude and longitude."
+      },
+      "Mail" : {
+        "required" : [ "@type", "createdAt", "deletable", "deleted", "fileId", "fileName", "fileSizeBytes", "fileType", "locked", "modifiedAt", "removedInvalidAttachments" ],
+        "type" : "object",
+        "discriminator" : {
+          "propertyName" : "@type"
+        },
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/AbstractFile"
+        }, {
+          "type" : "object",
+          "properties" : {
+            "@type" : {
+              "type" : "string"
+            },
+            "metaData" : {
+              "$ref" : "#/components/schemas/MailMetaData"
+            },
+            "removedInvalidAttachments" : {
+              "type" : "integer",
+              "format" : "int32"
+            }
+          }
+        } ]
+      },
+      "MailMetaData" : {
+        "required" : [ "mailFrom", "mailTo", "messageText", "sentDate", "subject" ],
+        "type" : "object",
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/MetaData"
+        }, {
+          "type" : "object",
+          "properties" : {
+            "mailFrom" : {
+              "type" : "string"
+            },
+            "mailTo" : {
+              "type" : "string"
+            },
+            "messageText" : {
+              "type" : "string"
+            },
+            "sentDate" : {
+              "type" : "string",
+              "format" : "date-time"
+            },
+            "subject" : {
+              "type" : "string"
+            }
+          }
+        } ]
+      },
+      "MailMetaDataHistory" : {
+        "required" : [ "changedAt" ],
+        "type" : "object",
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/MetaDataHistory"
+        }, {
+          "type" : "object",
+          "properties" : {
+            "mailMetaData" : {
+              "$ref" : "#/components/schemas/MailMetaData"
+            }
+          }
+        } ]
+      },
+      "ManualProgressEntry" : {
+        "required" : [ "createdAt", "createdBy", "locked", "manualProgressEntryType", "modifiedAt", "progressEntryId" ],
+        "type" : "object",
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/ProgressEntry"
+        }, {
+          "type" : "object",
+          "properties" : {
+            "createdBy" : {
+              "type" : "string",
+              "format" : "uuid"
+            },
+            "keyDocumentType" : {
+              "type" : "string"
+            },
+            "keyDocumentVersion" : {
+              "type" : "integer",
+              "format" : "int32"
+            },
+            "locked" : {
+              "type" : "boolean"
+            },
+            "manualProgressEntryType" : {
+              "$ref" : "#/components/schemas/ManualProgressEntryType"
+            },
+            "note" : {
+              "type" : "string"
+            }
+          }
+        }, {
+          "$ref" : "#/components/schemas/ApprovalRequestEntity"
+        }, {
+          "$ref" : "#/components/schemas/KeyDocumentAwareProgressEntry"
+        } ]
+      },
+      "ManualProgressEntryHistory" : {
+        "required" : [ "changedAt" ],
+        "type" : "object",
+        "properties" : {
+          "changedAt" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "manualProgressEntry" : {
+            "$ref" : "#/components/schemas/ManualProgressEntry"
+          }
+        }
+      },
+      "ManualProgressEntryType" : {
+        "type" : "string",
+        "enum" : [ "LETTER", "PHONE_CALL", "NOTE", "EMAIL", "IMAGE", "DOCUMENT" ]
+      },
+      "MetaData" : {
+        "required" : [ "@type" ],
+        "type" : "object",
+        "properties" : {
+          "@type" : {
+            "type" : "string"
+          },
+          "description" : {
+            "type" : "string"
+          }
+        },
+        "discriminator" : {
+          "propertyName" : "@type"
+        }
+      },
+      "MetaDataHistory" : {
+        "required" : [ "@type", "changedAt" ],
+        "type" : "object",
+        "properties" : {
+          "@type" : {
+            "type" : "string"
+          },
+          "changedAt" : {
+            "type" : "string",
+            "format" : "date-time"
+          }
+        },
+        "discriminator" : {
+          "propertyName" : "@type"
+        }
+      },
+      "MultiLangDocument" : {
+        "required" : [ "de" ],
+        "type" : "object",
+        "properties" : {
+          "de" : {
+            "$ref" : "#/components/schemas/DocumentDetails"
+          },
+          "en" : {
+            "$ref" : "#/components/schemas/DocumentDetails"
+          }
+        }
+      },
+      "OpeningHours" : {
+        "required" : [ "de", "en" ],
+        "type" : "object",
+        "properties" : {
+          "de" : {
+            "minItems" : 1,
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          },
+          "en" : {
+            "minItems" : 1,
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          }
+        }
+      },
+      "Operation" : {
+        "type" : "string",
+        "enum" : [ "DELETE" ]
+      },
+      "PatchManualProgressEntryRequest" : {
+        "type" : "object",
+        "properties" : {
+          "manualProgressEntryType" : {
+            "$ref" : "#/components/schemas/ManualProgressEntryType"
+          },
+          "note" : {
+            "type" : "string",
+            "nullable" : true
+          }
+        }
+      },
+      "Pdf" : {
+        "required" : [ "@type", "createdAt", "deletable", "deleted", "fileId", "fileName", "fileSizeBytes", "fileType", "locked", "modifiedAt" ],
+        "type" : "object",
+        "discriminator" : {
+          "propertyName" : "@type"
+        },
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/AbstractFile"
+        }, {
+          "type" : "object",
+          "properties" : {
+            "@type" : {
+              "type" : "string"
+            },
+            "metaData" : {
+              "$ref" : "#/components/schemas/PdfMetaData"
+            }
+          }
+        } ]
+      },
+      "PdfMetaData" : {
+        "type" : "object",
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/MetaData"
+        }, {
+          "type" : "object",
+          "properties" : {
+            "createdDate" : {
+              "type" : "string",
+              "format" : "date-time"
+            }
+          }
+        } ]
+      },
+      "PdfMetaDataHistory" : {
+        "required" : [ "changedAt" ],
+        "type" : "object",
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/MetaDataHistory"
+        }, {
+          "type" : "object",
+          "properties" : {
+            "pdfMetaData" : {
+              "$ref" : "#/components/schemas/PdfMetaData"
+            }
+          }
+        } ]
+      },
+      "PersonLanguage" : {
+        "type" : "string",
+        "enum" : [ "BULGARIAN", "CHINESE", "GERMAN", "ENGLISH", "FRENCH", "GREEK", "ITALIAN", "POLISH", "PORTUGUESE", "ROMANIAN", "RUSSIAN", "SERBO_CROATIAN", "SLOVAKIAN", "SPANISH", "THAI", "CZECH", "TURKISH", "UKRAINIAN", "HUNGARIAN", "UNKNOWN" ]
+      },
+      "PersonType" : {
+        "type" : "string",
+        "enum" : [ "PATIENT", "PARENT", "PROFESSIONAL", "EMPLOYEE" ]
+      },
       "Population" : {
         "required" : [ "numberOfPopulatedEntities", "totalNumberOfEntities" ],
         "type" : "object",
@@ -251,6 +5659,488 @@
             "format" : "int64"
           }
         }
+      },
+      "PostboxAddress" : {
+        "required" : [ "city", "country", "postalCode", "postbox" ],
+        "type" : "object",
+        "description" : "An address which is a postbox.",
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/Address"
+        }, {
+          "type" : "object",
+          "properties" : {
+            "city" : {
+              "maxLength" : 50,
+              "minLength" : 1,
+              "type" : "string",
+              "description" : "The city in which the address is located.",
+              "example" : "Berlin"
+            },
+            "country" : {
+              "$ref" : "#/components/schemas/CountryCode"
+            },
+            "differentName" : {
+              "maxLength" : 200,
+              "minLength" : 1,
+              "type" : "string",
+              "description" : "If the name of the addressee deviates from the present name of a Person or Facility, e.g. when a company pays the bill for its employee or a parent company shall be contacted instead of its subsidiary.",
+              "example" : "Parent Company AG"
+            },
+            "postalCode" : {
+              "maxLength" : 20,
+              "minLength" : 1,
+              "type" : "string",
+              "description" : "The postal code of the address.",
+              "example" : "10115"
+            },
+            "postbox" : {
+              "maxLength" : 21,
+              "minLength" : 1,
+              "type" : "string",
+              "description" : "The number (or name) of the postbox.",
+              "example" : "123"
+            }
+          }
+        } ]
+      },
+      "Procedure" : {
+        "required" : [ "archivingRelevanceSettings", "businessModule", "createdAt", "modifiedAt", "procedureId", "procedureStatus", "procedureType", "summary" ],
+        "type" : "object",
+        "properties" : {
+          "archivingRelevanceSettings" : {
+            "$ref" : "#/components/schemas/ArchivingRelevanceSettings"
+          },
+          "businessModule" : {
+            "$ref" : "#/components/schemas/BusinessModule"
+          },
+          "closedAt" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "createdAt" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "exportedAt" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "modifiedAt" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "procedureId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "procedureStatus" : {
+            "$ref" : "#/components/schemas/ProcedureStatus"
+          },
+          "procedureType" : {
+            "$ref" : "#/components/schemas/ProcedureType"
+          },
+          "summary" : {
+            "maxLength" : 128,
+            "minLength" : 0,
+            "pattern" : "[a-zA-Z0-9.].+",
+            "type" : "string"
+          }
+        }
+      },
+      "ProcedureMetric" : {
+        "required" : [ "abortedCount", "businessModule", "closedCount", "inProgressCount", "openOrDraftCount", "procedureType", "totalCount" ],
+        "type" : "object",
+        "properties" : {
+          "abortedCount" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "averageDuration" : {
+            "type" : "string",
+            "description" : "A duration in ISO 8601"
+          },
+          "businessModule" : {
+            "$ref" : "#/components/schemas/BusinessModule"
+          },
+          "closedCount" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "inProgressCount" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "openOrDraftCount" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "procedureType" : {
+            "$ref" : "#/components/schemas/ProcedureType"
+          },
+          "totalCount" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        }
+      },
+      "ProcedureStatus" : {
+        "type" : "string",
+        "enum" : [ "DRAFT", "OPEN", "IN_PROGRESS", "CLOSED", "ABORTED" ]
+      },
+      "ProcedureType" : {
+        "type" : "string",
+        "enum" : [ "REGULAR_EXAMINATION", "CAN_CHILD", "ENTRY_LEVEL", "DRAFT_CITIZEN_OFFICE_IMPORT", "DRAFT_SCHOOL_IMPORT", "INSPECTION", "TM_VACCINATION_CONSULTATION", "MEASLES_PROTECTION", "STI_PROTECTION", "MEDICAL_REGISTRY_ENTRY", "MEDICAL_REGISTRY_CITIZEN_DRAFT", "MEDICAL_REGISTRY_EMPLOYEE_DRAFT", "DENTAL_CHILD", "OFFICIAL_MEDICAL_SERVICE", "MEDS_ABROAD", "PROSTITUTE_PROTECTION" ]
+      },
+      "ProcedureWithDuration" : {
+        "required" : [ "createdAt", "id" ],
+        "type" : "object",
+        "properties" : {
+          "createdAt" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "duration" : {
+            "type" : "string",
+            "description" : "A duration in ISO 8601"
+          },
+          "id" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }
+      },
+      "ProcessedInboxProgressEntry" : {
+        "required" : [ "createdAt", "createdBy", "inboxProcedureId", "inboxProgressEntryType", "modifiedAt", "progressEntryId" ],
+        "type" : "object",
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/ProgressEntry"
+        }, {
+          "type" : "object",
+          "properties" : {
+            "createdBy" : {
+              "type" : "string",
+              "format" : "uuid"
+            },
+            "inboxProcedureId" : {
+              "type" : "string",
+              "format" : "uuid"
+            },
+            "inboxProgressEntryType" : {
+              "$ref" : "#/components/schemas/InboxProgressEntryType"
+            },
+            "messageText" : {
+              "type" : "string"
+            },
+            "subject" : {
+              "type" : "string"
+            }
+          }
+        } ]
+      },
+      "ProgressEntry" : {
+        "required" : [ "@type", "createdAt", "modifiedAt", "progressEntryId" ],
+        "type" : "object",
+        "properties" : {
+          "@type" : {
+            "type" : "string"
+          },
+          "createdAt" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "fileReference" : {
+            "oneOf" : [ {
+              "$ref" : "#/components/schemas/GenericFileReference"
+            }, {
+              "$ref" : "#/components/schemas/Image"
+            }, {
+              "$ref" : "#/components/schemas/Mail"
+            }, {
+              "$ref" : "#/components/schemas/Pdf"
+            } ]
+          },
+          "modifiedAt" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "progressEntryId" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        },
+        "discriminator" : {
+          "propertyName" : "@type"
+        }
+      },
+      "ProgressEntryClass" : {
+        "type" : "string",
+        "enum" : [ "MANUAL_PROGRESS_ENTRY", "SYSTEM_PROGRESS_ENTRY", "PROCESSED_INBOX_PROGRESS_ENTRY" ]
+      },
+      "ProgressEntryReferenceFilePair" : {
+        "required" : [ "file", "progressEntryId" ],
+        "type" : "object",
+        "properties" : {
+          "file" : {
+            "oneOf" : [ {
+              "$ref" : "#/components/schemas/Image"
+            }, {
+              "$ref" : "#/components/schemas/Mail"
+            }, {
+              "$ref" : "#/components/schemas/Pdf"
+            } ]
+          },
+          "progressEntryId" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }
+      },
+      "ProgressEntrySortBy" : {
+        "type" : "string",
+        "default" : "CREATED_AT",
+        "enum" : [ "CREATED_AT", "MODIFIED_AT" ]
+      },
+      "ProgressEntrySortOrder" : {
+        "type" : "string",
+        "default" : "ASC",
+        "enum" : [ "ASC", "DESC" ]
+      },
+      "ProstituteProtectionAppointmentStandardDurations" : {
+        "required" : [ "consultation" ],
+        "type" : "object",
+        "properties" : {
+          "consultation" : {
+            "type" : "string"
+          }
+        },
+        "description" : "A request containing the standard duration."
+      },
+      "ProstituteProtectionProcedureOverview" : {
+        "required" : [ "createdAt", "id", "languages", "lastName", "modifiedAt", "status" ],
+        "type" : "object",
+        "properties" : {
+          "alias" : {
+            "type" : "string"
+          },
+          "appointmentStart" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "consultationType" : {
+            "$ref" : "#/components/schemas/ConsultationType"
+          },
+          "createdAt" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "dateOfBirth" : {
+            "type" : "string",
+            "format" : "date"
+          },
+          "firstName" : {
+            "type" : "string"
+          },
+          "id" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "languages" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/PersonLanguage"
+            }
+          },
+          "lastName" : {
+            "type" : "string"
+          },
+          "modifiedAt" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "status" : {
+            "$ref" : "#/components/schemas/ProcedureStatus"
+          }
+        }
+      },
+      "ProstitutionProtectionProcedureSortKey" : {
+        "type" : "string",
+        "default" : "ALIAS",
+        "enum" : [ "ALIAS", "APPOINTMENT_START" ]
+      },
+      "Salutation" : {
+        "type" : "string",
+        "enum" : [ "NOT_SPECIFIED", "NEUTRAL", "FEMALE", "MALE" ]
+      },
+      "SelfAssignTaskRequest" : {
+        "required" : [ "taskVersion" ],
+        "type" : "object",
+        "properties" : {
+          "dueAt" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "taskVersion" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        }
+      },
+      "SortDirection" : {
+        "type" : "string",
+        "default" : "ASC",
+        "enum" : [ "ASC", "DESC" ]
+      },
+      "SystemProgressEntry" : {
+        "required" : [ "createdAt", "modifiedAt", "progressEntryId", "systemProgressEntryType", "triggerType" ],
+        "type" : "object",
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/ProgressEntry"
+        }, {
+          "type" : "object",
+          "properties" : {
+            "changeDescription" : {
+              "type" : "string"
+            },
+            "keyDocumentType" : {
+              "type" : "string"
+            },
+            "keyDocumentVersion" : {
+              "type" : "integer",
+              "format" : "int32"
+            },
+            "previousFacilityFileStateId" : {
+              "type" : "string",
+              "format" : "uuid"
+            },
+            "previousPersonFileStateId" : {
+              "type" : "string",
+              "format" : "uuid"
+            },
+            "systemProgressEntryType" : {
+              "type" : "string"
+            },
+            "triggerType" : {
+              "$ref" : "#/components/schemas/TriggerType"
+            },
+            "triggeredBy" : {
+              "type" : "string",
+              "format" : "uuid"
+            }
+          }
+        }, {
+          "$ref" : "#/components/schemas/KeyDocumentAwareProgressEntry"
+        } ]
+      },
+      "Task" : {
+        "required" : [ "businessModule", "createdAt", "isOverdue", "modifiedAt", "procedureId", "summary", "taskId", "taskStatus", "taskType", "version" ],
+        "type" : "object",
+        "properties" : {
+          "assignedById" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "assigneeId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "businessModule" : {
+            "$ref" : "#/components/schemas/BusinessModule"
+          },
+          "createdAt" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "dueAt" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "isOverdue" : {
+            "type" : "boolean"
+          },
+          "modifiedAt" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "procedureId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "summary" : {
+            "maxLength" : 128,
+            "minLength" : 0,
+            "type" : "string"
+          },
+          "taskId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "taskStatus" : {
+            "$ref" : "#/components/schemas/TaskStatus"
+          },
+          "taskType" : {
+            "$ref" : "#/components/schemas/TaskType"
+          },
+          "version" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        }
+      },
+      "TaskMetric" : {
+        "required" : [ "moreThanTwoOccurrencesCount", "noOccurrencesCount", "oneOccurrenceCount", "taskType", "twoOccurrencesCount" ],
+        "type" : "object",
+        "properties" : {
+          "averageDuration" : {
+            "type" : "string",
+            "description" : "A duration in ISO 8601"
+          },
+          "moreThanTwoOccurrencesCount" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "noOccurrencesCount" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "oneOccurrenceCount" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "taskType" : {
+            "$ref" : "#/components/schemas/TaskType"
+          },
+          "twoOccurrencesCount" : {
+            "type" : "integer",
+            "format" : "int32"
+          }
+        }
+      },
+      "TaskResponse" : {
+        "required" : [ "count", "tasks" ],
+        "type" : "object",
+        "properties" : {
+          "count" : {
+            "type" : "integer",
+            "description" : "total number of tasks for this query",
+            "format" : "int64"
+          },
+          "tasks" : {
+            "maxItems" : 200,
+            "minItems" : 0,
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Task"
+            }
+          }
+        }
+      },
+      "TaskStatus" : {
+        "type" : "string",
+        "enum" : [ "OPEN", "CLOSED" ]
+      },
+      "TaskType" : {
+        "type" : "string",
+        "enum" : [ "BOOK_APPOINTMENT", "PERFORM_SCHOOL_ENTRY_EXAMINATION", "INSPECTION_PLANNING", "INSPECTION_EXECUTION", "INSPECTION_REPORT", "TRAVEL_MEDICINE", "MEASLES_PROTECTION", "STI_PROTECTION", "OFFICIAL_MEDICAL_SERVICE", "MEDS_ABROAD", "PROSTITUTE_PROTECTION" ]
       },
       "TestHelperClockSetRequest" : {
         "required" : [ "newInstant" ],
@@ -319,6 +6209,138 @@
           },
           "urlPatternFilter" : {
             "type" : "string"
+          }
+        }
+      },
+      "Title" : {
+        "type" : "string",
+        "enum" : [ "DR", "PROF", "PROF_DR" ]
+      },
+      "TriggerType" : {
+        "type" : "string",
+        "enum" : [ "SYSTEM_AUTOMATIC", "EMPLOYEE", "CITIZEN" ]
+      },
+      "UpdateAppointmentBlockRequest" : {
+        "required" : [ "consultants", "end", "mfas", "parallelExaminations", "physicians", "start" ],
+        "type" : "object",
+        "properties" : {
+          "consultants" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "format" : "uuid"
+            }
+          },
+          "end" : {
+            "type" : "string",
+            "description" : "Time at which the appointment block ends.",
+            "format" : "date-time",
+            "example" : "2016-01-01T01:45:00.123456+01:00"
+          },
+          "mfas" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "format" : "uuid"
+            }
+          },
+          "parallelExaminations" : {
+            "maximum" : 10,
+            "minimum" : 1,
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "physicians" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "format" : "uuid"
+            }
+          },
+          "room" : {
+            "type" : "string"
+          },
+          "start" : {
+            "type" : "string",
+            "description" : "Time at which the appointment block starts.",
+            "format" : "date-time",
+            "example" : "2016-01-01T01:00:00.123456+01:00"
+          }
+        }
+      },
+      "UpdateInternalConfigDepartmentInfoRequest" : {
+        "type" : "object",
+        "properties" : {
+          "departmentInfo" : {
+            "$ref" : "#/components/schemas/DepartmentInfo"
+          }
+        }
+      },
+      "User" : {
+        "required" : [ "enabled", "firstName", "lastName", "userId", "username" ],
+        "type" : "object",
+        "properties" : {
+          "email" : {
+            "type" : "string",
+            "description" : "The email address of a user.",
+            "example" : "example@mail.de"
+          },
+          "enabled" : {
+            "type" : "boolean",
+            "description" : "True, if the user can login",
+            "example" : false
+          },
+          "externalChatUsername" : {
+            "type" : "string",
+            "description" : "The chat username of the gematik TI-Messenger (matrix chat).",
+            "example" : "@username:server"
+          },
+          "firstName" : {
+            "type" : "string",
+            "description" : "The given name(s) of a user.",
+            "example" : "John"
+          },
+          "lastName" : {
+            "type" : "string",
+            "description" : "The last name of a user.",
+            "example" : "Doe"
+          },
+          "phoneNumber" : {
+            "type" : "string",
+            "description" : "The phone number of a user.",
+            "example" : "+491234567890"
+          },
+          "userId" : {
+            "type" : "string",
+            "description" : "The Id of the user.",
+            "format" : "uuid",
+            "example" : "UUID_2"
+          },
+          "username" : {
+            "minLength" : 1,
+            "type" : "string",
+            "description" : "The username which is displayed in the application and can be used for the login.",
+            "example" : "testuser"
+          }
+        }
+      },
+      "ValidateAppointmentBlockGroupResponse" : {
+        "required" : [ "userIdsWithEventConflicts", "userIdsWithoutEventConflicts" ],
+        "type" : "object",
+        "properties" : {
+          "userIdsWithEventConflicts" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "format" : "uuid"
+            }
+          },
+          "userIdsWithoutEventConflicts" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "format" : "uuid"
+            }
           }
         }
       }

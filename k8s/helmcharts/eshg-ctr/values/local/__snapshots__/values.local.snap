@@ -267,7 +267,7 @@ data:
         }
 
         # set client certificate header
-        proxy_set_header x-eshg-client-cert $ssl_client_cert;
+        proxy_set_header x-eshg-client-cert $ssl_client_escaped_cert;
 
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
 

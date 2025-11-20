@@ -6,7 +6,6 @@
 package de.eshg.inspection.sample.api;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.NotNull;
 
 @Schema(name = "UpdateInspectionSampleMeasurementParameterValueRequest")
-public record UpdateInspectionSampleMeasurementParameterValueRequest(@NotNull double value) {}
+public record UpdateInspectionSampleMeasurementParameterValueRequest(Double value) {}

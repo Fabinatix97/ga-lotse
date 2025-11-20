@@ -7,6 +7,7 @@ package de.eshg.measlesprotection.testhelper;
 
 import de.eshg.base.feature.BaseFeature;
 import de.eshg.base.feature.BaseFeatureTogglesApi;
+import de.eshg.measlesprotection.MeaslesProtectionProperties;
 import de.eshg.measlesprotection.polytune.PolytuneMeaslesVaccinationCheckApi;
 import de.eshg.measlesprotection.polytune.PolytuneMeaslesVaccinationCheckResponse;
 import de.eshg.measlesprotection.polytune.PolytuneMeaslesVaccinationCheckResult;
@@ -42,10 +43,15 @@ public class PolytuneMock
   private PolytuneMockSimulateErrorRequest errorToSimulate;
 
   private final BaseFeatureTogglesApi baseFeatureTogglesApi;
+  private final MeaslesProtectionProperties properties;
   private final Clock clock;
 
-  public PolytuneMock(BaseFeatureTogglesApi baseFeatureTogglesApi, Clock clock) {
+  public PolytuneMock(
+      BaseFeatureTogglesApi baseFeatureTogglesApi,
+      MeaslesProtectionProperties properties,
+      Clock clock) {
     this.baseFeatureTogglesApi = baseFeatureTogglesApi;
+    this.properties = properties;
     this.clock = clock;
     clear();
   }
@@ -183,12 +189,8 @@ public class PolytuneMock
       throw new IllegalStateException(
           "Trying to call polytune mock: Feature toggle VACCINATION_CHECK not enabled");
     }
-    if (!baseFeatureTogglesApi
-        .getFeatureToggles()
-        .enabledNewFeatures()
-        .contains(BaseFeature.POLYTUNE)) {
-      throw new IllegalStateException(
-          "Trying to call polytune mock: Feature toggle POLYTUNE not enabled");
+    if (!properties.isPolytuneActive()) {
+      throw new IllegalStateException("Trying to call polytune mock: POLYTUNE is not active");
     }
     if (!initialized) {
       throw new IllegalStateException("Trying to call polytune mock: Mock not initialized");

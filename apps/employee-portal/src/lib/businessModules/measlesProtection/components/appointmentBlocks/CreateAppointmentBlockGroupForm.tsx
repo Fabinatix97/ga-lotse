@@ -13,6 +13,7 @@ import {
   AppointmentBlockGroupValuesWithDays,
   emptyAppointmentBlockGroup,
 } from "@eshg/lib-employee-portal";
+import { mapOptionalValue } from "@eshg/lib-portal";
 import {
   ApiAppointmentType,
   ApiCreateDailyAppointmentBlock,
@@ -30,6 +31,7 @@ import { AppointmentBlockGroupForm } from "./AppointmentBlockGroupForm";
 const INITIAL_VALUES: AppointmentBlockGroupValues = {
   types: SUPPORTED_APPOINTMENT_TYPES,
   appointmentBlocks: [emptyAppointmentBlockGroup()],
+  room: "",
 };
 
 function mapAppointmentBlock(
@@ -51,6 +53,7 @@ function mapFormValues(
     appointmentBlocks: values.appointmentBlocks.map(mapAppointmentBlock),
     physicians: undefined,
     mfas: undefined,
+    room: mapOptionalValue(values.room),
   };
 }
 

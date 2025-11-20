@@ -12,6 +12,8 @@ import de.eshg.persistence.TransactionHelper;
 import jakarta.annotation.PostConstruct;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 import javax.xml.parsers.DocumentBuilder;
@@ -53,6 +55,11 @@ public class CreateTeisDataTask {
   public static final String UNTERSUCHUNGSUMFANG_FILE =
       "/de/eshg/inspection/teis/teis5_untersuchungsumfang/teis5_untersuchungsumfang.xml";
 
+  public static final String PARAMETER_XML_FILE_FOR_TEST =
+      "/de/eshg/inspection/teis_for_tests/teis5_parameter.xml";
+  public static final String UNTERSUCHUNGSPARAMETER_XML_FILE_FOR_TEST =
+      "/de/eshg/inspection/teis_for_tests/teis5_untersuchungsumfang/teis5_untersuchungsparameter.xml";
+
   private final ClassPathResource analyseverfahrenXmlFile;
   private final ClassPathResource aufbereitungsverfahrenXmlFile;
   private final ClassPathResource einheitXmlFile;
@@ -67,6 +74,9 @@ public class CreateTeisDataTask {
   private final ClassPathResource verwaltungsbezirkXmlFile;
   private final ClassPathResource untersuchungsparameterXmlFile;
   private final ClassPathResource untersuchtungsumfangXmlFile;
+
+  private final ClassPathResource parameterXmlFileForTest;
+  private final ClassPathResource untersuchungsparameterXmlFileForTest;
 
   private final TeisRepositories repositories;
   private final TransactionHelper transactionHelper;
@@ -87,6 +97,9 @@ public class CreateTeisDataTask {
       @Value(VERWALTUNGSBEZIRK_FILE) ClassPathResource verwaltungsbezirkXmlFile,
       @Value(UNTERSUCHUNGSPARAMETER_XML_FILE) ClassPathResource untersuchungsparameterXmlFile,
       @Value(UNTERSUCHUNGSUMFANG_FILE) ClassPathResource untersuchtungsumfangXmlFile,
+      @Value(PARAMETER_XML_FILE_FOR_TEST) ClassPathResource parameterXmlFileForTest,
+      @Value(UNTERSUCHUNGSPARAMETER_XML_FILE_FOR_TEST)
+          ClassPathResource untersuchungsparameterXmlFileForTest,
       TeisAnalyseverfahrenRepository teisAnalyseverfahrenRepository,
       TeisAufbereitungsverfahrenRepository teisAufbereitungsverfahrenRepository,
       TeisEinheitRepository teisEinheitRepository,
@@ -136,6 +149,8 @@ public class CreateTeisDataTask {
     assertFileExists(verwaltungsbezirkXmlFile);
     assertFileExists(untersuchungsparameterXmlFile);
     assertFileExists(untersuchtungsumfangXmlFile);
+    assertFileExists(parameterXmlFileForTest);
+    assertFileExists(untersuchungsparameterXmlFileForTest);
 
     this.analyseverfahrenXmlFile = analyseverfahrenXmlFile;
     this.aufbereitungsverfahrenXmlFile = aufbereitungsverfahrenXmlFile;
@@ -151,6 +166,8 @@ public class CreateTeisDataTask {
     this.verwaltungsbezirkXmlFile = verwaltungsbezirkXmlFile;
     this.untersuchungsparameterXmlFile = untersuchungsparameterXmlFile;
     this.untersuchtungsumfangXmlFile = untersuchtungsumfangXmlFile;
+    this.parameterXmlFileForTest = parameterXmlFileForTest;
+    this.untersuchungsparameterXmlFileForTest = untersuchungsparameterXmlFileForTest;
   }
 
   @PostConstruct
@@ -181,10 +198,43 @@ public class CreateTeisDataTask {
         });
   }
 
+  public void parseXmlForTest() {
+    if (!inspectionFeatureToggle.isNewFeatureEnabled(InspectionFeature.TEIS_DATA)) {
+      return;
+    }
+    transactionHelper.executeInTransaction(
+        () -> {
+          // If we can find entries that are already in the database, we can assume that this
+          // already ran.
+          if (repositories.teisEinheitRepository().count() == 0) {
+            parseFile(einheitXmlFile.getFile());
+            parseFile(listeXmlFile.getFile());
+            parseFile(parameterXmlFileForTest.getFile());
+            parseFile(untersuchtungsumfangXmlFile.getFile());
+            parseFile(untersuchungsparameterXmlFileForTest.getFile());
+          }
+        });
+  }
+
   private void parseFile(File file) throws ParserConfigurationException, IOException, SAXException {
     DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
     DocumentBuilder db = dbf.newDocumentBuilder();
     Document document = db.parse(file);
+
+    List<TeisAnalyseverfahren> teisAnalyseverfahrenList = new ArrayList<>();
+    List<TeisAufbereitungsverfahren> teisAufbereitungsverfahrenList = new ArrayList<>();
+    List<TeisEinheit> teisEinheitList = new ArrayList<>();
+    List<TeisEuParameter> teisEuParameterList = new ArrayList<>();
+    List<TeisGesundheitsamt> teisGesundheitsamtList = new ArrayList<>();
+    List<TeisLand> teisLandList = new ArrayList<>();
+    List<TeisListe> teisListeList = new ArrayList<>();
+    List<TeisMesswerttext> teisMesswerttextList = new ArrayList<>();
+    List<TeisParameter> teisParameterList = new ArrayList<>();
+    List<TeisProbenahmehaeufigkeit> teisProbenahmehaeufigkeitList = new ArrayList<>();
+    List<TeisUmrechnung> teisUmrechnungList = new ArrayList<>();
+    List<TeisVerwaltungsbezirk> teisVerwaltungsbezirkList = new ArrayList<>();
+    List<TeisUntersuchungsparameter> teisUntersuchungsparameterList = new ArrayList<>();
+    List<TeisUntersuchungsumfang> teisUntersuchungsumfangList = new ArrayList<>();
 
     NodeList nodeList = document.getChildNodes();
     for (int i = 0; i < nodeList.getLength(); i++) {
@@ -196,67 +246,58 @@ public class CreateTeisDataTask {
           switch (entityNode.getNodeName()) {
             case "ANALYSEVERFAHREN" ->
                 parseTeisEntity(
-                    entityNode,
-                    TeisAnalyseverfahren::new,
-                    repositories.teisAnalyseverfahrenRepository()::save);
+                    entityNode, TeisAnalyseverfahren::new, teisAnalyseverfahrenList::add);
             case "AUFBEREITUNGSVERFAHREN" ->
                 parseTeisEntity(
                     entityNode,
                     TeisAufbereitungsverfahren::new,
-                    repositories.teisAufbereitungsverfahrenRepository()::save);
-            case "EINHEIT" ->
-                parseTeisEntity(
-                    entityNode, TeisEinheit::new, repositories.teisEinheitRepository()::save);
+                    teisAufbereitungsverfahrenList::add);
+            case "EINHEIT" -> parseTeisEntity(entityNode, TeisEinheit::new, teisEinheitList::add);
             case "EUPARAMETER" ->
-                parseTeisEntity(
-                    entityNode,
-                    TeisEuParameter::new,
-                    repositories.teisEuParameterRepository()::save);
+                parseTeisEntity(entityNode, TeisEuParameter::new, teisEuParameterList::add);
             case "GESUNDHEITSAMT" ->
-                parseTeisEntity(
-                    entityNode,
-                    TeisGesundheitsamt::new,
-                    repositories.teisGesundheitsamtRepository()::save);
-            case "LAND" ->
-                parseTeisEntity(entityNode, TeisLand::new, repositories.teisLandRepository()::save);
-            case "LISTE" ->
-                parseTeisEntity(
-                    entityNode, TeisListe::new, repositories.teisListeRepository()::save);
+                parseTeisEntity(entityNode, TeisGesundheitsamt::new, teisGesundheitsamtList::add);
+            case "LAND" -> parseTeisEntity(entityNode, TeisLand::new, teisLandList::add);
+            case "LISTE" -> parseTeisEntity(entityNode, TeisListe::new, teisListeList::add);
             case "MESSWERTTEXT" ->
-                parseTeisEntity(
-                    entityNode,
-                    TeisMesswerttext::new,
-                    repositories.teisMesswerttextRepository()::save);
+                parseTeisEntity(entityNode, TeisMesswerttext::new, teisMesswerttextList::add);
             case "PARAMETER" ->
-                parseTeisEntity(
-                    entityNode, TeisParameter::new, repositories.teisParameterRepository()::save);
+                parseTeisEntity(entityNode, TeisParameter::new, teisParameterList::add);
             case "PROBENAHMEHAEUFIGKEIT" ->
                 parseTeisEntity(
-                    entityNode,
-                    TeisProbenahmehaeufigkeit::new,
-                    repositories.teisProbenahmehaeufigkeitRepository()::save);
+                    entityNode, TeisProbenahmehaeufigkeit::new, teisProbenahmehaeufigkeitList::add);
             case "UMRECHNUNG" ->
-                parseTeisEntity(
-                    entityNode, TeisUmrechnung::new, repositories.teisUmrechnungRepository()::save);
+                parseTeisEntity(entityNode, TeisUmrechnung::new, teisUmrechnungList::add);
             case "UNTERSUCHUNGSPARAMETER" ->
                 parseTeisEntity(
                     entityNode,
                     TeisUntersuchungsparameter::new,
-                    repositories.teisUntersuchungsparameterRepository()::save);
+                    teisUntersuchungsparameterList::add);
             case "UNTERSUCHUNGSUMFANG" ->
                 parseTeisEntity(
-                    entityNode,
-                    TeisUntersuchungsumfang::new,
-                    repositories.teisUntersuchungsumfangRepository()::save);
+                    entityNode, TeisUntersuchungsumfang::new, teisUntersuchungsumfangList::add);
             case "VERWALTUNGSBEZIRK" ->
                 parseTeisEntity(
-                    entityNode,
-                    TeisVerwaltungsbezirk::new,
-                    repositories.teisVerwaltungsbezirkRepository()::save);
+                    entityNode, TeisVerwaltungsbezirk::new, teisVerwaltungsbezirkList::add);
           }
         }
       }
     }
+
+    repositories.teisAnalyseverfahrenRepository().saveAll(teisAnalyseverfahrenList);
+    repositories.teisAufbereitungsverfahrenRepository().saveAll(teisAufbereitungsverfahrenList);
+    repositories.teisEinheitRepository().saveAll(teisEinheitList);
+    repositories.teisEuParameterRepository().saveAll(teisEuParameterList);
+    repositories.teisGesundheitsamtRepository().saveAll(teisGesundheitsamtList);
+    repositories.teisLandRepository().saveAll(teisLandList);
+    repositories.teisListeRepository().saveAll(teisListeList);
+    repositories.teisMesswerttextRepository().saveAll(teisMesswerttextList);
+    repositories.teisParameterRepository().saveAll(teisParameterList);
+    repositories.teisProbenahmehaeufigkeitRepository().saveAll(teisProbenahmehaeufigkeitList);
+    repositories.teisUmrechnungRepository().saveAll(teisUmrechnungList);
+    repositories.teisVerwaltungsbezirkRepository().saveAll(teisVerwaltungsbezirkList);
+    repositories.teisUntersuchungsparameterRepository().saveAll(teisUntersuchungsparameterList);
+    repositories.teisUntersuchungsumfangRepository().saveAll(teisUntersuchungsumfangList);
   }
 
   private <T extends TeisEntity> T parseTeisEntity(

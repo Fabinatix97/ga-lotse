@@ -119,6 +119,13 @@ public class AppointmentBlockController {
     return appointmentBlockViewService.getAppointmentBlock(appointmentBlockId);
   }
 
+  @GetMapping("/rooms")
+  @Transactional(readOnly = true)
+  @Operation(summary = "Returns all assigned rooms for appointmentBlocks")
+  public GetAppointmentBlockRoomsResponse getAppointmentBlockRooms() {
+    return new GetAppointmentBlockRoomsResponse(appointmentBlockService.findAllRooms());
+  }
+
   @Operation(summary = "Update appointment block")
   @PutMapping("/{appointmentBlockId}")
   @Transactional()

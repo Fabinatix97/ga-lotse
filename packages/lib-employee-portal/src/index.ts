@@ -83,6 +83,7 @@ export {
   mapFormValuesToApiValues,
   type UpdateAppointmentBlockValues,
 } from "./components/appointmentBlocks/UpdateAppointmentBlockSidebar";
+export { AppointmentRoomField } from "./components/appointmentBlocks/AppointmentRoomField";
 export { EmployeePortalErrorModal } from "./components/boundaries/EmployeePortalErrorModal";
 export { OverlayBoundary } from "./components/boundaries/OverlayBoundary";
 export {

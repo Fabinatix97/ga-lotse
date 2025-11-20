@@ -13,6 +13,7 @@ import {
 import { useOrganizationNavigationItem as useMeaslesProtectionOrganizationNavigationItem } from "@/lib/businessModules/measlesProtection/shared/navigationItems";
 import { useCitizenNavigationItem as useMedicalRegistryCitizenNavigationItem } from "@/lib/businessModules/medicalRegistry/shared/navigationItems";
 import { useCitizenNavigationItem as useOfficialMedicalServiceNavigationItem } from "@/lib/businessModules/officialMedicalService/shared/navigationItems";
+import { useProstituteProtectionCitizenNavigationItem } from "@/lib/businessModules/prostituteProtection/shared/navigationItems";
 import { useCitizenNavigationItem as useSchoolEntryCitizenNavigationItem } from "@/lib/businessModules/schoolEntry/shared/navigationItems";
 import { useCitizenNavigationItem as useStiProtectionCitizenNavigationItem } from "@/lib/businessModules/stiProtection/shared/navigationItems";
 import { useCitizenNavigationItem as useTravelMedicineCitizenNavigationItem } from "@/lib/businessModules/travelMedicine/shared/navigationItems";
@@ -30,6 +31,8 @@ export function useResolveCitizenNavigationItems(): NavigationItem[] {
     useMedicalRegistryCitizenNavigationItem();
   const officialMedicalServiceNavigationItem =
     useOfficialMedicalServiceNavigationItem();
+  const prostituteProtectionCitizenNavigationItem =
+    useProstituteProtectionCitizenNavigationItem();
   const stiProtectionCitizenNavigationItem =
     useStiProtectionCitizenNavigationItem();
 
@@ -46,6 +49,9 @@ export function useResolveCitizenNavigationItems(): NavigationItem[] {
   }
   if (hasBusinessModule(ApiBusinessModule.OfficialMedicalService)) {
     topicNavigation.addItem(officialMedicalServiceNavigationItem);
+  }
+  if (hasBusinessModule(ApiBusinessModule.ProstituteProtection)) {
+    topicNavigation.addItem(prostituteProtectionCitizenNavigationItem);
   }
   if (hasBusinessModule(ApiBusinessModule.StiProtection)) {
     topicNavigation.addItem(stiProtectionCitizenNavigationItem);

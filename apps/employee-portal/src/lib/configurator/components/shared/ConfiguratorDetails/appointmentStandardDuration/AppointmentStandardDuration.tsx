@@ -14,6 +14,7 @@ import {
   validateRange,
 } from "@eshg/lib-portal";
 
+import { ProstituteProtectionAppointmentStandardDuration } from "@/lib/configurator/components/shared/ConfiguratorDetails/appointmentStandardDuration/ProstituteProtectionAppointmentStandardDuration";
 import { ConfiguratorForm } from "@/lib/configurator/components/shared/ConfiguratorForm";
 import { ConfiguratorAlertProps } from "@/lib/configurator/components/shared/RenderField";
 import { useTabStatus } from "@/lib/configurator/components/shared/hooks/useTabStatus";
@@ -42,6 +43,8 @@ export function AppointmentStandardDuration(props: {
       return <StiProtectionAppointmentStandardDuration />;
     case ConfiguratorModuleName.sexWork:
       return <SexWorkAppointmentStandardDuration />;
+    case ConfiguratorModuleName.ProstituteProtection:
+      return <ProstituteProtectionAppointmentStandardDuration />;
     default:
       notFound();
   }

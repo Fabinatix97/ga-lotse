@@ -6,6 +6,7 @@
 import {
   DefaultError,
   queryOptions,
+  useQuery,
   useSuspenseQuery,
 } from "@tanstack/react-query";
 
@@ -25,6 +26,17 @@ export function useGetAppointmentBlock(
   return useSuspenseQuery({
     queryKey: queryKey(["getAppointmentBlock", appointmentBlockId]),
     queryFn: () => appointmentBlockApi.getAppointmentBlock(appointmentBlockId),
+  });
+}
+
+export function useGetAppointmentBlockRooms(
+  appointmentBlockApi: AppointmentBlockApi,
+  queryKey: QueryKeyFactory,
+) {
+  return useQuery({
+    queryKey: queryKey(["getAppointmentBlockRooms"]),
+    queryFn: () => appointmentBlockApi.getAppointmentBlockRooms(),
+    select: (response) => response.rooms,
   });
 }
 

@@ -8,13 +8,21 @@ plugins {
 
 dependencies {
     implementation project(':lib-base-client')
+    implementation project(':lib-config')
+    implementation project(':lib-appointmentblock')
     implementation project(':business-module-commons')
     implementation project(':business-module-persistence-commons')
+    implementation project(':lib-document-generator')
+    implementation project(':lib-procedures')
 
     testImplementation testFixtures(project(':business-module-persistence-commons'))
+    testImplementation testFixtures(project(':lib-appointmentblock'))
 
     implementation 'org.springdoc:springdoc-openapi-starter-common:latest.release'
     runtimeOnly 'org.postgresql:postgresql'
+    annotationProcessor 'org.hibernate.orm:hibernate-jpamodelgen'
+
+    testImplementation testFixtures(project(':lib-document-generator'))
 }
 
 dockerCompose {

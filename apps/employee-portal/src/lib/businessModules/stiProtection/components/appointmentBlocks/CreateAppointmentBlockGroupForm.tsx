@@ -12,6 +12,7 @@ import {
   AppointmentBlockGroupValuesWithDays,
   emptyAppointmentBlockGroup,
 } from "@eshg/lib-employee-portal";
+import { mapOptionalValue } from "@eshg/lib-portal";
 import {
   ApiCreateDailyAppointmentBlock,
   ApiCreateDailyAppointmentBlockGroupRequest,
@@ -45,6 +46,7 @@ const INITIAL_VALUES: StiProtectionAppointmentValues = {
   consultants: [],
   parallelExaminations: 1,
   locationId: "",
+  room: "",
 };
 
 function mapAppointmentBlock(
@@ -66,6 +68,7 @@ export function mapFormValues(
     appointmentBlocks: values.appointmentBlocks.map(mapAppointmentBlock),
     physicians: values.physicians,
     consultants: values.consultants,
+    room: mapOptionalValue(values.room),
   };
 }
 

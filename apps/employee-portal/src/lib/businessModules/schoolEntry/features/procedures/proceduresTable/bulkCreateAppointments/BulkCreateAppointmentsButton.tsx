@@ -7,6 +7,7 @@ import { CalendarMonthOutlined } from "@mui/icons-material";
 
 import { RowSelectionTableToolbarButton } from "@eshg/lib-employee-portal";
 
+import { useBulkCreateAppointmentsSidebar } from "@/lib/businessModules/schoolEntry/features/procedures/proceduresTable/bulkCreateAppointments/BulkCreateAppointmentsSidebar";
 import { useBulkCreateAppointment } from "@/lib/businessModules/schoolEntry/features/procedures/proceduresTable/bulkCreateAppointments/useBulkCreateAppointment";
 
 interface BulkCreateAppointmentsButtonProps {
@@ -16,6 +17,7 @@ interface BulkCreateAppointmentsButtonProps {
 export function BulkCreateAppointmentsButton(
   props: BulkCreateAppointmentsButtonProps,
 ) {
+  const useParameterizedSidebarResult = useBulkCreateAppointmentsSidebar();
   const { isPending, startAppointmentCreation } = useBulkCreateAppointment(
     props.selectedProcedureIds,
   );
@@ -24,7 +26,11 @@ export function BulkCreateAppointmentsButton(
       decorator={<CalendarMonthOutlined />}
       isPending={isPending}
       disabled={isPending}
-      onClick={startAppointmentCreation}
+      onClick={() => {
+        useParameterizedSidebarResult.open({
+          startAppointmentCreation,
+        });
+      }}
     >
       Termine zuweisen
     </RowSelectionTableToolbarButton>

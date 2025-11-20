@@ -19,6 +19,7 @@ import jakarta.persistence.OrderBy;
 import jakarta.persistence.OrderColumn;
 import jakarta.persistence.Table;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -26,7 +27,7 @@ import java.util.UUID;
 import org.hibernate.annotations.BatchSize;
 
 @Entity
-@Table(indexes = @Index(columnList = "appointment_block_group_id"))
+@Table(indexes = {@Index(columnList = "appointment_block_group_id"), @Index(columnList = "room")})
 public class AppointmentBlock extends BaseEntityWithExternalId {
 
   @DataSensitivity(SensitivityLevel.PUBLIC)
@@ -48,19 +49,22 @@ public class AppointmentBlock extends BaseEntityWithExternalId {
   @ElementCollection
   @Column(name = "physician_id", nullable = false)
   @OrderColumn
-  private List<UUID> physicians;
+  private List<UUID> physicians = new ArrayList<>();
 
   @DataSensitivity(SensitivityLevel.PSEUDONYMIZED)
   @ElementCollection
   @Column(name = "mfa_id", nullable = false)
   @OrderColumn
-  private List<UUID> mfas;
+  private List<UUID> mfas = new ArrayList<>();
 
   @DataSensitivity(SensitivityLevel.PSEUDONYMIZED)
   @ElementCollection
   @Column(name = "consultant_id", nullable = false)
   @OrderColumn
-  private List<UUID> consultants;
+  private List<UUID> consultants = new ArrayList<>();
+
+  @DataSensitivity(SensitivityLevel.PSEUDONYMIZED)
+  private String room;
 
   @DataSensitivity(SensitivityLevel.PUBLIC)
   @ManyToOne(optional = false)
@@ -139,5 +143,13 @@ public class AppointmentBlock extends BaseEntityWithExternalId {
 
   public Set<Appointment> getAppointments() {
     return appointments;
+  }
+
+  public String getRoom() {
+    return room;
+  }
+
+  public void setRoom(String room) {
+    this.room = room;
   }
 }

@@ -80,5 +80,8 @@
   <include file="migrations/0070_add_gdpr_identification_data_hash.xml"/>
   <include file="migrations/0071_add_gdpr_identification_hash_not_null_constraint.xml"/>
   <include file="migrations/0072_add_school_entry_measles_vaccination_status.xml"/>
+  <include file="migrations/0073_add_ppr_appointment_type.xml"/>
+  <include file="migrations/0074_add_room_to_appointment_block.xml"/>
+  <include file="migrations/0075_add_new_procedure_type_prostitute_protection.xml"/>
 
 </databaseChangeLog>

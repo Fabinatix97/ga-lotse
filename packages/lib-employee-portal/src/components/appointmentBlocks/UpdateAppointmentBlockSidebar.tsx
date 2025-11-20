@@ -7,7 +7,11 @@ import { Formik, FormikErrors } from "formik";
 import { Ref } from "react";
 import { isDefined, isEmpty } from "remeda";
 
-import { QueryKeyFactory } from "@eshg/lib-portal";
+import {
+  QueryKeyFactory,
+  mapOptionalValue,
+  parseOptionalValue,
+} from "@eshg/lib-portal";
 
 import {
   AppointmentBlockApi,
@@ -59,6 +63,7 @@ export interface UpdateAppointmentBlockValues {
   physicians?: string[];
   mfas?: string[];
   consultants?: string[];
+  room: string;
 }
 
 function UpdateAppointmentBlockSidebar(props: UpdateAppointmentBlockProps) {
@@ -118,6 +123,7 @@ function UpdateAppointmentBlockSidebar(props: UpdateAppointmentBlockProps) {
         mfas: appointmentBlock.mfas,
         physicians: appointmentBlock.physicians,
         consultants: appointmentBlock.consultants,
+        room: parseOptionalValue(appointmentBlock.room),
       }}
       validate={handleValidate}
       onSubmit={handleUpdate}
@@ -168,6 +174,7 @@ export function mapFormValuesToApiValues(
       mfas: values.mfas ?? [],
       physicians: values.physicians ?? [],
       consultants: values.consultants ?? [],
+      room: mapOptionalValue(values.room),
     },
   };
 }

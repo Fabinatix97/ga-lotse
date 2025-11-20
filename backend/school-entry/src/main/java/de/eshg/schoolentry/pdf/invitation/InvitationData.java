@@ -17,4 +17,6 @@ public record InvitationData(
     InvitationExamination examination,
     InvitationInfo invitationInfo,
     String accentColorHex,
-    String qrBoxBackgroundColorHex) {}
+    String qrBoxBackgroundColorHex,
+    String physicianOrMfaName,
+    String roomName) {}

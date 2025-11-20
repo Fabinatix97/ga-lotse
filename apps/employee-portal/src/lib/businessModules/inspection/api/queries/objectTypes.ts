@@ -16,6 +16,21 @@ export function useGetObjectTypes() {
   return useSuspenseQuery(getObjectTypesQuery(objectTypeApi));
 }
 
+export function useGetObjectTypeHierarchyTree() {
+  const objectTypeHierarchyTreeApi = useObjectTypeApi();
+  return useSuspenseQuery(
+    getObjectTypesHierarchyTree(objectTypeHierarchyTreeApi),
+  );
+}
+
+function getObjectTypesHierarchyTree(objectTypeApi: ObjectTypeApi) {
+  return queryOptions({
+    queryKey: objectTypeApiQueryKey(["getObjectTypesHierarchy"]),
+    queryFn: () => objectTypeApi.getObjectTypesHierarchy(),
+    select: (response) => response.root.subNodes ?? [],
+  });
+}
+
 export function getObjectTypesQuery(objectTypeApi: ObjectTypeApi) {
   return queryOptions({
     queryKey: objectTypeApiQueryKey(["getObjectTypes"]),

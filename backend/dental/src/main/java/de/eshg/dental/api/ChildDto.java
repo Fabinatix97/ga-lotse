@@ -25,4 +25,5 @@ public record ChildDto(
     String groupName,
     @NotNull @Valid InstitutionDto institution,
     @NotNull ProcedureStatusDto status,
-    @NotNull @Valid List<ProcedureLabelDto> procedureLabels) {}
+    @NotNull @Valid List<ProcedureLabelDto> procedureLabels,
+    @NotNull BooleanWithUnknownDto fluoridationConsent) {}

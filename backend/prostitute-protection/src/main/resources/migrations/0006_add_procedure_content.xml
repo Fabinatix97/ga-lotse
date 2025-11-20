@@ -1,0 +1,30 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<!--
+ Copyright 2025 cronn GmbH
+ SPDX-License-Identifier: Apache-2.0
+-->
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+    <changeSet author="GA-Lotse" id="1763046713403-1">
+        <ext:createPostgresEnumType name="consultationtype" values="FOLLOW_UP, INITIAL"/>
+        <createTable tableName="prostitute_protection_procedure_languages">
+            <column name="prostitute_protection_procedure_id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_prostitute_protection_procedure_languages"/>
+            </column>
+            <column name="languages" type="TEXT"/>
+            <column name="languages_order" type="INTEGER">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_prostitute_protection_procedure_languages"/>
+            </column>
+        </createTable>
+        <addColumn tableName="prostitute_protection_procedure">
+            <column name="last_name" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="first_name" type="TEXT"/>
+            <column name="alias" type="TEXT"/>
+            <column name="date_of_birth" type="date"/>
+            <column name="consultation_type" type="CONSULTATIONTYPE"/>
+        </addColumn>
+        <addForeignKeyConstraint baseColumnNames="prostitute_protection_procedure_id" baseTableName="prostitute_protection_procedure_languages" constraintName="fk_procedure_languages_prostitute_protection_procedure" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="prostitute_protection_procedure" validate="true"/>
+    </changeSet>
+</databaseChangeLog>

@@ -65,16 +65,19 @@ public class ProtectionProcedureController {
   private final GetProceduresForPersonMapper getProceduresForPersonMapper;
   private final AuditLogger auditLogger;
   private final BaseFeatureTogglesApi baseFeatureTogglesApi;
+  private final MeaslesProtectionProperties properties;
 
   public ProtectionProcedureController(
       MeaslesProtectionService measlesProtectionService,
       GetProceduresForPersonMapper getProceduresForPersonMapper,
       AuditLogger auditLogger,
-      BaseFeatureTogglesApi baseFeatureTogglesApi) {
+      BaseFeatureTogglesApi baseFeatureTogglesApi,
+      MeaslesProtectionProperties properties) {
     this.measlesProtectionService = measlesProtectionService;
     this.getProceduresForPersonMapper = getProceduresForPersonMapper;
     this.auditLogger = auditLogger;
     this.baseFeatureTogglesApi = baseFeatureTogglesApi;
+    this.properties = properties;
   }
 
   @PutMapping("/{id}")
@@ -101,8 +104,8 @@ public class ProtectionProcedureController {
     if (!features.contains(BaseFeature.VACCINATION_CHECK)) {
       throw new BadRequestException("New feature VACCINATION_CHECK is not enabled");
     }
-    if (!features.contains(BaseFeature.POLYTUNE)) {
-      throw new BadRequestException("New feature POLYTUNE is not enabled");
+    if (!properties.isPolytuneActive()) {
+      throw new BadRequestException("POLYTUNE is not active");
     }
     return ToDtoMappers.toProcedureDetails(
         measlesProtectionService.requestVaccinationStatusUpdate(procedureId));

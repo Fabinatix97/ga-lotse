@@ -15,4 +15,5 @@ public record ChildFilterParameters(
     String groupNameFilter,
     Boolean noGroupFilter,
     List<UUID> procedureLabelsFilter,
-    List<UUID> excludedProcedureLabelsFilter) {}
+    List<UUID> excludedProcedureLabelsFilter,
+    BooleanWithUnknownDto fluoridationConsentFilter) {}

@@ -9,6 +9,7 @@ import static de.eshg.schoolentry.population.CreateLabelsTask.SPECIAL_NEEDS_LABE
 import static de.eshg.schoolentry.util.SchoolEntrySystemProgressEntryType.*;
 import static java.util.Comparator.comparing;
 
+import com.google.common.collect.Streams;
 import de.eshg.base.citizenuser.CitizenAccessCodeUserApi;
 import de.eshg.base.citizenuser.api.AddCitizenAccessCodeUserWithDateOfBirthCredentialRequest;
 import de.eshg.base.citizenuser.api.CitizenAccessCodeUserDto;
@@ -22,6 +23,7 @@ import de.eshg.lib.appointmentblock.api.LocationDto;
 import de.eshg.lib.appointmentblock.api.LocationSelectionMode;
 import de.eshg.lib.appointmentblock.persistence.AppointmentType;
 import de.eshg.lib.appointmentblock.persistence.entity.Appointment;
+import de.eshg.lib.appointmentblock.persistence.entity.AppointmentBlock;
 import de.eshg.lib.appointmentblock.persistence.entity.AppointmentBlockGroup;
 import de.eshg.lib.appointmentblock.spring.AppointmentBlockConfig;
 import de.eshg.lib.auditlog.AuditLogger;
@@ -488,6 +490,28 @@ public class SchoolEntryService {
       AppointmentType appointmentType,
       Boolean availableForCitizen,
       Boolean availableForBulkBooking) {
+    return getFreeAppointmentsWithAvailabilityAndStaffAndRoom(
+        procedure,
+        earliestStart,
+        latestStart,
+        appointmentType,
+        availableForCitizen,
+        availableForBulkBooking,
+        null,
+        null,
+        null);
+  }
+
+  List<AppointmentDto> getFreeAppointmentsWithAvailabilityAndStaffAndRoom(
+      SchoolEntryProcedure procedure,
+      Instant earliestStart,
+      Instant latestStart,
+      AppointmentType appointmentType,
+      Boolean availableForCitizen,
+      Boolean availableForBulkBooking,
+      UUID physician,
+      UUID mfa,
+      String room) {
 
     if (procedure.hasBeenClosed()) {
       log.info(
@@ -508,7 +532,10 @@ public class SchoolEntryService {
         appointmentType,
         appointmentLocationId,
         availableForCitizen,
-        availableForBulkBooking);
+        availableForBulkBooking,
+        physician,
+        mfa,
+        room);
   }
 
   UUID getAppointmentLocation(SchoolEntryProcedure procedure) {
@@ -517,6 +544,13 @@ public class SchoolEntryService {
       case SCHOOL -> procedure.getSchoolId();
       case HEALTH_DEPARTMENT -> procedure.getLocationId();
     };
+  }
+
+  AppointmentBlock getAppointmentBlock(SchoolEntryProcedure procedure) {
+    return Optional.of(procedure)
+        .map(SchoolEntryProcedure::getAppointment)
+        .map(Appointment::getAppointmentBlock)
+        .orElse(null);
   }
 
   private UUID computeLocationIdForAppointment(
@@ -606,12 +640,25 @@ public class SchoolEntryService {
 
     CitizenAccessCodeUserDto citizenAccessCodeUser = createOrGetCitizenAccessCodeUser(procedure);
     String accessCode = citizenAccessCodeUser.accessCode();
+    AppointmentBlock appointmentBlock = getAppointmentBlock(procedure);
+    UUID physicianOrMfaId = null;
+    String room = null;
+    if (appointmentBlock != null) {
+      physicianOrMfaId =
+          Streams.concat(
+                  appointmentBlock.getPhysicians().stream(), appointmentBlock.getMfas().stream())
+              .findFirst()
+              .orElse(null);
+      room = appointmentBlock.getRoom();
+    }
     Pdf invitation =
         invitationGenerator.generateInvitation(
             accessCode,
             childDataWithPersonIdAndCustodian,
             start,
-            getAppointmentLocation(procedure));
+            getAppointmentLocation(procedure),
+            physicianOrMfaId,
+            room);
     progressEntryUtil.addProgressEntry(
         procedure,
         APPOINTMENT_MODIFIED,
@@ -683,7 +730,9 @@ public class SchoolEntryService {
     return citizenAccessCodeUser;
   }
 
-  public BulkCreateAppointmentStatistics createAppointmentsInBulk(List<UUID> procedureIds) {
+  public BulkCreateAppointmentStatistics createAppointmentsInBulk(
+      CreateAppointmentsBulkRequest request) {
+    List<UUID> procedureIds = request.procedureIds();
     BulkCreateAppointmentStatistics stats = new BulkCreateAppointmentStatistics();
     for (UUID procedureId : procedureIds) {
       try {
@@ -705,8 +754,16 @@ public class SchoolEntryService {
           AppointmentType appointmentType = computeAppointmentType(procedure, null, null);
 
           List<AppointmentDto> freeAppointments =
-              getFreeAppointmentsWithAvailability(
-                  procedure, earliestStart, null, appointmentType, null, true);
+              getFreeAppointmentsWithAvailabilityAndStaffAndRoom(
+                  procedure,
+                  earliestStart,
+                  null,
+                  appointmentType,
+                  null,
+                  true,
+                  request.physicianId(),
+                  request.mfaId(),
+                  request.room());
           if (freeAppointments.isEmpty()) {
             stats.countError();
           } else {

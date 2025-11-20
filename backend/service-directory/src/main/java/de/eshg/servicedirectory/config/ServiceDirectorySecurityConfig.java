@@ -13,6 +13,8 @@ import de.eshg.rest.service.security.DefaultEshgSecurityConfig;
 import de.eshg.servicedirectory.common.AdminNameHolder;
 import de.eshg.servicedirectory.util.X509Utils;
 import jakarta.servlet.http.HttpServletRequest;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.List;
 import javax.naming.InvalidNameException;
@@ -51,7 +53,7 @@ public class ServiceDirectorySecurityConfig {
 
   /**
    * authenticate clients by header "X-ESHG-cert-subject" requests to /adminapi additionally need
-   * the user's certificate in the header "X-ESHG-client-cert"
+   * the user's certificate in the header "X-ESHG-client-cert" in URL-encoded PEM format
    */
   @Bean
   public SecurityFilterChain securityFilterChain(
@@ -104,7 +106,8 @@ public class ServiceDirectorySecurityConfig {
 
       String certificateHeaderValue =
           getHeaderValue(requestAuthorizationContext.getRequest(), X_ESHG_CLIENT_CERT.headerName);
-      String pem = X509Utils.normalizePem(certificateHeaderValue);
+      String pem =
+          X509Utils.normalizePem(URLDecoder.decode(certificateHeaderValue, StandardCharsets.UTF_8));
 
       String adminCommonName = X509Utils.extractSanOrCommonName(X509Utils.parsePem(pem));
 

@@ -183,3 +183,13 @@ export function translateInspectionSamplePreclassification(
 ) {
   return inspectionSamplePreclassification[type];
 }
+
+export const inspectionUnfinishedSamplesFilterNames = {
+  ["true"]: "Ja",
+  ["false"]: "Nein",
+} satisfies Record<string, string>;
+
+export const inspectionSuspiciousSamplesFilterNames = {
+  ["true"]: "Ja",
+  ["false"]: "Nein",
+} satisfies Record<string, string>;

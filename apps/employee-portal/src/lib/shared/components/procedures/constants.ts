@@ -32,6 +32,7 @@ export const taskTypeNames = {
   [ApiTaskType.StiProtection]: "HIV-STI-Schutz",
   [ApiTaskType.OfficialMedicalService]: "Amtsärztlicher Dienst",
   [ApiTaskType.MedsAbroad]: "Reisen mit BtM",
+  [ApiTaskType.ProstituteProtection]: "Prostituiertenschutzgesetz",
 } satisfies Record<ApiTaskType, string>;
 
 export const taskStatusNames = {

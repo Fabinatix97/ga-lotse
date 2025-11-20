@@ -20,6 +20,7 @@ export const configuratorNameMapping: Record<ConfiguratorModuleName, string> = {
   OFFICIAL_MEDICAL_SERVICE: "Amtsärztliche Dienste",
   OPEN_DATA: "Open Data",
   INSPECTION: "Begehung",
+  PROSTITUTE_PROTECTION: "Prostituiertenschutzgesetz",
 };
 
 export function getTabNamesByEndpointName(
@@ -66,6 +67,8 @@ export function getTabNamesByEndpointName(
     case "ADDRESS_REGISTRY":
       return "Straßen-/Gemeinde-Verzeichnis";
     case "INSPECTION":
+      return "Fachliche Einstellungen";
+    case "PROSTITUTE_PROTECTION":
       return "Fachliche Einstellungen";
   }
 }

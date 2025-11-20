@@ -14,6 +14,7 @@ export interface ApiUpdateAppointmentBlockRequest {
   mfas: string[];
   physicians: string[];
   consultants: string[];
+  room?: string;
 }
 
 export interface UpdateAppointmentBlockRequest {
@@ -30,6 +31,10 @@ export interface ValidateAppointmentBlockGroupResponse {
   userIdsWithoutEventConflicts: string[];
 }
 
+interface GetAppointmentBlockRoomsResponse {
+  rooms: string[];
+}
+
 export interface AppointmentBlockApi {
   getAppointmentBlock(appointmentBlockId: string): Promise<AppointmentBlock>;
   updateAppointmentBlock(
@@ -41,4 +46,5 @@ export interface AppointmentBlockApi {
   deleteAppointmentBlock(
     requestParameters: DeleteAppointmentBlockRequest,
   ): Promise<ApiResponse<void>>;
+  getAppointmentBlockRooms(): Promise<GetAppointmentBlockRoomsResponse>;
 }

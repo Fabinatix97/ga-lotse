@@ -2,6 +2,24 @@ GA-Lotse ist ein Kooperationsprojekt des Gesundheitsamts Frankfurt am Main mit d
 
 Finanziert von der Europäischen Union – NextGenerationEU
 
+## GA-Lotse 2.11
+_19.11.2025_
+
+Vierundzwanzigster Release der Anwendung GA-Lotse
+
+### Grundfunktionen:
+
+* Hinzufügen eines optionalen Raums bei der Terminblockbuchung möglich
+
+### Zahnärztlicher Dienst:
+
+* Kindertabelle um die filterbare Spalte Fluoridierungseinverständnis ergänzt
+
+### Einschulungsuntersuchungen:
+
+* Buchung von Termin nach Filter MFA/Arzt und/oder Raum
+* Übernahme von Arzt-, MFA- und Raumangaben gemäß GA-Konfigurator-Einstellungen im Einladungsschreiben
+
 ## GA-Lotse 2.10
 _29.10.2025_
 

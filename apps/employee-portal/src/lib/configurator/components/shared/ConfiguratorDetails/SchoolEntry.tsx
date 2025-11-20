@@ -27,12 +27,16 @@ enum FormNames {
   LOCATION_SELECTION_MODE = "locationSelectionMode",
   DIRECT_PROCEDURE_TYPE_ASSIGNMENT = "directProcedureTypeAssignmentOnImport",
   PDF_DOCUMENT_ACCENT_COLOR = "pdfDocumentAccentColor",
+  INVITATION_INCLUDE_PERSON = "invitationIncludePerson",
+  INVITATION_INCLUDE_ROOM = "invitationIncludeRoom",
 }
 
 export interface SchoolEntryFormModel extends FormikValues {
   [FormNames.LOCATION_SELECTION_MODE]: OptionalFieldValue<ApiLocationSelectionMode>;
   [FormNames.DIRECT_PROCEDURE_TYPE_ASSIGNMENT]: boolean;
   [FormNames.PDF_DOCUMENT_ACCENT_COLOR]: string;
+  [FormNames.INVITATION_INCLUDE_PERSON]: boolean;
+  [FormNames.INVITATION_INCLUDE_ROOM]: boolean;
 }
 
 const endpointName: ConfiguratorEndpointName = "SCHOOL_ENTRY";
@@ -145,6 +149,38 @@ function SchoolEntryConfiguratorForm(props: {
                       validate: validateHexColorCode(
                         "Bitte einen gültigen HEX-Farbcode angeben.",
                       ),
+                    },
+                  ],
+                },
+              ],
+            },
+          },
+        ] satisfies FormSection[],
+      },
+      {
+        title: "Informationen im Einladungsschreiben",
+        description:
+          "Definieren Sie welche Informationen im Einladungsschreiben enthalten sein sollen.",
+        sections: [
+          {
+            content: {
+              type: "field",
+              rows: [
+                {
+                  fields: [
+                    {
+                      name: FormNames.INVITATION_INCLUDE_PERSON,
+                      label: "Bearbeitende Person (Arzt oder MFA)",
+                      type: "checkbox",
+                    },
+                  ],
+                },
+                {
+                  fields: [
+                    {
+                      name: FormNames.INVITATION_INCLUDE_ROOM,
+                      label: "Raum",
+                      type: "checkbox",
                     },
                   ],
                 },

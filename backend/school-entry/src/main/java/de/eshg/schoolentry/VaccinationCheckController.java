@@ -11,6 +11,7 @@ import de.eshg.rest.service.error.BadRequestException;
 import de.eshg.schoolentry.api.vaccination.VaccinationCheckApi;
 import de.eshg.schoolentry.api.vaccination.VaccinationCheckRequest;
 import de.eshg.schoolentry.api.vaccination.VaccinationCheckResponse;
+import de.eshg.schoolentry.config.SchoolEntryProperties;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -21,14 +22,17 @@ public class VaccinationCheckController implements VaccinationCheckApi {
   private final VaccinationCheckService vaccinationCheckService;
   private final SchoolEntryGuard guard;
   private final BaseFeatureTogglesApi baseFeatureTogglesApi;
+  private final SchoolEntryProperties properties;
 
   public VaccinationCheckController(
       VaccinationCheckService vaccinationCheckService,
       SchoolEntryGuard guard,
-      BaseFeatureTogglesApi baseFeatureTogglesApi) {
+      BaseFeatureTogglesApi baseFeatureTogglesApi,
+      SchoolEntryProperties properties) {
     this.vaccinationCheckService = vaccinationCheckService;
     this.guard = guard;
     this.baseFeatureTogglesApi = baseFeatureTogglesApi;
+    this.properties = properties;
   }
 
   @Override
@@ -40,6 +44,9 @@ public class VaccinationCheckController implements VaccinationCheckApi {
       throw new BadRequestException("New feature VACCINATION_CHECK is not enabled");
     }
     guard.guardVaccinationCheck();
+    if (properties.isPolytuneActive()) {
+      throw new BadRequestException("Direct vaccination check is not active.");
+    }
     return vaccinationCheckService.checkVaccinationStatus(request.fileStateIds());
   }
 }

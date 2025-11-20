@@ -62,7 +62,7 @@ tasks.register('buildDockerImage', DockerBuildImage) {
     inputDir.set(dockerBuildContext)
     dockerFile.set(inputDir.file("Dockerfile"))
     // WARNING: The version from gradle's catalog is ignored since the sha digest is used without regard to the tag value
-    buildArgs["keycloakVersion"] = libs.versions.keycloak.server.get() + "@sha256:2b32a51a31e8d780d9fa9a69a59ead69975263c61b5dd13559090e22aa26f100"
+    buildArgs["keycloakVersion"] = libs.versions.keycloak.server.get() + "@sha256:3617b09bb4b7510a8d8d9b9fc5707399e2d70688dbcc2f8fb013a144829be1b9"
 
     if (project.hasProperty("tagName")) {
         images.add(getImageNameWithTag())

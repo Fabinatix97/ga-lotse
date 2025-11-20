@@ -28,4 +28,7 @@ public record GetPendingFacilitiesFilterOptionsDto(
     Instant isBefore,
     Instant isAfter,
     Boolean hasDuplicates,
-    Boolean banned) {}
+    Boolean banned,
+    Boolean unfinishedSamples,
+    Boolean suspiciousSamples,
+    String pointOfWithdrawal) {}

@@ -19,5 +19,6 @@
   <include file="migrations/0009_add_schedlock.xml"/>
   <include file="migrations/0010_add_auditlogsource_opendata.xml"/>
   <include file="migrations/0011_add_meds_abroad_as_audit_log_source.xml"/>
+  <include file="migrations/0012_add_prostitute_protection_as_audit_log_source.xml"/>
 
 </databaseChangeLog>

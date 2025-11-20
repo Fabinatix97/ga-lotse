@@ -1,18 +1,18 @@
 # This is a Gradle generated file for dependency locking.
 # Manual edits can break the build and are not advised.
 # This file is expected to be part of source control.
-com.avast.gradle.docker-compose:com.avast.gradle.docker-compose.gradle.plugin:0.17.12=buildScriptClasspath,compileClasspath
-com.avast.gradle:gradle-docker-compose-plugin:0.17.12=buildScriptClasspath,compileClasspath
-com.bmuschko.docker-remote-api:com.bmuschko.docker-remote-api.gradle.plugin:9.4.0=buildScriptClasspath,compileClasspath
-com.bmuschko:gradle-docker-plugin:9.4.0=buildScriptClasspath,compileClasspath
-com.fasterxml.jackson.core:jackson-annotations:2.15.3=buildScriptClasspath
-com.fasterxml.jackson.core:jackson-core:2.15.3=buildScriptClasspath
-com.fasterxml.jackson.core:jackson-databind:2.15.3=buildScriptClasspath
-com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.15.3=buildScriptClasspath
-com.fasterxml.jackson.datatype:jackson-datatype-guava:2.15.3=buildScriptClasspath
-com.fasterxml.jackson.datatype:jackson-datatype-joda:2.15.3=buildScriptClasspath
-com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.15.3=buildScriptClasspath
-com.fasterxml.jackson:jackson-bom:2.15.3=buildScriptClasspath
+com.avast.gradle.docker-compose:com.avast.gradle.docker-compose.gradle.plugin:0.17.19=buildScriptClasspath,compileClasspath
+com.avast.gradle:gradle-docker-compose-plugin:0.17.19=buildScriptClasspath,compileClasspath
+com.bmuschko.docker-remote-api:com.bmuschko.docker-remote-api.gradle.plugin:10.0.0=buildScriptClasspath,compileClasspath
+com.bmuschko:gradle-docker-plugin:10.0.0=buildScriptClasspath,compileClasspath
+com.fasterxml.jackson.core:jackson-annotations:2.20=buildScriptClasspath
+com.fasterxml.jackson.core:jackson-core:2.20.1=buildScriptClasspath
+com.fasterxml.jackson.core:jackson-databind:2.20.1=buildScriptClasspath
+com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.20.1=buildScriptClasspath
+com.fasterxml.jackson.datatype:jackson-datatype-guava:2.20.1=buildScriptClasspath
+com.fasterxml.jackson.datatype:jackson-datatype-joda:2.20.1=buildScriptClasspath
+com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.20.1=buildScriptClasspath
+com.fasterxml.jackson:jackson-bom:2.20.1=buildScriptClasspath
 com.github.ben-manes.caffeine:caffeine:2.9.3=buildScriptClasspath
 com.github.curious-odd-man:rgxgen:1.4=buildScriptClasspath
 com.github.java-json-tools:btf:1.3=buildScriptClasspath
@@ -57,7 +57,7 @@ jakarta.activation:jakarta.activation-api:1.2.2=buildScriptClasspath
 jakarta.validation:jakarta.validation-api:2.0.2=buildScriptClasspath
 jakarta.xml.bind:jakarta.xml.bind-api:2.3.3=buildScriptClasspath
 javax.validation:validation-api:1.1.0.Final=buildScriptClasspath
-joda-time:joda-time:2.10.14=buildScriptClasspath
+joda-time:joda-time:2.12.7=buildScriptClasspath
 net.java.dev.jna:jna:5.12.1=buildScriptClasspath
 net.sf.jopt-simple:jopt-simple:5.0.4=buildScriptClasspath
 org.apache.commons:commons-lang3:3.13.0=buildScriptClasspath
@@ -75,5 +75,5 @@ org.slf4j:slf4j-api:2.0.9=buildScriptClasspath
 org.slf4j:slf4j-ext:1.7.36=buildScriptClasspath
 org.slf4j:slf4j-simple:1.7.36=buildScriptClasspath
 org.threeten:threetenbp:1.6.8=buildScriptClasspath
-org.yaml:snakeyaml:2.3=buildScriptClasspath
+org.yaml:snakeyaml:2.5=buildScriptClasspath
 empty=annotationProcessor

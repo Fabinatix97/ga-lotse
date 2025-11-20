@@ -9,4 +9,5 @@ import jakarta.validation.constraints.NotEmpty;
 import java.util.List;
 import java.util.UUID;
 
-public record CreateAppointmentsBulkRequest(@NotEmpty List<UUID> procedureIds) {}
+public record CreateAppointmentsBulkRequest(
+    @NotEmpty List<UUID> procedureIds, UUID physicianId, UUID mfaId, String room) {}

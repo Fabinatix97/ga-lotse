@@ -5,10 +5,13 @@
 
 package de.eshg.dental;
 
+import static de.eshg.dental.mapper.BooleanWithUnknownMapper.mapToDomain;
+
 import de.eshg.api.commons.SortDirection;
 import de.eshg.dental.api.ChildFilterParameters;
 import de.eshg.dental.api.ChildPaginationAndSortParameters;
 import de.eshg.dental.api.ChildSortKey;
+import de.eshg.dental.domain.model.BooleanWithUnknown;
 import de.eshg.dental.domain.model.Child;
 import de.eshg.dental.domain.model.Child_;
 import de.eshg.dental.domain.model.ProcedureLabel;
@@ -46,6 +49,7 @@ class ChildSpecification implements Specification<Child> {
   private final Boolean noGroupFilter;
   private final ArrayList<UUID> procedureLabelFilter;
   private final ArrayList<UUID> excludedProcedureLabelFilter;
+  private final BooleanWithUnknown fluoridationConsentFilter;
 
   public ChildSpecification(
       ChildFilterParameters filterParameters,
@@ -59,6 +63,7 @@ class ChildSpecification implements Specification<Child> {
     procedureLabelFilter = (ArrayList<UUID>) filterParameters.procedureLabelsFilter();
     excludedProcedureLabelFilter =
         (ArrayList<UUID>) filterParameters.excludedProcedureLabelsFilter();
+    fluoridationConsentFilter = mapToDomain(filterParameters.fluoridationConsentFilter());
   }
 
   static ChildPageSpec toPageSpec(
@@ -124,6 +129,11 @@ class ChildSpecification implements Specification<Child> {
       }
     }
 
+    if (fluoridationConsentFilter != null) {
+      conjunctions.add(
+          cb.equal(root.get(Child_.CURRENT_FLUORIDATION_CONSENT), fluoridationConsentFilter));
+    }
+
     return cb.and(conjunctions.toArray(Predicate[]::new));
   }
 
@@ -132,6 +142,7 @@ class ChildSpecification implements Specification<Child> {
       case ID -> root.get(Child_.id);
       case YEAR -> root.get(Child_.year);
       case GROUP_NAME -> DentalSpecificationUtil.leadingNumbersInGroupName(root, cb);
+      case FLUORIDATION_CONSENT -> root.get(Child_.currentFluoridationConsent);
       case FIRST_NAME, LAST_NAME, DATE_OF_BIRTH -> {
         Assert.isTrue(
             sortKey.isPersonAttribute(),

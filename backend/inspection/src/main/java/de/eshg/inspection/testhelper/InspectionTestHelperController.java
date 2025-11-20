@@ -14,6 +14,7 @@ import de.eshg.inspection.config.persistence.FacilityFileNumberMethod;
 import de.eshg.inspection.config.persistence.InspectionPropertiesConfigurationProvider;
 import de.eshg.inspection.feature.InspectionFeature;
 import de.eshg.inspection.feature.InspectionFeatureToggle;
+import de.eshg.inspection.testhelper.api.TeisDataCreationModeDto;
 import de.eshg.lib.auditlog.AuditLogTestHelperService;
 import de.eshg.testhelper.ConditionalOnTestHelperEnabled;
 import de.eshg.testhelper.DefaultTestHelperService;
@@ -36,6 +37,7 @@ public class InspectionTestHelperController extends TestHelperController
   private final ChecklistRepository checklistRepository;
   private final InspectionPropertiesConfigService inspectionPropertiesConfigService;
   private final InspectionPropertiesConfigMapper inspectionPropertiesConfigMapper;
+  private final TeisDataPopulator teisDataPopulator;
 
   public InspectionTestHelperController(
       DefaultTestHelperService testHelperService,
@@ -44,13 +46,15 @@ public class InspectionTestHelperController extends TestHelperController
       EnvironmentConfig environmentConfig,
       ChecklistRepository checklistRepository,
       InspectionPropertiesConfigService inspectionPropertiesConfigService,
-      InspectionPropertiesConfigMapper inspectionPropertiesConfigMapper) {
+      InspectionPropertiesConfigMapper inspectionPropertiesConfigMapper,
+      TeisDataPopulator teisDataPopulator) {
     super(testHelperService, environmentConfig);
     this.auditLogTestHelperService = auditLogTestHelperService;
     this.inspectionFeatureToggle = inspectionFeatureToggle;
     this.checklistRepository = checklistRepository;
     this.inspectionPropertiesConfigService = inspectionPropertiesConfigService;
     this.inspectionPropertiesConfigMapper = inspectionPropertiesConfigMapper;
+    this.teisDataPopulator = teisDataPopulator;
   }
 
   @Override
@@ -85,5 +89,11 @@ public class InspectionTestHelperController extends TestHelperController
             return inspectionPropertiesConfigMapper.toDomainType(method);
           }
         });
+  }
+
+  @PostExchange("/recreate-teis-data")
+  @Transactional
+  public void recreateTeisData(@RequestParam(name = "mode") TeisDataCreationModeDto mode) {
+    teisDataPopulator.recreateTeisData(mode);
   }
 }

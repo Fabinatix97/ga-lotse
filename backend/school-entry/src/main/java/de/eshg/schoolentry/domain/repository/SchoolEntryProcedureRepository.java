@@ -16,9 +16,7 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Stream;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Slice;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.Lock;
@@ -111,6 +109,4 @@ public interface SchoolEntryProcedureRepository extends ProcedureRepository<Scho
       @Param("keyDocumentType") String keyDocumentType);
 
   List<SchoolEntryProcedure> findByAppointmentIn(List<Appointment> appointments);
-
-  Slice<SchoolEntryProcedure> findByIdGreaterThanOrderByIdAsc(Long lastId, PageRequest of);
 }

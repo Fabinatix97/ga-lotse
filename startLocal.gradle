@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 
 def neededPortals = ["employee-portal", "citizen-portal", "admin-portal", "pdf-converter-portal"]
-def neededBackendServicesWithDb = ["auditlog", "base", "inspection", "school-entry", "measles-protection", "opendata", "travel-medicine", "statistics", "service-directory", "central-repository", "chat-management", "synapse", "sti-protection", "medical-registry", "dental", "official-medical-service"]
+def neededBackendServicesWithDb = ["auditlog", "base", "inspection", "school-entry", "measles-protection", "opendata", "travel-medicine", "statistics", "service-directory", "central-repository", "chat-management", "synapse", "sti-protection", "medical-registry", "dental", "official-medical-service", "prostitute-protection"]
 def neededBackendServices = ["keycloak", "svg-sanitizer"]
 
 def startFirstIfSlow = [ "keycloak", "base" ]

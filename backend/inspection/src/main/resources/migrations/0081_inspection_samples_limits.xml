@@ -1,0 +1,26 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<!--
+ Copyright 2025 SCOOP Software GmbH, cronn GmbH
+ SPDX-License-Identifier: AGPL-3.0-only
+-->
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+  <changeSet author="GA-Lotse" id="1762958811786-1">
+    <addColumn tableName="inspection_sample_measurement_parameter">
+      <column name="teis_untersuchungsparameter_zid" type="TEXT">
+        <constraints nullable="false"/>
+      </column>
+    </addColumn>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1762958811786-2">
+    <createIndex indexName="idx_inspection_sample_measurement_parameter_teis_untersuchungsparameter_zid" tableName="inspection_sample_measurement_parameter">
+      <column name="teis_untersuchungsparameter_zid"/>
+    </createIndex>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1762958811786-3">
+    <addForeignKeyConstraint baseColumnNames="teis_untersuchungsparameter_zid" baseTableName="inspection_sample_measurement_parameter" constraintName="fk_inspection_sample_measurement_parameter_teis_untersuchungsparameter" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="zid" referencedTableName="teis_untersuchungsparameter" validate="true"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1762958811786-4">
+    <dropColumn columnName="parameter_name" tableName="inspection_sample_measurement_parameter"/>
+  </changeSet>
+</databaseChangeLog>

@@ -39,4 +39,5 @@ export const APPOINTMENT_TYPE: EnumMap<ApiAppointmentType> = {
   [ApiAppointmentType.OfficialMedicalServiceShort]: "Kleine Untersuchung",
   [ApiAppointmentType.OfficialMedicalServiceLong]: "Große Untersuchung",
   [ApiAppointmentType.MedsAbroadCertification]: "Beglaubigung",
+  [ApiAppointmentType.ProstituteProtectionConsultation]: "Beratung",
 };

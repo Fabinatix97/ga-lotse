@@ -106,7 +106,10 @@ public class SchoolEntryProceduresPopulator extends BasePopulator<CreateProcedur
   private void createAppointments(List<CreateProcedureResponse> procedures) {
     schoolEntryController.createAppointmentsInBulk(
         new CreateAppointmentsBulkRequest(
-            procedures.stream().map(CreateProcedureResponse::procedureId).toList()));
+            procedures.stream().map(CreateProcedureResponse::procedureId).toList(),
+            null,
+            null,
+            null));
   }
 
   private void assignSpecialNeedsLabel(List<CreateProcedureResponse> procedures) {

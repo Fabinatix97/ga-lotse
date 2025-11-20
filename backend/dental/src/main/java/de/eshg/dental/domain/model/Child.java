@@ -17,10 +17,12 @@ import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
+import jakarta.persistence.Index;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OrderBy;
 import jakarta.persistence.OrderColumn;
+import jakarta.persistence.Table;
 import java.time.LocalDate;
 import java.time.Year;
 import java.util.ArrayList;
@@ -29,8 +31,11 @@ import java.util.List;
 import java.util.UUID;
 import org.apache.commons.lang3.BooleanUtils;
 import org.hibernate.annotations.BatchSize;
+import org.hibernate.annotations.JdbcType;
+import org.hibernate.dialect.PostgreSQLEnumJdbcType;
 
 @Entity
+@Table(indexes = @Index(columnList = Child_.CURRENT_FLUORIDATION_CONSENT))
 public class Child extends Procedure<Child, ChildTask, Person, Facility> {
 
   @DataSensitivity(PROTECTED)
@@ -67,6 +72,11 @@ public class Child extends Procedure<Child, ChildTask, Person, Facility> {
   @OrderColumn
   @BatchSize(size = 100)
   private final List<FluoridationConsent> fluoridationConsents = new ArrayList<>();
+
+  @DataSensitivity(SENSITIVE)
+  @JdbcType(PostgreSQLEnumJdbcType.class)
+  @Column(nullable = false)
+  private BooleanWithUnknown currentFluoridationConsent = BooleanWithUnknown.UNKNOWN;
 
   public UUID getChildIdFromCentralFile() {
     return getChild().getCentralFileStateId();
@@ -129,7 +139,7 @@ public class Child extends Procedure<Child, ChildTask, Person, Facility> {
   }
 
   public List<FluoridationConsent> getFluoridationConsents() {
-    return fluoridationConsents;
+    return List.copyOf(fluoridationConsents);
   }
 
   public FluoridationConsent getLatestFluoridationConsentAtDate(LocalDate date) {
@@ -166,6 +176,21 @@ public class Child extends Procedure<Child, ChildTask, Person, Facility> {
 
   public void addFluoridationConsent(FluoridationConsent fluoridationConsent) {
     this.fluoridationConsents.add(fluoridationConsent);
+  }
+
+  /**
+   * Holds the most recent {@link FluoridationConsent#getConsented} of {@link
+   * Child#getFluoridationConsents}.
+   *
+   * <p>This respects not just the fluoridationConsents of this entity, but of all Child entities
+   * whose {@link Child#getChildIdFromCentralFile} belong to the same reference person.
+   */
+  public BooleanWithUnknown getCurrentFluoridationConsent() {
+    return currentFluoridationConsent;
+  }
+
+  public void setCurrentFluoridationConsent(BooleanWithUnknown currentFluoridationConsent) {
+    this.currentFluoridationConsent = currentFluoridationConsent;
   }
 
   public String getNote() {

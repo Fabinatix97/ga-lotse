@@ -63,12 +63,18 @@ public enum TeisAttribute {
       TeisUmrechnung.class,
       (entity, value, repositories) ->
           entity.setEinheitVon(
-              repositories.teisEinheitRepository().findTeisEinheitByZid(value).orElseThrow())),
+              repositories
+                  .teisEinheitRepository()
+                  .findTeisEinheitByZid(value)
+                  .orElseThrow(() -> getZidNotFoundErrorException(value)))),
   EINHEITNACH(
       TeisUmrechnung.class,
       (entity, value, repositories) ->
           entity.setEinheitNach(
-              repositories.teisEinheitRepository().findTeisEinheitByZid(value).orElseThrow())),
+              repositories
+                  .teisEinheitRepository()
+                  .findTeisEinheitByZid(value)
+                  .orElseThrow(() -> getZidNotFoundErrorException(value)))),
   STRASSE(TeisGesundheitsamt.class, TeisGesundheitsamt::setStrasse),
   PLZ(TeisGesundheitsamt.class, TeisGesundheitsamt::setPlz),
   ORT(TeisGesundheitsamt.class, TeisGesundheitsamt::setOrt),
@@ -78,7 +84,10 @@ public enum TeisAttribute {
       HasEinheit.class,
       (entity, value, repositories) ->
           entity.setEinheit(
-              repositories.teisEinheitRepository().findTeisEinheitByZid(value).orElseThrow())),
+              repositories
+                  .teisEinheitRepository()
+                  .findTeisEinheitByZid(value)
+                  .orElseThrow(() -> getZidNotFoundErrorException(value)))),
   HISTKURZBEZEICHNUNG(TeisParameter.class, TeisParameter::setHistkurzbezeichnung),
   HYGRISNUMMER(TeisParameter.class, TeisParameter::setHygrisnummer),
   CASNUMMER(HasCasnummer.class, HasCasnummer::setCasnummer),
@@ -112,18 +121,27 @@ public enum TeisAttribute {
       TeisProbenahmehaeufigkeit.class,
       (entity, value, repositories) ->
           entity.setVerordnung(
-              repositories.teisListeRepository().findTeisListeByZid(value).orElseThrow())),
+              repositories
+                  .teisListeRepository()
+                  .findTeisListeByZid(value)
+                  .orElseThrow(() -> getZidNotFoundErrorException(value)))),
   PARAMETERART(
       HasParameterart.class,
       (entity, value, repositories) ->
           entity.setParameterart(
-              repositories.teisListeRepository().findTeisListeByZid(value).orElseThrow())),
+              repositories
+                  .teisListeRepository()
+                  .findTeisListeByZid(value)
+                  .orElseThrow(() -> getZidNotFoundErrorException(value)))),
   NOTIZ(TeisUntersuchungsumfang.class, TeisUntersuchungsumfang::setNotiz),
   PARAMETER(
       HasParameter.class,
       (entity, value, repositories) ->
           entity.setParameter(
-              repositories.teisParameterRepository().findTeisParameterByZid(value).orElseThrow())),
+              repositories
+                  .teisParameterRepository()
+                  .findTeisParameterByZid(value)
+                  .orElseThrow(() -> getZidNotFoundErrorException(value)))),
   UNTERSUCHUNGSUMFANG(
       TeisUntersuchungsparameter.class,
       (entity, value, repositories) ->
@@ -131,7 +149,7 @@ public enum TeisAttribute {
               repositories
                   .teisUntersuchungsumfangRepository()
                   .findTeisUntersuchungsumfangByZid(value)
-                  .orElseThrow())),
+                  .orElseThrow(() -> getZidNotFoundErrorException(value)))),
   POSITION(
       TeisUntersuchungsparameter.class,
       (entity, value) -> entity.setPosition(Integer.parseInt(value))),
@@ -184,5 +202,13 @@ public enum TeisAttribute {
         + requiredClass.getSimpleName()
         + " but it is "
         + entity.getClass().getSimpleName();
+  }
+
+  private static String getZidNotFoundErrorMessage(String zid) {
+    return "ZID not found: " + zid;
+  }
+
+  private static RuntimeException getZidNotFoundErrorException(String zid) {
+    return new RuntimeException(getZidNotFoundErrorMessage(zid));
   }
 }

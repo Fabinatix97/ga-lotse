@@ -51,6 +51,7 @@ import de.eshg.dental.business.model.PagedChildren;
 import de.eshg.dental.business.model.PagedInstitutionsForTransition;
 import de.eshg.dental.client.PersonClient;
 import de.eshg.dental.config.DentalProperties;
+import de.eshg.dental.domain.model.BooleanWithUnknown;
 import de.eshg.dental.domain.model.Child;
 import de.eshg.dental.domain.model.Examination;
 import de.eshg.dental.domain.model.FluoridationConsent;
@@ -187,6 +188,15 @@ public class ChildService {
 
   private Child createChild(CreateChildRequest request, UUID personId) {
     Child createdChild = createChild(personId);
+
+    getChildAndAllPreviousChildren(createdChild).stream()
+        .filter(child -> !child.getChildIdFromCentralFile().equals(personId))
+        .findAny()
+        .ifPresent(
+            previousChild ->
+                createdChild.setCurrentFluoridationConsent(
+                    previousChild.getCurrentFluoridationConsent()));
+
     ChildMapper.mapToChild(request, createdChild);
     return createdChild;
   }
@@ -316,9 +326,8 @@ public class ChildService {
   }
 
   public List<FluoridationConsent> getAllFluoridationConsents(
-      List<ChildWithPersonAndContactData> childAndAllPreviousChildren) {
+      List<Child> childAndAllPreviousChildren) {
     return childAndAllPreviousChildren.stream()
-        .map(ChildWithPersonAndContactData::child)
         .map(Child::getFluoridationConsents)
         .flatMap(Collection::stream)
         .sorted(
@@ -328,10 +337,9 @@ public class ChildService {
   }
 
   public List<FluoridationConsent> getRelevantFluoridationConsentsForExamination(
-      List<ChildWithPersonAndContactData> childDataList, LocalDate examinationDate) {
+      List<Child> childDataList, LocalDate examinationDate) {
 
     return childDataList.stream()
-        .map(ChildWithPersonAndContactData::child)
         .flatMap(child -> child.getFluoridationConsents().stream())
         .filter(consent -> !consent.getDateOfConsent().isAfter(examinationDate))
         .sorted(
@@ -355,14 +363,12 @@ public class ChildService {
         .toList();
   }
 
-  List<ChildWithPersonAndContactData> getChildAndAllPreviousChildren(Child child) {
+  List<Child> getChildAndAllPreviousChildren(Child child) {
     List<UUID> ids =
         personClient.getPersonFileStateIdsAssociatedWithFileState(
             child.getChildIdFromCentralFile());
-    List<Child> childAndAllPreviousChildren =
-        childRepository.findByRelatedPersonsCentralFileStateId(ids);
 
-    return augmentWithChildAndContactData(childAndAllPreviousChildren);
+    return childRepository.findByRelatedPersonsCentralFileStateId(ids);
   }
 
   public Child findByExternalIdOrThrow(UUID childId) {
@@ -509,6 +515,7 @@ public class ChildService {
               sortDirection == SortDirection.ASC
                   ? Comparator.nullsLast(Comparator.naturalOrder())
                   : Comparator.nullsFirst(Comparator.naturalOrder()));
+      case FLUORIDATION_CONSENT -> Comparator.comparing(Child::getCurrentFluoridationConsent);
       default ->
           throw new IllegalArgumentException("Invalid sort comparator for sort key" + sortKey);
     };
@@ -644,6 +651,13 @@ public class ChildService {
 
   public void updateChildData(Child child, UpdateChildRequest request) {
     validator.validateInstitutionAndGroupName(request.institutionId(), request.groupName());
+
+    // Updating the fluoridation consent first because it involves an additional find in the child
+    // repository. This will cause an implicit flush. If we already updated the child entity at this
+    // point, it would cause an unnecessary DB write.
+    updateFluoridationConsent(
+        child, ChildMapper.mapFluoridationToDomain(request.fluoridationConsent()));
+
     boolean updateGroup = !Objects.equals(request.groupName(), child.getGroupName());
     if (updateGroup) {
       log.debug("Updating group name: '{}' → '{}'", child.getGroupName(), request.groupName());
@@ -663,9 +677,6 @@ public class ChildService {
       addSystemProgressEntry(child, ChildSystemProgressEntryType.INSTITUTION_MODIFIED);
     }
 
-    updateFluoridationConsent(
-        child, ChildMapper.mapFluoridationToDomain(request.fluoridationConsent()));
-
     updateProcedureLabels(child, request.procedureLabels());
   }
 
@@ -679,10 +690,21 @@ public class ChildService {
                     requestedFluoridationConsent, persistedFluoridationConsent));
 
     if (updateFluoridationConsent) {
+      List<Child> childAndAllAssociatedChildren = getChildAndAllPreviousChildren(child);
+
       requestedFluoridationConsent.setModifiedAt(Instant.now(clock));
       child.addFluoridationConsent(requestedFluoridationConsent);
       progressEntryUtil.addSystemProgressEntry(
           child, ChildSystemProgressEntryType.FLUORIDATION_CONSENT_MODIFIED);
+
+      List<FluoridationConsent> fluoridationConsents =
+          getAllFluoridationConsents(childAndAllAssociatedChildren);
+      BooleanWithUnknown currentConsent =
+          fluoridationConsents.stream()
+              .map(FluoridationConsent::getConsented)
+              .findFirst()
+              .orElse(BooleanWithUnknown.UNKNOWN);
+      childAndAllAssociatedChildren.forEach(c -> c.setCurrentFluoridationConsent(currentConsent));
     }
   }
 
@@ -910,6 +932,7 @@ public class ChildService {
     promotedChild.setInstitutionId(childToPromote.getInstitutionId());
     promotedChild.setProcedureLabels(new ArrayList<>(childToPromote.getProcedureLabels()));
     promotedChild.setNote(childToPromote.getNote());
+    promotedChild.setCurrentFluoridationConsent(childToPromote.getCurrentFluoridationConsent());
     childRepository.save(promotedChild);
     return promotedChild;
   }

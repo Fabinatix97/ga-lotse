@@ -24,6 +24,10 @@ export function useGetSchoolEntryConfig() {
           data._configuration?.directProcedureTypeAssignmentOnImport ?? false,
         pdfDocumentAccentColor:
           data._configuration?.pdfDocumentAccentColor ?? "",
+        invitationIncludePerson:
+          data._configuration?.invitationIncludePerson ?? false,
+        invitationIncludeRoom:
+          data._configuration?.invitationIncludeRoom ?? false,
       } satisfies SchoolEntryFormModel,
 
       locationSelectionModeReadOnly:

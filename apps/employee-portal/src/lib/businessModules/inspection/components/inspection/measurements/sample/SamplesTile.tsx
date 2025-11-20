@@ -30,8 +30,15 @@ export function SamplesTile({ procedureId }: Readonly<SamplesTileProps>) {
 
   function setupItems() {
     const result = [];
+    let index = 0;
     for (const sample of samples) {
-      result.push(<Sample sample={sample} procedureId={procedureId} />);
+      result.push(
+        <Sample
+          sample={sample}
+          procedureId={procedureId}
+          sampleIndex={index++}
+        />,
+      );
     }
     return result;
   }

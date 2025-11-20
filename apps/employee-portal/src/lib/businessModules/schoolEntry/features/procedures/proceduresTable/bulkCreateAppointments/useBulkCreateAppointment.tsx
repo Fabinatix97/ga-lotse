@@ -6,8 +6,14 @@
 import { useCreateAppointmentsInBulk } from "@/lib/businessModules/schoolEntry/api/mutations/schoolEntryApi";
 import { useBulkAppointmentCreationMessage } from "@/lib/businessModules/schoolEntry/features/procedures/proceduresTable/bulkCreateAppointments/useBulkAppointmentCreationMessage";
 
-interface UseBulkCreateAppointmentResult {
-  startAppointmentCreation: () => Promise<void>;
+export interface AppointmentCriteria {
+  physicianId?: string;
+  mfaId?: string;
+  room?: string;
+}
+
+export interface UseBulkCreateAppointmentResult {
+  startAppointmentCreation: (criteria?: AppointmentCriteria) => Promise<void>;
   isPending: boolean;
 }
 
@@ -17,11 +23,12 @@ export function useBulkCreateAppointment(
   const createAppointmentsInBulk = useCreateAppointmentsInBulk();
   const bulkAppointmentCreationMessage = useBulkAppointmentCreationMessage();
 
-  async function startAppointmentCreation() {
+  async function startAppointmentCreation(criteria?: AppointmentCriteria) {
     bulkAppointmentCreationMessage.close();
     await createAppointmentsInBulk.mutateAsync(
       {
         procedureIds: selectedProcedureIds,
+        ...criteria,
       },
       { onSuccess: bulkAppointmentCreationMessage.open },
     );

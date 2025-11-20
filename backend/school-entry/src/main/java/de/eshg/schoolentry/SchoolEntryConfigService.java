@@ -16,13 +16,11 @@ import de.eshg.config.EshgConfigurationService;
 import de.eshg.lib.appointmentblock.api.LocationSelectionMode;
 import de.eshg.lib.appointmentblock.persistence.AppointmentBlockRepository;
 import de.eshg.lib.appointmentblock.spring.AppointmentBlockProperties;
-import de.eshg.lib.procedure.domain.repository.ProcedureRepository;
 import de.eshg.persistence.TransactionHelper;
 import de.eshg.rest.service.error.BadRequestException;
 import de.eshg.schoolentry.api.configuration.SchoolEntryConfigDto;
 import de.eshg.schoolentry.config.SchoolEntryProperties;
 import de.eshg.schoolentry.domain.model.SchoolEntryConfig;
-import de.eshg.schoolentry.domain.model.SchoolEntryProcedure;
 import jakarta.persistence.EntityManager;
 import java.util.SequencedMap;
 import org.springframework.stereotype.Service;
@@ -35,20 +33,17 @@ public class SchoolEntryConfigService extends EshgConfigurationService<SchoolEnt
       TransactionHelper transactionHelper,
       AppointmentBlockProperties appointmentBlockProperties,
       SchoolEntryProperties schoolEntryProperties,
-      ProcedureRepository<SchoolEntryProcedure> procedureRepository,
       AppointmentBlockRepository appointmentBlockRepository,
       AuditLogWriter auditLogWriter) {
     super(entityManager, transactionHelper, SchoolEntryConfig.class);
     this.appointmentBlockProperties = appointmentBlockProperties;
     this.schoolEntryProperties = schoolEntryProperties;
-    this.procedureRepository = procedureRepository;
     this.appointmentBlockRepository = appointmentBlockRepository;
     this.auditLogWriter = auditLogWriter;
   }
 
   private final AppointmentBlockProperties appointmentBlockProperties;
   private final SchoolEntryProperties schoolEntryProperties;
-  private final ProcedureRepository<SchoolEntryProcedure> procedureRepository;
   private final AppointmentBlockRepository appointmentBlockRepository;
   private final AuditLogWriter auditLogWriter;
 
@@ -61,6 +56,8 @@ public class SchoolEntryConfigService extends EshgConfigurationService<SchoolEnt
         schoolEntryProperties.isDirectProcedureTypeAssignmentOnImport());
     schoolEntryConfiguration.setPdfDocumentAccentColor(
         schoolEntryProperties.getPdfDocumentAccentColor());
+    schoolEntryConfiguration.setInvitationIncludePerson(false);
+    schoolEntryConfiguration.setInvitationIncludeRoom(false);
     return schoolEntryConfiguration;
   }
 
@@ -76,7 +73,9 @@ public class SchoolEntryConfigService extends EshgConfigurationService<SchoolEnt
           config.getLocationSelectionMode(),
           isLocationSelectionModeReadOnly(),
           config.isDirectProcedureTypeAssignmentOnImport(),
-          config.getPdfDocumentAccentColor());
+          config.getPdfDocumentAccentColor(),
+          config.isInvitationIncludePerson(),
+          config.isInvitationIncludeRoom());
     } else {
       return null;
     }
@@ -94,6 +93,14 @@ public class SchoolEntryConfigService extends EshgConfigurationService<SchoolEnt
     return getConfig().getPdfDocumentAccentColor();
   }
 
+  public boolean isInvitationIncludePerson() {
+    return getConfig().isInvitationIncludePerson();
+  }
+
+  public boolean isInvitationIncludeRoom() {
+    return getConfig().isInvitationIncludeRoom();
+  }
+
   public void update(SchoolEntryConfig configUpdate) {
     SchoolEntryConfig persistentConfig = getConfig();
     auditLogWriter.writeChangeToAuditLog(
@@ -104,6 +111,8 @@ public class SchoolEntryConfigService extends EshgConfigurationService<SchoolEnt
     updateDirectProcedureTypeAssignmentOnImport(
         persistentConfig, configUpdate.isDirectProcedureTypeAssignmentOnImport());
     updatePdfDocumentAccentColor(persistentConfig, configUpdate.getPdfDocumentAccentColor());
+    updateInvitationIncludePerson(persistentConfig, configUpdate.isInvitationIncludePerson());
+    updateInvitationIncludeRoom(persistentConfig, configUpdate.isInvitationIncludeRoom());
   }
 
   @VisibleForTesting
@@ -138,6 +147,18 @@ public class SchoolEntryConfigService extends EshgConfigurationService<SchoolEnt
       SchoolEntryConfig persistentConfig, String pdfDocumentAccentColor) {
     persistentConfig.setInitialized(true);
     persistentConfig.setPdfDocumentAccentColor(pdfDocumentAccentColor);
+  }
+
+  private void updateInvitationIncludePerson(
+      SchoolEntryConfig persistentConfig, boolean invitationIncludePerson) {
+    persistentConfig.setInitialized(true);
+    persistentConfig.setInvitationIncludePerson(invitationIncludePerson);
+  }
+
+  private void updateInvitationIncludeRoom(
+      SchoolEntryConfig persistentConfig, boolean invitationIncludeRoom) {
+    persistentConfig.setInitialized(true);
+    persistentConfig.setInvitationIncludeRoom(invitationIncludeRoom);
   }
 
   private ConfigurationStatus mapToConfigurationStatus(SchoolEntryConfig config) {

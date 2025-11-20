@@ -142,6 +142,12 @@ function ConfiguratorSideNavigationItem() {
             accessCheck: sideNavigationItem.accessCheck,
             data,
           }),
+          subItem({
+            name: "ProstSchG",
+            module: "PROSTITUTE_PROTECTION",
+            accessCheck: sideNavigationItem.accessCheck,
+            data,
+          }),
         ].filter(isDefined),
       }}
     />

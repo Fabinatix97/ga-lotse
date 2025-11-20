@@ -43,7 +43,6 @@ declare module "@tanstack/react-table" {
       subRow?: boolean;
     };
     textAlign?: ColumnTextAlign;
-
     skipWhenParentRow?: boolean;
     spanWhenParentRow?: number;
     // to ensure accessibility for hidden header labels, set isHeaderLabelHidden to true and provide a headerLabel
@@ -54,6 +53,8 @@ declare module "@tanstack/react-table" {
      * https://bitvtest.de/pruefschritt/bitv-20-web/bitv-20-web-9-1-3-1e-datentabellen-richtig-aufgebaut
      */
     isRowHeader?: boolean;
+    indentSubRows?: boolean;
+    indentSize?: number;
   }
 }
 
@@ -85,6 +86,8 @@ interface DataTableProps<TData> {
   minWidth?: number | string;
   rowSelectionProps?: RowSelectionProps<TData>;
   initialExpanded?: boolean;
+  indentSize?: number;
+  indentSubRows?: boolean;
 }
 
 export function DataTable<TData>(props: Readonly<DataTableProps<TData>>) {
@@ -96,10 +99,15 @@ export function DataTable<TData>(props: Readonly<DataTableProps<TData>>) {
   const striped = props.striped ?? true;
   const tableConfig: TableOptions<TData> = {
     data: props.data,
-    columns: addFeatureColumns(props.columns, {
-      toggleExpand: hasSubRows,
-      toggleSelectProps: props.rowSelectionProps?.toggleSelectProps,
-    }),
+    columns: addFeatureColumns(
+      props.columns,
+      {
+        toggleExpand: hasSubRows,
+        toggleSelectProps: props.rowSelectionProps?.toggleSelectProps,
+      },
+      props.indentSubRows,
+      props.indentSize,
+    ),
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getExpandedRowModel: hasSubRows ? getExpandedRowModel() : undefined,

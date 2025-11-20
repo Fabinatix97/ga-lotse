@@ -96,10 +96,7 @@ public class LsdKeycloakClient {
               .resteasyClient(createClientWithTimeout())
               .build();
 
-      log.info(
-          "Connected to Keycloak on '{}'. Keycloak version: {}",
-          keycloakUrl,
-          keycloak.serverInfo().getInfo().getSystemInfo().getVersion());
+      log.info("Connected to Keycloak on '{}'.", keycloakUrl);
     } catch (Exception e) {
       throw new KeycloakException("Failed to connect to Keycloak on URL: '" + keycloakUrl + "'", e);
     }

@@ -44,14 +44,20 @@ public interface AppointmentBlockRepository extends JpaRepository<AppointmentBlo
           + "and (:availableForCitizen is null or abg.availableForCitizen = :availableForCitizen) "
           + "and (:availableForBulkBooking is null or abg.availableForBulkBooking = :availableForBulkBooking) "
           + "and (:locationId is null or abg.locationId = :locationId) "
+          + "and (:physicianId is null or :physicianId member of a.physicians) "
+          + "and (:mfaId is null or :mfaId member of a.mfas) "
+          + "and (:room is null or a.room = :room) "
           + "and a.appointmentBlockEnd >= :appointmentBlockEnd order by a.id")
   List<AppointmentBlock>
-      findBlockByAvailabilityAndAppointmentTypeAndLocationAndAppointmentBlockEndGreaterThan(
+      findBlockByAvailabilityAndAppointmentTypeAndLocationAndStaffAndRoomAndAppointmentBlockEndGreaterThan(
           @Param("appointmentType") AppointmentType appointmentType,
           @Param("locationId") UUID locationId,
           @Param("appointmentBlockEnd") Instant appointmentBlockEnd,
           @Param("availableForCitizen") Boolean availableForCitizen,
-          @Param("availableForBulkBooking") Boolean availableForBulkBooking);
+          @Param("availableForBulkBooking") Boolean availableForBulkBooking,
+          @Param("physicianId") UUID physicianId,
+          @Param("mfaId") UUID mfaId,
+          @Param("room") String room);
 
   @Lock(LockModeType.PESSIMISTIC_WRITE)
   @Query(
@@ -82,4 +88,12 @@ public interface AppointmentBlockRepository extends JpaRepository<AppointmentBlo
   Optional<AppointmentBlock> findByExternalIdForUpdate(UUID externalId);
 
   List<AppointmentBlock> findAllByCalendarEventIdInOrderById(List<UUID> eventIds);
+
+  @Query(
+      """
+    select distinct a.room from AppointmentBlock a
+       where a.room is not null
+        order by a.room
+    """)
+  List<String> findDistinctRooms();
 }

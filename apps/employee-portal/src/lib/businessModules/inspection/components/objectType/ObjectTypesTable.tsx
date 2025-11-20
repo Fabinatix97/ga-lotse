@@ -8,7 +8,10 @@
 import { ColumnHelper, createColumnHelper } from "@tanstack/react-table";
 
 import { ApiUserRole } from "@eshg/base-api";
-import { ApiObjectType } from "@eshg/inspection-api";
+import {
+  ApiObjectType,
+  ApiObjectTypeHierarchyTreeNode,
+} from "@eshg/inspection-api";
 import {
   DataTable,
   TablePage,
@@ -16,26 +19,31 @@ import {
   useHasUserRoleCheck,
 } from "@eshg/lib-employee-portal";
 
-import { useGetObjectTypes } from "@/lib/businessModules/inspection/api/queries/objectTypes";
+import { useGetObjectTypeHierarchyTree } from "@/lib/businessModules/inspection/api/queries/objectTypes";
 
 import { useEditObjectTypeSidebar } from "./EditObjectTypeSidebar";
 
 export function ObjectTypesTable() {
-  const { data: objectTypes, isFetching } = useGetObjectTypes();
   const canEdit = useHasUserRoleCheck(ApiUserRole.InspectionObjecttypesWrite);
+  const { data: objectTypeHierarchyTree, isFetching } =
+    useGetObjectTypeHierarchyTree();
 
   const sidebar = useEditObjectTypeSidebar();
 
-  const columnHelper: ColumnHelper<ApiObjectType> =
-    createColumnHelper<ApiObjectType>();
+  const columnHelper: ColumnHelper<
+    ApiObjectTypeHierarchyTreeNode | ApiObjectType
+  > = createColumnHelper<ApiObjectTypeHierarchyTreeNode | ApiObjectType>();
 
   const columns = [
     columnHelper.accessor("name", {
       header: "Name",
       meta: {
+        indentSubRows: true,
         width: "40%",
+        indentSize: 24,
         canNavigate: {
-          parentRow: true,
+          parentRow: false,
+          subRow: true,
         },
       },
     }),
@@ -43,7 +51,8 @@ export function ObjectTypesTable() {
       header: "Intervall (Tage)",
       meta: {
         canNavigate: {
-          parentRow: true,
+          parentRow: false,
+          subRow: true,
         },
       },
     }),
@@ -51,7 +60,8 @@ export function ObjectTypesTable() {
       header: "nach Beanst. (Tage)",
       meta: {
         canNavigate: {
-          parentRow: true,
+          parentRow: false,
+          subRow: true,
         },
       },
     }),
@@ -59,23 +69,36 @@ export function ObjectTypesTable() {
       header: "Dauer (Std.)",
       meta: {
         canNavigate: {
-          parentRow: true,
+          parentRow: false,
+          subRow: true,
         },
       },
     }),
   ];
 
+  function isApiObjectType(
+    row: ApiObjectTypeHierarchyTreeNode | ApiObjectType,
+  ): row is ApiObjectType {
+    return !("subNodes" in row);
+  }
+
   return (
     <TablePage fullHeight>
       <TableSheet loading={isFetching}>
         <DataTable
-          data={objectTypes}
+          data={objectTypeHierarchyTree}
+          indentSize={24}
+          indentSubRows
           columns={columns}
+          getSubRows={getSubRows}
+          minWidth={1000}
           rowNavigation={
             canEdit
               ? {
                   onClick: (row) => () => {
-                    sidebar.open({ objectType: row.original });
+                    if (isApiObjectType(row.original)) {
+                      sidebar.open({ objectType: row.original });
+                    }
                   },
                   focusColumnAccessorKey: "name",
                 }
@@ -86,4 +109,19 @@ export function ObjectTypesTable() {
       </TableSheet>
     </TablePage>
   );
+}
+
+export function getSubRows(
+  originalRow: ApiObjectTypeHierarchyTreeNode | ApiObjectType,
+): (ApiObjectType | ApiObjectTypeHierarchyTreeNode)[] | undefined {
+  if ("subNodes" in originalRow) {
+    const objectTypes = originalRow.objectTypes ?? [];
+    const subNodes = originalRow.subNodes ?? [];
+
+    const combined = [...objectTypes, ...subNodes];
+
+    return combined.length > 0 ? combined : undefined;
+  }
+
+  return undefined;
 }

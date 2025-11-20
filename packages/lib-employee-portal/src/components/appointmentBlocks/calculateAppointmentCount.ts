@@ -12,6 +12,7 @@ import { ApiAppointmentType } from "./types";
 
 export interface AppointmentBlockGroupValues {
   types: ApiAppointmentType[];
+  room: string;
   appointmentBlocks: AppointmentBlockGroupValuesWithDays[];
 }
 

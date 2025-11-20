@@ -18,6 +18,8 @@ public class SchoolEntryConfigMapper {
         request.directProcedureTypeAssignmentOnImport());
     schoolEntryConfig.setLocationSelectionMode(request.locationSelectionMode());
     schoolEntryConfig.setPdfDocumentAccentColor(request.pdfDocumentAccentColor());
+    schoolEntryConfig.setInvitationIncludePerson(request.invitationIncludePerson());
+    schoolEntryConfig.setInvitationIncludeRoom(request.invitationIncludeRoom());
     return schoolEntryConfig;
   }
 }

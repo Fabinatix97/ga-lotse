@@ -403,17 +403,19 @@ public enum EmployeePermissionRole implements PermissionRole {
       ADMIN_KEYCLOAK_NAME.formatted("Prostituiertenschutzgesetz"),
       "Standardberechtigung für das Fachmodul",
       Module.PROSTITUTE_PROTECTION,
+      BASE_PERSONS_READ, // required to access progress entries
       BASE_CALENDAR_BUSINESS_EVENTS_WRITE),
-
-  BASE_PERSON_MIGRATE_PERSON_WITHOUT_DATE_OF_BIRTH(
-      "Technischer User Personen ohne Geburtsdatum Migration",
-      "Technischer User des Einschulungsuntersuchungsmoduls, für inter-modul PSB ohne Geburtsdatum Datenmigration, nicht für menschliche User bestimmt",
-      Module.BASE),
 
   SCHOOL_ENTRY_VACCINATION_CHECK(
       READ_PERMISSION_TEMPLATE.formatted("Impfstatus"),
       "Berechtigung zum Abrufen des Impfstatus",
-      Module.SCHOOL_ENTRY);
+      Module.SCHOOL_ENTRY),
+
+  BASE_INTER_MODULE_MIGRATION(
+      "Technischer User Migration",
+      "Technischer User von Fachmodulen, für inter-modul Datenmigration, nicht für menschliche User bestimmt; hat nur migrationsspezifische, temporäre Rechte für die Dauer der Migration",
+      Module.BASE),
+  ;
 
   private final String keycloakNameWithoutPrefix;
   private final String description;

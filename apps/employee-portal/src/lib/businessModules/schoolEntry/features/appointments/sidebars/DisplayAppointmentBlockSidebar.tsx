@@ -97,7 +97,9 @@ export function DisplayAppointmentBlockSidebar(
                 ))}
               </DetailsBlock>
             )}
-
+            {appointmentBlock.room && (
+              <DetailsBlock title="Raum:">{appointmentBlock.room}</DetailsBlock>
+            )}
             <DetailsBlock title="Terminarten:" contentRole="list">
               {appointmentBlock.types.map((appointmentType) => (
                 <Typography

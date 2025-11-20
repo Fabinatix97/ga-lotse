@@ -281,6 +281,25 @@
         "tags" : [ "AppointmentBlock" ]
       }
     },
+    "/appointment-blocks/rooms" : {
+      "get" : {
+        "operationId" : "getAppointmentBlockRooms",
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/GetAppointmentBlockRoomsResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Returns all assigned rooms for appointmentBlocks",
+        "tags" : [ "AppointmentBlock" ]
+      }
+    },
     "/appointment-blocks/{appointmentBlockId}" : {
       "delete" : {
         "operationId" : "deleteAppointmentBlock",
@@ -742,6 +761,9 @@
               "$ref" : "#/components/schemas/AppointmentBlockUser"
             }
           },
+          "room" : {
+            "type" : "string"
+          },
           "start" : {
             "type" : "string",
             "description" : "Time at which the appointment block starts.",
@@ -856,7 +878,7 @@
       },
       "AppointmentType" : {
         "type" : "string",
-        "enum" : [ "CONSULTATION", "VACCINATION", "REGULAR_EXAMINATION", "CAN_CHILD", "ENTRY_LEVEL", "SPECIAL_NEEDS", "PROOF_SUBMISSION", "HIV_STI_CONSULTATION", "SEX_WORK", "RESULTS_REVIEW", "OFFICIAL_MEDICAL_SERVICE_SHORT", "OFFICIAL_MEDICAL_SERVICE_LONG", "MEDS_ABROAD_CERTIFICATION" ]
+        "enum" : [ "CONSULTATION", "VACCINATION", "REGULAR_EXAMINATION", "CAN_CHILD", "ENTRY_LEVEL", "SPECIAL_NEEDS", "PROOF_SUBMISSION", "HIV_STI_CONSULTATION", "SEX_WORK", "RESULTS_REVIEW", "OFFICIAL_MEDICAL_SERVICE_SHORT", "OFFICIAL_MEDICAL_SERVICE_LONG", "MEDS_ABROAD_CERTIFICATION", "PROSTITUTE_PROTECTION_CONSULTATION" ]
       },
       "ConfigurationStatus" : {
         "type" : "string",
@@ -954,6 +976,11 @@
               "type" : "string",
               "format" : "uuid"
             }
+          },
+          "room" : {
+            "maxLength" : 60,
+            "minLength" : 1,
+            "type" : "string"
           },
           "types" : {
             "maxItems" : 2147483647,
@@ -1098,6 +1125,18 @@
           "totalNumberOfElements" : {
             "type" : "integer",
             "format" : "int64"
+          }
+        }
+      },
+      "GetAppointmentBlockRoomsResponse" : {
+        "required" : [ "rooms" ],
+        "type" : "object",
+        "properties" : {
+          "rooms" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
           }
         }
       },
@@ -1312,6 +1351,9 @@
               "type" : "string",
               "format" : "uuid"
             }
+          },
+          "room" : {
+            "type" : "string"
           },
           "start" : {
             "type" : "string",

@@ -65,5 +65,7 @@
   <include file="migrations/0055_add_gdpr_identification_data_hash.xml"/>
   <include file="migrations/0056_add_gdpr_identification_hash_not_null_constraint.xml"/>
   <include file="migrations/0057_fluoridation_consent_with_unknown.xml"/>
+  <include file="migrations/0058_add_current_fluoridation_consent_to_child.xml"/>
+  <include file="migrations/0059_add_new_procedure_type_prostitute_protection.xml"/>
 
 </databaseChangeLog>

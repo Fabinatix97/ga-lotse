@@ -15,7 +15,6 @@ import {
   Divider,
   Grid,
   IconButton,
-  Input,
   Stack,
   Typography,
 } from "@mui/joy";
@@ -28,14 +27,14 @@ import {
 } from "@eshg/inspection-api";
 import { DetailsItem } from "@eshg/lib-employee-portal";
 import {
+  DebouncedInput,
   DetailsColumn,
   DetailsList,
   formatDateTime,
-  useSnackbar,
 } from "@eshg/lib-portal";
 
 import { useUpdateSampleMeasurementParameterValue } from "@/lib/businessModules/inspection/api/mutations/sample";
-import { useInspectEditSampleSidebar } from "@/lib/businessModules/inspection/components/inspection/measurements/InspectionEditSampleSidebar";
+import { useInspectionEditSampleSidebar } from "@/lib/businessModules/inspection/components/inspection/measurements/InspectionEditSampleSidebar";
 import {
   translateInspectionSampleEvaluationType,
   translateInspectionSamplePreclassification,
@@ -45,27 +44,23 @@ import {
 interface MeasurementsTileItemProps {
   sample: ApiInspectionSample;
   procedureId: string;
+  sampleIndex: number;
 }
 
 export function Sample({
   sample,
   procedureId,
+  sampleIndex,
 }: Readonly<MeasurementsTileItemProps>) {
   const [open, setOpen] = useState(false);
-  const snackbar = useSnackbar();
-  const inspectionEditSampleSidebar = useInspectEditSampleSidebar();
+  const inspectionEditSampleSidebar = useInspectionEditSampleSidebar();
   const { mutateAsync: updateSampleMeasurementParameterValue } =
     useUpdateSampleMeasurementParameterValue();
 
-  function handleOpenEditSidebar(
-    e: React.MouseEvent,
-    sample: ApiInspectionSample,
-  ) {
+  function handleOpenEditSidebar(e: React.MouseEvent) {
     e.stopPropagation();
     inspectionEditSampleSidebar.open({
       procedureId: procedureId,
-      sample: sample,
-      sampleId: sample.sampleId,
     });
   }
 
@@ -79,24 +74,17 @@ export function Sample({
     alert("Label drucken");
   }
 
-  async function handleEdit(value: string, index: number) {
-    if (sample.measurementParameters[index] && !isNaN(Number(value))) {
-      await updateSampleMeasurementParameterValue(
-        {
-          inspectionId: procedureId,
-          sampleId: sample.sampleId,
-          measurementParameterId:
-            sample.measurementParameters[index].externalId,
-          apiUpdateInspectionSampleMeasurementParameterValueRequest: {
-            value: Number(value),
-          },
+  async function handleEdit(value: string | number | undefined, index: number) {
+    if (sample.measurementParameters[index]) {
+      await updateSampleMeasurementParameterValue({
+        inspectionId: procedureId,
+        sampleId: sample.sampleId,
+        measurementParameterId: sample.measurementParameters[index].externalId,
+        apiUpdateInspectionSampleMeasurementParameterValueRequest: {
+          value:
+            value !== "" && !isNaN(Number(value)) ? Number(value) : undefined,
         },
-        {
-          onSuccess: () => {
-            snackbar.confirmation("Probe wurde geändert.");
-          },
-        },
-      );
+      });
     }
   }
 
@@ -223,13 +211,14 @@ export function Sample({
                   variant="outlined"
                   aria-label="Proben bearbeiten"
                   onClick={(e) => {
-                    handleOpenEditSidebar(e, initObject);
+                    handleOpenEditSidebar(e);
                   }}
                 >
                   <Edit />
                 </IconButton>
 
                 <IconButton
+                  data-testid={"sample-" + sampleIndex}
                   color="neutral"
                   variant="plain"
                   aria-label="öffnen-schließen details"
@@ -358,14 +347,12 @@ export function Sample({
                           alignItems: "center",
                         }}
                       >
-                        <Input
+                        <DebouncedInput
+                          data-testid={"measurementParameterInput-" + index}
                           name={"measurementValue-" + index}
                           type="text"
-                          value={parameter.measurementValue}
-                          readOnly={parameter.measurementValue !== undefined}
-                          onBlur={(event) =>
-                            handleEdit(event.target.value, index)
-                          }
+                          defaultValue={parameter.measurementValue}
+                          onChange={(value) => handleEdit(value, index)}
                         />
                         <Typography component="span" level="body-md">
                           {parameter.unit}
@@ -381,6 +368,9 @@ export function Sample({
                       }}
                     >
                       <Typography
+                        data-testid={
+                          "measurementParameterClassification-" + index
+                        }
                         component="span"
                         level="body-md"
                         sx={{

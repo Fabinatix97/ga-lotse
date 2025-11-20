@@ -373,7 +373,7 @@ public class SchoolEntryController {
   @Transactional
   public CreateAppointmentsBulkResponse createAppointmentsInBulk(
       @Valid @RequestBody CreateAppointmentsBulkRequest request) {
-    return schoolEntryService.createAppointmentsInBulk(request.procedureIds()).mapToResponse();
+    return schoolEntryService.createAppointmentsInBulk(request).mapToResponse();
   }
 
   @GetMapping("/{procedureId}/hearing-test-result")

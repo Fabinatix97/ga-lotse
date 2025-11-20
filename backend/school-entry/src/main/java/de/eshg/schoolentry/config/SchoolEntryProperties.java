@@ -32,6 +32,7 @@ public final class SchoolEntryProperties implements ResettableProperties {
   private @NotNull @DurationUnit(ChronoUnit.MINUTES) Duration
       vaccinationCheckRateLimitIntervalMinutes = Duration.ofMinutes(60);
   private @Positive int vaccinationCheckRateLimitCapacity = 180;
+  private boolean polytuneActive = false;
 
   public Period getBulkCreateAppointmentsMinLeadTime() {
     return bulkCreateAppointmentsMinLeadTime;
@@ -110,5 +111,13 @@ public final class SchoolEntryProperties implements ResettableProperties {
 
   public void setVaccinationCheckRateLimitCapacity(int vaccinationCheckRateLimitCapacity) {
     this.vaccinationCheckRateLimitCapacity = vaccinationCheckRateLimitCapacity;
+  }
+
+  public boolean isPolytuneActive() {
+    return polytuneActive;
+  }
+
+  public void setPolytuneActive(boolean polytuneActive) {
+    this.polytuneActive = polytuneActive;
   }
 }

@@ -9,6 +9,8 @@ import de.eshg.base.address.AddressDto;
 import de.eshg.base.address.DomesticAddressDto;
 import de.eshg.base.address.PostboxAddressDto;
 import de.eshg.base.centralfile.api.person.PersonDetails;
+import de.eshg.base.user.UserApi;
+import de.eshg.base.user.api.UserProfileDto;
 import de.eshg.lib.appointmentblock.api.LocationSelectionMode;
 import de.eshg.lib.appointmentblock.spring.AppointmentBlockConfig;
 import de.eshg.lib.contact.ContactClient;
@@ -32,16 +34,21 @@ import java.time.Instant;
 import java.time.ZonedDateTime;
 import java.util.Base64;
 import java.util.List;
+import java.util.StringJoiner;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.logging.log4j.util.Strings;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.VisibleForTesting;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.util.UriComponentsBuilder;
 
 @Component
@@ -51,6 +58,8 @@ public class InvitationGenerator extends AbstractGenerator {
 
   private static final String CITIZEN_PORTAL_LANDING_PAGE_PATH = "esu";
 
+  private static final Logger log = LoggerFactory.getLogger(InvitationGenerator.class);
+
   private final ClassPathResource invitationTemplate;
   private final String citizenPortalUrl;
   private final DocumentGenerator documentGenerator;
@@ -58,6 +67,7 @@ public class InvitationGenerator extends AbstractGenerator {
   private final DepartmentLogoClient departmentLogoClient;
   private final SchoolEntryConfigService schoolEntryConfigService;
   private final AppointmentBlockConfig appointmentBlockConfig;
+  private final UserApi userClient;
 
   public InvitationGenerator(
       @Value(INVITATION_TEMPLATE) ClassPathResource invitationTemplate,
@@ -68,7 +78,8 @@ public class InvitationGenerator extends AbstractGenerator {
       Clock clock,
       AppointmentBlockConfig appointmentBlockConfig,
       ContactClient contactClient,
-      SchoolEntryConfigService schoolEntryConfigService) {
+      SchoolEntryConfigService schoolEntryConfigService,
+      UserApi userClient) {
     super(departmentInfoClient, contactClient);
     this.departmentLogoClient = departmentLogoClient;
     this.schoolEntryConfigService = schoolEntryConfigService;
@@ -78,6 +89,7 @@ public class InvitationGenerator extends AbstractGenerator {
     this.citizenPortalUrl = citizenPortalUrl;
     this.documentGenerator = documentGenerator;
     this.clock = clock;
+    this.userClient = userClient;
   }
 
   private static String formatAccessCode(String accessCode) {
@@ -92,7 +104,9 @@ public class InvitationGenerator extends AbstractGenerator {
       String accessCode,
       ChildDataWithPersonIdAndCustodian childDataWithPersonIdAndCustodian,
       Instant appointmentStart,
-      UUID locationId) {
+      UUID locationId,
+      UUID physicianOrMfaId,
+      String room) {
     String url = buildQrCodeUrl(accessCode);
     String qrCode =
         Base64.getEncoder()
@@ -119,6 +133,16 @@ public class InvitationGenerator extends AbstractGenerator {
 
     ZonedDateTime zonedAppointmentStart = appointmentStart.atZone(clock.getZone());
 
+    String physicianOrMfaName = null;
+    if (schoolEntryConfigService.isInvitationIncludePerson() && physicianOrMfaId != null) {
+      physicianOrMfaName = getUserName(physicianOrMfaId);
+    }
+
+    String roomName = null;
+    if (schoolEntryConfigService.isInvitationIncludeRoom() && Strings.isNotEmpty(room)) {
+      roomName = room.replaceFirst("(?i)^raum\\s*", "");
+    }
+
     InvitationExamination examination =
         new InvitationExamination(
             zonedAppointmentStart.format(ReportGeneratorConstants.DATE_FORMAT_DE),
@@ -140,7 +164,30 @@ public class InvitationGenerator extends AbstractGenerator {
         examination,
         invitationInfo,
         schoolEntryConfigService.getPdfDocumentAccentColor(),
-        "#EBEBEB");
+        "#EBEBEB",
+        physicianOrMfaName,
+        roomName);
+  }
+
+  private String getUserName(UUID userId) {
+    UserProfileDto user = getUser(userId);
+    if (user == null) return null;
+    StringJoiner name = new StringJoiner(" ");
+    if (user.title() != null) {
+      name.add(user.title());
+    }
+    name.add(user.user().firstName());
+    name.add(user.user().lastName());
+    return name.toString();
+  }
+
+  private UserProfileDto getUser(UUID userid) {
+    try {
+      return userClient.getUserProfile(userid);
+    } catch (HttpClientErrorException.NotFound ex) {
+      log.error("Could not find user with id {}.", userid);
+      return null;
+    }
   }
 
   private Address getCustodianAddressIfExists(PersonDetails custodian) {
@@ -199,9 +246,17 @@ public class InvitationGenerator extends AbstractGenerator {
       String accessCode,
       ChildDataWithPersonIdAndCustodian childDataWithPersonIdAndCustodian,
       Instant start,
-      UUID locationId) {
+      UUID locationId,
+      UUID physicianOrMfaId,
+      String room) {
     InvitationData invitationData =
-        buildInvitationData(accessCode, childDataWithPersonIdAndCustodian, start, locationId);
+        buildInvitationData(
+            accessCode,
+            childDataWithPersonIdAndCustodian,
+            start,
+            locationId,
+            physicianOrMfaId,
+            room);
     return generateInvitation(invitationData);
   }
 

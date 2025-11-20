@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Divider, Stack } from "@mui/joy";
+import { Divider, Grid, Stack } from "@mui/joy";
 import { Formik, FormikErrors } from "formik";
 import { isDefined, isEmpty } from "remeda";
 
@@ -11,6 +11,7 @@ import { ApiUser } from "@eshg/base-api";
 import {
   AppointmentBlockGroupFields,
   AppointmentLocationSelection,
+  AppointmentRoomField,
   AppointmentStaffSelection,
   FormButtonBar,
   FormSheet,
@@ -24,6 +25,8 @@ import {
 } from "@eshg/school-entry-api";
 
 import { useAppointmentBlockApi } from "@/lib/businessModules/schoolEntry/api/clients";
+import { mapAppointmentBlockApi } from "@/lib/businessModules/schoolEntry/api/mapAppointmentBlockApi";
+import { appointmentBlockApiQueryKey } from "@/lib/businessModules/schoolEntry/api/queries/apiQueryKeys";
 import { getValidateDailyAppointmentBlocksForGroupQuery } from "@/lib/businessModules/schoolEntry/api/queries/appointmentBlockApi";
 import {
   CreateAppointmentBlockGroupValues,
@@ -133,6 +136,16 @@ export function AppointmentBlockGroupForm(
               }
             />
           </Stack>
+          <Grid container>
+            <Grid xs={6}>
+              <AppointmentRoomField
+                appointmentBlockApi={mapAppointmentBlockApi(
+                  appointmentBlockApi,
+                )}
+                queryKey={appointmentBlockApiQueryKey}
+              />
+            </Grid>
+          </Grid>
           <Divider />
           <FormButtonBar
             submitLabel="Planen"

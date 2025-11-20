@@ -23,11 +23,12 @@ import { SelectOption, SelectOptions } from "@eshg/lib-portal";
 
 import { useSearchInstitutionGroupsQuery } from "../../../../api/queries/groups";
 import { ProcedureLabelFilter } from "../../../../components/procedureLabels/ProcedureLabelFilter";
+import { FLUORIDATION_CONSENTED_OPTIONS } from "../../../../config/child";
 import { SCHOOL_OR_DAYCARE_CONTACT } from "../../../../config/contacts";
 
 export type ChildrenFilters = Pick<
   GetChildrenRequest,
-  "institutionIdFilter"
+  "institutionIdFilter" | "fluoridationConsentFilter"
 > & {
   procedureLabelsFilter?: ProcedureLabel[];
   excludedProcedureLabelsFilter?: ProcedureLabel[];
@@ -50,6 +51,7 @@ const FILTER_NAMES: Record<keyof ChildrenFilters, string> = {
   institutionIdFilter: "Einrichtung",
   procedureLabelsFilter: "Kennungen",
   excludedProcedureLabelsFilter: "Ohne Kennungen",
+  fluoridationConsentFilter: "Fluoridierungseinverständnis",
 };
 
 const NO_GROUP_VALUE = "[noGroup]";
@@ -200,6 +202,23 @@ export function ChildrenFilterSettings(props: ChildrenFilterSettingsProps) {
             setLabelFilterFormValues(filteredProcedureLabels ?? [], newValue);
           }}
         />
+        <FormControl>
+          <FormLabel>Fluoridierungseinverständnis</FormLabel>
+          <ResettableSingleSelect
+            value={props.filterFormValues.fluoridationConsentFilter ?? ""}
+            onChange={(_, newValue) => {
+              if (newValue === null) {
+                return;
+              }
+              props.setFilterFormValue("fluoridationConsentFilter", newValue);
+            }}
+            onResetSelect={() => {
+              props.setFilterFormValue("fluoridationConsentFilter", undefined);
+            }}
+          >
+            <SelectOptions options={FLUORIDATION_CONSENTED_OPTIONS} />
+          </ResettableSingleSelect>
+        </FormControl>
       </FilterSettingsContent>
     </FilterSettingsSheet>
   );

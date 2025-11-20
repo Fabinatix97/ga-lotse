@@ -8,6 +8,7 @@ package de.eshg.inspection.sample;
 import de.eshg.base.centralfile.api.facility.GetFacilityFileStateResponse;
 import de.eshg.base.contact.api.ContactDto;
 import de.eshg.base.user.api.UserDto;
+import de.eshg.inspection.sample.api.AutocompleteParameterDto;
 import de.eshg.inspection.sample.api.CreateInspectionSampleMeasurementParameterRequest;
 import de.eshg.inspection.sample.api.InspectionSampleActorDto;
 import de.eshg.inspection.sample.api.InspectionSampleActorReferenceDto;
@@ -26,12 +27,24 @@ import de.eshg.inspection.sample.persistence.InspectionSample;
 import de.eshg.inspection.sample.persistence.InspectionSampleActorReference;
 import de.eshg.inspection.sample.persistence.InspectionSampleActorReferenceType;
 import de.eshg.inspection.sample.persistence.InspectionSampleMeasurementParameter;
+import de.eshg.inspection.teis.persistence.TeisEinheit;
+import de.eshg.inspection.teis.persistence.TeisUntersuchungsparameter;
+import de.eshg.inspection.teis.persistence.TeisUntersuchungsparameterRepository;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 import org.springframework.stereotype.Component;
 
 @Component
 public class InspectionSampleMapper {
+
+  private final TeisUntersuchungsparameterRepository teisUntersuchungsparameterRepository;
+
+  public InspectionSampleMapper(
+      TeisUntersuchungsparameterRepository teisUntersuchungsparameterRepository) {
+    this.teisUntersuchungsparameterRepository = teisUntersuchungsparameterRepository;
+  }
+
   public static InspectionSampleDto mapToDto(
       InspectionSample sample,
       GetFacilityFileStateResponse facilityFileState,
@@ -59,10 +72,19 @@ public class InspectionSampleMapper {
 
     return new InspectionSampleMeasurementParameterDto(
         measurementParameter.getMeasurementParameterExternalId(),
-        measurementParameter.getParameterName(),
+        measurementParameter.getTeisUntersuchungsparameter().getParameter().getBezeichnung(),
         measurementParameter.getParameterGroup(),
         measurementParameter.getMeasurementValue(),
-        "mg/L", // TODO We will need to map this properly when we can
+        Optional.ofNullable(
+                Optional.ofNullable(
+                        measurementParameter.getTeisUntersuchungsparameter().getEinheit())
+                    .orElse(
+                        measurementParameter
+                            .getTeisUntersuchungsparameter()
+                            .getParameter()
+                            .getEinheit()))
+            .map(TeisEinheit::getKurzbezeichnung)
+            .orElse(null),
         measurementParameter.getPreclassification() != null
             ? InspectionSamplePreclassificationDto.valueOf(
                 measurementParameter.getPreclassification().name())
@@ -83,12 +105,19 @@ public class InspectionSampleMapper {
     };
   }
 
-  public static InspectionSampleMeasurementParameter mapToPersistenceObject(
+  public InspectionSampleMeasurementParameter mapToPersistenceObject(
       CreateInspectionSampleMeasurementParameterRequest measurementParameterDto) {
     InspectionSampleMeasurementParameter measurementParameter =
         new InspectionSampleMeasurementParameter();
     measurementParameter.setMeasurementParameterExternalId(measurementParameterDto.externalId());
-    measurementParameter.setParameterName(measurementParameterDto.parameterName());
+    measurementParameter.setTeisUntersuchungsparameter(
+        teisUntersuchungsparameterRepository
+            .findTeisUntersuchungsparameterByZid(measurementParameterDto.uParameterZid())
+            .orElseThrow(
+                () ->
+                    new RuntimeException(
+                        "No Untersuchungsparameter found for ZID "
+                            + measurementParameterDto.uParameterZid())));
     measurementParameter.setParameterGroup(measurementParameterDto.parameterGroup());
 
     return measurementParameter;
@@ -108,5 +137,16 @@ public class InspectionSampleMapper {
       actorReference.setType(InspectionSampleActorReferenceType.INSPECTED_FACILITY);
     }
     return actorReference;
+  }
+
+  public static AutocompleteParameterDto mapToAutocompleteParameterDto(
+      TeisUntersuchungsparameter untersuchungsparameter) {
+    String zid = untersuchungsparameter.getZid();
+    String name =
+        untersuchungsparameter.getParameter().getBezeichnung()
+            + " ("
+            + untersuchungsparameter.getUntersuchungsumfang().getKurzbezeichnung()
+            + ")";
+    return new AutocompleteParameterDto(zid, name);
   }
 }

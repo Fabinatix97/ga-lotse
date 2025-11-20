@@ -5,6 +5,7 @@
 
 package de.eshg.measlesprotection;
 
+import de.eshg.testhelper.ResettableProperties;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -13,17 +14,26 @@ import org.springframework.validation.annotation.Validated;
 
 @Validated
 @ConfigurationProperties(prefix = "de.eshg.measlesprotection")
-public class MeaslesProtectionProperties {
+public class MeaslesProtectionProperties implements ResettableProperties {
 
   @DurationUnit(ChronoUnit.MINUTES)
-  private Duration directVaccinationCheckRefreshThreshold = Duration.ofMinutes(10);
+  private Duration directVaccinationCheckCooldown = Duration.ofMinutes(10);
+
+  private boolean polytuneActive = false;
 
   public Duration getDirectVaccinationCheckCooldown() {
-    return directVaccinationCheckRefreshThreshold;
+    return directVaccinationCheckCooldown;
   }
 
-  public void setDirectVaccinationCheckRefreshThreshold(
-      Duration directVaccinationCheckRefreshThreshold) {
-    this.directVaccinationCheckRefreshThreshold = directVaccinationCheckRefreshThreshold;
+  public void setDirectVaccinationCheckRefreshThreshold(Duration directVaccinationCheckCooldown) {
+    this.directVaccinationCheckCooldown = directVaccinationCheckCooldown;
+  }
+
+  public boolean isPolytuneActive() {
+    return polytuneActive;
+  }
+
+  public void setPolytuneActive(boolean polytuneActive) {
+    this.polytuneActive = polytuneActive;
   }
 }

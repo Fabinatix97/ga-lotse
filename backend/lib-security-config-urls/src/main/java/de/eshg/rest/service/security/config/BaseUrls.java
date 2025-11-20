@@ -225,6 +225,13 @@ public final class BaseUrls {
     private Dental() {}
   }
 
+  public static final class ProstituteProtection {
+    public static final String PROCEDURE_CONTROLLER = "/prostitute-protection-procedures";
+    public static final String PUBLIC_CITIZEN_CONTROLLER = "/citizen/public";
+
+    private ProstituteProtection() {}
+  }
+
   public static final class Statistics {
     public static final String EVALUATION_CONTROLLER = "/evaluation";
     public static final String RETRIEVE_DATA_URL = "/retrieve-data";

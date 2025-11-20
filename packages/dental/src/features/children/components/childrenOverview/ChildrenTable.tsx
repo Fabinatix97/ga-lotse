@@ -5,12 +5,12 @@
 
 "use client";
 
-import { Stack, Typography } from "@mui/joy";
+import { Stack, Tooltip, Typography } from "@mui/joy";
 import { useSuspenseQueries } from "@tanstack/react-query";
 import { ColumnSort, createColumnHelper } from "@tanstack/react-table";
 
 import { ApiBusinessModule } from "@eshg/base-api";
-import { ApiChildSortKey } from "@eshg/dental-api";
+import { ApiBooleanWithUnknown, ApiChildSortKey } from "@eshg/dental-api";
 import {
   ButtonBar,
   ChipWithTooltip,
@@ -234,7 +234,7 @@ export function ChildrenTable() {
               rowSelectionProps={rowSelectionProps}
               sorting={tableControl.tableSorting}
               enableSortingRemoval={false}
-              minWidth={1250}
+              minWidth={1350}
               rowNavigation={{
                 focusColumnAccessorKey: "lastName",
                 route: (row) => routes.children.byId(row.original.id).details,
@@ -277,6 +277,21 @@ const COLUMNS = [
     enableSorting: true,
     meta: {
       width: 160,
+      canNavigate: {
+        parentRow: true,
+      },
+    },
+  }),
+  columnHelper.accessor("fluoridationConsent", {
+    header: () => (
+      <Tooltip title="Fluoridierungseinverständis">
+        <Typography>Fluorid. EV</Typography>
+      </Tooltip>
+    ),
+    cell: (props) => formatBooleanWithUnknownShort(props.getValue()),
+    enableSorting: true,
+    meta: {
+      width: 100,
       canNavigate: {
         parentRow: true,
       },
@@ -346,5 +361,17 @@ const SORT_KEY_MAPPING: Record<string, ApiChildSortKey> = {
   lastName: ApiChildSortKey.LastName,
   dateOfBirth: ApiChildSortKey.DateOfBirth,
   groupName: ApiChildSortKey.GroupName,
+  fluoridationConsent: ApiChildSortKey.FluoridationConsent,
   year: ApiChildSortKey.Year,
 };
+
+function formatBooleanWithUnknownShort(value: ApiBooleanWithUnknown) {
+  switch (value) {
+    case ApiBooleanWithUnknown.True:
+      return "Ja";
+    case ApiBooleanWithUnknown.False:
+      return "Nein";
+    case ApiBooleanWithUnknown.Unknown:
+      return "-";
+  }
+}

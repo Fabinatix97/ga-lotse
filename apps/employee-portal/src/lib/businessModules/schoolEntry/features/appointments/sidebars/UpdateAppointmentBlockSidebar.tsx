@@ -19,6 +19,7 @@ import {
   formatTimeInput,
   mapFormValuesToApiValues,
 } from "@eshg/lib-employee-portal";
+import { parseOptionalValue } from "@eshg/lib-portal";
 import { ApiAppointmentBlock } from "@eshg/school-entry-api";
 
 import {
@@ -81,6 +82,7 @@ export function UpdateAppointmentBlockSidebar(
         parallelExaminations: appointmentBlock.parallelExaminations,
         physicians: appointmentBlock.physicians,
         mfas: appointmentBlock.mfas,
+        room: parseOptionalValue(appointmentBlock.room),
       }}
       validate={handleValidate}
       onSubmit={handleUpdate}

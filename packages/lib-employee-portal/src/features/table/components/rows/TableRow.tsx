@@ -181,6 +181,7 @@ export function TableRow<TData>({
           return (
             <DataCell
               key={cell.id}
+              rowDepth={row.depth}
               role={isRowHeader ? "rowheader" : undefined}
               colSpan={
                 isParentRow(row) &&

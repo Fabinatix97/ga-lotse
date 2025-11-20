@@ -27,6 +27,7 @@ export function getHeaderCellStyles(
 export function getRowCellStyles(
   meta: UnknownColumnMeta | undefined,
   theme: Theme,
+  rowDepth: number,
 ) {
   const isCheckbox = meta?.cellStyle === "checkbox";
   const isButtonOrIcon =
@@ -36,6 +37,7 @@ export function getRowCellStyles(
     ...(isCheckbox ? getCheckboxPadding(theme) : {}),
     ...(isButtonOrIcon ? getButtonOrIconPadding(theme) : {}),
     overflow: meta?.cellStyle === "icon" ? "visible" : undefined,
+    ...(meta?.indentSubRows ? getSubrowPadding(meta, rowDepth) : {}),
     // ensure width, even if header is not present
     width: meta?.width,
   };
@@ -58,5 +60,16 @@ function getButtonOrIconPadding(theme: Theme) {
   return {
     "--TableCell-paddingY": theme.spacing(0.5),
     "--TableCell-paddingX": theme.spacing(1),
+  };
+}
+
+function getSubrowPadding(
+  meta: UnknownColumnMeta | undefined,
+  rowDepth: number,
+) {
+  const paddingLeft = meta?.indentSize ? rowDepth * meta?.indentSize : 0;
+  return {
+    paddingLeft: `${paddingLeft}px`,
+    overflow: "visible",
   };
 }

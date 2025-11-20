@@ -92,7 +92,8 @@ public final class ChildMapper {
         child.child().getGroupName(),
         InstitutionMapper.mapContactToInstitutionDto(child.contact()),
         ProcedureMapper.toInterfaceType(child.child().getProcedureStatus()),
-        ProcedureLabelMapper.toDto(child.child().getProcedureLabels()));
+        ProcedureLabelMapper.toDto(child.child().getProcedureLabels()),
+        mapToDto(child.child().getCurrentFluoridationConsent()));
   }
 
   private static List<ExaminationDto> mapExaminationsToDto(List<Examination> examinations) {

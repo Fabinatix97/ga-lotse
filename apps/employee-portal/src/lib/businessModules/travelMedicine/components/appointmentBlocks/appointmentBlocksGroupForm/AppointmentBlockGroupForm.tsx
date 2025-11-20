@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Divider, Stack } from "@mui/joy";
+import { Divider, Grid, Stack } from "@mui/joy";
 import { Formik, FormikErrors } from "formik";
 import { isDefined, isEmpty } from "remeda";
 
@@ -11,6 +11,7 @@ import { ApiUser } from "@eshg/base-api";
 import {
   AppointmentBlockGroupFields,
   AppointmentBlockGroupValuesWithDays,
+  AppointmentRoomField,
   AppointmentStaffSelection,
   FormButtonBar,
   FormSheet,
@@ -20,7 +21,9 @@ import {
 import { OptionalFieldValue } from "@eshg/lib-portal";
 import { ApiAppointmentType } from "@eshg/travel-medicine-api";
 
+import { appointmentBlockApiQueryKey } from "@/lib/businessModules/schoolEntry/api/queries/apiQueryKeys";
 import { useAppointmentBlockApi } from "@/lib/businessModules/travelMedicine/api/clients";
+import { mapAppointmentBlockApi } from "@/lib/businessModules/travelMedicine/api/mapAppointmentBlockApi";
 import { getValidateDailyAppointmentBlocksForGroupQuery } from "@/lib/businessModules/travelMedicine/api/queries/appointmentBlocks";
 import { mapFormValues } from "@/lib/businessModules/travelMedicine/components/appointmentBlocks/appointmentBlocksGroupForm/CreateAppointmentBlockGroupForm";
 import { APPOINTMENT_TYPE_OPTIONS } from "@/lib/businessModules/travelMedicine/components/appointmentBlocks/options";
@@ -69,6 +72,7 @@ export interface AppointmentBlockGroupValues {
   appointmentBlocks: AppointmentBlockGroupValuesWithDays[];
   mfas: string[];
   physicians: string[];
+  room: string;
 }
 
 export function AppointmentBlockGroupForm(
@@ -116,6 +120,14 @@ export function AppointmentBlockGroupForm(
               }
             />
           </Stack>
+          <Grid container>
+            <Grid xs={6}>
+              <AppointmentRoomField
+                appointmentBlockApi={mapAppointmentBlockApi(appointmentApi)}
+                queryKey={appointmentBlockApiQueryKey}
+              />
+            </Grid>
+          </Grid>
           <Divider />
           <FormButtonBar
             submitLabel="Planen"

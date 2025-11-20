@@ -395,6 +395,13 @@
           }
         }, {
           "in" : "query",
+          "name" : "fluoridationConsentFilter",
+          "required" : false,
+          "schema" : {
+            "$ref" : "#/components/schemas/BooleanWithUnknown"
+          }
+        }, {
+          "in" : "query",
           "name" : "sortKey",
           "required" : false,
           "schema" : {
@@ -4113,7 +4120,7 @@
         }
       },
       "Child" : {
-        "required" : [ "dateOfBirth", "firstName", "gender", "id", "institution", "lastName", "procedureLabels", "status", "year" ],
+        "required" : [ "dateOfBirth", "firstName", "fluoridationConsent", "gender", "id", "institution", "lastName", "procedureLabels", "status", "year" ],
         "type" : "object",
         "properties" : {
           "dateOfBirth" : {
@@ -4122,6 +4129,9 @@
           },
           "firstName" : {
             "type" : "string"
+          },
+          "fluoridationConsent" : {
+            "$ref" : "#/components/schemas/BooleanWithUnknown"
           },
           "gender" : {
             "$ref" : "#/components/schemas/Gender"
@@ -4358,7 +4368,7 @@
       },
       "ChildSortKey" : {
         "type" : "string",
-        "enum" : [ "ID", "DATE_OF_BIRTH", "FIRST_NAME", "LAST_NAME", "YEAR", "GROUP_NAME" ]
+        "enum" : [ "ID", "DATE_OF_BIRTH", "FIRST_NAME", "LAST_NAME", "YEAR", "GROUP_NAME", "FLUORIDATION_CONSENT" ]
       },
       "ChildrenPopulationResult" : {
         "required" : [ "children", "count" ],
@@ -6835,7 +6845,7 @@
       },
       "ProcedureType" : {
         "type" : "string",
-        "enum" : [ "REGULAR_EXAMINATION", "CAN_CHILD", "ENTRY_LEVEL", "DRAFT_CITIZEN_OFFICE_IMPORT", "DRAFT_SCHOOL_IMPORT", "INSPECTION", "TM_VACCINATION_CONSULTATION", "MEASLES_PROTECTION", "STI_PROTECTION", "MEDICAL_REGISTRY_ENTRY", "MEDICAL_REGISTRY_CITIZEN_DRAFT", "MEDICAL_REGISTRY_EMPLOYEE_DRAFT", "DENTAL_CHILD", "OFFICIAL_MEDICAL_SERVICE", "MEDS_ABROAD" ]
+        "enum" : [ "REGULAR_EXAMINATION", "CAN_CHILD", "ENTRY_LEVEL", "DRAFT_CITIZEN_OFFICE_IMPORT", "DRAFT_SCHOOL_IMPORT", "INSPECTION", "TM_VACCINATION_CONSULTATION", "MEASLES_PROTECTION", "STI_PROTECTION", "MEDICAL_REGISTRY_ENTRY", "MEDICAL_REGISTRY_CITIZEN_DRAFT", "MEDICAL_REGISTRY_EMPLOYEE_DRAFT", "DENTAL_CHILD", "OFFICIAL_MEDICAL_SERVICE", "MEDS_ABROAD", "PROSTITUTE_PROTECTION" ]
       },
       "ProcedureWithDuration" : {
         "required" : [ "createdAt", "id" ],
@@ -7492,7 +7502,7 @@
       },
       "TaskType" : {
         "type" : "string",
-        "enum" : [ "BOOK_APPOINTMENT", "PERFORM_SCHOOL_ENTRY_EXAMINATION", "INSPECTION_PLANNING", "INSPECTION_EXECUTION", "INSPECTION_REPORT", "TRAVEL_MEDICINE", "MEASLES_PROTECTION", "STI_PROTECTION", "OFFICIAL_MEDICAL_SERVICE", "MEDS_ABROAD" ]
+        "enum" : [ "BOOK_APPOINTMENT", "PERFORM_SCHOOL_ENTRY_EXAMINATION", "INSPECTION_PLANNING", "INSPECTION_EXECUTION", "INSPECTION_REPORT", "TRAVEL_MEDICINE", "MEASLES_PROTECTION", "STI_PROTECTION", "OFFICIAL_MEDICAL_SERVICE", "MEDS_ABROAD", "PROSTITUTE_PROTECTION" ]
       },
       "TestHelperClockSetRequest" : {
         "required" : [ "newInstant" ],

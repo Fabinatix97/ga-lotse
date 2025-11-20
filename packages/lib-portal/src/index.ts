@@ -234,6 +234,7 @@ export { ExpandNavigation } from "./components/icons/ExpandNavigation";
 export { StethoscopeIcon } from "./components/icons/StethoscopeIcon";
 export { NextGenerationEULogo } from "./components/icons/NextGenerationEULogo";
 export { CustomAutocomplete } from "./components/inputs/CustomAutocomplete";
+export { DebouncedInput } from "./components/inputs/DebouncedInput";
 export { YearInput } from "./components/inputs/YearInput";
 export { LiveAnnouncer } from "./components/liveAnnouncer/LiveAnnouncer";
 export {

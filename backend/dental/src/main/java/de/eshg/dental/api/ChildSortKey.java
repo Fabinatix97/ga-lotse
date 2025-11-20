@@ -13,7 +13,9 @@ public enum ChildSortKey {
   FIRST_NAME(true),
   LAST_NAME(true),
   YEAR(false),
-  GROUP_NAME(false);
+  GROUP_NAME(false),
+  FLUORIDATION_CONSENT(false),
+  ;
 
   private final boolean personAttribute;
 
@@ -30,7 +32,7 @@ public enum ChildSortKey {
       case DATE_OF_BIRTH -> GetPersonsSortKey.DATE_OF_BIRTH;
       case FIRST_NAME -> GetPersonsSortKey.FIRST_NAME;
       case LAST_NAME -> GetPersonsSortKey.LAST_NAME;
-      case ID, YEAR, GROUP_NAME -> {
+      case ID, YEAR, GROUP_NAME, FLUORIDATION_CONSENT -> {
         throw new IllegalArgumentException("only allowed for person attribute sort keys");
       }
     };

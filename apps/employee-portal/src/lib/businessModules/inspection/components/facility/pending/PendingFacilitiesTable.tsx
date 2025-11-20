@@ -50,7 +50,9 @@ import {
   inspectionDuplicateFilterNames,
   inspectionPendingFacilityKindNames,
   inspectionPhaseNames,
+  inspectionSuspiciousSamplesFilterNames,
   inspectionTypeNames,
+  inspectionUnfinishedSamplesFilterNames,
 } from "@/lib/businessModules/inspection/shared/enums";
 import { PendingFacilitiesFilters } from "@/lib/businessModules/inspection/shared/types";
 
@@ -150,6 +152,23 @@ function createFilterDefinitions(
       type: "Text",
       key: "fileNumber",
       name: "Aktenzeichen",
+    },
+    {
+      type: "EnumSingle",
+      key: "unfinishedSamples",
+      name: "Probe ohne Ergebnis",
+      options: optionsFromRecord(inspectionUnfinishedSamplesFilterNames),
+    },
+    {
+      type: "EnumSingle",
+      key: "suspiciousSamples",
+      name: "Messwertauffälligkeiten",
+      options: optionsFromRecord(inspectionSuspiciousSamplesFilterNames),
+    },
+    {
+      type: "Text",
+      key: "pointOfWithdrawal",
+      name: "Entnahmestelle",
     },
   ];
 }

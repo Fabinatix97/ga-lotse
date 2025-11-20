@@ -12,4 +12,6 @@ import jakarta.validation.constraints.NotNull;
 public record UpdateSchoolEntryConfigRequest(
     @NotNull LocationSelectionMode locationSelectionMode,
     @NotNull boolean directProcedureTypeAssignmentOnImport,
-    @NotNull @HexColor String pdfDocumentAccentColor) {}
+    @NotNull @HexColor String pdfDocumentAccentColor,
+    @NotNull boolean invitationIncludePerson,
+    @NotNull boolean invitationIncludeRoom) {}

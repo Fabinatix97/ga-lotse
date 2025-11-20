@@ -269,6 +269,16 @@ subprojects {
     dependencies {
         testImplementation 'org.springframework.boot:spring-boot-starter-test'
         testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+
+        constraints {
+            implementation("commons-io:commons-io") {
+                version {
+                    // Workaround for https://issues.apache.org/jira/browse/IO-881
+                    reject("20030203.000550")
+                }
+                because("Reject legacy timestamp release of commons-io that was/is declared as latest version by mistake. See https://issues.apache.org/jira/browse/IO-881")
+            }
+        }
     }
 }
 

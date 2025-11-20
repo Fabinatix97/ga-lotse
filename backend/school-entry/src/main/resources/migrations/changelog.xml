@@ -118,5 +118,9 @@
   <include file="migrations/0108_add_gdpr_identification_data_hash.xml"/>
   <include file="migrations/0109_add_gdpr_identification_hash_not_null_constraint.xml"/>
   <include file="migrations/0110_add_custodians_without_date_of_birth.xml"/>
+  <include file="migrations/0111_add_ppr_appointment_type.xml"/>
+  <include file="migrations/0112_add_room_to_appointment_block.xml"/>
+  <include file="migrations/0113_add_new_procedure_type_prostitute_protection.xml"/>
+  <include file="migrations/0114_add_invitation_config.xml"/>
 
 </databaseChangeLog>

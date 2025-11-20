@@ -23,6 +23,11 @@ public class SchoolEntryConfigAuditLogMapper {
           "directProcedureTypeAssignmentOnImport",
           Boolean.toString(schoolEntryConfig.isDirectProcedureTypeAssignmentOnImport()));
       relevantFields.put("pdfDocumentAccentColor", schoolEntryConfig.getPdfDocumentAccentColor());
+      relevantFields.put(
+          "invitationIncludePerson",
+          Boolean.toString(schoolEntryConfig.isInvitationIncludePerson()));
+      relevantFields.put(
+          "invitationIncludeRoom", Boolean.toString(schoolEntryConfig.isInvitationIncludeRoom()));
     }
     return relevantFields;
   }

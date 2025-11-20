@@ -82,3 +82,7 @@ export const inspectionFeatureTogglesApiQueryKey = queryKeyFactory(
 export const samplesApiQueryKey = queryKeyFactory(
   apiQueryKey(["inspectionSampleApi"]),
 );
+
+export const measurementParameterApiQueryKey = queryKeyFactory(
+  apiQueryKey(["InspectionParameterAutocompleteApi"]),
+);

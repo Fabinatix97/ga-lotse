@@ -27,4 +27,5 @@ public record UpdateAppointmentBlockRequest(
     @NotNull @Min(1) @Max(10) int parallelExaminations,
     @NotNull List<UUID> physicians,
     @NotNull List<UUID> mfas,
-    @NotNull List<UUID> consultants) {}
+    @NotNull List<UUID> consultants,
+    String room) {}

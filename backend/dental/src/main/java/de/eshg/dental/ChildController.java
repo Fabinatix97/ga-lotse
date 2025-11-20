@@ -191,11 +191,15 @@ public class ChildController {
 
   private ChildDetailsDto getChildDetails(Child child) {
     List<ChildWithPersonAndContactData> childAndAllPreviousChildren =
-        childService.getChildAndAllPreviousChildren(child);
+        childService.augmentWithChildAndContactData(
+            childService.getChildAndAllPreviousChildren(child));
 
     List<Examination> examinations = childService.getAllExaminations(childAndAllPreviousChildren);
     List<FluoridationConsent> fluoridationConsents =
-        childService.getAllFluoridationConsents(childAndAllPreviousChildren);
+        childService.getAllFluoridationConsents(
+            childAndAllPreviousChildren.stream()
+                .map(ChildWithPersonAndContactData::child)
+                .toList());
 
     List<AnnualInstitutionDto> institutions =
         childService.getAllInstitutions(childAndAllPreviousChildren);

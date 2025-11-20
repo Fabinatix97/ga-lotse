@@ -34,6 +34,10 @@ import {
 } from "@eshg/official-medical-service-api";
 import { OpenDataConfigApi } from "@eshg/opendata-api";
 import {
+  ProstituteProtectionAppointmentStandardDurationConfigApi,
+  Configuration as ProstituteProtectionConfiguration,
+} from "@eshg/prostitute-protection-api";
+import {
   AppointmentBlockAvailabilityConfigApi,
   SchoolEntryAppointmentStandardDurationConfigApi,
   SchoolEntryLibConfigApi,
@@ -115,7 +119,7 @@ export function useStatisticsProcedureReferenceApi(
 // note: STI_PROTECTION and SEX_WORK have different paths
 
 // eslint-disable-next-line unused-imports/no-unused-vars
-const { DENTAL, PROSTITUTE_PROTECTION, ...configBusinessModuleBackendUrls } =
+const { DENTAL, ...configBusinessModuleBackendUrls } =
   businessModuleBackendUrls;
 const configuratorModuleBackendUrls = {
   ...configBusinessModuleBackendUrls,
@@ -258,6 +262,16 @@ export function useStiProtectionAppointmentStandardDurationConfigApi() {
 export function useOpenDataConfigApi() {
   const configuration = useOpenDataConfiguration();
   return new OpenDataConfigApi(configuration);
+}
+
+export function useProstituteProtectionAppointmentStandardDurationConfigApi() {
+  const configuration = useConfigurationByBusinessModule(
+    ApiBusinessModule.ProstituteProtection,
+    ProstituteProtectionConfiguration,
+  );
+  return new ProstituteProtectionAppointmentStandardDurationConfigApi(
+    configuration,
+  );
 }
 
 export function useAddressRegistryConfigurationApi() {

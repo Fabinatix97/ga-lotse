@@ -28,6 +28,7 @@ export const ApiAppointmentType = {
   OfficialMedicalServiceShort: "OFFICIAL_MEDICAL_SERVICE_SHORT",
   OfficialMedicalServiceLong: "OFFICIAL_MEDICAL_SERVICE_LONG",
   MedsAbroadCertification: "MEDS_ABROAD_CERTIFICATION",
+  ProstituteProtectionConsultation: "PROSTITUTE_PROTECTION_CONSULTATION",
 } as const;
 export type ApiAppointmentType =
   (typeof ApiAppointmentType)[keyof typeof ApiAppointmentType];

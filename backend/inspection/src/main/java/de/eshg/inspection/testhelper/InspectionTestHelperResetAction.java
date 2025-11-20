@@ -6,7 +6,7 @@
 package de.eshg.inspection.testhelper;
 
 import de.eshg.inspection.objecttype.persistence.CreateObjectTypeHierarchyTask;
-import de.eshg.inspection.teis.CreateTeisDataTask;
+import de.eshg.inspection.testhelper.api.TeisDataCreationModeDto;
 import de.eshg.testhelper.ConditionalOnTestHelperEnabled;
 import de.eshg.testhelper.TestHelperServiceResetAction;
 import org.springframework.core.annotation.Order;
@@ -18,21 +18,31 @@ import org.springframework.stereotype.Component;
 public class InspectionTestHelperResetAction implements TestHelperServiceResetAction {
   private final CreateObjectTypeHierarchyTask createObjectTypeHierarchyTask;
   private final ChecklistDefinitionTestDataProvider checklistDefinitionTestDataProvider;
-  private final CreateTeisDataTask createTeisDataTask;
+  private final TeisDataPopulator teisDataPopulator;
+
+  private TeisDataCreationModeDto teisDataCreationMode = TeisDataCreationModeDto.TEST_DATA;
 
   public InspectionTestHelperResetAction(
       ChecklistDefinitionTestDataProvider checklistDefinitionTestDataProvider,
       CreateObjectTypeHierarchyTask createObjectTypeHierarchyTask,
-      CreateTeisDataTask createTeisDataTask) {
+      TeisDataPopulator teisDataPopulator) {
     this.checklistDefinitionTestDataProvider = checklistDefinitionTestDataProvider;
     this.createObjectTypeHierarchyTask = createObjectTypeHierarchyTask;
-    this.createTeisDataTask = createTeisDataTask;
+    this.teisDataPopulator = teisDataPopulator;
+  }
+
+  public TeisDataCreationModeDto getTeisDataCreationModeDto() {
+    return teisDataCreationMode;
+  }
+
+  public void setTeisDataCreationModeDto(TeisDataCreationModeDto teisDataCreationModeDto) {
+    this.teisDataCreationMode = teisDataCreationModeDto;
   }
 
   @Override
   public void reset() {
     createObjectTypeHierarchyTask.createObjectTypeHierarchy();
     checklistDefinitionTestDataProvider.clearTestCLDs();
-    createTeisDataTask.parseXml();
+    teisDataPopulator.recreateTeisData(teisDataCreationMode);
   }
 }

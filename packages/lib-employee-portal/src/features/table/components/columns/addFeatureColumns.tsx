@@ -20,6 +20,8 @@ interface TableFeatures {
 export function addFeatureColumns<TData>(
   columns: TableOptions<TData>["columns"],
   features: TableFeatures,
+  indentSubRows?: boolean,
+  indentSize?: number,
 ): TableOptions<TData>["columns"] {
   if (isDefined(features.toggleSelectProps)) {
     columns = [
@@ -28,7 +30,17 @@ export function addFeatureColumns<TData>(
     ];
   }
   if (features.toggleExpand) {
-    columns = [ToggleExpandColumn as DisplayColumnDef<TData>, ...columns];
+    columns = [
+      {
+        ...ToggleExpandColumn,
+        meta: {
+          ...ToggleExpandColumn.meta,
+          indentSubRows: indentSubRows,
+          indentSize: indentSize,
+        },
+      } as DisplayColumnDef<TData>,
+      ...columns,
+    ];
   }
 
   return columns;

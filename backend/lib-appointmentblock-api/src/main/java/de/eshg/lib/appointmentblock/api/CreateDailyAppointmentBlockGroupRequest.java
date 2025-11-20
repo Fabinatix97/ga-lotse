@@ -21,6 +21,7 @@ public record CreateDailyAppointmentBlockGroupRequest(
     List<UUID> physicians,
     List<UUID> mfas,
     List<UUID> consultants,
+    @Size(min = 1, max = 60) String room,
     UUID locationId,
     Boolean availableForCitizen,
     Boolean availableForBulkBooking) {
@@ -39,6 +40,7 @@ public record CreateDailyAppointmentBlockGroupRequest(
         physicians,
         mfas,
         consultants,
+        null,
         null,
         null,
         null);
