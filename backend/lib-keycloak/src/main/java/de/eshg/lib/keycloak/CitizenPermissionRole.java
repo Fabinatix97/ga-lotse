@@ -58,7 +58,7 @@ public enum CitizenPermissionRole implements PermissionRole {
   private enum Module {
     BASE("Grundmodul"),
     SCHOOL_ENTRY("Einschulungsuntersuchungsmodul"),
-    INSPECTION("Begehungsmodul"),
+    INSPECTION("Hygienemodul"),
     TRAVEL_MEDICINE("Impfberatung"),
     MEASLES_PROTECTION("Masernschutzimpfung"),
     CHAT_MANAGEMENT("Chat-Management"),

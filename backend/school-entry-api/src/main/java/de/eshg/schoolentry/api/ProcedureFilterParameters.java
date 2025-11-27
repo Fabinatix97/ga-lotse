@@ -19,4 +19,7 @@ public record ProcedureFilterParameters(
     List<UUID> labelsFilter,
     List<UUID> excludedLabelsFilter,
     Boolean isInvitationSentFilter,
-    Boolean hasExaminationEditsFilter) {}
+    Boolean hasExaminationEditsFilter,
+    List<UUID> physiciansFilter,
+    List<UUID> mfasFilter,
+    String roomFilter) {}

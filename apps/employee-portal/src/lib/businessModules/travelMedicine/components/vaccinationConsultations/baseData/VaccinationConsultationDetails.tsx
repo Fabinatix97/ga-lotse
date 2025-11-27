@@ -7,7 +7,7 @@
 
 import { Grid, Stack } from "@mui/joy";
 
-import { ApiCountryCode } from "@eshg/base-api";
+import { ApiCountryCode, ApiUser } from "@eshg/base-api";
 import { Alert } from "@eshg/lib-portal";
 import {
   ApiCreatedByUserType,
@@ -46,6 +46,8 @@ const SPACING = { xxs: 2, sm: 3, md: 3, xxl: 3 };
 
 interface VaccinationConsultationPageProps {
   procedure: ApiGetVaccinationConsultationDetailsResponse;
+  allPhysicians: ApiUser[];
+  allMedicalAssistants: ApiUser[];
 }
 
 export function VaccinationConsultationDetails(
@@ -120,6 +122,8 @@ export function VaccinationConsultationDetails(
             initialValues.initialAppointmentProcedureStepId
           }
           createdByUserType={initialValues.createdByUserType}
+          allPhysicians={props.allPhysicians}
+          allMedicalAssistants={props.allMedicalAssistants}
         />
       </Grid>
     </DetailsGrid>

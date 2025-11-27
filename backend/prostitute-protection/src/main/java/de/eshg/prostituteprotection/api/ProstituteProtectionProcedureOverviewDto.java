@@ -18,7 +18,7 @@ import java.util.UUID;
 public record ProstituteProtectionProcedureOverviewDto(
     @NotNull UUID id,
     String firstName,
-    @NotNull String lastName,
+    String lastName,
     String alias,
     @DateOfBirth LocalDate dateOfBirth,
     @NotNull List<LanguageDto> languages,

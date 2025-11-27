@@ -9,11 +9,7 @@ import { StickyToolbarLayout } from "@eshg/lib-employee-portal";
 import { DynamicLayoutProps } from "@eshg/lib-portal";
 
 import { ProcedureToolbar } from "@/lib/businessModules/stiProtection/features/procedures/ProcedureToolbar";
-
-// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
-export type StiProtectionProcedureRouteParams = {
-  id: string;
-};
+import { StiProtectionProcedureRouteParams } from "@/lib/businessModules/stiProtection/features/procedures/StiProtectionProcedureRouteParams";
 
 export default async function StiProtectionProcedureLayout(
   props: DynamicLayoutProps<StiProtectionProcedureRouteParams>,

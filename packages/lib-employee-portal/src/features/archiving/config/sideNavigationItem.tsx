@@ -26,7 +26,7 @@ const subItemsArchiveMap: SubItemMap = {
     accessCheck: hasUserRole(ApiUserRole.ProcedureArchive),
   },
   [ApiBusinessModule.Inspection]: {
-    name: "Begehung",
+    name: "Hygiene",
     href: archivingRoutes.module[ApiBusinessModule.Inspection],
     accessCheck: hasUserRole(ApiUserRole.ProcedureArchive),
   },
@@ -74,7 +74,7 @@ const subItemsArchiveAdminMap: SubItemMap = {
     accessCheck: hasUserRole(ApiUserRole.ProcedureArchiveAdmin),
   },
   [ApiBusinessModule.Inspection]: {
-    name: "Begehung",
+    name: "Hygiene",
     href: archivingAdminRoutes.module[ApiBusinessModule.Inspection],
     accessCheck: hasUserRole(ApiUserRole.ProcedureArchiveAdmin),
   },

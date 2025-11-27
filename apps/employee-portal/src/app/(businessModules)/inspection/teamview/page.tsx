@@ -13,7 +13,7 @@ import {
   Toolbar,
 } from "@eshg/lib-employee-portal";
 
-import { Teamview } from "@/lib/baseModule/components/task/Teamview";
+import { Teamview } from "@/lib/businessModules/inspection/components/teamview/Teamview";
 import { moduleUserGroup } from "@/lib/businessModules/inspection/shared/moduleUserGroup";
 
 export default function InspectionTeamviewPage() {

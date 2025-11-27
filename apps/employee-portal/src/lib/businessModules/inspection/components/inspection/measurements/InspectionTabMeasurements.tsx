@@ -48,7 +48,10 @@ export function InspectionTabMeasurements({
             height: "min-content",
           }}
         >
-          <SamplesTile procedureId={inspection.externalId} />
+          <SamplesTile
+            procedureId={inspection.externalId}
+            facility={inspection.facility}
+          />
         </Box>
       </Box>
     );
@@ -63,7 +66,10 @@ export function InspectionTabMeasurements({
             paddingBottom: 2,
           }}
         >
-          <SamplesTile procedureId={inspection.externalId} />
+          <SamplesTile
+            procedureId={inspection.externalId}
+            facility={inspection.facility}
+          />
         </Box>
       </Box>
     );

@@ -13,6 +13,7 @@ import {
   useArchivingSideNavigationItems,
   useGetPublicConfig,
 } from "@eshg/lib-employee-portal";
+import { resolveSideNavigationItems as resolveProstituteProtectionSideNavigationItems } from "@eshg/prostitute-protection";
 
 import { SideNavItemGroups } from "@/lib/baseModule/components/layout/sideNavigation/types";
 import { useSideNavigationItemProps } from "@/lib/baseModule/components/layout/sideNavigation/useSideNavigationItemProps";
@@ -51,7 +52,8 @@ const businessItemResolvers: Record<
   [ApiBusinessModule.OfficialMedicalService]:
     resolveOfficialMedicalServiceSideNavigationItems,
   [ApiBusinessModule.MedsAbroad]: () => [],
-  [ApiBusinessModule.ProstituteProtection]: (_) => [],
+  [ApiBusinessModule.ProstituteProtection]:
+    resolveProstituteProtectionSideNavigationItems,
 };
 
 function useBusinessItems(): SideNavigationItem[] {

@@ -59,7 +59,7 @@ public class SchoolEntryProcedureDataSource
         DATA_SOURCE_ID,
         DATA_SOURCE_NAME,
         DataSourceSensitivity.SENSITIVE,
-        null,
+        5,
         schoolEntryProcedureRepository,
         EsuAttributes.allAttributes());
     this.anamnesisStatistics = anamnesisStatistics;

@@ -5,16 +5,28 @@
 
 import { styled } from "@mui/joy";
 
-export const SectionGrid = styled("section")(({ theme }) => ({
+export const SectionGrid = styled("section", {
+  shouldForwardProp(propName) {
+    return !["columns", "defaultColumn", "breakpoint"].includes(
+      propName as string,
+    );
+  },
+})<{
+  columns?: string;
+  defaultColumn?: number;
+  breakpoint?: "xxl" | "xl" | "lg" | "md";
+}>(({ theme, defaultColumn, columns, breakpoint }) => ({
   display: "grid",
   rowGap: theme.spacing(5),
   columnGap: theme.spacing(3),
-  gridTemplateColumns: "6fr 3fr",
+  gridTemplateColumns: columns ?? "6fr 3fr",
+
   "& > *": {
-    gridColumn: 1,
+    gridColumn: defaultColumn,
   },
 
-  [theme.breakpoints.down("lg")]: {
-    gridTemplateColumns: "1fr",
+  [theme.breakpoints.down(breakpoint ?? "lg")]: {
+    display: "flex",
+    flexDirection: "column",
   },
 }));

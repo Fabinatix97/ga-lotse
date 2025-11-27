@@ -158,6 +158,7 @@ export {
   SearchableGroups,
 } from "./components/searchableGroups/SearchableGroups";
 export { ResettableSingleSelect } from "./components/select/ResettableSingleSelect";
+export { RoomSelect } from "./components/select/RoomSelect";
 export { PersonToolbarHeader } from "./components/tabNavigationToolbar/PersonToolbarHeader";
 export { type TabNavigationItem } from "./components/tabNavigationToolbar/TabNavigation";
 export {

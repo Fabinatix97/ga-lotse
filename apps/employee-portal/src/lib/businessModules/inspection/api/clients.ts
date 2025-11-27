@@ -22,6 +22,7 @@ import {
   InspectionIncidentApi,
   InspectionParameterAutocompleteApi,
   InspectionPropertiesConfigApi,
+  InspectionSampleActorAutocompleteApi,
   InspectionSampleApi,
   ObjectTypeApi,
   PacklistApi,
@@ -170,4 +171,9 @@ export function useSampleApi() {
 export function useParameterAutocompleteApi() {
   const configuration = useConfiguration();
   return new InspectionParameterAutocompleteApi(configuration);
+}
+
+export function useSampleActorAutocompleteApi() {
+  const configuration = useConfiguration();
+  return new InspectionSampleActorAutocompleteApi(configuration);
 }

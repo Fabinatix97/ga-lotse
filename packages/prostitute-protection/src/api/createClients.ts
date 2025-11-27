@@ -23,6 +23,8 @@ import {
   InboxProcedureApi,
   ProcedureApi,
   ProgressEntryApi,
+  ProstituteProtectionApi,
+  ProstituteProtectionAppointmentStandardDurationApi,
   TaskApi,
   TestHelperApi,
 } from "@eshg/prostitute-protection-api";
@@ -34,6 +36,8 @@ export function createClients(baseUrl: string) {
   });
   return {
     appointmentBlockApi: new AppointmentBlockApi(config),
+    appointmentStandardDurationApi:
+      new ProstituteProtectionAppointmentStandardDurationApi(config),
     archivingApi: new ArchivingApi(config),
     inboxProcedureApi: new InboxProcedureApi(config),
     procedureApi: new ProcedureApi(config),
@@ -43,6 +47,7 @@ export function createClients(baseUrl: string) {
     approvalRequestApi: new ApprovalRequestApi(config),
     gdprValidationTaskApi: new GdprValidationTaskApi(config),
     taskApi: new TaskApi(config),
+    prostituteProtectionApi: new ProstituteProtectionApi(config),
   };
 }
 export type ProstituteProtectionClients = ReturnType<typeof createClients>;

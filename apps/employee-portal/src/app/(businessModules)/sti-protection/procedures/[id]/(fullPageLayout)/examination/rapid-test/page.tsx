@@ -11,9 +11,9 @@ import { use } from "react";
 import { MainContentLayout } from "@eshg/lib-employee-portal";
 import { DisabledFormProvider, DynamicPageProps } from "@eshg/lib-portal";
 
-import { StiProtectionProcedureRouteParams } from "@/app/(businessModules)/sti-protection/procedures/[id]/(fullPageLayout)/layout";
 import { useGetRapidTestExaminationQueryOptions } from "@/lib/businessModules/stiProtection/api/queries/examination";
 import { useStiProcedureQueryOptions } from "@/lib/businessModules/stiProtection/api/queries/procedures";
+import { StiProtectionProcedureRouteParams } from "@/lib/businessModules/stiProtection/features/procedures/StiProtectionProcedureRouteParams";
 import { RapidTestExamination } from "@/lib/businessModules/stiProtection/features/procedures/examination/rapidTest/RapidTestExamination";
 import { isProcedureOpen } from "@/lib/businessModules/stiProtection/shared/helpers";
 

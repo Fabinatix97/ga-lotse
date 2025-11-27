@@ -11,13 +11,13 @@ import { ApiBusinessModule, ApiUserRole } from "@eshg/base-api";
 import { ProgressEntriesPage } from "@eshg/lib-employee-portal";
 import { DynamicPageProps } from "@eshg/lib-portal";
 
-import { StiProtectionProcedureRouteParams } from "@/app/(businessModules)/sti-protection/procedures/[id]/(framedPageLayout)/layout";
 import {
   useApprovalRequestApi,
   useFileApi,
   useProcedureApi,
   useProgressEntryApi,
 } from "@/lib/businessModules/stiProtection/api/clients";
+import { StiProtectionProcedureRouteParams } from "@/lib/businessModules/stiProtection/features/procedures/StiProtectionProcedureRouteParams";
 import { systemProgressEntryTypeTitles } from "@/lib/businessModules/stiProtection/shared/constants";
 import { moduleUserGroup } from "@/lib/businessModules/stiProtection/shared/moduleUserGroup";
 

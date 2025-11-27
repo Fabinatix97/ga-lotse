@@ -64,7 +64,8 @@ public class InspectionPopulator extends BasePopulator<InspectionDto> {
     InspectionDto response = facilityTestDataProvider.createTestFacilityAndStartInsp(index);
     RequestContextFaker.withFakedRequestContextIfNecessary(
         () -> {
-          inspectionTestDataProvider.prepareTestInspection(response.externalId(), faker, index);
+          inspectionTestDataProvider.prepareTestInspection(
+              response.externalId(), response.facility().id(), faker, index);
           return null;
         });
     return response;

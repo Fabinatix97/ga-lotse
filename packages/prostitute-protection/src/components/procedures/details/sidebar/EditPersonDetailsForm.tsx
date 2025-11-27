@@ -3,22 +3,27 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Chip, Stack } from "@mui/joy";
+import { Chip, Divider, Stack } from "@mui/joy";
 import { useFormikContext } from "formik";
 import { ChangeEvent } from "react";
 
 import {
   CheckboxField,
   DateField,
-  GENDER_OPTIONS,
   InputField,
   SelectField,
+  buildEnumOptions,
   useValidateLength,
   validateDateOfBirth,
 } from "@eshg/lib-portal";
 import { ApiPersonLanguage } from "@eshg/prostitute-protection-api";
 
-import { LANGUAGE_OPTIONS } from "../../shared/constants";
+import {
+  DOCUMENT_TYPE_VALUES,
+  LANGUAGE_OPTIONS,
+  NATIONALITY_OPTIONS,
+  PERSON_FIELD_NAME,
+} from "../../../../shared/constants";
 
 import { EditPersonalDataForm } from "./EditPersonDetailsSidebar";
 
@@ -28,21 +33,19 @@ export function EditPersonDetailsForm() {
 
   async function handleCheckboxChange(e: ChangeEvent<HTMLInputElement>) {
     const isChecked = e.target.checked;
-    const currentLanguages = values.consultationLanguage ?? [];
+    const languages = values.languages ?? [];
     const german = ApiPersonLanguage.German;
 
     if (isChecked) {
-      // Add German at the beginning if not present
-      const updatedLanguages = currentLanguages.includes(german)
-        ? currentLanguages
-        : [german, ...currentLanguages];
-      await setFieldValue("consultationLanguage", updatedLanguages);
+      const updatedLanguages = languages.includes(german)
+        ? languages
+        : [german, ...languages];
+      await setFieldValue("languages", updatedLanguages);
       await setFieldValue("hasSufficientGermanLanguageSkills", true);
     } else {
-      // Remove German from the list
       await setFieldValue(
-        "consultationLanguage",
-        currentLanguages.filter((lang: ApiPersonLanguage) => lang !== german),
+        "languages",
+        languages.filter((lang: ApiPersonLanguage) => lang !== german),
       );
       await setFieldValue("hasSufficientGermanLanguageSkills", false);
     }
@@ -52,17 +55,15 @@ export function EditPersonDetailsForm() {
     const german = ApiPersonLanguage.German;
     const hasGerman = value.includes(german);
 
-    // Sync checkbox state with German presence in languages
     if (values.hasSufficientGermanLanguageSkills !== hasGerman) {
       await setFieldValue("hasSufficientGermanLanguageSkills", hasGerman);
     }
 
-    // Keep German at the beginning if present
     if (hasGerman) {
       const withoutGerman = value.filter((lang) => lang !== german);
-      await setFieldValue("consultationLanguage", [german, ...withoutGerman]);
+      await setFieldValue("languages", [german, ...withoutGerman]);
     } else {
-      await setFieldValue("consultationLanguage", value);
+      await setFieldValue("languages", value);
     }
   }
 
@@ -70,35 +71,30 @@ export function EditPersonDetailsForm() {
     <Stack gap={2}>
       <InputField
         name="firstName"
-        label="Vorname"
+        label={PERSON_FIELD_NAME.firstName}
         validate={(value) => (value ? validateLength(1, 80)(value) : undefined)}
       />
       <InputField
         name="lastName"
-        label="Nachname"
+        label={PERSON_FIELD_NAME.lastName}
         required="Bitte einen Nachnamen angeben."
         validate={validateLength(1, 120)}
       />
       <InputField name="alias" label="Alias" validate={validateLength(1, 80)} />
       <DateField
         name="dateOfBirth"
-        label="Geburtsdatum"
+        label={PERSON_FIELD_NAME.dateOfBirth}
         validate={(value) => (value ? validateDateOfBirth(value) : undefined)}
       />
-      <SelectField
-        name="gender"
-        label="Biologisches Geschlecht"
-        options={GENDER_OPTIONS}
-        required="Bitte ein Biologisches Geschlecht auswählen."
-      />
+      <Divider sx={{ marginBlock: 1 }} />
       <CheckboxField
         name="hasSufficientGermanLanguageSkills"
-        label="Ausreichende Deutschkenntnisse"
+        label={PERSON_FIELD_NAME.hasSufficientGermanLanguageSkills}
         onChange={handleCheckboxChange}
       />
       <SelectField
-        name="consultationLanguage"
-        label="Gesprochene Sprachen"
+        name="languages"
+        label={PERSON_FIELD_NAME.languages}
         options={LANGUAGE_OPTIONS}
         renderValue={(modules) => (
           <Stack direction="row" spacing={0.5} flexWrap="wrap">
@@ -111,6 +107,16 @@ export function EditPersonDetailsForm() {
         )}
         multiple
         onChange={handleSelectChange}
+      />
+      <SelectField
+        name="nationality"
+        label={PERSON_FIELD_NAME.nationality}
+        options={NATIONALITY_OPTIONS}
+      />
+      <SelectField
+        name="documentType"
+        label={PERSON_FIELD_NAME.documentType}
+        options={buildEnumOptions(DOCUMENT_TYPE_VALUES)}
       />
     </Stack>
   );

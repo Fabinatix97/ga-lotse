@@ -7,7 +7,7 @@ import { BiotechOutlined } from "@mui/icons-material";
 import { Box, Stack } from "@mui/joy";
 import { ReactNode } from "react";
 
-import { StiProtectionProcedureRouteParams } from "@/app/(businessModules)/sti-protection/procedures/[id]/(fullPageLayout)/layout";
+import { StiProtectionProcedureRouteParams } from "@/lib/businessModules/stiProtection/features/procedures/StiProtectionProcedureRouteParams";
 import { routes } from "@/lib/businessModules/stiProtection/shared/routes";
 import { LaboratoryTestOutlined } from "@/lib/shared/components/icons/LaboratoryTestOutlined";
 import { SidePanel } from "@/lib/shared/components/sidePanel/SidePanel";

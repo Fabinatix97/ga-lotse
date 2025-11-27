@@ -9,12 +9,17 @@ import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 import { DeepKeys } from "@tanstack/react-table";
 import { isDefined } from "remeda";
 
-import { PaginationProps, TableSortingProps } from "@eshg/lib-employee-portal";
+import {
+  PaginationProps,
+  TableSortingProps,
+  getSortDirection,
+  getSortKey,
+} from "@eshg/lib-employee-portal";
 import { unwrapRawResponse } from "@eshg/lib-portal";
 import {
   ApiGetMeaslesProtectionProceduresSortBy,
-  ApiGetMeaslesProtectionProceduresSortOrder,
   ApiGetProcedure200Response,
+  GetProceduresRequest,
   ProtectionProcedureApi,
 } from "@eshg/measles-protection-api";
 
@@ -53,17 +58,6 @@ const SortByMap: Record<string, ApiGetMeaslesProtectionProceduresSortBy> = {
   Record<ProcedureTableColumnNames, ApiGetMeaslesProtectionProceduresSortBy>
 >;
 
-function mapSortBy(sortBy?: string) {
-  if (!sortBy) return;
-
-  const mappedValue = SortByMap[sortBy];
-  if (mappedValue) {
-    return mappedValue;
-  }
-
-  throw Error(`Unexpected sort field: ${sortBy}`);
-}
-
 export function getProcedureQuery(
   protectionProcedureApi: ProtectionProcedureApi,
   procedureId: string,
@@ -94,53 +88,37 @@ export function useGetHeaderInformation(procedureId: string) {
   });
 }
 
-function mapSortOrder(
-  sortOrder: boolean | undefined,
-): ApiGetMeaslesProtectionProceduresSortOrder | undefined {
-  if (sortOrder === undefined) {
-    return;
-  }
-  return sortOrder
-    ? ApiGetMeaslesProtectionProceduresSortOrder.Desc
-    : ApiGetMeaslesProtectionProceduresSortOrder.Asc;
-}
-
 export function useGetProceduresQuery(
   page: PageRequest,
   sorting: TableSortingProps,
   filters: ProcedureFilters,
 ) {
-  const sortState = sorting.manualSorting
-    ? sorting.sortingState[0]
-    : sorting.initialSorting?.[0];
+  const sortKey = getSortKey(sorting, SortByMap);
   const protectionProcedureApi = useProtectionProcedureApi();
+  const request: GetProceduresRequest = {
+    pageNumber: page.pageNumber,
+    pageSize: page.pageSize,
+    sortBy: sortKey,
+    sortOrder: getSortDirection(sorting),
+    creationDate: filters.creationDate,
+    birthday: filters.birthday,
+    facilityType: filters.facilityType,
+    caseStatus: filters.caseStatus,
+    procedureStatus: filters.procedureStatus,
+    roleStatus: filters.roleStatus,
+    hasAppointment: filters.hasAppointment,
+    measure: filters.measure,
+    proofRequestSent: filters.proofRequestSent,
+    proofSubmissionResult: filters.proofSubmissionResult,
+  };
+
   return queryOptions({
     queryFn: ({ signal }) =>
-      protectionProcedureApi.getProcedures(
-        page.pageNumber,
-        page.pageSize,
-        mapSortBy(sortState?.id),
-        mapSortOrder(sortState?.desc),
-        filters.creationDate,
-        filters.birthday,
-        filters.facilityType,
-        filters.caseStatus,
-        filters.procedureStatus,
-        filters.roleStatus,
-        filters.hasAppointment,
-        filters.measure,
-        filters.proofRequestSent,
-        filters.proofSubmissionResult,
-        { signal },
-      ),
+      protectionProcedureApi
+        .getProceduresRaw(request, { signal })
+        .then(unwrapRawResponse),
 
-    queryKey: measlesProtectionApiQueryKey([
-      "procedures",
-      "list",
-      page,
-      sortState,
-      makeFiltersQueryKeyPart(filters),
-    ]),
+    queryKey: measlesProtectionApiQueryKey(["procedures", "list", request]),
   });
 }
 
@@ -159,17 +137,4 @@ export function getProceduresByPersonQuery(
     select: (response) => response.procedures,
     enabled: isDefined(id),
   });
-}
-
-// Apparently nested sets don't go down so well with Tanstack Query
-function makeFiltersQueryKeyPart(filters: ProcedureFilters) {
-  return Object.fromEntries(
-    Object.entries(filters).map(([key, value]) => {
-      if (value instanceof Set) {
-        return [key, Array.from(value).join(",")];
-      }
-
-      return [key, value];
-    }),
-  );
 }

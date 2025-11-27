@@ -17,10 +17,10 @@ public enum EmployeePermissionRole implements PermissionRole {
       "Standardberechtigung, die ALLE Mitarbeiter:innen automatisch erhalten",
       Module.BASE),
   INSPECTION_LEADER(
-      LEADER_KEYCLOAK_NAME, LEADER_DESCRIPTION.formatted("Begehung"), Module.INSPECTION),
+      LEADER_KEYCLOAK_NAME, LEADER_DESCRIPTION.formatted("Hygiene"), Module.INSPECTION),
   INSPECTION_LANDESAMT_LEADER(
       LEADER_KEYCLOAK_NAME,
-      LEADER_DESCRIPTION.formatted("Begehungsmodul Landesamt"),
+      LEADER_DESCRIPTION.formatted("Hygienemodul Landesamt"),
       Module.INSPECTION_LANDESAMT),
   SCHOOL_ENTRY_LEADER(
       LEADER_KEYCLOAK_NAME,
@@ -456,8 +456,8 @@ public enum EmployeePermissionRole implements PermissionRole {
   private enum Module {
     BASE("Grundmodul"),
     SCHOOL_ENTRY("Einschulungsuntersuchung"),
-    INSPECTION("Begehungsmodul"),
-    INSPECTION_LANDESAMT("Begehungsmodul Landesamt"),
+    INSPECTION("Hygienemodul"),
+    INSPECTION_LANDESAMT("Hygienemodul Landesamt"),
     TRAVEL_MEDICINE("Impfberatung"),
     MEASLES_PROTECTION("Masernschutzimpfung"),
     CHAT_MANAGEMENT("Chat-Management"),

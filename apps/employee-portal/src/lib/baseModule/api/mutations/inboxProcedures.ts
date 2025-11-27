@@ -4,9 +4,11 @@
  */
 
 import { useHandledMutation } from "@eshg/lib-portal";
-import { ApiCreateInboxProcedureRequest } from "@eshg/lib-procedures-api";
+import {
+  ApiBusinessModule,
+  ApiCreateInboxProcedureRequest,
+} from "@eshg/lib-procedures-api";
 
-import { InboxAwareBusinessModule } from "@/lib/baseModule/components/inboxProcedures/types";
 import { useResolveInboxProcedureApi } from "@/lib/baseModule/moduleRegister/useResolveInboxProcedureApi";
 
 export function useCreateInboxProcedure() {
@@ -18,7 +20,7 @@ export function useCreateInboxProcedure() {
       request,
       file,
     }: {
-      businessModule: InboxAwareBusinessModule;
+      businessModule: ApiBusinessModule;
       request: ApiCreateInboxProcedureRequest;
       file?: File;
     }) =>

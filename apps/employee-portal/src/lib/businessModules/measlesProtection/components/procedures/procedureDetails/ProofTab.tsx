@@ -32,6 +32,7 @@ import {
   EditAppointmentSidebar,
 } from "@/lib/businessModules/measlesProtection/components/procedures/procedureDetails/AppointmentSidebar";
 import { FineSidebar } from "@/lib/businessModules/measlesProtection/components/procedures/procedureDetails/FineSidebar";
+import { FullVaccinationBanner } from "@/lib/businessModules/measlesProtection/components/procedures/procedureDetails/FullVaccinationBanner";
 import { ProofRequestLetterSidebar } from "@/lib/businessModules/measlesProtection/components/procedures/procedureDetails/ProofRequestLetterSidebar";
 import {
   formatName,
@@ -84,63 +85,66 @@ export function ProofTab({ procedureId }: Readonly<{ procedureId: string }>) {
   const appointment = procedure.appointment;
 
   return (
-    <Grid container spacing={2}>
-      <Grid container spacing={2} xs={12} xxl={9}>
-        <Grid xxs={12} sm={6} xl={4}>
-          <AppointmentCard
-            appointment={appointment}
-            procedureClosed={procedureClosed}
-            procedureId={procedureId}
-          />
+    <Stack gap={3}>
+      <FullVaccinationBanner procedure={procedure} />
+      <Grid container spacing={2}>
+        <Grid container spacing={2} xs={12} xxl={9}>
+          <Grid xxs={12} sm={6} xl={4}>
+            <AppointmentCard
+              appointment={appointment}
+              procedureClosed={procedureClosed}
+              procedureId={procedureId}
+            />
+          </Grid>
+
+          <Grid xxs={12} sm={6} xl={4}>
+            <ProofSubmissionsCard
+              proofSubmissions={proofSubmissions}
+              procedureClosed={procedureClosed}
+              onClick={() => setOpenProof(true)}
+            />
+          </Grid>
+
+          <Grid xxs={12} sm={6} xl={4}>
+            <FineCard
+              monetaryFines={monetaryFines}
+              procedureClosed={procedureClosed}
+              onClick={() => setOpenFine(true)}
+            />
+          </Grid>
+
+          <Grid xxs={12} lg={6}>
+            <AccessRestrictionCard
+              procedure={procedure}
+              accessRestriction={procedure.accessRestriction}
+              procedureClosed={procedureClosed}
+              onClick={() => setOpenAccessRestriction(true)}
+              onClickAddLetter={() => setOpenAccessRestrictionLetter(true)}
+            />
+          </Grid>
+          <Grid xxs={12} lg={6}>
+            <ProofRequestLetterCard
+              procedure={procedure}
+              procedureClosed={procedureClosed}
+              proofSubmissionLetters={letters}
+              onClick={() => setOpenProofRequestLetter(true)}
+            />
+          </Grid>
         </Grid>
 
-        <Grid xxs={12} sm={6} xl={4}>
-          <ProofSubmissionsCard
-            proofSubmissions={proofSubmissions}
-            procedureClosed={procedureClosed}
-            onClick={() => setOpenProof(true)}
-          />
+        <Grid xxs={12} lg={6} xxl={3}>
+          <AdditionalInfoSection procedure={procedure} />
         </Grid>
-
-        <Grid xxs={12} sm={6} xl={4}>
-          <FineCard
-            monetaryFines={monetaryFines}
-            procedureClosed={procedureClosed}
-            onClick={() => setOpenFine(true)}
-          />
-        </Grid>
-
-        <Grid xxs={12} lg={6}>
-          <AccessRestrictionCard
-            procedure={procedure}
-            accessRestriction={procedure.accessRestriction}
-            procedureClosed={procedureClosed}
-            onClick={() => setOpenAccessRestriction(true)}
-            onClickAddLetter={() => setOpenAccessRestrictionLetter(true)}
-          />
-        </Grid>
-        <Grid xxs={12} lg={6}>
-          <ProofRequestLetterCard
-            procedure={procedure}
-            procedureClosed={procedureClosed}
-            proofSubmissionLetters={letters}
-            onClick={() => setOpenProofRequestLetter(true)}
-          />
-        </Grid>
+        <AddAppointmentSidebar id={procedureId} />
+        <EditAppointmentSidebar id={procedureId} />
+        <ProofSidebar id={procedureId} />
+        <FineSidebar id={procedureId} />
+        <AccessRestrictionSidebar id={procedureId} />
+        <AccessRestrictionLetterSidebar id={procedureId} />
+        <EditAccessRestrictionSidebar procedure={procedure} />
+        <ProofRequestLetterSidebar id={procedureId} />
       </Grid>
-
-      <Grid xxs={12} lg={6} xxl={3}>
-        <AdditionalInfoSection procedure={procedure} />
-      </Grid>
-      <AddAppointmentSidebar id={procedureId} />
-      <EditAppointmentSidebar id={procedureId} />
-      <ProofSidebar id={procedureId} />
-      <FineSidebar id={procedureId} />
-      <AccessRestrictionSidebar id={procedureId} />
-      <AccessRestrictionLetterSidebar id={procedureId} />
-      <EditAccessRestrictionSidebar procedure={procedure} />
-      <ProofRequestLetterSidebar id={procedureId} />
-    </Grid>
+    </Stack>
   );
 }
 

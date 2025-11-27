@@ -14,7 +14,7 @@ import java.util.List;
 
 class AttributeUtil {
 
-  static final String ATTRIBUTE_CATEGORY_INSPECTION = "Begehung";
+  static final String ATTRIBUTE_CATEGORY_INSPECTION = "Hygiene";
   static final String ATTRIBUTE_CATEGORY_FACILITY = "Einrichtung";
 
   private AttributeUtil() {}

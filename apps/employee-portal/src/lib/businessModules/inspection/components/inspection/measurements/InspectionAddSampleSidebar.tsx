@@ -5,21 +5,17 @@
 
 "use client";
 
-import { Add, DeleteOutlined } from "@mui/icons-material";
-import { Box, Button, Divider, Grid, Stack } from "@mui/joy";
 import { useSuspenseQueries } from "@tanstack/react-query";
-import { Formik } from "formik";
+import { Formik, FormikErrors } from "formik";
 import { useMemo, useRef } from "react";
-import { v4 as uuidv4 } from "uuid";
 
 import {
   ApiCreateInspectionSampleRequest,
+  ApiInspFacility,
   ApiInspectionSampleEvaluationType,
   ApiInspectionSampleType,
 } from "@eshg/inspection-api";
 import {
-  DateTimeField,
-  IconButton,
   MultiFormButtonBar,
   SidebarActions,
   SidebarContent,
@@ -29,37 +25,22 @@ import {
   useSidebarWithFormRef,
   useStepper,
 } from "@eshg/lib-employee-portal";
-import {
-  FieldArrayWithFocus as FieldArray,
-  FormPlus,
-  InputField,
-  SelectField,
-} from "@eshg/lib-portal";
+import { formatUserName } from "@eshg/lib-portal";
 
 import { useUserApi } from "@/lib/baseModule/api/clients";
 import { useCreateSample } from "@/lib/businessModules/inspection/api/mutations/sample";
 import { getSelfUserQuery } from "@/lib/businessModules/inspection/api/queries/users";
-import { MeasurementParameterField } from "@/lib/businessModules/inspection/components/inspection/measurements/sampleSidebar/MeasurementParameterField";
+import { InspectionSampleSidebarBasisData } from "@/lib/businessModules/inspection/components/inspection/measurements/sampleSidebar/InspectionSampleSidebarBasisData";
 import {
-  EVALUATION_TYPE_OPTIONS,
-  SAMPLE_TYPE_OPTIONS,
-} from "@/lib/businessModules/inspection/shared/constants";
+  InspectionSampleSidebarFormType,
+  makeCreateInspectionSampleRequest,
+} from "@/lib/businessModules/inspection/components/inspection/measurements/sampleSidebar/InspectionSampleSidebarHelper";
+import { InspectionSampleSidebarMeasurementParameterData } from "@/lib/businessModules/inspection/components/inspection/measurements/sampleSidebar/InspectionSampleSidebarMeasurementParameterData";
 import { ConfirmLeaveDirtyFormEffect } from "@/lib/shared/components/form/ConfirmLeaveDirtyFormEffect";
 
 interface InspectionAddSampleSidebarProps extends SidebarWithFormRefProps {
   procedureId: string;
-}
-
-export interface InspectionAddSampleSidebarFormType {
-  evaluatingActor?: string; //ApiCreateInspectionSampleRequestEvaluatingActor;
-  evaluationType: ApiInspectionSampleEvaluationType;
-  measurementParameters: string[];
-  nameOfSamplingPoint?: string;
-  pointOfWithdrawal: string;
-  samplingActor: string; //ApiCreateInspectionSampleRequestEvaluatingActor;
-  timeOfEvaluation?: string;
-  timeOfSampling?: string;
-  typeOfSample: ApiInspectionSampleType;
+  facility: ApiInspFacility;
 }
 
 export function useInspectionAddSampleSidebar() {
@@ -72,6 +53,7 @@ function InspectionAddSampleSidebar({
   onClose,
   procedureId,
   formRef,
+  facility,
 }: Readonly<InspectionAddSampleSidebarProps>) {
   const sidebarFormRef = useRef<SidebarFormHandle>(null);
   const userApi = useUserApi();
@@ -87,9 +69,9 @@ function InspectionAddSampleSidebar({
     onClose(force);
   }
 
-  async function onFinalSubmit(formValues: InspectionAddSampleSidebarFormType) {
+  async function onFinalSubmit(formValues: InspectionSampleSidebarFormType) {
     const payload: ApiCreateInspectionSampleRequest =
-      mapFormToRequest(formValues);
+      makeCreateInspectionSampleRequest(formValues, selfUser.userId);
     await createSample(
       { inspectionId: procedureId, apiCreateInspectionSampleRequest: payload },
       {
@@ -101,179 +83,67 @@ function InspectionAddSampleSidebar({
     );
   }
 
-  function mapFormToRequest(
-    formValues: InspectionAddSampleSidebarFormType,
-  ): ApiCreateInspectionSampleRequest {
-    return {
-      evaluatingActor: {
-        type: "InspectionSampleUserReference",
-        userId: selfUser.userId,
-      },
-      evaluationType: formValues.evaluationType,
-      externalId: uuidv4(),
-      measurementParameters: formValues.measurementParameters.map((zid) => {
-        return {
-          externalId: uuidv4(),
-          uParameterZid: zid,
-        };
-      }),
-      nameOfSamplingPoint: formValues.nameOfSamplingPoint,
-      pointOfWithdrawal: formValues.pointOfWithdrawal,
-      samplingActor: {
-        type: "InspectionSampleUserReference",
-        userId: selfUser.userId,
-      },
-      timeOfEvaluation: formValues.timeOfEvaluation
-        ? new Date(formValues.timeOfEvaluation)
-        : undefined,
-      timeOfSampling: formValues.timeOfSampling
-        ? new Date(formValues.timeOfSampling)
-        : undefined,
-      typeOfSample: formValues.typeOfSample,
-    };
-  }
-
   const steps = [
     {
       title: "Probe hinzufügen",
       subTitle: "Schritt 1: Informationen",
-      fields: () => (
-        <Grid container component={FormPlus} spacing={1} sx={{ flexGrow: 1 }}>
-          <Grid xxs={12}>
-            <InputField
-              name="pointOfWithdrawal"
-              type="text"
-              label="Entnahmestelle"
-              required="Bitte eine Entnahmestelle eingeben"
-            />
-          </Grid>
-          <Grid xxs={12}>
-            <SelectField
-              name="typeOfSample"
-              label="Art der Probe"
-              options={SAMPLE_TYPE_OPTIONS}
-              required="Bitte Art der Probe auswählen"
-            />
-          </Grid>
-          <Grid xxs={12}>
-            <InputField
-              name="nameOfSamplingPoint"
-              type="text"
-              label="Name der Probennahmestelle"
-              required="Bitte Namen der Probennahmestelle eingeben"
-            />
-          </Grid>
-          <Grid xxs={12}>
-            <SelectField
-              name="evaluationType"
-              label="Auswertungsart"
-              options={EVALUATION_TYPE_OPTIONS}
-              required="Bitte Auswertungsart auswählen"
-            />
-          </Grid>
-          <Divider />
-          <Grid xxs={12}>
-            <InputField
-              name="samplingActor"
-              type="text"
-              label="Probennehmer"
-              required="Bitte Probennehmer eintragen"
-            />
-          </Grid>
-          <Divider />
-          <Grid xxs={12}>
-            <InputField
-              name="evaluatingActor"
-              type="text"
-              label="Auswerter"
-              required="Bitte Auswerter eintragen"
-            />
-          </Grid>
-          <Divider />
-          <Grid xxs={12}>
-            <DateTimeField
-              name="timeOfSampling"
-              label="Zeitpunkt der Probennahme"
-            />
-          </Grid>
-          <Grid xxs={12}>
-            <DateTimeField
-              name="timeOfEvaluation"
-              label="Zeitpunkt der Auswertung"
-            />
-          </Grid>
-        </Grid>
+      fields: ({
+        values,
+        setFieldValue,
+      }: {
+        values: InspectionSampleSidebarFormType;
+        setFieldValue: (
+          field: string,
+          value: unknown,
+          shouldValidate?: boolean,
+        ) => Promise<void | FormikErrors<InspectionSampleSidebarFormType>>;
+      }) => (
+        <InspectionSampleSidebarBasisData
+          values={values}
+          onSamplingActorSelection={(value) =>
+            setFieldValue("samplingActor", {
+              label: value?.label ?? "",
+              value: value?.value ?? "",
+            })
+          }
+          onEvaluatingActorSelection={(value) =>
+            setFieldValue("evaluatingActor", {
+              label: value?.label ?? "",
+              value: value?.value ?? "",
+            })
+          }
+          onSelfAssignSamplingActor={() =>
+            setFieldValue("samplingActor", {
+              label: formatUserName(selfUser),
+              value: selfUser.userId,
+            })
+          }
+          onSelfAssignEvaluatingActor={() =>
+            setFieldValue("evaluatingActor", {
+              label: formatUserName(selfUser),
+              value: selfUser.userId,
+            })
+          }
+          onFacilityAssignEvaluatingActor={() =>
+            setFieldValue("evaluatingActor", {
+              label: facility.baseFacility.name,
+              value: facility.id,
+            })
+          }
+          onFacilityAssignSamplingActor={() =>
+            setFieldValue("samplingActor", {
+              label: facility.baseFacility.name,
+              value: facility.id,
+            })
+          }
+        />
       ),
     },
     {
       title: "Probe hinzufügen",
       subTitle: "Schritt 2: Messparameter",
-      fields: ({ values }: { values: InspectionAddSampleSidebarFormType }) => (
-        <Grid container spacing={1} sx={{ display: "grid" }}>
-          <FieldArray
-            valueLength={values.measurementParameters.length}
-            name="measurementParameters"
-          >
-            {({ push, remove }) => (
-              <>
-                <Box
-                  sx={{
-                    display: "grid",
-                    flexDirection: "column",
-                    gap: 2,
-                    paddingBottom: 2,
-                    paddingTop: 1,
-                  }}
-                >
-                  {values.measurementParameters.map((element, elementIndex) => (
-                    <Stack key={elementIndex} direction="row" spacing={2}>
-                      <MeasurementParameterField
-                        label={`${elementIndex + 1}. Messparameter`}
-                        name={`measurementParameters.${elementIndex}`}
-                        placeholder={`Messparameter ${elementIndex + 1} auswählen`}
-                        required={`Messparameter ${elementIndex + 1} auswählen`}
-                      />
-                      {values.measurementParameters.length >= 2 && (
-                        <IconButton
-                          label="Löschen"
-                          aria-label="Löschen"
-                          sx={{
-                            borderColor:
-                              "var(--global--color-danger-outlined-border)",
-                            borderRadius: "var(--joy-radius-sm)",
-                            borderWidth: "1px",
-                            height: "36px",
-                            width: "36px",
-                            alignSelf: "flex-end",
-                          }}
-                          onClick={() => remove(elementIndex)}
-                        >
-                          <DeleteOutlined color="danger" />
-                        </IconButton>
-                      )}
-                    </Stack>
-                  ))}
-                </Box>
-                <Box
-                  sx={{
-                    flexGrow: 1,
-                    justifyContent: "flex-end",
-                    display: "flex",
-                  }}
-                >
-                  <Button
-                    variant="plain"
-                    startDecorator={<Add />}
-                    sx={{ alignSelf: "flex-end" }}
-                    onClick={() => push("")}
-                  >
-                    Messparameter hinzufügen
-                  </Button>
-                </Box>
-              </>
-            )}
-          </FieldArray>
-        </Grid>
+      fields: ({ values }: { values: InspectionSampleSidebarFormType }) => (
+        <InspectionSampleSidebarMeasurementParameterData values={values} />
       ),
     },
   ];
@@ -288,7 +158,7 @@ function InspectionAddSampleSidebar({
     isOnLastStep,
   } = useStepper({ steps, onFinalSubmit });
 
-  const initialValues: InspectionAddSampleSidebarFormType = useMemo(() => {
+  const initialValues: InspectionSampleSidebarFormType = useMemo(() => {
     return {
       evaluatingActor: "",
       evaluationType: ApiInspectionSampleEvaluationType.OnSite,
@@ -309,11 +179,11 @@ function InspectionAddSampleSidebar({
       initialValues={initialValues}
       onSubmit={handleNext}
     >
-      {({ isValid, values }) => (
+      {({ isValid, values, setFieldValue }) => (
         <SidebarForm ref={formRef}>
           <ConfirmLeaveDirtyFormEffect />
           <SidebarContent title={step.title} subtitle={step.subTitle}>
-            <Fields values={values} />
+            <Fields values={values} setFieldValue={setFieldValue} />
           </SidebarContent>
           <SidebarActions>
             <MultiFormButtonBar

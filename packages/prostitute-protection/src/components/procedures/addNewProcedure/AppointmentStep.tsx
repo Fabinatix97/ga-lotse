@@ -21,7 +21,7 @@ import {
   validateRange,
 } from "@eshg/lib-portal";
 
-import { validateDateTimeIsTodayOrFuture } from "../../shared/helpers";
+import { validateDateTimeIsTodayOrFuture } from "../../../shared/helpers";
 
 import { FieldProps } from "./useAddNewProcedureSidebar";
 
@@ -46,7 +46,8 @@ function Fields() {
       <NumberField
         name="duration"
         label="Termindauer in Minuten"
-        validate={validateIntegerAnd(validateRange(0, 1440))}
+        required="Die Besuchsdauer ist erforderlich."
+        validate={validateIntegerAnd(validateRange(1, 1440))}
       />
     </Stack>
   );

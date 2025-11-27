@@ -92,13 +92,15 @@ export function VaccinationStatusSection({
               </Stack>
             </DetailsList>
           ) : (
-            <Stack gap={1}>
-              <Alert
-                color="primary"
-                message="Bitte fragen Sie zuerst ab, ob Impfdaten vorhanden sind, bevor Sie neue Daten eingeben."
-              />
-              <Button onClick={handleUpdateRequest}>Daten anfragen</Button>
-            </Stack>
+            measlesVaccinationStatus.update === "POSSIBLE" && (
+              <Stack gap={1}>
+                <Alert
+                  color="primary"
+                  message="Bitte fragen Sie zuerst ab, ob Impfdaten vorhanden sind, bevor Sie neue Daten eingeben."
+                />
+                <Button onClick={handleUpdateRequest}>Daten anfragen</Button>
+              </Stack>
+            )
           )}
         </InfoTile>
       </Stack>

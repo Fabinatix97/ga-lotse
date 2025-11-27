@@ -5,6 +5,9 @@
 
 package de.eshg.schoolentry.importer;
 
+import static de.eshg.base.gdpr.api.GdprPersonDto.MAX_FIRST_NAME_LENGTH;
+import static de.eshg.base.gdpr.api.GdprPersonDto.MAX_LAST_NAME_LENGTH;
+import static de.eshg.base.gdpr.api.GdprPersonDto.MAX_PHONE_NUMBER_LENGTH;
 import static de.eshg.schoolentry.importer.SchoolListColumn.*;
 
 import de.eshg.lib.xlsximport.ColumnAccessor;
@@ -34,8 +37,8 @@ class SchoolListRowReader extends RowReader<SchoolListRow, SchoolListColumn> {
   private ImportChildData readChildData(
       ColumnAccessor<SchoolListColumn> col, ErrorHandler errorHandler) {
     return new ImportChildData(
-        cellAsString(col, FIRST_NAME, errorHandler),
-        cellAsString(col, LAST_NAME, errorHandler),
+        cellAsString(col, FIRST_NAME, MAX_FIRST_NAME_LENGTH, errorHandler),
+        cellAsString(col, LAST_NAME, MAX_LAST_NAME_LENGTH, errorHandler),
         cellAsDateOfBirth(col, DATE_OF_BIRTH, false, errorHandler),
         cellAsGender(col, GENDER, errorHandler),
         readAddressData(
@@ -48,7 +51,7 @@ class SchoolListRowReader extends RowReader<SchoolListRow, SchoolListColumn> {
   }
 
   private String readPhoneNumber(ColumnAccessor<SchoolListColumn> col, ErrorHandler errorHandler) {
-    return cellAsString(col, PHONE_NUMBER, true, true, errorHandler);
+    return cellAsString(col, PHONE_NUMBER, true, true, MAX_PHONE_NUMBER_LENGTH, errorHandler);
   }
 
   private String readEmail(ColumnAccessor<SchoolListColumn> col, ErrorHandler errorHandler) {

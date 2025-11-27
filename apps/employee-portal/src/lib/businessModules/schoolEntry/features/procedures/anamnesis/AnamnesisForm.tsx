@@ -39,10 +39,7 @@ import { InterestAndSportsInfoForm } from "@/lib/businessModules/schoolEntry/fea
 import { MigrationBackgroundForm } from "@/lib/businessModules/schoolEntry/features/procedures/anamnesis/MigrationBackgroundForm";
 import { PromotionBeforeSchoolEntryForm } from "@/lib/businessModules/schoolEntry/features/procedures/anamnesis/PromotionBeforeSchoolEntryForm";
 import { FlexLabel } from "@/lib/businessModules/schoolEntry/features/procedures/examinations/FlexLabel";
-import {
-  BOLD_LABEL_STYLE,
-  BOOLEAN_SELECT_STYLE,
-} from "@/lib/businessModules/schoolEntry/features/procedures/styles";
+import { BOOLEAN_SELECT_STYLE } from "@/lib/businessModules/schoolEntry/features/procedures/styles";
 import { REQUIRED_PROCEDURE_PROPERTIES } from "@/lib/businessModules/schoolEntry/features/procedures/translations";
 import { ConfirmLeaveDirtyFormEffect } from "@/lib/shared/components/form/ConfirmLeaveDirtyFormEffect";
 
@@ -221,7 +218,7 @@ export function AnamnesisForm(props: AnamnesisFormProps) {
                 label={
                   REQUIRED_PROCEDURE_PROPERTIES.ANAMNESIS_CHILD_LANGUAGE_SCREENING
                 }
-                sx={{ ...BOOLEAN_SELECT_STYLE, ...BOLD_LABEL_STYLE }}
+                sx={{ ...BOOLEAN_SELECT_STYLE }}
                 softRequired
                 allowDeselection
               />
@@ -230,7 +227,7 @@ export function AnamnesisForm(props: AnamnesisFormProps) {
                 label={
                   REQUIRED_PROCEDURE_PROPERTIES.ANAMNESIS_PRELIMINARY_COURSE
                 }
-                sx={{ ...BOOLEAN_SELECT_STYLE, ...BOLD_LABEL_STYLE }}
+                sx={{ ...BOOLEAN_SELECT_STYLE }}
                 softRequired
                 allowDeselection
               />

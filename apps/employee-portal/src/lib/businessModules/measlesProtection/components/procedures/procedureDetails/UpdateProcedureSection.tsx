@@ -117,12 +117,7 @@ export function UpdateProcedureSection({
             procedure.measlesVaccinationStatusFromSchoolEntry
           }
         />
-        <EditActions
-          isDraft={isDraft}
-          isOpen={!procedureClosed}
-          isUpdatePending
-          procedureId={procedure.id}
-        />
+        <EditActions isDraft={isDraft} isOpen={!procedureClosed} />
       </Stack>
     </ProcedureForm>
   );
@@ -166,8 +161,6 @@ function EditActions({
 }: Readonly<{
   isOpen: boolean;
   isDraft?: boolean;
-  isUpdatePending?: boolean;
-  procedureId: string;
 }>) {
   const { isSubmitting } = useFormikContext<UpdateProcedureForm>();
 

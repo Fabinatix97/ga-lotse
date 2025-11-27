@@ -5,29 +5,35 @@
 
 package de.eshg.prostituteprotection.domain.model;
 
+import de.cronn.commons.lang.StreamUtil;
 import de.eshg.lib.appointmentblock.EntityWithAppointment;
 import de.eshg.lib.appointmentblock.persistence.entity.Appointment;
-import de.eshg.lib.common.CountryCode;
 import de.eshg.lib.common.DataSensitivity;
 import de.eshg.lib.common.SensitivityLevel;
 import de.eshg.lib.procedure.domain.model.Procedure;
+import de.eshg.lib.procedure.domain.model.TaskType;
 import jakarta.persistence.CascadeType;
-import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
+import jakarta.persistence.Index;
 import jakarta.persistence.OneToOne;
-import jakarta.persistence.OrderColumn;
-import jakarta.validation.constraints.NotNull;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
+import jakarta.persistence.Table;
+import java.time.Instant;
+import java.util.stream.Stream;
 import org.hibernate.annotations.JdbcType;
 import org.hibernate.dialect.PostgreSQLEnumJdbcType;
+import org.springframework.util.Assert;
 
 @Entity
 @DataSensitivity(SensitivityLevel.SENSITIVE)
+@Table(
+    indexes = {
+      @Index(
+          name = "idx_prostitute_protection_procedure_appointment_start",
+          columnList = "appointment_start"),
+    })
 public class ProstituteProtectionProcedure
     extends Procedure<ProstituteProtectionProcedure, ProstituteProtectionTask, Person, Facility>
     implements EntityWithAppointment {
@@ -35,26 +41,57 @@ public class ProstituteProtectionProcedure
   @OneToOne(orphanRemoval = true, cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
   private Appointment appointment;
 
-  @NotNull private String lastName;
-  private String firstName;
-  private String alias;
-  private LocalDate dateOfBirth;
-
-  @JdbcType(PostgreSQLEnumJdbcType.class)
-  private CountryCode nationality;
-
-  @JdbcType(PostgreSQLEnumJdbcType.class)
-  private DocumentType documentType;
+  @OneToOne(
+      orphanRemoval = true,
+      fetch = FetchType.LAZY,
+      cascade = CascadeType.ALL,
+      mappedBy = UserDefinedAppointment_.PROCEDURE)
+  private UserDefinedAppointment userDefinedAppointment;
 
   @JdbcType(PostgreSQLEnumJdbcType.class)
   private ConsultationType consultationType;
 
-  @ElementCollection
-  @Enumerated(EnumType.STRING)
-  @OrderColumn
-  private List<Language> languages = new ArrayList<>();
-
   private Boolean withTranslator;
+
+  @OneToOne(orphanRemoval = true, fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+  private EncryptedPersonalData encryptedPersonalData;
+
+  @OneToOne(
+      optional = false,
+      fetch = FetchType.LAZY,
+      cascade = {CascadeType.PERSIST, CascadeType.REMOVE},
+      mappedBy = Consultation_.PROCEDURE)
+  private Consultation consultation;
+
+  private Instant appointmentStart;
+
+  private Instant consultationCertificateCreatedAt;
+
+  public ProstituteProtectionTask getTaskOfType(TaskType taskType) {
+    return getTasksOfType(taskType).collect(StreamUtil.toSingleElement());
+  }
+
+  private Stream<ProstituteProtectionTask> getTasksOfType(TaskType taskType) {
+    return getTasks().stream().filter(task -> task.getTaskType() == taskType);
+  }
+
+  @PrePersist
+  @PreUpdate
+  public void computeFieldValues() {
+    computeAppointmentStart();
+  }
+
+  private void computeAppointmentStart() {
+    if (userDefinedAppointment != null) {
+      appointmentStart = userDefinedAppointment.getAppointmentStart();
+    } else if (appointment != null) {
+      appointmentStart = appointment.getAppointmentStart();
+    }
+  }
+
+  public Instant getAppointmentStart() {
+    return appointmentStart;
+  }
 
   @Override
   public Appointment getAppointment() {
@@ -66,54 +103,6 @@ public class ProstituteProtectionProcedure
     this.appointment = appointment;
   }
 
-  public @NotNull String getLastName() {
-    return lastName;
-  }
-
-  public void setLastName(@NotNull String lastName) {
-    this.lastName = lastName;
-  }
-
-  public String getFirstName() {
-    return firstName;
-  }
-
-  public void setFirstName(String firstName) {
-    this.firstName = firstName;
-  }
-
-  public String getAlias() {
-    return alias;
-  }
-
-  public void setAlias(String alias) {
-    this.alias = alias;
-  }
-
-  public LocalDate getDateOfBirth() {
-    return dateOfBirth;
-  }
-
-  public void setDateOfBirth(LocalDate dateOfBirth) {
-    this.dateOfBirth = dateOfBirth;
-  }
-
-  public CountryCode getNationality() {
-    return nationality;
-  }
-
-  public void setNationality(CountryCode nationality) {
-    this.nationality = nationality;
-  }
-
-  public DocumentType getDocumentType() {
-    return documentType;
-  }
-
-  public void setDocumentType(DocumentType documentType) {
-    this.documentType = documentType;
-  }
-
   public ConsultationType getConsultationType() {
     return consultationType;
   }
@@ -122,12 +111,23 @@ public class ProstituteProtectionProcedure
     this.consultationType = consultationType;
   }
 
-  public List<Language> getLanguages() {
-    return languages;
+  public UserDefinedAppointment getUserDefinedAppointment() {
+    return userDefinedAppointment;
   }
 
-  public void setLanguages(List<Language> languages) {
-    this.languages = languages;
+  public void setUserDefinedAppointment(UserDefinedAppointment userDefinedAppointment) {
+    if (userDefinedAppointment != null) {
+      Assert.isNull(
+          appointment, "You must cancel an appointment before scheduling a new user-defined one.");
+    }
+    if (userDefinedAppointment == null) {
+      if (this.userDefinedAppointment != null) {
+        this.userDefinedAppointment.setProcedure(null);
+      }
+    } else {
+      userDefinedAppointment.setProcedure(this);
+    }
+    this.userDefinedAppointment = userDefinedAppointment;
   }
 
   public Boolean isWithTranslator() {
@@ -136,5 +136,30 @@ public class ProstituteProtectionProcedure
 
   public void setWithTranslator(Boolean withTranslator) {
     this.withTranslator = withTranslator;
+  }
+
+  public EncryptedPersonalData getEncryptedPersonalData() {
+    return encryptedPersonalData;
+  }
+
+  public void setEncryptedPersonalData(EncryptedPersonalData encryptedPersonalData) {
+    this.encryptedPersonalData = encryptedPersonalData;
+  }
+
+  public Instant getConsultationCertificateCreatedAt() {
+    return consultationCertificateCreatedAt;
+  }
+
+  public void setConsultationCertificateCreatedAt(Instant consultationCertificateCreatedAt) {
+    this.consultationCertificateCreatedAt = consultationCertificateCreatedAt;
+  }
+
+  public Consultation getConsultation() {
+    return consultation;
+  }
+
+  public void setConsultation(Consultation consultation) {
+    this.consultation = consultation;
+    this.consultation.setProcedure(this);
   }
 }

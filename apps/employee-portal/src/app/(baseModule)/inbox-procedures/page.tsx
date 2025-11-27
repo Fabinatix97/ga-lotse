@@ -14,6 +14,7 @@ import {
   StickyToolbarLayout,
   Toolbar,
 } from "@eshg/lib-employee-portal";
+import { mapRequiredValue } from "@eshg/lib-portal";
 import { ApiInboxProcedure } from "@eshg/lib-procedures-api";
 
 import { useCreateInboxProcedure } from "@/lib/baseModule/api/mutations/inboxProcedures";
@@ -28,7 +29,6 @@ import {
   mapFormValuesToCreateInboxProcedureRequest,
   mapValuesToFile,
 } from "@/lib/baseModule/components/inboxProcedures/mapper";
-import { InboxAwareBusinessModule } from "@/lib/baseModule/components/inboxProcedures/types";
 
 const initialValues: CreateInboxProcedureValues = {
   businessModule: "",
@@ -44,7 +44,7 @@ export default function InboxPage() {
   async function onSubmit(values: CreateInboxProcedureValues) {
     await createInboxProcedure.mutateAsync(
       {
-        businessModule: values.businessModule as InboxAwareBusinessModule,
+        businessModule: mapRequiredValue(values.businessModule),
         request: mapFormValuesToCreateInboxProcedureRequest(values),
         file: mapValuesToFile(values),
       },

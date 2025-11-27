@@ -22,7 +22,9 @@ export default function InspectionProceduresPage(props: PageProps) {
   const searchParams = use(props.searchParams);
   const isOffline = useIsOffline();
 
-  const title = isOffline ? "Offline verfügbare Begehungen" : "Begehung";
+  const title = isOffline
+    ? "Hygiene: Offline verfügbare Begehungen"
+    : "Hygiene";
 
   return (
     <StickyToolbarLayout toolbar={<Toolbar title={title} />}>

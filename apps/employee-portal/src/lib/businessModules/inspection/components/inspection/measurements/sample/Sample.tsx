@@ -5,27 +5,44 @@
 
 "use client";
 
-import { Edit, KeyboardArrowDown, Print } from "@mui/icons-material";
+import {
+  CheckCircleOutlined,
+  Delete,
+  DeleteOutlined,
+  EditOutlined,
+  FileDownloadOutlined,
+  KeyboardArrowDown,
+  MoreVert,
+  PendingOutlined,
+  PrintOutlined,
+  ReportGmailerrorredOutlined,
+} from "@mui/icons-material";
 import {
   Accordion,
   AccordionDetails,
   AccordionGroup,
   AccordionSummary,
-  Button,
+  Chip,
   Divider,
+  Dropdown,
   Grid,
   IconButton,
+  ListItemDecorator,
+  Menu,
+  MenuButton,
+  MenuItem,
   Stack,
   Typography,
 } from "@mui/joy";
 import { useState } from "react";
 
 import {
+  ApiInspFacility,
   ApiInspectionSample,
   ApiInspectionSampleEvaluatingActor,
   ApiInspectionSamplePreclassification,
 } from "@eshg/inspection-api";
-import { DetailsItem } from "@eshg/lib-employee-portal";
+import { DetailsItem, useConfirmationDialog } from "@eshg/lib-employee-portal";
 import {
   DebouncedInput,
   DetailsColumn,
@@ -33,7 +50,11 @@ import {
   formatDateTime,
 } from "@eshg/lib-portal";
 
-import { useUpdateSampleMeasurementParameterValue } from "@/lib/businessModules/inspection/api/mutations/sample";
+import {
+  useDeleteSample,
+  useDeleteSampleMeasurementParameter,
+  useUpdateSampleMeasurementParameterValue,
+} from "@/lib/businessModules/inspection/api/mutations/sample";
 import { useInspectionEditSampleSidebar } from "@/lib/businessModules/inspection/components/inspection/measurements/InspectionEditSampleSidebar";
 import {
   translateInspectionSampleEvaluationType,
@@ -45,22 +66,35 @@ interface MeasurementsTileItemProps {
   sample: ApiInspectionSample;
   procedureId: string;
   sampleIndex: number;
+  facility: ApiInspFacility;
+  classification: "SUSPICIOUS" | "PENDING" | "NO_NORM" | "OK";
+  showOnlyConspicuousParameters: boolean;
 }
 
 export function Sample({
   sample,
   procedureId,
   sampleIndex,
+  facility,
+  classification,
+  showOnlyConspicuousParameters,
 }: Readonly<MeasurementsTileItemProps>) {
   const [open, setOpen] = useState(false);
   const inspectionEditSampleSidebar = useInspectionEditSampleSidebar();
   const { mutateAsync: updateSampleMeasurementParameterValue } =
     useUpdateSampleMeasurementParameterValue();
+  const { mutateAsync: deleteSampleParameter } =
+    useDeleteSampleMeasurementParameter();
+  const { mutateAsync: deleteSample } = useDeleteSample();
+
+  const { openCancelDialog } = useConfirmationDialog();
 
   function handleOpenEditSidebar(e: React.MouseEvent) {
     e.stopPropagation();
     inspectionEditSampleSidebar.open({
       procedureId: procedureId,
+      sample: sample,
+      facility: facility,
     });
   }
 
@@ -72,6 +106,53 @@ export function Sample({
   function handlePrint(e: React.MouseEvent) {
     e.stopPropagation();
     alert("Label drucken");
+  }
+
+  function handleDownloadProtocol(e: React.MouseEvent) {
+    e.stopPropagation();
+    alert("Protokoll herunterladen");
+  }
+
+  function handleDownloadAccompanyingNote(e: React.MouseEvent) {
+    e.stopPropagation();
+    alert("Begleitschein herunterladen");
+  }
+
+  function handleDeleteSample(e: React.MouseEvent) {
+    e.stopPropagation();
+    openCancelDialog({
+      title: "Probe löschen",
+      description: `Möchten Sie die Probe ${sample.pointOfWithdrawal} und die zugehörigen Messwerten unwiderruflich löschen?`,
+      cancelLabel: "Abbrechen",
+      confirmLabel: "Löschen",
+      onConfirm: async () => {
+        await deleteSample({
+          sampleId: sample.sampleId,
+          inspectionId: procedureId,
+        });
+      },
+    });
+  }
+
+  function handleDeleteSampleParameter(
+    e: React.MouseEvent,
+    parameterId: string,
+    parameterName: string,
+  ) {
+    e.stopPropagation();
+    openCancelDialog({
+      title: "Messparameter löschen",
+      description: `Möchten Sie den Messparameter ${parameterName} und den zugehörigen Messwert unwiderruflich löschen?`,
+      cancelLabel: "Abbrechen",
+      confirmLabel: "Löschen",
+      onConfirm: async () => {
+        await deleteSampleParameter({
+          inspectionId: procedureId,
+          sampleId: sample.sampleId,
+          measurementParameterId: parameterId,
+        });
+      },
+    });
   }
 
   async function handleEdit(value: string | number | undefined, index: number) {
@@ -88,7 +169,7 @@ export function Sample({
     }
   }
 
-  function getPreclassificationColor(
+  function getParameterPreclassificationColor(
     preclassification?: ApiInspectionSamplePreclassification,
   ) {
     switch (preclassification) {
@@ -102,7 +183,7 @@ export function Sample({
     }
   }
 
-  function getPreclassificationBorderColor(
+  function getParameterPreclassificationBorderColor(
     preclassification?: ApiInspectionSamplePreclassification,
   ) {
     switch (preclassification) {
@@ -127,11 +208,59 @@ export function Sample({
       case "InspectionSampleUser":
         return actor.user.firstName + " " + actor.user.lastName;
       default:
-        return "-";
+        return "";
     }
   }
 
-  const initObject: ApiInspectionSample = sample;
+  function getSampleClassificationColor() {
+    switch (classification) {
+      case "SUSPICIOUS":
+        return "danger";
+      case "OK":
+        return "success";
+      case "PENDING":
+        return "primary";
+      default:
+        return "neutral";
+    }
+  }
+
+  function getSampleClassificationText() {
+    switch (classification) {
+      case "SUSPICIOUS":
+        return "Auffälligkeiten";
+      case "OK":
+        return "Normbereich";
+      case "PENDING":
+        return "Bewertung ausstehend";
+      default:
+        return null;
+    }
+  }
+
+  function getSampleClassificationIcon() {
+    switch (classification) {
+      case "SUSPICIOUS":
+        return <ReportGmailerrorredOutlined />;
+      case "OK":
+        return <CheckCircleOutlined />;
+      case "PENDING":
+        return <PendingOutlined />;
+      default:
+        return null;
+    }
+  }
+
+  const initObject: ApiInspectionSample = {
+    ...sample,
+    measurementParameters: showOnlyConspicuousParameters
+      ? sample.measurementParameters.filter(
+          (p) =>
+            p.preclassification === "TOO_HIGH" ||
+            p.preclassification === "TOO_LOW",
+        )
+      : sample.measurementParameters,
+  };
 
   return (
     <AccordionGroup variant="soft" color="neutral">
@@ -174,7 +303,7 @@ export function Sample({
               }}
             >
               <Typography component="span" level="title-lg">
-                {initObject.pointOfWithdrawal}
+                {"Probe " + sampleIndex + 1}
               </Typography>
             </Grid>
             <Grid
@@ -183,9 +312,17 @@ export function Sample({
                 alignContent: "center",
               }}
             >
-              <Typography component="span" level="title-sm">
-                {initObject.nameOfSamplingPoint}
-              </Typography>
+              {classification !== "NO_NORM" && (
+                <Chip
+                  data-testid={"sampleClassificationChip-" + sampleIndex}
+                  color={getSampleClassificationColor()}
+                  variant="outlined"
+                  sx={{ backgroundColor: "transparent" }}
+                  startDecorator={getSampleClassificationIcon()}
+                >
+                  {getSampleClassificationText()}
+                </Chip>
+              )}
             </Grid>
             <Grid
               lg={1}
@@ -195,27 +332,81 @@ export function Sample({
               }}
             >
               <Stack direction="row" spacing={1}>
-                <Button
-                  color="primary"
-                  variant="outlined"
-                  startDecorator={<Print />}
-                  onClick={(e) => {
-                    handlePrint(e);
-                  }}
-                >
-                  Label drucken
-                </Button>
-
-                <IconButton
-                  color="primary"
-                  variant="outlined"
-                  aria-label="Proben bearbeiten"
-                  onClick={(e) => {
-                    handleOpenEditSidebar(e);
-                  }}
-                >
-                  <Edit />
-                </IconButton>
+                <Dropdown>
+                  <MenuButton
+                    data-testId={"dropdown-button-sample-" + sampleIndex}
+                    aria-label="Proben menü"
+                    slots={{ root: IconButton }}
+                    slotProps={{
+                      root: { variant: "outlined", color: "primary" },
+                    }}
+                  >
+                    <MoreVert />
+                  </MenuButton>
+                  <Menu>
+                    <MenuItem
+                      aria-label="Probe bearbeiten"
+                      onClick={(e) => {
+                        handleOpenEditSidebar(e);
+                      }}
+                    >
+                      <ListItemDecorator>
+                        <EditOutlined />
+                      </ListItemDecorator>{" "}
+                      Bearbeiten
+                    </MenuItem>
+                    <MenuItem
+                      aria-label="Label drucken"
+                      onClick={(e) => {
+                        handlePrint(e);
+                      }}
+                    >
+                      <ListItemDecorator>
+                        <PrintOutlined />
+                      </ListItemDecorator>{" "}
+                      Label drucken
+                    </MenuItem>
+                    <MenuItem
+                      aria-label="Protokoll herunterladen"
+                      onClick={(e) => {
+                        handleDownloadProtocol(e);
+                      }}
+                    >
+                      <ListItemDecorator>
+                        <FileDownloadOutlined />
+                      </ListItemDecorator>{" "}
+                      Protokoll herunterladen
+                    </MenuItem>
+                    <MenuItem
+                      aria-label="Begleitschein herunterladen"
+                      onClick={(e) => {
+                        handleDownloadAccompanyingNote(e);
+                      }}
+                    >
+                      <ListItemDecorator>
+                        <FileDownloadOutlined />
+                      </ListItemDecorator>{" "}
+                      Begleitschein herunterladen
+                    </MenuItem>
+                    <MenuItem
+                      aria-label="Probe löschen"
+                      sx={{
+                        color: "#C41C1C",
+                        "&:hover": {
+                          color: "#C41C1C",
+                        },
+                      }}
+                      onClick={(e) => {
+                        handleDeleteSample(e);
+                      }}
+                    >
+                      <ListItemDecorator sx={{ color: "#C41C1C" }}>
+                        <Delete sx={{ color: "#C41C1C" }} />
+                      </ListItemDecorator>{" "}
+                      Löschen
+                    </MenuItem>
+                  </Menu>
+                </Dropdown>
 
                 <IconButton
                   data-testid={"sample-" + sampleIndex}
@@ -305,86 +496,134 @@ export function Sample({
             </Stack>
             <Divider sx={{ marginTop: 3, marginBottom: 2 }} />
             <DetailsColumn>
-              <Stack direction={{ md: "column" }} gap={2} width="100%">
+              <Stack
+                data-testid="measurementParameterList"
+                direction={{ md: "column" }}
+                gap={2}
+                width="100%"
+              >
                 {initObject.measurementParameters.map((parameter, index) => (
                   <Grid
                     key={"measurementParameter-" + index}
                     container
                     direction={{ lg: "row" }}
-                    columns={3}
+                    columns={2}
                     sx={{
-                      height: 68,
-                      borderRight: "10px solid",
-                      borderColor: getPreclassificationBorderColor(
-                        parameter.preclassification,
-                      ),
-                      borderRadius: "8px",
-                      paddingLeft: 2,
-                      backgroundColor: "white",
                       flexGrow: 1,
                     }}
                   >
                     <Grid
-                      lg={1}
+                      container
+                      direction={{ lg: "row" }}
+                      columns={3}
                       sx={{
-                        alignContent: "center",
+                        height: 68,
+                        borderRight: "10px solid",
+                        borderColor: getParameterPreclassificationBorderColor(
+                          parameter.preclassification,
+                        ),
+                        borderRadius: "8px",
+                        paddingLeft: 2,
+                        backgroundColor: "white",
+                        flexGrow: 1,
                       }}
                     >
-                      <Typography component="span" level="body-md">
-                        {parameter.parameterName}
-                      </Typography>
-                    </Grid>
-                    <Grid
-                      lg={1}
-                      sx={{
-                        alignContent: "center",
-                      }}
-                    >
-                      <Stack
-                        direction={{ md: "row" }}
-                        gap={2}
+                      <Grid
+                        lg={1}
                         sx={{
-                          alignItems: "center",
+                          alignContent: "center",
                         }}
                       >
-                        <DebouncedInput
-                          data-testid={"measurementParameterInput-" + index}
-                          name={"measurementValue-" + index}
-                          type="text"
-                          defaultValue={parameter.measurementValue}
-                          onChange={(value) => handleEdit(value, index)}
-                        />
                         <Typography component="span" level="body-md">
-                          {parameter.unit}
+                          {parameter.parameterName}
                         </Typography>
-                      </Stack>
-                    </Grid>
-                    <Grid
-                      lg={1}
-                      sx={{
-                        alignContent: "center",
-                        justifyItems: "flex-end",
-                        paddingRight: 3,
-                      }}
-                    >
-                      <Typography
-                        data-testid={
-                          "measurementParameterClassification-" + index
-                        }
-                        component="span"
-                        level="body-md"
+                      </Grid>
+                      <Grid
+                        lg={1}
                         sx={{
-                          color: getPreclassificationColor(
-                            parameter.preclassification,
-                          ),
+                          alignContent: "center",
                         }}
                       >
-                        {translateInspectionSamplePreclassification(
-                          parameter.preclassification ??
-                            ApiInspectionSamplePreclassification.NoNormSpecified,
-                        )}
-                      </Typography>
+                        <Stack
+                          direction={{ md: "row" }}
+                          gap={2}
+                          sx={{
+                            alignItems: "center",
+                          }}
+                        >
+                          <DebouncedInput
+                            data-testid={"measurementParameterInput-" + index}
+                            name={"measurementValue-" + index}
+                            inputMode="numeric"
+                            type="number"
+                            defaultValue={parameter.measurementValue}
+                            onChange={(value) => handleEdit(value, index)}
+                          />
+                          <Typography component="span" level="body-md">
+                            {parameter.unit}
+                          </Typography>
+                        </Stack>
+                      </Grid>
+                      <Grid
+                        lg={1}
+                        sx={{
+                          alignContent: "center",
+                          justifyItems: "flex-end",
+                          paddingRight: 3,
+                        }}
+                      >
+                        <Typography
+                          data-testid={
+                            "measurementParameterClassification-" + index
+                          }
+                          component="span"
+                          level="body-md"
+                          sx={{
+                            color: getParameterPreclassificationColor(
+                              parameter.preclassification,
+                            ),
+                          }}
+                        >
+                          {translateInspectionSamplePreclassification(
+                            parameter.preclassification ??
+                              ApiInspectionSamplePreclassification.NoNormSpecified,
+                          )}
+                        </Typography>
+                      </Grid>
                     </Grid>
+                    {initObject.measurementParameters.length >= 2 && (
+                      <Grid
+                        sx={{
+                          alignContent: "center",
+                          justifyItems: "flex-end",
+                          paddingLeft: 2,
+                        }}
+                      >
+                        <IconButton
+                          data-testid={"measurementParameterDelete-" + index}
+                          aria-label="Löschen"
+                          sx={{
+                            border: "solid",
+                            borderColor: "#F09898",
+                            borderRadius: "var(--joy-radius-sm)",
+                            borderWidth: "1px",
+                            backgroundColor: "white",
+                            height: "32px",
+                            width: "32px",
+                            alignSelf: "flex-end",
+                          }}
+                          onClick={(e) =>
+                            handleDeleteSampleParameter(
+                              e,
+                              parameter.externalId,
+                              parameter.parameterName,
+                            )
+                          }
+                        >
+                          <DeleteOutlined color="danger" />
+                        </IconButton>
+                      </Grid>
+                    )}
                   </Grid>
                 ))}
               </Stack>

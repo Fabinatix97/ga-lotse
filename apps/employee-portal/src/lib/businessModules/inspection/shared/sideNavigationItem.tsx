@@ -66,7 +66,7 @@ export function resolveSideNavigationItems(): SideNavigationItem[] {
   return [
     {
       type: "SideNavigationParentItem",
-      name: "Begehung",
+      name: "Hygiene",
       decorator: <OtherHousesOutlined />,
       subItems,
     },

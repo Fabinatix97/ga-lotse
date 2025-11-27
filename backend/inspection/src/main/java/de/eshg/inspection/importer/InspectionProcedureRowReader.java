@@ -5,6 +5,15 @@
 
 package de.eshg.inspection.importer;
 
+import static de.eshg.base.address.DomesticAddressDto.MAX_CITY_LENGTH;
+import static de.eshg.base.address.DomesticAddressDto.MAX_HOUSE_NUMBER_LENGTH;
+import static de.eshg.base.address.DomesticAddressDto.MAX_POSTAL_CODE_LENGTH;
+import static de.eshg.base.address.DomesticAddressDto.MAX_STREET_LENGTH;
+import static de.eshg.base.centralfile.api.facility.FacilityContactPersonDto.MAX_ROLE_LENGTH;
+import static de.eshg.base.gdpr.api.GdprPersonDto.MAX_FIRST_NAME_LENGTH;
+import static de.eshg.base.gdpr.api.GdprPersonDto.MAX_LAST_NAME_LENGTH;
+import static de.eshg.base.gdpr.api.GdprPersonDto.MAX_PHONE_NUMBER_LENGTH;
+import static de.eshg.base.gdpr.api.GdprPersonDto.MAX_TITLE_LENGTH;
 import static de.eshg.inspection.importer.InspectionListColumn.CONTACT_EMAIL;
 import static de.eshg.inspection.importer.InspectionListColumn.CONTACT_FIRSTNAME;
 import static de.eshg.inspection.importer.InspectionListColumn.CONTACT_LASTNAME;
@@ -90,13 +99,17 @@ class InspectionProcedureRowReader extends RowReader<InspectionImporterRow, Insp
 
   private FacilityDetailsDto readFacilityDetails(
       ColumnAccessor<InspectionListColumn> col, ErrorHandler errorHandler) {
-    String name = cellAsString(col, FACILITY_NAME, errorHandler);
-    String zipCode = cellAsString(col, FACILITY_ZIPCODE, false, true, errorHandler);
-    String city = cellAsString(col, FACILITY_CITY, errorHandler);
-    String street = cellAsString(col, FACILITY_STREET, errorHandler);
-    String housenumber = cellAsString(col, FACILITY_HOUSENUMBER, false, true, errorHandler);
-    String email = cellAsString(col, FACILITY_EMAIL, true, false, errorHandler);
-    String phonenumber = cellAsString(col, FACILITY_PHONENUMBER, true, true, errorHandler);
+    String name =
+        cellAsString(col, FACILITY_NAME, FacilityDetailsDto.MAX_NAME_LENGTH, errorHandler);
+    String zipCode =
+        cellAsString(col, FACILITY_ZIPCODE, false, true, MAX_POSTAL_CODE_LENGTH, errorHandler);
+    String city = cellAsString(col, FACILITY_CITY, MAX_CITY_LENGTH, errorHandler);
+    String street = cellAsString(col, FACILITY_STREET, MAX_STREET_LENGTH, errorHandler);
+    String housenumber =
+        cellAsString(col, FACILITY_HOUSENUMBER, true, true, MAX_HOUSE_NUMBER_LENGTH, errorHandler);
+    String email = cellAsEmailString(col, FACILITY_EMAIL, true, errorHandler);
+    String phonenumber =
+        cellAsString(col, FACILITY_PHONENUMBER, true, true, MAX_PHONE_NUMBER_LENGTH, errorHandler);
 
     DomesticAddressDto contactAddress =
         new DomesticAddressDto(CountryCode.DE, city, zipCode, null, street, housenumber, null);
@@ -115,12 +128,15 @@ class InspectionProcedureRowReader extends RowReader<InspectionImporterRow, Insp
   private FacilityContactPersonDto readFacilityContactPerson(
       ColumnAccessor<InspectionListColumn> col, ErrorHandler errorHandler) {
     SalutationDto salutation = cellAsSalutation(col, CONTACT_SALUTATION, errorHandler);
-    String title = cellAsString(col, CONTACT_TITLE, true, false, errorHandler);
-    String role = cellAsString(col, CONTACT_ROLE, true, false, errorHandler);
-    String firstName = cellAsString(col, CONTACT_FIRSTNAME, true, false, errorHandler);
-    String lastName = cellAsString(col, CONTACT_LASTNAME, true, false, errorHandler);
-    String email = cellAsString(col, CONTACT_EMAIL, true, false, errorHandler);
-    String phonenumber = cellAsString(col, CONTACT_PHONENUMBER, true, true, errorHandler);
+    String title = cellAsString(col, CONTACT_TITLE, true, false, MAX_TITLE_LENGTH, errorHandler);
+    String role = cellAsString(col, CONTACT_ROLE, true, false, MAX_ROLE_LENGTH, errorHandler);
+    String firstName =
+        cellAsString(col, CONTACT_FIRSTNAME, true, false, MAX_FIRST_NAME_LENGTH, errorHandler);
+    String lastName =
+        cellAsString(col, CONTACT_LASTNAME, true, false, MAX_LAST_NAME_LENGTH, errorHandler);
+    String email = cellAsEmailString(col, CONTACT_EMAIL, true, errorHandler);
+    String phonenumber =
+        cellAsString(col, CONTACT_PHONENUMBER, true, true, MAX_PHONE_NUMBER_LENGTH, errorHandler);
 
     // If every contact field is empty then don't create a contact
     if (salutation == null

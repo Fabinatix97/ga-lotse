@@ -3,9 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { SelectOption, buildEnumOptions } from "@eshg/lib-portal";
+import { buildEnumOptions } from "@eshg/lib-portal";
 import {
   ApiConsultationType,
+  ApiCountryCode,
+  ApiDocumentType,
   ApiPersonLanguage,
 } from "@eshg/prostitute-protection-api";
 
@@ -14,125 +16,87 @@ export const systemProgressEntryTypeTitles: Record<string, string> = {
   CLOSED: "Vorgang geschlossen",
   PROCEDURE_CANCELED: "Vorgang abgebrochen",
   REOPENED: "Vorgang wiedereröffnet",
-};
+} as const;
 
 export const keyDocumentTypes: Record<string, string> = {
   PERSON_DETAILS_UPDATED: "Person aktualisiert.",
   CLOSED: "Vorgang geschlossen.",
   PROCEDURE_CANCELED: "Vorgang abgebrochen.",
   REOPENED: "Vorgang wiedereröffnet.",
+} as const;
+
+export const PERSON_FIELD_NAME = {
+  firstName: "Vorname",
+  lastName: "Nachname",
+  dateOfBirth: "Geburtsdatum",
+  alias: "Alias",
+  languages: "Sprachen",
+  gender: "Geschlecht",
+  countryOfBirth: "Geburtsland",
+  nationality: "Staatsangehörigkeit",
+  documentType: "Ausweisdokument",
+  hasSufficientGermanLanguageSkills: "Ausreichende Deutschkenntnisse",
+} as const;
+
+export const PROCEDURE_FIELD_NAME = {
+  consultationType: "Vorgangstyp",
+  procedureStatus: "Status",
+  consultant: "Berater/in",
+  createdBy: "Angelegt von",
+} as const;
+
+export const APPOINTMENT_FIELD_NAME = {
+  appointmentStart: "Zeitpunkt",
+  appointmentDuration: "Dauer",
+} as const;
+
+export const LANGUAGE_FIELD_NAME = {
+  languageOfConsultation: "Sprache der Beratung",
+  interpreterCalledIn: "Dolmetscher hinzugezogen",
+} as const;
+
+export const NOTES_FIELD_NAME = {
+  supervisedConsultation: "Beratung unter Aufsicht",
+  remarks: "Bemerkungen",
+  insertTextTemplate: "Textvorlage einfügen",
+} as const;
+
+export const CONSULTATION_FIELD_NAME = {
+  legalAdvice: "Rechtsberatung",
+  healthAndSocialInsurance: "Kranken- und Sozialversicherung",
+  counselingServices: "Beratungsangebote",
+  helpInEmergencies: "Hilfe in Notsituationen",
+  taxObligation: "Steuerpflicht",
+  counselingNeedClearing: "Beratungsbedarf / Clearing",
+  informationMaterial: "Infomaterial",
+  emergencyCoercionSituation: "Notlage / Zwangslage",
+  diseasePrevention: "Krankheitsverhütung",
+  contraception: "Empfängnisregelung",
+  pregnancy: "Schwangerschaft",
+  alcoholDrugUse: "Alkohol- / Drogengebrauch",
+  referralParagraph19: "Weitervermittlung § 19",
+} as const;
+
+export const DOCUMENT_TYPE_VALUES: Record<ApiDocumentType, string> = {
+  [ApiDocumentType.IdentificationCard]: "Personalausweis",
+  [ApiDocumentType.Passport]: "Reisepass",
 };
 
-// ------------------ ConsultationTopic ------------------ //
-export const ConsultationTopic = {
-  diseasePrevention: "DISEASE_PREVENTION",
-  contraception: "CONTRACEPTION",
-  pregnancy: "PREGNANCY",
-  drugRisks: "DRUG_RISKS",
-} as const;
+export const APPOINTMENT_DURATION_VALUES: Record<string, string> = {
+  PT15M: "15 min",
+  PT20M: "20 min",
+  PT30M: "30 min",
+  PT40M: "40 min",
+  PT45M: "45 min",
+  PT60M: "60 min",
+};
 
-export type ConsultationTopic =
-  (typeof ConsultationTopic)[keyof typeof ConsultationTopic];
-
-// ------------------ WorkEnvironment ------------------ //
-export const WorkEnvironment = {
-  brothel: "BROTHEL",
-  club: "CLUB",
-  escort: "ESCORT",
-  massageSalon: "MASSAGE_SALON",
-  streetProstitution: "STREET_PROSTITUTION",
-  apartment: "APARTMENT",
-} as const;
-
-export type WorkEnvironment =
-  (typeof WorkEnvironment)[keyof typeof WorkEnvironment];
-
-// ------------------ MedicalReferral ------------------ //
-export const MedicalReferral = {
-  homanitarianClinic: "HOMANITARIAN_CLINIC",
-  studentPolyclinic: "STUDENT_POLYCLINIC",
-  ifsg19Measures: "IFSG_19_MEASURES",
-} as const;
-
-export type MedicalReferral =
-  (typeof MedicalReferral)[keyof typeof MedicalReferral];
-
-// ------------------ HealthInsurance ------------------ //
-export const HealthInsurance = {
-  insuredOnlyInHomeCountry: "INSURED_ONLY_IN_HOME_COUNTRY",
-  insuredInGermany: "INSURED_IN_GERMANY",
-  foreignInsuranceOnly: "FOREIGN_INSURANCE_ONLY",
-  uninsured: "UNINSURED",
-} as const;
-
-export type HealthInsurance =
-  (typeof HealthInsurance)[keyof typeof HealthInsurance];
-
-export const CONSULTATION_TYPE_VALUES: Record<string, string> = {
+export const CONSULTATION_TYPE_VALUES: Record<ApiConsultationType, string> = {
   [ApiConsultationType.Initial]: "Erstkonsultation",
   [ApiConsultationType.FollowUp]: "Folgekonsultation",
-};
+} as const;
 
-export const CONSULTATION_TYPE_OPTIONS: SelectOption<string, string>[] =
-  Object.values(CONSULTATION_TYPE_VALUES).map((value) => ({
-    label: value,
-    value,
-  }));
-
-export const CONSULTATION_TOPIC_VALUES: Record<string, string> = {
-  [ConsultationTopic.diseasePrevention]: "Krankheitsprävention",
-  [ConsultationTopic.contraception]: "Empfängnisverhütung",
-  [ConsultationTopic.pregnancy]: "Schwangerschaft",
-  [ConsultationTopic.drugRisks]: "Drogenrisiken",
-};
-
-export const CONSULTATION_TOPIC_OPTIONS: SelectOption<string, string>[] =
-  Object.entries(CONSULTATION_TOPIC_VALUES).map(([key, value]) => ({
-    label: value,
-    value: key,
-  }));
-
-export const WORK_ENVIRONMENT_VALUES: Record<string, string> = {
-  [WorkEnvironment.brothel]: "Bordell",
-  [WorkEnvironment.club]: "Club",
-  [WorkEnvironment.escort]: "Escort",
-  [WorkEnvironment.massageSalon]: "Massagesalon",
-  [WorkEnvironment.streetProstitution]: "Straßenprostitution",
-  [WorkEnvironment.apartment]: "Wohnung",
-};
-
-export const WORK_ENVIRONMENT_OPTIONS: SelectOption<string, string>[] =
-  Object.entries(WORK_ENVIRONMENT_VALUES).map(([key, value]) => ({
-    label: value,
-    value: key,
-  }));
-
-export const MEDICAL_REFERRAL_VALUES: Record<string, string> = {
-  [MedicalReferral.homanitarianClinic]: "Humanitäre Klinik",
-  [MedicalReferral.studentPolyclinic]: "Studentische Poliklinik",
-  [MedicalReferral.ifsg19Measures]: "§19 IfSG-Maßnahmen",
-};
-
-export const MEDICAL_REFERRAL_OPTIONS: SelectOption<string, string>[] =
-  Object.entries(MEDICAL_REFERRAL_VALUES).map(([key, value]) => ({
-    label: value,
-    value: key,
-  }));
-
-export const HEALTH_INSURANCE_VALUES: Record<string, string> = {
-  [HealthInsurance.insuredOnlyInHomeCountry]: "Nur im Heimatland versichert",
-  [HealthInsurance.insuredInGermany]: "In Deutschland versichert",
-  [HealthInsurance.foreignInsuranceOnly]: "Nur ausländische Versicherung",
-  [HealthInsurance.uninsured]: "Nicht versichert",
-};
-
-export const HEALTH_INSURANCE_OPTIONS: SelectOption<string, string>[] =
-  Object.entries(HEALTH_INSURANCE_VALUES).map(([key, value]) => ({
-    label: value,
-    value: key,
-  }));
-
-export const LANGUAGE_VALUE = {
+export const LANGUAGE_VALUE: Record<ApiPersonLanguage, string> = {
   [ApiPersonLanguage.Bulgarian]: "Bulgarisch",
   [ApiPersonLanguage.Chinese]: "Chinesisch",
   [ApiPersonLanguage.German]: "Deutsch",
@@ -155,4 +119,274 @@ export const LANGUAGE_VALUE = {
   [ApiPersonLanguage.Unknown]: "Unbekannt",
 } as const;
 
-export const LANGUAGE_OPTIONS = buildEnumOptions(LANGUAGE_VALUE, true);
+export const LANGUAGE_OPTIONS = buildEnumOptions(LANGUAGE_VALUE, false);
+
+export const NATIONALITY_VALUES: Record<ApiCountryCode, string> = {
+  [ApiCountryCode.Ad]: "Andorranisch",
+  [ApiCountryCode.Ae]: "Emiratisch",
+  [ApiCountryCode.Af]: "Afghanisch",
+  [ApiCountryCode.Ag]: "Antiguanisch",
+  [ApiCountryCode.Ai]: "Anguillanisch",
+  [ApiCountryCode.Al]: "Albanisch",
+  [ApiCountryCode.Am]: "Armenisch",
+  [ApiCountryCode.Ao]: "Angolanisch",
+  [ApiCountryCode.Aq]: "Antarktisch",
+  [ApiCountryCode.Ar]: "Argentinisch",
+  [ApiCountryCode.As]: "Amerikanisch-Samoanisch",
+  [ApiCountryCode.At]: "Österreichisch",
+  [ApiCountryCode.Au]: "Australisch",
+  [ApiCountryCode.Aw]: "Arubanisch",
+  [ApiCountryCode.Ax]: "Åländisch",
+  [ApiCountryCode.Az]: "Aserbaidschanisch",
+  [ApiCountryCode.Ba]: "Bosnisch-Herzegowinisch",
+  [ApiCountryCode.Bb]: "Barbadisch",
+  [ApiCountryCode.Bd]: "Bangladeschisch",
+  [ApiCountryCode.Be]: "Belgisch",
+  [ApiCountryCode.Bf]: "Burkinisch",
+  [ApiCountryCode.Bg]: "Bulgarisch",
+  [ApiCountryCode.Bh]: "Bahrainisch",
+  [ApiCountryCode.Bi]: "Burundisch",
+  [ApiCountryCode.Bj]: "Beninisch",
+  [ApiCountryCode.Bl]: "St. Barthélemyanisch",
+  [ApiCountryCode.Bm]: "Bermudisch",
+  [ApiCountryCode.Bn]: "Bruneiisch",
+  [ApiCountryCode.Bo]: "Bolivianisch",
+  [ApiCountryCode.Bq]: "Karibisch-Niederländisch",
+  [ApiCountryCode.Br]: "Brasilianisch",
+  [ApiCountryCode.Bs]: "Bahamaisch",
+  [ApiCountryCode.Bt]: "Bhutanisch",
+  [ApiCountryCode.Bv]: "Bouvetinsel",
+  [ApiCountryCode.Bw]: "Botswanisch",
+  [ApiCountryCode.By]: "Belarussisch",
+  [ApiCountryCode.Bz]: "Belizisch",
+  [ApiCountryCode.Ca]: "Kanadisch",
+  [ApiCountryCode.Cc]: "Kokosinseln",
+  [ApiCountryCode.Cd]: "Kongolesisch (Demokratische Republik)",
+  [ApiCountryCode.Cf]: "Zentralafrikanisch",
+  [ApiCountryCode.Cg]: "Kongolesisch",
+  [ApiCountryCode.Ch]: "Schweizerisch",
+  [ApiCountryCode.Ci]: "Ivorisch",
+  [ApiCountryCode.Ck]: "Cookinseln",
+  [ApiCountryCode.Cl]: "Chilenisch",
+  [ApiCountryCode.Cm]: "Kamerunisch",
+  [ApiCountryCode.Cn]: "Chinesisch",
+  [ApiCountryCode.Co]: "Kolumbianisch",
+  [ApiCountryCode.Cr]: "Costa-Ricanisch",
+  [ApiCountryCode.Cu]: "Kubanisch",
+  [ApiCountryCode.Cv]: "Kap-Verdisch",
+  [ApiCountryCode.Cw]: "Curaçaoisch",
+  [ApiCountryCode.Cx]: "Weihnachtsinsel",
+  [ApiCountryCode.Cy]: "Zyprisch",
+  [ApiCountryCode.Cz]: "Tschechisch",
+  [ApiCountryCode.De]: "Deutsch",
+  [ApiCountryCode.Dj]: "Dschibutisch",
+  [ApiCountryCode.Dk]: "Dänisch",
+  [ApiCountryCode.Dm]: "Dominicanisch",
+  [ApiCountryCode.Do]: "Dominikanisch",
+  [ApiCountryCode.Dz]: "Algerisch",
+  [ApiCountryCode.Ec]: "Ecuadorianisch",
+  [ApiCountryCode.Ee]: "Estnisch",
+  [ApiCountryCode.Eg]: "Ägyptisch",
+  [ApiCountryCode.Eh]: "Westsaharisch",
+  [ApiCountryCode.Er]: "Eritreisch",
+  [ApiCountryCode.Es]: "Spanisch",
+  [ApiCountryCode.Et]: "Äthiopisch",
+  [ApiCountryCode.Fi]: "Finnisch",
+  [ApiCountryCode.Fj]: "Fidschianisch",
+  [ApiCountryCode.Fk]: "Falklandinseln",
+  [ApiCountryCode.Fm]: "Mikronesisch",
+  [ApiCountryCode.Fo]: "Färöisch",
+  [ApiCountryCode.Fr]: "Französisch",
+  [ApiCountryCode.Ga]: "Gabunisch",
+  [ApiCountryCode.Gb]: "Britisch",
+  [ApiCountryCode.Gd]: "Grenadisch",
+  [ApiCountryCode.Ge]: "Georgisch",
+  [ApiCountryCode.Gf]: "Französisch-Guayanisch",
+  [ApiCountryCode.Gg]: "Guernsey",
+  [ApiCountryCode.Gh]: "Ghanaisch",
+  [ApiCountryCode.Gi]: "Gibraltarisch",
+  [ApiCountryCode.Gl]: "Grönländisch",
+  [ApiCountryCode.Gm]: "Gambisch",
+  [ApiCountryCode.Gn]: "Guineisch",
+  [ApiCountryCode.Gp]: "Guadeloupisch",
+  [ApiCountryCode.Gq]: "Äquatorialguineisch",
+  [ApiCountryCode.Gr]: "Griechisch",
+  [ApiCountryCode.Gs]: "Südgeorgisch",
+  [ApiCountryCode.Gt]: "Guatemaltekisch",
+  [ApiCountryCode.Gu]: "Guamisch",
+  [ApiCountryCode.Gw]: "Guinea-Bissauisch",
+  [ApiCountryCode.Gy]: "Guyanisch",
+  [ApiCountryCode.Hk]: "Hongkong",
+  [ApiCountryCode.Hm]: "Heard und McDonaldinseln",
+  [ApiCountryCode.Hn]: "Honduranisch",
+  [ApiCountryCode.Hr]: "Kroatisch",
+  [ApiCountryCode.Ht]: "Haitianisch",
+  [ApiCountryCode.Hu]: "Ungarisch",
+  [ApiCountryCode.Id]: "Indonesisch",
+  [ApiCountryCode.Ie]: "Irisch",
+  [ApiCountryCode.Il]: "Israelisch",
+  [ApiCountryCode.Im]: "Manx",
+  [ApiCountryCode.In]: "Indisch",
+  [ApiCountryCode.Io]: "Britisch-Indischer Ozean",
+  [ApiCountryCode.Iq]: "Irakisch",
+  [ApiCountryCode.Ir]: "Iranisch",
+  [ApiCountryCode.Is]: "Isländisch",
+  [ApiCountryCode.It]: "Italienisch",
+  [ApiCountryCode.Je]: "Jersey",
+  [ApiCountryCode.Jm]: "Jamaikanisch",
+  [ApiCountryCode.Jo]: "Jordanisch",
+  [ApiCountryCode.Jp]: "Japanisch",
+  [ApiCountryCode.Ke]: "Kenianisch",
+  [ApiCountryCode.Kg]: "Kirgisisch",
+  [ApiCountryCode.Kh]: "Kambodschanisch",
+  [ApiCountryCode.Ki]: "Kiribatisch",
+  [ApiCountryCode.Km]: "Komorisch",
+  [ApiCountryCode.Kn]: "St. Kitts und Nevis",
+  [ApiCountryCode.Kp]: "Nordkoreanisch",
+  [ApiCountryCode.Kr]: "Südkoreanisch",
+  [ApiCountryCode.Kw]: "Kuwaitisch",
+  [ApiCountryCode.Ky]: "Caymanisch",
+  [ApiCountryCode.Kz]: "Kasachisch",
+  [ApiCountryCode.La]: "Laotisch",
+  [ApiCountryCode.Lb]: "Libanesisch",
+  [ApiCountryCode.Lc]: "St. Lucianisch",
+  [ApiCountryCode.Li]: "Liechtensteinisch",
+  [ApiCountryCode.Lk]: "Sri-Lankisch",
+  [ApiCountryCode.Lr]: "Liberianisch",
+  [ApiCountryCode.Ls]: "Lesothisch",
+  [ApiCountryCode.Lt]: "Litauisch",
+  [ApiCountryCode.Lu]: "Luxemburgisch",
+  [ApiCountryCode.Lv]: "Lettisch",
+  [ApiCountryCode.Ly]: "Libysch",
+  [ApiCountryCode.Ma]: "Marokkanisch",
+  [ApiCountryCode.Mc]: "Monegassisch",
+  [ApiCountryCode.Md]: "Moldauisch",
+  [ApiCountryCode.Me]: "Montenegrinisch",
+  [ApiCountryCode.Mf]: "St. Martin",
+  [ApiCountryCode.Mg]: "Madagassisch",
+  [ApiCountryCode.Mh]: "Marshallisch",
+  [ApiCountryCode.Mk]: "Nordmazedonisch",
+  [ApiCountryCode.Ml]: "Malisch",
+  [ApiCountryCode.Mm]: "Myanmarisch",
+  [ApiCountryCode.Mn]: "Mongolisch",
+  [ApiCountryCode.Mo]: "Macauisch",
+  [ApiCountryCode.Mp]: "Nördliche Marianen",
+  [ApiCountryCode.Mq]: "Martiniquisch",
+  [ApiCountryCode.Mr]: "Mauretanisch",
+  [ApiCountryCode.Ms]: "Montserratisch",
+  [ApiCountryCode.Mt]: "Maltesisch",
+  [ApiCountryCode.Mu]: "Mauritisch",
+  [ApiCountryCode.Mv]: "Maledivisch",
+  [ApiCountryCode.Mw]: "Malawisch",
+  [ApiCountryCode.Mx]: "Mexikanisch",
+  [ApiCountryCode.My]: "Malaysisch",
+  [ApiCountryCode.Mz]: "Mosambikanisch",
+  [ApiCountryCode.Na]: "Namibisch",
+  [ApiCountryCode.Nc]: "Neukaledonisch",
+  [ApiCountryCode.Ne]: "Nigrisch",
+  [ApiCountryCode.Nf]: "Norfolkinsel",
+  [ApiCountryCode.Ng]: "Nigerianisch",
+  [ApiCountryCode.Ni]: "Nicaraguanisch",
+  [ApiCountryCode.Nl]: "Niederländisch",
+  [ApiCountryCode.No]: "Norwegisch",
+  [ApiCountryCode.Np]: "Nepalesisch",
+  [ApiCountryCode.Nr]: "Nauruisch",
+  [ApiCountryCode.Nu]: "Niueanisch",
+  [ApiCountryCode.Nz]: "Neuseeländisch",
+  [ApiCountryCode.Om]: "Omanisch",
+  [ApiCountryCode.Pa]: "Panamaisch",
+  [ApiCountryCode.Pe]: "Peruanisch",
+  [ApiCountryCode.Pf]: "Französisch-Polynesisch",
+  [ApiCountryCode.Pg]: "Papua-Neuguineisch",
+  [ApiCountryCode.Ph]: "Philippinisch",
+  [ApiCountryCode.Pk]: "Pakistanisch",
+  [ApiCountryCode.Pl]: "Polnisch",
+  [ApiCountryCode.Pm]: "St. Pierre und Miquelon",
+  [ApiCountryCode.Pn]: "Pitcairninseln",
+  [ApiCountryCode.Pr]: "Puerto-Ricanisch",
+  [ApiCountryCode.Ps]: "Palästinensisch",
+  [ApiCountryCode.Pt]: "Portugiesisch",
+  [ApiCountryCode.Pw]: "Palauisch",
+  [ApiCountryCode.Py]: "Paraguayisch",
+  [ApiCountryCode.Qa]: "Katarisch",
+  [ApiCountryCode.Re]: "Réunionisch",
+  [ApiCountryCode.Ro]: "Rumänisch",
+  [ApiCountryCode.Rs]: "Serbisch",
+  [ApiCountryCode.Ru]: "Russisch",
+  [ApiCountryCode.Rw]: "Ruandisch",
+  [ApiCountryCode.Sa]: "Saudisch",
+  [ApiCountryCode.Sb]: "Salomonisch",
+  [ApiCountryCode.Sc]: "Seychellisch",
+  [ApiCountryCode.Sd]: "Sudanesisch",
+  [ApiCountryCode.Se]: "Schwedisch",
+  [ApiCountryCode.Sg]: "Singapurisch",
+  [ApiCountryCode.Sh]: "St. Helena",
+  [ApiCountryCode.Si]: "Slowenisch",
+  [ApiCountryCode.Sj]: "Svalbard und Jan Mayen",
+  [ApiCountryCode.Sk]: "Slowakisch",
+  [ApiCountryCode.Sl]: "Sierra-Leonisch",
+  [ApiCountryCode.Sm]: "San-Marinesisch",
+  [ApiCountryCode.Sn]: "Senegalesisch",
+  [ApiCountryCode.So]: "Somalisch",
+  [ApiCountryCode.Sr]: "Surinamisch",
+  [ApiCountryCode.Ss]: "Südsudanesisch",
+  [ApiCountryCode.St]: "São-Toméisch",
+  [ApiCountryCode.Sv]: "Salvadorianisch",
+  [ApiCountryCode.Sx]: "Sint Maarten",
+  [ApiCountryCode.Sy]: "Syrisch",
+  [ApiCountryCode.Sz]: "Eswatinisch",
+  [ApiCountryCode.Tc]: "Turks- und Caicosinseln",
+  [ApiCountryCode.Td]: "Tschadisch",
+  [ApiCountryCode.Tf]: "Französische Süd- und Antarktisgebiete",
+  [ApiCountryCode.Tg]: "Togoisch",
+  [ApiCountryCode.Th]: "Thailändisch",
+  [ApiCountryCode.Tj]: "Tadschikisch",
+  [ApiCountryCode.Tk]: "Tokelauisch",
+  [ApiCountryCode.Tl]: "Timoresisch",
+  [ApiCountryCode.Tm]: "Turkmenisch",
+  [ApiCountryCode.Tn]: "Tunesisch",
+  [ApiCountryCode.To]: "Tongaisch",
+  [ApiCountryCode.Tr]: "Türkisch",
+  [ApiCountryCode.Tt]: "Trinidadisch",
+  [ApiCountryCode.Tv]: "Tuvaluisch",
+  [ApiCountryCode.Tw]: "Taiwanisch",
+  [ApiCountryCode.Tz]: "Tansanisch",
+  [ApiCountryCode.Ua]: "Ukrainisch",
+  [ApiCountryCode.Ug]: "Ugandisch",
+  [ApiCountryCode.Um]: "Amerikanische Überseeinseln",
+  [ApiCountryCode.Us]: "Amerikanisch",
+  [ApiCountryCode.Uy]: "Uruguayisch",
+  [ApiCountryCode.Uz]: "Usbekisch",
+  [ApiCountryCode.Va]: "Vatikanisch",
+  [ApiCountryCode.Vc]: "St. Vincent und die Grenadinen",
+  [ApiCountryCode.Ve]: "Venezolanisch",
+  [ApiCountryCode.Vg]: "Britische Jungferninseln",
+  [ApiCountryCode.Vi]: "Amerikanische Jungferninseln",
+  [ApiCountryCode.Vn]: "Vietnamesisch",
+  [ApiCountryCode.Vu]: "Vanuatuisch",
+  [ApiCountryCode.Wf]: "Wallis und Futuna",
+  [ApiCountryCode.Ws]: "Samoanisch",
+  [ApiCountryCode.Ye]: "Jemenitisch",
+  [ApiCountryCode.Yt]: "Mayotte",
+  [ApiCountryCode.Za]: "Südafrikanisch",
+  [ApiCountryCode.Zm]: "Sambisch",
+  [ApiCountryCode.Zw]: "Simbabwisch",
+  [ApiCountryCode.Xk]: "Kosovarisch",
+  [ApiCountryCode.Unknown]: "Unbekannt",
+  [ApiCountryCode.Stateless]: "Staatenlos",
+};
+
+export const NATIONALITY_OPTIONS = buildEnumOptions(NATIONALITY_VALUES, false);
+
+export const CertificateType = {
+  fullName: "FULL_NAME",
+  alias: "ALIAS",
+} as const;
+
+export type CertificateType =
+  (typeof CertificateType)[keyof typeof CertificateType];
+
+export const CERTIFICATE_TYPE_VALUES = {
+  [CertificateType.fullName]: "Klarname",
+  [CertificateType.alias]: "Alias",
+} as const;

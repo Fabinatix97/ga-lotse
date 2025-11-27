@@ -22,10 +22,7 @@ import {
 import { ApiProcedureType } from "@eshg/lib-procedures-api";
 
 import { useIsNewFeatureEnabled } from "@/lib/baseModule/api/queries/feature";
-import {
-  InboxAwareBusinessModule,
-  inboxAwareBusinessModuleNames,
-} from "@/lib/baseModule/components/inboxProcedures/types";
+import { inboxAwareBusinessModuleNames } from "@/lib/baseModule/components/inboxProcedures/types";
 import {
   getAllProcedureTypes,
   resolveProcedureTypes,
@@ -41,7 +38,7 @@ import {
 import { validateForm } from "./validate";
 
 export interface CreateInboxProcedureValues {
-  businessModule: OptionalFieldValue<InboxAwareBusinessModule>;
+  businessModule: OptionalFieldValue<ApiBusinessModule>;
   procedureType: OptionalFieldValue<ApiProcedureType>;
   inboxProgressEntry: InboxProgressEntryValues;
   contact: ContactValues;
@@ -53,7 +50,7 @@ interface CreateInboxProcedureFormProps {
 }
 
 function buildProcedureTypeOptions(
-  businessModuleValue: OptionalFieldValue<InboxAwareBusinessModule>,
+  businessModuleValue: OptionalFieldValue<ApiBusinessModule>,
 ) {
   return isEmpty(businessModuleValue)
     ? buildOptionsFromProcedureTypes(getAllProcedureTypes())
@@ -70,7 +67,7 @@ export function CreateInboxProcedureForm(props: CreateInboxProcedureFormProps) {
       ? buildEnumOptions(inboxAwareBusinessModuleNames)
       : [
           {
-            value: InboxAwareBusinessModule.Inspection,
+            value: ApiBusinessModule.Inspection,
             label: businessModuleNames[ApiBusinessModule.Inspection],
           },
         ];
@@ -79,7 +76,7 @@ export function CreateInboxProcedureForm(props: CreateInboxProcedureFormProps) {
   const initialValues = useMemo(() => {
     const initialValues = { ...props.initialValues };
     if (!isInboxEnabled) {
-      initialValues.businessModule = InboxAwareBusinessModule.Inspection;
+      initialValues.businessModule = ApiBusinessModule.Inspection;
       initialValues.procedureType = ApiProcedureType.Inspection;
     }
     return initialValues;

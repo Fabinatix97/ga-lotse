@@ -38,6 +38,7 @@ public class InspectionTestHelperController extends TestHelperController
   private final InspectionPropertiesConfigService inspectionPropertiesConfigService;
   private final InspectionPropertiesConfigMapper inspectionPropertiesConfigMapper;
   private final TeisDataPopulator teisDataPopulator;
+  private final ObjectTypePopulator objectTypePopulator;
 
   public InspectionTestHelperController(
       DefaultTestHelperService testHelperService,
@@ -47,7 +48,8 @@ public class InspectionTestHelperController extends TestHelperController
       ChecklistRepository checklistRepository,
       InspectionPropertiesConfigService inspectionPropertiesConfigService,
       InspectionPropertiesConfigMapper inspectionPropertiesConfigMapper,
-      TeisDataPopulator teisDataPopulator) {
+      TeisDataPopulator teisDataPopulator,
+      ObjectTypePopulator objectTypePopulator) {
     super(testHelperService, environmentConfig);
     this.auditLogTestHelperService = auditLogTestHelperService;
     this.inspectionFeatureToggle = inspectionFeatureToggle;
@@ -55,6 +57,7 @@ public class InspectionTestHelperController extends TestHelperController
     this.inspectionPropertiesConfigService = inspectionPropertiesConfigService;
     this.inspectionPropertiesConfigMapper = inspectionPropertiesConfigMapper;
     this.teisDataPopulator = teisDataPopulator;
+    this.objectTypePopulator = objectTypePopulator;
   }
 
   @Override
@@ -95,5 +98,11 @@ public class InspectionTestHelperController extends TestHelperController
   @Transactional
   public void recreateTeisData(@RequestParam(name = "mode") TeisDataCreationModeDto mode) {
     teisDataPopulator.recreateTeisData(mode);
+  }
+
+  @PostExchange("/create-object-types")
+  @Transactional
+  public void createObjectTypes() {
+    objectTypePopulator.createObjectTypeHierarchy();
   }
 }

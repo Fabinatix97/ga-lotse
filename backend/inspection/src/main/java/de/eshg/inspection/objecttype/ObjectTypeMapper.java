@@ -10,6 +10,7 @@ import de.eshg.inspection.objecttype.api.ObjectTypeHierarchyTreeNodeDto;
 import de.eshg.inspection.objecttype.api.UpdateObjectTypeRequest;
 import de.eshg.inspection.objecttype.persistence.ObjectType;
 import de.eshg.inspection.objecttype.persistence.ObjectTypeHierarchyTreeNode;
+import java.util.Comparator;
 
 public class ObjectTypeMapper {
 
@@ -37,7 +38,10 @@ public class ObjectTypeMapper {
     return new ObjectTypeHierarchyTreeNodeDto(
         treeNode.getName(),
         treeNode.getSubNodes().stream().map(ObjectTypeMapper::toDto).toList(),
-        treeNode.getObjectTypes().stream().map(ObjectTypeMapper::toDto).toList());
+        treeNode.getObjectTypes().stream()
+            .map(ObjectTypeMapper::toDto)
+            .sorted(Comparator.comparing(ObjectTypeDto::name))
+            .toList());
   }
 
   public static ObjectType mapUpdateRequest(

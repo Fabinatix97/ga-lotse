@@ -88,7 +88,7 @@ function ConfiguratorSideNavigationItem() {
             data,
           }),
           subItem({
-            name: "Begehung",
+            name: "Hygiene",
             module: "INSPECTION",
             accessCheck: sideNavigationItem.accessCheck,
             data,

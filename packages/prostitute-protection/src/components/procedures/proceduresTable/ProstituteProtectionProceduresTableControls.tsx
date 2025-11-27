@@ -14,7 +14,7 @@ import {
   usePersonSearchFromURL,
 } from "@eshg/lib-employee-portal";
 
-import { useAddNewProcedureSidebar } from "../../sidebar/useAddNewProcedureSidebar";
+import { useAddNewProcedureSidebar } from "../addNewProcedure/useAddNewProcedureSidebar";
 
 interface ProstituteProtectionProceduresTableControlsProps {
   handleSearch: () => void;

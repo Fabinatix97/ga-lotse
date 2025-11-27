@@ -7,23 +7,13 @@ import { ApiBusinessModule } from "@eshg/base-api";
 
 import { businessModuleNames } from "@/lib/shared/components/procedures/constants";
 
-export const InboxAwareBusinessModule = {
-  Inspection: "INSPECTION",
-  SchoolEntry: "SCHOOL_ENTRY",
-  TravelMedicine: "TRAVEL_MEDICINE",
-  MeaslesProtection: "MEASLES_PROTECTION",
-} as const;
-
-export type InboxAwareBusinessModule =
-  (typeof InboxAwareBusinessModule)[keyof typeof InboxAwareBusinessModule];
-
 export const inboxAwareBusinessModuleNames = {
-  [InboxAwareBusinessModule.Inspection]:
+  [ApiBusinessModule.Inspection]:
     businessModuleNames[ApiBusinessModule.Inspection],
-  [InboxAwareBusinessModule.SchoolEntry]:
+  [ApiBusinessModule.SchoolEntry]:
     businessModuleNames[ApiBusinessModule.SchoolEntry],
-  [InboxAwareBusinessModule.TravelMedicine]:
+  [ApiBusinessModule.TravelMedicine]:
     businessModuleNames[ApiBusinessModule.TravelMedicine],
-  [InboxAwareBusinessModule.MeaslesProtection]:
+  [ApiBusinessModule.MeaslesProtection]:
     businessModuleNames[ApiBusinessModule.MeaslesProtection],
-} satisfies Record<InboxAwareBusinessModule, string>;
+} satisfies Partial<Record<ApiBusinessModule, string>>;

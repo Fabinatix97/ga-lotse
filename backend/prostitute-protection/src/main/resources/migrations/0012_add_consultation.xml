@@ -1,0 +1,68 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<!--
+ Copyright 2025 cronn GmbH
+ SPDX-License-Identifier: Apache-2.0
+-->
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+  <changeSet author="GA-Lotse" id="1764055364326-1">
+    <createTable tableName="consultation">
+      <column name="version" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="alcohol_and_drug_usage" type="BOOLEAN">
+        <constraints nullable="false"/>
+      </column>
+      <column name="birth_control" type="BOOLEAN">
+        <constraints nullable="false"/>
+      </column>
+      <column name="clearing" type="BOOLEAN">
+        <constraints nullable="false"/>
+      </column>
+      <column name="consulting_services" type="BOOLEAN">
+        <constraints nullable="false"/>
+      </column>
+      <column name="disease_prevention" type="BOOLEAN">
+        <constraints nullable="false"/>
+      </column>
+      <column name="emergency_help" type="BOOLEAN">
+        <constraints nullable="false"/>
+      </column>
+      <column name="health_and_social_insurance" type="BOOLEAN">
+        <constraints nullable="false"/>
+      </column>
+      <column name="information_material" type="BOOLEAN">
+        <constraints nullable="false"/>
+      </column>
+      <column name="legal_advices" type="BOOLEAN">
+        <constraints nullable="false"/>
+      </column>
+      <column name="predicament" type="BOOLEAN">
+        <constraints nullable="false"/>
+      </column>
+      <column name="pregnancy" type="BOOLEAN">n
+        <constraints nullable="false"/>
+      </column>
+      <column name="referral" type="BOOLEAN">
+        <constraints nullable="false"/>
+      </column>
+      <column name="tax_liability" type="BOOLEAN">
+        <constraints nullable="false"/>
+      </column>
+      <column name="procedure_id" type="BIGINT">
+        <constraints nullable="false" primaryKey="true"
+                     primaryKeyName="pk_consultation"/>
+      </column>
+    </createTable>
+    <addForeignKeyConstraint baseColumnNames="procedure_id"
+                             baseTableName="consultation"
+                             constraintName="fk_consultation_prostitute_protection_procedure"
+                             deferrable="false" initiallyDeferred="false"
+                             onDelete="NO ACTION" onUpdate="NO ACTION"
+                             referencedColumnNames="id"
+                             referencedTableName="prostitute_protection_procedure"
+                             validate="true"/>
+  </changeSet>
+</databaseChangeLog>

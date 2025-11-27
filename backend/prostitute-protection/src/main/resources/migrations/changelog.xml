@@ -15,4 +15,10 @@
   <include file="migrations/0006_add_procedure_content.xml"/>
   <include file="migrations/0007_add_new_procedure_type_prostitute_protection.xml"/>
   <include file="migrations/0008_add_additional_certificate_fields_to_procedure.xml"/>
+  <include file="migrations/0009_add_user_defined_appointment.xml"/>
+  <include file="migrations/0010_separate_person_data_from_procedure.xml"/>
+  <include file="migrations/0011_add_encrypted_personal_data_table.xml"/>
+  <include file="migrations/0012_add_consultation.xml"/>
+  <include file="migrations/0013_add_consultation_certificate_created_at.xml"/>
+  <include file="migrations/0014_drop_not_null_constraint.xml"/>
 </databaseChangeLog>

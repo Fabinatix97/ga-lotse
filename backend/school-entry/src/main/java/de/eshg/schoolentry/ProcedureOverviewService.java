@@ -197,16 +197,13 @@ public class ProcedureOverviewService {
             ProcedureMapper.mapIntegerToYear(filterParameters.schoolYearFilter()),
             getDayOfAppointmentAsInstant(filterParameters.dayOfAppointmentFilter()),
             filterParameters.hasAppointmentFilter(),
-            new ArrayList<>(
-                filterParameters.labelsFilter() == null
-                    ? Collections.emptyList()
-                    : filterParameters.labelsFilter()),
-            new ArrayList<>(
-                filterParameters.excludedLabelsFilter() == null
-                    ? Collections.emptyList()
-                    : filterParameters.excludedLabelsFilter()),
+            arrayList(filterParameters.labelsFilter()),
+            arrayList(filterParameters.excludedLabelsFilter()),
             filterParameters.isInvitationSentFilter(),
             filterParameters.hasExaminationEditsFilter(),
+            arrayList(filterParameters.physiciansFilter()),
+            arrayList(filterParameters.mfasFilter()),
+            filterParameters.roomFilter(),
             pageSpec.sortKey(),
             pageSpec.direction());
 
@@ -249,6 +246,10 @@ public class ProcedureOverviewService {
 
     List<ProcedureData> procedureData = augmentWithChildData(result).toList();
     return new PagedProcedures(procedureData, personIds.size());
+  }
+
+  private static <T> ArrayList<T> arrayList(List<T> input) {
+    return input == null ? new ArrayList<>() : new ArrayList<>(input);
   }
 
   private static GetPersonsSortKey mapToGetPersonsSortKey(ProcedureSortKey sortKey) {

@@ -3,53 +3,37 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Sheet, Stack } from "@mui/joy";
-import { isDefined } from "remeda";
+import { Stack } from "@mui/joy";
+import { isDefined, isNullish } from "remeda";
 
 import {
+  ContentPanel,
   DetailsItem,
-  DetailsRow,
   DetailsSection,
   EditButton,
   ResponsiveDivider,
 } from "@eshg/lib-employee-portal";
-import {
-  DetailsColumn,
-  DetailsList,
-  GENDER_VALUES,
-  PERSON_FIELD_NAME,
-  formatDate,
-} from "@eshg/lib-portal";
-import { ApiPersonLanguage } from "@eshg/prostitute-protection-api";
+import { DetailsColumn, DetailsList, formatDate } from "@eshg/lib-portal";
+import { ApiProcedureDetails } from "@eshg/prostitute-protection-api";
 
-// TO DO - Remove this once the prostitute protection module is released
-import { ApiProstituteProtectionProcedure } from "../../../mock";
-import { LANGUAGE_VALUE } from "../../../shared/constants";
-import { isProcedureFinalized } from "../../../shared/helpers";
-import { useEditPersonDetailsSidebar } from "../../sidebar/EditPersonDetailsSidebar";
+import {
+  DOCUMENT_TYPE_VALUES,
+  NATIONALITY_VALUES,
+  PERSON_FIELD_NAME,
+} from "../../../shared/constants";
+import { formatLanguages, isProcedureFinalized } from "../../../shared/helpers";
+
+import { useEditPersonDetailsSidebar } from "./sidebar/EditPersonDetailsSidebar";
 
 export function PersonDetails({
   procedure,
 }: Readonly<{
-  procedure: ApiProstituteProtectionProcedure;
+  procedure: ApiProcedureDetails;
 }>) {
   const editPersonDetailsSidebar = useEditPersonDetailsSidebar(procedure);
-  const person = procedure.person;
-
-  const sortedLanguages = procedure.consultationLanguage
-    ? [...procedure.consultationLanguage]
-        .sort((a, b) =>
-          a === ApiPersonLanguage.German
-            ? -1
-            : b === ApiPersonLanguage.German
-              ? 1
-              : 0,
-        )
-        .map((lang) => LANGUAGE_VALUE[lang])
-    : [];
 
   return (
-    <Sheet>
+    <ContentPanel>
       <DetailsSection
         title="Antragsteller"
         buttons={
@@ -69,48 +53,52 @@ export function PersonDetails({
             width="100%"
           >
             <DetailsColumn>
-              {isDefined(person.firstName) && (
+              {isDefined(procedure.firstName) && (
                 <DetailsItem
                   label={PERSON_FIELD_NAME.firstName}
-                  value={person.firstName}
+                  value={procedure.firstName}
                 />
               )}
               <DetailsItem
                 label={PERSON_FIELD_NAME.lastName}
-                value={person.lastName}
+                value={procedure.lastName}
               />
-            </DetailsColumn>
-            <DetailsColumn>
-              {isDefined(procedure.alias.alias) && (
-                <DetailsItem label="Alias" value={procedure.alias.alias} />
-              )}
-
-              <DetailsRow>
-                {isDefined(person.dateOfBirth) && (
-                  <DetailsItem
-                    label={PERSON_FIELD_NAME.dateOfBirth}
-                    value={formatDate(person.dateOfBirth)}
-                  />
-                )}
-                {isDefined(procedure.gender) && (
-                  <DetailsItem
-                    label={PERSON_FIELD_NAME.gender}
-                    value={GENDER_VALUES[procedure.gender]}
-                  />
-                )}
-              </DetailsRow>
-            </DetailsColumn>
-            <DetailsColumn>
-              {isDefined(procedure.consultationLanguage) && (
+              {isDefined(procedure.dateOfBirth) && (
                 <DetailsItem
-                  label="Sprachen"
-                  value={sortedLanguages.join(", ")}
+                  label={PERSON_FIELD_NAME.dateOfBirth}
+                  value={formatDate(procedure.dateOfBirth)}
+                />
+              )}
+              {isDefined(procedure.alias) && (
+                <DetailsItem
+                  label={PERSON_FIELD_NAME.alias}
+                  value={procedure.alias}
+                />
+              )}
+            </DetailsColumn>
+            <DetailsColumn>
+              {isDefined(procedure.languages) && (
+                <DetailsItem
+                  label={PERSON_FIELD_NAME.languages}
+                  value={formatLanguages(procedure.languages)}
+                />
+              )}
+              {!isNullish(procedure.nationality) && (
+                <DetailsItem
+                  label={PERSON_FIELD_NAME.nationality}
+                  value={NATIONALITY_VALUES[procedure.nationality]}
+                />
+              )}
+              {!isNullish(procedure.documentTypeDto) && (
+                <DetailsItem
+                  label={PERSON_FIELD_NAME.documentType}
+                  value={DOCUMENT_TYPE_VALUES[procedure.documentTypeDto]}
                 />
               )}
             </DetailsColumn>
           </Stack>
         </DetailsList>
       </DetailsSection>
-    </Sheet>
+    </ContentPanel>
   );
 }

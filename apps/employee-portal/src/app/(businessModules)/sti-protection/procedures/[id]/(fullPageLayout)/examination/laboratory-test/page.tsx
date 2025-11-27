@@ -10,9 +10,9 @@ import { use } from "react";
 import { MainContentLayout } from "@eshg/lib-employee-portal";
 import { DisabledFormProvider, DynamicPageProps } from "@eshg/lib-portal";
 
-import { StiProtectionProcedureRouteParams } from "@/app/(businessModules)/sti-protection/procedures/[id]/(fullPageLayout)/layout";
 import { useGetLaboratoryTestExaminationQuery } from "@/lib/businessModules/stiProtection/api/queries/examination";
 import { useStiProcedureQuery } from "@/lib/businessModules/stiProtection/api/queries/procedures";
+import { StiProtectionProcedureRouteParams } from "@/lib/businessModules/stiProtection/features/procedures/StiProtectionProcedureRouteParams";
 import { LaboratoryTestExamination } from "@/lib/businessModules/stiProtection/features/procedures/examination/laboratoryTest/LaboratoryTestExamination";
 import { isProcedureOpen } from "@/lib/businessModules/stiProtection/shared/helpers";
 

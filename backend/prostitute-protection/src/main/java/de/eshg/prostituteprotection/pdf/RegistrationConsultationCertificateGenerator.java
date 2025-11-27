@@ -38,19 +38,17 @@ public class RegistrationConsultationCertificateGenerator extends AbstractGenera
   public Pdf generateRegistrationConsultationCertificate(ProstituteProtectionProcedure procedure) {
     return generatePdf(
         buildRegistrationConsultationCertificateData(procedure),
-        "Beratungszertifikat Anmeldung",
-        "Beratungszertifikat_Anmeldung");
+        PrintDocumentType.REGISTRATION_CONSULTATION_CERTIFICATE);
   }
 
   RegistrationConsultationCertificateData buildRegistrationConsultationCertificateData(
       ProstituteProtectionProcedure procedure) {
-    String consultationDate =
-        getFormattedDate(toLocalDate(procedure.getAppointment().getAppointmentStart()));
+    String consultationDate = getFormattedDate(toLocalDate(procedure.getAppointmentStart()));
     return new RegistrationConsultationCertificateData(
         getPersonData(procedure),
         consultationDate,
-        !procedure.isWithTranslator(),
-        procedure.isWithTranslator(),
+        !Boolean.TRUE.equals(procedure.isWithTranslator()),
+        Boolean.TRUE.equals(procedure.isWithTranslator()),
         getDepartmentData());
   }
 }

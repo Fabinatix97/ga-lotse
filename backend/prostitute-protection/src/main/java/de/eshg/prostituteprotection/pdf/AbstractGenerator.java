@@ -46,29 +46,29 @@ public abstract class AbstractGenerator {
     Assert.isTrue(template.exists(), () -> template + " does not exist");
   }
 
-  protected Pdf generatePdf(Object templateData, String description, String fileNamePrefix) {
+  protected Pdf generatePdf(Object templateData, PrintDocumentType printDocumentType) {
     ByteArrayOutputStream baos = new ByteArrayOutputStream();
     documentGenerator.createPdfFromTemplate(template, templateData, baos);
 
     PdfMetaData pdfMetaData = new PdfMetaData();
     ZonedDateTime now = ZonedDateTime.now(clock);
     pdfMetaData.setCreatedDate(now.toInstant());
-    pdfMetaData.setDescription(description);
+    pdfMetaData.setDescription(printDocumentType.getDescription());
     String filename =
         "%s_%s.pdf"
             .formatted(
-                fileNamePrefix,
+                printDocumentType.getFileNamePrefix(),
                 now.format(DateTimeFormatter.ofPattern("yyyy-MM-dd-HH-mm-ss", Locale.GERMANY)));
     return FileFactory.createPdfWithMetaData(filename, baos.toByteArray(), pdfMetaData);
   }
 
   protected static PersonData getPersonData(ProstituteProtectionProcedure procedure) {
     return new PersonData(
-        procedure.getFirstName(),
-        procedure.getLastName(),
-        getFormattedDate(procedure.getDateOfBirth()),
-        procedure.getAlias(),
-        procedure.getNationality().name());
+        procedure.getEncryptedPersonalData().getFirstName(),
+        procedure.getEncryptedPersonalData().getLastName(),
+        getFormattedDate(procedure.getEncryptedPersonalData().getDateOfBirth()),
+        procedure.getEncryptedPersonalData().getAlias(),
+        procedure.getEncryptedPersonalData().getNationality().name());
   }
 
   protected LocalDate toLocalDate(Instant instant) {

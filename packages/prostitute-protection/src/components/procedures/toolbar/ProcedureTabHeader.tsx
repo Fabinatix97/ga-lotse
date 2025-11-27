@@ -3,27 +3,33 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { isDefined } from "remeda";
+
 import {
   TabNavigationHeader,
   TabNavigationHeaderTypography,
 } from "@eshg/lib-employee-portal";
 import { formatDate, formatPersonName } from "@eshg/lib-portal";
 
-import { mockProcedures } from "../../../mock";
+import { useGetProcedure } from "../../../api/queries/procedures";
 
 export function ProcedureTabHeader(props: Readonly<{ procedureId: string }>) {
-  const procedure =
-    mockProcedures.find((p) => p.id === props.procedureId) ??
-    mockProcedures[0]!;
+  const { data: procedure } = useGetProcedure(props.procedureId);
+  const { firstName, lastName, dateOfBirth } = procedure;
 
   return (
     <TabNavigationHeader titleAsH1>
       <TabNavigationHeaderTypography>
-        {formatPersonName(procedure.person)}
+        {formatPersonName({
+          firstName,
+          lastName,
+        })}
       </TabNavigationHeaderTypography>
-      <TabNavigationHeaderTypography>
-        Geb. {formatDate(procedure.person.dateOfBirth)}
-      </TabNavigationHeaderTypography>
+      {isDefined(dateOfBirth) && (
+        <TabNavigationHeaderTypography>
+          Geb. {formatDate(new Date(dateOfBirth))}
+        </TabNavigationHeaderTypography>
+      )}
     </TabNavigationHeader>
   );
 }

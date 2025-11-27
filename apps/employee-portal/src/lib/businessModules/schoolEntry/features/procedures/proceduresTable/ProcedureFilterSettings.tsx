@@ -4,6 +4,7 @@
  */
 
 import { FormControl, FormLabel, Input } from "@mui/joy";
+import { useQueries } from "@tanstack/react-query";
 import { isEmpty } from "remeda";
 
 import { ApiContactCategory } from "@eshg/base-api";
@@ -16,6 +17,7 @@ import {
   ProcedureLabel,
   ProcedureLabelAutocomplete,
   ResettableSingleSelect,
+  RoomSelect,
   SchoolYearAutocomplete,
   SearchInstitutionFilter,
   SetDictionaryFilterFn,
@@ -29,8 +31,21 @@ import {
 } from "@eshg/lib-portal";
 import { GetProceduresRequest } from "@eshg/school-entry-api";
 
-import { useLabelApi } from "@/lib/businessModules/schoolEntry/api/clients";
-import { schoolEntryApiQueryKey } from "@/lib/businessModules/schoolEntry/api/queries/apiQueryKeys";
+import { UserAutoCompleteField } from "@/lib/auditlog/components/authorize/UserAutoCompleteField";
+import { useUserApi } from "@/lib/baseModule/api/clients";
+import {
+  useAppointmentBlockApi,
+  useLabelApi,
+} from "@/lib/businessModules/schoolEntry/api/clients";
+import { mapAppointmentBlockApi } from "@/lib/businessModules/schoolEntry/api/mapAppointmentBlockApi";
+import {
+  appointmentBlockApiQueryKey,
+  schoolEntryApiQueryKey,
+} from "@/lib/businessModules/schoolEntry/api/queries/apiQueryKeys";
+import {
+  getAllMedicalAssistantsQuery,
+  getAllPhysiciansQuery,
+} from "@/lib/businessModules/schoolEntry/api/queries/appointmentStaff";
 import { PROCEDURE_TYPE_OPTIONS } from "@/lib/businessModules/schoolEntry/features/procedures/options";
 
 export type ProcedureFilters = Pick<
@@ -42,6 +57,9 @@ export type ProcedureFilters = Pick<
   | "schoolYearFilter"
   | "isInvitationSentFilter"
   | "hasExaminationEditsFilter"
+  | "physiciansFilter"
+  | "mfasFilter"
+  | "roomFilter"
 > & { labelsFilter?: ProcedureLabel[] } & {
   excludedLabelsFilter?: ProcedureLabel[];
 };
@@ -56,6 +74,9 @@ const FILTER_NAMES: Record<keyof ProcedureFilters, string> = {
   excludedLabelsFilter: "Ohne Kennungen",
   isInvitationSentFilter: "Einladung versandt",
   hasExaminationEditsFilter: "Untersuchung begonnen",
+  physiciansFilter: "Arzt",
+  mfasFilter: "MFA",
+  roomFilter: "Raum",
 };
 
 const SCHOOL_CONTACT = new Set<ApiContactCategory>([ApiContactCategory.School]);
@@ -90,6 +111,8 @@ function evaluateStringAsBoolean(value: string) {
 
 export function ProcedureFilterSettings(props: ProcedureFilterSettingsProps) {
   const labelApi = useLabelApi();
+  const appointmentBlockApi = useAppointmentBlockApi();
+  const { physicians, mfas } = useGetUsers();
 
   function setLabelFilterFormValues(
     labelsValues: ProcedureLabel[],
@@ -300,6 +323,49 @@ export function ProcedureFilterSettings(props: ProcedureFilterSettingsProps) {
               }}
             />
           </FormControl>
+          <FormControl>
+            <FormLabel>Ärzte</FormLabel>
+            <UserAutoCompleteField
+              options={Object.values(physicians)}
+              values={
+                props.filterFormValues.physiciansFilter
+                  ?.map((id) => physicians[id])
+                  .filter((user) => !!user) ?? []
+              }
+              setFieldValue={(_, value) =>
+                props.setFilterFormValue(
+                  "physiciansFilter",
+                  value.map((user) => user.userId),
+                )
+              }
+            />
+          </FormControl>
+          <FormControl>
+            <FormLabel>MFAs</FormLabel>
+            <UserAutoCompleteField
+              options={Object.values(mfas)}
+              values={
+                props.filterFormValues.mfasFilter
+                  ?.map((id) => mfas[id])
+                  .filter((user) => !!user) ?? []
+              }
+              setFieldValue={(_, value) =>
+                props.setFilterFormValue(
+                  "mfasFilter",
+                  value.map((user) => user.userId),
+                )
+              }
+            />
+          </FormControl>
+          <FormControl>
+            <FormLabel>Raum</FormLabel>
+            <RoomSelect
+              appointmentBlockApi={mapAppointmentBlockApi(appointmentBlockApi)}
+              queryKey={appointmentBlockApiQueryKey}
+              filterFormValues={props.filterFormValues}
+              setFilterFormValue={props.setFilterFormValue}
+            />
+          </FormControl>
         </FilterSettingsContent>
       </FilterSettingsSheet>
     </OverlayBoundary>
@@ -313,4 +379,20 @@ function removeAllLabel(
   return labels.filter(
     (label) => !labelsToRemove.map((label) => label.id).includes(label.id),
   );
+}
+
+function useGetUsers() {
+  const userApi = useUserApi();
+  const [{ data: physicians }, { data: mfas }] = useQueries({
+    queries: [
+      getAllPhysiciansQuery(userApi),
+      getAllMedicalAssistantsQuery(userApi),
+    ],
+  });
+  return {
+    physicians: Object.fromEntries(
+      physicians?.map((user) => [user.userId, user]) ?? [],
+    ),
+    mfas: Object.fromEntries(mfas?.map((user) => [user.userId, user]) ?? []),
+  };
 }

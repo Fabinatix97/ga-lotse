@@ -3021,6 +3021,35 @@
           }
         }, {
           "in" : "query",
+          "name" : "physiciansFilter",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "format" : "uuid"
+            }
+          }
+        }, {
+          "in" : "query",
+          "name" : "mfasFilter",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "format" : "uuid"
+            }
+          }
+        }, {
+          "in" : "query",
+          "name" : "roomFilter",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "in" : "query",
           "name" : "sortKey",
           "required" : false,
           "schema" : {

@@ -28,7 +28,7 @@ public class ResourcePopulator extends BasePopulator<ResourceDto> {
   private final ResourceController resourceController;
   private final ResourceRepository resourceRepository;
   private static final List<String> labelNames =
-      List.of("Begehung", "Masernschutz", "Einschulung", "Impfberatung");
+      List.of("Hygiene", "Masernschutz", "Einschulung", "Impfberatung");
 
   public ResourcePopulator(
       PopulationProperties properties,

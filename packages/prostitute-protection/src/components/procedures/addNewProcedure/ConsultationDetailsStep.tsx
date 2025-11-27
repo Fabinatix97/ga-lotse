@@ -13,13 +13,13 @@ import {
   SidebarContent,
   SidebarForm,
 } from "@eshg/lib-employee-portal";
-import { CheckboxField, SelectField } from "@eshg/lib-portal";
+import { CheckboxField, SelectField, buildEnumOptions } from "@eshg/lib-portal";
 import { ApiPersonLanguage } from "@eshg/prostitute-protection-api";
 
 import {
-  CONSULTATION_TYPE_OPTIONS,
+  CONSULTATION_TYPE_VALUES,
   LANGUAGE_OPTIONS,
-} from "../../shared/constants";
+} from "../../../shared/constants";
 
 import { AddNewProcedureForm, FieldProps } from "./useAddNewProcedureSidebar";
 
@@ -84,6 +84,7 @@ function Fields() {
       <SelectField
         name="languages"
         label="Gesprochene Sprachen"
+        required="Bitte eine Sprache auswählen"
         options={LANGUAGE_OPTIONS}
         renderValue={(modules) => (
           <Stack direction="row" spacing={0.5} flexWrap="wrap">
@@ -100,7 +101,7 @@ function Fields() {
       <SelectField
         name="consultationType"
         label="Art der Konsultation"
-        options={CONSULTATION_TYPE_OPTIONS}
+        options={buildEnumOptions(CONSULTATION_TYPE_VALUES)}
       />
     </Stack>
   );

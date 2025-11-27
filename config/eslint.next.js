@@ -24,20 +24,6 @@ const compat = new FlatCompat({
 });
 
 /**
- * Fixes the redefinition of the `import` plugin, which is already defined in `eslint.base.js`
- *
- * @param config {import("eslint").Linter.Config}
- */
-function removeImportPluginDefinition(config) {
-  if (config.plugins === undefined) {
-    return config;
-  }
-
-  const { ["import"]: _, ...pluginsWithoutImport } = config.plugins;
-  return { ...config, plugins: pluginsWithoutImport };
-}
-
-/**
  * Importing mui icons does not work correctly via default imports in lib-portal.
  * Default imports work when used directly in portal Next.js projects.
  * https://github.com/mui/material-ui/issues/35535

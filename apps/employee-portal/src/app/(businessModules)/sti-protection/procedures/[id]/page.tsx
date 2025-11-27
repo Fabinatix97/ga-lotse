@@ -7,7 +7,7 @@ import { redirect } from "next/navigation";
 
 import { DynamicPageProps } from "@eshg/lib-portal";
 
-import { StiProtectionProcedureRouteParams } from "@/app/(businessModules)/sti-protection/procedures/[id]/(framedPageLayout)/layout";
+import { StiProtectionProcedureRouteParams } from "@/lib/businessModules/stiProtection/features/procedures/StiProtectionProcedureRouteParams";
 import { routes } from "@/lib/businessModules/stiProtection/shared/routes";
 
 export default async function StiProtectionProcedurePage(

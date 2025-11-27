@@ -19,7 +19,7 @@ export const configuratorNameMapping: Record<ConfiguratorModuleName, string> = {
   SEX_WORK: "Sexarbeit",
   OFFICIAL_MEDICAL_SERVICE: "Amtsärztliche Dienste",
   OPEN_DATA: "Open Data",
-  INSPECTION: "Begehung",
+  INSPECTION: "Hygiene",
   PROSTITUTE_PROTECTION: "Prostituiertenschutzgesetz",
 };
 

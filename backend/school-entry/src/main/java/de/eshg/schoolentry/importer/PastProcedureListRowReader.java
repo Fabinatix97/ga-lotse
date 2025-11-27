@@ -5,6 +5,8 @@
 
 package de.eshg.schoolentry.importer;
 
+import static de.eshg.base.gdpr.api.GdprPersonDto.MAX_FIRST_NAME_LENGTH;
+import static de.eshg.base.gdpr.api.GdprPersonDto.MAX_LAST_NAME_LENGTH;
 import static de.eshg.schoolentry.importer.PastProcedureListColumn.*;
 
 import de.eshg.lib.procedure.domain.model.ProcedureType;
@@ -372,8 +374,8 @@ class PastProcedureListRowReader extends RowReader<PastProcedureListRow, PastPro
   private ImportChildData readChildData(
       ColumnAccessor<PastProcedureListColumn> col, ErrorHandler errorHandler) {
     return new ImportChildData(
-        cellAsString(col, FIRST_NAME, errorHandler),
-        cellAsString(col, LAST_NAME, errorHandler),
+        cellAsString(col, FIRST_NAME, MAX_FIRST_NAME_LENGTH, errorHandler),
+        cellAsString(col, LAST_NAME, MAX_LAST_NAME_LENGTH, errorHandler),
         cellAsDateOfBirth(col, DATE_OF_BIRTH, false, errorHandler),
         cellAsGender(col, GENDER, errorHandler),
         readAddressData(

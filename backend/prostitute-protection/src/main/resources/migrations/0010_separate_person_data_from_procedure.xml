@@ -1,0 +1,48 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<!--
+ Copyright 2025 cronn GmbH
+ SPDX-License-Identifier: Apache-2.0
+-->
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+    <changeSet author="GA-Lotse" id="1763631285143-9">
+        <dropForeignKeyConstraint baseTableName="prostitute_protection_procedure_languages" constraintName="fk_procedure_languages_prostitute_protection_procedure"/>
+        <createTable tableName="person_languages">
+            <column name="person_id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_person_languages"/>
+            </column>
+            <column name="languages" type="TEXT"/>
+            <column name="languages_order" type="INTEGER">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_person_languages"/>
+            </column>
+        </createTable>
+        <addColumn tableName="person">
+            <column name="alias" type="TEXT"/>
+        </addColumn>
+        <addColumn tableName="person">
+            <column name="date_of_birth" type="date"/>
+        </addColumn>
+        <addColumn tableName="person">
+            <column name="document_type" type="DOCUMENTTYPE"/>
+        </addColumn>
+        <addColumn tableName="person">
+            <column name="first_name" type="TEXT"/>
+        </addColumn>
+        <addColumn tableName="person">
+            <column name="last_name" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+        <addColumn tableName="person">
+            <column name="nationality" type="COUNTRYCODE"/>
+        </addColumn>
+        <addForeignKeyConstraint baseColumnNames="person_id" baseTableName="person_languages" constraintName="fk_person_languages_person" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="person" validate="true"/>
+        <dropTable tableName="prostitute_protection_procedure_languages"/>
+        <dropColumn columnName="alias" tableName="prostitute_protection_procedure"/>
+        <dropColumn columnName="date_of_birth" tableName="prostitute_protection_procedure"/>
+        <dropColumn columnName="document_type" tableName="prostitute_protection_procedure"/>
+        <dropColumn columnName="first_name" tableName="prostitute_protection_procedure"/>
+        <dropColumn columnName="last_name" tableName="prostitute_protection_procedure"/>
+        <dropColumn columnName="nationality" tableName="prostitute_protection_procedure"/>
+    </changeSet>
+</databaseChangeLog>

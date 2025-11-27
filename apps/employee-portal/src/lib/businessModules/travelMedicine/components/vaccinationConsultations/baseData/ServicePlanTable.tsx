@@ -7,9 +7,9 @@
 
 import { AddOutlined } from "@mui/icons-material";
 import { Box, Button, Grid } from "@mui/joy";
-import { useSuspenseQueries } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 
+import { ApiUser } from "@eshg/base-api";
 import {
   DataTable,
   TablePage,
@@ -30,10 +30,6 @@ import {
   useDeleteService,
   useUnassignStepToService,
 } from "@/lib/businessModules/travelMedicine/api/mutations/vaccinationConsultation";
-import {
-  useGetAllMedicalAssistantsQuery,
-  useGetAllPhysiciansQuery,
-} from "@/lib/businessModules/travelMedicine/api/queries/appointmentStaff";
 import { servicePlanColumns } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/baseData/ServicePlanColumns";
 import { TableTitle } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/baseData/TableTitle";
 import { useAddServiceAppointmentSidebar } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/baseData/sidebars/AddServiceAppointmentSidebar";
@@ -80,12 +76,16 @@ export function ServicePlanTable({
   data,
   initialAppointmentProcedureStepId,
   createdByUserType,
+  allPhysicians,
+  allMedicalAssistants,
 }: Readonly<{
   procedureId: string;
   isProcedureClosed: boolean;
   data: ApiServicePlanGroup[];
   initialAppointmentProcedureStepId: string;
   createdByUserType: ApiCreatedByUserType;
+  allPhysicians: ApiUser[];
+  allMedicalAssistants: ApiUser[];
 }>) {
   const [currentUsers, setCurrentUsers] = useSessionStorage(
     { physician: "", medicalAssistant: "" },
@@ -135,11 +135,6 @@ export function ServicePlanTable({
   function isInitialStep(procedureStepId: string) {
     return procedureStepId === initialAppointmentProcedureStepId;
   }
-
-  const [{ data: allPhysicians }, { data: allMedicalAssistants }] =
-    useSuspenseQueries({
-      queries: [useGetAllPhysiciansQuery(), useGetAllMedicalAssistantsQuery()],
-    });
 
   const rows = data.map(toServicePlanEntryGroup);
 

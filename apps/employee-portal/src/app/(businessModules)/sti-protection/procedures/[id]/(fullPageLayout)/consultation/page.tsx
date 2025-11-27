@@ -11,9 +11,9 @@ import { use } from "react";
 import { MainContentLayout } from "@eshg/lib-employee-portal";
 import { DisabledFormProvider, DynamicPageProps } from "@eshg/lib-portal";
 
-import { StiProtectionProcedureRouteParams } from "@/app/(businessModules)/sti-protection/procedures/[id]/(fullPageLayout)/layout";
 import { useConsultationQueryOptions } from "@/lib/businessModules/stiProtection/api/queries/consultation";
 import { useStiProcedureQueryOptions } from "@/lib/businessModules/stiProtection/api/queries/procedures";
+import { StiProtectionProcedureRouteParams } from "@/lib/businessModules/stiProtection/features/procedures/StiProtectionProcedureRouteParams";
 import { ConsultationForm } from "@/lib/businessModules/stiProtection/features/procedures/consultation/ConsultationForm";
 import { isProcedureOpen } from "@/lib/businessModules/stiProtection/shared/helpers";
 

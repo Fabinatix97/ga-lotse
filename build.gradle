@@ -112,8 +112,7 @@ subprojects {
 
 def depsInputs = [
   "${rootDir}/pnpm-workspace.yaml",
-  "${rootDir}/pnpm-lock.yaml",
-  "${rootDir}/.npmrc"
+  "${rootDir}/pnpm-lock.yaml"
 ]
 def nodeModulesDir = "node_modules"
 

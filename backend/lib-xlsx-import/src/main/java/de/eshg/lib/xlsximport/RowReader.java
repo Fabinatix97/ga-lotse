@@ -5,6 +5,12 @@
 
 package de.eshg.lib.xlsximport;
 
+import static de.eshg.base.address.DomesticAddressDto.MAX_ADDRESS_ADDITION_LENGTH;
+import static de.eshg.base.address.DomesticAddressDto.MAX_CITY_LENGTH;
+import static de.eshg.base.address.DomesticAddressDto.MAX_HOUSE_NUMBER_LENGTH;
+import static de.eshg.base.address.DomesticAddressDto.MAX_POSTAL_CODE_LENGTH;
+import static de.eshg.base.address.DomesticAddressDto.MAX_STREET_LENGTH;
+
 import de.eshg.base.GenderDto;
 import de.eshg.base.SalutationDto;
 import de.eshg.lib.common.CountryCode;
@@ -147,6 +153,11 @@ public abstract class RowReader<R extends RowData<R>, C extends XlsxColumn> {
     return cellAsString(col.get(column), errorHandler);
   }
 
+  protected String cellAsString(
+      ColumnAccessor<C> col, C column, int maxLength, ErrorHandler errorHandler) {
+    return cellAsString(col, column, false, false, maxLength, errorHandler);
+  }
+
   protected static String cellAsString(Cell cell, ErrorHandler errorHandler) {
     return cellAsString(cell, false, false, errorHandler);
   }
@@ -180,8 +191,27 @@ public abstract class RowReader<R extends RowData<R>, C extends XlsxColumn> {
     return cellAsString(col.get(column), optional, allowCellTypeNumeric, errorHandler);
   }
 
+  protected String cellAsString(
+      ColumnAccessor<C> col,
+      C column,
+      boolean optional,
+      boolean allowCellTypeNumeric,
+      int maxLength,
+      ErrorHandler errorHandler) {
+    return cellAsString(col.get(column), optional, allowCellTypeNumeric, maxLength, errorHandler);
+  }
+
   protected static String cellAsString(
       Cell cell, boolean optional, boolean allowCellTypeNumeric, ErrorHandler errorHandler) {
+    return cellAsString(cell, optional, allowCellTypeNumeric, null, errorHandler);
+  }
+
+  protected static String cellAsString(
+      Cell cell,
+      boolean optional,
+      boolean allowCellTypeNumeric,
+      Integer maxLength,
+      ErrorHandler errorHandler) {
     List<CellType> expectedTypes =
         allowCellTypeNumeric
             ? List.of(CellType.STRING, CellType.NUMERIC)
@@ -191,11 +221,16 @@ public abstract class RowReader<R extends RowData<R>, C extends XlsxColumn> {
       return null;
     }
 
-    if (allowCellTypeNumeric) {
-      return DATA_FORMATTER.formatCellValue(cell).trim();
-    } else {
-      return cell.getStringCellValue().trim();
+    String value =
+        (allowCellTypeNumeric)
+            ? DATA_FORMATTER.formatCellValue(cell).trim()
+            : cell.getStringCellValue().trim();
+
+    if (invalidLength(cell, value, maxLength, errorHandler)) {
+      return null;
     }
+
+    return value;
   }
 
   protected Cell convertToTextCell(ColumnAccessor<C> col, C column, ErrorHandler errorHandler) {
@@ -476,6 +511,21 @@ public abstract class RowReader<R extends RowData<R>, C extends XlsxColumn> {
     return false;
   }
 
+  private static boolean invalidLength(
+      Cell cell, String value, Integer maxLength, ErrorHandler errorHandler) {
+    int length = value.length();
+    if (length < 1) {
+      errorHandler.handleError(cell, "Ungültige Länge (mindestens 1 Zeichen erforderlich)");
+      return true;
+    }
+    if (maxLength != null && length > maxLength) {
+      errorHandler.handleError(
+          cell, "Ungültige Länge (maximal %d Zeichen erlaubt)".formatted(maxLength));
+      return true;
+    }
+    return false;
+  }
+
   private boolean anyValueInRange(
       ColumnAccessor<C> col, AddressColumns<C> addressColumns, ErrorHandler errorHandler) {
     return anyValueInRange(
@@ -497,13 +547,24 @@ public abstract class RowReader<R extends RowData<R>, C extends XlsxColumn> {
     convertToTextCell(col, addressColumns.postalCode, errorHandler);
 
     if (anyValueInRange(col, addressColumns, errorHandler) || mandatoryAddress) {
-      String street = cellAsString(col, addressColumns.street(), false, false, errorHandler);
+      String street =
+          cellAsString(col, addressColumns.street(), false, false, MAX_STREET_LENGTH, errorHandler);
       String houseNumber =
-          cellAsString(col, addressColumns.houseNumber(), true, true, errorHandler);
-      String postalCode = cellAsString(col, addressColumns.postalCode(), false, true, errorHandler);
-      String city = cellAsString(col, addressColumns.city(), false, false, errorHandler);
+          cellAsString(
+              col, addressColumns.houseNumber(), true, true, MAX_HOUSE_NUMBER_LENGTH, errorHandler);
+      String postalCode =
+          cellAsString(
+              col, addressColumns.postalCode(), false, true, MAX_POSTAL_CODE_LENGTH, errorHandler);
+      String city =
+          cellAsString(col, addressColumns.city(), false, false, MAX_CITY_LENGTH, errorHandler);
       String addressAddition =
-          cellAsString(col, addressColumns.addressAddition(), true, true, errorHandler);
+          cellAsString(
+              col,
+              addressColumns.addressAddition(),
+              true,
+              true,
+              MAX_ADDRESS_ADDITION_LENGTH,
+              errorHandler);
       return new AddressData(
           CountryCode.DE, city, postalCode, street, houseNumber, addressAddition);
     }

@@ -104,3 +104,26 @@ export function useUpdateSampleMeasurementParameterValue() {
     },
   });
 }
+
+interface DeleteSampleMeasurementParameter {
+  inspectionId: string;
+  sampleId: string;
+  measurementParameterId: string;
+}
+
+export function useDeleteSampleMeasurementParameter() {
+  const sampleApi = useSampleApi();
+  const snackbar = useSnackbar();
+  return useHandledMutation({
+    mutationFn: async (req: DeleteSampleMeasurementParameter) => {
+      return await sampleApi.deleteMeasurementParameter(
+        req.inspectionId,
+        req.sampleId,
+        req.measurementParameterId,
+      );
+    },
+    onSuccess: () => {
+      snackbar.confirmation("Messparameter gelöscht");
+    },
+  });
+}

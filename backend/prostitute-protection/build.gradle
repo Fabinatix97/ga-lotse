@@ -14,6 +14,7 @@ dependencies {
     implementation project(':business-module-persistence-commons')
     implementation project(':lib-document-generator')
     implementation project(':lib-procedures')
+    implementation project(':lib-calendar')
 
     testImplementation testFixtures(project(':business-module-persistence-commons'))
     testImplementation testFixtures(project(':lib-appointmentblock'))

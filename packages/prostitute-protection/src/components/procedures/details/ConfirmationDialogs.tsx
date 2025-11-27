@@ -4,14 +4,13 @@
  */
 
 import { ConfirmationDialog } from "@eshg/lib-employee-portal";
-
-import { ApiProstituteProtectionProcedure } from "../../../mock";
+import { ApiProcedureDetails } from "@eshg/prostitute-protection-api";
 
 interface CloseAndReopenConfirmationDialogProps {
   open: boolean;
   onClose: () => void;
   onConfirm: () => Promise<void>;
-  procedure?: ApiProstituteProtectionProcedure;
+  procedure?: ApiProcedureDetails;
 }
 
 export function CloseConfirmationDialog({
@@ -43,6 +42,24 @@ export function CancelConfirmationDialog({
       description="Diese Aktion kann nicht rückgängig gemacht werden. Bitte informieren Sie ggf. den Antragsteller darüber, dass der Antrag abgebrochen wurde."
       confirmLabel="Vorgang abbrechen"
       color="danger"
+      open={open}
+      onClose={onClose}
+      onConfirm={onConfirm}
+    />
+  );
+}
+
+export function CreateCertificateConfirmationDialog({
+  open,
+  onClose,
+  onConfirm,
+}: Omit<CloseAndReopenConfirmationDialogProps, "procedure">) {
+  return (
+    <ConfirmationDialog
+      title="Zertifikat erstellen?"
+      description="Möchten Sie wirklich ein neues Zertifikat erstellen? Dieser Vorgang wird automatisch ein neues Zertifikat generieren."
+      confirmLabel="Zertifikat erstellen"
+      color="primary"
       open={open}
       onClose={onClose}
       onConfirm={onConfirm}

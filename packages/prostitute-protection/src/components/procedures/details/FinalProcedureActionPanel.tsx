@@ -8,21 +8,21 @@ import { ReactEventHandler, useState } from "react";
 
 import { ApiProcedureStatus, ApiUserRole } from "@eshg/base-api";
 import { ContentPanel, useHasUserRoleCheck } from "@eshg/lib-employee-portal";
+import { ApiProcedureDetails } from "@eshg/prostitute-protection-api";
 
-import { ApiProstituteProtectionProcedure } from "../../../mock";
 import {
   isProcedureClosed,
   isProcedureFinalized,
 } from "../../../shared/helpers";
 
 import {
-  CancelConfirmationDialog,
   CloseConfirmationDialog,
-} from "./ProcedureDialogs";
+  CreateCertificateConfirmationDialog,
+} from "./ConfirmationDialogs";
 
 export function FinalProcedureActionPanel({
   procedure,
-}: Readonly<{ procedure: ApiProstituteProtectionProcedure }>) {
+}: Readonly<{ procedure: ApiProcedureDetails }>) {
   const isLeader = useHasUserRoleCheck(ApiUserRole.ProstituteProtectionLeader);
 
   if (procedure.procedureStatus === ApiProcedureStatus.Aborted) {
@@ -43,13 +43,14 @@ export function FinalProcedureActionPanel({
 const FinalAction = {
   Cancel: "CANCEL",
   Close: "CLOSE",
+  Certificate: "CERTIFICATE",
 };
 
 type FinalAction = (typeof FinalAction)[keyof typeof FinalAction];
 
 function OpenProcedureActions({
   procedure,
-}: Readonly<{ procedure: ApiProstituteProtectionProcedure }>) {
+}: Readonly<{ procedure: ApiProcedureDetails }>) {
   const [action, setAction] = useState<FinalAction | undefined>();
 
   if (isProcedureFinalized(procedure)) {
@@ -62,10 +63,12 @@ function OpenProcedureActions({
 
   return (
     <>
-      <CancelButton onClick={() => setAction(FinalAction.Cancel)} />
+      <CreateCertificateButton
+        onClick={() => setAction(FinalAction.Certificate)}
+      />
       <CloseButton onClick={() => setAction(FinalAction.Close)} />
-      <CancelConfirmationDialog
-        open={action === FinalAction.Cancel}
+      <CreateCertificateConfirmationDialog
+        open={action === FinalAction.Certificate}
         onClose={handleCloseDialog}
         onConfirm={() => {
           return new Promise((resolve) => {
@@ -91,7 +94,7 @@ function OpenProcedureActions({
   );
 }
 
-function CancelButton({
+export function CancelButton({
   onClick,
 }: {
   onClick: ReactEventHandler<HTMLButtonElement>;
@@ -109,4 +112,16 @@ function CloseButton({
   onClick: ReactEventHandler<HTMLButtonElement>;
 }) {
   return <Button onClick={onClick}>Vorgang abschließen</Button>;
+}
+
+function CreateCertificateButton({
+  onClick,
+}: {
+  onClick: ReactEventHandler<HTMLButtonElement>;
+}) {
+  return (
+    <Button variant="soft" color="primary" onClick={onClick}>
+      Zertifikat erstellen
+    </Button>
+  );
 }

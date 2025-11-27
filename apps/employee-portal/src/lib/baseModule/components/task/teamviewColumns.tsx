@@ -12,7 +12,7 @@ import { isDefined } from "remeda";
 import { formatDate } from "@eshg/lib-portal";
 
 import { OverdueTaskIcon } from "@/lib/baseModule/components/task/OverdueTaskIcon";
-import { TaskRow } from "@/lib/baseModule/components/task/Teamview";
+import { TaskRow } from "@/lib/businessModules/inspection/components/teamview/Teamview";
 
 const columnHelper = createColumnHelper<TaskRow>();
 

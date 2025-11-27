@@ -4,9 +4,14 @@
  */
 
 import { Box, Button } from "@mui/joy";
+import { useFormikContext } from "formik";
 import { ReactNode } from "react";
 
-import { BottomToolbar, ButtonBar } from "@eshg/lib-employee-portal";
+import {
+  BottomToolbar,
+  ButtonBar,
+  useConfirmationDialog,
+} from "@eshg/lib-employee-portal";
 import { SubmitButton, useIsFormDisabled } from "@eshg/lib-portal";
 
 interface StickyBottomBarProps {
@@ -15,6 +20,8 @@ interface StickyBottomBarProps {
 }
 
 export function StickyBottomBar({ left, onCancel }: StickyBottomBarProps) {
+  const { isSubmitting, dirty, resetForm } = useFormikContext();
+  const { openCancelDialog } = useConfirmationDialog();
   const disabled = useIsFormDisabled();
 
   if (disabled) {
@@ -37,13 +44,24 @@ export function StickyBottomBar({ left, onCancel }: StickyBottomBarProps) {
             <>
               <Button
                 variant="plain"
+                disabled={!dirty}
+                aria-disabled={isSubmitting || !dirty}
                 onClick={() => {
+                  openCancelDialog({
+                    onConfirm() {
+                      resetForm();
+                      // eslint-disable-next-line no-console
+                      console.log(
+                        "Cancel Form Confirmation Dialog - onConfirm",
+                      );
+                    },
+                  });
                   onCancel?.();
                 }}
               >
                 Abbrechen
               </Button>
-              <SubmitButton submitting={false}>Speichern</SubmitButton>
+              <SubmitButton submitting={isSubmitting}>Speichern</SubmitButton>
             </>
           }
         />

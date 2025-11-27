@@ -26,7 +26,7 @@ public record PersonDetailsDto(
     @NotNull @Size(min = 1, max = 120) String lastName,
     @NotNull LocalDate dateOfBirth,
     @Size(min = 1, max = 40) String nameAtBirth,
-    @Size(min = 1, max = 50) String placeOfBirth,
+    @Size(min = 1, max = MAX_PLACE_OF_BIRTH_LENGTH) String placeOfBirth,
     CountryCode countryOfBirth,
     List<@MandatoryEmailAddressConstraint String> emailAddresses,
     List<@NotNull @Size(min = 1, max = 23) String> phoneNumbers,
@@ -35,6 +35,7 @@ public record PersonDetailsDto(
     implements PersonDetails {
 
   public static final String SCHEMA_NAME = "PersonDetails";
+  public static final int MAX_PLACE_OF_BIRTH_LENGTH = 50;
 
   public PersonDetailsDto(String firstName, String lastName, LocalDate dateOfBirth) {
     this(null, firstName, lastName, dateOfBirth);

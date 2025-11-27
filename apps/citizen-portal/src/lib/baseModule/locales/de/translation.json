@@ -19,7 +19,7 @@
   "business_modules": {
     "SCHOOL_ENTRY": "Einschulungsuntersuchung",
     "DENTAL": "Zahnärztlicher Dienst",
-    "INSPECTION": "Begehung",
+    "INSPECTION": "Hygiene",
     "MEASLES_PROTECTION": "Masernschutz",
     "MEDICAL_REGISTRY": "Medizinalaufsicht",
     "OFFICIAL_MEDICAL_SERVICE": "Amtsärztlicher Dienst",

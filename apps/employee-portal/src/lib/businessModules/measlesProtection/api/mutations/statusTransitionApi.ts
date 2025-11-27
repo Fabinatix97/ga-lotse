@@ -3,10 +3,15 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { MutationPassThrough, useHandledMutation } from "@eshg/lib-portal";
+import {
+  MutationPassThrough,
+  useHandledMutation,
+  useSnackbar,
+} from "@eshg/lib-portal";
 
 import { useStatusTransitionApi } from "@/lib/businessModules/measlesProtection/api/clients";
 import { measlesProtectionApiQueryKey } from "@/lib/businessModules/measlesProtection/api/queries/apiQueryKeys";
+import { CLOSE_PROCEDURE_SUCCESS_MESSAGE } from "@/lib/businessModules/measlesProtection/components/procedures/procedureDetails/helpers";
 
 interface UseCloseProcedureRequest {
   procedureId: string;
@@ -43,5 +48,15 @@ export function useReopenProcedure({
     mutationKey: measlesProtectionApiQueryKey(["procedures"]),
     onSuccess,
     onError,
+  });
+}
+
+export function useCloseVaccinated() {
+  const api = useStatusTransitionApi();
+  const snackbar = useSnackbar();
+  return useHandledMutation({
+    mutationFn: (procedureId: string) => api.closeVaccinated(procedureId),
+    mutationKey: measlesProtectionApiQueryKey(["procedures"]),
+    onSuccess: () => snackbar.confirmation(CLOSE_PROCEDURE_SUCCESS_MESSAGE),
   });
 }

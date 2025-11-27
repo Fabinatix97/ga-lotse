@@ -124,7 +124,8 @@ public class InspectionTestDataProvider {
     this.inspectionFeatureToggle = inspectionFeatureToggle;
   }
 
-  public void prepareTestInspection(@NotNull UUID inspectionId, Faker faker, int index) {
+  public void prepareTestInspection(
+      @NotNull UUID inspectionId, @NotNull UUID centralFileStateId, Faker faker, int index) {
     /*
     The inspections that should be created with the respective indices are:
     0: Facility with inspection in DRAFT status (inspection wasn't started yet)
@@ -152,7 +153,7 @@ public class InspectionTestDataProvider {
       createManualIncident(inspectionId, faker);
       if (inspectionFeatureToggle.isNewFeatureEnabled(InspectionFeature.SAMPLES)
           && inspectionFeatureToggle.isNewFeatureEnabled(InspectionFeature.TEIS_DATA)) {
-        addUnfinishedSample(inspectionId);
+        addUnfinishedSample(inspectionId, centralFileStateId);
       }
     }
     if ((index % FacilityTestDataProvider.NUMBER_OF_DEFINED_FACILITIES) > 3) {
@@ -278,7 +279,7 @@ public class InspectionTestDataProvider {
             "Resource für " + FacilityTestDataProvider.getNameOfFacility(index),
             "12345" + index,
             getTypeForResource(index),
-            Collections.singletonList("Begehung")));
+            Collections.singletonList("Hygiene")));
   }
 
   private ResourceDto findOrCreateResource(int index) {
@@ -286,8 +287,7 @@ public class InspectionTestDataProvider {
     ResourceTypeDto resourceType = getTypeForResource(index);
     return resourceApi
         .getResources(
-            new ResourceFilterParameters(
-                resourceName, resourceType, "Begehung", null, null, 0, 100))
+            new ResourceFilterParameters(resourceName, resourceType, "Hygiene", null, null, 0, 100))
         .elements()
         .stream()
         .filter(resourceDto -> resourceDto.name().equals(resourceName))
@@ -328,7 +328,7 @@ public class InspectionTestDataProvider {
             inventoryType,
             "Inventargegenstände für Begehungen",
             "123456",
-            Collections.singletonList("Begehung"),
+            Collections.singletonList("Hygiene"),
             Integer.MAX_VALUE,
             100));
   }
@@ -337,7 +337,7 @@ public class InspectionTestDataProvider {
     return inventoryApi
         .getInventoryItems(
             new InventoryItemFilterParameters(
-                inventoryName, inventoryType, "Begehung", null, null, 0, 100))
+                inventoryName, inventoryType, "Hygiene", null, null, 0, 100))
         .elements()
         .stream()
         .filter(inventoryItemDto -> inventoryItemDto.name().equals(inventoryName))
@@ -352,7 +352,7 @@ public class InspectionTestDataProvider {
         inspectionId, new UpdateInspectionModifyInventoryRequest(inventoryItem.id(), null, 1));
   }
 
-  private void addUnfinishedSample(UUID inspectionId) {
+  private void addUnfinishedSample(UUID inspectionId, UUID centralFileStateId) {
     inspectionSampleService.createSample(
         inspectionId,
         new CreateInspectionSampleRequest(
@@ -361,9 +361,9 @@ public class InspectionTestDataProvider {
             "Entnahmestelle",
             "Dusche links Herren",
             InspectionSampleEvaluationTypeDto.LABORATORY,
-            new InspectionSampleInspectedFacilityReferenceDto(),
+            new InspectionSampleInspectedFacilityReferenceDto(centralFileStateId),
             Instant.parse("2024-03-01T00:00:00.123456Z"),
-            new InspectionSampleInspectedFacilityReferenceDto(),
+            new InspectionSampleInspectedFacilityReferenceDto(centralFileStateId),
             null,
             List.of(
                 new CreateInspectionSampleMeasurementParameterRequest(

@@ -12,7 +12,9 @@ import de.eshg.base.contact.ContactApi;
 import de.eshg.base.contact.GetContactsRequest;
 import de.eshg.base.contact.GetContactsResponse;
 import de.eshg.base.contact.api.ContactDto;
+import de.eshg.base.contact.api.ContactFilterParameters;
 import de.eshg.base.contact.api.PersonContactDto;
+import de.eshg.base.contact.api.SearchContactsResponse;
 import de.eshg.rest.service.error.BadRequestException;
 import de.eshg.rest.service.error.ErrorCode;
 import jakarta.validation.constraints.NotNull;
@@ -34,6 +36,11 @@ public class ContactClient {
 
   public ContactClient(ContactApi contactApi) {
     this.contactApi = contactApi;
+  }
+
+  @NotNull
+  public SearchContactsResponse getContacts(ContactFilterParameters parameters) {
+    return contactApi.getContacts(parameters);
   }
 
   @NotNull

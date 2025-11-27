@@ -7,11 +7,17 @@ package de.eshg.inspection.sample;
 
 import static de.eshg.inspection.inspection.InspectionUtils.checkInspectionIsNotClosed;
 
+import de.eshg.api.commons.SortDirection;
 import de.eshg.base.centralfile.api.facility.GetFacilityFileStateResponse;
 import de.eshg.base.contact.api.ContactDto;
+import de.eshg.base.contact.api.ContactFilterParameters;
+import de.eshg.base.contact.api.ContactSortKey;
+import de.eshg.base.contact.api.ContactTypeDto;
 import de.eshg.base.contact.api.InstitutionContactCategoryDto;
 import de.eshg.base.contact.api.InstitutionContactDto;
 import de.eshg.base.user.api.UserDto;
+import de.eshg.base.user.api.UserFilterParameters;
+import de.eshg.base.user.api.UserRoleDto;
 import de.eshg.inspection.client.ContactClient;
 import de.eshg.inspection.client.UserClient;
 import de.eshg.inspection.facility.FacilityClient;
@@ -19,7 +25,11 @@ import de.eshg.inspection.inspection.InspectionMapper;
 import de.eshg.inspection.inspection.InspectionService;
 import de.eshg.inspection.inspection.InspectionUpdater;
 import de.eshg.inspection.inspection.persistence.Inspection;
+import de.eshg.inspection.sample.api.AutocompleteActorDto;
+import de.eshg.inspection.sample.api.AutocompleteActorResponse;
+import de.eshg.inspection.sample.api.AutocompleteContactDto;
 import de.eshg.inspection.sample.api.AutocompleteParameterResponse;
+import de.eshg.inspection.sample.api.AutocompleteUserDto;
 import de.eshg.inspection.sample.api.CreateInspectionSampleMeasurementParameterRequest;
 import de.eshg.inspection.sample.api.CreateInspectionSampleRequest;
 import de.eshg.inspection.sample.api.GetInspectionSamplesResponse;
@@ -44,12 +54,15 @@ import de.eshg.rest.service.error.BadRequestException;
 import de.eshg.rest.service.error.NotFoundException;
 import java.time.Clock;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -105,6 +118,10 @@ public class InspectionSampleService {
         "Proben können nicht zu abgeschlossenen Vorgängen hinzugefügt werden.",
         "sample could not be added");
 
+    validateReferencedInspectedFacility(
+        List.of(request.evaluatingActor(), request.samplingActor()),
+        inspection.getCentralFileStateId());
+
     GetFacilityFileStateResponse facilityFileState =
         actorReferencesContainInspectedFacility(
                 List.of(request.evaluatingActor(), request.samplingActor()))
@@ -159,6 +176,10 @@ public class InspectionSampleService {
         "Proben von abgeschlossenen Vorgängen können nicht geändert werden.",
         "sample could not be updated");
     InspectionSample sample = findInspectionSample(inspection, sampleId);
+
+    validateReferencedInspectedFacility(
+        List.of(request.evaluatingActor(), request.samplingActor()),
+        inspection.getCentralFileStateId());
 
     GetFacilityFileStateResponse facilityFileState =
         actorReferencesContainInspectedFacility(
@@ -271,6 +292,23 @@ public class InspectionSampleService {
     inspectionUpdater.updateModified(inspection);
   }
 
+  public void deleteMeasurementParameter(
+      UUID inspectionId, UUID sampleId, UUID measurementParameterId) {
+    Inspection inspection = inspectionService.loadInspectionForUpdate(inspectionId);
+    checkInspectionIsNotClosed(
+        inspection,
+        "Proben von abgeschlossenen Vorgängen können nicht geändert werden.",
+        "sample could not be updated");
+    InspectionSample sample = findInspectionSample(inspection, sampleId);
+
+    InspectionSampleMeasurementParameter measurementParameter =
+        findInspectionSampleMeasurementParameter(sample, measurementParameterId);
+
+    sample.getMeasurementParameters().remove(measurementParameter);
+
+    inspectionUpdater.updateModified(inspection);
+  }
+
   public AutocompleteParameterResponse getParameterAutocomplete(String prefix) {
     List<TeisUntersuchungsparameter> untersuchungsparameterList =
         teisUntersuchungsparameterRepository.findAutocomplete(prefix + "%", 100);
@@ -278,6 +316,59 @@ public class InspectionSampleService {
         untersuchungsparameterList.stream()
             .map(InspectionSampleMapper::mapToAutocompleteParameterDto)
             .toList());
+  }
+
+  public AutocompleteActorResponse getActorAutocomplete(String prefix, boolean useLaboratories) {
+    List<UserDto> users =
+        useLaboratories
+            ? Collections.emptyList()
+            : userClient
+                .getUsers(new UserFilterParameters(UserRoleDto.INSPECTION_PROCEDURE_EDIT, prefix))
+                .users();
+
+    ContactFilterParameters contactFilterParameters =
+        useLaboratories
+            ? new ContactFilterParameters(
+                prefix,
+                null,
+                ContactTypeDto.INSTITUTION,
+                Set.of(InstitutionContactCategoryDto.LABORATORY),
+                ContactSortKey.NAME,
+                SortDirection.ASC,
+                null,
+                null)
+            : new ContactFilterParameters(
+                prefix,
+                null,
+                ContactTypeDto.PERSON,
+                null,
+                ContactSortKey.NAME,
+                SortDirection.ASC,
+                null,
+                null);
+
+    List<ContactDto> contacts = contactClient.getContacts(contactFilterParameters).elements();
+
+    List<? extends AutocompleteActorDto> autocompleteUsers =
+        users.stream()
+            .map(
+                user ->
+                    new AutocompleteUserDto(
+                        user.userId(), user.firstName() + " " + user.lastName()))
+            .toList();
+
+    List<? extends AutocompleteActorDto> autocompleteContacts =
+        contacts.stream()
+            .map(contact -> new AutocompleteContactDto(contact.id(), contact.name()))
+            .toList();
+
+    List<AutocompleteActorDto> combinedAutocompleteActors =
+        Stream.concat(autocompleteUsers.stream(), autocompleteContacts.stream())
+            .sorted(Comparator.comparing(AutocompleteActorDto::name))
+            .limit(100)
+            .toList();
+
+    return new AutocompleteActorResponse(combinedAutocompleteActors);
   }
 
   private void determinePreclassification(
@@ -341,6 +432,21 @@ public class InspectionSampleService {
             "Institution must be laboratory but it is " + institution.category());
       }
     }
+  }
+
+  private static void validateReferencedInspectedFacility(
+      Collection<InspectionSampleActorReferenceDto> actors, UUID centralFileStateId) {
+    actors.stream()
+        .filter(Objects::nonNull)
+        .filter(actor -> actor instanceof InspectionSampleInspectedFacilityReferenceDto)
+        .forEach(
+            facilityReference -> {
+              if (!((InspectionSampleInspectedFacilityReferenceDto) facilityReference)
+                  .centralFileStateId()
+                  .equals(centralFileStateId)) {
+                throw new BadRequestException("Facility central file state ID is incorrect");
+              }
+            });
   }
 
   private static boolean actorReferencesContainInspectedFacility(

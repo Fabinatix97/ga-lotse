@@ -11,12 +11,16 @@ import {
   useSuspenseQuery,
 } from "@tanstack/react-query";
 
-import { PaginationProps, TableSortingProps } from "@eshg/lib-employee-portal";
-import { useFileDownload } from "@eshg/lib-portal";
+import {
+  PaginationProps,
+  TableSortingProps,
+  getSortDirection,
+  getSortKey,
+} from "@eshg/lib-employee-portal";
+import { unwrapRawResponse, useFileDownload } from "@eshg/lib-portal";
 import {
   ApiGetStiProtectionProceduresSortBy,
-  ApiGetStiProtectionProceduresSortOrder,
-  ApiStiProtectionProcedureOverview,
+  GetStiProceduresRequest,
 } from "@eshg/sti-protection-api";
 
 import { useStiProtectionProcedureApi } from "@/lib/businessModules/stiProtection/api/clients";
@@ -54,49 +58,33 @@ function useStiProceduresQueryOptions(
   filters: ProcedureFilters,
 ) {
   const stiProtectionApi = useStiProtectionProcedureApi();
-  const sortState =
-    sorting.manualSorting === true
-      ? sorting.sortingState[0]
-      : sorting.initialSorting?.[0];
+  const sortKey = getSortKey(sorting, SortByMap);
+
+  const request: GetStiProceduresRequest = {
+    sortBy: sortKey,
+    sortOrder: getSortDirection(sorting),
+    pageNumber: page.pageNumber,
+    pageSize: page.pageSize,
+    creationDateStart: filters.creationDateStart,
+    creationDateEnd: filters.creationDateEnd,
+    yearOfBirth: filters.yearOfBirth,
+    appointmentDateStart: filters.appointmentDateStart,
+    appointmentDateEnd: filters.appointmentDateEnd,
+    gender: filters.gender,
+    concern: filters.concern,
+    procedureStatus: filters.procedureStatus,
+    labStatus: filters.labStatus,
+    procedureOrigin: filters.procedureOrigin,
+  };
 
   return queryOptions({
     queryFn: ({ signal }) =>
-      stiProtectionApi.getStiProcedures(
-        mapSortBy(sortState?.id),
-        mapSortOrder(sortState?.desc),
-        page.pageNumber,
-        page.pageSize,
-        filters.creationDateStart,
-        filters.creationDateEnd,
-        filters.yearOfBirth,
-        filters.appointmentDateStart,
-        filters.appointmentDateEnd,
-        filters.gender,
-        filters.concern,
-        filters.procedureStatus,
-        filters.labStatus,
-        filters.procedureOrigin,
-        { signal },
-      ),
+      stiProtectionApi
+        .getStiProceduresRaw(request, { signal })
+        .then(unwrapRawResponse),
 
-    queryKey: proceduresQueryKey([
-      "list",
-      { page, sortState },
-      makeFiltersQueryKeyPart(filters),
-    ]),
+    queryKey: proceduresQueryKey(["list", { request }]),
   });
-}
-
-function makeFiltersQueryKeyPart(filters: ProcedureFilters) {
-  return Object.fromEntries(
-    Object.entries(filters).map(([key, value]) => {
-      if (value instanceof Set) {
-        return [key, Array.from(value).join(",")];
-      }
-
-      return [key, value];
-    }),
-  );
 }
 
 function useStiProceduresSearchQueryOptions(searchQuery: string) {
@@ -151,35 +139,8 @@ export function useAnonymousIdentificationDocumentQuery(procedureId: string) {
   );
 }
 
-type ColumnNames = keyof ApiStiProtectionProcedureOverview;
-const SortByMap: Record<
-  string,
-  ApiGetStiProtectionProceduresSortBy | undefined
-> = {
+const SortByMap: Record<string, ApiGetStiProtectionProceduresSortBy> = {
   createdAt: ApiGetStiProtectionProceduresSortBy.CreatedAt,
   sampleBarCode: ApiGetStiProtectionProceduresSortBy.SampleBarcode,
   appointmentStart: ApiGetStiProtectionProceduresSortBy.Appointment,
-} as const satisfies Partial<
-  Record<ColumnNames, ApiGetStiProtectionProceduresSortBy>
->;
-
-function mapSortBy(sortBy?: string) {
-  if (!sortBy) return;
-
-  const mappedValue = SortByMap[sortBy];
-  if (mappedValue) {
-    return mappedValue;
-  }
-  throw Error(`Unexpected sort field: ${sortBy}`);
-}
-
-function mapSortOrder(
-  desc: boolean | undefined,
-): ApiGetStiProtectionProceduresSortOrder | undefined {
-  if (desc === undefined) {
-    return;
-  }
-  return desc
-    ? ApiGetStiProtectionProceduresSortOrder.Desc
-    : ApiGetStiProtectionProceduresSortOrder.Asc;
-}
+};

@@ -15,7 +15,7 @@ import java.util.List;
 
 @Schema(name = FacilityDetailsDto.SCHEMA_NAME, description = "The data relating to a facility")
 public record FacilityDetailsDto(
-    @NotNull @Size(min = 1, max = 300) String name,
+    @NotNull @Size(min = 1, max = MAX_NAME_LENGTH) String name,
     List<@MandatoryEmailAddressConstraint String> emailAddresses,
     List<@NotNull @Size(max = 23) String> phoneNumbers,
     @Valid List<FacilityContactPersonDto> contactPersons,
@@ -23,6 +23,7 @@ public record FacilityDetailsDto(
     @Valid AddressDto differentBillingAddress)
     implements FacilityDetails {
 
+  public static final int MAX_NAME_LENGTH = 300;
   public static final String SCHEMA_NAME = "FacilityDetails";
 
   public FacilityDetailsDto(FacilityDetails facilityDetails) {

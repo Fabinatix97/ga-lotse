@@ -121,7 +121,7 @@ tasks.register('createDockerfile', Dockerfile) {
   def groupName = 'nodejs'
   def userName = 'nextjs'
 
-  from((System.getenv('CI_DEPENDENCY_PROXY_DIRECT_GROUP_IMAGE_PREFIX') ?: 'docker.io') + '/' + nodeDockerImage)
+  from(nodeDockerImage)
 
   workingDir('/app')
 

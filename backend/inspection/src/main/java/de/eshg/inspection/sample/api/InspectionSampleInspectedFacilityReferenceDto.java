@@ -6,9 +6,11 @@
 package de.eshg.inspection.sample.api;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotNull;
+import java.util.UUID;
 
 @Schema(name = InspectionSampleInspectedFacilityReferenceDto.SCHEMA_NAME)
-public record InspectionSampleInspectedFacilityReferenceDto()
+public record InspectionSampleInspectedFacilityReferenceDto(@NotNull UUID centralFileStateId)
     implements InspectionSampleActorReferenceDto {
   public static final String SCHEMA_NAME = "InspectionSampleInspectedFacilityReference";
 

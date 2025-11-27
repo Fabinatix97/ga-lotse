@@ -6,21 +6,30 @@
 "use client";
 
 import { Chip } from "@mui/joy";
-import { createColumnHelper } from "@tanstack/react-table";
+import { useSuspenseQuery } from "@tanstack/react-query";
+import { ColumnSort, createColumnHelper } from "@tanstack/react-table";
 import { useState } from "react";
 
-import { DataTable, TablePage, TableSheet } from "@eshg/lib-employee-portal";
-import { formatDate, formatDateTime } from "@eshg/lib-portal";
-
-import { CONSULTATION_TYPE_VALUES } from "../../../shared/constants";
 import {
-  ApiProstituteProtectionProcedureOverview,
-  proceduresMock,
-} from "../../../shared/mockData";
+  DataTable,
+  TablePage,
+  TableSheet,
+  useTableControl,
+} from "@eshg/lib-employee-portal";
+import { formatDate, formatDateTime } from "@eshg/lib-portal";
+import { ApiProstituteProtectionProcedureOverview } from "@eshg/prostitute-protection-api";
+
+import { useProceduresQueryOptions } from "../../../api/queries/procedures";
+import { CONSULTATION_TYPE_VALUES } from "../../../shared/constants";
 
 import { LanguagesCell } from "./LanguagesCell";
 import { PersonSearchForm, usePersonSearch } from "./PersonSearchForm";
 import { ProstituteProtectionProceduresTableControls } from "./ProstituteProtectionProceduresTableControls";
+
+const initialSorting: ColumnSort = {
+  id: "appointmentStart",
+  desc: true,
+};
 
 const columnHelper =
   createColumnHelper<ApiProstituteProtectionProcedureOverview>();
@@ -106,7 +115,13 @@ function getProceduresColumns() {
     }),
     columnHelper.accessor("consultationType", {
       header: "Art der Konsultation",
-      cell: ({ getValue }) => CONSULTATION_TYPE_VALUES[getValue()],
+      cell: ({ getValue }) => {
+        const consultationKey = getValue();
+        if (!consultationKey) {
+          return null;
+        }
+        return CONSULTATION_TYPE_VALUES[consultationKey];
+      },
       enableSorting: false,
       meta: {
         width: 110,
@@ -121,6 +136,20 @@ function getProceduresColumns() {
 export function ProstituteProtectionProceduresTable() {
   const [isSearchVisible, setSearchVisible] = useState(false);
   const personSearch = usePersonSearch();
+
+  const tableControl = useTableControl({
+    serverSideSorting: true,
+    initialSorting,
+    sortFieldName: "sortBy",
+    sortDirectionName: "sortOrder",
+  });
+
+  const proceduresQueryOptions = useProceduresQueryOptions({
+    page: tableControl.paginationProps,
+    sorting: tableControl.tableSorting,
+  });
+
+  const { data, isLoading } = useSuspenseQuery(proceduresQueryOptions);
 
   return (
     <TablePage
@@ -143,8 +172,8 @@ export function ProstituteProtectionProceduresTable() {
       }
       fullHeight
     >
-      <TableSheet loading={false}>
-        <DataTable data={proceduresMock} columns={getProceduresColumns()} />
+      <TableSheet loading={isLoading}>
+        <DataTable data={data.elements} columns={getProceduresColumns()} />
       </TableSheet>
     </TablePage>
   );

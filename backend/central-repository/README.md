@@ -27,7 +27,9 @@ Gibt den Inhalt der angeforderten Version im Response Body zurück. Dabei ist de
 
 **Pfadparameter**:
 
-* `moduleName` - Ein beliebiger Name, aber am besten der des Fachmoduls, was die Einträge verwaltet, z.B. `inspection` für "Begehung" (Wieso wird es nicht automatisch bestimmt? Siehe [Punkt 3 im Abschnitt Anforderungen](#Anforderungen))
+*
+`moduleName` - Ein beliebiger Name, aber am besten der des Fachmoduls, was die Einträge verwaltet, z.B.
+`inspection` für "Hygiene" (Wieso wird es nicht automatisch bestimmt? Siehe [Punkt 3 im Abschnitt Anforderungen](#Anforderungen))
 * `objectName` - Ein beliebiger Name für Einträge, die hier gespeichert werden, z.B. `checklist` für Checklisten
 * `id` - Eine fortlaufende ID, die von der Datenbank beim ersten Anlegen festgelegt wird
 * `version` - Die Versionsnummer, die bei jeder neuen Version eines Eintrags höher sein muss
@@ -252,9 +254,9 @@ Fachlogik und Rechteverwaltung sind im zentralen Repository nicht gewünscht. Da
 
 Wenn ein Modul wie z.B. Begehung (`inspection`) Checklisten hat, die nur von einem Modul im Landesamt bearbeitet werden dürfen (sogenannte Kern-Checklisten), dann muss es seine Einträge unter zwei Pfaden ablegen (`checklist` und `kernel_checklist`) und dann von Administratoren im Service-Directory folgende Regeln anlegen lassen.
 
-* jedes Modul "Begehung" darf
+* jedes Modul "Hygiene" darf
   * `GET`/`PUT`/`POST repo/versioned/inspection/checklist/*` aufrufen
   * `GET repo/versioned/inspection/kernel_checklist/*` aufrufen
-* nur das Modul "Begehung" aus dem Landesamt darf
+* nur das Modul "Hygiene" aus dem Landesamt darf
   * `PUT`/`POST`/`DELETE repo/versioned/inspection/kernel_checklist/*` aufrufen
   * `DELETE repo/versioned/inspection/checklist/*` aufrufen

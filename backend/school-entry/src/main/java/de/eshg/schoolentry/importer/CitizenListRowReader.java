@@ -5,6 +5,10 @@
 
 package de.eshg.schoolentry.importer;
 
+import static de.eshg.base.centralfile.api.person.PersonDetailsDto.MAX_PLACE_OF_BIRTH_LENGTH;
+import static de.eshg.base.gdpr.api.GdprPersonDto.MAX_FIRST_NAME_LENGTH;
+import static de.eshg.base.gdpr.api.GdprPersonDto.MAX_LAST_NAME_LENGTH;
+import static de.eshg.base.gdpr.api.GdprPersonDto.MAX_TITLE_LENGTH;
 import static de.eshg.schoolentry.importer.CitizenListColumn.*;
 
 import de.eshg.base.GenderDto;
@@ -74,11 +78,12 @@ class CitizenListRowReader extends RowReader<CitizenListRow, CitizenListColumn> 
 
   private ImportChildData readChildData(
       ColumnAccessor<CitizenListColumn> col, ErrorHandler errorHandler) {
-    String lastName = cellAsString(col, LAST_NAME, errorHandler);
-    String firstName = cellAsString(col, FIRST_NAME, errorHandler);
+    String lastName = cellAsString(col, LAST_NAME, MAX_LAST_NAME_LENGTH, errorHandler);
+    String firstName = cellAsString(col, FIRST_NAME, MAX_FIRST_NAME_LENGTH, errorHandler);
     AddressData addressData = readAddressData(col, CHILD_ADDRESS_COLUMNS, errorHandler, true);
     LocalDate birthDate = cellAsDateOfBirth(col, DATE_OF_BIRTH, false, errorHandler);
-    String placeOfBirth = cellAsString(col, PLACE_OF_BIRTH, true, false, errorHandler);
+    String placeOfBirth =
+        cellAsString(col, PLACE_OF_BIRTH, true, false, MAX_PLACE_OF_BIRTH_LENGTH, errorHandler);
     CountryCode countryCode = cellAsCountryCode(col, COUNTRY_OF_BIRTH, errorHandler);
     GenderDto genderDto = cellAsGender(col, GENDER, errorHandler);
     return new ImportChildData(
@@ -91,11 +96,14 @@ class CitizenListRowReader extends RowReader<CitizenListRow, CitizenListColumn> 
 
     for (CustodianColumns custodian : CUSTODIAN_COLUMNS) {
       if (anyValueInRange(col, custodian, errorHandler)) {
-        String firstName = cellAsString(col, custodian.firstName(), errorHandler);
-        String lastName = cellAsString(col, custodian.lastName(), errorHandler);
+        String firstName =
+            cellAsString(col, custodian.firstName(), MAX_FIRST_NAME_LENGTH, errorHandler);
+        String lastName =
+            cellAsString(col, custodian.lastName(), MAX_LAST_NAME_LENGTH, errorHandler);
         AddressData address = readAddressData(col, custodian.address(), errorHandler, false);
         LocalDate dateOfBirth = cellAsDateOfBirth(col, custodian.dateOfBirth(), true, errorHandler);
-        String title = cellAsString(col, custodian.title(), true, false, errorHandler);
+        String title =
+            cellAsString(col, custodian.title(), true, false, MAX_TITLE_LENGTH, errorHandler);
         SalutationDto salutation = cellAsSalutation(col, custodian.salutation(), errorHandler);
         GenderDto gender = cellAsGender(col, custodian.gender(), errorHandler);
 

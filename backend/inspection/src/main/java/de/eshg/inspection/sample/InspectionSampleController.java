@@ -127,4 +127,18 @@ public class InspectionSampleController {
     }
     inspectionSampleService.deleteSample(inspectionId, sampleId);
   }
+
+  @DeleteMapping(path = "/{sampleId}/measurement-parameters/{measurementParameterId}")
+  @Operation(summary = "Delete a measurement parameter")
+  @Transactional
+  public void deleteMeasurementParameter(
+      @PathVariable("inspectionId") UUID inspectionId,
+      @PathVariable("sampleId") UUID sampleId,
+      @PathVariable("measurementParameterId") UUID measurementParameterId) {
+    if (!inspectionFeatureToggle.isNewFeatureEnabled(InspectionFeature.SAMPLES)) {
+      throw new BadRequestException("Feature toggle for samples is not enabled!");
+    }
+    inspectionSampleService.deleteMeasurementParameter(
+        inspectionId, sampleId, measurementParameterId);
+  }
 }

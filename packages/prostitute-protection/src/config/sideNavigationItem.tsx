@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { HealthAndSafetyOutlined } from "@mui/icons-material";
+import { FavoriteBorder } from "@mui/icons-material";
 
 import { ApiUserRole } from "@eshg/base-api";
 import {
@@ -16,14 +16,14 @@ import { routes } from "./routes";
 
 const sideNavigationItem = {
   name: "ProstSchG",
-  decorator: <HealthAndSafetyOutlined />,
+  decorator: <FavoriteBorder />,
 };
 
 const defaultSubItems: SideNavigationSubItem[] = [
   {
     name: "Vorgänge",
     href: routes.procedures.index,
-    accessCheck: hasUserRole(ApiUserRole.ProstituteProtectionLeader),
+    accessCheck: hasUserRole(ApiUserRole.ProstituteProtectionAdmin),
   },
 ];
 

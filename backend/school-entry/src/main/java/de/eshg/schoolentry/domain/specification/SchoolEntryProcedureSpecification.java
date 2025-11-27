@@ -6,6 +6,9 @@
 package de.eshg.schoolentry.domain.specification;
 
 import de.eshg.api.commons.SortDirection;
+import de.eshg.lib.appointmentblock.persistence.entity.Appointment;
+import de.eshg.lib.appointmentblock.persistence.entity.AppointmentBlock;
+import de.eshg.lib.appointmentblock.persistence.entity.AppointmentBlock_;
 import de.eshg.lib.appointmentblock.persistence.entity.Appointment_;
 import de.eshg.lib.procedure.domain.model.ProcedureStatus;
 import de.eshg.lib.procedure.domain.model.ProcedureType;
@@ -29,6 +32,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.util.Assert;
 
@@ -46,6 +50,9 @@ public class SchoolEntryProcedureSpecification implements Specification<SchoolEn
   private final ArrayList<UUID> excludedLabelFilter;
   private final Boolean isInvitationSentFilter;
   private final Boolean hasExaminationEditsFilter;
+  private final ArrayList<UUID> physiciansFilter;
+  private final ArrayList<UUID> mfasFilter;
+  private final String roomFilter;
   private final ProcedureSortKey sortKey;
   private final SortDirection sortDirection;
 
@@ -60,6 +67,9 @@ public class SchoolEntryProcedureSpecification implements Specification<SchoolEn
       ArrayList<UUID> excludedLabelFilter,
       Boolean isInvitationSentFilter,
       Boolean hasExaminationEditsFilter,
+      ArrayList<UUID> physiciansFilter,
+      ArrayList<UUID> mfasFilter,
+      String roomFilter,
       ProcedureSortKey sortKey,
       SortDirection sortDirection) {
     this.procedureStatusFilter = procedureStatusFilter;
@@ -72,6 +82,9 @@ public class SchoolEntryProcedureSpecification implements Specification<SchoolEn
     this.excludedLabelFilter = excludedLabelFilter;
     this.isInvitationSentFilter = isInvitationSentFilter;
     this.hasExaminationEditsFilter = hasExaminationEditsFilter;
+    this.physiciansFilter = physiciansFilter;
+    this.mfasFilter = mfasFilter;
+    this.roomFilter = roomFilter;
     this.sortKey = sortKey;
     this.sortDirection = sortDirection;
   }
@@ -172,6 +185,35 @@ public class SchoolEntryProcedureSpecification implements Specification<SchoolEn
       } else {
         conjunctions.add(criteriaBuilder.exists(subquery).not());
       }
+    }
+
+    if (CollectionUtils.isNotEmpty(physiciansFilter)) {
+      Subquery<SchoolEntryProcedure> subquery = query.subquery(SchoolEntryProcedure.class);
+      Root<SchoolEntryProcedure> subqueryRoot = subquery.correlate(root);
+      Join<Appointment, AppointmentBlock> appointmentBlockJoin =
+          subqueryRoot.join(SchoolEntryProcedure_.appointment).join(Appointment_.appointmentBlock);
+
+      subquery.where(appointmentBlockJoin.join(AppointmentBlock_.physicians).in(physiciansFilter));
+
+      conjunctions.add(criteriaBuilder.exists(subquery));
+    }
+
+    if (CollectionUtils.isNotEmpty(mfasFilter)) {
+      Subquery<SchoolEntryProcedure> subquery = query.subquery(SchoolEntryProcedure.class);
+      Root<SchoolEntryProcedure> subqueryRoot = subquery.correlate(root);
+      Join<Appointment, AppointmentBlock> appointmentBlockJoin =
+          subqueryRoot.join(SchoolEntryProcedure_.appointment).join(Appointment_.appointmentBlock);
+
+      subquery.where(appointmentBlockJoin.join(AppointmentBlock_.mfas).in(mfasFilter));
+
+      conjunctions.add(criteriaBuilder.exists(subquery));
+    }
+
+    if (roomFilter != null) {
+      Join<Appointment, AppointmentBlock> appointmentBlockJoin =
+          root.join(SchoolEntryProcedure_.appointment).join(Appointment_.appointmentBlock);
+      conjunctions.add(
+          criteriaBuilder.equal(appointmentBlockJoin.get(AppointmentBlock_.room), roomFilter));
     }
 
     Set<Order> orders = new LinkedHashSet<>();

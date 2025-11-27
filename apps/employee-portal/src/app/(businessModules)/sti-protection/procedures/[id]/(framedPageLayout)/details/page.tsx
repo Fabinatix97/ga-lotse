@@ -9,8 +9,8 @@ import { use } from "react";
 
 import { DynamicPageProps } from "@eshg/lib-portal";
 
-import { StiProtectionProcedureRouteParams } from "@/app/(businessModules)/sti-protection/procedures/[id]/(framedPageLayout)/layout";
 import { useStiProcedureQuery } from "@/lib/businessModules/stiProtection/api/queries/procedures";
+import { StiProtectionProcedureRouteParams } from "@/lib/businessModules/stiProtection/features/procedures/StiProtectionProcedureRouteParams";
 import { ProcedureDetails } from "@/lib/businessModules/stiProtection/features/procedures/details/ProcedureDetails";
 
 export default function StiProtectionProcedureDetailsPage(

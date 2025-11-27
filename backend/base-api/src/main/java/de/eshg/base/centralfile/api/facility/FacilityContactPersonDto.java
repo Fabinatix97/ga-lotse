@@ -22,7 +22,7 @@ public record FacilityContactPersonDto(
         @Size(min = 1, max = 23)
         String phoneNumber,
     @Schema(description = "The role of the Contact Person in the Facility.", example = "CEO")
-        @Size(min = 1, max = 255)
+        @Size(min = 1, max = MAX_ROLE_LENGTH)
         String role,
     @Schema(description = "The last name of the Contact Person.", example = "Doe")
         @NotNull
@@ -36,4 +36,6 @@ public record FacilityContactPersonDto(
         String title,
     SalutationDto salutation,
     GenderDto gender,
-    Boolean mainContact) {}
+    Boolean mainContact) {
+  public static final int MAX_ROLE_LENGTH = 255;
+}

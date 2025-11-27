@@ -22,8 +22,11 @@ public final class ProstituteProtectionPublicSecurityConfig
     grantAccessToConfiguration();
     grantAccessToStatistics(EmployeePermissionRole.PROSTITUTE_PROTECTION_ADMIN);
 
-    requestMatchers(BaseUrls.ProstituteProtection.PROCEDURE_CONTROLLER + "/**")
+    requestMatchers(
+            BaseUrls.ProstituteProtection.PROCEDURE_CONTROLLER + "/**",
+            BaseUrls.EVENT_METADATA_API + "/**")
         .hasAnyRole(EmployeePermissionRole.PROSTITUTE_PROTECTION_ADMIN);
+
     requestMatchers(BaseUrls.ProstituteProtection.PUBLIC_CITIZEN_CONTROLLER + "/**").permitAll();
   }
 }

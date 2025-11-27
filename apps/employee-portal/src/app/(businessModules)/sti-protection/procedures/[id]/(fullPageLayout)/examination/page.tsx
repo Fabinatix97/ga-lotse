@@ -10,7 +10,7 @@ import { use } from "react";
 
 import { DynamicPageProps } from "@eshg/lib-portal";
 
-import { StiProtectionProcedureRouteParams } from "@/app/(businessModules)/sti-protection/procedures/[id]/(fullPageLayout)/layout";
+import { StiProtectionProcedureRouteParams } from "@/lib/businessModules/stiProtection/features/procedures/StiProtectionProcedureRouteParams";
 import { routes } from "@/lib/businessModules/stiProtection/shared/routes";
 
 export default function StiProtectionProcedureExaminationPage(

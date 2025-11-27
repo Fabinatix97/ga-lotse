@@ -1,0 +1,28 @@
+/*
+ * Copyright 2025 cronn GmbH
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+package de.eshg.prostituteprotection.api;
+
+public enum ProcedureProperty {
+  FIRST_NAME,
+  DATE_OF_BIRTH,
+  NATIONALITY,
+  DOCUMENT_TYPE,
+
+  WITH_INTERPRETER,
+  LEGAL_ADVICES,
+  HEALTH_AND_SOCIAL_INSURANCE,
+  CONSULTING_SERVICES,
+  EMERGENCY_HELP,
+  TAX_LIABILITY,
+  CLEARING,
+  INFORMATION_MATERIAL,
+  PREDICAMENT,
+  DISEASE_PREVENTION,
+  BIRTH_CONTROL,
+  PREGNANCY,
+  ALCOHOL_AND_DURG_USAGE,
+  REFERRAL,
+}

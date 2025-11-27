@@ -37,7 +37,7 @@ public record DomesticAddressDto(
         @Size(min = 1, max = MAX_HOUSE_NUMBER_LENGTH)
         String houseNumber,
     @Schema(description = "A descriptive addition to the address.", example = "2.OG links")
-        @Size(min = 1, max = 100)
+        @Size(min = 1, max = MAX_ADDRESS_ADDITION_LENGTH)
         String addressAddition)
     implements AddressDto {
 
@@ -46,6 +46,7 @@ public record DomesticAddressDto(
   public static final int MAX_POSTAL_CODE_LENGTH = 20;
   public static final int MAX_STREET_LENGTH = 55;
   public static final int MAX_HOUSE_NUMBER_LENGTH = 11;
+  public static final int MAX_ADDRESS_ADDITION_LENGTH = 100;
 
   @Override
   public String type() {

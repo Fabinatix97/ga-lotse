@@ -38,19 +38,21 @@ public class ConsultationCertificateGenerator extends AbstractGenerator {
 
   public Pdf generateConsultationCertificate(ProstituteProtectionProcedure procedure) {
     return generatePdf(
-        buildConsultationCertificateData(procedure), "Beratungszertifikat", "Beratungszertifikat");
+        buildConsultationCertificateData(procedure), PrintDocumentType.CONSULTATION_CERTIFICATE);
   }
 
   ConsultationCertificateData buildConsultationCertificateData(
       ProstituteProtectionProcedure procedure) {
-    LocalDate consultationDate = toLocalDate(procedure.getAppointment().getAppointmentStart());
-    LocalDate validToDate = calculateValidToDate(consultationDate, procedure.getDateOfBirth());
+    LocalDate consultationDate = toLocalDate(procedure.getAppointmentStart());
+    LocalDate validToDate =
+        calculateValidToDate(
+            consultationDate, procedure.getEncryptedPersonalData().getDateOfBirth());
 
     return new ConsultationCertificateData(
         getPersonData(procedure),
         getFormattedDate(consultationDate),
         getFormattedDate(validToDate),
-        procedure.getDocumentType().getDescription(),
+        procedure.getEncryptedPersonalData().getDocumentType().getDescription(),
         getDepartmentData());
   }
 

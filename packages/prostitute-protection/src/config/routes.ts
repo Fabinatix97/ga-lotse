@@ -16,8 +16,6 @@ export const routes = defineRoutes(basePath, (prostituteProtectionPath) => ({
       byId: (procedureId: string) =>
         defineRoutes(proceduresPath(`/${procedureId}`), (procedurePath) => ({
           details: procedurePath("/details"),
-          syncPerson: (fileStateId: string) =>
-            procedurePath(`/sync-person/${fileStateId}`),
           progressEntries: procedurePath("/progress-entries"),
           consultation: procedurePath("/consultation"),
         })),

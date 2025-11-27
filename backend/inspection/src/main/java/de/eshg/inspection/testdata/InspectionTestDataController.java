@@ -92,7 +92,8 @@ public class InspectionTestDataController {
     Faker faker = new Faker();
     for (int i = 0; i < 6; i++) {
       InspectionDto response = facilityTestDataProvider.createTestFacilityAndStartInsp(i);
-      inspectionTestDataProvider.prepareTestInspection(response.externalId(), faker, i);
+      inspectionTestDataProvider.prepareTestInspection(
+          response.externalId(), response.facility().id(), faker, i);
     }
   }
 }

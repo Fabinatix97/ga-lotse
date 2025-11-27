@@ -5,8 +5,14 @@
 
 import { useQuery } from "@tanstack/react-query";
 
-import { useParameterAutocompleteApi } from "@/lib/businessModules/inspection/api/clients";
-import { measurementParameterApiQueryKey } from "@/lib/businessModules/inspection/api/queries/apiQueryKeys";
+import {
+  useParameterAutocompleteApi,
+  useSampleActorAutocompleteApi,
+} from "@/lib/businessModules/inspection/api/clients";
+import {
+  measurementParameterApiQueryKey,
+  sampleActorApiQueryKey,
+} from "@/lib/businessModules/inspection/api/queries/apiQueryKeys";
 
 export function useAutocompleteParameterQuery({ prefix }: { prefix: string }) {
   const parameterAutocompleteApi = useParameterAutocompleteApi();
@@ -18,6 +24,30 @@ export function useAutocompleteParameterQuery({ prefix }: { prefix: string }) {
     queryKey: measurementParameterApiQueryKey([
       "autocompleteParameter",
       prefix,
+    ]),
+  });
+}
+
+export function useAutocompleteUserFacilityContactQuery({
+  prefix,
+  useLaboratories,
+}: {
+  prefix: string;
+  useLaboratories: boolean;
+}) {
+  const parameterAutocompleteApi = useSampleActorAutocompleteApi();
+
+  return useQuery({
+    queryFn: async () => {
+      return parameterAutocompleteApi.autocompleteActor(
+        prefix,
+        useLaboratories,
+      );
+    },
+    queryKey: sampleActorApiQueryKey([
+      "autocompleteActor",
+      prefix,
+      useLaboratories,
     ]),
   });
 }

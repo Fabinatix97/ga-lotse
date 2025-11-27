@@ -27,12 +27,12 @@ import {
   DetailsList,
   FormPlus,
   InputField,
+  QueryBoundary,
   formatDateTime,
   useAlert,
   useSnackbar,
 } from "@eshg/lib-portal";
 
-import QueryBoundary from "@/app/@modal/template";
 import {
   useChangeProcedureStatus,
   useRefreshProcedureStatus,

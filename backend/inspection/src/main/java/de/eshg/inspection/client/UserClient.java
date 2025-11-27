@@ -8,7 +8,9 @@ package de.eshg.inspection.client;
 import de.cronn.commons.lang.StreamUtil;
 import de.eshg.base.user.UserApi;
 import de.eshg.base.user.api.GetUsersRequest;
+import de.eshg.base.user.api.GetUsersResponse;
 import de.eshg.base.user.api.UserDto;
+import de.eshg.base.user.api.UserFilterParameters;
 import de.eshg.rest.service.error.BadRequestException;
 import de.eshg.rest.service.error.ErrorCode;
 import de.eshg.rest.service.error.ErrorResponse;
@@ -32,6 +34,11 @@ public class UserClient {
 
   public UserClient(UserApi userApi) {
     this.userApi = userApi;
+  }
+
+  @NotNull
+  public GetUsersResponse getUsers(UserFilterParameters parameters) {
+    return userApi.getUsers(parameters);
   }
 
   @NotNull

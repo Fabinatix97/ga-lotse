@@ -2917,6 +2917,40 @@
         "tags" : [ "Inspection" ]
       }
     },
+    "/inspections/sample-actor-autocomplete" : {
+      "get" : {
+        "operationId" : "autocompleteActor",
+        "parameters" : [ {
+          "in" : "query",
+          "name" : "prefix",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "in" : "query",
+          "name" : "useLaboratories",
+          "required" : true,
+          "schema" : {
+            "type" : "boolean"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/AutocompleteActorResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Autocomplete actors for taking or evaluating samples",
+        "tags" : [ "InspectionSampleActorAutocomplete" ]
+      }
+    },
     "/inspections/{id}" : {
       "get" : {
         "operationId" : "getInspection",
@@ -3721,6 +3755,43 @@
           }
         },
         "summary" : "Update a sample",
+        "tags" : [ "InspectionSample" ]
+      }
+    },
+    "/inspections/{inspectionId}/samples/{sampleId}/measurement-parameters/{measurementParameterId}" : {
+      "delete" : {
+        "operationId" : "deleteMeasurementParameter",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "inspectionId",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }, {
+          "in" : "path",
+          "name" : "sampleId",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }, {
+          "in" : "path",
+          "name" : "measurementParameterId",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          }
+        },
+        "summary" : "Delete a measurement parameter",
         "tags" : [ "InspectionSample" ]
       }
     },
@@ -5200,6 +5271,17 @@
         "tags" : [ "TestHelper" ]
       }
     },
+    "/test-helper/create-object-types" : {
+      "post" : {
+        "operationId" : "createObjectTypes",
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "TestHelper" ]
+      }
+    },
     "/test-helper/enabled-new-features/{featureToDisable}" : {
       "delete" : {
         "operationId" : "disableNewFeature",
@@ -5932,6 +6014,52 @@
             "format" : "int64"
           }
         }
+      },
+      "AutocompleteActor" : {
+        "required" : [ "@type" ],
+        "type" : "object",
+        "properties" : {
+          "@type" : {
+            "type" : "string"
+          }
+        },
+        "discriminator" : {
+          "propertyName" : "@type"
+        }
+      },
+      "AutocompleteActorResponse" : {
+        "required" : [ "elements" ],
+        "type" : "object",
+        "properties" : {
+          "elements" : {
+            "type" : "array",
+            "items" : {
+              "oneOf" : [ {
+                "$ref" : "#/components/schemas/AutocompleteContact"
+              }, {
+                "$ref" : "#/components/schemas/InspectionSampleUserReference"
+              } ]
+            }
+          }
+        }
+      },
+      "AutocompleteContact" : {
+        "required" : [ "contactId" ],
+        "type" : "object",
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/AutocompleteActor"
+        }, {
+          "type" : "object",
+          "properties" : {
+            "contactId" : {
+              "type" : "string",
+              "format" : "uuid"
+            },
+            "name" : {
+              "type" : "string"
+            }
+          }
+        } ]
       },
       "AutocompleteParameter" : {
         "required" : [ "name", "zid" ],
@@ -10017,9 +10145,18 @@
         } ]
       },
       "InspectionSampleInspectedFacilityReference" : {
+        "required" : [ "centralFileStateId" ],
         "type" : "object",
         "allOf" : [ {
           "$ref" : "#/components/schemas/InspectionSampleActorReference"
+        }, {
+          "type" : "object",
+          "properties" : {
+            "centralFileStateId" : {
+              "type" : "string",
+              "format" : "uuid"
+            }
+          }
         } ]
       },
       "InspectionSampleMeasurementParameter" : {
@@ -10081,6 +10218,19 @@
         }, {
           "type" : "object",
           "properties" : {
+            "userId" : {
+              "type" : "string",
+              "format" : "uuid"
+            }
+          }
+        }, {
+          "$ref" : "#/components/schemas/AutocompleteActor"
+        }, {
+          "type" : "object",
+          "properties" : {
+            "name" : {
+              "type" : "string"
+            },
             "userId" : {
               "type" : "string",
               "format" : "uuid"

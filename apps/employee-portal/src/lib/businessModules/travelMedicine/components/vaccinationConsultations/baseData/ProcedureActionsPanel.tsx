@@ -132,15 +132,14 @@ export function ProcedureActionsPanel(
         <Grid xs={6} display="flex">
           <Button
             key="startProcedure"
+            sx={{ visibility: query.isSuccess ? "visible" : "hidden" }}
             color="primary"
             fullWidth
             onClick={async () => {
               if (query.isSuccess && query.data.persons.length > 0) {
                 acceptProcedureSidebar.open({
                   procedure: props.procedure,
-                  queryResults: query.isSuccess
-                    ? query.data.persons
-                    : undefined,
+                  queryResults: query.data.persons,
                 });
               } else if (query.isSuccess && query.data.persons.length === 0) {
                 await handleCreate(props.procedure.procedureId);

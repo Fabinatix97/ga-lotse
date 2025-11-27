@@ -3,65 +3,83 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Typography } from "@mui/joy";
+import { Divider, Grid, Stack, Typography } from "@mui/joy";
 
-import {
-  SelectField,
-  TextareaField,
-  YesOrNoWithFollowUp,
-} from "@eshg/lib-portal";
+import { CheckboxField } from "@eshg/lib-portal";
 
-import {
-  CONSULTATION_TOPIC_OPTIONS,
-  HEALTH_INSURANCE_OPTIONS,
-  MEDICAL_REFERRAL_OPTIONS,
-  WORK_ENVIRONMENT_OPTIONS,
-} from "../../../shared/constants";
+import { CONSULTATION_FIELD_NAME } from "../../../shared/constants";
 
 import { SectionGrid } from "./SectionGrid";
 
 export function GeneralSection() {
   return (
-    <SectionGrid>
-      <Typography level="h3">Allgemein</Typography>
-
-      <TextareaField name="general.mainReason" label="Konsultationsgrund" />
-      <TextareaField
-        name="general.furtherGenderInfo"
-        label="Weitere Geschlechtsangaben"
-      />
-      <SelectField
-        name="general.consultationTopics"
-        label="Beratungsthemen"
-        options={CONSULTATION_TOPIC_OPTIONS}
-      />
-      <YesOrNoWithFollowUp
-        name="general.beginnerInSexWork"
-        label="Anfängerin in der Sexarbeit"
-      />
-      <SelectField
-        name="general.workEnvironment"
-        label="Arbeitsumfeld"
-        options={WORK_ENVIRONMENT_OPTIONS}
-      />
-      <YesOrNoWithFollowUp
-        name="general.emergencySituation"
-        label="Notfallsituation"
-      />
-      <SelectField
-        name="general.healthInsurance"
-        label="Krankenversicherung"
-        options={HEALTH_INSURANCE_OPTIONS}
-      />
-      <YesOrNoWithFollowUp
-        name="general.referralToSocialServices"
-        label="Weiterleitung an soziale Dienste"
-      />
-      <SelectField
-        name="general.referralToMedicalInstitutions"
-        label="Überweisung an medizinische Einrichtungen"
-        options={MEDICAL_REFERRAL_OPTIONS}
-      />
+    <SectionGrid defaultColumn={1} sx={{ mt: 6 }}>
+      <Typography level="h3">Beratungsinhalte</Typography>
+      <Grid container spacing={4}>
+        <Grid component={Stack} gap={4} xs={12} md={6}>
+          <CheckboxField
+            name="general.legalAdvice"
+            label={CONSULTATION_FIELD_NAME.legalAdvice}
+          />
+          <CheckboxField
+            name="general.healthAndSocialInsurance"
+            label={CONSULTATION_FIELD_NAME.healthAndSocialInsurance}
+          />
+          <CheckboxField
+            name="general.counselingServices"
+            label={CONSULTATION_FIELD_NAME.counselingServices}
+          />
+          <CheckboxField
+            name="general.helpInEmergencies"
+            label={CONSULTATION_FIELD_NAME.helpInEmergencies}
+          />
+          <CheckboxField
+            name="general.taxObligation"
+            label={CONSULTATION_FIELD_NAME.taxObligation}
+          />
+        </Grid>
+        <Grid component={Stack} gap={4} xs={12} md={6}>
+          <CheckboxField
+            name="general.counselingNeedClearing"
+            label={CONSULTATION_FIELD_NAME.counselingNeedClearing}
+          />
+          <CheckboxField
+            name="general.informationMaterial"
+            label={CONSULTATION_FIELD_NAME.informationMaterial}
+          />
+          <CheckboxField
+            name="general.emergencyCoercionSituation"
+            label={CONSULTATION_FIELD_NAME.emergencyCoercionSituation}
+          />
+          <CheckboxField
+            name="general.diseasePrevention"
+            label={CONSULTATION_FIELD_NAME.diseasePrevention}
+          />
+        </Grid>
+      </Grid>
+      <Divider />
+      <Grid container spacing={4} sx={{ mb: 1 }}>
+        <Grid component={Stack} gap={4} xs={12} md={6}>
+          <CheckboxField
+            name="general.contraception"
+            label={CONSULTATION_FIELD_NAME.contraception}
+          />
+          <CheckboxField
+            name="general.pregnancy"
+            label={CONSULTATION_FIELD_NAME.pregnancy}
+          />
+        </Grid>
+        <Grid component={Stack} gap={4} xs={12} md={6}>
+          <CheckboxField
+            name="general.alcoholDrugUse"
+            label={CONSULTATION_FIELD_NAME.alcoholDrugUse}
+          />
+          <CheckboxField
+            name="general.referralParagraph19"
+            label={CONSULTATION_FIELD_NAME.referralParagraph19}
+          />
+        </Grid>
+      </Grid>
     </SectionGrid>
   );
 }

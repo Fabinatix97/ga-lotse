@@ -84,11 +84,7 @@ ext {
 tasks.register('createDockerfile', Dockerfile) {
     dependsOn 'copyBootJarToDockerBuildContext', 'copyResourcesToDockerBuildContext'
 
-    if (project.hasProperty("useDependencyProxy")) {
-        from(new Dockerfile.From("${System.getenv("CI_DEPENDENCY_PROXY_DIRECT_GROUP_IMAGE_PREFIX")}/${jreDockerImage}").withStage("build"))
-    } else {
-        from(new Dockerfile.From(jreDockerImage).withStage("build"))
-    }
+    from(new Dockerfile.From(jreDockerImage).withStage("build"))
 
     copyFile(new Dockerfile.CopyFile(bootJar.archiveFileName.get(), "application.jar"))
     runCommand("java -Djarmode=tools -jar application.jar extract --layers --launcher")

@@ -23,6 +23,7 @@ import { AdditionalInfoSection } from "./AdditionalInfoSection";
 import { AffectedPerson } from "./AffectedPerson";
 import { Custodians } from "./Custodians";
 import { Facility } from "./Facility";
+import { FullVaccinationBanner } from "./FullVaccinationBanner";
 import { UpdateProcedureForm } from "./helpers";
 
 export function MeaslesProtectionProcedureData({ id }: { id: string }) {
@@ -33,20 +34,23 @@ export function MeaslesProtectionProcedureData({ id }: { id: string }) {
   );
 
   return (
-    <Grid container spacing={3} data-testid="procedureDetailPage">
-      <Grid xs={12} lg>
-        <Stack gap={3}>
-          <UnderagedPersonAlert procedure={procedure} />
-          <AffectedPerson procedure={procedure} />
-          <Custodians procedure={procedure} />
-          <Facility procedure={procedure} />
-        </Stack>
-      </Grid>
+    <Stack gap={3}>
+      <FullVaccinationBanner procedure={procedure} />
+      <Grid container spacing={3} data-testid="procedureDetailPage">
+        <Grid xs={12} lg>
+          <Stack gap={3}>
+            <UnderagedPersonAlert procedure={procedure} />
+            <AffectedPerson procedure={procedure} />
+            <Custodians procedure={procedure} />
+            <Facility procedure={procedure} />
+          </Stack>
+        </Grid>
 
-      <Grid xs={12} lg={4} sx={{ maxWidth: { lg: 432 } }}>
-        <AdditionalInfoSection procedure={procedure} />
+        <Grid xs={12} lg={4} sx={{ maxWidth: { lg: 432 } }}>
+          <AdditionalInfoSection procedure={procedure} />
+        </Grid>
       </Grid>
-    </Grid>
+    </Stack>
   );
 }
 

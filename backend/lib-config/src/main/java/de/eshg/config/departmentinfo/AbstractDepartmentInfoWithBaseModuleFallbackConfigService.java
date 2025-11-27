@@ -5,12 +5,13 @@
 
 package de.eshg.config.departmentinfo;
 
+import static de.eshg.config.mapper.DepartmentInfoMapper.mapToDomain;
+
 import de.eshg.base.department.GetDepartmentInfoResponse;
 import de.eshg.base.department.PublicDepartmentApi;
 import de.eshg.config.AuditLogWriter;
 import de.eshg.config.domain.AbstractDepartmentInfoConfig;
 import de.eshg.config.domain.DepartmentInfo;
-import de.eshg.config.initialization.InitialDepartmentInfo;
 import de.eshg.config.initialization.OptionalInitialDepartmentInfo;
 import de.eshg.config.mapper.DepartmentInfoMapper;
 import de.eshg.persistence.TransactionHelper;
@@ -18,7 +19,6 @@ import jakarta.annotation.PostConstruct;
 import jakarta.persistence.EntityManager;
 import java.lang.reflect.Field;
 import java.util.Optional;
-import java.util.function.Function;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,6 +28,7 @@ public abstract class AbstractDepartmentInfoWithBaseModuleFallbackConfigService<
         T extends AbstractDepartmentInfoConfig>
     extends AbstractDepartmentInfoConfigService<T> {
 
+  public static final String DEPARTMENT_INFO_IS_NOT_COMPLETE = "Department info is not complete.";
   private final OptionalInitialDepartmentInfo initialDepartmentInfo;
   private final PublicDepartmentApi publicDepartmentApi;
 
@@ -65,45 +66,26 @@ public abstract class AbstractDepartmentInfoWithBaseModuleFallbackConfigService<
     if (initialDepartmentInfo.useDepartmentInfoFromBaseModule()) {
       log.info("Using department info from base module.");
       return null;
+    } else if (!checkIfDepartmentInfoIsComplete(initialDepartmentInfo)) {
+      throw new IllegalStateException(DEPARTMENT_INFO_IS_NOT_COMPLETE);
     } else {
       log.info("Using custom department info.");
-      GetDepartmentInfoResponse baseDepartmentInfo = publicDepartmentApi.getDepartmentInfo();
-
-      DepartmentInfo departmentInfo = new DepartmentInfo();
-      departmentInfo.setName(
-          useFromInitialConfigOrBase(InitialDepartmentInfo::name, baseDepartmentInfo.name()));
-      departmentInfo.setAbbreviation(
-          useFromInitialConfigOrBase(
-              InitialDepartmentInfo::abbreviation, baseDepartmentInfo.abbreviation()));
-      departmentInfo.setStreet(
-          useFromInitialConfigOrBase(InitialDepartmentInfo::street, baseDepartmentInfo.street()));
-      departmentInfo.setHouseNumber(
-          useFromInitialConfigOrBase(
-              InitialDepartmentInfo::houseNumber, baseDepartmentInfo.houseNumber()));
-      departmentInfo.setPostalCode(
-          useFromInitialConfigOrBase(
-              InitialDepartmentInfo::postalCode, baseDepartmentInfo.postalCode()));
-      departmentInfo.setCity(
-          useFromInitialConfigOrBase(InitialDepartmentInfo::city, baseDepartmentInfo.city()));
-      departmentInfo.setCountry(
-          useFromInitialConfigOrBase(InitialDepartmentInfo::country, baseDepartmentInfo.country()));
-      departmentInfo.setPhoneNumber(
-          useFromInitialConfigOrBase(
-              InitialDepartmentInfo::phoneNumber, baseDepartmentInfo.phoneNumber()));
-      departmentInfo.setHomepage(
-          useFromInitialConfigOrBase(
-              InitialDepartmentInfo::homepage, baseDepartmentInfo.homepage()));
-      departmentInfo.setEmail(
-          useFromInitialConfigOrBase(InitialDepartmentInfo::email, baseDepartmentInfo.email()));
-
-      departmentInfo.setLongitude(
-          useFromInitialConfigOrBase(
-              InitialDepartmentInfo::longitude, baseDepartmentInfo.location().longitude()));
-      departmentInfo.setLatitude(
-          useFromInitialConfigOrBase(
-              InitialDepartmentInfo::latitude, baseDepartmentInfo.location().latitude()));
-      return departmentInfo;
+      return mapToDomain(initialDepartmentInfo);
     }
+  }
+
+  private boolean checkIfDepartmentInfoIsComplete(
+      OptionalInitialDepartmentInfo initialDepartmentInfo) {
+    for (var component : initialDepartmentInfo.getClass().getRecordComponents()) {
+      try {
+        if (component.getAccessor().invoke(initialDepartmentInfo) == null) {
+          return false;
+        }
+      } catch (Exception e) {
+        throw new RuntimeException(e);
+      }
+    }
+    return true;
   }
 
   @PostConstruct
@@ -131,8 +113,4 @@ public abstract class AbstractDepartmentInfoWithBaseModuleFallbackConfigService<
   }
 
   protected abstract T createEmptyDepartmentInfoObject();
-
-  private <U> U useFromInitialConfigOrBase(Function<InitialDepartmentInfo, U> fn, U fallback) {
-    return Optional.ofNullable(initialDepartmentInfo).map(fn).orElse(fallback);
-  }
 }

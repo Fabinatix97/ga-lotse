@@ -5,61 +5,45 @@
 
 "use client";
 
-import { Add, DeleteOutlined } from "@mui/icons-material";
-import { Box, Button, Divider, Grid, Stack } from "@mui/joy";
+import { Tab, TabList, TabPanel, Tabs } from "@mui/joy";
 import { useSuspenseQueries } from "@tanstack/react-query";
 import { Formik } from "formik";
-import { useMemo, useRef } from "react";
-import { v4 as uuidv4 } from "uuid";
+import { useMemo, useState } from "react";
 
 import {
-  ApiCreateInspectionSampleRequest,
-  ApiInspectionSampleEvaluationType,
-  ApiInspectionSampleType,
+  ApiInspFacility,
+  ApiInspectionSample,
+  ApiInspectionSampleContact,
+  ApiInspectionSampleEvaluatingActor,
+  ApiInspectionSampleInspectedFacility,
+  ApiInspectionSampleUser,
+  ApiUpdateInspectionSampleRequest,
 } from "@eshg/inspection-api";
 import {
-  DateTimeField,
-  IconButton,
   MultiFormButtonBar,
   SidebarActions,
   SidebarContent,
   SidebarForm,
-  SidebarFormHandle,
   SidebarWithFormRefProps,
   useSidebarWithFormRef,
-  useStepper,
 } from "@eshg/lib-employee-portal";
-import {
-  FieldArrayWithFocus as FieldArray,
-  FormPlus,
-  InputField,
-  SelectField,
-} from "@eshg/lib-portal";
+import { formatDateTime, formatUserName } from "@eshg/lib-portal";
 
 import { useUserApi } from "@/lib/baseModule/api/clients";
-import { useCreateSample } from "@/lib/businessModules/inspection/api/mutations/sample";
+import { useUpdateSample } from "@/lib/businessModules/inspection/api/mutations/sample";
 import { getSelfUserQuery } from "@/lib/businessModules/inspection/api/queries/users";
-import { MeasurementParameterField } from "@/lib/businessModules/inspection/components/inspection/measurements/sampleSidebar/MeasurementParameterField";
+import { InspectionSampleSidebarBasisData } from "@/lib/businessModules/inspection/components/inspection/measurements/sampleSidebar/InspectionSampleSidebarBasisData";
 import {
-  EVALUATION_TYPE_OPTIONS,
-  SAMPLE_TYPE_OPTIONS,
-} from "@/lib/businessModules/inspection/shared/constants";
+  InspectionSampleSidebarFormType,
+  makeUpdateInspectionSampleRequest,
+} from "@/lib/businessModules/inspection/components/inspection/measurements/sampleSidebar/InspectionSampleSidebarHelper";
+import { InspectionSampleSidebarMeasurementParameterData } from "@/lib/businessModules/inspection/components/inspection/measurements/sampleSidebar/InspectionSampleSidebarMeasurementParameterData";
 import { ConfirmLeaveDirtyFormEffect } from "@/lib/shared/components/form/ConfirmLeaveDirtyFormEffect";
 
 interface InspectionEditSampleSidebarProps extends SidebarWithFormRefProps {
   procedureId: string;
-}
-
-export interface InspectionEditSampleSidebarFormType {
-  evaluatingActor?: string; //ApiCreateInspectionSampleRequestEvaluatingActor;
-  evaluationType: ApiInspectionSampleEvaluationType;
-  measurementParameters: string[];
-  nameOfSamplingPoint?: string;
-  pointOfWithdrawal: string;
-  samplingActor: string; //ApiCreateInspectionSampleRequestEvaluatingActor;
-  timeOfEvaluation?: string;
-  timeOfSampling?: string;
-  typeOfSample: ApiInspectionSampleType;
+  sample: ApiInspectionSample;
+  facility: ApiInspFacility;
 }
 
 export function useInspectionEditSampleSidebar() {
@@ -71,258 +55,181 @@ export function useInspectionEditSampleSidebar() {
 function InspectionEditSampleSidebar({
   onClose,
   procedureId,
+  sample,
   formRef,
+  facility,
 }: Readonly<InspectionEditSampleSidebarProps>) {
-  const sidebarFormRef = useRef<SidebarFormHandle>(null);
   const userApi = useUserApi();
 
   const [{ data: selfUser }] = useSuspenseQueries({
     queries: [getSelfUserQuery(userApi)],
   });
 
-  const { mutateAsync: createSample } = useCreateSample();
+  const { mutateAsync: updateSample } = useUpdateSample();
+
+  const [selectedTab, setSelectedTab] = useState(0);
 
   function handleClose(force?: boolean) {
-    changeToStep(0);
     onClose(force);
   }
 
-  async function onFinalSubmit(
-    formValues: InspectionEditSampleSidebarFormType,
-  ) {
-    const payload: ApiCreateInspectionSampleRequest =
-      mapFormToRequest(formValues);
-    await createSample(
-      { inspectionId: procedureId, apiCreateInspectionSampleRequest: payload },
+  async function onFinalSubmit(formValues: InspectionSampleSidebarFormType) {
+    const payload: ApiUpdateInspectionSampleRequest =
+      makeUpdateInspectionSampleRequest(formValues, selfUser.userId);
+    await updateSample(
+      {
+        inspectionId: procedureId,
+        sampleId: sample.sampleId,
+        apiUpdateInspectionSampleRequest: payload,
+      },
       {
         onSuccess: () => {
-          sidebarFormRef.current?.resetForm();
           handleClose(true);
         },
       },
     );
   }
 
-  function mapFormToRequest(
-    formValues: InspectionEditSampleSidebarFormType,
-  ): ApiCreateInspectionSampleRequest {
-    return {
-      evaluatingActor: {
-        type: "InspectionSampleUserReference",
-        userId: selfUser.userId,
-      },
-      evaluationType: formValues.evaluationType,
-      externalId: uuidv4(),
-      measurementParameters: formValues.measurementParameters.map((zid) => {
-        return {
-          externalId: uuidv4(),
-          uParameterZid: zid,
-        };
-      }),
-      nameOfSamplingPoint: formValues.nameOfSamplingPoint,
-      pointOfWithdrawal: formValues.pointOfWithdrawal,
-      samplingActor: {
-        type: "InspectionSampleUserReference",
-        userId: selfUser.userId,
-      },
-      timeOfEvaluation: formValues.timeOfEvaluation
-        ? new Date(formValues.timeOfEvaluation)
-        : undefined,
-      timeOfSampling: formValues.timeOfSampling
-        ? new Date(formValues.timeOfSampling)
-        : undefined,
-      typeOfSample: formValues.typeOfSample,
-    };
+  function getActorName(actor: ApiInspectionSampleEvaluatingActor) {
+    switch (actor.type) {
+      case "InspectionSampleContact":
+        const inspectionSampleContact = actor as ApiInspectionSampleContact;
+        return inspectionSampleContact.contact.name;
+      case "InspectionSampleInspectedFacility":
+        const inspectionSampleInspectedFacility =
+          actor as ApiInspectionSampleInspectedFacility;
+        return inspectionSampleInspectedFacility.facilityFileState.name;
+      case "InspectionSampleUser":
+        const inspectionSampleUser = actor as ApiInspectionSampleUser;
+        return formatUserName(inspectionSampleUser.user);
+    }
   }
 
-  const steps = [
-    {
-      title: "Probe hinzufügen",
-      subTitle: "Schritt 1: Informationen",
-      fields: () => (
-        <Grid container component={FormPlus} spacing={1} sx={{ flexGrow: 1 }}>
-          <Grid xxs={12}>
-            <InputField
-              name="pointOfWithdrawal"
-              type="text"
-              label="Entnahmestelle"
-              required="Bitte eine Entnahmestelle eingeben"
-            />
-          </Grid>
-          <Grid xxs={12}>
-            <SelectField
-              name="typeOfSample"
-              label="Art der Probe"
-              options={SAMPLE_TYPE_OPTIONS}
-              required="Bitte Art der Probe auswählen"
-            />
-          </Grid>
-          <Grid xxs={12}>
-            <InputField
-              name="nameOfSamplingPoint"
-              type="text"
-              label="Name der Probennahmestelle"
-              required="Bitte Namen der Probennahmestelle eingeben"
-            />
-          </Grid>
-          <Grid xxs={12}>
-            <SelectField
-              name="evaluationType"
-              label="Auswertungsart"
-              options={EVALUATION_TYPE_OPTIONS}
-              required="Bitte Auswertungsart auswählen"
-            />
-          </Grid>
-          <Divider />
-          <Grid xxs={12}>
-            <InputField
-              name="samplingActor"
-              type="text"
-              label="Probennehmer"
-              required="Bitte Probennehmer eintragen"
-            />
-          </Grid>
-          <Divider />
-          <Grid xxs={12}>
-            <InputField
-              name="evaluatingActor"
-              type="text"
-              label="Auswerter"
-              required="Bitte Auswerter eintragen"
-            />
-          </Grid>
-          <Divider />
-          <Grid xxs={12}>
-            <DateTimeField
-              name="timeOfSampling"
-              label="Zeitpunkt der Probennahme"
-            />
-          </Grid>
-          <Grid xxs={12}>
-            <DateTimeField
-              name="timeOfEvaluation"
-              label="Zeitpunkt der Auswertung"
-            />
-          </Grid>
-        </Grid>
-      ),
-    },
-    {
-      title: "Probe hinzufügen",
-      subTitle: "Schritt 2: Messparameter",
-      fields: ({ values }: { values: InspectionEditSampleSidebarFormType }) => (
-        <Grid container spacing={1} sx={{ display: "grid" }}>
-          <FieldArray
-            valueLength={values.measurementParameters.length}
-            name="measurementParameters"
-          >
-            {({ push, remove }) => (
-              <>
-                <Box
-                  sx={{
-                    display: "grid",
-                    flexDirection: "column",
-                    gap: 2,
-                    paddingBottom: 2,
-                    paddingTop: 1,
-                  }}
-                >
-                  {values.measurementParameters.map((element, elementIndex) => (
-                    <Stack key={elementIndex} direction="row" spacing={2}>
-                      <MeasurementParameterField
-                        label={`${elementIndex + 1}. Messparameter`}
-                        name={`measurementParameters.${elementIndex}`}
-                        placeholder={`Messparameter ${elementIndex + 1} auswählen`}
-                        required={`Messparameter ${elementIndex + 1} auswählen`}
-                      />
-                      {values.measurementParameters.length >= 2 && (
-                        <IconButton
-                          label="Löschen"
-                          aria-label="Löschen"
-                          sx={{
-                            borderColor:
-                              "var(--global--color-danger-outlined-border)",
-                            borderRadius: "var(--joy-radius-sm)",
-                            borderWidth: "1px",
-                            height: "36px",
-                            width: "36px",
-                            alignSelf: "flex-end",
-                          }}
-                          onClick={() => remove(elementIndex)}
-                        >
-                          <DeleteOutlined color="danger" />
-                        </IconButton>
-                      )}
-                    </Stack>
-                  ))}
-                </Box>
-                <Box
-                  sx={{
-                    flexGrow: 1,
-                    justifyContent: "flex-end",
-                    display: "flex",
-                  }}
-                >
-                  <Button
-                    variant="plain"
-                    startDecorator={<Add />}
-                    sx={{ alignSelf: "flex-end" }}
-                    onClick={() => push("")}
-                  >
-                    Messparameter hinzufügen
-                  </Button>
-                </Box>
-              </>
-            )}
-          </FieldArray>
-        </Grid>
-      ),
-    },
-  ];
-
-  const {
-    Fields,
-    handleNext,
-    handlePrev,
-    changeToStep,
-    step,
-    isOnFirstStep,
-    isOnLastStep,
-  } = useStepper({ steps, onFinalSubmit });
-
-  const initialValues: InspectionEditSampleSidebarFormType = useMemo(() => {
+  const initialValues: InspectionSampleSidebarFormType = useMemo(() => {
     return {
-      evaluatingActor: "",
-      evaluationType: ApiInspectionSampleEvaluationType.OnSite,
-      externalId: "",
+      evaluatingActor: getActorName(sample.evaluatingActor),
+      evaluationType: sample.evaluationType,
+      externalId: sample.sampleId,
       measurementParameters: [],
-      nameOfSamplingPoint: "",
-      pointOfWithdrawal: "",
-      samplingActor: "",
-      timeOfEvaluation: undefined,
-      timeOfSampling: undefined,
-      typeOfSample: ApiInspectionSampleType.DrinkingWater,
+      nameOfSamplingPoint: sample.nameOfSamplingPoint,
+      pointOfWithdrawal: sample.pointOfWithdrawal,
+      samplingActor: getActorName(sample.samplingActor),
+      timeOfEvaluation:
+        sample.timeOfEvaluation && formatDateTime(sample.timeOfEvaluation),
+      timeOfSampling:
+        sample.timeOfSampling && formatDateTime(sample.timeOfSampling),
+      typeOfSample: sample.typeOfSample,
     };
-  }, []);
+  }, [sample]);
 
   return (
     <Formik
       enableReinitialize
       initialValues={initialValues}
-      onSubmit={handleNext}
+      onSubmit={onFinalSubmit}
     >
-      {({ isValid, values }) => (
+      {({ isValid, values, setFieldValue }) => (
         <SidebarForm ref={formRef}>
           <ConfirmLeaveDirtyFormEffect />
-          <SidebarContent title={step.title} subtitle={step.subTitle}>
-            <Fields values={values} />
+          <SidebarContent title="Probe bearbeiten">
+            <Tabs
+              variant="plain"
+              aria-label="Proben bearbeiten tabs"
+              value={selectedTab}
+              onChange={(event, value) => setSelectedTab(value as number)}
+            >
+              <TabList sx={{ flexGrow: 1, borderRadius: "8px" }}>
+                <Tab
+                  aria-label="Informationen tab"
+                  sx={{
+                    flexGrow: 1,
+                    borderTopLeftRadius: "8px",
+                    borderBottomLeftRadius: "8px",
+                    backgroundColor: "#F0F4F8",
+                    color: "black",
+                    "&.Mui-selected": {
+                      // Aktiver Zustand
+                      backgroundColor: "#0B6BCB",
+                      color: "white",
+                    },
+                    "&:hover": {
+                      backgroundColor: "#F0F4F8",
+                      color: "black",
+                    },
+                    "&.Mui-selected:hover": {
+                      backgroundColor: "#0B6BCB",
+                      color: "white",
+                    },
+                  }}
+                >
+                  Informationen
+                </Tab>
+                <Tab
+                  aria-label="Messparameter tab"
+                  sx={{
+                    flexGrow: 1,
+                    borderTopRightRadius: "8px",
+                    borderBottomRightRadius: "8px",
+                    backgroundColor: "#F0F4F8",
+                    color: "black",
+                    "&.Mui-selected": {
+                      backgroundColor: "#0B6BCB",
+                      color: "white",
+                    },
+                    "&:hover": {
+                      backgroundColor: "#F0F4F8",
+                      color: "black",
+                    },
+                    "&.Mui-selected:hover": {
+                      backgroundColor: "#0B6BCB",
+                      color: "white",
+                    },
+                  }}
+                >
+                  Messparameter
+                </Tab>
+              </TabList>
+              <TabPanel value={0}>
+                <InspectionSampleSidebarBasisData
+                  values={values}
+                  onSelfAssignSamplingActor={() =>
+                    setFieldValue("samplingActor", {
+                      label: formatUserName(selfUser),
+                      value: selfUser.userId,
+                    })
+                  }
+                  onSelfAssignEvaluatingActor={() =>
+                    setFieldValue("evaluatingActor", {
+                      label: formatUserName(selfUser),
+                      value: selfUser.userId,
+                    })
+                  }
+                  onFacilityAssignEvaluatingActor={() =>
+                    setFieldValue("evaluatingActor", {
+                      label: facility.baseFacility.name,
+                      value: facility.id,
+                    })
+                  }
+                  onFacilityAssignSamplingActor={() =>
+                    setFieldValue("samplingActor", {
+                      label: facility.baseFacility.name,
+                      value: facility.id,
+                    })
+                  }
+                />
+              </TabPanel>
+              <TabPanel value={1}>
+                <InspectionSampleSidebarMeasurementParameterData
+                  values={values}
+                />
+              </TabPanel>
+            </Tabs>
           </SidebarContent>
           <SidebarActions>
             <MultiFormButtonBar
               submitting={!isValid}
-              submitLabel={isOnLastStep ? "Probe hinzufügen" : "Weiter"}
+              submitLabel="Probe speichern"
               onCancel={handleClose}
-              onBack={isOnFirstStep ? undefined : handlePrev}
             />
           </SidebarActions>
         </SidebarForm>

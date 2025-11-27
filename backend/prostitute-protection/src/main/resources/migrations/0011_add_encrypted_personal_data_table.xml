@@ -1,0 +1,49 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<!--
+ Copyright 2025 cronn GmbH
+ SPDX-License-Identifier: Apache-2.0
+-->
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+    <changeSet author="GA-Lotse" id="1763991630052-7">
+        <dropForeignKeyConstraint baseTableName="person_languages" constraintName="fk_person_languages_person"/>
+        <createTable tableName="encrypted_personal_data_languages">
+            <column name="encrypted_personal_data_id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_encrypted_personal_data_languages"/>
+            </column>
+            <column name="languages" type="TEXT"/>
+            <column name="languages_order" type="INTEGER">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_encrypted_personal_data_languages"/>
+            </column>
+        </createTable>
+        <createTable tableName="encrypted_personal_data">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_encrypted_personal_data"/>
+            </column>
+            <column name="version" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="alias" type="TEXT"/>
+            <column name="date_of_birth" type="date"/>
+            <column name="document_type" type="DOCUMENTTYPE"/>
+            <column name="first_name" type="TEXT"/>
+            <column name="last_name" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="nationality" type="COUNTRYCODE"/>
+        </createTable>
+        <addColumn tableName="prostitute_protection_procedure">
+            <column name="encrypted_personal_data_id" type="BIGINT"/>
+        </addColumn>
+        <addUniqueConstraint columnNames="encrypted_personal_data_id" constraintName="prostitute_protection_procedure_encrypted_personal_data_id_key" tableName="prostitute_protection_procedure"/>
+        <addForeignKeyConstraint baseColumnNames="encrypted_personal_data_id" baseTableName="encrypted_personal_data_languages" constraintName="fk_encrypted_personal_data_languages_encrypted_personal_data" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="encrypted_personal_data" validate="true"/>
+        <addForeignKeyConstraint baseColumnNames="encrypted_personal_data_id" baseTableName="prostitute_protection_procedure" constraintName="fk_prostitute_protection_procedure_encrypted_personal_data" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="encrypted_personal_data" validate="true"/>
+        <dropTable tableName="person_languages"/>
+        <dropColumn columnName="alias" tableName="person"/>
+        <dropColumn columnName="date_of_birth" tableName="person"/>
+        <dropColumn columnName="document_type" tableName="person"/>
+        <dropColumn columnName="first_name" tableName="person"/>
+        <dropColumn columnName="last_name" tableName="person"/>
+        <dropColumn columnName="nationality" tableName="person"/>
+    </changeSet>
+</databaseChangeLog>

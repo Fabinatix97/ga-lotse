@@ -28,7 +28,7 @@ public enum EsuAnamnesisAttributes implements EsuAttributes {
 
   KISS(
       BooleanAttribute.createSensitive(
-          "Kiss", "KISS", EsuAnamnesisAttributes.CATEGORY_ANAMNESIS, true, 0.2)),
+          "KiSS", "KISS", EsuAnamnesisAttributes.CATEGORY_ANAMNESIS, true, 0.2)),
 
   VLK(
       BooleanAttribute.createSensitive(

@@ -49,7 +49,7 @@ public class ProcedureStatusUpdater {
   public void closeVaccinatedProcedure(UUID procedureId) {
     assertSchoolEntryActive();
     MeaslesProtectionProcedure procedure = procedureFinder.findProcedureByExternalId(procedureId);
-    assertDraftOrOpen(procedure.getProcedureStatus());
+    assertOpen(procedure.getProcedureStatus());
     assertFullyVaccinated(procedure.getPatient());
     procedure.addProgressEntry(
         SystemProgressEntryFactory.createSystemProgressEntry(
@@ -75,8 +75,8 @@ public class ProcedureStatusUpdater {
     procedure.updateProcedureStatus(ProcedureStatus.OPEN, clock, auditLogger);
   }
 
-  private void assertDraftOrOpen(ProcedureStatus procedureStatus) {
-    if (procedureStatus != ProcedureStatus.DRAFT) {
+  private void assertOpen(ProcedureStatus procedureStatus) {
+    if (procedureStatus != ProcedureStatus.OPEN) {
       throw new BadRequestException(
           "Cannot close procedure with status %s".formatted(procedureStatus));
     }

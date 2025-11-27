@@ -7,7 +7,7 @@ import { ApiBusinessModule, ApiTaskStatus, ApiTaskType } from "@eshg/base-api";
 import { DENTAL_MODULE_NAME } from "@eshg/dental";
 
 export const businessModuleNames = {
-  [ApiBusinessModule.Inspection]: "Begehung",
+  [ApiBusinessModule.Inspection]: "Hygiene",
   [ApiBusinessModule.SchoolEntry]: "Einschulungsuntersuchung",
   [ApiBusinessModule.TravelMedicine]:
     "Reisemedizinische Beratung und Impfungen",

@@ -5,6 +5,7 @@
 
 package de.eshg.schoolentry.statistics.attributes;
 
+import de.eshg.lib.statistics.api.DataPrivacyCategory;
 import de.eshg.lib.statistics.attributes.AttributeData;
 import de.eshg.lib.statistics.attributes.CentralFileIdPersonAttribute;
 import de.eshg.lib.statistics.attributes.ContactIdAttribute;
@@ -24,7 +25,13 @@ public enum EsuChildAttributes implements EsuAttributes {
   SCHULE(ContactIdAttribute.create("Schule", "SCHULE", EsuChildAttributes.CATEGORY_CHILD, false)),
 
   SCHULJAHR(
-      TextAttribute.create("Schuljahr", "SCHULJAHR", EsuChildAttributes.CATEGORY_CHILD, true)),
+      TextAttribute.create(
+          "Schuljahr",
+          "SCHULJAHR",
+          EsuChildAttributes.CATEGORY_CHILD,
+          true,
+          null,
+          DataPrivacyCategory.QUASI_IDENTIFYING)),
 
   KIH(
       ValueWithOptionsAttribute.create(
@@ -32,7 +39,8 @@ public enum EsuChildAttributes implements EsuAttributes {
           "KIH",
           EsuChildAttributes.CATEGORY_CHILD,
           true,
-          EsuAttributeUtil.createSiblingValueOptions()));
+          EsuAttributeUtil.createSiblingValueOptions(),
+          DataPrivacyCategory.QUASI_IDENTIFYING));
 
   private static final String CATEGORY_CHILD = "Kind";
   private static final String CATEGORY_PROCEDURE_REFERENCE = "Vorgangsreferenz";

@@ -26,7 +26,10 @@ interface UserInputProps {
   setFieldValue: (
     field: string,
     value: ApiUser[],
-  ) => Promise<void | FormikErrors<{ validForm: boolean; users: ApiUser[] }>>;
+  ) => void | Promise<void | FormikErrors<{
+    validForm: boolean;
+    users: ApiUser[];
+  }>>;
 }
 
 export function UserAutoCompleteField({

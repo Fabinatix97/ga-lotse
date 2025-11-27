@@ -37,7 +37,7 @@ export function MeasurementParameterField(props: ParameterFieldProps) {
       fetching={query.isFetching}
       options={options}
       sx={{ flex: 1 }}
-      onChange={(value) => setInputValue(value)}
+      onInputChange={(e, value) => setInputValue(value)}
       {...props}
     />
   );

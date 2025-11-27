@@ -162,7 +162,7 @@ if [ "$(k3d cluster list -o json | jq 'any(.name == "ga-lotse")')" == "false" ];
       -keyout k3d/certs/tls.key -out k3d/certs/tls.crt
   fi
 
-  imageName="${CI_DEPENDENCY_PROXY_DIRECT_GROUP_IMAGE_PREFIX:-docker.io}/$(grep eclipse ../backend/buildSrc/src/main/groovy/eshg.service.gradle | cut -d\' -f2)"
+  imageName="docker.io/$(grep eclipse ../backend/buildSrc/src/main/groovy/eshg.service.gradle | cut -d\' -f2)"
   docker run --rm --user "$(id -u):$(id -g)" -v "$(pwd)/k3d:/host" --entrypoint /bin/bash "$imageName" \
    -c "cp /opt/java/openjdk/lib/security/cacerts /host/ && keytool -importcert -alias localca -keystore /host/cacerts -storepass changeit -file /host/certs/tls.crt -noprompt"
 
@@ -222,6 +222,22 @@ echo "Install health department"
 namespace="frankfurt"
 setupNamespace "$namespace"
 
+declare -A springProfileMapping
+springProfileMapping=(
+  ["bergstrasse"]="bergstrasse"
+  ["darmstadt-dieburg"]="dadi"
+  ["frankfurt"]="frankfurt"
+  ["hersfeld-rotenburg"]="hef-rof"
+  ["kreisgg"]="gross-gerau"
+  ["main-taunus-kreis"]="mtk"
+  ["odenwaldkreis"]="odenwaldkreis"
+  ["rheingau-taunus"]="rtk"
+  ["sek"]="sek"
+  ["vogelsbergkreis"]=""
+  ["werra-meissner"]="wmk"
+  ["wiesbaden"]="wiesbaden"
+)
+
 helm dependency update helmcharts/eshg-gas
 
 if [ -z "$productionConfig" ]; then
@@ -234,6 +250,11 @@ if [ -z "$productionConfig" ]; then
     --set image.tag="$versionTag" \
     eshg helmcharts/eshg-gas
 else
+  profileName=${springProfileMapping[$productionConfig]}
+  if [ -n "$profileName" ]; then
+    setList="$setList,spring.profiles.active=production\,health-department-$profileName"
+  fi
+
   helm upgrade --install \
     --values helmcharts/eshg-gas/values/prod1/values.common.yaml \
     --values "$productionConfigYaml" \

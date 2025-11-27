@@ -27,7 +27,7 @@ public class InventoryPopulator extends BasePopulator<InventoryItemDto> {
   private final InventoryController inventoryController;
   private final InventoryRepository inventoryRepository;
   private static final List<String> labelNames =
-      List.of("Begehung", "Masernschutz", "Einschulung", "Impfberatung");
+      List.of("Hygiene", "Masernschutz", "Einschulung", "Impfberatung");
 
   public InventoryPopulator(
       PopulationProperties properties,
