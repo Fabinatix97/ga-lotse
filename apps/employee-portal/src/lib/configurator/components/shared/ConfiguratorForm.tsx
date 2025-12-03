@@ -8,7 +8,10 @@ import { Formik, FormikErrors, FormikValues } from "formik";
 import { ReactElement, useState } from "react";
 import { isDefined, isEmpty } from "remeda";
 
-import { useConfirmationDialog } from "@eshg/lib-employee-portal";
+import {
+  ConfirmLeaveDirtyFormEffect,
+  useConfirmationDialog,
+} from "@eshg/lib-employee-portal";
 import {
   Alert,
   AlertProps,
@@ -23,7 +26,6 @@ import {
   FormFields,
   RenderField,
 } from "@/lib/configurator/components/shared/RenderField";
-import { ConfirmLeaveDirtyFormEffect } from "@/lib/shared/components/form/ConfirmLeaveDirtyFormEffect";
 
 export interface FormSheet {
   title: string;

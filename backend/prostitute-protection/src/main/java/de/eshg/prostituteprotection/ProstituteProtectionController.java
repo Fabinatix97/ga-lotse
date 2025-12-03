@@ -19,9 +19,13 @@ import de.eshg.prostituteprotection.api.ProcedureDetailsDto;
 import de.eshg.prostituteprotection.api.ProcedureProperty;
 import de.eshg.prostituteprotection.api.ProstituteProtectionProcedurePaginationAndSortParameters;
 import de.eshg.prostituteprotection.api.RequiredProcedureArea;
+import de.eshg.prostituteprotection.api.UpdateEncryptedPersonalDataRequest;
+import de.eshg.prostituteprotection.api.UpdateProstituteProtectionProcedureRequest;
 import de.eshg.prostituteprotection.api.ValidateRequiredProcedureDataResponse;
 import de.eshg.prostituteprotection.domain.model.Consultation;
+import de.eshg.prostituteprotection.domain.model.ConsultationType;
 import de.eshg.prostituteprotection.domain.model.ProstituteProtectionProcedure;
+import de.eshg.prostituteprotection.mapper.AppointmentMapper;
 import de.eshg.prostituteprotection.mapper.ProstituteProtectionMapper;
 import de.eshg.prostituteprotection.pdf.ConsultationCertificateGenerator;
 import de.eshg.prostituteprotection.pdf.PrintDocumentType;
@@ -50,6 +54,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -64,6 +69,7 @@ public class ProstituteProtectionController {
   public static final String BASE_URL = BaseUrls.ProstituteProtection.PROCEDURE_CONTROLLER;
 
   private final ProstituteProtectionService prostituteProtectionService;
+  private final ProstituteProtectionAppointmentService prostituteProtectionAppointmentService;
   private final ProgressEntryUtil progressEntryUtil;
   private final ConsultationCertificateGenerator consultationCertificateGenerator;
   private final RegistrationConsultationCertificateGenerator
@@ -72,11 +78,13 @@ public class ProstituteProtectionController {
 
   public ProstituteProtectionController(
       ProstituteProtectionService prostituteProtectionService,
+      ProstituteProtectionAppointmentService prostituteProtectionAppointmentService,
       ProgressEntryUtil progressEntryUtil,
       ConsultationCertificateGenerator consultationCertificateGenerator,
       RegistrationConsultationCertificateGenerator registrationConsultationCertificateGenerator,
       Clock clock) {
     this.prostituteProtectionService = prostituteProtectionService;
+    this.prostituteProtectionAppointmentService = prostituteProtectionAppointmentService;
     this.progressEntryUtil = progressEntryUtil;
     this.consultationCertificateGenerator = consultationCertificateGenerator;
     this.registrationConsultationCertificateGenerator =
@@ -107,12 +115,46 @@ public class ProstituteProtectionController {
         pagedProcedures.getTotalElements());
   }
 
-  @GetMapping("/{id}")
+  @GetMapping("/{procedureId}")
   @Transactional(readOnly = true)
   @Operation(summary = "Returns procedure details identified by UUID")
-  public ProcedureDetailsDto getProcedure(@PathVariable("id") UUID procedureId) {
+  public ProcedureDetailsDto getProcedure(@PathVariable("procedureId") UUID procedureId) {
     return ProstituteProtectionMapper.mapToDetailsDto(
         prostituteProtectionService.findByExternalIdOrThrow(procedureId));
+  }
+
+  @PatchMapping("/{procedureId}")
+  @Transactional
+  @Operation(summary = "Update the prostitute protection procedure and appointment")
+  public ProcedureDetailsDto updateProcedure(
+      @PathVariable("procedureId") UUID procedureId,
+      @Valid @RequestBody UpdateProstituteProtectionProcedureRequest request) {
+    ProstituteProtectionProcedure procedure =
+        prostituteProtectionService.findByExternalIdForUpdate(procedureId, request.version());
+    prostituteProtectionService.updateProcedure(procedure, request);
+    prostituteProtectionAppointmentService.bookAppointment(
+        procedure, AppointmentMapper.toDataType(request));
+
+    progressEntryUtil.addSystemProgressEntry(
+        procedure, ProstituteProtectionProgressEntryType.PROCEDURE_DETAILS_MODIFIED);
+
+    return getProcedure(procedureId);
+  }
+
+  @PatchMapping("/{procedureId}/personal-data")
+  @Transactional
+  @Operation(summary = "Update the personal data inside procedure")
+  public ProcedureDetailsDto updateProcedurePersonalData(
+      @PathVariable("procedureId") UUID procedureId,
+      @Valid @RequestBody UpdateEncryptedPersonalDataRequest request) {
+    ProstituteProtectionProcedure procedure =
+        prostituteProtectionService.findByExternalIdForUpdate(procedureId, request.version());
+    prostituteProtectionService.updateEncryptedPersonalDataInProcedure(procedure, request);
+
+    progressEntryUtil.addSystemProgressEntry(
+        procedure, ProstituteProtectionProgressEntryType.PERSON_DETAILS_MODIFIED);
+
+    return getProcedure(procedureId);
   }
 
   @GetMapping("/{procedureId}/consultation")
@@ -132,9 +174,15 @@ public class ProstituteProtectionController {
     Consultation consultation =
         prostituteProtectionService.findConsultationForUpdate(procedureId, request.version());
     ProcedureValidator.validateProcedureStatusNotClosed(consultation.getProcedure());
+    Consultation requestedConsultation =
+        ProstituteProtectionMapper.mapConsultationToDomain(request);
+    ProstituteProtectionValidator.validateConsultation(requestedConsultation);
+    prostituteProtectionService.updateConsultation(consultation, requestedConsultation);
 
-    prostituteProtectionService.updateConsultation(
-        consultation, ProstituteProtectionMapper.mapConsultationToDomain(request));
+    ProstituteProtectionProcedure procedure =
+        prostituteProtectionService.findByExternalIdOrThrow(procedureId);
+    progressEntryUtil.addSystemProgressEntry(
+        procedure, ProstituteProtectionProgressEntryType.CONSULTATION_MODIFIED);
 
     return ProstituteProtectionMapper.mapConsultationToDto(consultation);
   }
@@ -164,6 +212,7 @@ public class ProstituteProtectionController {
     progressEntryUtil.addSystemProgressEntry(
         procedure,
         ProstituteProtectionProgressEntryType.CONSULTATION_CERTIFICATE_GENERATED,
+        getCertificateCreatedDescription(procedure.getConsultationType()),
         pdf,
         PrintDocumentType.CONSULTATION_CERTIFICATE);
     procedure.setConsultationCertificateCreatedAt(Instant.now(clock));
@@ -203,6 +252,7 @@ public class ProstituteProtectionController {
     progressEntryUtil.addSystemProgressEntry(
         procedure,
         ProstituteProtectionProgressEntryType.REGISTRATION_CONSULTATION_CERTIFICATE_GENERATED,
+        getCertificateCreatedDescription(procedure.getConsultationType()),
         pdf,
         PrintDocumentType.REGISTRATION_CONSULTATION_CERTIFICATE);
 
@@ -215,6 +265,14 @@ public class ProstituteProtectionController {
                 .toString())
         .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_PDF_VALUE)
         .body(new ByteArrayResource(pdf.getFileContent().getContent()));
+  }
+
+  private String getCertificateCreatedDescription(ConsultationType consultationType) {
+    return switch (consultationType) {
+      case null -> null;
+      case INITIAL -> "Das Zertifikat wurde für die Erstberatung erstellt.";
+      case FOLLOW_UP -> "Das Zertifikat wurde für die Folgeberatung erstellt.";
+    };
   }
 
   @PostMapping("/{procedureId}/close-procedure")

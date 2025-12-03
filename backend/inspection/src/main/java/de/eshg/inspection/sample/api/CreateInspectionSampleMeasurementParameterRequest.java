@@ -11,4 +11,7 @@ import java.util.UUID;
 
 @Schema(name = "CreateInspectionSampleMeasurementParameterRequest")
 public record CreateInspectionSampleMeasurementParameterRequest(
-    @NotNull UUID externalId, @NotNull String uParameterZid, String parameterGroup) {}
+    @NotNull UUID externalId,
+    @NotNull String parameterZid,
+    String untersuchungsparameterZid,
+    String parameterGroup) {}

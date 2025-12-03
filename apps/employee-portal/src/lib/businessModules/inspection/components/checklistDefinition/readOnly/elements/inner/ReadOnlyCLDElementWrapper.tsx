@@ -6,6 +6,9 @@
 import { Stack } from "@mui/joy";
 import { PropsWithChildren } from "react";
 
+import { ApiInspectionFeature } from "@eshg/inspection-api";
+
+import { useIsNewFeatureEnabled } from "@/lib/businessModules/inspection/api/queries/feature";
 import { ReadOnlyCLDElementProps } from "@/lib/businessModules/inspection/components/checklistDefinition/readOnly/elements/ReadOnlyCLDElement";
 import { ChecklistLabel } from "@/lib/businessModules/inspection/components/inspection/execution/checklist/form/ChecklistLabel";
 
@@ -15,6 +18,11 @@ export function ReadOnlyCLDElementWrapper({
   elementIndex,
   children,
 }: Readonly<PropsWithChildren<ReadOnlyCLDElementProps>>) {
+  const featureToggleChecklistRequirementRemovalEnabled =
+    useIsNewFeatureEnabled(ApiInspectionFeature.ChecklistRequirementRemoval);
+  const isMandatory =
+    !featureToggleChecklistRequirementRemovalEnabled && element.mandatory;
+
   const elementTitle = `${sectionIndex + 1}.${elementIndex + 1}. ${element.text}`;
   return (
     <Stack
@@ -24,7 +32,7 @@ export function ReadOnlyCLDElementWrapper({
       data-element-type={element.type}
     >
       <ChecklistLabel
-        required={element.mandatory}
+        required={isMandatory}
         note={element.note === "" ? undefined : element.note}
         tooltipText={element.help === "" ? undefined : element.help}
         label-id={`${element.id}-label`}

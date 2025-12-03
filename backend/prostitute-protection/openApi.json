@@ -2540,12 +2540,12 @@
         "tags" : [ "ProstituteProtection" ]
       }
     },
-    "/prostitute-protection-procedures/{id}" : {
+    "/prostitute-protection-procedures/{procedureId}" : {
       "get" : {
         "operationId" : "getProcedure",
         "parameters" : [ {
           "in" : "path",
-          "name" : "id",
+          "name" : "procedureId",
           "required" : true,
           "schema" : {
             "type" : "string",
@@ -2565,6 +2565,42 @@
           }
         },
         "summary" : "Returns procedure details identified by UUID",
+        "tags" : [ "ProstituteProtection" ]
+      },
+      "patch" : {
+        "operationId" : "updateProcedure",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "procedureId",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/UpdateProstituteProtectionProcedureRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ProcedureDetails"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Update the prostitute protection procedure and appointment",
         "tags" : [ "ProstituteProtection" ]
       }
     },
@@ -2731,6 +2767,44 @@
             "description" : "OK"
           }
         },
+        "tags" : [ "ProstituteProtection" ]
+      }
+    },
+    "/prostitute-protection-procedures/{procedureId}/personal-data" : {
+      "patch" : {
+        "operationId" : "updateProcedurePersonalData",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "procedureId",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/UpdateEncryptedPersonalDataRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ProcedureDetails"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Update the personal data inside procedure",
         "tags" : [ "ProstituteProtection" ]
       }
     },
@@ -3054,6 +3128,34 @@
               "*/*" : {
                 "schema" : {
                   "$ref" : "#/components/schemas/DefaultPopulationResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "TestHelper" ]
+      }
+    },
+    "/test-helper/population/procedures" : {
+      "post" : {
+        "operationId" : "populateProcedures",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/PopulationRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/PopulationResult"
                 }
               }
             },
@@ -3763,7 +3865,7 @@
         "enum" : [ "COMPLETE", "PARTIALLY_COMPLETE", "INCOMPLETE" ]
       },
       "Consultation" : {
-        "required" : [ "alcoholAndDrugUsage", "birthControl", "clearing", "consultingServices", "diseasePrevention", "emergencyHelp", "healthAndSocialInsurance", "informationMaterial", "legalAdvices", "predicament", "pregnancy", "referral", "taxLiability", "version" ],
+        "required" : [ "alcoholAndDrugUsage", "birthControl", "clearing", "consultingServices", "diseasePrevention", "emergencyHelp", "healthAndSocialInsurance", "informationMaterial", "interpreterConsulted", "legalAdvices", "predicament", "pregnancy", "referral", "supervisedConsultation", "taxLiability", "version" ],
         "type" : "object",
         "properties" : {
           "alcoholAndDrugUsage" : {
@@ -3790,6 +3892,18 @@
           "informationMaterial" : {
             "type" : "boolean"
           },
+          "interpreterConsulted" : {
+            "type" : "boolean"
+          },
+          "interpreterFirstName" : {
+            "type" : "string"
+          },
+          "interpreterLastName" : {
+            "type" : "string"
+          },
+          "languageOfConsultation" : {
+            "$ref" : "#/components/schemas/PersonLanguage"
+          },
           "legalAdvices" : {
             "type" : "boolean"
           },
@@ -3800,6 +3914,12 @@
             "type" : "boolean"
           },
           "referral" : {
+            "type" : "boolean"
+          },
+          "remark" : {
+            "type" : "string"
+          },
+          "supervisedConsultation" : {
             "type" : "boolean"
           },
           "taxLiability" : {
@@ -5988,6 +6108,32 @@
           }
         }
       },
+      "PopulationRequest" : {
+        "required" : [ "numberOfEntitiesToPopulate" ],
+        "type" : "object",
+        "properties" : {
+          "numberOfEntitiesToPopulate" : {
+            "type" : "integer",
+            "format" : "int32"
+          }
+        }
+      },
+      "PopulationResult" : {
+        "required" : [ "count", "procedures" ],
+        "type" : "object",
+        "properties" : {
+          "count" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "procedures" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/CreateProstituteProtectionProcedureResponse"
+            }
+          }
+        }
+      },
       "PostboxAddress" : {
         "required" : [ "city", "country", "postalCode", "postbox" ],
         "type" : "object",
@@ -6353,7 +6499,7 @@
       "ProstitutionProtectionProcedureSortKey" : {
         "type" : "string",
         "default" : "ALIAS",
-        "enum" : [ "ALIAS", "APPOINTMENT_START" ]
+        "enum" : [ "ID", "ALIAS", "APPOINTMENT_START" ]
       },
       "Salutation" : {
         "type" : "string",
@@ -6656,11 +6802,79 @@
           }
         }
       },
+      "UpdateEncryptedPersonalDataRequest" : {
+        "required" : [ "alias", "dateOfBirth", "firstName", "lastName", "version" ],
+        "type" : "object",
+        "properties" : {
+          "alias" : {
+            "type" : "string"
+          },
+          "dateOfBirth" : {
+            "type" : "string",
+            "format" : "date"
+          },
+          "documentType" : {
+            "$ref" : "#/components/schemas/DocumentType"
+          },
+          "firstName" : {
+            "maxLength" : 80,
+            "minLength" : 1,
+            "type" : "string"
+          },
+          "languages" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/PersonLanguage"
+            }
+          },
+          "lastName" : {
+            "maxLength" : 120,
+            "minLength" : 1,
+            "type" : "string"
+          },
+          "nationality" : {
+            "$ref" : "#/components/schemas/CountryCode"
+          },
+          "version" : {
+            "type" : "integer",
+            "description" : "Version of the entity. Each time the entity is changed, it is incremented by one.",
+            "format" : "int64"
+          }
+        }
+      },
       "UpdateInternalConfigDepartmentInfoRequest" : {
         "type" : "object",
         "properties" : {
           "departmentInfo" : {
             "$ref" : "#/components/schemas/DepartmentInfo"
+          }
+        }
+      },
+      "UpdateProstituteProtectionProcedureRequest" : {
+        "required" : [ "appointmentBookingType", "appointmentStart", "consultationType", "durationInMinutes", "version" ],
+        "type" : "object",
+        "properties" : {
+          "appointmentBookingType" : {
+            "$ref" : "#/components/schemas/AppointmentBookingType"
+          },
+          "appointmentStart" : {
+            "type" : "string",
+            "description" : "The start date and time of the appointment.",
+            "format" : "date-time"
+          },
+          "consultationType" : {
+            "$ref" : "#/components/schemas/ConsultationType"
+          },
+          "durationInMinutes" : {
+            "type" : "integer",
+            "description" : "Duration of the appointment in minutes.",
+            "format" : "int32",
+            "example" : 30
+          },
+          "version" : {
+            "type" : "integer",
+            "description" : "Version of the entity. Each time the entity is changed, it is incremented by one.",
+            "format" : "int64"
           }
         }
       },

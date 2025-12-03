@@ -9,110 +9,72 @@ import { Sheet, Typography } from "@mui/joy";
 import { useMutation } from "@tanstack/react-query";
 import { Formik } from "formik";
 
+import { ConfirmLeaveDirtyFormEffect } from "@eshg/lib-employee-portal";
 import {
   FormPlus,
   OptionalFieldValue,
   mapOptionalValue,
-  mapRequiredValue,
+  parseOptionalValue,
 } from "@eshg/lib-portal";
 import {
+  ApiConsultation,
   ApiPersonLanguage,
   ApiProcedureDetails,
 } from "@eshg/prostitute-protection-api";
 
 import { useUpsertConsultationOptions } from "../../../api/mutations/consultation";
-import { CertificateType } from "../../../shared/constants";
-import { ConfirmLeaveDirtyFormEffect } from "../../form/ConfirmLeaveDirtyFormEffect";
 
-import { CertificateTypeSection } from "./CertificateTypeSection";
 import { GeneralSection } from "./GeneralSection";
 import { LanguageSection } from "./LanguageSection";
 import { NotesSection } from "./NotesSection";
 import { SidePanelLayout, SidePanelStack } from "./SidePanelLayout";
 import { StickyBottomBar } from "./StickyBottomBar";
 
-export interface GeneralSectionData {
-  legalAdvice: boolean;
-  healthAndSocialInsurance: boolean;
-  counselingServices: boolean;
-  helpInEmergencies: boolean;
-  taxObligation: boolean;
-  counselingNeedClearing: boolean;
-  informationMaterial: boolean;
-  emergencyCoercionSituation: boolean;
-  diseasePrevention: boolean;
-  contraception: boolean;
-  pregnancy: boolean;
-  alcoholDrugUse: boolean;
-  referralParagraph19: boolean;
-}
-
-export interface NotesSectionData {
-  supervisedConsultation: boolean;
-  remarks: string;
-}
-
-export interface LanguageSectionData {
-  languageOfConsultation: ApiPersonLanguage | null;
-  interpreterCalledIn: boolean;
-  interpreterName: OptionalFieldValue<string>;
-  interpreterLastName: OptionalFieldValue<string>;
-}
-
 export interface ConsultationFormData {
-  general: GeneralSectionData;
-  notes: NotesSectionData;
-  language: LanguageSectionData;
-  certificateType: CertificateType | null;
+  alcoholAndDrugUsage: boolean;
+  birthControl: boolean;
+  clearing: boolean;
+  consultingServices: boolean;
+  diseasePrevention: boolean;
+  emergencyHelp: boolean;
+  healthAndSocialInsurance: boolean;
+  informationMaterial: boolean;
+  interpreterConsulted: boolean;
+  legalAdvices: boolean;
+  predicament: boolean;
+  pregnancy: boolean;
+  referral: boolean;
+  supervisedConsultation: boolean;
+  taxLiability: boolean;
+  version: number;
+  interpreterFirstName: OptionalFieldValue<string>;
+  interpreterLastName: OptionalFieldValue<string>;
+  languageOfConsultation: OptionalFieldValue<ApiPersonLanguage>;
+  remark: OptionalFieldValue<string>;
 }
+
 export function ConsultationForm({
   procedure,
+  consultation,
 }: Readonly<{
   procedure: ApiProcedureDetails;
-  consultation?: string;
+  consultation: ApiConsultation;
 }>) {
-  const consultationFormData: ConsultationFormData = {
-    general: {
-      legalAdvice: false,
-      healthAndSocialInsurance: false,
-      counselingServices: false,
-      helpInEmergencies: false,
-      taxObligation: false,
-      counselingNeedClearing: false,
-      informationMaterial: false,
-      emergencyCoercionSituation: false,
-      diseasePrevention: false,
-      contraception: false,
-      pregnancy: false,
-      alcoholDrugUse: false,
-      referralParagraph19: false,
-    },
-    notes: {
-      supervisedConsultation: false,
-      remarks: "",
-    },
-    language: {
-      languageOfConsultation: procedure.languages[0] ?? null,
-      interpreterCalledIn: false,
-      interpreterName: "",
-      interpreterLastName: "",
-    },
-    certificateType: CertificateType.fullName,
-  };
-
   const upsertConsultationOptions = useUpsertConsultationOptions({
     procedureId: procedure.id,
   });
   const upsertConsultation = useMutation(upsertConsultationOptions);
 
   function onSubmit(values: ConsultationFormData) {
-    const consultation = mapFormToApi(values);
-    return upsertConsultation.mutateAsync({ consultation });
+    const apiConsultation = mapFormToApi(values);
+    return upsertConsultation.mutateAsync(apiConsultation);
   }
+
+  const initialValues = mapApiToForm(consultation);
 
   return (
     <Formik
-      initialValues={consultationFormData}
+      initialValues={initialValues}
       enableReinitialize
       onSubmit={onSubmit}
     >
@@ -140,7 +102,6 @@ export function ConsultationForm({
             </Sheet>
             <SidePanelStack sx={{ pb: 3 }}>
               <LanguageSection />
-              <CertificateTypeSection />
             </SidePanelStack>
           </SidePanelLayout>
           <StickyBottomBar />
@@ -150,23 +111,24 @@ export function ConsultationForm({
   );
 }
 
-function mapFormToApi(values: ConsultationFormData) {
+function mapApiToForm(consultation: ApiConsultation): ConsultationFormData {
   return {
-    general: values.general,
-    notes: {
-      supervisedConsultation: values.notes.supervisedConsultation,
-      remarks: mapOptionalValue(values.notes.remarks),
-    },
-    language: {
-      languageOfConsultation: values.language.languageOfConsultation,
-      interpreterCalledIn: values.language.interpreterCalledIn,
-      interpreterName: mapOptionalValue(values.language.interpreterName),
-      interpreterLastName: mapOptionalValue(
-        values.language.interpreterLastName,
-      ),
-    },
-    certificateType: mapRequiredValue(values.certificateType),
+    ...consultation,
+    interpreterFirstName: parseOptionalValue(consultation.interpreterFirstName),
+    interpreterLastName: parseOptionalValue(consultation.interpreterLastName),
+    languageOfConsultation: parseOptionalValue(
+      consultation.languageOfConsultation,
+    ),
+    remark: parseOptionalValue(consultation.remark),
   };
 }
 
-export type ConsultationRequestData = ReturnType<typeof mapFormToApi>;
+function mapFormToApi(values: ConsultationFormData): ApiConsultation {
+  return {
+    ...values,
+    interpreterFirstName: mapOptionalValue(values.interpreterFirstName),
+    interpreterLastName: mapOptionalValue(values.interpreterLastName),
+    languageOfConsultation: mapOptionalValue(values.languageOfConsultation),
+    remark: mapOptionalValue(values.remark),
+  };
+}

@@ -11,6 +11,7 @@ import { SxProps } from "@mui/joy/styles/types";
 import { Formik } from "formik";
 import { useEffect, useState } from "react";
 
+import { ConfirmLeaveDirtyFormEffect } from "@eshg/lib-employee-portal";
 import { FormPlus, TextareaField } from "@eshg/lib-portal";
 import {
   ApiConcern,
@@ -30,7 +31,6 @@ import {
 import { SectionGrid } from "@/lib/businessModules/stiProtection/components/procedures/procedureDetails/SectionGrid";
 import { TabStickyBottomButtonBar } from "@/lib/businessModules/stiProtection/features/procedures/TabStickyBottomButtonBar";
 import { CONCERN_VALUES } from "@/lib/businessModules/stiProtection/shared/constants";
-import { ConfirmLeaveDirtyFormEffect } from "@/lib/shared/components/form/ConfirmLeaveDirtyFormEffect";
 
 import {
   MedicalHistoryFormData,

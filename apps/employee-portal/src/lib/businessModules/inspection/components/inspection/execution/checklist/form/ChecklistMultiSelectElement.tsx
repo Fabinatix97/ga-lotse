@@ -15,8 +15,10 @@ import {
 } from "@mui/joy";
 import { ChangeEvent, ReactNode, useId } from "react";
 
+import { ApiInspectionFeature } from "@eshg/inspection-api";
 import { useBaseField } from "@eshg/lib-portal";
 
+import { useIsNewFeatureEnabled } from "@/lib/businessModules/inspection/api/queries/feature";
 import { ChecklistLabel } from "@/lib/businessModules/inspection/components/inspection/execution/checklist/form/ChecklistLabel";
 import { CLFormElement } from "@/lib/businessModules/inspection/components/inspection/execution/checklist/form/helpers";
 
@@ -49,10 +51,17 @@ export function ChecklistMultiSelectElement({
   readOnly,
   ...restProps
 }: Readonly<ChecklistMultiSelectElementProps>) {
+  const featureToggleChecklistRequirementRemovalEnabled =
+    useIsNewFeatureEnabled(ApiInspectionFeature.ChecklistRequirementRemoval);
+
+  const isMandatory =
+    !featureToggleChecklistRequirementRemovalEnabled &&
+    element.context.mandatory;
+
   const titleId = useId();
   const { input, meta, helpers, helperText } = useBaseField<string[]>({
     validate: (value: string[]) => {
-      if (element.context.mandatory && value.length === 0)
+      if (isMandatory && value.length === 0)
         return "Bitte mindestens eine Auswahl treffen";
       else return undefined;
     },
@@ -85,7 +94,7 @@ export function ChecklistMultiSelectElement({
     <Box display="contents" role="group" aria-labelledby={titleId}>
       <ChecklistLabel
         incident={incident}
-        required={element.context.mandatory}
+        required={isMandatory}
         tooltipText={element.context.help}
         endDecorator={labelEndDecorator}
         note={element.context.note}

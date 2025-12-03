@@ -39,7 +39,7 @@ public class ProstituteProtectionAppointmentService
     this.appointmentBlockSlotUtil = appointmentBlockSlotUtil;
   }
 
-  void createAppointment(ProstituteProtectionProcedure procedure, AppointmentData appointment) {
+  void bookAppointment(ProstituteProtectionProcedure procedure, AppointmentData appointment) {
     AppointmentType type = appointment.appointmentType();
     Instant start = appointment.appointmentStart();
     Instant end = start.plus(Duration.ofMinutes(appointment.durationInMinutes()));
@@ -55,10 +55,11 @@ public class ProstituteProtectionAppointmentService
   private void bookUserDefinedAppointment(
       ProstituteProtectionProcedure procedure, Instant start, Instant end) {
     procedure.setAppointment(null);
-    UserDefinedAppointment userDefinedAppointment = new UserDefinedAppointment();
-    userDefinedAppointment.setAppointmentStart(start);
-    userDefinedAppointment.setAppointmentEnd(end);
-    procedure.setUserDefinedAppointment(userDefinedAppointment);
+    if (procedure.getUserDefinedAppointment() == null) {
+      procedure.setUserDefinedAppointment(new UserDefinedAppointment());
+    }
+    procedure.getUserDefinedAppointment().setAppointmentStart(start);
+    procedure.getUserDefinedAppointment().setAppointmentEnd(end);
   }
 
   private void bookAppointmentFromAppointmentBlock(
@@ -81,7 +82,10 @@ public class ProstituteProtectionAppointmentService
   @Override
   protected Map<ProstituteProtectionProcedure, String> getInformationForAppointmentOverview(
       List<ProstituteProtectionProcedure> entities) {
-    return entities.stream().collect(StreamUtil.toLinkedHashMap(entity -> entity, null));
+    return entities.stream()
+        .collect(
+            StreamUtil.toLinkedHashMap(
+                entity -> entity, e -> e.getEncryptedPersonalData().getAlias()));
   }
 
   @Override

@@ -26,7 +26,6 @@ import de.eshg.statistics.api.datasource.BusinessDataSourceAttribute;
 import de.eshg.statistics.api.datasource.GetAvailableDataSourcesResponse;
 import de.eshg.statistics.config.StatisticsConfig;
 import de.eshg.statistics.config.StatisticsConfig.BusinessModuleConfig;
-import de.eshg.statistics.config.StatisticsFeature;
 import de.eshg.statistics.config.StatisticsFeatureToggle;
 import de.eshg.statistics.mapper.EvaluationMapper;
 import java.util.Collection;
@@ -134,8 +133,7 @@ public class DataSourceAggregationService {
   }
 
   private boolean canBeAnonymized(DataSourceInfo dataSource) {
-    return statisticsFeatureToggle.isNewFeatureEnabled(StatisticsFeature.ANONYMIZATION)
-        && !DataSourceSensitivity.ANONYMOUS.equals(dataSource.sensitivity())
+    return !DataSourceSensitivity.ANONYMOUS.equals(dataSource.sensitivity())
         && dataSource.kAnonymity() != null
         && noDataPrivacyCategoryMissing(dataSource)
         && noIntervalConfigMissing(dataSource)

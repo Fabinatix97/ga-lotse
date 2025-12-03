@@ -33,6 +33,8 @@
       key: POSTGRESQL_PASSWORD
 - name: de.eshg.base.service-url
   value: "http://base{{ .Values.domains.clusterLocalSuffix }}"
+- name: de.eshg.schoolentry.service-url
+  value: "http://schoolentry{{ .Values.domains.clusterLocalSuffix }}"
 - name: eshg.keycloak.url
   value: "https://{{ .Values.domains.hosts.keycloak }}"
 - name: eshg.keycloak.internal.url

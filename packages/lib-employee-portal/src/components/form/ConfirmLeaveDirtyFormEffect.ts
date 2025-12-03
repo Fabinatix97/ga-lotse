@@ -1,12 +1,13 @@
 /**
  * Copyright 2025 cronn GmbH
- * SPDX-License-Identifier: AGPL-3.0-only
+ * SPDX-License-Identifier: Apache-2.0
  */
 
 import { useFormikContext } from "formik";
 
-import { useConfirmLeaveDirtyFormEffect } from "@eshg/lib-employee-portal";
 import { OnBeforeNavigateProps } from "@eshg/lib-portal";
+
+import { useConfirmLeaveDirtyFormEffect } from "../../hooks/useConfirmLeaveDirtyFormEffect";
 
 type ConfirmLeaveDirtyFormEffectProps = OnBeforeNavigateProps;
 

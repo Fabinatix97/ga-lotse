@@ -5,7 +5,6 @@
 
 package de.eshg.inspection.statistics;
 
-import de.eshg.inspection.feature.InspectionFeature;
 import de.eshg.inspection.feature.InspectionFeatureToggle;
 import de.eshg.inspection.inspection.persistence.Inspection;
 import de.eshg.inspection.inspection.persistence.InspectionAppointment;
@@ -79,16 +78,12 @@ public class InspectionDataSource extends ProcedureDataSource<Inspection, Inspec
 
   @Override
   public Integer getKAnonymity() {
-    return inspectionFeatureToggle.isNewFeatureEnabled(InspectionFeature.STATISTIC_ANONYMIZATION)
-        ? 3
-        : null;
+    return 3;
   }
 
   @Override
   public List<InspectionAttributes> getAttributes() {
-    return inspectionFeatureToggle.isNewFeatureEnabled(InspectionFeature.STATISTIC_ANONYMIZATION)
-        ? ANONYMIZATION_ATTRIBUTES
-        : NO_ANONYMIZATION_ATTRIBUTES;
+    return ANONYMIZATION_ATTRIBUTES;
   }
 
   @Override

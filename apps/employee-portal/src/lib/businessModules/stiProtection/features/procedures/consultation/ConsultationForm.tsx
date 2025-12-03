@@ -8,6 +8,7 @@
 import { Sheet, Typography } from "@mui/joy";
 import { Formik } from "formik";
 
+import { ConfirmLeaveDirtyFormEffect } from "@eshg/lib-employee-portal";
 import { FormPlus } from "@eshg/lib-portal";
 import {
   ApiConsultation,
@@ -25,7 +26,6 @@ import {
   SidecarSheet,
 } from "@/lib/businessModules/stiProtection/features/procedures/SidecarFormLayout";
 import { TabStickyBottomButtonBar } from "@/lib/businessModules/stiProtection/features/procedures/TabStickyBottomButtonBar";
-import { ConfirmLeaveDirtyFormEffect } from "@/lib/shared/components/form/ConfirmLeaveDirtyFormEffect";
 
 import { GeneralSection } from "./GeneralSection";
 import { PregnancySection } from "./PregnancySection";

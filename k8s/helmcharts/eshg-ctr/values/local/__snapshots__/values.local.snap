@@ -1112,6 +1112,24 @@ data:
         },
         {
           "active": true,
+          "description": "measlesprotection → schoolentry",
+          "client": {
+            "federalState": "HE",
+            "orgUnitType": "GA",
+            "orgUnitName": "frankfurt",
+            "actorType": "FM",
+            "actorName": "measlesprotection"
+          },
+          "server": {
+            "federalState": "HE",
+            "orgUnitType": "GA",
+            "orgUnitName": "frankfurt",
+            "actorType": "FM",
+            "actorName": "schoolentry"
+          }
+        },
+        {
+          "active": true,
           "description": "statistics → All FM",
           "client": {
             "federalState": "HE",

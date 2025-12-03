@@ -25,6 +25,24 @@ export default async (workspaceDir) => {
     files: {
       "gradleDependencies.json": (gradleDependencies, options) =>
         updateGradleDependencies(gradleDependencies, options, context),
+      "package.json": (manifest) => {
+        return {
+          ...manifest,
+          packageManager: "pnpm@10.23.0",
+          devEngines: {
+            runtime: {
+              name: "node",
+              version: ">=22.18 <23",
+              onFail: "error",
+            },
+            packageManager: {
+              name: "pnpm",
+              version: ">=10.21 <11",
+              onFail: "error",
+            },
+          },
+        };
+      },
     },
   });
 };

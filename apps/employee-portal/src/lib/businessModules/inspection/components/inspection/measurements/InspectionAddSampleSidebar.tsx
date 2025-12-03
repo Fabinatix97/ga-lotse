@@ -16,6 +16,7 @@ import {
   ApiInspectionSampleType,
 } from "@eshg/inspection-api";
 import {
+  ConfirmLeaveDirtyFormEffect,
   MultiFormButtonBar,
   SidebarActions,
   SidebarContent,
@@ -36,7 +37,6 @@ import {
   makeCreateInspectionSampleRequest,
 } from "@/lib/businessModules/inspection/components/inspection/measurements/sampleSidebar/InspectionSampleSidebarHelper";
 import { InspectionSampleSidebarMeasurementParameterData } from "@/lib/businessModules/inspection/components/inspection/measurements/sampleSidebar/InspectionSampleSidebarMeasurementParameterData";
-import { ConfirmLeaveDirtyFormEffect } from "@/lib/shared/components/form/ConfirmLeaveDirtyFormEffect";
 
 interface InspectionAddSampleSidebarProps extends SidebarWithFormRefProps {
   procedureId: string;
@@ -71,7 +71,7 @@ function InspectionAddSampleSidebar({
 
   async function onFinalSubmit(formValues: InspectionSampleSidebarFormType) {
     const payload: ApiCreateInspectionSampleRequest =
-      makeCreateInspectionSampleRequest(formValues, selfUser.userId);
+      makeCreateInspectionSampleRequest(formValues);
     await createSample(
       { inspectionId: procedureId, apiCreateInspectionSampleRequest: payload },
       {
@@ -101,39 +101,45 @@ function InspectionAddSampleSidebar({
         <InspectionSampleSidebarBasisData
           values={values}
           onSamplingActorSelection={(value) =>
-            setFieldValue("samplingActor", {
-              label: value?.label ?? "",
-              value: value?.value ?? "",
-            })
+            setFieldValue("samplingActor", value)
           }
           onEvaluatingActorSelection={(value) =>
-            setFieldValue("evaluatingActor", {
-              label: value?.label ?? "",
-              value: value?.value ?? "",
-            })
+            setFieldValue("evaluatingActor", value)
           }
           onSelfAssignSamplingActor={() =>
             setFieldValue("samplingActor", {
               label: formatUserName(selfUser),
-              value: selfUser.userId,
+              value: {
+                id: selfUser.userId,
+                type: "InspectionSampleUserReference",
+              },
             })
           }
           onSelfAssignEvaluatingActor={() =>
             setFieldValue("evaluatingActor", {
               label: formatUserName(selfUser),
-              value: selfUser.userId,
+              value: {
+                id: selfUser.userId,
+                type: "InspectionSampleUserReference",
+              },
             })
           }
           onFacilityAssignEvaluatingActor={() =>
             setFieldValue("evaluatingActor", {
               label: facility.baseFacility.name,
-              value: facility.id,
+              value: {
+                id: facility.baseFacility.id,
+                type: "InspectionSampleInspectedFacilityReference",
+              },
             })
           }
           onFacilityAssignSamplingActor={() =>
             setFieldValue("samplingActor", {
               label: facility.baseFacility.name,
-              value: facility.id,
+              value: {
+                id: facility.baseFacility.id,
+                type: "InspectionSampleInspectedFacilityReference",
+              },
             })
           }
         />
@@ -160,13 +166,19 @@ function InspectionAddSampleSidebar({
 
   const initialValues: InspectionSampleSidebarFormType = useMemo(() => {
     return {
-      evaluatingActor: "",
+      evaluatingActor: {
+        label: "",
+        value: { id: "", type: "InspectionSampleUserReference" },
+      },
       evaluationType: ApiInspectionSampleEvaluationType.OnSite,
       externalId: "",
       measurementParameters: [],
       nameOfSamplingPoint: "",
       pointOfWithdrawal: "",
-      samplingActor: "",
+      samplingActor: {
+        label: "",
+        value: { id: "", type: "InspectionSampleUserReference" },
+      },
       timeOfEvaluation: undefined,
       timeOfSampling: undefined,
       typeOfSample: ApiInspectionSampleType.DrinkingWater,

@@ -5,10 +5,19 @@
 
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 
-import { InspectionSampleApi } from "@eshg/inspection-api";
+import {
+  InspectionSampleApi,
+  InspectionSampleTemplateApi,
+} from "@eshg/inspection-api";
 
-import { useSampleApi } from "@/lib/businessModules/inspection/api/clients";
-import { samplesApiQueryKey } from "@/lib/businessModules/inspection/api/queries/apiQueryKeys";
+import {
+  useSampleApi,
+  useSampleTemplateApi,
+} from "@/lib/businessModules/inspection/api/clients";
+import {
+  sampleTemplateApiQueryKey,
+  samplesApiQueryKey,
+} from "@/lib/businessModules/inspection/api/queries/apiQueryKeys";
 
 export function useGetSamples(inspectionId: string) {
   const sampleApi = useSampleApi();
@@ -27,5 +36,20 @@ export function getSamplesQuery(
         //getHeadersForOfflineCaching(inspectionId),
       ),
     select: (response) => response.samples ?? [],
+  });
+}
+
+export function useGetSampleTemplates() {
+  const sampleTemplateApi = useSampleTemplateApi();
+  return useSuspenseQuery(getSampleTemplatesQuery(sampleTemplateApi));
+}
+
+export function getSampleTemplatesQuery(
+  sampleTemplateApi: InspectionSampleTemplateApi,
+) {
+  return queryOptions({
+    queryKey: sampleTemplateApiQueryKey(["getInspectionSampleTemplates"]),
+    queryFn: () => sampleTemplateApi.getInspectionSampleTemplates(),
+    select: (response) => response.templates ?? [],
   });
 }

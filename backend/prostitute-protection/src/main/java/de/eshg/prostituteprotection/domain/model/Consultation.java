@@ -12,6 +12,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.MapsId;
 import jakarta.persistence.OneToOne;
+import org.hibernate.annotations.JdbcType;
+import org.hibernate.dialect.PostgreSQLEnumJdbcType;
 
 @Entity
 @DataSensitivity(SensitivityLevel.SENSITIVE)
@@ -35,6 +37,16 @@ public class Consultation extends GenericEntity<Long> {
   private boolean pregnancy;
   private boolean alcoholAndDrugUsage;
   private boolean referral;
+
+  private boolean supervisedConsultation;
+  private String remark;
+
+  @JdbcType(PostgreSQLEnumJdbcType.class)
+  private Language languageOfConsultation;
+
+  private boolean interpreterConsulted;
+  private String interpreterFirstName;
+  private String interpreterLastName;
 
   @Override
   public Long getId() {
@@ -155,5 +167,53 @@ public class Consultation extends GenericEntity<Long> {
 
   public void setProcedure(ProstituteProtectionProcedure procedure) {
     this.procedure = procedure;
+  }
+
+  public boolean isSupervisedConsultation() {
+    return supervisedConsultation;
+  }
+
+  public void setSupervisedConsultation(boolean supervisedConsultation) {
+    this.supervisedConsultation = supervisedConsultation;
+  }
+
+  public String getRemark() {
+    return remark;
+  }
+
+  public void setRemark(String remark) {
+    this.remark = remark;
+  }
+
+  public Language getLanguageOfConsultation() {
+    return languageOfConsultation;
+  }
+
+  public void setLanguageOfConsultation(Language languageOfConsultation) {
+    this.languageOfConsultation = languageOfConsultation;
+  }
+
+  public boolean isInterpreterConsulted() {
+    return interpreterConsulted;
+  }
+
+  public void setInterpreterConsulted(boolean interpreterConsulted) {
+    this.interpreterConsulted = interpreterConsulted;
+  }
+
+  public String getInterpreterFirstName() {
+    return interpreterFirstName;
+  }
+
+  public void setInterpreterFirstName(String interpreterName) {
+    this.interpreterFirstName = interpreterName;
+  }
+
+  public String getInterpreterLastName() {
+    return interpreterLastName;
+  }
+
+  public void setInterpreterLastName(String interpreterLastName) {
+    this.interpreterLastName = interpreterLastName;
   }
 }

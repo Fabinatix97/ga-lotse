@@ -5,8 +5,9 @@
 -->
 
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
   <changeSet author="GA-Lotse" id="1764055364326-1">
     <createTable tableName="consultation">
       <column name="version" type="BIGINT">
@@ -64,5 +65,31 @@
                              referencedColumnNames="id"
                              referencedTableName="prostitute_protection_procedure"
                              validate="true"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1764153209124-1">
+    <ext:createPostgresEnumType name="language"
+                                values="BULGARIAN, CHINESE, CZECH, ENGLISH, FRENCH, GERMAN, GREEK, HUNGARIAN, ITALIAN, POLISH, PORTUGUESE, ROMANIAN, RUSSIAN, SERBO_CROATIAN, SLOVAKIAN, SPANISH, THAI, TURKISH, UKRAINIAN, UNKNOWN"/>
+    <addColumn tableName="consultation">
+      <column name="interpreter_consulted" type="BOOLEAN">
+        <constraints nullable="false"/>
+      </column>
+    </addColumn>
+    <addColumn tableName="consultation">
+      <column name="interpreter_first_name" type="TEXT"/>
+    </addColumn>
+    <addColumn tableName="consultation">
+      <column name="interpreter_last_name" type="TEXT"/>
+    </addColumn>
+    <addColumn tableName="consultation">
+      <column name="language_of_consultation" type="LANGUAGE"/>
+    </addColumn>
+    <addColumn tableName="consultation">
+      <column name="remark" type="TEXT"/>
+    </addColumn>
+    <addColumn tableName="consultation">
+      <column name="supervised_consultation" type="BOOLEAN">
+        <constraints nullable="false"/>
+      </column>
+    </addColumn>
   </changeSet>
 </databaseChangeLog>

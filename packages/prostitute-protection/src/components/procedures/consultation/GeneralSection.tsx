@@ -18,41 +18,41 @@ export function GeneralSection() {
       <Grid container spacing={4}>
         <Grid component={Stack} gap={4} xs={12} md={6}>
           <CheckboxField
-            name="general.legalAdvice"
-            label={CONSULTATION_FIELD_NAME.legalAdvice}
+            name="legalAdvices"
+            label={CONSULTATION_FIELD_NAME.legalAdvices}
           />
           <CheckboxField
-            name="general.healthAndSocialInsurance"
+            name="healthAndSocialInsurance"
             label={CONSULTATION_FIELD_NAME.healthAndSocialInsurance}
           />
           <CheckboxField
-            name="general.counselingServices"
-            label={CONSULTATION_FIELD_NAME.counselingServices}
+            name="consultingServices"
+            label={CONSULTATION_FIELD_NAME.consultingServices}
           />
           <CheckboxField
-            name="general.helpInEmergencies"
-            label={CONSULTATION_FIELD_NAME.helpInEmergencies}
+            name="emergencyHelp"
+            label={CONSULTATION_FIELD_NAME.emergencyHelp}
           />
           <CheckboxField
-            name="general.taxObligation"
-            label={CONSULTATION_FIELD_NAME.taxObligation}
+            name="taxLiability"
+            label={CONSULTATION_FIELD_NAME.taxLiability}
           />
         </Grid>
         <Grid component={Stack} gap={4} xs={12} md={6}>
           <CheckboxField
-            name="general.counselingNeedClearing"
-            label={CONSULTATION_FIELD_NAME.counselingNeedClearing}
+            name="clearing"
+            label={CONSULTATION_FIELD_NAME.clearing}
           />
           <CheckboxField
-            name="general.informationMaterial"
+            name="informationMaterial"
             label={CONSULTATION_FIELD_NAME.informationMaterial}
           />
           <CheckboxField
-            name="general.emergencyCoercionSituation"
-            label={CONSULTATION_FIELD_NAME.emergencyCoercionSituation}
+            name="predicament"
+            label={CONSULTATION_FIELD_NAME.predicament}
           />
           <CheckboxField
-            name="general.diseasePrevention"
+            name="diseasePrevention"
             label={CONSULTATION_FIELD_NAME.diseasePrevention}
           />
         </Grid>
@@ -61,22 +61,22 @@ export function GeneralSection() {
       <Grid container spacing={4} sx={{ mb: 1 }}>
         <Grid component={Stack} gap={4} xs={12} md={6}>
           <CheckboxField
-            name="general.contraception"
-            label={CONSULTATION_FIELD_NAME.contraception}
+            name="birthControl"
+            label={CONSULTATION_FIELD_NAME.birthControl}
           />
           <CheckboxField
-            name="general.pregnancy"
+            name="pregnancy"
             label={CONSULTATION_FIELD_NAME.pregnancy}
           />
         </Grid>
         <Grid component={Stack} gap={4} xs={12} md={6}>
           <CheckboxField
-            name="general.alcoholDrugUse"
-            label={CONSULTATION_FIELD_NAME.alcoholDrugUse}
+            name="alcoholAndDrugUsage"
+            label={CONSULTATION_FIELD_NAME.alcoholAndDrugUsage}
           />
           <CheckboxField
-            name="general.referralParagraph19"
-            label={CONSULTATION_FIELD_NAME.referralParagraph19}
+            name="referral"
+            label={CONSULTATION_FIELD_NAME.referral}
           />
         </Grid>
       </Grid>

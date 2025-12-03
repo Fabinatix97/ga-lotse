@@ -8,7 +8,11 @@
 import { Divider, Grid, Stack } from "@mui/joy";
 import { Formik, FormikHelpers } from "formik";
 
-import { FormFooter, FormStack } from "@eshg/lib-employee-portal";
+import {
+  ConfirmLeaveDirtyFormEffect,
+  FormFooter,
+  FormStack,
+} from "@eshg/lib-employee-portal";
 import {
   CheckboxField,
   DebouncedTextareaField,
@@ -32,7 +36,6 @@ import { SetAllExaminationResultsSelect } from "@/lib/businessModules/schoolEntr
 import { handleChangeExaminationResultValue } from "@/lib/businessModules/schoolEntry/features/procedures/examinations/examinationResultHelpers";
 import { EyeForm } from "@/lib/businessModules/schoolEntry/features/procedures/eyeExamination/EyeForm";
 import { REQUIRED_PROCEDURE_PROPERTIES } from "@/lib/businessModules/schoolEntry/features/procedures/translations";
-import { ConfirmLeaveDirtyFormEffect } from "@/lib/shared/components/form/ConfirmLeaveDirtyFormEffect";
 import { FormGroupGrid } from "@/lib/shared/components/form/FormGroupGrid";
 
 const CHECKBOX_GROUPS: CheckboxDefinition[][] = [

@@ -21,4 +21,11 @@ export const routes = defineRoutes(basePath, (prostituteProtectionPath) => ({
         })),
     }),
   ),
+  appointmentBlockGroups: defineRoutes(
+    prostituteProtectionPath("/appointment-block-groups"),
+    (appointmentBlockGroupsPath) => ({
+      index: appointmentBlockGroupsPath("/"),
+      new: appointmentBlockGroupsPath("/new"),
+    }),
+  ),
 }));

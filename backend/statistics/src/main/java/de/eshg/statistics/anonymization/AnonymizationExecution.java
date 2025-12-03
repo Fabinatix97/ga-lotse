@@ -5,8 +5,6 @@
 
 package de.eshg.statistics.anonymization;
 
-import de.eshg.rest.service.error.BadRequestException;
-import de.eshg.statistics.config.StatisticsFeature;
 import de.eshg.statistics.config.StatisticsFeatureToggle;
 import de.eshg.statistics.exception.AnonymizationFailedException;
 import java.util.UUID;
@@ -36,30 +34,26 @@ public class AnonymizationExecution {
   }
 
   private void executeAnonymization(UUID id, boolean isReport) {
-    if (!featureToggle.isNewFeatureEnabled(StatisticsFeature.ANONYMIZATION)) {
-      throw new BadRequestException("Data anonymization is required but feature is not enabled");
-    } else {
-      DataHolderBeforeAnonymization dataHolderBeforeAnonymization =
-          anonymizationService.prepareAnonymization(id, isReport);
+    DataHolderBeforeAnonymization dataHolderBeforeAnonymization =
+        anonymizationService.prepareAnonymization(id, isReport);
 
-      if (dataHolderBeforeAnonymization == null) {
-        anonymizationService.finishAnonymization(id, isReport, false);
+    if (dataHolderBeforeAnonymization == null) {
+      anonymizationService.finishAnonymization(id, isReport, false);
+    } else {
+      doForAllTableRowPages(dataHolderBeforeAnonymization, anonymizationService::addTableRows);
+      ARXResult result;
+      try {
+        result =
+            new ARXAnonymizer()
+                .anonymize(
+                    dataHolderBeforeAnonymization.data(), dataHolderBeforeAnonymization.config());
+      } catch (Exception e) {
+        throw new AnonymizationFailedException(e);
+      }
+      if (result.isResultAvailable()) {
+        storeAnonymizedData(result.getOutput(false), id, isReport);
       } else {
-        doForAllTableRowPages(dataHolderBeforeAnonymization, anonymizationService::addTableRows);
-        ARXResult result;
-        try {
-          result =
-              new ARXAnonymizer()
-                  .anonymize(
-                      dataHolderBeforeAnonymization.data(), dataHolderBeforeAnonymization.config());
-        } catch (Exception e) {
-          throw new AnonymizationFailedException(e);
-        }
-        if (result.isResultAvailable()) {
-          storeAnonymizedData(result.getOutput(false), id, isReport);
-        } else {
-          throw new AnonymizationFailedException("Error during anonymization: no result available");
-        }
+        throw new AnonymizationFailedException("Error during anonymization: no result available");
       }
     }
   }

@@ -6,6 +6,7 @@
 import { Divider, Sheet, Stack, Typography } from "@mui/joy";
 import { Formik } from "formik";
 
+import { ConfirmLeaveDirtyFormEffect } from "@eshg/lib-employee-portal";
 import { Alert, CheckboxField, FormPlus, InputField } from "@eshg/lib-portal";
 import {
   ApiLabStatus,
@@ -25,7 +26,6 @@ import {
 import { TabStickyBottomButtonBar } from "@/lib/businessModules/stiProtection/features/procedures/TabStickyBottomButtonBar";
 import { ExaminationTabNavPanel } from "@/lib/businessModules/stiProtection/features/procedures/examination/ExaminationTabNavPanel";
 import { SectionGrid } from "@/lib/businessModules/stiProtection/features/procedures/medicalHistory/SectionGrid";
-import { ConfirmLeaveDirtyFormEffect } from "@/lib/shared/components/form/ConfirmLeaveDirtyFormEffect";
 
 import { LabStatusIndicator } from "./LabStatusIndicator";
 import {

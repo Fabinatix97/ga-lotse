@@ -303,7 +303,7 @@ export function Sample({
               }}
             >
               <Typography component="span" level="title-lg">
-                {"Probe " + sampleIndex + 1}
+                {"Probe " + (sampleIndex + 1)}
               </Typography>
             </Grid>
             <Grid
@@ -334,7 +334,7 @@ export function Sample({
               <Stack direction="row" spacing={1}>
                 <Dropdown>
                   <MenuButton
-                    data-testId={"dropdown-button-sample-" + sampleIndex}
+                    data-testid={"dropdown-button-sample-" + sampleIndex}
                     aria-label="Proben menü"
                     slots={{ root: IconButton }}
                     slotProps={{
@@ -506,7 +506,7 @@ export function Sample({
                   <Grid
                     key={"measurementParameter-" + index}
                     container
-                    direction={{ lg: "row" }}
+                    direction={{ lg: "row", sm: "column" }}
                     columns={2}
                     sx={{
                       flexGrow: 1,
@@ -514,7 +514,7 @@ export function Sample({
                   >
                     <Grid
                       container
-                      direction={{ lg: "row" }}
+                      direction={{ lg: "row", sm: "column" }}
                       columns={3}
                       sx={{
                         height: 68,
@@ -585,8 +585,7 @@ export function Sample({
                           }}
                         >
                           {translateInspectionSamplePreclassification(
-                            parameter.preclassification ??
-                              ApiInspectionSamplePreclassification.NoNormSpecified,
+                            parameter.preclassification,
                           )}
                         </Typography>
                       </Grid>

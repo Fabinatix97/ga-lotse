@@ -2951,6 +2951,52 @@
         "tags" : [ "InspectionSampleActorAutocomplete" ]
       }
     },
+    "/inspections/sample-templates" : {
+      "get" : {
+        "operationId" : "getInspectionSampleTemplates",
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/GetInspectionSampleTemplatesResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Get all sample templates",
+        "tags" : [ "InspectionSampleTemplate" ]
+      }
+    },
+    "/inspections/untersuchungsparameter" : {
+      "get" : {
+        "operationId" : "getUntersuchungsparameter",
+        "parameters" : [ {
+          "in" : "query",
+          "name" : "parameterZid",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/GetUntersuchungsparameterResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Get Untersuchungsparameter for a given parameter",
+        "tags" : [ "InspectionUntersuchungsparameter" ]
+      }
+    },
     "/inspections/{id}" : {
       "get" : {
         "operationId" : "getInspection",
@@ -5483,6 +5529,26 @@
         "tags" : [ "TestHelper" ]
       }
     },
+    "/test-helper/sample-templates" : {
+      "delete" : {
+        "operationId" : "deleteSampleTemplates",
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "TestHelper" ]
+      },
+      "post" : {
+        "operationId" : "createSampleTemplates",
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "TestHelper" ]
+      }
+    },
     "/test-helper/set-clock" : {
       "patch" : {
         "operationId" : "setClock",
@@ -7125,7 +7191,7 @@
         }
       },
       "CreateInspectionSampleMeasurementParameterRequest" : {
-        "required" : [ "externalId", "uParameterZid" ],
+        "required" : [ "externalId", "parameterZid" ],
         "type" : "object",
         "properties" : {
           "externalId" : {
@@ -7135,7 +7201,10 @@
           "parameterGroup" : {
             "type" : "string"
           },
-          "uParameterZid" : {
+          "parameterZid" : {
+            "type" : "string"
+          },
+          "untersuchungsparameterZid" : {
             "type" : "string"
           }
         }
@@ -8543,6 +8612,18 @@
           }
         }
       },
+      "GetInspectionSampleTemplatesResponse" : {
+        "required" : [ "templates" ],
+        "type" : "object",
+        "properties" : {
+          "templates" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/InspectionSampleTemplate"
+            }
+          }
+        }
+      },
       "GetInspectionSamplesResponse" : {
         "required" : [ "samples" ],
         "type" : "object",
@@ -9150,6 +9231,18 @@
             "minimum" : 0,
             "type" : "integer",
             "format" : "int64"
+          }
+        }
+      },
+      "GetUntersuchungsparameterResponse" : {
+        "required" : [ "elements" ],
+        "type" : "object",
+        "properties" : {
+          "elements" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/UntersuchungsparameterReference"
+            }
           }
         }
       },
@@ -9847,7 +9940,7 @@
       },
       "InspectionFeature" : {
         "type" : "string",
-        "enum" : [ "STATISTIC_ANONYMIZATION", "SAMPLES", "OBJECT_TYPE_HIERARCHY", "TEIS_DATA" ]
+        "enum" : [ "SAMPLES", "OBJECT_TYPE_HIERARCHY", "TEIS_DATA", "CHECKLIST_REQUIREMENT_REMOVAL" ]
       },
       "InspectionFollowupInfo" : {
         "type" : "object",
@@ -10160,7 +10253,7 @@
         } ]
       },
       "InspectionSampleMeasurementParameter" : {
-        "required" : [ "externalId", "parameterName" ],
+        "required" : [ "externalId", "parameterName", "preclassification" ],
         "type" : "object",
         "properties" : {
           "externalId" : {
@@ -10188,9 +10281,58 @@
           }
         }
       },
+      "InspectionSampleMeasurementParameterTemplate" : {
+        "required" : [ "parameterName", "parameterZid" ],
+        "type" : "object",
+        "properties" : {
+          "parameterGroup" : {
+            "type" : "string"
+          },
+          "parameterName" : {
+            "type" : "string"
+          },
+          "parameterZid" : {
+            "type" : "string"
+          },
+          "untersuchungsparameterZid" : {
+            "type" : "string"
+          }
+        }
+      },
       "InspectionSamplePreclassification" : {
         "type" : "string",
         "enum" : [ "PENDING", "TOO_LOW", "WITHIN_NORM", "TOO_HIGH", "NO_NORM_SPECIFIED" ]
+      },
+      "InspectionSampleTemplate" : {
+        "required" : [ "evaluationType", "id", "measurementParameters", "name", "pointOfWithdrawal", "typeOfSample" ],
+        "type" : "object",
+        "properties" : {
+          "evaluationType" : {
+            "$ref" : "#/components/schemas/InspectionSampleEvaluationType"
+          },
+          "id" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "measurementParameters" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/InspectionSampleMeasurementParameterTemplate"
+            }
+          },
+          "name" : {
+            "type" : "string"
+          },
+          "nameOfSamplingPoint" : {
+            "type" : "string"
+          },
+          "pointOfWithdrawal" : {
+            "type" : "string"
+          },
+          "typeOfSample" : {
+            "$ref" : "#/components/schemas/InspectionSampleType"
+          }
+        }
       },
       "InspectionSampleType" : {
         "type" : "string",
@@ -11571,6 +11713,19 @@
       "TriggerType" : {
         "type" : "string",
         "enum" : [ "SYSTEM_AUTOMATIC", "EMPLOYEE", "CITIZEN" ]
+      },
+      "UntersuchungsparameterReference" : {
+        "required" : [ "name", "zid" ],
+        "type" : "object",
+        "properties" : {
+          "name" : {
+            "type" : "string"
+          },
+          "zid" : {
+            "minLength" : 1,
+            "type" : "string"
+          }
+        }
       },
       "UpdateChecklist" : {
         "required" : [ "elements" ],

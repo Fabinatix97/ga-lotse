@@ -8,6 +8,7 @@ import { useQuery } from "@tanstack/react-query";
 import {
   useParameterAutocompleteApi,
   useSampleActorAutocompleteApi,
+  useUntersuchungsparameterApi,
 } from "@/lib/businessModules/inspection/api/clients";
 import {
   measurementParameterApiQueryKey,
@@ -25,6 +26,25 @@ export function useAutocompleteParameterQuery({ prefix }: { prefix: string }) {
       "autocompleteParameter",
       prefix,
     ]),
+  });
+}
+
+export function useAutocompleteParameterRegulationQuery({
+  parameterZid,
+}: {
+  parameterZid: string;
+}) {
+  const parameterAutocompleteApi = useUntersuchungsparameterApi();
+
+  return useQuery({
+    queryFn: async () => {
+      return parameterAutocompleteApi.getUntersuchungsparameter(parameterZid);
+    },
+    queryKey: measurementParameterApiQueryKey([
+      "autocompleteParameterRegulation",
+      parameterZid,
+    ]),
+    enabled: parameterZid !== "",
   });
 }
 

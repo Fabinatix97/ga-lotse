@@ -33,8 +33,6 @@ import de.eshg.inspection.checklist.api.update.element.UpdateChecklistElementDto
 import de.eshg.inspection.checklist.api.update.element.UpdateChecklistMultiSelectDto;
 import de.eshg.inspection.checklist.api.update.element.UpdateChecklistSingleSelectDto;
 import de.eshg.inspection.checklist.api.update.element.UpdateChecklistTextDto;
-import de.eshg.inspection.feature.InspectionFeature;
-import de.eshg.inspection.feature.InspectionFeatureToggle;
 import de.eshg.inspection.incident.InspectionIncidentService;
 import de.eshg.inspection.incident.api.CreateInspectionIncidentRequest;
 import de.eshg.inspection.inspection.InspectionService;
@@ -48,15 +46,6 @@ import de.eshg.inspection.inspection.api.UpdateInspectionAddResourceRequest;
 import de.eshg.inspection.inspection.api.UpdateInspectionAppointmentDto;
 import de.eshg.inspection.inspection.api.UpdateInspectionModifyInventoryRequest;
 import de.eshg.inspection.inspection.api.UpdateInspectionRequest;
-import de.eshg.inspection.sample.InspectionSampleService;
-import de.eshg.inspection.sample.api.CreateInspectionSampleMeasurementParameterRequest;
-import de.eshg.inspection.sample.api.CreateInspectionSampleRequest;
-import de.eshg.inspection.sample.api.GetInspectionSamplesResponse;
-import de.eshg.inspection.sample.api.InspectionSampleDto;
-import de.eshg.inspection.sample.api.InspectionSampleEvaluationTypeDto;
-import de.eshg.inspection.sample.api.InspectionSampleInspectedFacilityReferenceDto;
-import de.eshg.inspection.sample.api.InspectionSampleTypeDto;
-import de.eshg.inspection.sample.api.UpdateInspectionSampleMeasurementParameterValueRequest;
 import jakarta.validation.constraints.NotNull;
 import java.time.Duration;
 import java.time.Instant;
@@ -100,28 +89,24 @@ public class InspectionTestDataProvider {
   private static final InventoryItemTypeDto inventoryType =
       InventoryItemTypeDto.PROTECTIVE_EQUIPMENT;
 
-  private static final String ZID_CHLOR_FREI = "299999999000000001421"; // only upper limit: 0,3
-  private static final String ZID_CHLOR_GEBUNDEN = "299999999000000000808"; // only upper limit: 0,2
+  private static final String ZID_P_CHLOR_FREI = "229999999000000000043";
+  private static final String ZID_P_CHLOR_GEBUNDEN = "299999999000000000808";
 
-  private final InspectionSampleService inspectionSampleService;
-
-  private final InspectionFeatureToggle inspectionFeatureToggle;
+  private static final String ZID_U_CHLOR_FREI = "229999999000000000044"; // only upper limit: 0,3
+  private static final String ZID_U_CHLOR_GEBUNDEN =
+      "299999999000000000808"; // only upper limit: 0,2
 
   public InspectionTestDataProvider(
       InspectionService inspectionService,
       ResourceApi resourceApi,
       InventoryApi inventoryApi,
       CalendarEventApi calendarEventApi,
-      InspectionIncidentService inspectionIncidentService,
-      InspectionSampleService inspectionSampleService,
-      InspectionFeatureToggle inspectionFeatureToggle) {
+      InspectionIncidentService inspectionIncidentService) {
     this.inspectionService = inspectionService;
     this.resourceApi = resourceApi;
     this.inventoryApi = inventoryApi;
     this.calendarEventApi = calendarEventApi;
     this.inspectionIncidentService = inspectionIncidentService;
-    this.inspectionSampleService = inspectionSampleService;
-    this.inspectionFeatureToggle = inspectionFeatureToggle;
   }
 
   public void prepareTestInspection(
@@ -151,17 +136,9 @@ public class InspectionTestDataProvider {
       addChecklists(inspectionId);
       fillOutAllChecklists(inspectionId, faker);
       createManualIncident(inspectionId, faker);
-      if (inspectionFeatureToggle.isNewFeatureEnabled(InspectionFeature.SAMPLES)
-          && inspectionFeatureToggle.isNewFeatureEnabled(InspectionFeature.TEIS_DATA)) {
-        addUnfinishedSample(inspectionId, centralFileStateId);
-      }
     }
     if ((index % FacilityTestDataProvider.NUMBER_OF_DEFINED_FACILITIES) > 3) {
       inspectionService.finalizeInspection(inspectionId, new FinalizeInspectionRequest(null), null);
-      if (inspectionFeatureToggle.isNewFeatureEnabled(InspectionFeature.SAMPLES)
-          && inspectionFeatureToggle.isNewFeatureEnabled(InspectionFeature.TEIS_DATA)) {
-        fillOutSample(inspectionId);
-      }
     }
     if ((index % FacilityTestDataProvider.NUMBER_OF_DEFINED_FACILITIES) > 4) {
       inspectionService.approveInspection(inspectionId);
@@ -350,44 +327,6 @@ public class InspectionTestDataProvider {
 
     inspectionService.modifyInventory(
         inspectionId, new UpdateInspectionModifyInventoryRequest(inventoryItem.id(), null, 1));
-  }
-
-  private void addUnfinishedSample(UUID inspectionId, UUID centralFileStateId) {
-    inspectionSampleService.createSample(
-        inspectionId,
-        new CreateInspectionSampleRequest(
-            UUID.randomUUID(),
-            InspectionSampleTypeDto.BATH_WATER,
-            "Entnahmestelle",
-            "Dusche links Herren",
-            InspectionSampleEvaluationTypeDto.LABORATORY,
-            new InspectionSampleInspectedFacilityReferenceDto(centralFileStateId),
-            Instant.parse("2024-03-01T00:00:00.123456Z"),
-            new InspectionSampleInspectedFacilityReferenceDto(centralFileStateId),
-            null,
-            List.of(
-                new CreateInspectionSampleMeasurementParameterRequest(
-                    UUID.randomUUID(), ZID_CHLOR_FREI, ""),
-                new CreateInspectionSampleMeasurementParameterRequest(
-                    UUID.randomUUID(), ZID_CHLOR_GEBUNDEN, ""))));
-  }
-
-  private void fillOutSample(UUID inspectionId) {
-    GetInspectionSamplesResponse getSamplesResponse =
-        inspectionSampleService.getSamples(inspectionId);
-
-    for (InspectionSampleDto sample : getSamplesResponse.samples()) {
-      inspectionSampleService.updateSampleMeasurementParameterValue(
-          inspectionId,
-          sample.sampleId(),
-          sample.measurementParameters().getFirst().externalId(),
-          new UpdateInspectionSampleMeasurementParameterValueRequest(10.0));
-      inspectionSampleService.updateSampleMeasurementParameterValue(
-          inspectionId,
-          sample.sampleId(),
-          sample.measurementParameters().getLast().externalId(),
-          new UpdateInspectionSampleMeasurementParameterValueRequest(0.1));
-    }
   }
 
   private static UpdateInspectionAppointmentDto getAppointmentTime(int index) {

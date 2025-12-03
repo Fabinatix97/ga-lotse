@@ -6,6 +6,7 @@
 import { Divider, Sheet, Stack, Typography } from "@mui/joy";
 import { Formik } from "formik";
 
+import { ConfirmLeaveDirtyFormEffect } from "@eshg/lib-employee-portal";
 import { CheckboxField, FormPlus } from "@eshg/lib-portal";
 import {
   ApiRapidTestExamination,
@@ -23,7 +24,6 @@ import {
 } from "@/lib/businessModules/stiProtection/features/procedures/SidecarFormLayout";
 import { TabStickyBottomButtonBar } from "@/lib/businessModules/stiProtection/features/procedures/TabStickyBottomButtonBar";
 import { ExaminationTabNavPanel } from "@/lib/businessModules/stiProtection/features/procedures/examination/ExaminationTabNavPanel";
-import { ConfirmLeaveDirtyFormEffect } from "@/lib/shared/components/form/ConfirmLeaveDirtyFormEffect";
 
 import {
   RapidTestWithBooleanResult,

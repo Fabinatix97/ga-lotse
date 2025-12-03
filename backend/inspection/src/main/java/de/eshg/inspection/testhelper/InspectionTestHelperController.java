@@ -39,6 +39,7 @@ public class InspectionTestHelperController extends TestHelperController
   private final InspectionPropertiesConfigMapper inspectionPropertiesConfigMapper;
   private final TeisDataPopulator teisDataPopulator;
   private final ObjectTypePopulator objectTypePopulator;
+  private final SampleTemplatePopulator sampleTemplatePopulator;
 
   public InspectionTestHelperController(
       DefaultTestHelperService testHelperService,
@@ -49,7 +50,8 @@ public class InspectionTestHelperController extends TestHelperController
       InspectionPropertiesConfigService inspectionPropertiesConfigService,
       InspectionPropertiesConfigMapper inspectionPropertiesConfigMapper,
       TeisDataPopulator teisDataPopulator,
-      ObjectTypePopulator objectTypePopulator) {
+      ObjectTypePopulator objectTypePopulator,
+      SampleTemplatePopulator sampleTemplatePopulator) {
     super(testHelperService, environmentConfig);
     this.auditLogTestHelperService = auditLogTestHelperService;
     this.inspectionFeatureToggle = inspectionFeatureToggle;
@@ -58,6 +60,7 @@ public class InspectionTestHelperController extends TestHelperController
     this.inspectionPropertiesConfigMapper = inspectionPropertiesConfigMapper;
     this.teisDataPopulator = teisDataPopulator;
     this.objectTypePopulator = objectTypePopulator;
+    this.sampleTemplatePopulator = sampleTemplatePopulator;
   }
 
   @Override
@@ -104,5 +107,17 @@ public class InspectionTestHelperController extends TestHelperController
   @Transactional
   public void createObjectTypes() {
     objectTypePopulator.createObjectTypeHierarchy();
+  }
+
+  @PostExchange("/sample-templates")
+  @Transactional
+  public void createSampleTemplates() {
+    sampleTemplatePopulator.createSampleTemplates();
+  }
+
+  @DeleteExchange("/sample-templates")
+  @Transactional
+  public void deleteSampleTemplates() {
+    sampleTemplatePopulator.deleteSampleTemplates();
   }
 }

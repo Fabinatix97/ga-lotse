@@ -8,37 +8,12 @@
 import { Add } from "@mui/icons-material";
 import { Button } from "@mui/joy";
 
-import {
-  ButtonBar,
-  TogglePersonSearchButton,
-  usePersonSearchFromURL,
-} from "@eshg/lib-employee-portal";
+import { ButtonBar } from "@eshg/lib-employee-portal";
 
 import { useAddNewProcedureSidebar } from "../addNewProcedure/useAddNewProcedureSidebar";
 
-interface ProstituteProtectionProceduresTableControlsProps {
-  handleSearch: () => void;
-  isSearchVisible: boolean;
-}
-
-export function ProstituteProtectionProceduresTableControls({
-  handleSearch,
-  isSearchVisible,
-}: ProstituteProtectionProceduresTableControlsProps) {
-  const personSearch = usePersonSearchFromURL();
-
-  return (
-    <ButtonBar
-      left={
-        <TogglePersonSearchButton
-          {...personSearch.buttonProps}
-          expanded={isSearchVisible}
-          onClick={handleSearch}
-        />
-      }
-      right={<ControlsRight />}
-    />
-  );
+export function ProstituteProtectionProceduresTableControls() {
+  return <ButtonBar left={null} right={<ControlsRight />} />;
 }
 
 function ControlsRight() {

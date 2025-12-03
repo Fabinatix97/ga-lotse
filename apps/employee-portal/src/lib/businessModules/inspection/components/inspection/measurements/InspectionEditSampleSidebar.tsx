@@ -20,6 +20,7 @@ import {
   ApiUpdateInspectionSampleRequest,
 } from "@eshg/inspection-api";
 import {
+  ConfirmLeaveDirtyFormEffect,
   MultiFormButtonBar,
   SidebarActions,
   SidebarContent,
@@ -27,7 +28,7 @@ import {
   SidebarWithFormRefProps,
   useSidebarWithFormRef,
 } from "@eshg/lib-employee-portal";
-import { formatDateTime, formatUserName } from "@eshg/lib-portal";
+import { formatUserName, toDateTimeString } from "@eshg/lib-portal";
 
 import { useUserApi } from "@/lib/baseModule/api/clients";
 import { useUpdateSample } from "@/lib/businessModules/inspection/api/mutations/sample";
@@ -38,7 +39,6 @@ import {
   makeUpdateInspectionSampleRequest,
 } from "@/lib/businessModules/inspection/components/inspection/measurements/sampleSidebar/InspectionSampleSidebarHelper";
 import { InspectionSampleSidebarMeasurementParameterData } from "@/lib/businessModules/inspection/components/inspection/measurements/sampleSidebar/InspectionSampleSidebarMeasurementParameterData";
-import { ConfirmLeaveDirtyFormEffect } from "@/lib/shared/components/form/ConfirmLeaveDirtyFormEffect";
 
 interface InspectionEditSampleSidebarProps extends SidebarWithFormRefProps {
   procedureId: string;
@@ -75,7 +75,7 @@ function InspectionEditSampleSidebar({
 
   async function onFinalSubmit(formValues: InspectionSampleSidebarFormType) {
     const payload: ApiUpdateInspectionSampleRequest =
-      makeUpdateInspectionSampleRequest(formValues, selfUser.userId);
+      makeUpdateInspectionSampleRequest(formValues);
     await updateSample(
       {
         inspectionId: procedureId,
@@ -105,19 +105,59 @@ function InspectionEditSampleSidebar({
     }
   }
 
+  function getActorId(actor: ApiInspectionSampleEvaluatingActor) {
+    switch (actor.type) {
+      case "InspectionSampleContact":
+        const inspectionSampleContact = actor as ApiInspectionSampleContact;
+        return inspectionSampleContact.contact.id;
+      case "InspectionSampleInspectedFacility":
+        const inspectionSampleInspectedFacility =
+          actor as ApiInspectionSampleInspectedFacility;
+        return inspectionSampleInspectedFacility.facilityFileState.id;
+      case "InspectionSampleUser":
+        const inspectionSampleUser = actor as ApiInspectionSampleUser;
+        return inspectionSampleUser.user.userId;
+    }
+  }
+
+  function getActorType(actor: ApiInspectionSampleEvaluatingActor) {
+    switch (actor.type) {
+      case "InspectionSampleContact":
+        return "InspectionSampleContactReference";
+      case "InspectionSampleInspectedFacility":
+        return "InspectionSampleInspectedFacilityReference";
+      case "InspectionSampleUser":
+        return "InspectionSampleUserReference";
+    }
+  }
+
   const initialValues: InspectionSampleSidebarFormType = useMemo(() => {
     return {
-      evaluatingActor: getActorName(sample.evaluatingActor),
+      evaluatingActor: {
+        label: getActorName(sample.evaluatingActor),
+        value: {
+          id: getActorId(sample.evaluatingActor),
+          type: getActorType(sample.evaluatingActor),
+        },
+      },
       evaluationType: sample.evaluationType,
       externalId: sample.sampleId,
       measurementParameters: [],
       nameOfSamplingPoint: sample.nameOfSamplingPoint,
       pointOfWithdrawal: sample.pointOfWithdrawal,
-      samplingActor: getActorName(sample.samplingActor),
-      timeOfEvaluation:
-        sample.timeOfEvaluation && formatDateTime(sample.timeOfEvaluation),
-      timeOfSampling:
-        sample.timeOfSampling && formatDateTime(sample.timeOfSampling),
+      samplingActor: {
+        label: getActorName(sample.samplingActor),
+        value: {
+          id: getActorId(sample.samplingActor),
+          type: getActorType(sample.samplingActor),
+        },
+      },
+      timeOfEvaluation: sample.timeOfEvaluation
+        ? toDateTimeString(sample.timeOfEvaluation)
+        : "",
+      timeOfSampling: sample.timeOfSampling
+        ? toDateTimeString(sample.timeOfSampling)
+        : "",
       typeOfSample: sample.typeOfSample,
     };
   }, [sample]);
@@ -148,7 +188,6 @@ function InspectionEditSampleSidebar({
                     backgroundColor: "#F0F4F8",
                     color: "black",
                     "&.Mui-selected": {
-                      // Aktiver Zustand
                       backgroundColor: "#0B6BCB",
                       color: "white",
                     },
@@ -192,28 +231,46 @@ function InspectionEditSampleSidebar({
               <TabPanel value={0}>
                 <InspectionSampleSidebarBasisData
                   values={values}
+                  onSamplingActorSelection={(value) =>
+                    setFieldValue("samplingActor", value)
+                  }
+                  onEvaluatingActorSelection={(value) =>
+                    setFieldValue("evaluatingActor", value)
+                  }
                   onSelfAssignSamplingActor={() =>
                     setFieldValue("samplingActor", {
                       label: formatUserName(selfUser),
-                      value: selfUser.userId,
+                      value: {
+                        id: selfUser.userId,
+                        type: "InspectionSampleUserReference",
+                      },
                     })
                   }
                   onSelfAssignEvaluatingActor={() =>
                     setFieldValue("evaluatingActor", {
                       label: formatUserName(selfUser),
-                      value: selfUser.userId,
+                      value: {
+                        id: selfUser.userId,
+                        type: "InspectionSampleUserReference",
+                      },
                     })
                   }
                   onFacilityAssignEvaluatingActor={() =>
                     setFieldValue("evaluatingActor", {
                       label: facility.baseFacility.name,
-                      value: facility.id,
+                      value: {
+                        id: facility.baseFacility.id,
+                        type: "InspectionSampleInspectedFacilityReference",
+                      },
                     })
                   }
                   onFacilityAssignSamplingActor={() =>
                     setFieldValue("samplingActor", {
                       label: facility.baseFacility.name,
-                      value: facility.id,
+                      value: {
+                        id: facility.baseFacility.id,
+                        type: "InspectionSampleInspectedFacilityReference",
+                      },
                     })
                   }
                 />

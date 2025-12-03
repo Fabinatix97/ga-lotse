@@ -7,6 +7,7 @@ import { Box } from "@mui/joy";
 import { Formik } from "formik";
 import { useRouter } from "next/navigation";
 
+import { ConfirmLeaveDirtyFormEffect } from "@eshg/lib-employee-portal";
 import { FormPlus } from "@eshg/lib-portal";
 
 import { SchoolInfoLetter as SchoolInfoLetterType } from "@/lib/businessModules/schoolEntry/api/models/SchoolInfoLetter";
@@ -15,7 +16,6 @@ import { useGetSchoolInfoLetter } from "@/lib/businessModules/schoolEntry/api/qu
 import { SchoolInfoLetterContent } from "@/lib/businessModules/schoolEntry/features/procedures/reports/schoolInfoLetter/SchoolInfoLetterContent";
 import { SchoolInfoLetterPageBottomBar } from "@/lib/businessModules/schoolEntry/features/procedures/reports/schoolInfoLetter/SchoolInfoLetterPageBottomBar";
 import { routes } from "@/lib/businessModules/schoolEntry/shared/routes";
-import { ConfirmLeaveDirtyFormEffect } from "@/lib/shared/components/form/ConfirmLeaveDirtyFormEffect";
 
 import { LeaveDirtyConfirmationDialogProps } from "./LeaveDirtyConfirmationDialogProps";
 

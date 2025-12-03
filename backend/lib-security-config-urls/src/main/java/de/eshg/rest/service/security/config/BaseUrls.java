@@ -135,6 +135,8 @@ public final class BaseUrls {
     public static final String INSPECTION_TEST_DATA_CONTROLLER = "/test-data";
     public static final String INSPECTION_CONTROLLER = "/inspections";
     public static final String INSPECTION_GEO_CONTROLLER = INSPECTION_CONTROLLER + "/geo";
+    public static final String INSPECTION_SAMPLE_TEMPLATE_CONTROLLER =
+        INSPECTION_CONTROLLER + "/sample-templates";
     public static final String FACILITY_CONTROLLER = "/facilities";
     public static final String CHECKLIST_CONTROLLER = "/checklists";
     public static final String CHECKLIST_DEFINITION_CONTROLLER =

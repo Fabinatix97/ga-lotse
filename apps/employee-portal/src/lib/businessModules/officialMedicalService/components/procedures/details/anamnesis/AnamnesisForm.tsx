@@ -9,6 +9,7 @@ import { Stack } from "@mui/joy";
 import { Formik } from "formik";
 import { memo } from "react";
 
+import { ConfirmLeaveDirtyFormEffect } from "@eshg/lib-employee-portal";
 import { FormPlus, FormProps, MutationBundle } from "@eshg/lib-portal";
 import {
   AffectedPersonSection,
@@ -22,7 +23,6 @@ import { PatchAnamnesisRequest } from "@eshg/official-medical-service-api";
 
 import { theme } from "@/lib/baseModule/theme/theme";
 import { AnamnesisButtonBar } from "@/lib/businessModules/officialMedicalService/components/procedures/details/anamnesis/AnamnesisButtonBar";
-import { ConfirmLeaveDirtyFormEffect } from "@/lib/shared/components/form/ConfirmLeaveDirtyFormEffect";
 
 interface AnamnesisFormProps extends FormProps<AnamnesisFormValues> {
   valuesToMutationBundle: (

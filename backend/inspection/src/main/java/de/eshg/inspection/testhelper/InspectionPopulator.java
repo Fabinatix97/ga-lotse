@@ -7,6 +7,7 @@ package de.eshg.inspection.testhelper;
 
 import de.eshg.inspection.facility.persistence.FacilityRepository;
 import de.eshg.inspection.inspection.api.InspectionDto;
+import de.eshg.inspection.teis.CreateTeisDataTask;
 import de.eshg.persistence.TransactionHelper;
 import de.eshg.testhelper.environment.EnvironmentConfig;
 import de.eshg.testhelper.population.BasePopulator;
@@ -27,6 +28,7 @@ public class InspectionPopulator extends BasePopulator<InspectionDto> {
   private final FacilityTestDataProvider facilityTestDataProvider;
   private final InspectionTestDataProvider inspectionTestDataProvider;
   private final PlatformTransactionManager platformTransactionManager;
+  private final CreateTeisDataTask createTeisDataTask;
 
   protected InspectionPopulator(
       PopulationProperties properties,
@@ -38,13 +40,15 @@ public class InspectionPopulator extends BasePopulator<InspectionDto> {
       InspectionTestDataProvider inspectionTestDataProvider,
       @SuppressWarnings("unused") // Used to define a dependency
           ChecklistDefinitionPopulator checklistDefinitionPopulator,
-      PlatformTransactionManager platformTransactionManager) {
+      PlatformTransactionManager platformTransactionManager,
+      CreateTeisDataTask createTeisDataTask) {
     super(properties, clock, "inspection", environmentConfig);
     this.populateWithAccessTokenHelper = populateWithAccessTokenHelper;
     this.facilityRepository = facilityRepository;
     this.facilityTestDataProvider = facilityTestDataProvider;
     this.inspectionTestDataProvider = inspectionTestDataProvider;
     this.platformTransactionManager = platformTransactionManager;
+    this.createTeisDataTask = createTeisDataTask;
   }
 
   @Override

@@ -28,9 +28,7 @@ public class ProgressEntryUtil {
       ProstituteProtectionProgressEntryType progressEntryType) {
     SystemProgressEntry progressEntry =
         SystemProgressEntryFactory.createSystemProgressEntry(
-            progressEntryType.name(),
-            progressEntryType.getChangeDescription(),
-            TriggerType.SYSTEM_AUTOMATIC);
+            progressEntryType.name(), null, TriggerType.SYSTEM_AUTOMATIC);
 
     progressEntryService.addSystemProgressEntry(prostituteProtectionProcedure, progressEntry);
   }
@@ -38,12 +36,13 @@ public class ProgressEntryUtil {
   public void addSystemProgressEntry(
       ProstituteProtectionProcedure procedure,
       ProstituteProtectionProgressEntryType progressEntryType,
+      String changeDescription,
       File file,
-      PrintDocumentType printDocumentType) {
+      PrintDocumentType documentType) {
     SystemProgressEntry progressEntry =
         SystemProgressEntryFactory.createSystemProgressEntry(
-            progressEntryType.name(), TriggerType.SYSTEM_AUTOMATIC);
-    progressEntry.setKeyDocumentType(printDocumentType.name());
+            progressEntryType.name(), changeDescription, TriggerType.SYSTEM_AUTOMATIC);
+    progressEntry.setKeyDocumentType(documentType.name());
 
     progressEntryService.addSystemProgressEntry(procedure, progressEntry, file);
   }

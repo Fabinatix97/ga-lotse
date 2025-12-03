@@ -46,7 +46,6 @@ import de.eshg.statistics.api.report.GetReportSeriesEntriesOfEvaluationResponse;
 import de.eshg.statistics.api.report.ReportSeriesDto;
 import de.eshg.statistics.config.StatisticsConfig;
 import de.eshg.statistics.config.StatisticsConfig.BusinessModuleConfig;
-import de.eshg.statistics.config.StatisticsFeature;
 import de.eshg.statistics.config.StatisticsFeatureToggle;
 import de.eshg.statistics.datatransfer.AnalysisTemplateData;
 import de.eshg.statistics.datatransfer.DiagramTemplateData;
@@ -226,11 +225,6 @@ public class EvaluationService extends AbstractAggregationResultService {
             dataSource.businessModuleName())) {
       throw new BadRequestException(
           "Only anonymous evaluations allowed for data source '%s'".formatted(dataSource.id()));
-    }
-    if (anonymized
-        && !sensitivity.equals(DataSourceSensitivity.ANONYMOUS)
-        && !featureToggle.isNewFeatureEnabled(StatisticsFeature.ANONYMIZATION)) {
-      throw new BadRequestException("Data anonymization is required but feature is not enabled");
     }
 
     if (anonymized) {

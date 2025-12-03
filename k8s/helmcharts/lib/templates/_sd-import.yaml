@@ -503,6 +503,27 @@ data:
         }`) }}
         {{- end }}{{/* if base */}}
 
+      {{- if include "includeActor" (list $o "measlesprotection") }}
+        {{- $rulesArray = append $rulesArray (print `{
+          "active": true,
+          "description": "measlesprotection → schoolentry",
+          "client": {
+            "federalState": "` $o.federalState `",
+            "orgUnitType": "` $o.type `",
+            "orgUnitName": "` $o.name `",
+            "actorType": "` (include "actorType" (list "measlesprotection")) `",
+            "actorName": "measlesprotection"
+          },
+          "server": {
+            "federalState": "` $o.federalState `",
+            "orgUnitType": "` $o.type `",
+            "orgUnitName": "` $o.name `",
+            "actorType": "FM",
+            "actorName": "schoolentry"
+          }
+        }`) }}
+        {{- end }}{{/* if measlesprotection */}}
+
         {{- if include "includeActor" (list $o "statistics") }}
         {{- $rulesArray = append $rulesArray (print `{
           "active": true,

@@ -9,7 +9,6 @@ import de.eshg.inspection.feature.InspectionFeature;
 import de.eshg.inspection.feature.InspectionFeatureToggle;
 import de.eshg.inspection.teis.persistence.*;
 import de.eshg.persistence.TransactionHelper;
-import jakarta.annotation.PostConstruct;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -170,7 +169,6 @@ public class CreateTeisDataTask {
     this.untersuchungsparameterXmlFileForTest = untersuchungsparameterXmlFileForTest;
   }
 
-  @PostConstruct
   public void parseXml() {
     if (!inspectionFeatureToggle.isNewFeatureEnabled(InspectionFeature.TEIS_DATA)) {
       return;

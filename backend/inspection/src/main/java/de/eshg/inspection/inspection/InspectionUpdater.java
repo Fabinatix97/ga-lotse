@@ -33,6 +33,8 @@ import de.eshg.inspection.checklistdefinition.persistence.ChecklistDefinitionVer
 import de.eshg.inspection.client.CalendarClient;
 import de.eshg.inspection.client.UserClient;
 import de.eshg.inspection.facility.FacilityClient;
+import de.eshg.inspection.feature.InspectionFeature;
+import de.eshg.inspection.feature.InspectionFeatureToggle;
 import de.eshg.inspection.inspection.api.FollowupType;
 import de.eshg.inspection.inspection.api.InspectionAnnouncementDto;
 import de.eshg.inspection.inspection.api.InspectionAnnouncementType;
@@ -102,6 +104,7 @@ public class InspectionUpdater {
   private final CalendarApi calendarApi;
   private final CalendarEventApi calendarEventApi;
   private final Clock clock;
+  private final InspectionFeatureToggle inspectionFeatureToggle;
   private final AuditLogger auditLogger;
   private final FacilityClient facilityClient;
   private final InspectionProgressEntryService inspectionProgressEntryService;
@@ -119,7 +122,8 @@ public class InspectionUpdater {
       Clock clock,
       AuditLogger auditLogger,
       FacilityClient facilityClient,
-      InspectionProgressEntryService inspectionProgressEntryService) {
+      InspectionProgressEntryService inspectionProgressEntryService,
+      InspectionFeatureToggle inspectionFeatureToggle) {
     this.inspectionRepository = inspectionRepository;
     this.cldVersionRepository = cldVersionRepository;
     this.packlistService = packlistService;
@@ -133,6 +137,7 @@ public class InspectionUpdater {
     this.auditLogger = auditLogger;
     this.facilityClient = facilityClient;
     this.inspectionProgressEntryService = inspectionProgressEntryService;
+    this.inspectionFeatureToggle = inspectionFeatureToggle;
   }
 
   Inspection updateInspection(Inspection inspection, UpdateInspectionRequest request) {
@@ -775,7 +780,9 @@ public class InspectionUpdater {
   private void advanceToReadyForExecutionIfPossible(Inspection inspection) {
     if (inspection.getPhase().equals(InspectionPhase.PLANNING)
         && inspection.getPlannedAppointment() != null
-        && !inspection.getChecklists().isEmpty()
+        && (inspectionFeatureToggle.isNewFeatureEnabled(
+                InspectionFeature.CHECKLIST_REQUIREMENT_REMOVAL)
+            || !inspection.getChecklists().isEmpty())
         && (!inspection.getFacility().getObjectType().isEmailAnnouncement()
             || (inspection.getFacility().getObjectType().isEmailAnnouncement()
                 && inspection.getAnnouncement() != null))) {

@@ -24,6 +24,7 @@ dependencies {
     annotationProcessor 'org.hibernate.orm:hibernate-jpamodelgen'
 
     testImplementation testFixtures(project(':lib-document-generator'))
+    testImplementation testFixtures(project(':lib-procedures'))
 }
 
 dockerCompose {

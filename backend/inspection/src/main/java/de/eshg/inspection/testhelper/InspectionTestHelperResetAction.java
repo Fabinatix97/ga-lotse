@@ -6,6 +6,7 @@
 package de.eshg.inspection.testhelper;
 
 import de.eshg.inspection.objecttype.persistence.CreateObjectTypeHierarchyTask;
+import de.eshg.inspection.sample.CreateInspectionSampleTemplatesTask;
 import de.eshg.inspection.testhelper.api.TeisDataCreationModeDto;
 import de.eshg.testhelper.ConditionalOnTestHelperEnabled;
 import de.eshg.testhelper.TestHelperServiceResetAction;
@@ -21,14 +22,17 @@ public class InspectionTestHelperResetAction implements TestHelperServiceResetAc
   private final TeisDataPopulator teisDataPopulator;
 
   private TeisDataCreationModeDto teisDataCreationMode = TeisDataCreationModeDto.TEST_DATA;
+  private final CreateInspectionSampleTemplatesTask createInspectionSampleTemplatesTask;
 
   public InspectionTestHelperResetAction(
       ChecklistDefinitionTestDataProvider checklistDefinitionTestDataProvider,
       CreateObjectTypeHierarchyTask createObjectTypeHierarchyTask,
-      TeisDataPopulator teisDataPopulator) {
+      TeisDataPopulator teisDataPopulator,
+      CreateInspectionSampleTemplatesTask createInspectionSampleTemplatesTask) {
     this.checklistDefinitionTestDataProvider = checklistDefinitionTestDataProvider;
     this.createObjectTypeHierarchyTask = createObjectTypeHierarchyTask;
     this.teisDataPopulator = teisDataPopulator;
+    this.createInspectionSampleTemplatesTask = createInspectionSampleTemplatesTask;
   }
 
   public TeisDataCreationModeDto getTeisDataCreationModeDto() {
@@ -43,6 +47,8 @@ public class InspectionTestHelperResetAction implements TestHelperServiceResetAc
   public void reset() {
     createObjectTypeHierarchyTask.createObjectTypeHierarchy();
     checklistDefinitionTestDataProvider.clearTestCLDs();
+    createInspectionSampleTemplatesTask.deleteTemplates();
     teisDataPopulator.recreateTeisData(teisDataCreationMode);
+    createInspectionSampleTemplatesTask.createTemplates();
   }
 }

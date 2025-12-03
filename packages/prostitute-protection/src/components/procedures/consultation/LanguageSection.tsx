@@ -9,13 +9,12 @@ import { useFormikContext } from "formik";
 import {
   CheckboxField,
   InputField,
-  PERSON_FIELD_NAME,
   SelectField,
   useValidateLength,
 } from "@eshg/lib-portal";
 
 import {
-  LANGUAGE_FIELD_NAME,
+  CONSULTATION_FIELD_NAME,
   LANGUAGE_OPTIONS,
 } from "../../../shared/constants";
 
@@ -29,13 +28,13 @@ export function LanguageSection() {
       </Typography>
       <Stack gap={2}>
         <SelectField
-          name="language.languageOfConsultation"
-          label={LANGUAGE_FIELD_NAME.languageOfConsultation}
+          name="languageOfConsultation"
+          label={CONSULTATION_FIELD_NAME.languageOfConsultation}
           options={LANGUAGE_OPTIONS}
         />
         <InterpreterCheckbox
-          name="language.interpreterCalledIn"
-          label={LANGUAGE_FIELD_NAME.interpreterCalledIn}
+          name="interpreterConsulted"
+          label={CONSULTATION_FIELD_NAME.interpreterConsulted}
         />
       </Stack>
     </Sheet>
@@ -68,8 +67,8 @@ function InterpreterCheckbox({ name, label }: { name: string; label: string }) {
           const { checked } = e.target;
           await setFieldValue(name, checked);
           if (!checked) {
-            await setFieldValue("language.interpreterName", "");
-            await setFieldValue("language.interpreterLastName", "");
+            await setFieldValue("interpreterFirstName", "");
+            await setFieldValue("interpreterLastName", "");
           }
         }}
       />
@@ -82,16 +81,16 @@ function InterpreterCheckbox({ name, label }: { name: string; label: string }) {
           }}
         >
           <InputField
-            name="language.interpreterName"
-            label={PERSON_FIELD_NAME.firstName}
+            name="interpreterFirstName"
+            label={CONSULTATION_FIELD_NAME.interpreterFirstName}
             validate={(value) =>
               value ? validateLength(1, 80)(value) : undefined
             }
             sx={{ minWidth: 0 }}
           />
           <InputField
-            name="language.interpreterLastName"
-            label={PERSON_FIELD_NAME.lastName}
+            name="interpreterLastName"
+            label={CONSULTATION_FIELD_NAME.interpreterLastName}
             validate={(value) =>
               value ? validateLength(1, 80)(value) : undefined
             }

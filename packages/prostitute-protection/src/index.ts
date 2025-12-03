@@ -16,6 +16,8 @@ export {
 } from "./contexts/ProstituteProtectionApi";
 
 // Pages
+export { ProstituteProtectionNewAppointmentBlockGroupsPage } from "./pages/ProstituteProtectionNewAppointmentBlockGroupsPage";
+export { ProstituteProtectionAppointmentBlockGroupsOverviewPage } from "./pages/ProstituteProtectionAppointmentBlockGroupsOverviewPage";
 export { ProstituteProtectionOverviewPage } from "./pages/ProstituteProtectionOverviewPage";
 export { ProstituteProtectionProgressEntriesPage } from "./pages/ProstituteProtectionProgressEntriesPage";
 export { ProstituteProtectionProcedureDetailsPage } from "./pages/ProstituteProtectionProcedureDetailsPage";

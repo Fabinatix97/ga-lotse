@@ -3,6 +3,19 @@
   "version": "0.0.1",
   "type": "module",
   "private": true,
+  "packageManager": "pnpm@10.23.0",
+  "devEngines": {
+    "runtime": {
+      "name": "node",
+      "version": ">=22.18 <23",
+      "onFail": "error"
+    },
+    "packageManager": {
+      "name": "pnpm",
+      "version": ">=10.21 <11",
+      "onFail": "error"
+    }
+  },
   "dependencies": {
     "@ducanh2912/next-pwa": "10.2.9",
     "@emotion/react": "catalog:joy",
@@ -24,15 +37,15 @@
     "@eshg/medical-registry-api": "workspace:*",
     "@eshg/meds-abroad": "workspace:*",
     "@eshg/meds-abroad-api": "workspace:*",
-    "@eshg/prostitute-protection": "workspace:*",
     "@eshg/official-medical-service": "workspace:*",
     "@eshg/official-medical-service-api": "workspace:*",
     "@eshg/opendata-api": "workspace:*",
+    "@eshg/prostitute-protection": "workspace:*",
+    "@eshg/prostitute-protection-api": "workspace:*",
     "@eshg/school-entry-api": "workspace:*",
     "@eshg/statistics-api": "workspace:*",
     "@eshg/sti-protection-api": "workspace:*",
     "@eshg/travel-medicine-api": "workspace:*",
-    "@eshg/prostitute-protection-api": "workspace:*",
     "@fontsource/poppins": "catalog:joy",
     "@fontsource/source-code-pro": "catalog:joy",
     "@fullcalendar/core": "catalog:fullcalendar",

@@ -9,7 +9,11 @@ import { Divider, FormLabel, Stack } from "@mui/joy";
 import { Formik } from "formik";
 import { useId } from "react";
 
-import { FormFooter, FormStack } from "@eshg/lib-employee-portal";
+import {
+  ConfirmLeaveDirtyFormEffect,
+  FormFooter,
+  FormStack,
+} from "@eshg/lib-employee-portal";
 import {
   BooleanSelectField,
   DebouncedTextareaField,
@@ -41,7 +45,6 @@ import { PromotionBeforeSchoolEntryForm } from "@/lib/businessModules/schoolEntr
 import { FlexLabel } from "@/lib/businessModules/schoolEntry/features/procedures/examinations/FlexLabel";
 import { BOOLEAN_SELECT_STYLE } from "@/lib/businessModules/schoolEntry/features/procedures/styles";
 import { REQUIRED_PROCEDURE_PROPERTIES } from "@/lib/businessModules/schoolEntry/features/procedures/translations";
-import { ConfirmLeaveDirtyFormEffect } from "@/lib/shared/components/form/ConfirmLeaveDirtyFormEffect";
 
 export interface AnamnesisFormValues {
   childLanguageScreening: OptionalFieldValue<boolean>;

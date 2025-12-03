@@ -11,7 +11,7 @@ def pnpmSetupDir = gradleDir.dir('pnpm')
 
 node {
   version = '22.21.0'
-  pnpmVersion = '10.19.0'
+  pnpmVersion = '10.23.0'
   download = true
   workDir = nodeSetupDir
   pnpmWorkDir = pnpmSetupDir

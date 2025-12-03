@@ -15,11 +15,13 @@ import {
   ApiInspection,
   ApiInspectionAvailableCLDVersionsResponse,
   ApiInspectionCLDVersion,
+  ApiInspectionFeature,
 } from "@eshg/inspection-api";
 import { useConfirmationDialog } from "@eshg/lib-employee-portal";
 import { Alert } from "@eshg/lib-portal";
 
 import { useUpdateInspection } from "@/lib/businessModules/inspection/api/mutations/inspection";
+import { useIsNewFeatureEnabled } from "@/lib/businessModules/inspection/api/queries/feature";
 import { inspectionGettersQueryKey } from "@/lib/businessModules/inspection/api/queries/inspection";
 import { ChecklistSelectSidebar } from "@/lib/businessModules/inspection/components/inspection/planning/checklist/ChecklistSelectSidebar";
 import { InfoTile } from "@/lib/shared/components/infoTile/InfoTile";
@@ -47,6 +49,9 @@ export function ChecklistTile({
   const { openCancelDialog } = useConfirmationDialog();
 
   const [checklistSidebar, setChecklistSidebar] = useState(false);
+
+  const featureToggleChecklistRequirementRemovalEnabled =
+    useIsNewFeatureEnabled(ApiInspectionFeature.ChecklistRequirementRemoval);
 
   const listIsEmpty =
     inspection.selectedChecklistDefinitionVersions.length === 0;
@@ -138,12 +143,13 @@ export function ChecklistTile({
       )}
 
       <Stack direction="column" spacing={1} role="list">
-        {!inspection.selectedChecklistDefinitionVersions.length && (
-          <Alert
-            color="primary"
-            message="Mindestens eine Checkliste muss ausgewählt sein, um eine Begehung durchzuführen."
-          />
-        )}
+        {!featureToggleChecklistRequirementRemovalEnabled &&
+          !inspection.selectedChecklistDefinitionVersions.length && (
+            <Alert
+              color="primary"
+              message="Mindestens eine Checkliste muss ausgewählt sein, um eine Begehung durchzuführen."
+            />
+          )}
         {inspection.selectedChecklistDefinitionVersions.map((version, idx) => {
           return (
             <Stack

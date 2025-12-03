@@ -24,6 +24,8 @@ import {
   InspectionPropertiesConfigApi,
   InspectionSampleActorAutocompleteApi,
   InspectionSampleApi,
+  InspectionSampleTemplateApi,
+  InspectionUntersuchungsparameterApi,
   ObjectTypeApi,
   PacklistApi,
   PacklistDefinitionApi,
@@ -176,4 +178,14 @@ export function useParameterAutocompleteApi() {
 export function useSampleActorAutocompleteApi() {
   const configuration = useConfiguration();
   return new InspectionSampleActorAutocompleteApi(configuration);
+}
+
+export function useUntersuchungsparameterApi() {
+  const configuration = useConfiguration();
+  return new InspectionUntersuchungsparameterApi(configuration);
+}
+
+export function useSampleTemplateApi() {
+  const configuration = useConfiguration();
+  return new InspectionSampleTemplateApi(configuration);
 }

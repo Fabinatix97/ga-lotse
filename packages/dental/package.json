@@ -17,6 +17,19 @@
       "node": "./build/lib/server.js"
     }
   },
+  "packageManager": "pnpm@10.23.0",
+  "devEngines": {
+    "runtime": {
+      "name": "node",
+      "version": ">=22.18 <23",
+      "onFail": "error"
+    },
+    "packageManager": {
+      "name": "pnpm",
+      "version": ">=10.21 <11",
+      "onFail": "error"
+    }
+  },
   "dependencies": {
     "@eshg/base-api": "workspace:*",
     "@eshg/dental-api": "workspace:*",

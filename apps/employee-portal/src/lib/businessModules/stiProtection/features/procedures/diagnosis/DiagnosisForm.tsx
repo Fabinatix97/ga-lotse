@@ -10,6 +10,7 @@ import { Button, IconButton, Sheet, Stack, Typography } from "@mui/joy";
 import { Formik, useFormikContext } from "formik";
 import { PropsWithChildren } from "react";
 
+import { ConfirmLeaveDirtyFormEffect } from "@eshg/lib-employee-portal";
 import {
   Alert,
   CheckboxField,
@@ -40,7 +41,6 @@ import {
   SidecarFormLayout,
 } from "@/lib/businessModules/stiProtection/features/procedures/SidecarFormLayout";
 import { TabStickyBottomButtonBar } from "@/lib/businessModules/stiProtection/features/procedures/TabStickyBottomButtonBar";
-import { ConfirmLeaveDirtyFormEffect } from "@/lib/shared/components/form/ConfirmLeaveDirtyFormEffect";
 
 import { useIcd10Sidebar } from "./Icd10Sidebar";
 import {

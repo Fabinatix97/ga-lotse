@@ -30,7 +30,7 @@ interface InspectionActorSelectionProps {
     value: SelectObjectFieldValue<
       {
         label: string;
-        value: string;
+        value: { id: string; type: string };
       },
       false
     >,
@@ -49,7 +49,7 @@ export function InspectionActorSelection(props: InspectionActorSelectionProps) {
   const options = query.isSuccess
     ? query.data.elements.map((element) => ({
         label: getLabelOfOption(element),
-        value: getValueOfOption(element),
+        value: { id: getValueOfOption(element), type: element.type },
       }))
     : [];
 
@@ -78,8 +78,10 @@ export function InspectionActorSelection(props: InspectionActorSelectionProps) {
         options={options}
         sx={{ flex: 1 }}
         getOptionLabel={(option) => option.label ?? ""}
-        getOptionKey={(option) => option.value ?? ""}
-        isOptionEqualToValue={(option, value) => option.value === value.value}
+        getOptionKey={(option) => option.value.id ?? ""}
+        isOptionEqualToValue={(option, value) =>
+          option.value.id === value.value.id
+        }
         onInputChange={(e, value) => setInputValue(value)}
         onValueChanged={props.onChange}
         {...props}

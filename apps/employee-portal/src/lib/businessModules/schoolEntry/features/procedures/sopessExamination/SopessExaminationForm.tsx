@@ -8,7 +8,11 @@
 import { Divider, Stack } from "@mui/joy";
 import { Formik, FormikHelpers } from "formik";
 
-import { FormFooter, FormStack } from "@eshg/lib-employee-portal";
+import {
+  ConfirmLeaveDirtyFormEffect,
+  FormFooter,
+  FormStack,
+} from "@eshg/lib-employee-portal";
 import {
   DebouncedTextareaField,
   FormProps,
@@ -37,7 +41,6 @@ import { LanguageForm } from "@/lib/businessModules/schoolEntry/features/procedu
 import { SelectiveAttentionForm } from "@/lib/businessModules/schoolEntry/features/procedures/sopessExamination/SelectiveAttentionForm";
 import { VisuoMotorSkillsForm } from "@/lib/businessModules/schoolEntry/features/procedures/sopessExamination/VisuoMotorSkillsForm";
 import { EVALUATION_EXAMINATION_TYPES } from "@/lib/businessModules/schoolEntry/features/procedures/translations";
-import { ConfirmLeaveDirtyFormEffect } from "@/lib/shared/components/form/ConfirmLeaveDirtyFormEffect";
 
 import { BodyCoordinationForm } from "./BodyCoordinationForm";
 import { PluralForm } from "./PluralForm";

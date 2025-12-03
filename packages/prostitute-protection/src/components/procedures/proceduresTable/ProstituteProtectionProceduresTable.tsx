@@ -8,27 +8,32 @@
 import { Chip } from "@mui/joy";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { ColumnSort, createColumnHelper } from "@tanstack/react-table";
-import { useState } from "react";
+import { isNullish } from "remeda";
 
 import {
   DataTable,
+  Pagination,
   TablePage,
   TableSheet,
   useTableControl,
 } from "@eshg/lib-employee-portal";
-import { formatDate, formatDateTime } from "@eshg/lib-portal";
+import { formatWeekdayDateTime } from "@eshg/lib-portal";
 import { ApiProstituteProtectionProcedureOverview } from "@eshg/prostitute-protection-api";
 
 import { useProceduresQueryOptions } from "../../../api/queries/procedures";
-import { CONSULTATION_TYPE_VALUES } from "../../../shared/constants";
+import { routes } from "../../../config/routes";
+import {
+  CONSULTATION_TYPE_VALUES,
+  PROCEDURE_STATUS_COLORS,
+  PROCEDURE_STATUS_VALUES,
+} from "../../../shared/constants";
 
 import { LanguagesCell } from "./LanguagesCell";
-import { PersonSearchForm, usePersonSearch } from "./PersonSearchForm";
 import { ProstituteProtectionProceduresTableControls } from "./ProstituteProtectionProceduresTableControls";
 
 const initialSorting: ColumnSort = {
   id: "appointmentStart",
-  desc: true,
+  desc: false,
 };
 
 const columnHelper =
@@ -38,32 +43,11 @@ function getProceduresColumns() {
   return [
     columnHelper.accessor("appointmentStart", {
       header: "Termin",
-      cell: ({ getValue }) => formatDateTime(getValue()),
+      cell: ({ getValue }) =>
+        isNullish(getValue()) ? "" : `${formatWeekdayDateTime(getValue())} Uhr`,
       enableSorting: true,
       meta: {
-        width: 160,
-        canNavigate: {
-          parentRow: true,
-        },
-      },
-    }),
-    columnHelper.accessor("lastName", {
-      header: "Nachname",
-      cell: ({ getValue }) => getValue(),
-      enableSorting: false,
-      meta: {
-        width: 110,
-        canNavigate: {
-          parentRow: true,
-        },
-      },
-    }),
-    columnHelper.accessor("firstName", {
-      header: "Vorname",
-      cell: ({ getValue }) => getValue(),
-      enableSorting: false,
-      meta: {
-        width: 110,
+        width: 200,
         canNavigate: {
           parentRow: true,
         },
@@ -72,20 +56,9 @@ function getProceduresColumns() {
     columnHelper.accessor("alias", {
       header: "Alias",
       cell: ({ getValue }) => getValue(),
-      enableSorting: false,
+      enableSorting: true,
       meta: {
-        width: 110,
-        canNavigate: {
-          parentRow: true,
-        },
-      },
-    }),
-    columnHelper.accessor("dateOfBirth", {
-      header: "Geburtsdatum",
-      cell: ({ getValue }) => formatDate(getValue()),
-      enableSorting: false,
-      meta: {
-        width: 80,
+        width: 160,
         canNavigate: {
           parentRow: true,
         },
@@ -93,24 +66,25 @@ function getProceduresColumns() {
     }),
     columnHelper.accessor("status", {
       header: "Status",
-      cell: () => <Chip color="neutral">Offen</Chip>,
+      cell: ({ getValue }) => (
+        <Chip color={PROCEDURE_STATUS_COLORS[getValue()]}>
+          {PROCEDURE_STATUS_VALUES[getValue()]}
+        </Chip>
+      ),
       enableSorting: false,
       meta: {
-        width: 80,
+        width: 160,
         canNavigate: {
           parentRow: true,
         },
       },
     }),
     columnHelper.accessor("languages", {
-      header: "Weitere Sprachen",
+      header: "Sprachen",
       cell: ({ getValue }) => <LanguagesCell languages={getValue()} />,
       enableSorting: false,
       meta: {
-        width: 100,
-        canNavigate: {
-          parentRow: true,
-        },
+        width: 160,
       },
     }),
     columnHelper.accessor("consultationType", {
@@ -124,7 +98,7 @@ function getProceduresColumns() {
       },
       enableSorting: false,
       meta: {
-        width: 110,
+        width: 160,
         canNavigate: {
           parentRow: true,
         },
@@ -134,9 +108,6 @@ function getProceduresColumns() {
 }
 
 export function ProstituteProtectionProceduresTable() {
-  const [isSearchVisible, setSearchVisible] = useState(false);
-  const personSearch = usePersonSearch();
-
   const tableControl = useTableControl({
     serverSideSorting: true,
     initialSorting,
@@ -149,31 +120,38 @@ export function ProstituteProtectionProceduresTable() {
     sorting: tableControl.tableSorting,
   });
 
-  const { data, isLoading } = useSuspenseQuery(proceduresQueryOptions);
+  const {
+    data: { elements, totalNumberOfElements },
+    isLoading,
+  } = useSuspenseQuery(proceduresQueryOptions);
 
   return (
     <TablePage
+      data-testid="procedureTable"
       aria-label="Vorgänge"
-      controls={
-        <ProstituteProtectionProceduresTableControls
-          handleSearch={() => setSearchVisible(!isSearchVisible)}
-          isSearchVisible={!isSearchVisible}
-        />
-      }
+      controls={<ProstituteProtectionProceduresTableControls />}
       filterSettings={null}
-      search={
-        <PersonSearchForm
-          isHidden={!isSearchVisible}
-          {...personSearch.formProps}
-          onChange={(v) => {
-            personSearch.setValues(v);
-          }}
-        />
-      }
+      search={null}
       fullHeight
     >
-      <TableSheet loading={isLoading}>
-        <DataTable data={data.elements} columns={getProceduresColumns()} />
+      <TableSheet
+        loading={isLoading}
+        footer={
+          <Pagination
+            totalCount={totalNumberOfElements}
+            {...tableControl.paginationProps}
+          />
+        }
+      >
+        <DataTable
+          data={elements}
+          columns={getProceduresColumns()}
+          rowNavigation={{
+            route: ({ original: { id: procedureId } }) =>
+              routes.procedures.byId(procedureId).details,
+            focusColumnAccessorKey: "appointmentStart",
+          }}
+        />
       </TableSheet>
     </TablePage>
   );

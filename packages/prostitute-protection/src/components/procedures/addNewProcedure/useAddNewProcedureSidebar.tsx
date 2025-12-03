@@ -3,15 +3,15 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Ref, useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { Ref, useState } from "react";
 
 import {
   SidebarFormHandle,
-  useSearchParam,
   useSidebarFromSearchParam,
   useStepper,
 } from "@eshg/lib-employee-portal";
-import { durationToMinutes, useSnackbar } from "@eshg/lib-portal";
+import { mapOptionalValue, useSnackbar } from "@eshg/lib-portal";
 import {
   ApiAppointmentBookingType,
   ApiConsultationType,
@@ -21,10 +21,10 @@ import {
 
 import { useCreateProcedureMutation } from "../../../api/mutations/procedures";
 import { useGetAppointmentStandardDuration } from "../../../api/queries/appointmentStandardDuration";
+import { routes } from "../../../config/routes";
 
 import { AppointmentStep } from "./AppointmentStep";
 import { ConsultationDetailsStep } from "./ConsultationDetailsStep";
-import { PersonStep } from "./PersonStep";
 
 export interface FieldProps {
   formRef: Ref<SidebarFormHandle>;
@@ -42,10 +42,6 @@ export interface FieldProps {
 const steps = [
   {
     title: "Neuen Vorgang anlegen",
-    fields: PersonStep,
-  },
-  {
-    title: "Neuen Vorgang anlegen",
     fields: ConsultationDetailsStep,
   },
   {
@@ -56,24 +52,13 @@ const steps = [
 ];
 
 export interface AddNewProcedureForm {
-  firstName?: string;
-  lastName?: string;
   alias: string;
-  dateOfBirth?: string;
   hasSufficientGermanLanguageSkills?: boolean;
   languages: ApiPersonLanguage[];
-  consultationType?: ApiConsultationType;
+  consultationType: ApiConsultationType | "";
   customAppointmentDate: string;
   duration: number;
 }
-
-export const initialValues: AddNewProcedureForm = {
-  alias: "",
-  languages: [],
-  customAppointmentDate: "",
-  consultationType: ApiConsultationType.Initial,
-  duration: 0,
-};
 
 const searchParam = "add-procedure";
 
@@ -93,25 +78,23 @@ function SidebarWrapper({
   formRef: Ref<SidebarFormHandle>;
   onClose: () => void;
 }) {
-  const [currentState, setState] = useState<AddNewProcedureForm>(initialValues);
   const snackbar = useSnackbar();
-  const [_, setIsOpen] = useSearchParam(searchParam, "boolean");
   const addNewProcedure = useCreateProcedureMutation();
   const { data } = useGetAppointmentStandardDuration();
-
-  useEffect(() => {
-    if (currentState.duration) return;
-    if (!data?.consultation) return;
-    setState((currentState) => ({
-      ...currentState,
-      duration: durationToMinutes(data.consultation),
-    }));
-  }, [currentState.duration, data]);
+  const router = useRouter();
+  const initialValues: AddNewProcedureForm = {
+    alias: "",
+    languages: [],
+    customAppointmentDate: "",
+    consultationType: "",
+    duration: data.PROSTITUTE_PROTECTION_CONSULTATION,
+  };
+  const [currentState, setState] = useState<AddNewProcedureForm>(initialValues);
 
   async function onFinalSubmit(newValues: AddNewProcedureForm) {
     const mappedValues = mapProcedureFormToApi(newValues);
-    await addNewProcedure.mutateAsync(mappedValues);
-    setIsOpen(false);
+    const { id } = await addNewProcedure.mutateAsync(mappedValues);
+    router.push(routes.procedures.byId(id).details);
     snackbar.confirmation("Vorgang erstellt");
   }
   function onNext(newValues: AddNewProcedureForm) {
@@ -153,6 +136,6 @@ function mapProcedureFormToApi(
     alias: form.alias,
     languages: form.languages ?? [],
     appointmentBookingType: ApiAppointmentBookingType.UserDefined,
-    consultationType: form.consultationType,
+    consultationType: mapOptionalValue(form.consultationType),
   };
 }

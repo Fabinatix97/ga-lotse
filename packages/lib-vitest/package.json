@@ -13,6 +13,19 @@
       "import": "./build/lib/extend-expect.js"
     }
   },
+  "packageManager": "pnpm@10.23.0",
+  "devEngines": {
+    "runtime": {
+      "name": "node",
+      "version": ">=22.18 <23",
+      "onFail": "error"
+    },
+    "packageManager": {
+      "name": "pnpm",
+      "version": ">=10.21 <11",
+      "onFail": "error"
+    }
+  },
   "devDependencies": {
     "@eslint/compat": "catalog:eslint",
     "@eslint/eslintrc": "catalog:eslint",

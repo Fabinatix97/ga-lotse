@@ -3,15 +3,29 @@
   "version": "1.0.0",
   "description": "DOMPurify microservice for sanitizing SVG files",
   "type": "module",
+  "private": true,
   "main": "server.js",
   "scripts": {
     "start": "node server.js"
   },
+  "packageManager": "pnpm@10.23.0",
+  "devEngines": {
+    "runtime": {
+      "name": "node",
+      "version": ">=22.18 <23",
+      "onFail": "error"
+    },
+    "packageManager": {
+      "name": "pnpm",
+      "version": ">=10.21 <11",
+      "onFail": "error"
+    }
+  },
   "dependencies": {
-    "body-parser": "^2.2.0",
-    "dompurify": "^3.3.0",
-    "express": "^5.1.0",
-    "jsdom": "^27.0.1",
-    "pino": "^10.1.0"
+    "body-parser": "2.2.0",
+    "dompurify": "3.3.0",
+    "express": "5.1.0",
+    "jsdom": "27.0.1",
+    "pino": "10.1.0"
   }
 }

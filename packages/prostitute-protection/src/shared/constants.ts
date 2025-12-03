@@ -3,27 +3,31 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { buildEnumOptions } from "@eshg/lib-portal";
+import { ChipProps } from "@mui/joy";
+
+import { EnumMap, buildEnumOptions } from "@eshg/lib-portal";
 import {
+  ApiConsultation,
   ApiConsultationType,
   ApiCountryCode,
   ApiDocumentType,
   ApiPersonLanguage,
+  ApiProcedureStatus,
 } from "@eshg/prostitute-protection-api";
 
 export const systemProgressEntryTypeTitles: Record<string, string> = {
-  PERSON_DETAILS_UPDATED: "Antragsteller aktualisiert",
-  CLOSED: "Vorgang geschlossen",
-  PROCEDURE_CANCELED: "Vorgang abgebrochen",
-  REOPENED: "Vorgang wiedereröffnet",
+  PROCEDURE_DETAILS_MODIFIED: "Vorgangsdaten bearbeitet",
+  PERSON_DETAILS_MODIFIED: "Personendaten bearbeitet",
+  CONSULTATION_MODIFIED: "Beratung bearbeitet",
+  REGISTRATION_CONSULTATION_CERTIFICATE_GENERATED:
+    "Beratungszertifikat_Anmeldung erstellt",
+  CONSULTATION_CERTIFICATE_GENERATED: "Beratungszertifikat erstellt",
 } as const;
 
 export const keyDocumentTypes: Record<string, string> = {
-  PERSON_DETAILS_UPDATED: "Person aktualisiert.",
-  CLOSED: "Vorgang geschlossen.",
-  PROCEDURE_CANCELED: "Vorgang abgebrochen.",
-  REOPENED: "Vorgang wiedereröffnet.",
-} as const;
+  CONSULTATION_CERTIFICATE: "Beratungszertifikat",
+  REGISTRATION_CONSULTATION_CERTIFICATE: "Beratungszertifikat_Anmeldung",
+};
 
 export const PERSON_FIELD_NAME = {
   firstName: "Vorname",
@@ -50,45 +54,39 @@ export const APPOINTMENT_FIELD_NAME = {
   appointmentDuration: "Dauer",
 } as const;
 
-export const LANGUAGE_FIELD_NAME = {
-  languageOfConsultation: "Sprache der Beratung",
-  interpreterCalledIn: "Dolmetscher hinzugezogen",
+export const APPOINTMENT_FORM_LABELS = {
+  appointmentStart: "Datum und Zeit",
+  appointmentDuration: "Termindauer in Minuten",
 } as const;
 
-export const NOTES_FIELD_NAME = {
-  supervisedConsultation: "Beratung unter Aufsicht",
-  remarks: "Bemerkungen",
-  insertTextTemplate: "Textvorlage einfügen",
-} as const;
-
-export const CONSULTATION_FIELD_NAME = {
-  legalAdvice: "Rechtsberatung",
+export const CONSULTATION_FIELD_NAME: Record<
+  keyof Omit<ApiConsultation, "version">,
+  string
+> = {
+  legalAdvices: "Rechtsberatung",
   healthAndSocialInsurance: "Kranken- und Sozialversicherung",
-  counselingServices: "Beratungsangebote",
-  helpInEmergencies: "Hilfe in Notsituationen",
-  taxObligation: "Steuerpflicht",
-  counselingNeedClearing: "Beratungsbedarf / Clearing",
+  consultingServices: "Beratungsangebote",
+  emergencyHelp: "Hilfe in Notsituationen",
+  taxLiability: "Steuerpflicht",
+  clearing: "Beratungsbedarf / Clearing",
   informationMaterial: "Infomaterial",
-  emergencyCoercionSituation: "Notlage / Zwangslage",
+  predicament: "Notlage / Zwangslage",
   diseasePrevention: "Krankheitsverhütung",
-  contraception: "Empfängnisregelung",
+  birthControl: "Empfängnisregelung",
   pregnancy: "Schwangerschaft",
-  alcoholDrugUse: "Alkohol- / Drogengebrauch",
-  referralParagraph19: "Weitervermittlung § 19",
+  alcoholAndDrugUsage: "Alkohol- / Drogengebrauch",
+  referral: "Weitervermittlung § 19",
+  supervisedConsultation: "Beratung unter Aufsicht",
+  remark: "Bemerkungen",
+  interpreterConsulted: "Dolmetscher hinzugezogen",
+  interpreterFirstName: PERSON_FIELD_NAME.firstName,
+  interpreterLastName: PERSON_FIELD_NAME.lastName,
+  languageOfConsultation: "Sprache der Beratung",
 } as const;
 
 export const DOCUMENT_TYPE_VALUES: Record<ApiDocumentType, string> = {
   [ApiDocumentType.IdentificationCard]: "Personalausweis",
   [ApiDocumentType.Passport]: "Reisepass",
-};
-
-export const APPOINTMENT_DURATION_VALUES: Record<string, string> = {
-  PT15M: "15 min",
-  PT20M: "20 min",
-  PT30M: "30 min",
-  PT40M: "40 min",
-  PT45M: "45 min",
-  PT60M: "60 min",
 };
 
 export const CONSULTATION_TYPE_VALUES: Record<ApiConsultationType, string> = {
@@ -390,3 +388,22 @@ export const CERTIFICATE_TYPE_VALUES = {
   [CertificateType.fullName]: "Klarname",
   [CertificateType.alias]: "Alias",
 } as const;
+
+export const PROCEDURE_STATUS_COLORS: EnumMap<
+  ApiProcedureStatus,
+  ChipProps["color"]
+> = {
+  [ApiProcedureStatus.Aborted]: "warning",
+  [ApiProcedureStatus.Closed]: "success",
+  [ApiProcedureStatus.Draft]: "neutral",
+  [ApiProcedureStatus.InProgress]: "primary",
+  [ApiProcedureStatus.Open]: "neutral",
+};
+
+export const PROCEDURE_STATUS_VALUES: EnumMap<ApiProcedureStatus> = {
+  [ApiProcedureStatus.Aborted]: "Abgebrochen",
+  [ApiProcedureStatus.Closed]: "Geschlossen",
+  [ApiProcedureStatus.Draft]: "Entwurf",
+  [ApiProcedureStatus.InProgress]: "In Arbeit",
+  [ApiProcedureStatus.Open]: "Offen",
+};

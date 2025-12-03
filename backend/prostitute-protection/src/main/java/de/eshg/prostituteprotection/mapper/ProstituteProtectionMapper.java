@@ -13,6 +13,8 @@ import de.eshg.prostituteprotection.api.DocumentTypeDto;
 import de.eshg.prostituteprotection.api.LanguageDto;
 import de.eshg.prostituteprotection.api.ProcedureDetailsDto;
 import de.eshg.prostituteprotection.api.ProstituteProtectionProcedureOverviewDto;
+import de.eshg.prostituteprotection.api.UpdateEncryptedPersonalDataRequest;
+import de.eshg.prostituteprotection.api.UpdateProstituteProtectionProcedureRequest;
 import de.eshg.prostituteprotection.domain.model.Consultation;
 import de.eshg.prostituteprotection.domain.model.ConsultationType;
 import de.eshg.prostituteprotection.domain.model.DocumentType;
@@ -34,10 +36,10 @@ public class ProstituteProtectionMapper {
     prostituteProtectionProcedure.setConsultationType(
         mapConsultationType(request.consultationType()));
 
-    return mapPerson(prostituteProtectionProcedure, request);
+    return mapEncryptedPersonalData(prostituteProtectionProcedure, request);
   }
 
-  private static ProstituteProtectionProcedure mapPerson(
+  private static ProstituteProtectionProcedure mapEncryptedPersonalData(
       ProstituteProtectionProcedure prostituteProtectionProcedure,
       CreateProstituteProtectionProcedureRequest request) {
     EncryptedPersonalData personalData = new EncryptedPersonalData();
@@ -46,6 +48,18 @@ public class ProstituteProtectionMapper {
 
     prostituteProtectionProcedure.setEncryptedPersonalData(personalData);
     return prostituteProtectionProcedure;
+  }
+
+  public static ProstituteProtectionProcedure mapEncryptedPersonalData(
+      ProstituteProtectionProcedure procedure, UpdateEncryptedPersonalDataRequest request) {
+    procedure.getEncryptedPersonalData().setAlias(request.alias());
+    procedure.getEncryptedPersonalData().setLastName(request.lastName());
+    procedure.getEncryptedPersonalData().setFirstName(request.firstName());
+    procedure.getEncryptedPersonalData().setDateOfBirth(request.dateOfBirth());
+    procedure.getEncryptedPersonalData().setLanguages(mapLanguages(request.languages()));
+    procedure.getEncryptedPersonalData().setDocumentType(mapDocumentType(request.documentType()));
+    procedure.getEncryptedPersonalData().setNationality(request.nationality());
+    return procedure;
   }
 
   public static ProcedureDetailsDto mapToDetailsDto(ProstituteProtectionProcedure procedure) {
@@ -81,7 +95,13 @@ public class ProstituteProtectionMapper {
         consultation.isBirthControl(),
         consultation.isPregnancy(),
         consultation.isAlcoholAndDrugUsage(),
-        consultation.isReferral());
+        consultation.isReferral(),
+        consultation.isSupervisedConsultation(),
+        consultation.getRemark(),
+        mapToLanguageDto(consultation.getLanguageOfConsultation()),
+        consultation.isInterpreterConsulted(),
+        consultation.getInterpreterFirstName(),
+        consultation.getInterpreterLastName());
   }
 
   public static Consultation mapConsultationToDomain(ConsultationDto dto) {
@@ -99,6 +119,12 @@ public class ProstituteProtectionMapper {
     consultation.setPregnancy(dto.pregnancy());
     consultation.setAlcoholAndDrugUsage(dto.alcoholAndDrugUsage());
     consultation.setReferral(dto.referral());
+    consultation.setSupervisedConsultation(dto.supervisedConsultation());
+    consultation.setRemark(dto.remark());
+    consultation.setLanguageOfConsultation(mapLanguage(dto.languageOfConsultation()));
+    consultation.setInterpreterConsulted(dto.interpreterConsulted());
+    consultation.setInterpreterFirstName(dto.interpreterFirstName());
+    consultation.setInterpreterLastName(dto.interpreterLastName());
     return consultation;
   }
 
@@ -123,6 +149,14 @@ public class ProstituteProtectionMapper {
       case null -> null;
       case DocumentType.IDENTIFICATION_CARD -> DocumentTypeDto.IDENTIFICATION_CARD;
       case DocumentType.PASSPORT -> DocumentTypeDto.PASSPORT;
+    };
+  }
+
+  private static DocumentType mapDocumentType(DocumentTypeDto documentTypeDto) {
+    return switch (documentTypeDto) {
+      case null -> null;
+      case DocumentTypeDto.IDENTIFICATION_CARD -> DocumentType.IDENTIFICATION_CARD;
+      case DocumentTypeDto.PASSPORT -> DocumentType.PASSPORT;
     };
   }
 
@@ -213,5 +247,11 @@ public class ProstituteProtectionMapper {
     return procedure.getEncryptedPersonalData().getLanguages().stream()
         .map(ProstituteProtectionMapper::mapToLanguageDto)
         .toList();
+  }
+
+  public static void mapRequestToDomain(
+      ProstituteProtectionProcedure procedure, UpdateProstituteProtectionProcedureRequest request) {
+    procedure.setConsultationType(
+        ProstituteProtectionMapper.mapConsultationType(request.consultationType()));
   }
 }

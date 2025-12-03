@@ -17,6 +17,7 @@ import { ApiInspFacility, ApiInspectionSample } from "@eshg/inspection-api";
 
 import { useGetSamples } from "@/lib/businessModules/inspection/api/queries/sample";
 import { useInspectionAddSampleSidebar } from "@/lib/businessModules/inspection/components/inspection/measurements/InspectionAddSampleSidebar";
+import { useInspectionTemplateSampleSidebar } from "@/lib/businessModules/inspection/components/inspection/measurements/InspectionTemplateSampleSidebar";
 import { Sample } from "@/lib/businessModules/inspection/components/inspection/measurements/sample/Sample";
 import { InfoTile } from "@/lib/shared/components/infoTile/InfoTile";
 
@@ -31,6 +32,8 @@ export function SamplesTile({
   facility,
 }: Readonly<SamplesTileProps>) {
   const inspectionAddMeasurementSidebar = useInspectionAddSampleSidebar();
+  const inspectionTemplateSampleSidebar = useInspectionTemplateSampleSidebar();
+
   const [showOnlyConspicuousParameters, setShowOnlyConspicuousParameters] =
     useState(false);
   const { data: samples } = useGetSamples(procedureId);
@@ -38,6 +41,14 @@ export function SamplesTile({
   function handleAdd(e: React.MouseEvent) {
     e.stopPropagation();
     inspectionAddMeasurementSidebar.open({
+      procedureId: procedureId,
+      facility: facility,
+    });
+  }
+
+  function handleAddViaTemplate(e: React.MouseEvent) {
+    e.stopPropagation();
+    inspectionTemplateSampleSidebar.open({
       procedureId: procedureId,
       facility: facility,
     });
@@ -59,6 +70,16 @@ export function SamplesTile({
 
     if (allPending) {
       return "PENDING";
+    }
+
+    const allNoNormSpecified = params.every(
+      (p) =>
+        p.preclassification === undefined ||
+        p.preclassification === "NO_NORM_SPECIFIED",
+    );
+
+    if (allNoNormSpecified) {
+      return "NO_NORM";
     }
 
     return "OK";
@@ -102,7 +123,7 @@ export function SamplesTile({
         aria-label="Vorlage verwenden"
         startDecorator={<AssignmentOutlined />}
         onClick={(e) => {
-          handleAdd(e);
+          handleAddViaTemplate(e);
         }}
       >
         <Typography component="span" color="primary" level="title-md">

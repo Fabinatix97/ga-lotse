@@ -10,12 +10,25 @@ import de.eshg.prostituteprotection.api.RequiredProcedureArea;
 import de.eshg.prostituteprotection.domain.model.Consultation;
 import de.eshg.prostituteprotection.domain.model.ProstituteProtectionProcedure;
 import de.eshg.rest.service.error.BadRequestException;
+import io.micrometer.common.util.StringUtils;
 import java.util.EnumSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class ProstituteProtectionValidator {
   private ProstituteProtectionValidator() {}
+
+  public static void validateConsultation(Consultation consultation) {
+    if (consultation == null) {
+      return;
+    }
+    if (!consultation.isInterpreterConsulted()
+        && (StringUtils.isNotEmpty(consultation.getInterpreterFirstName())
+            || StringUtils.isNotEmpty(consultation.getInterpreterLastName()))) {
+      throw new BadRequestException(
+          "Interpreters name cannot be set when interpreterConsulted is false.");
+    }
+  }
 
   public static Map<RequiredProcedureArea, EnumSet<ProcedureProperty>> validateCompleteness(
       ProstituteProtectionProcedure procedure) {

@@ -9,7 +9,7 @@ import { DeleteOutlined, OpenInNew } from "@mui/icons-material";
 import { Stack, Typography } from "@mui/joy";
 import { useId } from "react";
 
-import { ApiFileType } from "@eshg/inspection-api";
+import { ApiFileType, ApiInspectionFeature } from "@eshg/inspection-api";
 import {
   CustomFileType,
   FileCard,
@@ -21,6 +21,7 @@ import { FileLike, FileType, FormPlus, formatFileSize } from "@eshg/lib-portal";
 
 import { useConfiguration } from "@/lib/businessModules/inspection/api/clients";
 import { useDeleteChecklistFile } from "@/lib/businessModules/inspection/api/mutations/checklist";
+import { useIsNewFeatureEnabled } from "@/lib/businessModules/inspection/api/queries/feature";
 import { ChecklistLabel } from "@/lib/businessModules/inspection/components/inspection/execution/checklist/form/ChecklistLabel";
 import { CLFormElement } from "@/lib/businessModules/inspection/components/inspection/execution/checklist/form/helpers";
 import { InfoIconTooltipButton } from "@/lib/shared/components/buttons/IconTooltipButton";
@@ -50,6 +51,9 @@ export function ChecklistFileElement({
   onChange,
   readOnly = false,
 }: Readonly<ChecklistFileElementProps>) {
+  const featureToggleChecklistRequirementRemovalEnabled =
+    useIsNewFeatureEnabled(ApiInspectionFeature.ChecklistRequirementRemoval);
+
   const { data: config } = useGetPublicConfig();
   const uploadTooltipTitleId = useId();
   const titleId = useId();
@@ -57,10 +61,14 @@ export function ChecklistFileElement({
     return;
   }
 
+  const isMandatory =
+    !featureToggleChecklistRequirementRemovalEnabled &&
+    element.context.mandatory;
+
   const requiredType =
     element.type === "IMAGE" ? "ein Foto" : "eine Audiodatei";
 
-  const requiredText = element.context.mandatory
+  const requiredText = isMandatory
     ? `Bitte ${requiredType} auswählen.`
     : undefined;
 
@@ -104,7 +112,7 @@ export function ChecklistFileElement({
       <Stack direction="column" gap={1} role="group" aria-labelledby={titleId}>
         <ChecklistLabel
           incident={false}
-          required={element.context.mandatory}
+          required={isMandatory}
           tooltipText={element.context.help}
           note={element.context.note}
           label-id={titleId}

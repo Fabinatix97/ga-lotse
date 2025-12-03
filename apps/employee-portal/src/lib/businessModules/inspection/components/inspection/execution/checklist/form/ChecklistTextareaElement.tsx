@@ -6,8 +6,10 @@
 import { Box } from "@mui/joy";
 import { ReactNode, useId } from "react";
 
+import { ApiInspectionFeature } from "@eshg/inspection-api";
 import { TextareaField } from "@eshg/lib-portal";
 
+import { useIsNewFeatureEnabled } from "@/lib/businessModules/inspection/api/queries/feature";
 import { ChecklistLabel } from "@/lib/businessModules/inspection/components/inspection/execution/checklist/form/ChecklistLabel";
 import { CLFormElement } from "@/lib/businessModules/inspection/components/inspection/execution/checklist/form/helpers";
 
@@ -28,22 +30,27 @@ export function ChecklistTextareaElement({
   labelEndDecorator,
   readOnly,
 }: Readonly<ChecklistTextareaElementProps>) {
+  const featureToggleChecklistRequirementRemovalEnabled =
+    useIsNewFeatureEnabled(ApiInspectionFeature.ChecklistRequirementRemoval);
+
   const labelId = useId();
 
   if (element.type !== "TEXT") {
     return;
   }
 
-  const requiredText = element.context.mandatory
-    ? "Bitte Text eingeben"
-    : undefined;
+  const isMandatory =
+    !featureToggleChecklistRequirementRemovalEnabled &&
+    element.context.mandatory;
+
+  const requiredText = isMandatory ? "Bitte Text eingeben" : undefined;
 
   return (
     <Box display="contents" role="group" aria-labelledby={labelId}>
       <ChecklistLabel
         label-id={labelId}
         incident={incident}
-        required={element.context.mandatory}
+        required={isMandatory}
         tooltipText={element.context.help}
         endDecorator={labelEndDecorator}
         note={element.context.note}

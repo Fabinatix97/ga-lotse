@@ -16,5 +16,5 @@ public record InspectionSampleMeasurementParameterDto(
     String parameterGroup,
     Double measurementValue,
     String unit,
-    InspectionSamplePreclassificationDto preclassification,
+    @NotNull InspectionSamplePreclassificationDto preclassification,
     String userAssessment) {}

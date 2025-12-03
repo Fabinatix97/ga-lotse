@@ -16,7 +16,10 @@ import {
   ApiChecklistDefinitionVersion,
   ApiObjectType,
 } from "@eshg/inspection-api";
-import { ButtonBar } from "@eshg/lib-employee-portal";
+import {
+  ButtonBar,
+  ConfirmLeaveDirtyFormEffect,
+} from "@eshg/lib-employee-portal";
 import { FormPlus, InternalLinkButton } from "@eshg/lib-portal";
 
 import {
@@ -33,7 +36,6 @@ import {
 import { ChecklistDefinitionSectionsList } from "@/lib/businessModules/inspection/components/checklistDefinition/editor/sections/ChecklistDefinitionSectionsList";
 import { useUserCanSaveChecklistDefinition } from "@/lib/businessModules/inspection/components/checklistDefinition/helpers/helpers";
 import { routes } from "@/lib/businessModules/inspection/shared/routes";
-import { ConfirmLeaveDirtyFormEffect } from "@/lib/shared/components/form/ConfirmLeaveDirtyFormEffect";
 
 interface EditChecklistDefinitionProps {
   headerRow?: ReactNode;

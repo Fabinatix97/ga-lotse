@@ -73,37 +73,42 @@ export function VaccinationStatusSection({
                     Daten erneut abfragen
                   </Button>
                 )}
-                {measlesVaccinationStatus.update === "PENDING" && (
-                  <Stack gap={2}>
-                    <Alert
-                      color="warning"
-                      title="Update läuft"
-                      message="Das Update des Impfstatus kann bis zu 2 Stunden dauern."
-                    />
-                    <Button
-                      fullWidth
-                      loading={refreshing}
-                      onClick={refreshPage}
-                    >
-                      Seite aktualisieren
-                    </Button>
-                  </Stack>
-                )}
+                {measlesVaccinationStatus.update === "PENDING" &&
+                  renderPendingMessage(refreshing, refreshPage)}
               </Stack>
             </DetailsList>
+          ) : measlesVaccinationStatus.update === "POSSIBLE" ? (
+            <Stack gap={1}>
+              <Alert
+                color="primary"
+                message="Bitte fragen Sie zuerst ab, ob Impfdaten vorhanden sind, bevor Sie neue Daten eingeben."
+              />
+              <Button onClick={handleUpdateRequest}>Daten anfragen</Button>
+            </Stack>
           ) : (
-            measlesVaccinationStatus.update === "POSSIBLE" && (
-              <Stack gap={1}>
-                <Alert
-                  color="primary"
-                  message="Bitte fragen Sie zuerst ab, ob Impfdaten vorhanden sind, bevor Sie neue Daten eingeben."
-                />
-                <Button onClick={handleUpdateRequest}>Daten anfragen</Button>
-              </Stack>
-            )
+            measlesVaccinationStatus.update === "PENDING" &&
+            renderPendingMessage(refreshing, refreshPage)
           )}
         </InfoTile>
       </Stack>
     )
+  );
+}
+
+function renderPendingMessage(
+  refreshing: boolean,
+  refreshPage: () => Promise<void>,
+) {
+  return (
+    <Stack gap={2}>
+      <Alert
+        color="warning"
+        title="Update läuft"
+        message="Das Update des Impfstatus kann bis zu 2 Stunden dauern."
+      />
+      <Button fullWidth loading={refreshing} onClick={refreshPage}>
+        Seite aktualisieren
+      </Button>
+    </Stack>
   );
 }

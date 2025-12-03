@@ -120,6 +120,7 @@ export {
 export { DetailsSectionHeader } from "./components/detailsSection/DetailsSectionHeader";
 export { DetailsItem } from "./components/detailsSection/items/DetailsItem";
 export { ExternalLinkDetailsItem } from "./components/detailsSection/items/ExternalLinkDetailsItem";
+export { ConfirmLeaveDirtyFormEffect } from "./components/form/ConfirmLeaveDirtyFormEffect";
 export { FormButtonBar } from "./components/form/FormButtonBar";
 export { FormDialog } from "./components/form/FormDialog";
 export { FormFooter } from "./components/form/FormFooter";

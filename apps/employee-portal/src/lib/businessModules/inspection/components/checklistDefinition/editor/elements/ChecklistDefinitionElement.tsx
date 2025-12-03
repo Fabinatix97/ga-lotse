@@ -16,10 +16,14 @@ import {
 import { Box, Divider, IconButton, Stack, Typography } from "@mui/joy";
 import { useId } from "react";
 
-import { ApiCLSectionContextElementsInner } from "@eshg/inspection-api";
+import {
+  ApiCLSectionContextElementsInner,
+  ApiInspectionFeature,
+} from "@eshg/inspection-api";
 import { InformationSheet } from "@eshg/lib-employee-portal";
 import { CheckboxField, InputField, SelectField } from "@eshg/lib-portal";
 
+import { useIsNewFeatureEnabledUnsuspended } from "@/lib/businessModules/inspection/api/queries/feature";
 import { NoteAndHelpTextInput } from "@/lib/businessModules/inspection/components/checklistDefinition/editor/elements/NoteAndHelpTextInput";
 import { ChecklistDefinitionElementInner } from "@/lib/businessModules/inspection/components/checklistDefinition/editor/elements/inner/ChecklistDefinitionElementInner";
 import { CopyDeleteDropdown } from "@/lib/businessModules/inspection/components/checklistDefinition/helpers/CopyDeleteDropdown";
@@ -48,6 +52,11 @@ export function ChecklistDefinitionElement({
   dragHandleProps,
   ref,
 }: Readonly<ChecklistDefinitionElementProps>) {
+  const { data: featureToggleChecklistRequirementRemovalEnabled } =
+    useIsNewFeatureEnabledUnsuspended(
+      ApiInspectionFeature.ChecklistRequirementRemoval,
+    );
+
   const isImage = element.type === "IMAGE" || element.type === "CLImageContext";
   const isAudio = element.type === "AUDIO" || element.type === "CLAudioContext";
   const isSeparator =
@@ -133,13 +142,15 @@ export function ChecklistDefinitionElement({
         }
         endDecorator={
           <>
-            {!isImage && !isAudio && (
-              /* image and audio elements cannot be marked as mandatory */
-              <CheckboxField
-                name={`context.sections.${sectionIndex}.elements.${elementIndex}.mandatory`}
-                label="Pflichtfeld"
-              />
-            )}
+            {!featureToggleChecklistRequirementRemovalEnabled &&
+              !isImage &&
+              !isAudio && (
+                /* image and audio elements cannot be marked as mandatory */
+                <CheckboxField
+                  name={`context.sections.${sectionIndex}.elements.${elementIndex}.mandatory`}
+                  label="Pflichtfeld"
+                />
+              )}
             <CopyDeleteDropdown
               onDelete={deleteElement}
               onCopy={() => copyElement()}

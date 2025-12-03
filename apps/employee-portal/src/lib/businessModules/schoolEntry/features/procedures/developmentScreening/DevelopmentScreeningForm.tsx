@@ -8,7 +8,11 @@
 import { Divider } from "@mui/joy";
 import { Formik, FormikHelpers } from "formik";
 
-import { FormFooter, FormStack } from "@eshg/lib-employee-portal";
+import {
+  ConfirmLeaveDirtyFormEffect,
+  FormFooter,
+  FormStack,
+} from "@eshg/lib-employee-portal";
 import {
   FormProps,
   MutationBundle,
@@ -44,7 +48,6 @@ import {
   SocioEducationalFields,
   SocioEducationalFieldsValues,
 } from "@/lib/businessModules/schoolEntry/features/procedures/developmentScreening/SocioEducationalFields";
-import { ConfirmLeaveDirtyFormEffect } from "@/lib/shared/components/form/ConfirmLeaveDirtyFormEffect";
 
 export interface DevelopmentScreeningFormValues {
   measurements: MeasurementFieldsValues;

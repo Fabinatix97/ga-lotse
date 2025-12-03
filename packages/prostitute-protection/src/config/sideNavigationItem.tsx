@@ -25,6 +25,11 @@ const defaultSubItems: SideNavigationSubItem[] = [
     href: routes.procedures.index,
     accessCheck: hasUserRole(ApiUserRole.ProstituteProtectionAdmin),
   },
+  {
+    name: "Terminblöcke",
+    href: routes.appointmentBlockGroups.index,
+    accessCheck: hasUserRole(ApiUserRole.ProstituteProtectionAdmin),
+  },
 ];
 
 export function resolveSideNavigationItems(): SideNavigationItem[] {

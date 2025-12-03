@@ -6,6 +6,7 @@
 package de.eshg.inspection.sample;
 
 import static de.eshg.inspection.inspection.InspectionUtils.checkInspectionIsNotClosed;
+import static java.util.Locale.ROOT;
 
 import de.eshg.api.commons.SortDirection;
 import de.eshg.base.centralfile.api.facility.GetFacilityFileStateResponse;
@@ -33,6 +34,7 @@ import de.eshg.inspection.sample.api.AutocompleteUserDto;
 import de.eshg.inspection.sample.api.CreateInspectionSampleMeasurementParameterRequest;
 import de.eshg.inspection.sample.api.CreateInspectionSampleRequest;
 import de.eshg.inspection.sample.api.GetInspectionSamplesResponse;
+import de.eshg.inspection.sample.api.GetUntersuchungsparameterResponse;
 import de.eshg.inspection.sample.api.InspectionSampleActorReferenceDto;
 import de.eshg.inspection.sample.api.InspectionSampleContactReferenceDto;
 import de.eshg.inspection.sample.api.InspectionSampleDto;
@@ -48,6 +50,8 @@ import de.eshg.inspection.sample.persistence.InspectionSampleMeasurementParamete
 import de.eshg.inspection.sample.persistence.InspectionSampleMeasurementParameterRepository;
 import de.eshg.inspection.sample.persistence.InspectionSamplePreclassification;
 import de.eshg.inspection.sample.persistence.InspectionSampleType;
+import de.eshg.inspection.teis.persistence.TeisParameter;
+import de.eshg.inspection.teis.persistence.TeisParameterRepository;
 import de.eshg.inspection.teis.persistence.TeisUntersuchungsparameter;
 import de.eshg.inspection.teis.persistence.TeisUntersuchungsparameterRepository;
 import de.eshg.rest.service.error.BadRequestException;
@@ -78,6 +82,7 @@ public class InspectionSampleService {
   private final UserClient userClient;
   private final ContactClient contactClient;
   private final InspectionSampleMapper inspectionSampleMapper;
+  private final TeisParameterRepository teisParameterRepository;
   private final TeisUntersuchungsparameterRepository teisUntersuchungsparameterRepository;
 
   public InspectionSampleService(
@@ -90,6 +95,7 @@ public class InspectionSampleService {
       UserClient userClient,
       ContactClient contactClient,
       InspectionSampleMapper inspectionSampleMapper,
+      TeisParameterRepository teisParameterRepository,
       TeisUntersuchungsparameterRepository teisUntersuchungsparameterRepository) {
     this.inspectionService = inspectionService;
     this.inspectionUpdater = inspectionUpdater;
@@ -101,6 +107,7 @@ public class InspectionSampleService {
     this.userClient = userClient;
     this.contactClient = contactClient;
     this.inspectionSampleMapper = inspectionSampleMapper;
+    this.teisParameterRepository = teisParameterRepository;
     this.teisUntersuchungsparameterRepository = teisUntersuchungsparameterRepository;
   }
 
@@ -249,6 +256,8 @@ public class InspectionSampleService {
     measurementParameter.setMeasurementValue(request.value());
     determinePreclassification(measurementParameter);
 
+    inspectionUpdater.advanceToExecutingPhase(inspection);
+
     return InspectionSampleMapper.mapToDto(measurementParameter);
   }
 
@@ -310,11 +319,22 @@ public class InspectionSampleService {
   }
 
   public AutocompleteParameterResponse getParameterAutocomplete(String prefix) {
-    List<TeisUntersuchungsparameter> untersuchungsparameterList =
-        teisUntersuchungsparameterRepository.findAutocomplete(prefix + "%", 100);
+    List<TeisParameter> parameterList =
+        teisParameterRepository.findAutocomplete(prepareStringForPrefixLike(prefix), 100);
     return new AutocompleteParameterResponse(
+        parameterList.stream()
+            .map(InspectionSampleMapper::mapToUntersuchungsParameterReferenceDto)
+            .toList());
+  }
+
+  public GetUntersuchungsparameterResponse getUntersuchungsparameter(String parameterZid) {
+    TeisParameter parameter =
+        teisParameterRepository.findTeisParameterByZid(parameterZid).orElseThrow();
+    List<TeisUntersuchungsparameter> untersuchungsparameterList =
+        teisUntersuchungsparameterRepository.findUntersuchungsparameterByParameter(parameter);
+    return new GetUntersuchungsparameterResponse(
         untersuchungsparameterList.stream()
-            .map(InspectionSampleMapper::mapToAutocompleteParameterDto)
+            .map(InspectionSampleMapper::mapToUntersuchungsParameterReferenceDto)
             .toList());
   }
 
@@ -374,8 +394,14 @@ public class InspectionSampleService {
   private void determinePreclassification(
       InspectionSampleMeasurementParameter measurementParameter) {
 
-    Double upperLimit = measurementParameter.getTeisUntersuchungsparameter().getObgrenzwert();
-    Double lowerLimit = measurementParameter.getTeisUntersuchungsparameter().getUntgrenzwert();
+    Double upperLimit =
+        measurementParameter.getTeisUntersuchungsparameter() != null
+            ? measurementParameter.getTeisUntersuchungsparameter().getObgrenzwert()
+            : null;
+    Double lowerLimit =
+        measurementParameter.getTeisUntersuchungsparameter() != null
+            ? measurementParameter.getTeisUntersuchungsparameter().getUntgrenzwert()
+            : null;
     Double value = measurementParameter.getMeasurementValue();
 
     if (upperLimit == null && lowerLimit == null) {
@@ -472,5 +498,9 @@ public class InspectionSampleService {
         .filter(actor -> actor instanceof InspectionSampleContactReferenceDto)
         .map(actor -> ((InspectionSampleContactReferenceDto) actor).contactId())
         .collect(Collectors.toSet());
+  }
+
+  private static String prepareStringForPrefixLike(String s) {
+    return s.replace("\\", "\\\\").replace("%", "\\%").replace("_", "\\_").toLowerCase(ROOT) + "%";
   }
 }

@@ -11,7 +11,11 @@ import { SxProps } from "@mui/joy/styles/types";
 import { Formik, FormikHelpers } from "formik";
 import { isDefined } from "remeda";
 
-import { FormFooter, FormStack } from "@eshg/lib-employee-portal";
+import {
+  ConfirmLeaveDirtyFormEffect,
+  FormFooter,
+  FormStack,
+} from "@eshg/lib-employee-portal";
 import {
   DateField,
   DebouncedTextareaField,
@@ -49,7 +53,6 @@ import {
   VACCINATION_FIELD_STYLE,
   VaccinationField,
 } from "@/lib/businessModules/schoolEntry/features/procedures/vaccination/VaccinationField";
-import { ConfirmLeaveDirtyFormEffect } from "@/lib/shared/components/form/ConfirmLeaveDirtyFormEffect";
 
 export function emptyOtherVaccination(): OtherVaccinationValues {
   return {

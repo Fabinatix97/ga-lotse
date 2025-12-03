@@ -21,6 +21,7 @@ import {
   validateRange,
 } from "@eshg/lib-portal";
 
+import { APPOINTMENT_FORM_LABELS } from "../../../shared/constants";
 import { validateDateTimeIsTodayOrFuture } from "../../../shared/helpers";
 
 import { FieldProps } from "./useAddNewProcedureSidebar";
@@ -38,14 +39,14 @@ function Fields() {
     <Stack gap={2}>
       <DateTimeField
         name="customAppointmentDate"
-        label="Datum und Zeit"
+        label={APPOINTMENT_FORM_LABELS.appointmentStart}
         required="Datum und Zeit sind erforderlich"
         validate={validateDateTimeIsTodayOrFuture}
       />
       <CustomAppointmentQuickButtons />
       <NumberField
         name="duration"
-        label="Termindauer in Minuten"
+        label={APPOINTMENT_FORM_LABELS.appointmentDuration}
         required="Die Besuchsdauer ist erforderlich."
         validate={validateIntegerAnd(validateRange(1, 1440))}
       />

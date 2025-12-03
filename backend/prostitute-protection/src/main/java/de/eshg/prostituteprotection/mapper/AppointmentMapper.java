@@ -10,19 +10,34 @@ import de.eshg.lib.appointmentblock.persistence.AppointmentType;
 import de.eshg.lib.appointmentblock.persistence.entity.Appointment;
 import de.eshg.prostituteprotection.api.AppointmentBookingTypeDto;
 import de.eshg.prostituteprotection.api.CreateProstituteProtectionProcedureRequest;
+import de.eshg.prostituteprotection.api.UpdateProstituteProtectionProcedureRequest;
 import de.eshg.prostituteprotection.domain.data.AppointmentData;
 import de.eshg.prostituteprotection.domain.model.AppointmentBookingType;
 import de.eshg.prostituteprotection.domain.model.UserDefinedAppointment;
+import java.time.Instant;
 
 public class AppointmentMapper {
   private AppointmentMapper() {}
 
   public static AppointmentData toDataType(CreateProstituteProtectionProcedureRequest request) {
+    return toDataType(
+        request.appointmentBookingType(), request.appointmentStart(), request.durationInMinutes());
+  }
+
+  public static AppointmentData toDataType(UpdateProstituteProtectionProcedureRequest request) {
+    return toDataType(
+        request.appointmentBookingType(), request.appointmentStart(), request.durationInMinutes());
+  }
+
+  private static AppointmentData toDataType(
+      AppointmentBookingTypeDto appointmentBookingTypeDto,
+      Instant appointmentStart,
+      Integer appointmentDurationInMinutes) {
     return new AppointmentData(
-        mapToDomain(request.appointmentBookingType()),
+        mapToDomain(appointmentBookingTypeDto),
         AppointmentType.PROSTITUTE_PROTECTION_CONSULTATION,
-        request.appointmentStart(),
-        request.durationInMinutes());
+        appointmentStart,
+        appointmentDurationInMinutes);
   }
 
   public static AppointmentDto toInterfaceType(

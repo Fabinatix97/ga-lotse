@@ -33,7 +33,7 @@ interface InspectionSampleSidebarBasisDataProps {
     value: SelectObjectFieldValue<
       {
         label: string;
-        value: string;
+        value: { id: string; type: string };
       },
       false
     >,
@@ -42,7 +42,7 @@ interface InspectionSampleSidebarBasisDataProps {
     value: SelectObjectFieldValue<
       {
         label: string;
-        value: string;
+        value: { id: string; type: string };
       },
       false
     >,

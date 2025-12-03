@@ -6,8 +6,10 @@
 import { Box } from "@mui/joy";
 import { ReactNode, useId } from "react";
 
+import { ApiInspectionFeature } from "@eshg/inspection-api";
 import { RadioButtonsField } from "@eshg/lib-portal";
 
+import { useIsNewFeatureEnabled } from "@/lib/businessModules/inspection/api/queries/feature";
 import { ChecklistLabel } from "@/lib/businessModules/inspection/components/inspection/execution/checklist/form/ChecklistLabel";
 import { CLFormElement } from "@/lib/businessModules/inspection/components/inspection/execution/checklist/form/helpers";
 
@@ -28,20 +30,24 @@ export function ChecklistRadioButtonElement({
   labelEndDecorator,
   readOnly,
 }: Readonly<ChecklistRadioButtonElementProps>) {
+  const featureToggleChecklistRequirementRemovalEnabled =
+    useIsNewFeatureEnabled(ApiInspectionFeature.ChecklistRequirementRemoval);
+  const isMandatory =
+    !featureToggleChecklistRequirementRemovalEnabled &&
+    element.context.mandatory;
+
   const titleId = useId();
   if (element.type !== "SINGLE_SELECT") {
     return;
   }
 
-  const requiredText = element.context.mandatory
-    ? "Bitte eine Auswahl treffen"
-    : undefined;
+  const requiredText = isMandatory ? "Bitte eine Auswahl treffen" : undefined;
 
   return (
     <Box display="contents" role="group" aria-labelledby={titleId}>
       <ChecklistLabel
         incident={incident}
-        required={element.context.mandatory}
+        required={isMandatory}
         tooltipText={element.context.help}
         endDecorator={labelEndDecorator}
         note={element.context.note}

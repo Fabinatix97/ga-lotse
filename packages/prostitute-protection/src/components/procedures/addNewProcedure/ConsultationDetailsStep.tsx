@@ -13,12 +13,20 @@ import {
   SidebarContent,
   SidebarForm,
 } from "@eshg/lib-employee-portal";
-import { CheckboxField, SelectField, buildEnumOptions } from "@eshg/lib-portal";
+import {
+  CheckboxField,
+  InputField,
+  SelectField,
+  buildEnumOptions,
+  useValidateLength,
+} from "@eshg/lib-portal";
 import { ApiPersonLanguage } from "@eshg/prostitute-protection-api";
 
 import {
   CONSULTATION_TYPE_VALUES,
   LANGUAGE_OPTIONS,
+  PERSON_FIELD_NAME,
+  PROCEDURE_FIELD_NAME,
 } from "../../../shared/constants";
 
 import { AddNewProcedureForm, FieldProps } from "./useAddNewProcedureSidebar";
@@ -36,6 +44,7 @@ export function ConsultationDetailsStep({
 
 function Fields() {
   const { values, setFieldValue } = useFormikContext<AddNewProcedureForm>();
+  const validateLength = useValidateLength();
 
   async function handleCheckboxChange(e: ChangeEvent<HTMLInputElement>) {
     const isChecked = e.target.checked;
@@ -76,6 +85,13 @@ function Fields() {
 
   return (
     <Stack gap={2}>
+      <InputField
+        name="alias"
+        label={PERSON_FIELD_NAME.alias}
+        required="Bitte einen Alias angeben."
+        validate={validateLength(1, 80)}
+        sx={{ marginBottom: 4 }}
+      />
       <CheckboxField
         name="hasSufficientGermanLanguageSkills"
         label="Ausreichende Deutschkenntnisse"
@@ -83,8 +99,7 @@ function Fields() {
       />
       <SelectField
         name="languages"
-        label="Gesprochene Sprachen"
-        required="Bitte eine Sprache auswählen"
+        label={PERSON_FIELD_NAME.languages}
         options={LANGUAGE_OPTIONS}
         renderValue={(modules) => (
           <Stack direction="row" spacing={0.5} flexWrap="wrap">
@@ -100,8 +115,8 @@ function Fields() {
       />
       <SelectField
         name="consultationType"
-        label="Art der Konsultation"
-        options={buildEnumOptions(CONSULTATION_TYPE_VALUES)}
+        label={PROCEDURE_FIELD_NAME.consultationType}
+        options={buildEnumOptions(CONSULTATION_TYPE_VALUES, true)}
       />
     </Stack>
   );

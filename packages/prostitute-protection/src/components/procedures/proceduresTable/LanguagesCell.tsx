@@ -41,6 +41,7 @@ export function LanguagesCell({
           size="sm"
           variant="plain"
           sx={{ padding: 0 }}
+          aria-label="Gesprochene Sprachen anzeigen"
           onClick={() => setOpen(true)}
         >
           <KeyboardArrowDown size="sm" />
@@ -68,6 +69,7 @@ export function LanguagesCell({
           size="sm"
           variant="plain"
           sx={{ padding: 0 }}
+          aria-label="Gesprochene Sprachen ausblenden"
           onClick={() => setOpen(false)}
         >
           <KeyboardArrowUp size="sm" />

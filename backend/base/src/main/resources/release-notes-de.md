@@ -2,6 +2,23 @@ GA-Lotse ist ein Kooperationsprojekt des Gesundheitsamts Frankfurt am Main mit d
 
 Finanziert von der Europäischen Union – NextGenerationEU
 
+## GA-Lotse 2.12
+_02.12.2025_
+
+Fünfundzwanzigster Release der Anwendung GA-Lotse
+
+### Grundfunktionen:
+
+* Erstellung von anonymisierten Statistiken, die sensible Daten enthalten, möglich
+
+### Hygiene:
+
+* Umbenennung der Modulbezeichnung von Begehung zu Hygiene  
+
+### Einschulungsuntersuchungen:
+
+* Filtermöglichkeit von Terminen in der Vorgangsübersicht nach Arzt / Ärztin, MFA und Raum
+
 ## GA-Lotse 2.11
 _19.11.2025_
 

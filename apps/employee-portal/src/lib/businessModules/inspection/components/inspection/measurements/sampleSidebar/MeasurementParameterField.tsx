@@ -3,24 +3,28 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Stack } from "@mui/joy";
 import { useState } from "react";
 import { useDebounce } from "use-debounce";
 
+import { SelectObjectField } from "@eshg/lib-portal";
+
 import {
-  SingleAutocompleteField,
-  SingleAutocompleteFieldProps,
-} from "@eshg/lib-portal";
+  useAutocompleteParameterQuery,
+  useAutocompleteParameterRegulationQuery,
+} from "@/lib/businessModules/inspection/api/queries/autocomplete";
 
-import { useAutocompleteParameterQuery } from "@/lib/businessModules/inspection/api/queries/autocomplete";
-
-export type ParameterFieldProps = Omit<
-  SingleAutocompleteFieldProps,
-  "options" | "loading" | "freeSolo"
->;
+export interface ParameterFieldProps {
+  name: string;
+  label: string;
+  required?: string;
+  placeholder?: string;
+}
 
 export function MeasurementParameterField(props: ParameterFieldProps) {
-  const [inputValue, setInputValue] = useState("");
-  const [parameterQuery] = useDebounce(inputValue, 100);
+  const [parameterInputValue, setParameterInputValue] = useState("");
+  const [parameterQuery] = useDebounce(parameterInputValue, 100);
+  const [selectedParameterZid, setSelectedParameterZid] = useState("");
 
   const query = useAutocompleteParameterQuery({ prefix: parameterQuery });
 
@@ -31,14 +35,47 @@ export function MeasurementParameterField(props: ParameterFieldProps) {
       }))
     : [];
 
+  const queryRegulations = useAutocompleteParameterRegulationQuery({
+    parameterZid: selectedParameterZid,
+  });
+  const regulations = queryRegulations.isSuccess
+    ? queryRegulations.data.elements.map((element) => ({
+        label: element.name,
+        value: element.zid,
+      }))
+    : [];
+
   return (
-    <SingleAutocompleteField
-      loading={query.isLoading}
-      fetching={query.isFetching}
-      options={options}
-      sx={{ flex: 1 }}
-      onInputChange={(e, value) => setInputValue(value)}
-      {...props}
-    />
+    <Stack sx={{ flex: 1 }} gap={2}>
+      <SelectObjectField
+        {...props}
+        name={props.name + ".parent"}
+        loading={query.isLoading}
+        options={options}
+        sx={{ flex: 1 }}
+        isOptionEqualToValue={(option, value) => option.value === value.value}
+        getOptionLabel={(option) => option.label}
+        getOptionKey={(option) => option.value}
+        onInputChange={(e, value) => setParameterInputValue(value)}
+        onValueChanged={(value) => {
+          if (value) {
+            setSelectedParameterZid(value.value);
+          }
+        }}
+      />
+      {selectedParameterZid !== "" && regulations.length > 0 && (
+        <SelectObjectField
+          placeholder="Verordnung auswählen"
+          label={props.label + " Verordnung"}
+          name={props.name + ".child"}
+          loading={queryRegulations.isLoading}
+          options={regulations}
+          sx={{ flex: 1 }}
+          isOptionEqualToValue={(option, value) => option.value === value.value}
+          getOptionLabel={(option) => option.label}
+          getOptionKey={(option) => option.value}
+        />
+      )}
+    </Stack>
   );
 }

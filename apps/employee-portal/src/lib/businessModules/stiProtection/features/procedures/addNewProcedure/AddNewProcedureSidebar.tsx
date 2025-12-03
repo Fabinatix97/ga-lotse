@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 import {
+  ConfirmLeaveDirtyFormEffect,
   MultiFormButtonBar,
   Sidebar,
   SidebarActions,
@@ -35,7 +36,6 @@ import { SharePinModal } from "@/lib/businessModules/stiProtection/shared/proced
 import { CONCERN_OPTIONS } from "@/lib/businessModules/stiProtection/shared/procedure/helpers";
 import { mapProcedureFormToApi } from "@/lib/businessModules/stiProtection/shared/procedure/mappers";
 import { routes } from "@/lib/businessModules/stiProtection/shared/routes";
-import { ConfirmLeaveDirtyFormEffect } from "@/lib/shared/components/form/ConfirmLeaveDirtyFormEffect";
 import { SelectableCardsField } from "@/lib/shared/components/formFields/SelectableCardsField";
 import { useSidebarForm } from "@/lib/shared/hooks/useSidebarForm";
 

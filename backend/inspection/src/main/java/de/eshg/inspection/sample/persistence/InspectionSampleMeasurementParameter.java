@@ -6,6 +6,7 @@
 package de.eshg.inspection.sample.persistence;
 
 import de.eshg.domain.model.BaseEntity;
+import de.eshg.inspection.teis.persistence.TeisParameter;
 import de.eshg.inspection.teis.persistence.TeisUntersuchungsparameter;
 import de.eshg.lib.common.DataSensitivity;
 import de.eshg.lib.common.SensitivityLevel;
@@ -22,7 +23,11 @@ import org.hibernate.annotations.JdbcType;
 import org.hibernate.dialect.PostgreSQLEnumJdbcType;
 
 @Entity
-@Table(indexes = @Index(columnList = "teis_untersuchungsparameter_zid"))
+@Table(
+    indexes = {
+      @Index(columnList = "teis_parameter_zid"),
+      @Index(columnList = "teis_untersuchungsparameter_zid")
+    })
 public class InspectionSampleMeasurementParameter extends BaseEntity {
   @Column(nullable = false, unique = false)
   @NotNull
@@ -36,6 +41,11 @@ public class InspectionSampleMeasurementParameter extends BaseEntity {
 
   @ManyToOne(fetch = FetchType.LAZY, optional = false)
   @NotNull
+  @JoinColumn(name = "teis_parameter_zid")
+  @DataSensitivity(SensitivityLevel.PSEUDONYMIZED)
+  TeisParameter teisParameter;
+
+  @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "teis_untersuchungsparameter_zid")
   @DataSensitivity(SensitivityLevel.PSEUDONYMIZED)
   TeisUntersuchungsparameter teisUntersuchungsparameter;
@@ -106,6 +116,14 @@ public class InspectionSampleMeasurementParameter extends BaseEntity {
 
   public void setUserAssessment(String userAssessment) {
     this.userAssessment = userAssessment;
+  }
+
+  public @NotNull TeisParameter getTeisParameter() {
+    return teisParameter;
+  }
+
+  public void setTeisParameter(@NotNull TeisParameter teisParameter) {
+    this.teisParameter = teisParameter;
   }
 
   public TeisUntersuchungsparameter getTeisUntersuchungsparameter() {

@@ -11,7 +11,6 @@ import { SidebarFormHandle } from "@eshg/lib-employee-portal";
 
 import { AnonymizationOptions } from "@/lib/businessModules/statistics/api/models/anonymizationOptions";
 import { useAddEvaluation } from "@/lib/businessModules/statistics/api/mutations/useAddEvaluation";
-import { useIsNewFeatureEnabled } from "@/lib/businessModules/statistics/api/queries/useStatisticsFeatureToggle";
 import {
   AnonymizedFieldValue,
   mapAnonymizedFieldValueToBoolean,
@@ -76,7 +75,6 @@ export function CreateEvaluationFromScratchSidebar({
   evaluationTemplates: EvaluationTemplateStepAutocompleteEntry[];
   formRef: Ref<SidebarFormHandle>;
 }) {
-  const anonymizationEnabled = useIsNewFeatureEnabled("ANONYMIZATION");
   const addEvaluation = useAddEvaluation({
     onSuccess: () => onClose(true),
   });
@@ -220,8 +218,8 @@ export function CreateEvaluationFromScratchSidebar({
               }),
               initialValues: {
                 timeSpan: initialTimeSpan,
-                anonymized: (anonymizationEnabled &&
-                dataSource?.anonymizationOptions !== "NOT_ANONYMIZABLE"
+                anonymized: (dataSource?.anonymizationOptions !==
+                "NOT_ANONYMIZABLE"
                   ? ENUM_TRUE_VALUE
                   : ENUM_FALSE_VALUE) as AnonymizedFieldValue,
               },

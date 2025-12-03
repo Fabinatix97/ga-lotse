@@ -13,13 +13,36 @@ import {
   ApiUpdateInspectionSampleRequest,
 } from "@eshg/inspection-api";
 
+export interface MeasurementParametersType {
+  parent: { label: string; value: string };
+  child: { label: string; value: string };
+}
+
 export interface InspectionSampleSidebarFormType {
-  evaluatingActor?: string; //ApiCreateInspectionSampleRequestEvaluatingActor;
+  evaluatingActor?: {
+    label: string;
+    value: {
+      id: string;
+      type:
+        | "InspectionSampleContactReference"
+        | "InspectionSampleInspectedFacilityReference"
+        | "InspectionSampleUserReference";
+    };
+  };
   evaluationType: ApiInspectionSampleEvaluationType;
-  measurementParameters: string[];
+  measurementParameters: MeasurementParametersType[];
   nameOfSamplingPoint?: string;
   pointOfWithdrawal: string;
-  samplingActor: string; //ApiCreateInspectionSampleRequestEvaluatingActor;
+  samplingActor?: {
+    label: string;
+    value: {
+      id: string;
+      type:
+        | "InspectionSampleContactReference"
+        | "InspectionSampleInspectedFacilityReference"
+        | "InspectionSampleUserReference";
+    };
+  };
   timeOfEvaluation?: string;
   timeOfSampling?: string;
   typeOfSample: ApiInspectionSampleType;
@@ -27,48 +50,68 @@ export interface InspectionSampleSidebarFormType {
 
 export function makeCreateInspectionSampleRequest(
   formValues: InspectionSampleSidebarFormType,
-  userId: string,
 ): ApiCreateInspectionSampleRequest {
   return {
-    ...makeInspectionSampleRequest(formValues, userId),
+    ...makeInspectionSampleRequest(formValues),
     externalId: uuidv4(),
-    measurementParameters: formValues.measurementParameters.map((zid) => ({
+    measurementParameters: formValues.measurementParameters.map((param) => ({
       externalId: uuidv4(),
-      uParameterZid: zid,
+      parameterZid: param.parent.value,
+      untersuchungsparameterZid: param?.child?.value,
     })),
   };
 }
 
 export function makeUpdateInspectionSampleRequest(
   formValues: InspectionSampleSidebarFormType,
-  userId: string,
 ): ApiUpdateInspectionSampleRequest {
   return {
-    ...makeInspectionSampleRequest(formValues, userId),
-    measurementParametersToAdd: formValues.measurementParameters.map((zid) => ({
-      externalId: uuidv4(),
-      uParameterZid: zid,
-    })),
+    ...makeInspectionSampleRequest(formValues),
+    measurementParametersToAdd: formValues.measurementParameters.map(
+      (param) => ({
+        externalId: uuidv4(),
+        parameterZid: param.parent.value,
+        untersuchungsparameterZid: param?.child?.value,
+      }),
+    ),
     measurementParametersToDelete: [],
   };
 }
 
+function createActor(input: {
+  type: ApiCreateInspectionSampleRequestEvaluatingActor["type"];
+  id?: string;
+}): ApiCreateInspectionSampleRequestEvaluatingActor {
+  switch (input.type) {
+    case "InspectionSampleUserReference":
+      return {
+        type: input.type,
+        userId: input.id!,
+      };
+
+    case "InspectionSampleContactReference":
+      return {
+        type: input.type,
+        contactId: input.id!,
+      };
+
+    case "InspectionSampleInspectedFacilityReference":
+      return {
+        type: input.type,
+        centralFileStateId: input.id!,
+      };
+  }
+}
+
 export function makeInspectionSampleRequest(
   formValues: InspectionSampleSidebarFormType,
-  userId: string,
 ) {
   return {
-    evaluatingActor: {
-      type: "InspectionSampleUserReference",
-      userId,
-    } as ApiCreateInspectionSampleRequestEvaluatingActor,
+    evaluatingActor: createActor(formValues.evaluatingActor!.value),
     evaluationType: formValues.evaluationType,
     nameOfSamplingPoint: formValues.nameOfSamplingPoint,
     pointOfWithdrawal: formValues.pointOfWithdrawal,
-    samplingActor: {
-      type: "InspectionSampleUserReference",
-      userId,
-    } as ApiCreateInspectionSampleRequestEvaluatingActor,
+    samplingActor: createActor(formValues.samplingActor!.value),
     timeOfEvaluation: formValues.timeOfEvaluation
       ? new Date(formValues.timeOfEvaluation)
       : undefined,
