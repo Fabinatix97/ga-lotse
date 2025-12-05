@@ -30,6 +30,7 @@ interface UseTableControlParams {
   sortDirectionName?: string;
   serverSideSorting?: boolean;
   initialSorting?: ColumnSort;
+  pageSizeOptions?: number[];
 }
 
 type CustomPaginationProps = Pick<
@@ -130,6 +131,7 @@ function getPaginationProps(
     pageNumberName = "pageNumber",
     pageSizeName = "pageSize",
     defaultPageSize = DEFAULT_PAGE_SIZE.toString(),
+    pageSizeOptions = DEFAULT_PAGE_SIZE_OPTIONS,
   } = params;
 
   return {
@@ -163,7 +165,7 @@ function getPaginationProps(
         session?.pageNumber ??
         DEFAULT_PAGE_NUMBER.toString(),
     ),
-    pageSizeOptions: DEFAULT_PAGE_SIZE_OPTIONS,
+    pageSizeOptions,
     alwaysShowPageSizeSelect: false,
   };
 }

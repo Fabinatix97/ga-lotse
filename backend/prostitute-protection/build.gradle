@@ -15,6 +15,7 @@ dependencies {
     implementation project(':lib-document-generator')
     implementation project(':lib-procedures')
     implementation project(':lib-calendar')
+    implementation project(':lib-statistics')
 
     testImplementation testFixtures(project(':business-module-persistence-commons'))
     testImplementation testFixtures(project(':lib-appointmentblock'))
@@ -25,6 +26,7 @@ dependencies {
 
     testImplementation testFixtures(project(':lib-document-generator'))
     testImplementation testFixtures(project(':lib-procedures'))
+    testImplementation testFixtures(project(':lib-statistics'))
 }
 
 dockerCompose {

@@ -21,4 +21,6 @@
   <include file="migrations/0012_add_consultation.xml"/>
   <include file="migrations/0013_add_consultation_certificate_created_at.xml"/>
   <include file="migrations/0014_drop_not_null_constraint.xml"/>
+  <include file="migrations/0015_add_age_at_consultation.xml"/>
+  <include file="migrations/0016_add_statistics.xml"/>
 </databaseChangeLog>

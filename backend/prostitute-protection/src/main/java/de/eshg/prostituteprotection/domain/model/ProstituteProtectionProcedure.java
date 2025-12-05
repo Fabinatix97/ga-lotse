@@ -51,6 +51,8 @@ public class ProstituteProtectionProcedure
   @JdbcType(PostgreSQLEnumJdbcType.class)
   private ConsultationType consultationType;
 
+  private Integer ageAtConsultation;
+
   private Boolean withTranslator;
 
   @OneToOne(orphanRemoval = true, fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
@@ -161,5 +163,13 @@ public class ProstituteProtectionProcedure
   public void setConsultation(Consultation consultation) {
     this.consultation = consultation;
     this.consultation.setProcedure(this);
+  }
+
+  public Integer getAgeAtConsultation() {
+    return ageAtConsultation;
+  }
+
+  public void setAgeAtConsultation(Integer ageAtConsultation) {
+    this.ageAtConsultation = ageAtConsultation;
   }
 }

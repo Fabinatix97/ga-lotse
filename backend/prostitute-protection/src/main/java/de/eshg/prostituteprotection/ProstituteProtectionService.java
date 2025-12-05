@@ -28,6 +28,9 @@ import de.eshg.rest.service.security.CurrentUserHelper;
 import de.eshg.validation.ValidationUtil;
 import java.time.Clock;
 import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
 import java.util.UUID;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -76,12 +79,27 @@ public class ProstituteProtectionService {
   void updateProcedure(
       ProstituteProtectionProcedure procedure, UpdateProstituteProtectionProcedureRequest request) {
     ProstituteProtectionMapper.mapRequestToDomain(procedure, request);
+    procedure.setAgeAtConsultation(
+        calculateAgeAtConsultation(
+            request.appointmentStart(), procedure.getEncryptedPersonalData().getDateOfBirth()));
     procedureRepository.flush();
+  }
+
+  public static Integer calculateAgeAtConsultation(
+      Instant appointmentStart, LocalDate dateOfBirth) {
+    if (appointmentStart == null || dateOfBirth == null) {
+      return null;
+    }
+    LocalDate dateOfConsultation = appointmentStart.atZone(ZoneId.systemDefault()).toLocalDate();
+
+    return (int) ChronoUnit.YEARS.between(dateOfBirth, dateOfConsultation);
   }
 
   void updateEncryptedPersonalDataInProcedure(
       ProstituteProtectionProcedure procedure, UpdateEncryptedPersonalDataRequest request) {
     ProstituteProtectionMapper.mapEncryptedPersonalData(procedure, request);
+    procedure.setAgeAtConsultation(
+        calculateAgeAtConsultation(procedure.getAppointmentStart(), request.dateOfBirth()));
     procedureRepository.flush();
   }
 

@@ -84,6 +84,7 @@ export function ProceduresTable(props: ProceduresTableProps) {
       sortFieldName: "sortKey",
       sortDirectionName: "sortDirection",
       initialSorting,
+      pageSizeOptions: [10, 25, 50, 100, 200],
     },
   );
 

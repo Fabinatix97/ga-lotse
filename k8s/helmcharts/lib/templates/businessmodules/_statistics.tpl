@@ -75,6 +75,10 @@
 - name: de.eshg.business-modules.clients.MEDICAL_REGISTRY.url
   value: http://medicalregistry{{ .Values.domains.clusterLocalSuffix }}
 {{- end }}
+{{- if .Values.businessmodules.prostituteprotection.enabled }}
+- name: de.eshg.business-modules.clients.PROSTITUTE_PROTECTION.url
+  value: http://prostituteprotection{{ .Values.domains.clusterLocalSuffix }}
+{{- end }}
 - name: spring.security.oauth2.client.registration.module-client.client-id
   value: system-statistics
 - name: spring.security.oauth2.client.registration.module-client.client-secret

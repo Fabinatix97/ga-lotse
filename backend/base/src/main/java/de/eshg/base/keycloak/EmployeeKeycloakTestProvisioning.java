@@ -96,6 +96,7 @@ public class EmployeeKeycloakTestProvisioning extends KeycloakTestProvisioning {
       case OFFICIAL_MEDICAL_SERVICE_PHYSICIANS -> "Tina";
       case MEDS_ABROAD_MFA -> "Louise";
       case PROSTITUTE_PROTECTION_CONSULTANT -> "Sigmund";
+      case SCHOOL_ENTRY_SOPASS -> "Oztafan";
     };
   }
 
@@ -113,6 +114,7 @@ public class EmployeeKeycloakTestProvisioning extends KeycloakTestProvisioning {
       case OFFICIAL_MEDICAL_SERVICE_PHYSICIANS -> "Hoffmann";
       case MEDS_ABROAD_MFA -> "Belcher";
       case PROSTITUTE_PROTECTION_CONSULTANT -> "Freud";
+      case SCHOOL_ENTRY_SOPASS -> "Kolibril";
     };
   }
 

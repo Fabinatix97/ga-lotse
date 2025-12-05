@@ -271,6 +271,7 @@ public enum CountryCode {
 
   public static String getCountryName(CountryCode countryCode) {
     return switch (countryCode) {
+      case null -> null;
       case XK -> "Kosovo";
       case UNKNOWN -> "Unbekanntes Land";
       case STATELESS -> "Staatenlos";

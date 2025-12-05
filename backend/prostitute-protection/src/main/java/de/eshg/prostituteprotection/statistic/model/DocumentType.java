@@ -1,0 +1,38 @@
+/*
+ * Copyright 2025 cronn GmbH
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+package de.eshg.prostituteprotection.statistic.model;
+
+import de.eshg.lib.statistics.util.ConvertibleToValueOptions;
+
+public enum DocumentType implements ConvertibleToValueOptions {
+  IDENTIFICATION_CARD("Personalausweis"),
+  PASSPORT("Reisepass");
+
+  private final String value;
+
+  DocumentType(String value) {
+    this.value = value;
+  }
+
+  @Override
+  public String getValue() {
+    return value;
+  }
+
+  @Override
+  public String getMeaning() {
+    return value;
+  }
+
+  public static String convertDocumentTypeToValue(
+      de.eshg.prostituteprotection.domain.model.DocumentType type) {
+    return switch (type) {
+      case null -> null;
+      case IDENTIFICATION_CARD -> IDENTIFICATION_CARD.getValue();
+      case PASSPORT -> PASSPORT.getValue();
+    };
+  }
+}

@@ -14,6 +14,7 @@ public enum TechnicalGroup implements KeycloakGroup {
   ZFA("ZFA", EmployeePermissionRole.DENTAL_ADMIN),
   SCHOOL_ENTRY_PHYSICIAN("ESU-Arzt", EmployeePermissionRole.SCHOOL_ENTRY_ADMIN),
   SCHOOL_ENTRY_MFA("ESU-MFA", EmployeePermissionRole.SCHOOL_ENTRY_ADMIN),
+  SCHOOL_ENTRY_SOPASS("ESU-SOPASS", EmployeePermissionRole.SCHOOL_ENTRY_ADMIN),
   TRAVEL_MEDICINE_PHYSICIAN("RMBI-Arzt", EmployeePermissionRole.TRAVEL_MEDICINE_ADMIN),
   TRAVEL_MEDICINE_MFA("RMBI-MFA", EmployeePermissionRole.TRAVEL_MEDICINE_ADMIN),
   STI_PROTECTION_PHYSICIAN("HIV-STI-Arzt", EmployeePermissionRole.STI_PROTECTION_ADMIN),
