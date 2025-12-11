@@ -1064,4 +1064,36 @@ public class SchoolEntryService {
     }
     return stats.mapToResponse();
   }
+
+  public UpdateProceduresBulkResponse updateProceduresInvitationSent(
+      Map<UUID, Long> procedureIdsAndVersion) {
+    BulkUpdateProceduresStatistics stats = new BulkUpdateProceduresStatistics();
+
+    List<SchoolEntryProcedure> procedures =
+        findProceduresByExternalIdForUpdate(procedureIdsAndVersion.keySet().stream().toList());
+
+    for (SchoolEntryProcedure procedure : procedures) {
+      try {
+        ValidationUtil.validateVersion(
+            procedureIdsAndVersion.get(procedure.getExternalId()), procedure);
+        ProcedureValidator.validateProcedureStatusNotClosed(procedure);
+        Validator.validateInvitationAppointmentIntegrity(
+            true,
+            de.eshg.lib.appointmentblock.AppointmentMapper.mapAppointmentToDto(
+                procedure.getAppointment()));
+      } catch (Exception e) {
+        log.info("Error in bulk invitation sent update: ", e);
+        stats.countError();
+        continue;
+      }
+
+      if (procedure.isInvitationSent()) {
+        stats.countUnmodified();
+      } else {
+        procedure.setIsInvitationSent(true);
+        stats.countUpdated();
+      }
+    }
+    return stats.mapToResponse();
+  }
 }

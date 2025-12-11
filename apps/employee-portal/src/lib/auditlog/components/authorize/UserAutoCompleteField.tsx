@@ -7,6 +7,7 @@ import { Close, Search } from "@mui/icons-material";
 import {
   AutocompleteOption,
   Chip,
+  ColorPaletteProp,
   ListItemContent,
   ListItemDecorator,
   Stack,
@@ -30,12 +31,14 @@ interface UserInputProps {
     validForm: boolean;
     users: ApiUser[];
   }>>;
+  color?: ColorPaletteProp;
 }
 
 export function UserAutoCompleteField({
   options,
   values,
   setFieldValue,
+  color = "primary",
 }: UserInputProps) {
   const iconId = useId();
   const labelId = useId();
@@ -45,7 +48,7 @@ export function UserAutoCompleteField({
     <CustomAutocomplete
       name="users"
       startDecorator={<Search />}
-      color="primary"
+      color={color}
       multiple
       options={options}
       value={values}
@@ -56,7 +59,7 @@ export function UserAutoCompleteField({
           // eslint-disable-next-line react/jsx-key
           <Chip
             variant="soft"
-            color="primary"
+            color={color}
             endDecorator={
               <Close id={iconId} fontSize="sm" aria-label="Auswahl entfernen" />
             }

@@ -22,6 +22,7 @@ export { ProstituteProtectionOverviewPage } from "./pages/ProstituteProtectionOv
 export { ProstituteProtectionProgressEntriesPage } from "./pages/ProstituteProtectionProgressEntriesPage";
 export { ProstituteProtectionProcedureDetailsPage } from "./pages/ProstituteProtectionProcedureDetailsPage";
 export { ProstituteProtectionConsultationPage } from "./pages/ProstituteProtectionConsultationPage";
+export { ProstituteProtectionPersonSearchPage } from "./pages/ProstituteProtectionPersonSearchPage";
 
 // Layouts
 export { ProstituteProtectionProcedureLayout } from "./layouts/ProstituteProtectionProcedureLayout";

@@ -77,7 +77,7 @@ export const CONSULTATION_FIELD_NAME: Record<
   alcoholAndDrugUsage: "Alkohol- / Drogengebrauch",
   referral: "Weitervermittlung § 19",
   supervisedConsultation: "Beratung unter Aufsicht",
-  remark: "Bemerkungen",
+  remark: "Anmerkungen",
   interpreterConsulted: "Dolmetscher hinzugezogen",
   interpreterFirstName: PERSON_FIELD_NAME.firstName,
   interpreterLastName: PERSON_FIELD_NAME.lastName,
@@ -407,3 +407,5 @@ export const PROCEDURE_STATUS_VALUES: EnumMap<ApiProcedureStatus> = {
   [ApiProcedureStatus.InProgress]: "In Arbeit",
   [ApiProcedureStatus.Open]: "Offen",
 };
+
+export const OPTIONAL_TAG = "(optional)";

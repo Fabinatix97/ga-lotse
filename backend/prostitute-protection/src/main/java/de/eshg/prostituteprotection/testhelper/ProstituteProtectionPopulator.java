@@ -7,19 +7,14 @@ package de.eshg.prostituteprotection.testhelper;
 
 import static de.eshg.base.util.ClassNameUtil.getClassNameAsPropertyKey;
 
-import de.eshg.lib.common.CountryCode;
 import de.eshg.prostituteprotection.ProstituteProtectionController;
 import de.eshg.prostituteprotection.api.AppointmentBookingTypeDto;
 import de.eshg.prostituteprotection.api.ConsultationDto;
 import de.eshg.prostituteprotection.api.ConsultationTypeDto;
 import de.eshg.prostituteprotection.api.CreateProstituteProtectionProcedureRequest;
 import de.eshg.prostituteprotection.api.CreateProstituteProtectionProcedureResponse;
-import de.eshg.prostituteprotection.api.DocumentTypeDto;
 import de.eshg.prostituteprotection.api.LanguageDto;
-import de.eshg.prostituteprotection.api.ProcedureDetailsDto;
-import de.eshg.prostituteprotection.api.UpdateEncryptedPersonalDataRequest;
 import de.eshg.prostituteprotection.domain.model.ProstituteProtectionProcedure;
-import de.eshg.prostituteprotection.domain.repository.ConsultationRepository;
 import de.eshg.prostituteprotection.domain.repository.ProstituteProtectionProcedureRepository;
 import de.eshg.testhelper.environment.EnvironmentConfig;
 import de.eshg.testhelper.population.BasePopulator;
@@ -47,8 +42,7 @@ public class ProstituteProtectionPopulator
       EnvironmentConfig environmentConfig,
       PopulateWithAccessTokenHelper populateWithAccessTokenHelper,
       ProstituteProtectionController prostituteProtectionController,
-      ProstituteProtectionProcedureRepository prostituteProtectionRepository,
-      ConsultationRepository consultationRepository) {
+      ProstituteProtectionProcedureRepository prostituteProtectionRepository) {
     super(
         properties,
         clock,
@@ -79,28 +73,9 @@ public class ProstituteProtectionPopulator
 
     CreateProstituteProtectionProcedureResponse procedure =
         prostituteProtectionController.createProcedure(request);
-    updateProstituteProtectionEncryptedPersonalData(procedure.id(), faker);
     updateProstituteProtectionConsultation(procedure.id(), faker);
 
     return procedure;
-  }
-
-  private void updateProstituteProtectionEncryptedPersonalData(UUID procedureId, Faker faker) {
-    ProcedureDetailsDto procedureDetailsDto =
-        prostituteProtectionController.getProcedure(procedureId);
-
-    UpdateEncryptedPersonalDataRequest updateEncryptedPersonalDataRequest =
-        new UpdateEncryptedPersonalDataRequest(
-            procedureDetailsDto.version(),
-            faker.name().firstName(),
-            faker.name().lastName(),
-            faker.timeAndDate().birthday(),
-            procedureDetailsDto.alias(),
-            randomElement(faker, CountryCode.values()),
-            randomElement(faker, DocumentTypeDto.values()),
-            procedureDetailsDto.languages());
-    prostituteProtectionController.updateProcedurePersonalData(
-        procedureId, updateEncryptedPersonalDataRequest);
   }
 
   private void updateProstituteProtectionConsultation(UUID procedureId, Faker faker) {

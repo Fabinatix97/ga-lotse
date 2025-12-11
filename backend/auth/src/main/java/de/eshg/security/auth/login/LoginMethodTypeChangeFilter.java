@@ -5,6 +5,8 @@
 
 package de.eshg.security.auth.login;
 
+import static de.eshg.security.auth.AuthServiceSecurityConfig.actuatorMonitoringRequestMatcher;
+
 import de.cronn.commons.lang.StreamUtil;
 import de.eshg.security.auth.AuthController;
 import jakarta.annotation.Nonnull;
@@ -48,6 +50,9 @@ public class LoginMethodTypeChangeFilter extends OncePerRequestFilter {
   }
 
   private void triggerReLoginIfRequired(HttpServletRequest request) {
+    if (actuatorMonitoringRequestMatcher.matches(request)) {
+      return;
+    }
     LoginMethodType loginMethodType = loginMethodTypeHolder.getLoginMethodType();
     if (loginMethodType == null) {
       return;

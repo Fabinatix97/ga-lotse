@@ -20,6 +20,7 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.OrderBy;
 import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 import jakarta.validation.constraints.NotNull;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -29,7 +30,9 @@ import org.hibernate.annotations.JdbcType;
 import org.hibernate.dialect.PostgreSQLEnumJdbcType;
 
 @Entity
-@Table(indexes = @Index(columnList = "inspection_id"))
+@Table(
+    indexes = @Index(columnList = "inspection_id"),
+    uniqueConstraints = @UniqueConstraint(columnNames = {"inspection_id", "sample_number"}))
 public class InspectionSample extends BaseEntity {
   @Column(nullable = false, unique = true)
   @NotNull
@@ -54,8 +57,9 @@ public class InspectionSample extends BaseEntity {
   private InspectionSampleType typeOfSample; // Art der Probe
 
   @Column
+  @NotNull
   @DataSensitivity(SensitivityLevel.PSEUDONYMIZED)
-  private String nameOfSamplingPoint; // Name der Probenahmestelle
+  private String sampleNumber; // Proben-Nr.
 
   @Column(nullable = false)
   @NotNull
@@ -137,12 +141,12 @@ public class InspectionSample extends BaseEntity {
     this.typeOfSample = typeOfSample;
   }
 
-  public String getNameOfSamplingPoint() {
-    return nameOfSamplingPoint;
+  public @NotNull String getSampleNumber() {
+    return sampleNumber;
   }
 
-  public void setNameOfSamplingPoint(String nameOfSamplingPoint) {
-    this.nameOfSamplingPoint = nameOfSamplingPoint;
+  public void setSampleNumber(@NotNull String sampleNumber) {
+    this.sampleNumber = sampleNumber;
   }
 
   public @NotNull InspectionSampleEvaluationType getEvaluationType() {

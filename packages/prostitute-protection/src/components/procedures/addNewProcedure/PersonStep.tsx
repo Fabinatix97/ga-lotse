@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Chip, Stack } from "@mui/joy";
-import { Formik, FormikValues, useFormikContext } from "formik";
+import { Chip, Divider, Stack } from "@mui/joy";
+import { useFormikContext } from "formik";
 import { ChangeEvent, ReactNode } from "react";
 
 import {
@@ -17,26 +17,17 @@ import {
   CheckboxField,
   InputField,
   SelectField,
-  buildEnumOptions,
   useValidateLength,
 } from "@eshg/lib-portal";
 import { ApiPersonLanguage } from "@eshg/prostitute-protection-api";
 
-import {
-  CONSULTATION_TYPE_VALUES,
-  LANGUAGE_OPTIONS,
-  PERSON_FIELD_NAME,
-  PROCEDURE_FIELD_NAME,
-} from "../../../shared/constants";
+import { LANGUAGE_OPTIONS, PERSON_FIELD_NAME } from "../../../shared/constants";
 
 import { AddNewProcedureForm, FieldProps } from "./useAddNewProcedureSidebar";
 
-export function ConsultationDetailsStep({
-  currentState,
-  ...props
-}: FieldProps) {
+export function PersonStep(props: FieldProps) {
   return (
-    <Layout initialValues={currentState} {...props}>
+    <Layout {...props}>
       <Fields />
     </Layout>
   );
@@ -84,14 +75,14 @@ function Fields() {
   }
 
   return (
-    <Stack gap={2}>
+    <Stack gap={2} mt={2}>
       <InputField
         name="alias"
         label={PERSON_FIELD_NAME.alias}
         required="Bitte einen Alias angeben."
         validate={validateLength(1, 80)}
-        sx={{ marginBottom: 4 }}
       />
+      <Divider sx={{ marginBlock: 1 }} />
       <CheckboxField
         name="hasSufficientGermanLanguageSkills"
         label="Ausreichende Deutschkenntnisse"
@@ -99,7 +90,7 @@ function Fields() {
       />
       <SelectField
         name="languages"
-        label={PERSON_FIELD_NAME.languages}
+        label="Weitere Sprachen"
         options={LANGUAGE_OPTIONS}
         renderValue={(modules) => (
           <Stack direction="row" spacing={0.5} flexWrap="wrap">
@@ -113,11 +104,6 @@ function Fields() {
         multiple
         onChange={handleSelectChange}
       />
-      <SelectField
-        name="consultationType"
-        label={PROCEDURE_FIELD_NAME.consultationType}
-        options={buildEnumOptions(CONSULTATION_TYPE_VALUES, true)}
-      />
     </Stack>
   );
 }
@@ -126,41 +112,35 @@ interface LayoutProps<T> {
   children: ReactNode;
   handleNext: (newValues: T) => Promise<unknown> | void;
   handlePrev: () => void;
-  initialValues: T & FormikValues;
   isOnLastStep: boolean;
   isOnFirstStep: boolean;
   onClose: () => void;
   title: string;
   subTitle?: string;
-  isPending: boolean;
 }
 function Layout<T>({
   children,
-  handleNext,
   handlePrev,
-  initialValues,
   isOnLastStep,
   isOnFirstStep,
   onClose,
   title,
   subTitle,
-  isPending,
 }: LayoutProps<T>) {
+  const { isSubmitting } = useFormikContext<AddNewProcedureForm>();
   return (
-    <Formik initialValues={initialValues} onSubmit={handleNext}>
-      <SidebarForm>
-        <SidebarContent title={title} subtitle={subTitle}>
-          {children}
-        </SidebarContent>
-        <SidebarActions>
-          <MultiFormButtonBar
-            submitting={isPending}
-            submitLabel={isOnLastStep ? "Erstellen" : "Weiter"}
-            onCancel={onClose}
-            onBack={isOnFirstStep ? undefined : handlePrev}
-          />
-        </SidebarActions>
-      </SidebarForm>
-    </Formik>
+    <SidebarForm>
+      <SidebarContent title={title} subtitle={subTitle}>
+        {children}
+      </SidebarContent>
+      <SidebarActions>
+        <MultiFormButtonBar
+          submitting={isSubmitting}
+          submitLabel={isOnLastStep ? "Erstellen" : "Weiter"}
+          onCancel={onClose}
+          onBack={isOnFirstStep ? undefined : handlePrev}
+        />
+      </SidebarActions>
+    </SidebarForm>
   );
 }

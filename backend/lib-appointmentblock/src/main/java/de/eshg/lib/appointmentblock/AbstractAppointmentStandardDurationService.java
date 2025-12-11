@@ -9,7 +9,7 @@ import de.cronn.commons.lang.StreamUtil;
 import de.eshg.config.AuditLogWriter;
 import de.eshg.config.ConfigurationStatus;
 import de.eshg.config.EshgConfigurationService;
-import de.eshg.domain.model.BaseEntity;
+import de.eshg.lib.appointmentblock.model.AbstractAppointmentStandardDuration;
 import de.eshg.lib.appointmentblock.persistence.AppointmentType;
 import de.eshg.lib.appointmentblock.spring.AppointmentBlockProperties;
 import de.eshg.persistence.TransactionHelper;
@@ -21,7 +21,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.function.Supplier;
 
-public abstract class AbstractAppointmentStandardDurationService<T extends BaseEntity>
+public abstract class AbstractAppointmentStandardDurationService<
+        T extends AbstractAppointmentStandardDuration>
     extends EshgConfigurationService<T> {
 
   protected AbstractAppointmentStandardDurationService(
@@ -66,6 +67,11 @@ public abstract class AbstractAppointmentStandardDurationService<T extends BaseE
     } else {
       throw new BadRequestException("Unknown AppointmentType " + appointmentType);
     }
+  }
+
+  public Duration getExtraDuration() {
+    T config = getConfig();
+    return config.getExtraDuration();
   }
 
   @Override

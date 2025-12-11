@@ -11,5 +11,5 @@ public record RegistrationConsultationCertificateData(
     @NotNull PersonData person,
     @NotNull String dateOfConsultation,
     @NotNull boolean inLanguageOfConsultant,
-    @NotNull boolean withTranslator,
+    @NotNull boolean interpreterConsulted,
     @NotNull DepartmentData department) {}

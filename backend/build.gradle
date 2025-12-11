@@ -22,7 +22,7 @@ buildscript {
 plugins {
     id 'io.spring.dependency-management' version 'latest.release' apply false
     id 'com.avast.gradle.docker-compose' version 'latest.release' apply false
-    id 'org.springframework.boot' version 'latest.release' apply false
+    id 'org.springframework.boot' version '3.+' apply false // do not update to Spring Boot 4 yet
     id 'org.cyclonedx.bom' version 'latest.release' apply false
     id 'com.trileuco.dependency-track-gradle' version 'latest.release' apply false
     id 'jacoco-report-aggregation'
@@ -277,6 +277,43 @@ subprojects {
                     reject("20030203.000550")
                 }
                 because("Reject legacy timestamp release of commons-io that was/is declared as latest version by mistake. See https://issues.apache.org/jira/browse/IO-881")
+            }
+            implementation("org.springdoc:springdoc-openapi-starter-common") {
+                version {
+                    strictly '2.+'
+                }
+                because("Version 3.* depends on Spring Boot 4 - This constraint will be removed when the application is updated to Spring Boot 4")
+            }
+            implementation("org.springdoc:springdoc-openapi-starter-webmvc-api") {
+                version {
+                    strictly '2.+'
+                }
+                because("Version 3.* depends on Spring Boot 4 - This constraint will be removed when the application is updated to Spring Boot 4")
+            }
+            implementation("com.github.gavlyukovskiy:datasource-proxy-spring-boot-starter") {
+                version {
+                    strictly '1.+'
+                }
+                because("Version 2.* depends on Spring Boot 4 - This constraint will be removed when the application is updated to Spring Boot 4")
+            }
+        }
+    }
+
+    project.afterEvaluate {
+        if (project.pluginManager.hasPlugin('java-test-fixtures')) {
+            project.dependencies {
+                testFixturesImplementation("org.springdoc:springdoc-openapi-starter-common") {
+                    version {
+                        strictly '2.+'
+                    }
+                    because("Version 3.* depends on Spring Boot 4 - This constraint will be removed when the application is updated to Spring Boot 4")
+                }
+                testFixturesImplementation("org.springdoc:springdoc-openapi-starter-webmvc-api") {
+                    version {
+                        strictly '2.+'
+                    }
+                    because("Version 3.* depends on Spring Boot 4 - This constraint will be removed when the application is updated to Spring Boot 4")
+                }
             }
         }
     }

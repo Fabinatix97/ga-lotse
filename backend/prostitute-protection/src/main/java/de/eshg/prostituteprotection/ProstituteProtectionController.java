@@ -7,11 +7,14 @@ package de.eshg.prostituteprotection;
 
 import de.eshg.api.commons.InlineParameterObject;
 import de.eshg.lib.procedure.domain.model.Pdf;
+import de.eshg.lib.procedure.domain.model.PdfMetaData;
 import de.eshg.lib.procedure.domain.model.TaskType;
+import de.eshg.lib.procedure.file.FileFactory;
 import de.eshg.lib.procedure.util.ProcedureValidator;
 import de.eshg.prostituteprotection.api.AbortProcedureRequest;
 import de.eshg.prostituteprotection.api.CloseProcedureRequest;
 import de.eshg.prostituteprotection.api.ConsultationDto;
+import de.eshg.prostituteprotection.api.CreateCertificateRequest;
 import de.eshg.prostituteprotection.api.CreateProstituteProtectionProcedureRequest;
 import de.eshg.prostituteprotection.api.CreateProstituteProtectionProcedureResponse;
 import de.eshg.prostituteprotection.api.GetProstituteProtectionProceduresResponse;
@@ -33,26 +36,24 @@ import de.eshg.prostituteprotection.pdf.RegistrationConsultationCertificateGener
 import de.eshg.prostituteprotection.util.ProgressEntryUtil;
 import de.eshg.prostituteprotection.util.ProstituteProtectionProgressEntryType;
 import de.eshg.prostituteprotection.util.TaskUtil;
-import de.eshg.rest.service.error.BadRequestException;
 import de.eshg.rest.service.security.config.BaseUrls;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import java.nio.charset.StandardCharsets;
 import java.time.Clock;
 import java.time.Instant;
+import java.time.ZonedDateTime;
 import java.util.EnumSet;
 import java.util.Map;
 import java.util.UUID;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.core.io.ByteArrayResource;
-import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
-import org.springframework.http.ContentDisposition;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -60,6 +61,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -67,6 +69,8 @@ import org.springframework.web.bind.annotation.RestController;
 @Tag(name = "ProstituteProtection")
 public class ProstituteProtectionController {
   public static final String BASE_URL = BaseUrls.ProstituteProtection.PROCEDURE_CONTROLLER;
+  public static final String CONSULTATION_CERTIFICATE_KEY = "consultationCertificate";
+  public static final String REGISTRATION_CERTIFICATE_KEY = "registrationCertificate";
 
   private final ProstituteProtectionService prostituteProtectionService;
   private final ProstituteProtectionAppointmentService prostituteProtectionAppointmentService;
@@ -190,81 +194,69 @@ public class ProstituteProtectionController {
   @GetMapping("/{procedureId}/validate-completeness")
   @Transactional(readOnly = true)
   public ValidateRequiredProcedureDataResponse validateCompleteness(
-      @PathVariable("procedureId") UUID procedureId) {
+      @PathVariable("procedureId") UUID procedureId, @RequestParam("withAlias") boolean withAlias) {
     ProstituteProtectionProcedure procedure =
         prostituteProtectionService.findByExternalIdOrThrow(procedureId);
 
     Map<RequiredProcedureArea, EnumSet<ProcedureProperty>> incompleteAreas =
-        ProstituteProtectionValidator.validateCompleteness(procedure);
+        ProstituteProtectionValidator.validateCompleteness(procedure, withAlias);
 
     return new ValidateRequiredProcedureDataResponse(incompleteAreas);
   }
 
   @PostMapping("/{procedureId}/consultation-certificate-print")
   @Transactional
-  public ResponseEntity<Resource> generateConsultationCertificatePdf(
-      @PathVariable("procedureId") UUID procedureId) {
+  public ResponseEntity<MultiValueMap<String, Object>> generateConsultationCertificatePdf(
+      @PathVariable("procedureId") UUID procedureId,
+      @Valid @RequestBody CreateCertificateRequest request) {
     ProstituteProtectionProcedure procedure =
         prostituteProtectionService.findByExternalIdOrThrow(procedureId);
-    validateForPdfGeneration(procedure);
+    ProstituteProtectionValidator.validateForPdfGeneration(procedure, request.withAlias());
 
-    Pdf pdf = consultationCertificateGenerator.generateConsultationCertificate(procedure);
+    MultiValueMap<String, Object> multipart = new LinkedMultiValueMap<>();
+
+    ByteArrayResource consultationCertificate =
+        consultationCertificateGenerator.generateConsultationCertificate(
+            procedure, request.withAlias());
     progressEntryUtil.addSystemProgressEntry(
         procedure,
         ProstituteProtectionProgressEntryType.CONSULTATION_CERTIFICATE_GENERATED,
         getCertificateCreatedDescription(procedure.getConsultationType()),
-        pdf,
+        generatePdf(
+            consultationCertificate, PrintDocumentType.CONSULTATION_CERTIFICATE.getDescription()),
         PrintDocumentType.CONSULTATION_CERTIFICATE);
     procedure.setConsultationCertificateCreatedAt(Instant.now(clock));
+    multipart.add(CONSULTATION_CERTIFICATE_KEY, consultationCertificate);
 
-    return ResponseEntity.ok()
-        .header(
-            HttpHeaders.CONTENT_DISPOSITION,
-            ContentDisposition.attachment()
-                .filename(pdf.getFileName(), StandardCharsets.UTF_8)
-                .build()
-                .toString())
-        .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_PDF_VALUE)
-        .body(new ByteArrayResource(pdf.getFileContent().getContent()));
-  }
+    if (request.withRegistrationCertificate()) {
+      ByteArrayResource registrationCertificate =
+          registrationConsultationCertificateGenerator.generateRegistrationConsultationCertificate(
+              procedure, request.withAlias());
+      progressEntryUtil.addSystemProgressEntry(
+          procedure,
+          ProstituteProtectionProgressEntryType.REGISTRATION_CONSULTATION_CERTIFICATE_GENERATED,
+          getCertificateCreatedDescription(procedure.getConsultationType()),
+          generatePdf(
+              registrationCertificate,
+              PrintDocumentType.REGISTRATION_CONSULTATION_CERTIFICATE.getDescription()),
+          PrintDocumentType.REGISTRATION_CONSULTATION_CERTIFICATE);
 
-  private static void validateForPdfGeneration(ProstituteProtectionProcedure procedure) {
-    ProcedureValidator.validateProcedureStatusNotClosed(procedure);
-    Map<RequiredProcedureArea, EnumSet<ProcedureProperty>> map =
-        ProstituteProtectionValidator.validateCompleteness(procedure);
-    if (!map.isEmpty()) {
-      throw new BadRequestException(
-          "Procedure %s is not complete.".formatted(procedure.getExternalId()));
+      multipart.add(REGISTRATION_CERTIFICATE_KEY, registrationCertificate);
     }
+
+    if (request.withAlias()) {
+      prostituteProtectionService.setCertificateWithAliasCreated(procedure);
+    }
+    return ResponseEntity.ok().contentType(MediaType.MULTIPART_FORM_DATA).body(multipart);
   }
 
-  @PostMapping("/{procedureId}/registration-consultation-certificate-print")
-  @Transactional
-  public ResponseEntity<Resource> generateRegistrationConsultationCertificatePdf(
-      @PathVariable("procedureId") UUID procedureId) {
-    ProstituteProtectionProcedure procedure =
-        prostituteProtectionService.findByExternalIdOrThrow(procedureId);
-    validateForPdfGeneration(procedure);
-
-    Pdf pdf =
-        registrationConsultationCertificateGenerator.generateRegistrationConsultationCertificate(
-            procedure);
-    progressEntryUtil.addSystemProgressEntry(
-        procedure,
-        ProstituteProtectionProgressEntryType.REGISTRATION_CONSULTATION_CERTIFICATE_GENERATED,
-        getCertificateCreatedDescription(procedure.getConsultationType()),
-        pdf,
-        PrintDocumentType.REGISTRATION_CONSULTATION_CERTIFICATE);
-
-    return ResponseEntity.ok()
-        .header(
-            HttpHeaders.CONTENT_DISPOSITION,
-            ContentDisposition.attachment()
-                .filename(pdf.getFileName(), StandardCharsets.UTF_8)
-                .build()
-                .toString())
-        .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_PDF_VALUE)
-        .body(new ByteArrayResource(pdf.getFileContent().getContent()));
+  protected Pdf generatePdf(ByteArrayResource resource, String description) {
+    ZonedDateTime now = ZonedDateTime.now(clock);
+    PdfMetaData pdfMetaData = new PdfMetaData();
+    pdfMetaData.setCreatedDate(now.toInstant());
+    pdfMetaData.setDescription(description);
+    return FileFactory.createPdfWithMetaData(
+        resource.getFilename(), resource.getByteArray(), pdfMetaData);
   }
 
   private String getCertificateCreatedDescription(ConsultationType consultationType) {

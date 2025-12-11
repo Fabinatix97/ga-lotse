@@ -6,10 +6,11 @@
 package de.eshg.prostituteprotection;
 
 import de.eshg.api.commons.SortDirection;
+import de.eshg.lib.procedure.domain.model.ProcedureStatus;
 import de.eshg.persistence.SpecificationUtil;
 import de.eshg.prostituteprotection.api.ProstituteProtectionProcedurePaginationAndSortParameters;
 import de.eshg.prostituteprotection.api.ProstitutionProtectionProcedureSortKey;
-import de.eshg.prostituteprotection.domain.model.EncryptedPersonalData_;
+import de.eshg.prostituteprotection.domain.model.PersonalData_;
 import de.eshg.prostituteprotection.domain.model.ProstituteProtectionProcedure;
 import de.eshg.prostituteprotection.domain.model.ProstituteProtectionProcedure_;
 import jakarta.persistence.criteria.CriteriaBuilder;
@@ -22,7 +23,9 @@ import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 import java.io.Serial;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import org.springframework.data.jpa.domain.Specification;
@@ -50,14 +53,20 @@ class ProcedureSpecification implements Specification<ProstituteProtectionProced
           SpecificationUtil.getOrder(
               sortDirection,
               cb,
-              root.join(ProstituteProtectionProcedure_.ENCRYPTED_PERSONAL_DATA, JoinType.LEFT)
-                  .get(EncryptedPersonalData_.ALIAS)));
+              root.join(ProstituteProtectionProcedure_.PERSONAL_DATA, JoinType.LEFT)
+                  .get(PersonalData_.ALIAS)));
     }
     orders.add(
         SpecificationUtil.getOrder(sortDirection, cb, root.get(ProstituteProtectionProcedure_.id)));
+
+    List<Predicate> conjunctions = new ArrayList<>();
+
+    conjunctions.add(
+        cb.equal(root.get(ProstituteProtectionProcedure_.procedureStatus), ProcedureStatus.OPEN));
+
     query.orderBy(orders.stream().toList());
 
-    return cb.conjunction();
+    return cb.and(conjunctions.toArray(Predicate[]::new));
   }
 
   private Expression<?> mapToSortPath(
@@ -66,8 +75,8 @@ class ProcedureSpecification implements Specification<ProstituteProtectionProced
       case ID -> root.get(ProstituteProtectionProcedure_.id);
       case ALIAS ->
           nullsLastString(
-              root.join(ProstituteProtectionProcedure_.ENCRYPTED_PERSONAL_DATA, JoinType.LEFT)
-                  .get(EncryptedPersonalData_.ALIAS),
+              root.join(ProstituteProtectionProcedure_.personalData, JoinType.LEFT)
+                  .get(PersonalData_.ALIAS),
               cb);
       case APPOINTMENT_START ->
           nullsLastInstant(root.get(ProstituteProtectionProcedure_.appointmentStart), cb);

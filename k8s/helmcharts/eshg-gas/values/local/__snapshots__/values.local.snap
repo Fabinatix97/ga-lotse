@@ -1919,6 +1919,40 @@ spec:
             secretKeyRef:
               name: keycloak-client-secrets
               key: citizen-auth-client-secret
+        - name: management.server.port
+          value: "8081"
+        startupProbe:
+          failureThreshold: 90
+          httpGet:
+            path: /actuator/health
+            port: 8081
+            scheme: HTTP
+          periodSeconds: 1
+        livenessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /actuator/health/liveness
+            port: 8081
+            scheme: HTTP
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 10
+        readinessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /actuator/health/readiness
+            port: 8081
+            scheme: HTTP
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 1
+        lifecycle:
+          preStop:
+            exec:
+              command:
+              - sh
+              - -c
+              - sleep 10
         volumeMounts:
         - name: tmp
           mountPath: /tmp
@@ -2732,6 +2766,40 @@ spec:
             secretKeyRef:
               name: keycloak-client-secrets
               key: employee-auth-client-secret
+        - name: management.server.port
+          value: "8081"
+        startupProbe:
+          failureThreshold: 90
+          httpGet:
+            path: /actuator/health
+            port: 8081
+            scheme: HTTP
+          periodSeconds: 1
+        livenessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /actuator/health/liveness
+            port: 8081
+            scheme: HTTP
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 10
+        readinessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /actuator/health/readiness
+            port: 8081
+            scheme: HTTP
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 1
+        lifecycle:
+          preStop:
+            exec:
+              command:
+              - sh
+              - -c
+              - sleep 10
         volumeMounts:
         - name: tmp
           mountPath: /tmp
@@ -3839,6 +3907,13 @@ spec:
           periodSeconds: 10
           successThreshold: 1
           timeoutSeconds: 1
+        lifecycle:
+          preStop:
+            exec:
+              command:
+              - sh
+              - -c
+              - sleep 10
         resources:
           limits:
             memory: 1024Mi

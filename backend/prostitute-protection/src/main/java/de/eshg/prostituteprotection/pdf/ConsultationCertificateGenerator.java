@@ -8,11 +8,11 @@ package de.eshg.prostituteprotection.pdf;
 import de.eshg.config.departmentinfo.DepartmentInfoConfigService;
 import de.eshg.lib.document.generator.DocumentGenerator;
 import de.eshg.lib.document.generator.department.DepartmentLogoClient;
-import de.eshg.lib.procedure.domain.model.Pdf;
 import de.eshg.prostituteprotection.domain.model.ProstituteProtectionProcedure;
 import java.time.Clock;
 import java.time.LocalDate;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
 
@@ -36,23 +36,24 @@ public class ConsultationCertificateGenerator extends AbstractGenerator {
         clock);
   }
 
-  public Pdf generateConsultationCertificate(ProstituteProtectionProcedure procedure) {
-    return generatePdf(
-        buildConsultationCertificateData(procedure), PrintDocumentType.CONSULTATION_CERTIFICATE);
+  public ByteArrayResource generateConsultationCertificate(
+      ProstituteProtectionProcedure procedure, boolean withAlias) {
+    return generateByteArrayResource(
+        buildConsultationCertificateData(procedure, withAlias),
+        PrintDocumentType.CONSULTATION_CERTIFICATE);
   }
 
   ConsultationCertificateData buildConsultationCertificateData(
-      ProstituteProtectionProcedure procedure) {
+      ProstituteProtectionProcedure procedure, boolean withAlias) {
     LocalDate consultationDate = toLocalDate(procedure.getAppointmentStart());
-    LocalDate validToDate =
-        calculateValidToDate(
-            consultationDate, procedure.getEncryptedPersonalData().getDateOfBirth());
+    // TODO: Decrypt date-of-birth from EncryptedPersonalData
+    LocalDate validToDate = calculateValidToDate(consultationDate, LocalDate.now());
 
     return new ConsultationCertificateData(
-        getPersonData(procedure),
+        getPersonData(procedure, withAlias),
         getFormattedDate(consultationDate),
         getFormattedDate(validToDate),
-        procedure.getEncryptedPersonalData().getDocumentType().getDescription(),
+        procedure.getPersonalData().getDocumentType().getDescription(),
         getDepartmentData());
   }
 

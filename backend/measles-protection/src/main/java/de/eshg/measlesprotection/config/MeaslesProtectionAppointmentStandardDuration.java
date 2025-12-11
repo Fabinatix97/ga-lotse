@@ -6,7 +6,7 @@
 package de.eshg.measlesprotection.config;
 
 import de.eshg.config.domain.Initializable;
-import de.eshg.domain.model.BaseEntity;
+import de.eshg.lib.appointmentblock.model.AbstractAppointmentStandardDuration;
 import de.eshg.lib.common.DataSensitivity;
 import de.eshg.lib.common.SensitivityLevel;
 import jakarta.persistence.Entity;
@@ -14,8 +14,8 @@ import jakarta.validation.constraints.NotNull;
 import java.time.Duration;
 
 @Entity
-public class MeaslesProtectionAppointmentStandardDuration extends BaseEntity
-    implements Initializable {
+public class MeaslesProtectionAppointmentStandardDuration
+    extends AbstractAppointmentStandardDuration implements Initializable {
 
   @DataSensitivity(SensitivityLevel.PUBLIC)
   private boolean initialized = false;

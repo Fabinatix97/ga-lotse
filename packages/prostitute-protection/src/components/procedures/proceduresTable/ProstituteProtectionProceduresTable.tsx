@@ -5,28 +5,31 @@
 
 "use client";
 
-import { Chip } from "@mui/joy";
+import { DeleteOutline } from "@mui/icons-material";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { ColumnSort, createColumnHelper } from "@tanstack/react-table";
+import { useState } from "react";
 import { isNullish } from "remeda";
 
 import {
+  ConfirmationDialog,
   DataTable,
+  IconButton,
   Pagination,
   TablePage,
   TableSheet,
   useTableControl,
 } from "@eshg/lib-employee-portal";
-import { formatWeekdayDateTime } from "@eshg/lib-portal";
+import { Row, formatWeekdayDateTime } from "@eshg/lib-portal";
 import { ApiProstituteProtectionProcedureOverview } from "@eshg/prostitute-protection-api";
 
+import {
+  AbortProcedureParams,
+  useAbortProcedureMutation,
+} from "../../../api/mutations/procedures";
 import { useProceduresQueryOptions } from "../../../api/queries/procedures";
 import { routes } from "../../../config/routes";
-import {
-  CONSULTATION_TYPE_VALUES,
-  PROCEDURE_STATUS_COLORS,
-  PROCEDURE_STATUS_VALUES,
-} from "../../../shared/constants";
+import { CONSULTATION_TYPE_VALUES } from "../../../shared/constants";
 
 import { LanguagesCell } from "./LanguagesCell";
 import { ProstituteProtectionProceduresTableControls } from "./ProstituteProtectionProceduresTableControls";
@@ -39,20 +42,12 @@ const initialSorting: ColumnSort = {
 const columnHelper =
   createColumnHelper<ApiProstituteProtectionProcedureOverview>();
 
-function getProceduresColumns() {
+interface RowActions {
+  onAbortProcedure: (id: string, version: number) => void;
+}
+
+function getProceduresColumns({ onAbortProcedure }: RowActions) {
   return [
-    columnHelper.accessor("appointmentStart", {
-      header: "Termin",
-      cell: ({ getValue }) =>
-        isNullish(getValue()) ? "" : `${formatWeekdayDateTime(getValue())} Uhr`,
-      enableSorting: true,
-      meta: {
-        width: 200,
-        canNavigate: {
-          parentRow: true,
-        },
-      },
-    }),
     columnHelper.accessor("alias", {
       header: "Alias",
       cell: ({ getValue }) => getValue(),
@@ -64,31 +59,20 @@ function getProceduresColumns() {
         },
       },
     }),
-    columnHelper.accessor("status", {
-      header: "Status",
-      cell: ({ getValue }) => (
-        <Chip color={PROCEDURE_STATUS_COLORS[getValue()]}>
-          {PROCEDURE_STATUS_VALUES[getValue()]}
-        </Chip>
-      ),
-      enableSorting: false,
+    columnHelper.accessor("appointmentStart", {
+      header: "Termin",
+      cell: ({ getValue }) =>
+        isNullish(getValue()) ? "" : `${formatWeekdayDateTime(getValue())} Uhr`,
+      enableSorting: true,
       meta: {
-        width: 160,
+        width: 240,
         canNavigate: {
           parentRow: true,
         },
       },
     }),
-    columnHelper.accessor("languages", {
-      header: "Sprachen",
-      cell: ({ getValue }) => <LanguagesCell languages={getValue()} />,
-      enableSorting: false,
-      meta: {
-        width: 160,
-      },
-    }),
     columnHelper.accessor("consultationType", {
-      header: "Art der Konsultation",
+      header: "Beratungstyp",
       cell: ({ getValue }) => {
         const consultationKey = getValue();
         if (!consultationKey) {
@@ -104,10 +88,37 @@ function getProceduresColumns() {
         },
       },
     }),
+    columnHelper.accessor("languages", {
+      header: "Sprachen",
+      cell: ({ getValue }) => <LanguagesCell languages={getValue()} />,
+      enableSorting: false,
+    }),
+    columnHelper.display({
+      id: "actions",
+      header: "Aktionen",
+      cell: ({ row: { original: procedure } }) => (
+        <Row>
+          <IconButton
+            variant="plain"
+            label="Löschen"
+            onClick={() => onAbortProcedure(procedure.id, procedure.version)}
+          >
+            <DeleteOutline />
+          </IconButton>
+        </Row>
+      ),
+      meta: {
+        cellStyle: "button",
+        width: 90,
+      },
+    }),
   ];
 }
 
 export function ProstituteProtectionProceduresTable() {
+  const [confirmAbort, setConfirmAbort] = useState<
+    AbortProcedureParams | undefined
+  >();
   const tableControl = useTableControl({
     serverSideSorting: true,
     initialSorting,
@@ -120,39 +131,67 @@ export function ProstituteProtectionProceduresTable() {
     sorting: tableControl.tableSorting,
   });
 
+  const abortProcedure = useAbortProcedureMutation();
+
+  async function handleAbort() {
+    if (confirmAbort === undefined) {
+      return;
+    }
+    await abortProcedure.mutateAsync(confirmAbort);
+    setConfirmAbort(undefined);
+  }
+
   const {
     data: { elements, totalNumberOfElements },
     isLoading,
   } = useSuspenseQuery(proceduresQueryOptions);
 
   return (
-    <TablePage
-      data-testid="procedureTable"
-      aria-label="Vorgänge"
-      controls={<ProstituteProtectionProceduresTableControls />}
-      filterSettings={null}
-      search={null}
-      fullHeight
-    >
-      <TableSheet
-        loading={isLoading}
-        footer={
-          <Pagination
-            totalCount={totalNumberOfElements}
-            {...tableControl.paginationProps}
-          />
-        }
+    <>
+      <TablePage
+        data-testid="procedureTable"
+        aria-label="Vorgänge"
+        controls={<ProstituteProtectionProceduresTableControls />}
+        filterSettings={null}
+        search={null}
+        fullHeight
       >
-        <DataTable
-          data={elements}
-          columns={getProceduresColumns()}
-          rowNavigation={{
-            route: ({ original: { id: procedureId } }) =>
-              routes.procedures.byId(procedureId).details,
-            focusColumnAccessorKey: "appointmentStart",
-          }}
-        />
-      </TableSheet>
-    </TablePage>
+        <TableSheet
+          loading={isLoading}
+          footer={
+            <Pagination
+              totalCount={totalNumberOfElements}
+              {...tableControl.paginationProps}
+            />
+          }
+        >
+          <DataTable
+            data={elements}
+            columns={getProceduresColumns({
+              onAbortProcedure: (id, version) =>
+                setConfirmAbort({ id, data: { version } }),
+            })}
+            rowNavigation={{
+              route: ({ original: { id: procedureId } }) =>
+                routes.procedures.byId(procedureId).details,
+              focusColumnAccessorKey: "alias",
+            }}
+          />
+        </TableSheet>
+      </TablePage>
+      <ConfirmationDialog
+        open={confirmAbort !== undefined}
+        title="Termin stornieren?"
+        confirmLabel="Stornieren"
+        color="danger"
+        onCancel={() => {
+          setConfirmAbort(undefined);
+        }}
+        onClose={() => {
+          setConfirmAbort(undefined);
+        }}
+        onConfirm={handleAbort}
+      />
+    </>
   );
 }

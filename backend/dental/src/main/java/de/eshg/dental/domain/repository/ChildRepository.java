@@ -13,8 +13,6 @@ import jakarta.persistence.LockModeType;
 import java.time.Year;
 import java.util.List;
 import java.util.UUID;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Slice;
 import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -126,8 +124,6 @@ public interface ChildRepository extends ProcedureRepository<Child> {
               institution_id
       """)
   List<InstitutionCounts> getInstitutionsAndCompletedChildren(@Param("schoolYear") Year schoolYear);
-
-  Slice<Child> findByIdGreaterThanOrderByIdAsc(Long lastId, PageRequest of);
 
   interface InstitutionCounts {
     UUID getInstitutionId();

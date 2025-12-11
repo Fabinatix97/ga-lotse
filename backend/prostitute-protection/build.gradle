@@ -17,6 +17,8 @@ dependencies {
     implementation project(':lib-calendar')
     implementation project(':lib-statistics')
 
+    implementation 'org.bouncycastle:bcprov-jdk18on:latest.release'
+
     testImplementation testFixtures(project(':business-module-persistence-commons'))
     testImplementation testFixtures(project(':lib-appointmentblock'))
 
@@ -27,6 +29,7 @@ dependencies {
     testImplementation testFixtures(project(':lib-document-generator'))
     testImplementation testFixtures(project(':lib-procedures'))
     testImplementation testFixtures(project(':lib-statistics'))
+    testImplementation 'jakarta.mail:jakarta.mail-api'
 }
 
 dockerCompose {

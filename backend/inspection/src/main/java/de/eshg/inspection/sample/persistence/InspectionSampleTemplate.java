@@ -37,10 +37,6 @@ public class InspectionSampleTemplate extends GloballyUniqueEntityBase {
   @DataSensitivity(SensitivityLevel.PSEUDONYMIZED)
   private InspectionSampleType typeOfSample;
 
-  @Column
-  @DataSensitivity(SensitivityLevel.PSEUDONYMIZED)
-  private String nameOfSamplingPoint;
-
   @Column(nullable = false)
   @NotNull
   @JdbcType(PostgreSQLEnumJdbcType.class)
@@ -78,14 +74,6 @@ public class InspectionSampleTemplate extends GloballyUniqueEntityBase {
 
   public void setTypeOfSample(@NotNull InspectionSampleType typeOfSample) {
     this.typeOfSample = typeOfSample;
-  }
-
-  public String getNameOfSamplingPoint() {
-    return nameOfSamplingPoint;
-  }
-
-  public void setNameOfSamplingPoint(String nameOfSamplingPoint) {
-    this.nameOfSamplingPoint = nameOfSamplingPoint;
   }
 
   public @NotNull InspectionSampleEvaluationType getEvaluationType() {

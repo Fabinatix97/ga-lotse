@@ -14,7 +14,8 @@ import {
 import { Procedure } from "@/lib/businessModules/schoolEntry/api/models/Procedure";
 import { BulkCreateAppointmentsButton } from "@/lib/businessModules/schoolEntry/features/procedures/proceduresTable/bulkCreateAppointments/BulkCreateAppointmentsButton";
 import { BulkDownloadInvitationsButton } from "@/lib/businessModules/schoolEntry/features/procedures/proceduresTable/bulkDownloadInvitations/BulkDownloadInvitationsButton";
-import { UpdateLabelsButton } from "@/lib/businessModules/schoolEntry/features/procedures/proceduresTable/bulkProcedureLabelUpdate/UpdateLabelsButton";
+import { UpdateProcedureLabelsButton } from "@/lib/businessModules/schoolEntry/features/procedures/proceduresTable/bulkProcedureLabelUpdate/UpdateProcedureLabelsButton";
+import { SetInvitationSentButton } from "@/lib/businessModules/schoolEntry/features/procedures/proceduresTable/bulkSetInvitationSent/SetInvitationSentButton";
 import { ProcedureIdVersion } from "@/lib/businessModules/schoolEntry/shared/types";
 
 interface ProcedureTableTitleProps {
@@ -51,7 +52,11 @@ export function ProceduresTableTitle(props: ProcedureTableTitleProps) {
             procedures={props.procedures}
           />
           <Divider orientation="vertical" sx={{ marginY: 1 }} />
-          <UpdateLabelsButton procedureIdsAndVersion={procedureIdsAndVersion} />
+          <UpdateProcedureLabelsButton
+            procedureIdsAndVersion={procedureIdsAndVersion}
+          />
+          <Divider orientation="vertical" sx={{ marginY: 1 }} />
+          <SetInvitationSentButton procedures={selectedProcedures} />
         </>
       )}
     </RowSelectionTableToolbar>

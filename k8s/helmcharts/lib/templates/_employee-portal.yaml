@@ -68,7 +68,7 @@ spec:
         {{- end }}
       containers:
         - name: application
-          image: "{{ .Values.image.registry }}/{{ .Values.image.repository }}/employee-portal:{{ .Values.image.tag }}"
+          image: "{{ .Values.image.registry }}/{{ .Values.image.repository }}/{{ default "employee-portal" .Values.employeeportal.imageName }}:{{ .Values.image.tag }}"
           securityContext: {{- .Values.containerSecurityContext | toYaml | nindent 12 }}
           resources:
           {{- toYaml (default dict .Values.employeeportalnextjs.resources) | nindent 12 }}
@@ -115,6 +115,10 @@ spec:
               value: https://{{ .Values.domains.centralservices.pdfaconverterportal }}
             - name: PUBLIC_MATRIX_SERVER_URL
               value: https://{{ .Values.domains.hosts.employeeportal }}/api/synapse
+            {{- range .Values.employeeportal.additionalEnv }}
+            - name: {{ .name }}
+              value: {{ .value }}
+            {{- end }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
       {{- include "module.spatz" (dict "Values" $.Values "v" $.Values.employeeportalnextjs "k" "employeeportalnextjs" "relay" false "createDebugLogMount" $createDebugLogMount) }}
 

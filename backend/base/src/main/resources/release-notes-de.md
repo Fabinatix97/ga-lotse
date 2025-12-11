@@ -2,6 +2,16 @@ GA-Lotse ist ein Kooperationsprojekt des Gesundheitsamts Frankfurt am Main mit d
 
 Finanziert von der Europäischen Union – NextGenerationEU
 
+## GA-Lotse 2.13
+_10.12.2025_
+
+Sechsundzwanzigster Release der Anwendung GA-Lotse
+
+### Einschulungsuntersuchungen:
+
+* Aktion „Einladung versandt“ auswählbar bei markierten Vorgängen nach dem Herunterladen der Einladungen
+* Anzeigeoptionen in der ESU erweitert, sodass nun auch 100 und 200 Einträge auswählbar sind
+
 ## GA-Lotse 2.12
 _02.12.2025_
 

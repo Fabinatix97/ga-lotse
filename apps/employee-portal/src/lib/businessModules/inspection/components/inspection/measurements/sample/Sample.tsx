@@ -303,7 +303,7 @@ export function Sample({
               }}
             >
               <Typography component="span" level="title-lg">
-                {"Probe " + (sampleIndex + 1)}
+                {initObject.sampleNumber}
               </Typography>
             </Grid>
             <Grid
@@ -446,8 +446,8 @@ export function Sample({
                   value={initObject.pointOfWithdrawal}
                 />
                 <DetailsItem
-                  label="Name der Probeentnahme"
-                  value={initObject.nameOfSamplingPoint}
+                  label="Proben-Nr."
+                  value={initObject.sampleNumber}
                 />
               </DetailsColumn>
               <DetailsColumn>

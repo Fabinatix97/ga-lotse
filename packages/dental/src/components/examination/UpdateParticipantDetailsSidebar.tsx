@@ -6,6 +6,7 @@
 "use client";
 
 import { Stack, Typography } from "@mui/joy";
+import { useSuspenseQuery } from "@tanstack/react-query";
 import { Formik } from "formik";
 import { isDefined } from "remeda";
 
@@ -40,6 +41,7 @@ import { Institution } from "../../api/models/Institution";
 import { childApiQueryKey } from "../../config/apiQueryKeys";
 import { FLUORIDATION_CONSENTED_OPTIONS } from "../../config/child";
 import { useDentalApi } from "../../contexts/dental";
+import { getChildDetailsQuery } from "../../features/children/api/queries/details";
 import { ParticipantDetails } from "../../features/prophylaxisSessions/api/models/ProphylaxisSessionExamination";
 import {
   FluoridationConsent,
@@ -76,8 +78,13 @@ function UpdateParticipantDetailsSidebar(
   props: UpdateParticipantDetailsSidebarProps,
 ) {
   const validatePastOrTodayDate = useValidatePastOrTodayDate();
-  const { procedureLabelApi } = useDentalApi();
+  const { childApi, procedureLabelApi } = useDentalApi();
   const { participantDetails, onClose } = props;
+
+  const { data: child } = useSuspenseQuery(
+    getChildDetailsQuery(childApi, participantDetails.id),
+  );
+  const fileStateUpdatePending = child.personDetails.outdated;
 
   const INITIAL_VALUES = {
     firstName: participantDetails.firstName,
@@ -108,25 +115,35 @@ function UpdateParticipantDetailsSidebar(
         <SidebarForm ref={props.formRef}>
           <SidebarContent title="Details zum Kind">
             <Stack gap={3}>
+              {fileStateUpdatePending && (
+                <Alert
+                  message="Personenangaben wurden geändert"
+                  color="warning"
+                />
+              )}
               <InputField
                 name="firstName"
                 label="Vorname"
+                disabled={fileStateUpdatePending}
                 required="Bitte einen Vornamen angeben."
               />
               <InputField
                 name="lastName"
                 label="Nachname"
+                disabled={fileStateUpdatePending}
                 required="Bitte einen Nachnamen angeben."
               />
               <DateField
                 name="dateOfBirth"
                 label="Geburtsdatum"
                 required="Bitte ein Geburtsdatum angeben."
+                disabled={fileStateUpdatePending}
                 validate={validateDateOfBirth}
               />
               <SelectField
                 name="gender"
                 label="Geschlecht"
+                disabled={fileStateUpdatePending}
                 options={GENDER_OPTIONS}
               />
               <SearchGroupField

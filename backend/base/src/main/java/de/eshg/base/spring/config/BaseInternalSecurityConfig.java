@@ -144,11 +144,6 @@ public class BaseInternalSecurityConfig {
     auth.requestMatchers(POST, PersonApi.BASE_URL + PersonApi.FILE_STATES_URL + ARCHIVE_DELETION)
         .hasRole(EmployeePermissionRole.BASE_PERSONS_DELETE.name());
 
-    auth.requestMatchers(POST, PersonApi.BASE_URL + PersonApi.FILE_STATES_URL + "/linked-ids")
-        .hasAnyRole(
-            EmployeePermissionRole.BASE_PERSONS_WRITE.name(),
-            EmployeePermissionRole.BASE_INTER_MODULE_MIGRATION.name());
-
     auth.requestMatchers(
             POST,
             PersonApi.BASE_URL

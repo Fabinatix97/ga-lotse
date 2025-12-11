@@ -3,7 +3,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Stack } from "@mui/joy";
 import { useSuspenseQueries } from "@tanstack/react-query";
 
 import { DisabledFormProvider, DynamicPageProps } from "@eshg/lib-portal";
@@ -28,9 +27,7 @@ export function ProstituteProtectionConsultationPage(
 
   return (
     <DisabledFormProvider disabled={isProcedureFinalized(procedure)}>
-      <Stack sx={{ height: "100%" }}>
-        <ConsultationForm procedure={procedure} consultation={consultation} />
-      </Stack>
+      <ConsultationForm procedure={procedure} consultation={consultation} />
     </DisabledFormProvider>
   );
 }

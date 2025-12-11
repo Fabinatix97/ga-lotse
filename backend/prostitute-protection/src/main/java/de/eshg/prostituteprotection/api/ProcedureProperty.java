@@ -6,12 +6,12 @@
 package de.eshg.prostituteprotection.api;
 
 public enum ProcedureProperty {
+  ALIAS,
   FIRST_NAME,
   DATE_OF_BIRTH,
   NATIONALITY,
   DOCUMENT_TYPE,
 
-  WITH_INTERPRETER,
   LEGAL_ADVICES,
   HEALTH_AND_SOCIAL_INSURANCE,
   CONSULTING_SERVICES,

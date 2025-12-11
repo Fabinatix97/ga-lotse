@@ -18,7 +18,7 @@ public record InspectionSampleDto(
     @NotNull UUID sampleId,
     @NotNull InspectionSampleTypeDto typeOfSample,
     @NotNull String pointOfWithdrawal,
-    String nameOfSamplingPoint,
+    @NotNull String sampleNumber,
     @NotNull InspectionSampleEvaluationTypeDto evaluationType,
     @NotNull @Valid InspectionSampleActorDto samplingActor,
     Instant timeOfSampling,

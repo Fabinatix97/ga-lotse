@@ -44,11 +44,20 @@ import org.springframework.security.web.header.writers.CrossOriginOpenerPolicyHe
 import org.springframework.security.web.header.writers.CrossOriginResourcePolicyHeaderWriter;
 import org.springframework.security.web.servlet.util.matcher.PathPatternRequestMatcher;
 import org.springframework.security.web.util.matcher.AnyRequestMatcher;
+import org.springframework.security.web.util.matcher.RequestMatcher;
+import org.springframework.security.web.util.matcher.RequestMatchers;
 
 @Configuration
 public class AuthServiceSecurityConfig {
 
   private static final Logger log = LoggerFactory.getLogger(AuthServiceSecurityConfig.class);
+  public static final RequestMatcher actuatorMonitoringRequestMatcher =
+      RequestMatchers.anyOf(
+          PathPatternRequestMatcher.withDefaults().matcher(HttpMethod.GET, "/actuator/health"),
+          PathPatternRequestMatcher.withDefaults()
+              .matcher(HttpMethod.GET, "/actuator/health/liveness"),
+          PathPatternRequestMatcher.withDefaults()
+              .matcher(HttpMethod.GET, "/actuator/health/readiness"));
 
   // We explicitly reconfigure the Spring OAuth client endpoints to live under /auth
   // This makes it easier to configure the proxy_pass in the Nginx reverse proxy.
@@ -108,12 +117,7 @@ public class AuthServiceSecurityConfig {
       throws Exception {
     return http.authorizeHttpRequests(
             auth -> {
-              auth.requestMatchers(
-                      HttpMethod.GET,
-                      "/actuator/health",
-                      "/actuator/health/liveness",
-                      "/actuator/health/readiness")
-                  .permitAll();
+              auth.requestMatchers(actuatorMonitoringRequestMatcher).permitAll();
               auth.requestMatchers(HttpMethod.GET, "/browser_update_required.html").permitAll();
               auth.requestMatchers(HttpMethod.GET, "/login_error.html").permitAll();
 

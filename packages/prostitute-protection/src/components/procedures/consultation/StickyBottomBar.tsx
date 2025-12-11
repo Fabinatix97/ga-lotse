@@ -4,6 +4,7 @@
  */
 
 import { Box, Button } from "@mui/joy";
+import { useQueryClient } from "@tanstack/react-query";
 import { useFormikContext } from "formik";
 import { ReactNode } from "react";
 
@@ -14,12 +15,15 @@ import {
 } from "@eshg/lib-employee-portal";
 import { SubmitButton, useIsFormDisabled } from "@eshg/lib-portal";
 
+import { proceduresQueryKey } from "../../../api/queries/apiQueryKeys";
+
 interface StickyBottomBarProps {
   left?: ReactNode | ReactNode[];
   onCancel?: () => void;
 }
 
 export function StickyBottomBar({ left, onCancel }: StickyBottomBarProps) {
+  const queryClient = useQueryClient();
   const { isSubmitting, dirty, resetForm } = useFormikContext();
   const { openCancelDialog } = useConfirmationDialog();
   const disabled = useIsFormDisabled();
@@ -34,6 +38,7 @@ export function StickyBottomBar({ left, onCancel }: StickyBottomBarProps) {
         position: "sticky",
         bottom: 0,
         marginInline: (theme) => theme.spacing(-3),
+        marginBlockEnd: (theme) => theme.spacing(-3),
         zIndex: (theme) => theme.zIndex.toolbar,
       }}
     >
@@ -50,10 +55,9 @@ export function StickyBottomBar({ left, onCancel }: StickyBottomBarProps) {
                   openCancelDialog({
                     onConfirm() {
                       resetForm();
-                      // eslint-disable-next-line no-console
-                      console.log(
-                        "Cancel Form Confirmation Dialog - onConfirm",
-                      );
+                      void queryClient.invalidateQueries({
+                        queryKey: proceduresQueryKey([]),
+                      });
                     },
                   });
                   onCancel?.();

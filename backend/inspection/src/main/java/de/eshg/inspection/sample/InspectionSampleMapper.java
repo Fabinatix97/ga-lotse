@@ -69,7 +69,7 @@ public class InspectionSampleMapper {
         sample.getSampleExternalId(),
         InspectionSampleTypeDto.valueOf(sample.getTypeOfSample().name()),
         sample.getPointOfWithdrawal(),
-        sample.getNameOfSamplingPoint(),
+        sample.getSampleNumber(),
         InspectionSampleEvaluationTypeDto.valueOf(sample.getEvaluationType().name()),
         mapToDto(sample.getSamplingActor(), facilityFileState, userMap, contactMap),
         sample.getTimeOfSampling(),
@@ -202,7 +202,6 @@ public class InspectionSampleMapper {
         sampleTemplate.getExternalId(),
         sampleTemplate.getName(),
         sampleTemplate.getPointOfWithdrawal(),
-        sampleTemplate.getNameOfSamplingPoint(),
         InspectionSampleEvaluationTypeDto.valueOf(sampleTemplate.getEvaluationType().name()),
         InspectionSampleTypeDto.valueOf(sampleTemplate.getTypeOfSample().name()),
         sampleTemplate.getMeasurementParameters().stream()

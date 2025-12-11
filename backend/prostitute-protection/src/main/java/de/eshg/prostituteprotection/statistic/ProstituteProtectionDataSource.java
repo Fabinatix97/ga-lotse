@@ -12,14 +12,13 @@ import de.eshg.lib.statistics.api.DataSourceSensitivity;
 import de.eshg.lib.statistics.datasource.ProcedureDataSource;
 import de.eshg.lib.statistics.util.TimeRange;
 import de.eshg.prostituteprotection.domain.model.Consultation;
-import de.eshg.prostituteprotection.domain.model.EncryptedPersonalData;
+import de.eshg.prostituteprotection.domain.model.PersonalData;
 import de.eshg.prostituteprotection.domain.model.ProstituteProtectionProcedure;
 import de.eshg.prostituteprotection.domain.model.ProstituteProtectionProcedure_;
 import de.eshg.prostituteprotection.domain.repository.ProstituteProtectionProcedureRepository;
 import de.eshg.prostituteprotection.statistic.model.ConsultationType;
 import de.eshg.prostituteprotection.statistic.model.DocumentType;
 import de.eshg.prostituteprotection.statistic.model.Language;
-import io.micrometer.common.util.StringUtils;
 import jakarta.persistence.criteria.Predicate;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
@@ -71,12 +70,12 @@ public class ProstituteProtectionDataSource
       ProstituteProtectionProcedure procedure,
       ProstituteProtectionAttributes attribute,
       TimeRange timeRange) {
-    EncryptedPersonalData personalData = procedure.getEncryptedPersonalData();
+    PersonalData personalData = procedure.getPersonalData();
 
     return switch (attribute) {
       case PROCEDURE_ID -> procedure.getExternalId();
       case AGE -> procedure.getAgeAtConsultation();
-      case ALIAS -> hasAlias(personalData);
+      case ALIAS -> Boolean.TRUE.equals(procedure.getCertificateWithAliasCreated());
       case DOCUMENT_TYPE -> getDocumentType(personalData);
       case NATIONALITY -> getNationality(personalData);
       case CONSULTATION_DATE -> getConsultationDate(procedure);
@@ -89,10 +88,6 @@ public class ProstituteProtectionDataSource
       case PREDICAMENT -> getConsultationAttribute(procedure, Consultation::isPredicament);
       case INTERPRETER -> getConsultationAttribute(procedure, Consultation::isInterpreterConsulted);
     };
-  }
-
-  private static boolean hasAlias(EncryptedPersonalData personalData) {
-    return personalData != null && StringUtils.isNotEmpty(personalData.getAlias());
   }
 
   private String getConsultationType(ProstituteProtectionProcedure procedure) {
@@ -113,14 +108,14 @@ public class ProstituteProtectionDataSource
     return procedure.getAppointmentStart().atZone(ZoneId.systemDefault()).format(DATE_FORMAT);
   }
 
-  private String getNationality(EncryptedPersonalData personalData) {
+  private String getNationality(PersonalData personalData) {
     if (personalData == null) {
       return null;
     }
     return CountryCode.getCountryName(personalData.getNationality());
   }
 
-  private String getDocumentType(EncryptedPersonalData personalData) {
+  private String getDocumentType(PersonalData personalData) {
     if (personalData == null) {
       return null;
     }

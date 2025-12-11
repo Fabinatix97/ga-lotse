@@ -3181,6 +3181,34 @@
         "tags" : [ "SchoolEntry" ]
       }
     },
+    "/school-entries/bulk-procedure-invitation-sent" : {
+      "patch" : {
+        "operationId" : "updateProceduresInvitationSent",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/UpdateProceduresInvitationSentRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/UpdateProceduresBulkResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "SchoolEntry" ]
+      }
+    },
     "/school-entries/bulk-procedure-label" : {
       "patch" : {
         "operationId" : "updateProceduresWithLabels",
@@ -10262,13 +10290,16 @@
         }
       },
       "SchoolEntryAppointmentStandardDurations" : {
-        "required" : [ "canChild", "entryLevel", "regularExamination", "specialNeeds" ],
+        "required" : [ "canChild", "entryLevel", "extraDuration", "regularExamination", "specialNeeds" ],
         "type" : "object",
         "properties" : {
           "canChild" : {
             "type" : "string"
           },
           "entryLevel" : {
+            "type" : "string"
+          },
+          "extraDuration" : {
             "type" : "string"
           },
           "regularExamination" : {
@@ -11492,6 +11523,20 @@
             "minimum" : 0,
             "type" : "integer",
             "format" : "int32"
+          }
+        }
+      },
+      "UpdateProceduresInvitationSentRequest" : {
+        "required" : [ "procedureIdsAndVersion" ],
+        "type" : "object",
+        "properties" : {
+          "procedureIdsAndVersion" : {
+            "minProperties" : 1,
+            "type" : "object",
+            "additionalProperties" : {
+              "type" : "integer",
+              "format" : "int64"
+            }
           }
         }
       },

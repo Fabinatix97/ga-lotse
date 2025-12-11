@@ -22,28 +22,30 @@ import {
 import { ApiUpdateProceduresBulkResponse } from "@eshg/school-entry-api";
 
 import { useLabelApi } from "@/lib/businessModules/schoolEntry/api/clients";
-import { useUpdateProceduresInBulk } from "@/lib/businessModules/schoolEntry/api/mutations/schoolEntryApi";
+import { useUpdateProcedureLabelsInBulk } from "@/lib/businessModules/schoolEntry/api/mutations/schoolEntryApi";
 import { schoolEntryApiQueryKey } from "@/lib/businessModules/schoolEntry/api/queries/apiQueryKeys";
 import { ProcedureIdVersion } from "@/lib/businessModules/schoolEntry/shared/types";
 
-interface UpdateProceduresSidebarProps extends SidebarWithFormRefProps {
+interface UpdateProcedureLabelsSidebarProps extends SidebarWithFormRefProps {
   procedureIdsAndVersion: ProcedureIdVersion;
 }
 
-export function useUpdateProceduresSidebar(): UseSidebarWithFormRefResult<UpdateProceduresSidebarProps> {
+export function useUpdateProcedureLabelsSidebar(): UseSidebarWithFormRefResult<UpdateProcedureLabelsSidebarProps> {
   return useSidebarWithFormRef({
-    component: UpdateProceduresSidebar,
+    component: UpdateProcedureLabelsSidebar,
   });
 }
 
-interface UpdateProceduresValues {
+interface UpdateProcedureLabelsValues {
   procedureLabels: ProcedureLabel[];
 }
 
-function UpdateProceduresSidebar(props: UpdateProceduresSidebarProps) {
-  const { mutateAsync, data, isSuccess } = useUpdateProceduresInBulk();
+function UpdateProcedureLabelsSidebar(
+  props: UpdateProcedureLabelsSidebarProps,
+) {
+  const { mutateAsync, data, isSuccess } = useUpdateProcedureLabelsInBulk();
 
-  async function handleSubmit(values: UpdateProceduresValues) {
+  async function handleSubmit(values: UpdateProcedureLabelsValues) {
     await mutateAsync({
       procedureIdsAndVersion: props.procedureIdsAndVersion,
       procedureLabels: values.procedureLabels.map((label) => label.id),
@@ -57,7 +59,7 @@ function UpdateProceduresSidebar(props: UpdateProceduresSidebarProps) {
   );
 }
 
-interface EmbeddedSidebarFormProps extends UpdateProceduresSidebarProps {
+interface EmbeddedSidebarFormProps extends UpdateProcedureLabelsSidebarProps {
   isSuccess: boolean;
   data: ApiUpdateProceduresBulkResponse | undefined;
 }

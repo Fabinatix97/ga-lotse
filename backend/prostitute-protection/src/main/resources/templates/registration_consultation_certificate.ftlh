@@ -200,7 +200,7 @@ footer.style
 
       <tr>
         <td>
-          <@checkbox.content checked=withTranslator />
+          <@checkbox.content checked=interpreterConsulted />
         </td>
         <td class="italic">
           mit Dolmetscher

@@ -8,10 +8,10 @@ package de.eshg.prostituteprotection.pdf;
 import de.eshg.config.departmentinfo.DepartmentInfoConfigService;
 import de.eshg.lib.document.generator.DocumentGenerator;
 import de.eshg.lib.document.generator.department.DepartmentLogoClient;
-import de.eshg.lib.procedure.domain.model.Pdf;
 import de.eshg.prostituteprotection.domain.model.ProstituteProtectionProcedure;
 import java.time.Clock;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
 
@@ -35,20 +35,21 @@ public class RegistrationConsultationCertificateGenerator extends AbstractGenera
         clock);
   }
 
-  public Pdf generateRegistrationConsultationCertificate(ProstituteProtectionProcedure procedure) {
-    return generatePdf(
-        buildRegistrationConsultationCertificateData(procedure),
+  public ByteArrayResource generateRegistrationConsultationCertificate(
+      ProstituteProtectionProcedure procedure, boolean withAlias) {
+    return generateByteArrayResource(
+        buildRegistrationConsultationCertificateData(procedure, withAlias),
         PrintDocumentType.REGISTRATION_CONSULTATION_CERTIFICATE);
   }
 
   RegistrationConsultationCertificateData buildRegistrationConsultationCertificateData(
-      ProstituteProtectionProcedure procedure) {
+      ProstituteProtectionProcedure procedure, boolean withAlias) {
     String consultationDate = getFormattedDate(toLocalDate(procedure.getAppointmentStart()));
     return new RegistrationConsultationCertificateData(
-        getPersonData(procedure),
+        getPersonData(procedure, withAlias),
         consultationDate,
-        !Boolean.TRUE.equals(procedure.isWithTranslator()),
-        Boolean.TRUE.equals(procedure.isWithTranslator()),
+        !procedure.getConsultation().isInterpreterConsulted(),
+        procedure.getConsultation().isInterpreterConsulted(),
         getDepartmentData());
   }
 }

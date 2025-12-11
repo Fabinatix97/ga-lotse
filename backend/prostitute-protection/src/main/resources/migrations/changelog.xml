@@ -23,4 +23,9 @@
   <include file="migrations/0014_drop_not_null_constraint.xml"/>
   <include file="migrations/0015_add_age_at_consultation.xml"/>
   <include file="migrations/0016_add_statistics.xml"/>
+  <include file="migrations/0017_remove_with_translator.xml"/>
+  <include file="migrations/0018_add_personal_data.xml"/>
+  <include file="migrations/0019_add_appointment_extraduration.xml"/>
+  <include file="migrations/0020_add_random_salt.xml"/>
+  <include file="migrations/0021_add_certificate_with_alias_created.xml"/>
 </databaseChangeLog>

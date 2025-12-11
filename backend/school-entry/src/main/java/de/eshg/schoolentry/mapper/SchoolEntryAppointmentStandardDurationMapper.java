@@ -26,6 +26,7 @@ public class SchoolEntryAppointmentStandardDurationMapper {
     domain.setEntryLevel(dto.entryLevel());
     domain.setRegularExamination(dto.regularExamination());
     domain.setSpecialNeeds(dto.specialNeeds());
+    domain.setExtraDuration(dto.extraDuration());
     return domain;
   }
 
@@ -36,6 +37,7 @@ public class SchoolEntryAppointmentStandardDurationMapper {
         domain.getCanChild(),
         domain.getEntryLevel(),
         domain.getRegularExamination(),
-        domain.getSpecialNeeds());
+        domain.getSpecialNeeds(),
+        domain.getExtraDuration());
   }
 }

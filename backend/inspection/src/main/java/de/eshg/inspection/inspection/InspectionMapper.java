@@ -396,8 +396,7 @@ public class InspectionMapper {
             Comparator.comparing(
                     InspectionSample::getPointOfWithdrawal, Comparator.nullsLast(String::compareTo))
                 .thenComparing(
-                    InspectionSample::getNameOfSamplingPoint,
-                    Comparator.nullsLast(String::compareTo))
+                    InspectionSample::getSampleNumber, Comparator.nullsLast(String::compareTo))
                 .thenComparing(
                     InspectionSample::getTypeOfSample,
                     Comparator.nullsLast(InspectionSampleType::compareTo))

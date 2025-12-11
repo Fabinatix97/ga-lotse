@@ -95,6 +95,9 @@ spec:
           {{- if .Values.springBootReadinessProbe.enabled }}
           readinessProbe: {{- omit .Values.springBootReadinessProbe "enabled" | toYaml | nindent 12 }}
           {{- end }}
+          {{- if $.Values.containersLifecycle.enabled }}
+          lifecycle: {{- omit $.Values.containersLifecycle "enabled" | toYaml | nindent 12 }}
+          {{- end }}
           resources:
           {{- toYaml (default dict .Values.relayserver.resources) | nindent 12 }}
           env:

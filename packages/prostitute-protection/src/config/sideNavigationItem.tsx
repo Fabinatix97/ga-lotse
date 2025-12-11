@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { FavoriteBorder } from "@mui/icons-material";
+import { TaskOutlined } from "@mui/icons-material";
 
 import { ApiUserRole } from "@eshg/base-api";
 import {
@@ -16,13 +16,18 @@ import { routes } from "./routes";
 
 const sideNavigationItem = {
   name: "ProstSchG",
-  decorator: <FavoriteBorder />,
+  decorator: <TaskOutlined />,
 };
 
 const defaultSubItems: SideNavigationSubItem[] = [
   {
     name: "Vorgänge",
     href: routes.procedures.index,
+    accessCheck: hasUserRole(ApiUserRole.ProstituteProtectionAdmin),
+  },
+  {
+    name: "Personensuche",
+    href: routes.searchPerson.index,
     accessCheck: hasUserRole(ApiUserRole.ProstituteProtectionAdmin),
   },
   {

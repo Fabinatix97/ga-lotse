@@ -203,6 +203,13 @@ public class SchoolEntryController {
         request.procedureIdsAndVersion(), request.procedureLabels());
   }
 
+  @PatchMapping("/bulk-procedure-invitation-sent")
+  @Transactional
+  public UpdateProceduresBulkResponse updateProceduresInvitationSent(
+      @Valid @RequestBody UpdateProceduresInvitationSentRequest request) {
+    return schoolEntryService.updateProceduresInvitationSent(request.procedureIdsAndVersion());
+  }
+
   @PostMapping("/{procedureId}/close-procedure")
   @Transactional
   public ProcedureDetailsDto closeProcedure(

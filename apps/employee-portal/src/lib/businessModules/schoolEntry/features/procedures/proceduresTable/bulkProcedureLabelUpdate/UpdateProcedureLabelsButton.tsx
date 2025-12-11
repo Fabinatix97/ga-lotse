@@ -7,15 +7,15 @@ import { TurnedInNotOutlined } from "@mui/icons-material";
 
 import { RowSelectionTableToolbarButton } from "@eshg/lib-employee-portal";
 
-import { useUpdateProceduresSidebar } from "@/lib/businessModules/schoolEntry/features/procedures/proceduresTable/bulkProcedureLabelUpdate/UpdateProceduresSidebar";
+import { useUpdateProcedureLabelsSidebar } from "@/lib/businessModules/schoolEntry/features/procedures/proceduresTable/bulkProcedureLabelUpdate/UpdateProcedureLabelsSidebar";
 import { ProcedureIdVersion } from "@/lib/businessModules/schoolEntry/shared/types";
 
 interface UpdateLabelsButtonProps {
   procedureIdsAndVersion: ProcedureIdVersion;
 }
 
-export function UpdateLabelsButton(props: UpdateLabelsButtonProps) {
-  const updateLabelsSidebar = useUpdateProceduresSidebar();
+export function UpdateProcedureLabelsButton(props: UpdateLabelsButtonProps) {
+  const updateLabelsSidebar = useUpdateProcedureLabelsSidebar();
   return (
     <RowSelectionTableToolbarButton
       decorator={<TurnedInNotOutlined />}

@@ -3,16 +3,22 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Formik } from "formik";
 import { useRouter } from "next/navigation";
-import { Ref, useState } from "react";
+import { Ref } from "react";
 
 import {
   SidebarFormHandle,
   useSidebarFromSearchParam,
   useStepper,
 } from "@eshg/lib-employee-portal";
-import { mapOptionalValue, useSnackbar } from "@eshg/lib-portal";
 import {
+  isNonEmptyString,
+  mapOptionalValue,
+  useSnackbar,
+} from "@eshg/lib-portal";
+import {
+  ApiAppointment,
   ApiAppointmentBookingType,
   ApiConsultationType,
   ApiCreateProstituteProtectionProcedureRequest,
@@ -24,7 +30,8 @@ import { useGetAppointmentStandardDuration } from "../../../api/queries/appointm
 import { routes } from "../../../config/routes";
 
 import { AppointmentStep } from "./AppointmentStep";
-import { ConsultationDetailsStep } from "./ConsultationDetailsStep";
+import { PersonStep } from "./PersonStep";
+import { SummaryFormStep } from "./SummaryForm";
 
 export interface FieldProps {
   formRef: Ref<SidebarFormHandle>;
@@ -34,20 +41,26 @@ export interface FieldProps {
   changeToStep: (index: number) => void;
   isOnFirstStep: boolean;
   isOnLastStep: boolean;
-  currentState: AddNewProcedureForm;
-  isPending: boolean;
   title: string;
   subTitle?: string;
+  jumpToAppointmentSelection: () => void;
+  jumpToPersonalData: () => void;
 }
 const steps = [
   {
     title: "Neuen Vorgang anlegen",
-    fields: ConsultationDetailsStep,
+    subTitle: "Schritt 1 von 3",
+    fields: PersonStep,
   },
   {
-    title: "Neuen Vorgang anlegen",
-    subTitle: "Termin",
+    title: "Termin wählen",
+    subTitle: "Schritt 2 von 3",
     fields: AppointmentStep,
+  },
+  {
+    title: "Zusammenfassung",
+    subTitle: "Schritt 3 von 3",
+    fields: SummaryFormStep,
   },
 ];
 
@@ -56,8 +69,10 @@ export interface AddNewProcedureForm {
   hasSufficientGermanLanguageSkills?: boolean;
   languages: ApiPersonLanguage[];
   consultationType: ApiConsultationType | "";
-  customAppointmentDate: string;
+  customAppointmentDate?: string;
   duration: number;
+  blockAppointment?: ApiAppointment;
+  appointmentBookingType: ApiAppointmentBookingType | "";
 }
 
 const searchParam = "add-procedure";
@@ -88,8 +103,8 @@ function SidebarWrapper({
     customAppointmentDate: "",
     consultationType: "",
     duration: data.PROSTITUTE_PROTECTION_CONSULTATION,
+    appointmentBookingType: "",
   };
-  const [currentState, setState] = useState<AddNewProcedureForm>(initialValues);
 
   async function onFinalSubmit(newValues: AddNewProcedureForm) {
     const mappedValues = mapProcedureFormToApi(newValues);
@@ -97,9 +112,7 @@ function SidebarWrapper({
     router.push(routes.procedures.byId(id).details);
     snackbar.confirmation("Vorgang erstellt");
   }
-  function onNext(newValues: AddNewProcedureForm) {
-    setState(newValues);
-  }
+
   const {
     Fields,
     handleNext,
@@ -108,34 +121,61 @@ function SidebarWrapper({
     isOnFirstStep,
     isOnLastStep,
     step,
-  } = useStepper({ steps, onFinalSubmit, onNext });
+  } = useStepper({ steps, onFinalSubmit });
+
+  function jumpToAppointmentSelection() {
+    changeToStep(1);
+  }
+  function jumpToPersonalData() {
+    changeToStep(0);
+  }
 
   return (
-    <Fields
-      title={step.title}
-      subTitle={step.subTitle}
-      currentState={currentState}
-      isPending={false}
-      formRef={formRef}
-      isOnLastStep={isOnLastStep}
-      isOnFirstStep={isOnFirstStep}
-      handleNext={handleNext}
-      handlePrev={handlePrev}
-      changeToStep={changeToStep}
-      onClose={onClose}
-    />
+    <Formik initialValues={initialValues} onSubmit={handleNext}>
+      <Fields
+        title={step.title}
+        subTitle={step.subTitle}
+        formRef={formRef}
+        isOnLastStep={isOnLastStep}
+        isOnFirstStep={isOnFirstStep}
+        handleNext={handleNext}
+        handlePrev={handlePrev}
+        changeToStep={changeToStep}
+        jumpToAppointmentSelection={jumpToAppointmentSelection}
+        jumpToPersonalData={jumpToPersonalData}
+        onClose={onClose}
+      />
+    </Formik>
   );
 }
 
 function mapProcedureFormToApi(
   form: AddNewProcedureForm,
 ): ApiCreateProstituteProtectionProcedureRequest {
+  const appointmentStart = getAppointmentDate(form);
+  if (!appointmentStart) {
+    throw new Error("Appointment start must be defined");
+  }
+  if (!form.appointmentBookingType) {
+    throw new Error("Appointment booking type must be defined");
+  }
   return {
-    appointmentStart: new Date(form.customAppointmentDate),
+    appointmentStart,
     durationInMinutes: form.duration,
     alias: form.alias,
     languages: form.languages ?? [],
-    appointmentBookingType: ApiAppointmentBookingType.UserDefined,
+    appointmentBookingType: form.appointmentBookingType,
     consultationType: mapOptionalValue(form.consultationType),
   };
+}
+
+export function getAppointmentDate(form: AddNewProcedureForm) {
+  const customAppointmentDate = isNonEmptyString(form.customAppointmentDate)
+    ? new Date(form.customAppointmentDate)
+    : undefined;
+  const date =
+    form.appointmentBookingType === ApiAppointmentBookingType.AppointmentBlock
+      ? form.blockAppointment?.start
+      : customAppointmentDate;
+  return date ?? undefined;
 }

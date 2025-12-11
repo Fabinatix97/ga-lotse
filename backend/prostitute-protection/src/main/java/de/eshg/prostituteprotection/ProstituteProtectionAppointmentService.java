@@ -83,9 +83,7 @@ public class ProstituteProtectionAppointmentService
   protected Map<ProstituteProtectionProcedure, String> getInformationForAppointmentOverview(
       List<ProstituteProtectionProcedure> entities) {
     return entities.stream()
-        .collect(
-            StreamUtil.toLinkedHashMap(
-                entity -> entity, e -> e.getEncryptedPersonalData().getAlias()));
+        .collect(StreamUtil.toLinkedHashMap(entity -> entity, e -> e.getPersonalData().getAlias()));
   }
 
   @Override

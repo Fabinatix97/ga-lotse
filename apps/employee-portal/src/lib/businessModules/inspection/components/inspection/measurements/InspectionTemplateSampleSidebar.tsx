@@ -120,10 +120,6 @@ function InspectionTemplateSampleSidebar({
               ),
             );
             await setFieldValue(
-              "nameOfSamplingPoint",
-              templates[i]?.nameOfSamplingPoint,
-            );
-            await setFieldValue(
               "pointOfWithdrawal",
               templates[i]?.pointOfWithdrawal,
             );
@@ -215,7 +211,7 @@ function InspectionTemplateSampleSidebar({
       evaluationType: ApiInspectionSampleEvaluationType.OnSite,
       externalId: "",
       measurementParameters: [],
-      nameOfSamplingPoint: "",
+      sampleNumber: "",
       pointOfWithdrawal: "",
       samplingActor: {
         label: "",

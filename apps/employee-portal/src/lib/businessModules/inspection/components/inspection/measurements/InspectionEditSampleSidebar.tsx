@@ -143,7 +143,7 @@ function InspectionEditSampleSidebar({
       evaluationType: sample.evaluationType,
       externalId: sample.sampleId,
       measurementParameters: [],
-      nameOfSamplingPoint: sample.nameOfSamplingPoint,
+      sampleNumber: sample.sampleNumber,
       pointOfWithdrawal: sample.pointOfWithdrawal,
       samplingActor: {
         label: getActorName(sample.samplingActor),

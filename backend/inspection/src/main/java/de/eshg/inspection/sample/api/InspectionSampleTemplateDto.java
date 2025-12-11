@@ -16,7 +16,6 @@ public record InspectionSampleTemplateDto(
     @NotNull UUID id,
     @NotNull String name,
     @NotNull String pointOfWithdrawal,
-    String nameOfSamplingPoint,
     @NotNull InspectionSampleEvaluationTypeDto evaluationType,
     @NotNull InspectionSampleTypeDto typeOfSample,
     @NotNull @Valid

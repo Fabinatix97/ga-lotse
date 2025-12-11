@@ -28,6 +28,7 @@ import {
   ApiSopessExaminationResult,
   ApiSyncPersonRequest,
   ApiUpdatePersonRequest,
+  ApiUpdateProceduresInvitationSentRequest,
   ApiUpdateProceduresWithLabelsRequest,
   ApiVaccinationStatus,
   ApiWaitingRoom,
@@ -61,12 +62,21 @@ export function useCreateAppointmentsInBulk() {
   });
 }
 
-export function useUpdateProceduresInBulk() {
+export function useUpdateProcedureLabelsInBulk() {
   const schoolEntryApi = useSchoolEntryApi();
 
   return useHandledMutation({
     mutationFn: (values: ApiUpdateProceduresWithLabelsRequest) =>
       schoolEntryApi.updateProceduresWithLabels(values),
+  });
+}
+
+export function useUpdateProcedureInvitationIsSentInBulk() {
+  const schoolEntryApi = useSchoolEntryApi();
+
+  return useHandledMutation({
+    mutationFn: (values: ApiUpdateProceduresInvitationSentRequest) =>
+      schoolEntryApi.updateProceduresInvitationSent(values),
   });
 }
 

@@ -2754,13 +2754,22 @@
             "format" : "uuid"
           }
         } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/CreateCertificateRequest"
+              }
+            }
+          },
+          "required" : true
+        },
         "responses" : {
           "200" : {
             "content" : {
               "*/*" : {
                 "schema" : {
-                  "type" : "string",
-                  "format" : "binary"
+                  "$ref" : "#/components/schemas/MultiValueMapStringObject"
                 }
               }
             },
@@ -2808,34 +2817,6 @@
         "tags" : [ "ProstituteProtection" ]
       }
     },
-    "/prostitute-protection-procedures/{procedureId}/registration-consultation-certificate-print" : {
-      "post" : {
-        "operationId" : "generateRegistrationConsultationCertificatePdf",
-        "parameters" : [ {
-          "in" : "path",
-          "name" : "procedureId",
-          "required" : true,
-          "schema" : {
-            "type" : "string",
-            "format" : "uuid"
-          }
-        } ],
-        "responses" : {
-          "200" : {
-            "content" : {
-              "*/*" : {
-                "schema" : {
-                  "type" : "string",
-                  "format" : "binary"
-                }
-              }
-            },
-            "description" : "OK"
-          }
-        },
-        "tags" : [ "ProstituteProtection" ]
-      }
-    },
     "/prostitute-protection-procedures/{procedureId}/validate-completeness" : {
       "get" : {
         "operationId" : "validateCompleteness",
@@ -2846,6 +2827,13 @@
           "schema" : {
             "type" : "string",
             "format" : "uuid"
+          }
+        }, {
+          "in" : "query",
+          "name" : "withAlias",
+          "required" : true,
+          "schema" : {
+            "type" : "boolean"
           }
         } ],
         "responses" : {
@@ -4037,6 +4025,18 @@
         "properties" : {
           "reason" : {
             "type" : "string"
+          }
+        }
+      },
+      "CreateCertificateRequest" : {
+        "required" : [ "withAlias", "withRegistrationCertificate" ],
+        "type" : "object",
+        "properties" : {
+          "withAlias" : {
+            "type" : "boolean"
+          },
+          "withRegistrationCertificate" : {
+            "type" : "boolean"
           }
         }
       },
@@ -6056,6 +6056,27 @@
           }
         }
       },
+      "MultiValueMapStringObject" : {
+        "type" : "object",
+        "properties" : {
+          "all" : {
+            "type" : "object",
+            "additionalProperties" : {
+              "type" : "object"
+            },
+            "writeOnly" : true
+          },
+          "empty" : {
+            "type" : "boolean"
+          }
+        },
+        "additionalProperties" : {
+          "type" : "array",
+          "items" : {
+            "type" : "object"
+          }
+        }
+      },
       "OpeningHours" : {
         "required" : [ "de", "en" ],
         "type" : "object",
@@ -6372,7 +6393,7 @@
       },
       "ProcedureProperty" : {
         "type" : "string",
-        "enum" : [ "FIRST_NAME", "DATE_OF_BIRTH", "NATIONALITY", "DOCUMENT_TYPE", "WITH_INTERPRETER", "LEGAL_ADVICES", "HEALTH_AND_SOCIAL_INSURANCE", "CONSULTING_SERVICES", "EMERGENCY_HELP", "TAX_LIABILITY", "CLEARING", "INFORMATION_MATERIAL", "PREDICAMENT", "DISEASE_PREVENTION", "BIRTH_CONTROL", "PREGNANCY", "ALCOHOL_AND_DURG_USAGE", "REFERRAL" ]
+        "enum" : [ "ALIAS", "FIRST_NAME", "DATE_OF_BIRTH", "NATIONALITY", "DOCUMENT_TYPE", "LEGAL_ADVICES", "HEALTH_AND_SOCIAL_INSURANCE", "CONSULTING_SERVICES", "EMERGENCY_HELP", "TAX_LIABILITY", "CLEARING", "INFORMATION_MATERIAL", "PREDICAMENT", "DISEASE_PREVENTION", "BIRTH_CONTROL", "PREGNANCY", "ALCOHOL_AND_DURG_USAGE", "REFERRAL" ]
       },
       "ProcedureStatus" : {
         "type" : "string",
@@ -6507,7 +6528,7 @@
         "description" : "A request containing the standard duration."
       },
       "ProstituteProtectionProcedureOverview" : {
-        "required" : [ "createdAt", "id", "languages", "modifiedAt", "status" ],
+        "required" : [ "createdAt", "id", "languages", "modifiedAt", "status", "version" ],
         "type" : "object",
         "properties" : {
           "alias" : {
@@ -6524,13 +6545,6 @@
             "type" : "string",
             "format" : "date-time"
           },
-          "dateOfBirth" : {
-            "type" : "string",
-            "format" : "date"
-          },
-          "firstName" : {
-            "type" : "string"
-          },
           "id" : {
             "type" : "string",
             "format" : "uuid"
@@ -6541,15 +6555,16 @@
               "$ref" : "#/components/schemas/PersonLanguage"
             }
           },
-          "lastName" : {
-            "type" : "string"
-          },
           "modifiedAt" : {
             "type" : "string",
             "format" : "date-time"
           },
           "status" : {
             "$ref" : "#/components/schemas/ProcedureStatus"
+          },
+          "version" : {
+            "type" : "integer",
+            "format" : "int64"
           }
         }
       },

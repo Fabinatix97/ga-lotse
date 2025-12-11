@@ -7210,7 +7210,7 @@
         }
       },
       "CreateInspectionSampleRequest" : {
-        "required" : [ "evaluatingActor", "evaluationType", "externalId", "measurementParameters", "pointOfWithdrawal", "samplingActor", "typeOfSample" ],
+        "required" : [ "evaluatingActor", "evaluationType", "externalId", "measurementParameters", "pointOfWithdrawal", "sampleNumber", "samplingActor", "typeOfSample" ],
         "type" : "object",
         "properties" : {
           "evaluatingActor" : {
@@ -7236,10 +7236,10 @@
               "$ref" : "#/components/schemas/CreateInspectionSampleMeasurementParameterRequest"
             }
           },
-          "nameOfSamplingPoint" : {
+          "pointOfWithdrawal" : {
             "type" : "string"
           },
-          "pointOfWithdrawal" : {
+          "sampleNumber" : {
             "type" : "string"
           },
           "samplingActor" : {
@@ -10098,7 +10098,7 @@
         "enum" : [ "OPEN", "SUCCESSFUL", "FAILED", "SUCCESSFUL_WITH_INCIDENTS" ]
       },
       "InspectionSample" : {
-        "required" : [ "createdAt", "evaluatingActor", "evaluationType", "inspectionId", "measurementParameters", "pointOfWithdrawal", "sampleId", "samplingActor", "typeOfSample" ],
+        "required" : [ "createdAt", "evaluatingActor", "evaluationType", "inspectionId", "measurementParameters", "pointOfWithdrawal", "sampleId", "sampleNumber", "samplingActor", "typeOfSample" ],
         "type" : "object",
         "properties" : {
           "createdAt" : {
@@ -10130,15 +10130,15 @@
               "$ref" : "#/components/schemas/InspectionSampleMeasurementParameter"
             }
           },
-          "nameOfSamplingPoint" : {
-            "type" : "string"
-          },
           "pointOfWithdrawal" : {
             "type" : "string"
           },
           "sampleId" : {
             "type" : "string",
             "format" : "uuid"
+          },
+          "sampleNumber" : {
+            "type" : "string"
           },
           "samplingActor" : {
             "oneOf" : [ {
@@ -10321,9 +10321,6 @@
             }
           },
           "name" : {
-            "type" : "string"
-          },
-          "nameOfSamplingPoint" : {
             "type" : "string"
           },
           "pointOfWithdrawal" : {
@@ -12060,7 +12057,7 @@
         }
       },
       "UpdateInspectionSampleRequest" : {
-        "required" : [ "evaluatingActor", "evaluationType", "measurementParametersToAdd", "measurementParametersToDelete", "pointOfWithdrawal", "samplingActor", "typeOfSample" ],
+        "required" : [ "evaluatingActor", "evaluationType", "measurementParametersToAdd", "measurementParametersToDelete", "pointOfWithdrawal", "sampleNumber", "samplingActor", "typeOfSample" ],
         "type" : "object",
         "properties" : {
           "evaluatingActor" : {
@@ -12088,10 +12085,10 @@
               "format" : "uuid"
             }
           },
-          "nameOfSamplingPoint" : {
+          "pointOfWithdrawal" : {
             "type" : "string"
           },
-          "pointOfWithdrawal" : {
+          "sampleNumber" : {
             "type" : "string"
           },
           "samplingActor" : {

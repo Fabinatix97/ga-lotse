@@ -191,6 +191,14 @@
     secretKeyRef:
       name: keycloak-client-secrets
       key: prostitute-protection-module-client-secret
+{{- range $k, $v := .Values.keycloak.additionalModuleClientSecrets }}
+- name: eshg.keycloak.employee-realm.module-client-secrets.{{ $k }}
+  valueFrom:
+    secretKeyRef:
+      name: keycloak-client-secrets
+      key: {{ $v }}
+{{- end }}
+
 - name: spring.security.oauth2.client.registration.module-client.client-id
   value: system-base
 - name: spring.security.oauth2.client.registration.module-client.client-secret

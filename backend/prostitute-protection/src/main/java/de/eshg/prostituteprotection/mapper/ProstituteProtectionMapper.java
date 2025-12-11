@@ -18,8 +18,8 @@ import de.eshg.prostituteprotection.api.UpdateProstituteProtectionProcedureReque
 import de.eshg.prostituteprotection.domain.model.Consultation;
 import de.eshg.prostituteprotection.domain.model.ConsultationType;
 import de.eshg.prostituteprotection.domain.model.DocumentType;
-import de.eshg.prostituteprotection.domain.model.EncryptedPersonalData;
 import de.eshg.prostituteprotection.domain.model.Language;
+import de.eshg.prostituteprotection.domain.model.PersonalData;
 import de.eshg.prostituteprotection.domain.model.ProstituteProtectionProcedure;
 import java.util.List;
 import java.util.Objects;
@@ -36,47 +36,53 @@ public class ProstituteProtectionMapper {
     prostituteProtectionProcedure.setConsultationType(
         mapConsultationType(request.consultationType()));
 
-    return mapEncryptedPersonalData(prostituteProtectionProcedure, request);
+    return mapPersonalData(prostituteProtectionProcedure, request);
   }
 
-  private static ProstituteProtectionProcedure mapEncryptedPersonalData(
+  private static ProstituteProtectionProcedure mapPersonalData(
       ProstituteProtectionProcedure prostituteProtectionProcedure,
       CreateProstituteProtectionProcedureRequest request) {
-    EncryptedPersonalData personalData = new EncryptedPersonalData();
+    PersonalData personalData = new PersonalData();
     personalData.setAlias(request.alias());
     personalData.setLanguages(mapLanguages(request.languages()));
 
-    prostituteProtectionProcedure.setEncryptedPersonalData(personalData);
+    prostituteProtectionProcedure.setPersonalData(personalData);
     return prostituteProtectionProcedure;
   }
 
-  public static ProstituteProtectionProcedure mapEncryptedPersonalData(
+  public static ProstituteProtectionProcedure mapPersonalData(
       ProstituteProtectionProcedure procedure, UpdateEncryptedPersonalDataRequest request) {
-    procedure.getEncryptedPersonalData().setAlias(request.alias());
-    procedure.getEncryptedPersonalData().setLastName(request.lastName());
-    procedure.getEncryptedPersonalData().setFirstName(request.firstName());
-    procedure.getEncryptedPersonalData().setDateOfBirth(request.dateOfBirth());
-    procedure.getEncryptedPersonalData().setLanguages(mapLanguages(request.languages()));
-    procedure.getEncryptedPersonalData().setDocumentType(mapDocumentType(request.documentType()));
-    procedure.getEncryptedPersonalData().setNationality(request.nationality());
+    procedure.getPersonalData().setAlias(request.alias());
+    procedure.getPersonalData().setLanguages(mapLanguages(request.languages()));
+    procedure.getPersonalData().setDocumentType(mapDocumentType(request.documentType()));
+    procedure.getPersonalData().setNationality(request.nationality());
+
+    if (!Objects.equals(procedure.getAppointment(), null)) {
+      procedure
+          .getEncryptedPersonalData()
+          .setLastConsultationDate(procedure.getAppointment().getAppointmentStart());
+    }
+
+    // TODO: Encrypt first-name, last-name, date-of-birth and store it in EncryptedPersonalData
     return procedure;
   }
 
   public static ProcedureDetailsDto mapToDetailsDto(ProstituteProtectionProcedure procedure) {
+    // TODO: Decrypt first-name, last-name, date-of-birth from EncryptedPersonalData
     return new ProcedureDetailsDto(
         procedure.getExternalId(),
         procedure.getVersion(),
-        procedure.getEncryptedPersonalData().getFirstName(),
-        procedure.getEncryptedPersonalData().getLastName(),
-        procedure.getEncryptedPersonalData().getDateOfBirth(),
-        procedure.getEncryptedPersonalData().getAlias(),
+        null,
+        null,
+        null,
+        procedure.getPersonalData().getAlias(),
         AppointmentMapper.toInterfaceType(
             procedure.getAppointment(), procedure.getUserDefinedAppointment()),
-        mapToLanguagesDto(procedure.getEncryptedPersonalData().getLanguages()),
+        mapToLanguagesDto(procedure.getPersonalData().getLanguages()),
         mapToConsultationTypeDto(procedure.getConsultationType()),
         ProcedureMapper.toInterfaceType(procedure.getProcedureStatus()),
-        procedure.getEncryptedPersonalData().getNationality(),
-        mapToDocumentTypeDto(procedure.getEncryptedPersonalData().getDocumentType()),
+        procedure.getPersonalData().getNationality(),
+        mapToDocumentTypeDto(procedure.getPersonalData().getDocumentType()),
         procedure.getConsultationCertificateCreatedAt());
   }
 
@@ -230,10 +236,8 @@ public class ProstituteProtectionMapper {
       ProstituteProtectionProcedure procedure) {
     return new ProstituteProtectionProcedureOverviewDto(
         procedure.getExternalId(),
-        procedure.getEncryptedPersonalData().getFirstName(),
-        procedure.getEncryptedPersonalData().getLastName(),
-        procedure.getEncryptedPersonalData().getAlias(),
-        procedure.getEncryptedPersonalData().getDateOfBirth(),
+        procedure.getVersion(),
+        procedure.getPersonalData().getAlias(),
         mapLanguagesToInterfaceType(procedure),
         mapToConsultationTypeDto(procedure.getConsultationType()),
         procedure.getAppointmentStart(),
@@ -244,7 +248,7 @@ public class ProstituteProtectionMapper {
 
   private static List<LanguageDto> mapLanguagesToInterfaceType(
       ProstituteProtectionProcedure procedure) {
-    return procedure.getEncryptedPersonalData().getLanguages().stream()
+    return procedure.getPersonalData().getLanguages().stream()
         .map(ProstituteProtectionMapper::mapToLanguageDto)
         .toList();
   }

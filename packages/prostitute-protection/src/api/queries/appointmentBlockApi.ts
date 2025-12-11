@@ -3,15 +3,17 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { queryOptions } from "@tanstack/react-query";
+import { queryOptions, useQuery } from "@tanstack/react-query";
 
 import { mapPaginatedList } from "@eshg/lib-employee-portal";
 import { unwrapRawResponse } from "@eshg/lib-portal";
 import {
+  ApiAppointmentType,
   AppointmentBlockApi,
   GetAppointmentBlockGroupsRequest,
 } from "@eshg/prostitute-protection-api";
 
+import { useProstituteProtectionApiClients } from "../../contexts/ProstituteProtectionApi";
 import { mapAppointmentBlockGroup } from "../models/AppointmentBlockGroup";
 
 import { appointmentBlockApiQueryKey } from "./apiQueryKeys";
@@ -30,5 +32,27 @@ export function getAppointmentBlockGroupsQuery(
         .getAppointmentBlockGroupsRaw(request)
         .then(unwrapRawResponse),
     select: mapPaginatedList(mapAppointmentBlockGroup),
+  });
+}
+
+interface GetFreeAppointmentsArgs {
+  appointmentType?: ApiAppointmentType;
+  earliestDate?: Date;
+}
+export function useGetFreeAppointments(request: GetFreeAppointmentsArgs) {
+  const { appointmentBlockApi } = useProstituteProtectionApiClients();
+  return useQuery({
+    queryKey: appointmentBlockApiQueryKey(["freeAppointments", request]),
+    queryFn: () => {
+      if (request.appointmentType === undefined) {
+        throw Error("Appointment type not specified");
+      }
+      return appointmentBlockApi.getFreeAppointments(
+        request.appointmentType,
+        request.earliestDate,
+      );
+    },
+    select: (data) => data.appointments,
+    enabled: request.appointmentType !== undefined,
   });
 }

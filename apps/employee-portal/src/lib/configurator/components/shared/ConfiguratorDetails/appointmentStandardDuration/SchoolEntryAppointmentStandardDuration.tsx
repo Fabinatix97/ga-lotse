@@ -32,6 +32,7 @@ export function SchoolEntryAppointmentStandardDuration() {
     <AppointmentStandardDurationConfiguratorForm
       moduleName={ConfiguratorModuleName.SchoolEntry}
       endpointName={SCHOOL_ENTRY_APPOINTMENT_STANDARD_DURATION_ENDPOINT_NAME}
+      withExtraDuration
       fields={fields}
       queryHook={useGetSchoolEntryStandardDurations}
       updateHook={useUpdateSchoolEntryAppointmentStandardDuration}
@@ -44,6 +45,7 @@ enum FormNames {
   ENTRY_LEVEL = "entryLevel",
   CAN_CHILD = "canChild",
   SPECIAL_NEEDS = "specialNeeds",
+  EXTRA_DURATION = "extraDuration",
 }
 
 interface SchoolEntryAppointmentStandardDurationFormValues
@@ -52,6 +54,7 @@ interface SchoolEntryAppointmentStandardDurationFormValues
   [FormNames.ENTRY_LEVEL]: OptionalFieldValue<number>;
   [FormNames.CAN_CHILD]: OptionalFieldValue<number>;
   [FormNames.SPECIAL_NEEDS]: OptionalFieldValue<number>;
+  [FormNames.EXTRA_DURATION]: OptionalFieldValue<number>;
 }
 
 const fields: StandardDurationField<SchoolEntryAppointmentStandardDurationFormValues>[] =
@@ -80,6 +83,7 @@ function mapValues(values: SchoolEntryAppointmentStandardDurationFormValues) {
     entryLevel: mapDurationValue(values.entryLevel),
     canChild: mapDurationValue(values.canChild),
     specialNeeds: mapDurationValue(values.specialNeeds),
+    extraDuration: mapDurationValue(values.extraDuration),
   };
 }
 
@@ -101,6 +105,7 @@ function mapResponse(
     entryLevel: mapOptionalISODuration(standardDurations?.entryLevel),
     canChild: mapOptionalISODuration(standardDurations?.canChild),
     specialNeeds: mapOptionalISODuration(standardDurations?.specialNeeds),
+    extraDuration: mapOptionalISODuration(standardDurations?.extraDuration),
   };
 }
 

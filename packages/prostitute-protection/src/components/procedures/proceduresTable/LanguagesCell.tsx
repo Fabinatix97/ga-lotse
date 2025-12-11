@@ -32,7 +32,7 @@ export function LanguagesCell({
 
   if (!isOpen && showToggle) {
     return (
-      <Stack direction="row" alignItems="center" justifyContent="space-between">
+      <Stack direction="row" alignItems="center" justifyContent="flex-start">
         <Typography noWrap fontSize="sm">
           {LANGUAGE_VALUE[sorted[0]!]}
         </Typography>
@@ -55,7 +55,7 @@ export function LanguagesCell({
       spacing={0.25}
       direction="row"
       alignItems="flex-start"
-      justifyContent="space-between"
+      justifyContent="flex-start"
     >
       <Stack sx={{ maxWidth: "80%" }}>
         {sorted.map((type) => (

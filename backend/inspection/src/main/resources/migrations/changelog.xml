@@ -97,5 +97,6 @@
   <include file="migrations/0082_add_new_procedure_type_prostitute_protection.xml"/>
   <include file="migrations/0083_parameter_adjustment.xml"/>
   <include file="migrations/0084_sample_templates.xml"/>
+  <include file="migrations/0085_sample_numbers.xml"/>
 
 </databaseChangeLog>

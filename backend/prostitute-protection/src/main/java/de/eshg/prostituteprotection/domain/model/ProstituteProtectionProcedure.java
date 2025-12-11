@@ -53,9 +53,16 @@ public class ProstituteProtectionProcedure
 
   private Integer ageAtConsultation;
 
-  private Boolean withTranslator;
+  @OneToOne(
+      orphanRemoval = true,
+      fetch = FetchType.LAZY,
+      cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
+  private PersonalData personalData;
 
-  @OneToOne(orphanRemoval = true, fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+  @OneToOne(
+      orphanRemoval = true,
+      fetch = FetchType.LAZY,
+      cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
   private EncryptedPersonalData encryptedPersonalData;
 
   @OneToOne(
@@ -68,6 +75,8 @@ public class ProstituteProtectionProcedure
   private Instant appointmentStart;
 
   private Instant consultationCertificateCreatedAt;
+
+  private Boolean certificateWithAliasCreated;
 
   public ProstituteProtectionTask getTaskOfType(TaskType taskType) {
     return getTasksOfType(taskType).collect(StreamUtil.toSingleElement());
@@ -132,14 +141,6 @@ public class ProstituteProtectionProcedure
     this.userDefinedAppointment = userDefinedAppointment;
   }
 
-  public Boolean isWithTranslator() {
-    return withTranslator;
-  }
-
-  public void setWithTranslator(Boolean withTranslator) {
-    this.withTranslator = withTranslator;
-  }
-
   public EncryptedPersonalData getEncryptedPersonalData() {
     return encryptedPersonalData;
   }
@@ -171,5 +172,21 @@ public class ProstituteProtectionProcedure
 
   public void setAgeAtConsultation(Integer ageAtConsultation) {
     this.ageAtConsultation = ageAtConsultation;
+  }
+
+  public PersonalData getPersonalData() {
+    return personalData;
+  }
+
+  public void setPersonalData(PersonalData personalData) {
+    this.personalData = personalData;
+  }
+
+  public Boolean getCertificateWithAliasCreated() {
+    return certificateWithAliasCreated;
+  }
+
+  public void setCertificateWithAliasCreated(Boolean certificateWithAliasCreated) {
+    this.certificateWithAliasCreated = certificateWithAliasCreated;
   }
 }

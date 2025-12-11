@@ -16,7 +16,7 @@ import java.util.UUID;
 public record UpdateInspectionSampleRequest(
     @NotNull InspectionSampleTypeDto typeOfSample,
     @NotNull String pointOfWithdrawal,
-    String nameOfSamplingPoint,
+    @NotNull String sampleNumber,
     @NotNull InspectionSampleEvaluationTypeDto evaluationType,
     @NotNull @Valid InspectionSampleActorReferenceDto samplingActor,
     Instant timeOfSampling,

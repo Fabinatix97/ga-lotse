@@ -85,7 +85,7 @@ spec:
       {{- end }}
       containers:
         - name: application
-          image: "{{ .Values.image.registry }}/{{ .Values.image.repository }}/auth:{{ .Values.image.tag }}"
+          image: "{{ .Values.image.registry }}/{{ .Values.image.repository }}/{{ default "auth" .Values.employeeportalauth.imageName }}:{{ .Values.image.tag }}"
           securityContext: {{- .Values.containerSecurityContext | toYaml | nindent 12 }}
           resources:
           {{- toYaml (default dict .Values.employeeportalauth.resources) | nindent 12 }}
@@ -133,6 +133,20 @@ spec:
             - name: JAVA_TOOL_OPTIONS
               value: "{{ .Values.employeeportalauth.javaToolOptions }}"
             {{- end }}
+            - name: management.server.port
+              value: "8081"
+          {{- if $.Values.springBootStartupProbe.enabled }}
+          startupProbe: {{- omit $.Values.springBootStartupProbe "enabled" | toYaml | nindent 12 }}
+          {{- end }}
+          {{- if $.Values.springBootLivenessProbe.enabled }}
+          livenessProbe: {{- omit $.Values.springBootLivenessProbe "enabled" | toYaml | nindent 12 }}
+          {{- end }}
+          {{- if $.Values.springBootReadinessProbe.enabled }}
+          readinessProbe: {{- omit $.Values.springBootReadinessProbe "enabled" | toYaml | nindent 12 }}
+          {{- end }}
+          {{- if $.Values.containersLifecycle.enabled }}
+          lifecycle: {{- omit $.Values.containersLifecycle "enabled" | toYaml | nindent 12 }}
+          {{- end }}
           volumeMounts:
             - name: tmp
               mountPath: /tmp

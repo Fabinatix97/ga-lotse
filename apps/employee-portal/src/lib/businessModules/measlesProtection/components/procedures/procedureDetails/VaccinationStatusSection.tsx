@@ -29,7 +29,7 @@ export function VaccinationStatusSection({
     useRequestVaccinationStatusUpdate(procedureId);
   const queryClient = useQueryClient();
   const [refreshing, setRefreshing] = useState(false);
-  const queryKey = measlesProtectionApiQueryKey(["getProcedure", procedureId]);
+  const queryKey = measlesProtectionApiQueryKey(["procedures", procedureId]);
 
   async function handleUpdateRequest() {
     await requestVaccinationStatusUpdate.mutateAsync(procedureId);

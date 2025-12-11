@@ -10,9 +10,6 @@ import de.eshg.config.departmentinfo.DepartmentInfoConfigService;
 import de.eshg.lib.document.generator.DocumentGenerator;
 import de.eshg.lib.document.generator.department.DepartmentLogo;
 import de.eshg.lib.document.generator.department.DepartmentLogoClient;
-import de.eshg.lib.procedure.domain.model.Pdf;
-import de.eshg.lib.procedure.domain.model.PdfMetaData;
-import de.eshg.lib.procedure.file.FileFactory;
 import de.eshg.prostituteprotection.domain.model.ProstituteProtectionProcedure;
 import java.io.ByteArrayOutputStream;
 import java.time.Clock;
@@ -21,6 +18,7 @@ import java.time.LocalDate;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.util.Assert;
 
@@ -46,29 +44,32 @@ public abstract class AbstractGenerator {
     Assert.isTrue(template.exists(), () -> template + " does not exist");
   }
 
-  protected Pdf generatePdf(Object templateData, PrintDocumentType printDocumentType) {
+  protected ByteArrayResource generateByteArrayResource(
+      Object templateData, PrintDocumentType printDocumentType) {
     ByteArrayOutputStream baos = new ByteArrayOutputStream();
     documentGenerator.createPdfFromTemplate(template, templateData, baos);
-
-    PdfMetaData pdfMetaData = new PdfMetaData();
     ZonedDateTime now = ZonedDateTime.now(clock);
-    pdfMetaData.setCreatedDate(now.toInstant());
-    pdfMetaData.setDescription(printDocumentType.getDescription());
-    String filename =
-        "%s_%s.pdf"
+
+    return new ByteArrayResource(baos.toByteArray(), printDocumentType.getDescription()) {
+      @Override
+      public String getFilename() {
+        return "%s_%s.pdf"
             .formatted(
                 printDocumentType.getFileNamePrefix(),
                 now.format(DateTimeFormatter.ofPattern("yyyy-MM-dd-HH-mm-ss", Locale.GERMANY)));
-    return FileFactory.createPdfWithMetaData(filename, baos.toByteArray(), pdfMetaData);
+      }
+    };
   }
 
-  protected static PersonData getPersonData(ProstituteProtectionProcedure procedure) {
+  protected static PersonData getPersonData(
+      ProstituteProtectionProcedure procedure, boolean withAlias) {
+    // TODO: Decrypt first-name, last-name, date-of-birth from EncryptedPersonalData
     return new PersonData(
-        procedure.getEncryptedPersonalData().getFirstName(),
-        procedure.getEncryptedPersonalData().getLastName(),
-        getFormattedDate(procedure.getEncryptedPersonalData().getDateOfBirth()),
-        procedure.getEncryptedPersonalData().getAlias(),
-        procedure.getEncryptedPersonalData().getNationality().name());
+        "",
+        "",
+        "",
+        withAlias ? procedure.getPersonalData().getAlias() : null,
+        procedure.getPersonalData().getNationality().name());
   }
 
   protected LocalDate toLocalDate(Instant instant) {

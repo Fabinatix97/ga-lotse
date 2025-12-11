@@ -3,18 +3,17 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Stack, Typography } from "@mui/joy";
+import { Stack } from "@mui/joy";
 
 import { CheckboxField, TextareaField } from "@eshg/lib-portal";
 
 import { CONSULTATION_FIELD_NAME } from "../../../shared/constants";
 
-import { SectionGrid } from "./SectionGrid";
+import { Section } from "./Section";
 
 export function NotesSection() {
   return (
-    <SectionGrid defaultColumn={1} sx={{ mt: 6 }}>
-      <Typography level="h3">Anmerkungen</Typography>
+    <Section title="Anmerkungen">
       <Stack gap={2}>
         <CheckboxField
           name="supervisedConsultation"
@@ -26,6 +25,6 @@ export function NotesSection() {
           minRows={5}
         />
       </Stack>
-    </SectionGrid>
+    </Section>
   );
 }

@@ -11,7 +11,7 @@ import de.eshg.config.AuditLogWriter;
 import de.eshg.config.ConfigurationEndpoint;
 import de.eshg.config.ConfigurationStatus;
 import de.eshg.config.domain.Initializable;
-import de.eshg.domain.model.BaseEntity;
+import de.eshg.lib.appointmentblock.model.AbstractAppointmentStandardDuration;
 import de.eshg.lib.appointmentblock.persistence.AppointmentType;
 import de.eshg.lib.appointmentblock.spring.AppointmentBlockProperties;
 import de.eshg.persistence.TransactionHelper;
@@ -21,7 +21,7 @@ import java.util.SequencedMap;
 import java.util.function.Supplier;
 
 public abstract class AbstractSimpleAppointmentStandardDurationService<
-        T extends BaseEntity & Initializable>
+        T extends AbstractAppointmentStandardDuration & Initializable>
     extends AbstractAppointmentStandardDurationService<T> {
 
   private final ConfigurationEndpoint configurationEndpoint;
@@ -59,6 +59,7 @@ public abstract class AbstractSimpleAppointmentStandardDurationService<
             info ->
                 info.entitySetter()
                     .accept(persistentEntity, info.entityGetter().apply(entityUpdate)));
+    persistentEntity.setExtraDuration(entityUpdate.getExtraDuration());
     persistentEntity.setInitialized(true);
   }
 
@@ -69,10 +70,13 @@ public abstract class AbstractSimpleAppointmentStandardDurationService<
   }
 
   private Map<String, String> getRelevantFieldsForLogging(T entity) {
-    return appointmentDurationInfos.values().stream()
-        .collect(
-            StreamUtil.toLinkedHashMap(
-                AppointmentDurationInfo::name,
-                info -> info.entityGetter().apply(entity).toString()));
+    SequencedMap<String, String> auditLogField =
+        appointmentDurationInfos.values().stream()
+            .collect(
+                StreamUtil.toLinkedHashMap(
+                    AppointmentDurationInfo::name,
+                    info -> info.entityGetter().apply(entity).toString()));
+    auditLogField.put("extraDuration", entity.getExtraDuration().toString());
+    return auditLogField;
   }
 }

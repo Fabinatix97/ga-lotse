@@ -5,7 +5,11 @@
 
 "use client";
 
-import { TextSnippetOutlined, TimelineOutlined } from "@mui/icons-material";
+import {
+  FormatListBulleted,
+  TextSnippetOutlined,
+  TimelineOutlined,
+} from "@mui/icons-material";
 
 import { ApiUserRole } from "@eshg/base-api";
 import {
@@ -16,7 +20,6 @@ import {
 } from "@eshg/lib-employee-portal";
 
 import { routes } from "../../../config/routes";
-import { PersonDocumentConsultation } from "../../icons/PersonDocumentConsultation";
 
 import { ProcedureTabHeader } from "./ProcedureTabHeader";
 
@@ -53,7 +56,7 @@ function buildTabItems(procedureId: string): TabNavigationItem[] {
     {
       tabButtonName: "Beratung",
       href: routes.procedures.byId(procedureId).consultation,
-      decorator: <PersonDocumentConsultation />,
+      decorator: <FormatListBulleted />,
     },
     {
       tabButtonName: "Verlaufseinträge",

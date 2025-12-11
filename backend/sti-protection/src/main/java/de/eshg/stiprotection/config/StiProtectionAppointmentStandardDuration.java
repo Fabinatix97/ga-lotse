@@ -5,7 +5,7 @@
 
 package de.eshg.stiprotection.config;
 
-import de.eshg.domain.model.BaseEntity;
+import de.eshg.lib.appointmentblock.model.AbstractAppointmentStandardDuration;
 import de.eshg.lib.common.DataSensitivity;
 import de.eshg.lib.common.SensitivityLevel;
 import jakarta.persistence.Entity;
@@ -13,7 +13,7 @@ import jakarta.validation.constraints.NotNull;
 import java.time.Duration;
 
 @Entity
-public class StiProtectionAppointmentStandardDuration extends BaseEntity {
+public class StiProtectionAppointmentStandardDuration extends AbstractAppointmentStandardDuration {
 
   @DataSensitivity(SensitivityLevel.PUBLIC)
   boolean hivStiConsultationInitialized = false;

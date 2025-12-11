@@ -78,10 +78,10 @@ export function InspectionSampleSidebarBasisData({
       </Grid>
       <Grid xxs={12}>
         <InputField
-          name="nameOfSamplingPoint"
+          name="sampleNumber"
           type="text"
-          label="Name der Probennahmestelle"
-          required="Bitte Namen der Probennahmestelle eingeben"
+          label="Proben-Nr."
+          required="Bitte Proben-Nr. eingeben"
         />
       </Grid>
       <Grid xxs={12}>

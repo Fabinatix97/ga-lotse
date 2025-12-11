@@ -16,6 +16,7 @@ import de.eshg.prostituteprotection.api.ProstituteProtectionProcedurePaginationA
 import de.eshg.prostituteprotection.api.UpdateEncryptedPersonalDataRequest;
 import de.eshg.prostituteprotection.api.UpdateProstituteProtectionProcedureRequest;
 import de.eshg.prostituteprotection.domain.model.Consultation;
+import de.eshg.prostituteprotection.domain.model.EncryptedPersonalData;
 import de.eshg.prostituteprotection.domain.model.ProstituteProtectionProcedure;
 import de.eshg.prostituteprotection.domain.model.ProstituteProtectionTask;
 import de.eshg.prostituteprotection.domain.repository.ConsultationRepository;
@@ -60,13 +61,13 @@ public class ProstituteProtectionService {
 
   CreateProstituteProtectionProcedureResponse createProcedure(
       CreateProstituteProtectionProcedureRequest request) {
-    // ToDo: Find optional anonymized Person in repo and map it to procedure
     ProstituteProtectionProcedure prostituteProtectionProcedure =
         ProstituteProtectionMapper.mapRequestToDomain(request);
     prostituteProtectionProcedure.setProcedureType(ProcedureType.PROSTITUTE_PROTECTION);
     prostituteProtectionProcedure.updateProcedureStatus(ProcedureStatus.OPEN, clock, auditLogger);
     prostituteProtectionProcedure.addTask(createTask());
     prostituteProtectionProcedure.setConsultation(new Consultation());
+    prostituteProtectionProcedure.setEncryptedPersonalData(new EncryptedPersonalData());
 
     appointmentService.bookAppointment(
         prostituteProtectionProcedure, AppointmentMapper.toDataType(request));
@@ -79,9 +80,9 @@ public class ProstituteProtectionService {
   void updateProcedure(
       ProstituteProtectionProcedure procedure, UpdateProstituteProtectionProcedureRequest request) {
     ProstituteProtectionMapper.mapRequestToDomain(procedure, request);
-    procedure.setAgeAtConsultation(
-        calculateAgeAtConsultation(
-            request.appointmentStart(), procedure.getEncryptedPersonalData().getDateOfBirth()));
+    // TODO: check if personal data is already persisted and decrypt data to calculate age at
+    // consultation
+    procedure.setAgeAtConsultation(calculateAgeAtConsultation(request.appointmentStart(), null));
     procedureRepository.flush();
   }
 
@@ -97,9 +98,10 @@ public class ProstituteProtectionService {
 
   void updateEncryptedPersonalDataInProcedure(
       ProstituteProtectionProcedure procedure, UpdateEncryptedPersonalDataRequest request) {
-    ProstituteProtectionMapper.mapEncryptedPersonalData(procedure, request);
+    ProstituteProtectionMapper.mapPersonalData(procedure, request);
     procedure.setAgeAtConsultation(
         calculateAgeAtConsultation(procedure.getAppointmentStart(), request.dateOfBirth()));
+    procedure.updateProcedureStatus(ProcedureStatus.IN_PROGRESS, clock, auditLogger);
     procedureRepository.flush();
   }
 
@@ -188,6 +190,11 @@ public class ProstituteProtectionService {
 
   public void abortProcedure(ProstituteProtectionProcedure procedure) {
     procedure.updateProcedureStatus(ProcedureStatus.ABORTED, clock, auditLogger);
+    procedureRepository.flush();
+  }
+
+  public void setCertificateWithAliasCreated(ProstituteProtectionProcedure procedure) {
+    procedure.setCertificateWithAliasCreated(true);
     procedureRepository.flush();
   }
 }

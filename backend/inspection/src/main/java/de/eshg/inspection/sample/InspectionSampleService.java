@@ -55,6 +55,7 @@ import de.eshg.inspection.teis.persistence.TeisParameterRepository;
 import de.eshg.inspection.teis.persistence.TeisUntersuchungsparameter;
 import de.eshg.inspection.teis.persistence.TeisUntersuchungsparameterRepository;
 import de.eshg.rest.service.error.BadRequestException;
+import de.eshg.rest.service.error.ErrorCode;
 import de.eshg.rest.service.error.NotFoundException;
 import java.time.Clock;
 import java.util.Collection;
@@ -67,6 +68,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -154,7 +156,7 @@ public class InspectionSampleService {
     sample.setSampleExternalId(request.externalId());
     sample.setTypeOfSample(InspectionSampleType.valueOf(request.typeOfSample().name()));
     sample.setPointOfWithdrawal(request.pointOfWithdrawal());
-    sample.setNameOfSamplingPoint(request.nameOfSamplingPoint());
+    sample.setSampleNumber(request.sampleNumber());
     sample.setEvaluationType(
         InspectionSampleEvaluationType.valueOf(request.evaluationType().name()));
 
@@ -170,7 +172,13 @@ public class InspectionSampleService {
 
     inspection.addSample(sample);
 
-    inspectionUpdater.updateModified(inspection);
+    try {
+      inspectionUpdater.updateModified(inspection);
+    } catch (DataIntegrityViolationException e) {
+      throw new BadRequestException(
+          ErrorCode.ALREADY_EXISTS,
+          "A sample with the specified sample number already exists in this inspection.");
+    }
 
     return InspectionSampleMapper.mapToDto(sample, facilityFileState, userMap, contactMap);
   }
@@ -212,7 +220,7 @@ public class InspectionSampleService {
     // TODO Maybe this should be in the mapper?
     sample.setTypeOfSample(InspectionSampleType.valueOf(request.typeOfSample().name()));
     sample.setPointOfWithdrawal(request.pointOfWithdrawal());
-    sample.setNameOfSamplingPoint(request.nameOfSamplingPoint());
+    sample.setSampleNumber(request.sampleNumber());
     sample.setEvaluationType(
         InspectionSampleEvaluationType.valueOf(request.evaluationType().name()));
 
@@ -233,7 +241,13 @@ public class InspectionSampleService {
 
     addNewMeasurementParameters(sample, request.measurementParametersToAdd());
 
-    inspectionUpdater.updateModified(inspection);
+    try {
+      inspectionUpdater.updateModified(inspection);
+    } catch (DataIntegrityViolationException e) {
+      throw new BadRequestException(
+          ErrorCode.ALREADY_EXISTS,
+          "A sample with the specified sample number already exists in this inspection.");
+    }
 
     return InspectionSampleMapper.mapToDto(sample, facilityFileState, userMap, contactMap);
   }

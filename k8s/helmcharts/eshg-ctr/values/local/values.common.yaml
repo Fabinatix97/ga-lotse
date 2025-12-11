@@ -101,6 +101,8 @@ businessmoduleDefaults:
     k8sDeployment: true
 
 businessmodules:
+  medsabroad:
+    enabled: false
   centralrepository:
     enabled: true
 

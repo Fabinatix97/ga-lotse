@@ -338,6 +338,7 @@ export function ProcedureFilterSettings(props: ProcedureFilterSettingsProps) {
                   value.map((user) => user.userId),
                 )
               }
+              color="neutral"
             />
           </FormControl>
           <FormControl>
@@ -355,6 +356,7 @@ export function ProcedureFilterSettings(props: ProcedureFilterSettingsProps) {
                   value.map((user) => user.userId),
                 )
               }
+              color="neutral"
             />
           </FormControl>
           <FormControl>

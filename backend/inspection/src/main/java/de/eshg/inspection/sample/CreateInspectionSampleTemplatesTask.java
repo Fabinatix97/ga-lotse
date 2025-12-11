@@ -67,7 +67,6 @@ public class CreateInspectionSampleTemplatesTask {
                 "Trinkwasser",
                 "Bad Herren links",
                 InspectionSampleType.DRINKING_WATER,
-                "Linkes Waschbecken",
                 InspectionSampleEvaluationType.ON_SITE,
                 List.of(
                     createMeasurementParameterTemplate(
@@ -81,7 +80,6 @@ public class CreateInspectionSampleTemplatesTask {
                 "Badewasser",
                 "Schwimmerbecken",
                 InspectionSampleType.DRINKING_WATER,
-                "Tiefes Ende",
                 InspectionSampleEvaluationType.ON_SITE,
                 List.of(
                     createMeasurementParameterTemplate(ZID_P_PH_WERT, ZID_U_PH_WERT),
@@ -96,14 +94,12 @@ public class CreateInspectionSampleTemplatesTask {
       String name,
       String pointOfWithdrawal,
       InspectionSampleType typeOfSample,
-      String nameOfSamplingPoint,
       InspectionSampleEvaluationType evaluationType,
       List<InspectionSampleMeasurementParameterTemplate> measurementParameters) {
     InspectionSampleTemplate template = new InspectionSampleTemplate();
     template.setName(name);
     template.setPointOfWithdrawal(pointOfWithdrawal);
     template.setTypeOfSample(typeOfSample);
-    template.setNameOfSamplingPoint(nameOfSamplingPoint);
     template.setEvaluationType(evaluationType);
 
     template.getMeasurementParameters().addAll(measurementParameters);

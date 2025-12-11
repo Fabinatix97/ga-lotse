@@ -10,7 +10,6 @@ import static de.eshg.lib.keycloak.EmployeePermissionRole.AUDITLOG_PUBLIC_KEYS_R
 import static de.eshg.lib.keycloak.EmployeePermissionRole.BASE_ACCESS_CODE_USER_ADMIN;
 import static de.eshg.lib.keycloak.EmployeePermissionRole.BASE_FACILITIES_DELETE;
 import static de.eshg.lib.keycloak.EmployeePermissionRole.BASE_GDPR_VALIDATION_TASK_CLEANUP;
-import static de.eshg.lib.keycloak.EmployeePermissionRole.BASE_INTER_MODULE_MIGRATION;
 import static de.eshg.lib.keycloak.EmployeePermissionRole.BASE_MAIL_SEND;
 import static de.eshg.lib.keycloak.EmployeePermissionRole.BASE_PERSONS_DELETE;
 import static de.eshg.lib.keycloak.EmployeePermissionRole.SCHOOL_ENTRY_VACCINATION_CHECK;
@@ -55,13 +54,7 @@ public enum ModuleClient {
           BASE_ACCESS_CODE_USER_ADMIN)),
   MEDICAL_REGISTRY(
       "medical-registry", List.of(BASE_MAIL_SEND, BASE_PERSONS_DELETE, BASE_FACILITIES_DELETE)),
-  DENTAL(
-      "dental",
-      List.of(
-          BASE_MAIL_SEND,
-          BASE_PERSONS_DELETE,
-          BASE_FACILITIES_DELETE,
-          BASE_INTER_MODULE_MIGRATION)),
+  DENTAL("dental", List.of(BASE_MAIL_SEND, BASE_PERSONS_DELETE, BASE_FACILITIES_DELETE)),
   OFFICIAL_MEDICAL_SERVICE(
       "official-medical-service", List.of(BASE_MAIL_SEND, BASE_ACCESS_CODE_USER_ADMIN)),
   MEDS_ABROAD("meds-abroad", List.of(EmployeePermissionRole.BASE_MAIL_SEND)),

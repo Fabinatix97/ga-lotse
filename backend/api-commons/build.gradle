@@ -15,6 +15,6 @@ dependencies {
 
     testImplementation project(':test-commons')
     testRuntimeOnly 'org.hibernate.validator:hibernate-validator'
-    testRuntimeOnly 'jakarta.el:jakarta.el-api:latest.release'
+    testRuntimeOnly 'jakarta.el:jakarta.el-api:6.0.1' // Avoid 6.1.0-M1 (which depends on a "SNAPSHOT" parent project which can not be found, error message: 'Could not find org.eclipse.ee4j:project:2.0.0-SNAPSHOT')
     testRuntimeOnly 'org.glassfish:jakarta.el:latest.release'
 }

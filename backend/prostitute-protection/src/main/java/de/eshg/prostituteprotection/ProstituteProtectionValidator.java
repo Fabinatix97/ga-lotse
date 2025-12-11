@@ -5,6 +5,7 @@
 
 package de.eshg.prostituteprotection;
 
+import de.eshg.lib.procedure.util.ProcedureValidator;
 import de.eshg.prostituteprotection.api.ProcedureProperty;
 import de.eshg.prostituteprotection.api.RequiredProcedureArea;
 import de.eshg.prostituteprotection.domain.model.Consultation;
@@ -31,10 +32,10 @@ public class ProstituteProtectionValidator {
   }
 
   public static Map<RequiredProcedureArea, EnumSet<ProcedureProperty>> validateCompleteness(
-      ProstituteProtectionProcedure procedure) {
+      ProstituteProtectionProcedure procedure, boolean withAlias) {
     LinkedHashMap<RequiredProcedureArea, EnumSet<ProcedureProperty>> errors = new LinkedHashMap<>();
 
-    putIfNotEmpty(errors, validateDetails(procedure), RequiredProcedureArea.DETAILS);
+    putIfNotEmpty(errors, validateDetails(procedure, withAlias), RequiredProcedureArea.DETAILS);
     putIfNotEmpty(errors, validateConsultation(procedure), RequiredProcedureArea.CONSULTATION);
 
     return errors;
@@ -50,25 +51,19 @@ public class ProstituteProtectionValidator {
   }
 
   private static EnumSet<ProcedureProperty> validateDetails(
-      ProstituteProtectionProcedure procedure) {
+      ProstituteProtectionProcedure procedure, boolean withAlias) {
     EnumSet<ProcedureProperty> properties = EnumSet.noneOf(ProcedureProperty.class);
 
+    // TODO: Decrypt first-name, last-name, date-of-birth from EncryptedPersonalData and check
+    // properties
+    if (withAlias) {
+      addPropertyIfNull(
+          properties, ProcedureProperty.ALIAS, procedure.getPersonalData().getAlias());
+    }
     addPropertyIfNull(
-        properties,
-        ProcedureProperty.FIRST_NAME,
-        procedure.getEncryptedPersonalData().getFirstName());
+        properties, ProcedureProperty.NATIONALITY, procedure.getPersonalData().getNationality());
     addPropertyIfNull(
-        properties,
-        ProcedureProperty.DATE_OF_BIRTH,
-        procedure.getEncryptedPersonalData().getDateOfBirth());
-    addPropertyIfNull(
-        properties,
-        ProcedureProperty.NATIONALITY,
-        procedure.getEncryptedPersonalData().getNationality());
-    addPropertyIfNull(
-        properties,
-        ProcedureProperty.DOCUMENT_TYPE,
-        procedure.getEncryptedPersonalData().getDocumentType());
+        properties, ProcedureProperty.DOCUMENT_TYPE, procedure.getPersonalData().getDocumentType());
 
     return properties;
   }
@@ -76,7 +71,6 @@ public class ProstituteProtectionValidator {
   private static EnumSet<ProcedureProperty> validateConsultation(
       ProstituteProtectionProcedure procedure) {
     EnumSet<ProcedureProperty> properties = EnumSet.noneOf(ProcedureProperty.class);
-    addPropertyIfNull(properties, ProcedureProperty.WITH_INTERPRETER, procedure.isWithTranslator());
 
     Consultation consultation = procedure.getConsultation();
     if (consultation == null) {
@@ -95,10 +89,6 @@ public class ProstituteProtectionValidator {
           properties, ProcedureProperty.EMERGENCY_HELP, consultation.isEmergencyHelp());
       addPropertyIfFalse(
           properties, ProcedureProperty.TAX_LIABILITY, consultation.isTaxLiability());
-      addPropertyIfFalse(properties, ProcedureProperty.CLEARING, consultation.isClearing());
-      addPropertyIfFalse(
-          properties, ProcedureProperty.INFORMATION_MATERIAL, consultation.isInformationMaterial());
-      addPropertyIfFalse(properties, ProcedureProperty.PREDICAMENT, consultation.isPredicament());
       addPropertyIfFalse(
           properties, ProcedureProperty.DISEASE_PREVENTION, consultation.isDiseasePrevention());
       addPropertyIfFalse(
@@ -108,7 +98,6 @@ public class ProstituteProtectionValidator {
           properties,
           ProcedureProperty.ALCOHOL_AND_DURG_USAGE,
           consultation.isAlcoholAndDrugUsage());
-      addPropertyIfFalse(properties, ProcedureProperty.REFERRAL, consultation.isReferral());
     }
     return properties;
   }
@@ -133,6 +122,16 @@ public class ProstituteProtectionValidator {
     if (procedure.getConsultationCertificateCreatedAt() == null) {
       throw new BadRequestException(
           "A consultation certificate must be created before the procedure can be closed.");
+    }
+  }
+
+  static void validateForPdfGeneration(ProstituteProtectionProcedure procedure, boolean withAlias) {
+    ProcedureValidator.validateProcedureStatusNotClosed(procedure);
+    Map<RequiredProcedureArea, EnumSet<ProcedureProperty>> map =
+        validateCompleteness(procedure, withAlias);
+    if (!map.isEmpty()) {
+      throw new BadRequestException(
+          "Procedure %s is not complete.".formatted(procedure.getExternalId()));
     }
   }
 }

@@ -173,7 +173,7 @@ function InspectionAddSampleSidebar({
       evaluationType: ApiInspectionSampleEvaluationType.OnSite,
       externalId: "",
       measurementParameters: [],
-      nameOfSamplingPoint: "",
+      sampleNumber: "",
       pointOfWithdrawal: "",
       samplingActor: {
         label: "",

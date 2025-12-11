@@ -3,28 +3,22 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { MutationOptions } from "@tanstack/react-query";
-
-import { useSnackbar } from "@eshg/lib-portal";
-import { ApiConsultation } from "@eshg/prostitute-protection-api";
+import { unwrapRawResponse, useSnackbar } from "@eshg/lib-portal";
+import { UpdateConsultationRequest } from "@eshg/prostitute-protection-api";
 
 import { useProstituteProtectionApiClients } from "../../contexts/ProstituteProtectionApi";
-import { proceduresQueryKey } from "../queries/apiQueryKeys";
 
-export function useUpsertConsultationOptions({
-  procedureId,
-}: {
-  procedureId: string;
-}): MutationOptions<ApiConsultation, Error, ApiConsultation> {
+export function useUpsertConsultationOptions() {
   const snackbar = useSnackbar();
   const { prostituteProtectionApi } = useProstituteProtectionApiClients();
 
   return {
-    mutationFn: (consultation: ApiConsultation) =>
-      prostituteProtectionApi.updateConsultation(procedureId, consultation),
-    mutationKey: proceduresQueryKey([procedureId, "consultation"]),
+    mutationFn: (request: UpdateConsultationRequest) =>
+      prostituteProtectionApi
+        .updateConsultationRaw(request)
+        .then(unwrapRawResponse),
     onSuccess: () => {
-      snackbar.confirmation("Die Konsultation wurde erfolgreich gespeichert.");
+      snackbar.confirmation("Die Beratung wurde erfolgreich geändert.");
     },
   };
 }

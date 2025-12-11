@@ -1,2 +1,3 @@
 de.eshg.rest.service.commons.ClockAutoConfiguration
 de.eshg.rest.service.commons.filter.RequestLoggingAutoConfiguration
+de.eshg.rest.service.commons.ManagementEndpointFutureDefaultAutoConfiguration

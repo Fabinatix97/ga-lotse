@@ -15,6 +15,7 @@ Usage: $0
   [ -v | --version-tag <name> ]
   [ -p | --production-config <name> ]
   [ -t | --tls-port <port> ]
+  [ -a | --all-business-modules ]
   [ -h | --help ]
 EOF
 exit 1
@@ -22,6 +23,7 @@ exit 1
 
 # defaults
 buildApplication=true
+enableAllBusinessModules=false
 remoteRegistry=""
 registry=""
 repository=""
@@ -31,7 +33,22 @@ versionTag="latest"
 CI_REGISTRY=${CI_REGISTRY:-}
 LOCAL_KUBECTL_CONTEXT_NAME="k3d-ga-lotse"
 
-if ! args=$(getopt -a -o hnv:r:t:p: --long help,no-build,version-tag:,remote-registry:,tls-port:,production-config: -- "$@"); then
+businessModules=(
+  "schoolentry"
+  "measlesprotection"
+  "travelmedicine"
+  "statistics"
+  "stiprotection"
+  "medicalregistry"
+  "dental"
+  "opendata"
+  "chatmanagement"
+  "officialmedicalservice"
+  "medsabroad"
+  "prostituteprotection"
+)
+
+if ! args=$(getopt -a -o hnv:r:t:p:a --long help,no-build,version-tag:,remote-registry:,tls-port:,production-config:,all-business-modules -- "$@"); then
   usage
 fi
 
@@ -39,12 +56,13 @@ eval set -- "${args}"
 while :
 do
   case $1 in
-    -h | --help)              usage                              ;;
-    -n | --no-build)          buildApplication=false   ; shift   ;;
-    -r | --remote-registry)   remoteRegistry="$2"      ; shift 2 ;;
-    -v | --version-tag)       versionTag="$2"          ; shift 2 ;;
-    -p | --production-config) productionConfig="$2"    ; shift 2 ;;
-    -t | --tls-port)          tlsPort="$2"             ; shift 2 ;;
+    -h | --help)                 usage                                  ;;
+    -n | --no-build)             buildApplication=false       ; shift   ;;
+    -r | --remote-registry)      remoteRegistry="$2"          ; shift 2 ;;
+    -v | --version-tag)          versionTag="$2"              ; shift 2 ;;
+    -p | --production-config)    productionConfig="$2"        ; shift 2 ;;
+    -a | --all-business-modules) enableAllBusinessModules=true; shift   ;;
+    -t | --tls-port)             tlsPort="$2"                 ; shift 2 ;;
     --) shift; break ;;
     *) >&2 echo Unsupported option: "$1"
        usage ;;
@@ -222,21 +240,11 @@ echo "Install health department"
 namespace="frankfurt"
 setupNamespace "$namespace"
 
-declare -A springProfileMapping
-springProfileMapping=(
-  ["bergstrasse"]="bergstrasse"
-  ["darmstadt-dieburg"]="dadi"
-  ["frankfurt"]="frankfurt"
-  ["hersfeld-rotenburg"]="hef-rof"
-  ["kreisgg"]="gross-gerau"
-  ["main-taunus-kreis"]="mtk"
-  ["odenwaldkreis"]="odenwaldkreis"
-  ["rheingau-taunus"]="rtk"
-  ["sek"]="sek"
-  ["vogelsbergkreis"]=""
-  ["werra-meissner"]="wmk"
-  ["wiesbaden"]="wiesbaden"
-)
+if [ "$enableAllBusinessModules" = true ]; then
+  for modules in "${businessModules[@]}"; do
+    setList="$setList,businessmodules.$modules.enabled=true"
+  done
+fi
 
 helm dependency update helmcharts/eshg-gas
 
@@ -250,11 +258,6 @@ if [ -z "$productionConfig" ]; then
     --set image.tag="$versionTag" \
     eshg helmcharts/eshg-gas
 else
-  profileName=${springProfileMapping[$productionConfig]}
-  if [ -n "$profileName" ]; then
-    setList="$setList,spring.profiles.active=production\,health-department-$profileName"
-  fi
-
   helm upgrade --install \
     --values helmcharts/eshg-gas/values/prod1/values.common.yaml \
     --values "$productionConfigYaml" \

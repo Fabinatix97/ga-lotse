@@ -31,7 +31,7 @@ export interface InspectionSampleSidebarFormType {
   };
   evaluationType: ApiInspectionSampleEvaluationType;
   measurementParameters: MeasurementParametersType[];
-  nameOfSamplingPoint?: string;
+  sampleNumber: string;
   pointOfWithdrawal: string;
   samplingActor?: {
     label: string;
@@ -109,7 +109,7 @@ export function makeInspectionSampleRequest(
   return {
     evaluatingActor: createActor(formValues.evaluatingActor!.value),
     evaluationType: formValues.evaluationType,
-    nameOfSamplingPoint: formValues.nameOfSamplingPoint,
+    sampleNumber: formValues.sampleNumber,
     pointOfWithdrawal: formValues.pointOfWithdrawal,
     samplingActor: createActor(formValues.samplingActor!.value),
     timeOfEvaluation: formValues.timeOfEvaluation

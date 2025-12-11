@@ -14,4 +14,5 @@ public record SchoolEntryAppointmentStandardDurationsDto(
     @NotNull Duration canChild,
     @NotNull Duration entryLevel,
     @NotNull Duration regularExamination,
-    @NotNull Duration specialNeeds) {}
+    @NotNull Duration specialNeeds,
+    @NotNull Duration extraDuration) {}

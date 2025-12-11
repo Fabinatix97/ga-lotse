@@ -5,8 +5,10 @@
 
 import { MutationPassThrough, useHandledMutation } from "@eshg/lib-portal";
 import {
+  type ApiAbortProcedureRequest,
   ApiCreateProstituteProtectionProcedureRequest,
   ApiCreateProstituteProtectionProcedureResponse,
+  type ApiProcedureDetails,
 } from "@eshg/prostitute-protection-api";
 
 import { useProstituteProtectionApiClients } from "../../contexts/ProstituteProtectionApi";
@@ -24,5 +26,23 @@ export function useCreateProcedureMutation({
     onError,
     mutationFn: (req: ApiCreateProstituteProtectionProcedureRequest) =>
       prostituteProtectionApi.createProcedure(req),
+  });
+}
+
+export interface AbortProcedureParams {
+  id: string;
+  data: ApiAbortProcedureRequest;
+}
+
+export function useAbortProcedureMutation({
+  onSuccess,
+  onError,
+}: MutationPassThrough<AbortProcedureParams, ApiProcedureDetails> = {}) {
+  const { prostituteProtectionApi } = useProstituteProtectionApiClients();
+  return useHandledMutation({
+    onSuccess,
+    onError,
+    mutationFn: ({ id, data }: AbortProcedureParams) =>
+      prostituteProtectionApi.abortProcedure(id, data),
   });
 }

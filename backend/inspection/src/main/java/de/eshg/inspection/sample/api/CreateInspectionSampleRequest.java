@@ -18,7 +18,7 @@ public record CreateInspectionSampleRequest(
     @NotNull UUID externalId,
     @NotNull InspectionSampleTypeDto typeOfSample,
     @NotNull String pointOfWithdrawal,
-    String nameOfSamplingPoint,
+    @NotNull String sampleNumber,
     @NotNull InspectionSampleEvaluationTypeDto evaluationType,
     @NotNull @Valid InspectionSampleActorReferenceDto samplingActor,
     Instant timeOfSampling,
