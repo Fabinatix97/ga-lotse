@@ -113,8 +113,11 @@ export function CreateAppointmentBlockGroupForm() {
     <AppointmentBlockGroupForm
       initialValues={INITIAL_VALUES}
       standardDurations={{
-        ...standardDurationsHiv,
-        ...standardDurationsSexWork,
+        standardDurations: {
+          ...standardDurationsHiv,
+          ...standardDurationsSexWork,
+        },
+        extraDuration: 0,
       }}
       consultants={allConsultants}
       physicians={allPhysicians}

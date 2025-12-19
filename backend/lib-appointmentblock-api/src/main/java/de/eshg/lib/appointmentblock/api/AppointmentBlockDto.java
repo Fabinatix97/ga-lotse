@@ -34,10 +34,12 @@ public record AppointmentBlockDto(
             example = "2016-01-01T01:45:00.123456+01:00")
         Instant end,
     @NotNull @Min(1) @Max(10) int parallelExaminations,
+    @NotNull boolean extraLength,
     @NotNull List<AppointmentTypeDto> types,
     @NotNull List<UUID> physicians,
     @NotNull List<UUID> mfas,
     @NotNull List<UUID> consultants,
+    @NotNull List<UUID> sopasss,
     String room,
     UUID creatorId,
     @NotNull @Valid Map<UUID, AppointmentBlockUserDto> resolvedUsers,

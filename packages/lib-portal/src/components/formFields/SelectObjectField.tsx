@@ -10,7 +10,6 @@ import {
 } from "@mui/joy";
 import { SxProps } from "@mui/joy/styles/types";
 import { ReactNode, SyntheticEvent } from "react";
-import { identity } from "remeda";
 
 import { FieldProps } from "../../types/form";
 import { useIsFormDisabled } from "../form/DisabledFormContext";
@@ -22,6 +21,10 @@ type JoyUiAutocompleteValue<
   TValue extends object | number,
   TMultiple extends boolean,
 > = AutocompleteProps<TValue, TMultiple, false, false>["value"];
+type JoyUiAutocompleteFilterOptions<
+  TValue extends object | number,
+  TMultiple extends boolean,
+> = AutocompleteProps<TValue, TMultiple, false, false>["filterOptions"];
 export type SelectObjectFieldValue<
   TValue extends object | number,
   TMultiple extends boolean,
@@ -34,7 +37,7 @@ export interface SelectObjectFieldProps<
   options: TValue[];
   getOptionLabel: (option: TValue) => string;
   getOptionKey?: (option: TValue) => string;
-  disableFiltering?: boolean;
+  filterOptions?: JoyUiAutocompleteFilterOptions<TValue, TMultiple>;
   multiple?: TMultiple;
   placeholder?: string;
   disabled?: boolean;
@@ -78,7 +81,7 @@ export function SelectObjectField<
         getOptionLabel={props.getOptionLabel}
         getOptionKey={props.getOptionKey ?? props.getOptionLabel}
         isOptionEqualToValue={props.isOptionEqualToValue}
-        filterOptions={props.disableFiltering ? identity() : undefined}
+        filterOptions={props.filterOptions}
         multiple={props.multiple}
         placeholder={props.placeholder}
         disabled={disabled || props.disabled}

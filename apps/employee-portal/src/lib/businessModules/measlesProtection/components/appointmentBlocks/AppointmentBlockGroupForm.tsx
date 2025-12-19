@@ -10,20 +10,20 @@ import { isDefined } from "remeda";
 import {
   AppointmentBlockGroupFields,
   AppointmentBlockGroupValues,
+  AppointmentStandardDurations,
   FormButtonBar,
   FormSheet,
   validateAppointmentBlock,
   validateFieldArray,
 } from "@eshg/lib-employee-portal";
 
-import { AppointmentDurationsMeasles } from "@/lib/businessModules/measlesProtection/api/models/AppointmentBlockGroup";
 import { routes } from "@/lib/businessModules/measlesProtection/shared/routes";
 
 import { APPOINTMENT_TYPE_OPTIONS } from "./options";
 
 function validateForm(
   values: AppointmentBlockGroupValues,
-  appointmentDurationsMeasles: AppointmentDurationsMeasles,
+  appointmentDurationsMeasles: AppointmentStandardDurations,
 ) {
   const errors: FormikErrors<AppointmentBlockGroupValues> = {};
   const appointmentBlockErrors = validateFieldArray(
@@ -31,6 +31,7 @@ function validateForm(
     (appointmentBlock) =>
       validateAppointmentBlock(
         values.types,
+        false,
         appointmentBlock,
         appointmentDurationsMeasles,
       ),
@@ -45,7 +46,7 @@ function validateForm(
 interface AppointmentBlockGroupFormProps {
   initialValues: AppointmentBlockGroupValues;
   onSubmit: (values: AppointmentBlockGroupValues) => Promise<void>;
-  appointmentDurationsMeasles: AppointmentDurationsMeasles;
+  appointmentDurationsMeasles: AppointmentStandardDurations;
 }
 
 export function AppointmentBlockGroupForm(

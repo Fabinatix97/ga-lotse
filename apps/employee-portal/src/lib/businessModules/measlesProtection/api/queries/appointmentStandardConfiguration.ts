@@ -5,6 +5,7 @@
 
 import { queryOptions } from "@tanstack/react-query";
 
+import { AppointmentStandardDurations } from "@eshg/lib-employee-portal";
 import { durationToMinutes } from "@eshg/lib-portal";
 import {
   ApiAppointmentType,
@@ -25,10 +26,13 @@ export function useGetAppointmentStandardDurationQuery() {
 
 function mapStandardDurations(
   standardDurations: ApiMeaslesProtectionAppointmentStandardDurations,
-): Partial<Record<ApiAppointmentType, number>> {
+): AppointmentStandardDurations {
   return {
-    [ApiAppointmentType.ProofSubmission]: durationToMinutes(
-      standardDurations.proofSubmission,
-    ),
+    standardDurations: {
+      [ApiAppointmentType.ProofSubmission]: durationToMinutes(
+        standardDurations.proofSubmission,
+      ),
+    },
+    extraDuration: 0,
   };
 }

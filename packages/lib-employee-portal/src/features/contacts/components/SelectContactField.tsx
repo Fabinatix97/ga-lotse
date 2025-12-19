@@ -4,6 +4,7 @@
  */
 
 import { ReactNode, useState } from "react";
+import { identity } from "remeda";
 
 import { ApiAddContact200Response, ApiContactCategory } from "@eshg/base-api";
 import {
@@ -43,7 +44,7 @@ export function SelectContactField(props: SelectContactFieldProps) {
       options={contacts}
       isOptionEqualToValue={isSameEntity}
       loading={query.isLoading}
-      disableFiltering
+      filterOptions={identity()}
       validate={props.validate}
       required={props.required}
       placeholder={props.placeholder}

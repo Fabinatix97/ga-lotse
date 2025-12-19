@@ -9,6 +9,7 @@ import static de.eshg.base.util.ClassNameUtil.getClassNameAsPropertyKey;
 import static de.eshg.lib.appointmentblock.AppointmentBlockValidator.TECHNICAL_GROUP_CONSULTANTS;
 import static de.eshg.lib.appointmentblock.AppointmentBlockValidator.TECHNICAL_GROUP_MFAS;
 import static de.eshg.lib.appointmentblock.AppointmentBlockValidator.TECHNICAL_GROUP_PHYSICIANS;
+import static de.eshg.lib.appointmentblock.AppointmentBlockValidator.TECHNICAL_GROUP_SOPASSS;
 
 import de.eshg.base.contact.ContactApi;
 import de.eshg.base.contact.api.*;
@@ -52,6 +53,7 @@ public class AppointmentBlockGroupsPopulator
   private final Optional<TechnicalGroup> groupPhysicians;
   private final Optional<TechnicalGroup> groupMfas;
   private final Optional<TechnicalGroup> groupConsultants;
+  private final Optional<TechnicalGroup> groupSopasss;
   private final UserApi userApi;
   private final ContactApi contactApi;
   private final BaseTestHelperApi baseTestHelperApi;
@@ -67,6 +69,7 @@ public class AppointmentBlockGroupsPopulator
       @Qualifier(TECHNICAL_GROUP_PHYSICIANS) Optional<TechnicalGroup> groupPhysicians,
       @Qualifier(TECHNICAL_GROUP_MFAS) Optional<TechnicalGroup> groupMfas,
       @Qualifier(TECHNICAL_GROUP_CONSULTANTS) Optional<TechnicalGroup> groupConsultants,
+      @Qualifier(TECHNICAL_GROUP_SOPASSS) Optional<TechnicalGroup> groupSopasss,
       UserApi userApi,
       ContactApi contactApi,
       BaseTestHelperApi baseTestHelperApi) {
@@ -83,6 +86,7 @@ public class AppointmentBlockGroupsPopulator
     this.groupPhysicians = groupPhysicians;
     this.groupMfas = groupMfas;
     this.groupConsultants = groupConsultants;
+    this.groupSopasss = groupSopasss;
     this.userApi = userApi;
     this.contactApi = contactApi;
     this.baseTestHelperApi = baseTestHelperApi;
@@ -122,6 +126,7 @@ public class AppointmentBlockGroupsPopulator
     List<UUID> physicianIds = getRandomUserIdAsList(faker, groupPhysicians);
     List<UUID> mfaIds = getRandomUserIdAsList(faker, groupMfas);
     List<UUID> consultantIds = getRandomUserIdAsList(faker, groupConsultants);
+    List<UUID> sopassIds = getRandomUserIdAsList(faker, groupSopasss);
     String room = optional(faker, randomElement(faker, List.of("Raum A", "Raum B", "Raum C")), 0.6);
 
     UUID locationId =
@@ -136,10 +141,12 @@ public class AppointmentBlockGroupsPopulator
         new CreateDailyAppointmentBlockGroupRequest(
             List.of(AppointmentTypeMapper.toInterfaceType(type)),
             parallelExaminations,
+            false,
             List.of(new CreateDailyAppointmentBlockDto(start, end, List.of(dayOfWeek))),
             physicianIds,
             mfaIds,
             consultantIds,
+            sopassIds,
             room,
             locationId,
             true,

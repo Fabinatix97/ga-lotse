@@ -1,5 +1,5 @@
 // Copyright 2025 cronn GmbH
-// SPDX-License-Identifier: Apache-2.0
+// SPDX-License-Identifier: AGPL-3.0-only
 
 plugins {
     id "eshg.service"
@@ -16,6 +16,7 @@ dependencies {
     implementation project(':lib-procedures')
     implementation project(':lib-calendar')
     implementation project(':lib-statistics')
+    implementation project(':lib-scheduling')
 
     implementation 'org.bouncycastle:bcprov-jdk18on:latest.release'
 

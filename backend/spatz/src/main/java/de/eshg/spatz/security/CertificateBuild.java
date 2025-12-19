@@ -14,12 +14,10 @@ public record CertificateBuild(
     KeyPair keyPair, X509Certificate certificate, String pemCrt, CertificateBuild signedBy) {
 
   public String fullChainPem() {
-    CertificateBuild c = this;
     StringBuilder s = new StringBuilder();
 
-    while (c != null) {
+    for (CertificateBuild c = this; c != null; c = c.signedBy) {
       s.append(c.pemCrt).append(LINE_SEPARATOR);
-      c = c.signedBy;
     }
     return s.toString();
   }

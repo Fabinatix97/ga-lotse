@@ -1,5 +1,0 @@
-== Licensing
-
-All files within this directory, including those in all subdirectories, are licensed under the Apache License 2.0.
-
-For the complete license text, please refer to the `LICENSE-APACHE-2.0.txt` file located in the project root.

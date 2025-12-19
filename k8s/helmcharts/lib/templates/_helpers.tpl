@@ -114,7 +114,7 @@
                   name: {{ .k }}-db
                   key: POSTGRESQL_HOST
             {{- end }}
-            {{- if .v.cache }}
+            {{- if and .hasCache .v.cache }}
               {{- $hostNum = add1 $hostNum }}
             - name: ESHG_SPATZ_DNS_FORWARDREQUESTALLOWLIST_{{ $hostNum }}
               valueFrom:

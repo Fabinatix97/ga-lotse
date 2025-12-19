@@ -13,6 +13,10 @@ export const proceduresQueryKey = queryKeyFactory(
   prostituteProtectionApiQueryKey(["procedures"]),
 );
 
+export const personQueryKey = queryKeyFactory(
+  prostituteProtectionApiQueryKey(["person"]),
+);
+
 export const appointmentBlockApiQueryKey = queryKeyFactory(
   prostituteProtectionApiQueryKey(["appointmentBlockApi"]),
 );

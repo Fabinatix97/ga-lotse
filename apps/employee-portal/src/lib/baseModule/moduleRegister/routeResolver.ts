@@ -5,6 +5,7 @@
 
 import { ApiBusinessModule, ApiProcedureStatus } from "@eshg/base-api";
 import { routes as dentalRoutes } from "@eshg/dental";
+import { routes as prostituteProtectionRoutes } from "@eshg/prostitute-protection";
 
 import { routes as inspectionRoutes } from "@/lib/businessModules/inspection/shared/routes";
 import { routes as measlesProtectionRoutes } from "@/lib/businessModules/measlesProtection/shared/routes";
@@ -46,7 +47,7 @@ export function resolveProcedureDetailsRoute({
     case "MEDS_ABROAD":
       return "";
     case "PROSTITUTE_PROTECTION":
-      return "";
+      return prostituteProtectionRoutes.procedures.byId(procedureId).details;
   }
 }
 
@@ -76,6 +77,7 @@ export function resolveProcedureProgressEntriesRoute(
     case "MEDS_ABROAD":
       return "";
     case "PROSTITUTE_PROTECTION":
-      return "";
+      return prostituteProtectionRoutes.procedures.byId(procedureId)
+        .progressEntries;
   }
 }

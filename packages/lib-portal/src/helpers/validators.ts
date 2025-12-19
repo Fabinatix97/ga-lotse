@@ -5,6 +5,7 @@
 
 import {
   addYears,
+  differenceInYears,
   endOfDay,
   isAfter,
   isBefore,
@@ -132,6 +133,21 @@ export function validatePastMonthAndYear(year: number, month: number) {
   const date = new Date(year, month);
   if (!isThisMonth(date) && isFuture(date)) {
     return "Das Datum liegt in der Zukunft.";
+  }
+
+  return undefined;
+}
+
+export function validateDateOfBirthOfLegaLAge(value: string) {
+  const inputDate = parseISO(value);
+
+  const age = differenceInYears(new Date(), inputDate);
+  if (age > 150) {
+    return "Das Geburtsdatum darf maximal 150 Jahre in der Vergangenheit liegen.";
+  }
+
+  if (age < 18) {
+    return "Die Person muss volljährig sein.";
   }
 
   return undefined;

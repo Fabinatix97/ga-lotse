@@ -105,7 +105,7 @@ public class InvitationGenerator extends AbstractGenerator {
       ChildDataWithPersonIdAndCustodian childDataWithPersonIdAndCustodian,
       Instant appointmentStart,
       UUID locationId,
-      UUID physicianOrMfaId,
+      UUID examinerId,
       String room) {
     String url = buildQrCodeUrl(accessCode);
     String qrCode =
@@ -133,9 +133,9 @@ public class InvitationGenerator extends AbstractGenerator {
 
     ZonedDateTime zonedAppointmentStart = appointmentStart.atZone(clock.getZone());
 
-    String physicianOrMfaName = null;
-    if (schoolEntryConfigService.isInvitationIncludePerson() && physicianOrMfaId != null) {
-      physicianOrMfaName = getUserName(physicianOrMfaId);
+    String examiner = null;
+    if (schoolEntryConfigService.isInvitationIncludePerson() && examinerId != null) {
+      examiner = getUserName(examinerId);
     }
 
     String roomName = null;
@@ -165,7 +165,7 @@ public class InvitationGenerator extends AbstractGenerator {
         invitationInfo,
         schoolEntryConfigService.getPdfDocumentAccentColor(),
         "#EBEBEB",
-        physicianOrMfaName,
+        examiner,
         roomName);
   }
 
@@ -247,16 +247,11 @@ public class InvitationGenerator extends AbstractGenerator {
       ChildDataWithPersonIdAndCustodian childDataWithPersonIdAndCustodian,
       Instant start,
       UUID locationId,
-      UUID physicianOrMfaId,
+      UUID examinerId,
       String room) {
     InvitationData invitationData =
         buildInvitationData(
-            accessCode,
-            childDataWithPersonIdAndCustodian,
-            start,
-            locationId,
-            physicianOrMfaId,
-            room);
+            accessCode, childDataWithPersonIdAndCustodian, start, locationId, examinerId, room);
     return generateInvitation(invitationData);
   }
 

@@ -5,6 +5,7 @@
 
 import { moduleUserGroup as dentalModuleUserGroup } from "@eshg/dental";
 import { ModuleUserGroupConfig } from "@eshg/lib-employee-portal";
+import { moduleUserGroup as prostituteProtectionModuleUserGroup } from "@eshg/prostitute-protection";
 
 import { moduleUserGroup as inspectionModuleUserGroup } from "@/lib/businessModules/inspection/shared/moduleUserGroup";
 import { moduleUserGroup as measlesProtectionModuleUserGroup } from "@/lib/businessModules/measlesProtection/shared/moduleUserGroup";
@@ -27,6 +28,7 @@ export const businessModuleUserGroups: ModuleUserGroupConfig[] = [
   officialMedicalServiceModuleUserGroup,
   medicalRegistryModuleUserGroup,
   openDataModuleUserGroup,
+  prostituteProtectionModuleUserGroup,
 ];
 
 export const businessModuleLeaderRoles = businessModuleUserGroups.map(

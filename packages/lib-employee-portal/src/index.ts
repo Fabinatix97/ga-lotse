@@ -75,6 +75,7 @@ export { WeekdayCheckboxGroup } from "./components/appointmentBlocks/WeekdayChec
 export {
   ApiAppointmentType,
   ApiDayOfWeek,
+  type AppointmentStandardDurations,
 } from "./components/appointmentBlocks/types";
 export { APPOINTMENT_TYPES } from "./components/appointmentBlocks/translations";
 export { validateAppointmentBlock } from "./components/appointmentBlocks/validateAppointmentBlock";

@@ -24,6 +24,7 @@ import {
 import {
   AddNewProcedureForm,
   FieldProps,
+  LayoutProps,
   getAppointmentDate,
 } from "./useAddNewProcedureSidebar";
 
@@ -100,7 +101,7 @@ function SummaryForm({
         action={{
           onClick: jumpToPersonalData,
           icon: <EditOutlined />,
-          label: "Bearbeiten",
+          label: "Person bearbeiten",
         }}
         title="Persönliche Daten"
       />
@@ -118,28 +119,19 @@ function SummaryForm({
   );
 }
 
-interface LayoutProps<T> {
-  children: ReactNode;
-  handleNext: (newValues: T) => Promise<unknown> | void;
-  handlePrev: () => void;
-  isOnLastStep: boolean;
-  isOnFirstStep: boolean;
-  onClose: () => void;
-  title: string;
-  subTitle?: string;
-}
 function Layout<T>({
   children,
   handlePrev,
   isOnLastStep,
   isOnFirstStep,
   onClose,
+  formRef,
   title,
   subTitle,
 }: LayoutProps<T>) {
   const { isSubmitting } = useFormikContext<AddNewProcedureForm>();
   return (
-    <SidebarForm>
+    <SidebarForm ref={formRef}>
       <SidebarContent title={title} subtitle={subTitle}>
         {children}
       </SidebarContent>
@@ -147,7 +139,7 @@ function Layout<T>({
         <MultiFormButtonBar
           submitting={isSubmitting}
           submitLabel={isOnLastStep ? "Erstellen" : "Weiter"}
-          onCancel={onClose}
+          onCancel={() => onClose(true)}
           onBack={isOnFirstStep ? undefined : handlePrev}
         />
       </SidebarActions>

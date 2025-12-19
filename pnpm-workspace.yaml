@@ -9,14 +9,14 @@ packages:
 
 catalogs:
   next:
-    "next": "15.4.8"
-    "@next/bundle-analyzer": "15.4.8"
-    "eslint-config-next": "15.4.8"
+    "next": "15.4.10"
+    "@next/bundle-analyzer": "15.4.10"
+    "eslint-config-next": "15.4.10"
 
   react:
-    "react": "19.2.1"
+    "react": "19.2.3"
     "@types/react": "19.2.7"
-    "react-dom": "19.2.1"
+    "react-dom": "19.2.3"
     "@types/react-dom": "19.2.3"
 
   joy:
@@ -101,6 +101,14 @@ saveExact: true
 # see https://github.com/vercel/next.js/issues/50803
 nodeLinker: "hoisted"
 minimumReleaseAge: 10080
+minimumReleaseAgeExclude:
+  - next@15.4.10
+  - "@next/bundle-analyzer@15.4.10"
+  - eslint-config-next@15.4.10
+  - react@19.2.3
+  - react-dom@19.2.3
+  - "@next/env@15.4.10"
+  - "@next/eslint-plugin-next@15.4.10"
 trustPolicy: no-downgrade
 trustPolicyExclude:
   - chokidar@4.0.3

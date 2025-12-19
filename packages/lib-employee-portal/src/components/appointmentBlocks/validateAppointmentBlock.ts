@@ -5,7 +5,7 @@
 
 import { differenceInCalendarDays, isBefore, isEqual, isPast } from "date-fns";
 import { FormikErrors } from "formik";
-import { isDefined, isEmpty, unique } from "remeda";
+import { isDefined, isEmpty, mapValues, unique } from "remeda";
 
 import { OptionalFieldValue } from "@eshg/lib-portal";
 
@@ -24,15 +24,15 @@ import {
   getAppointmentDurationInMinutes,
 } from "./calculateAppointmentCount";
 import { calculateMaxParallelBookings } from "./calculateMaxParallelBookings";
-import { ApiAppointmentType } from "./types";
+import { ApiAppointmentType, AppointmentStandardDurations } from "./types";
 
 const MAX_DAYS_IN_APPOINTMENT_BLOCK = 31;
-export type ExaminationDurations = Partial<Record<ApiAppointmentType, number>>;
 
 export function validateAppointmentBlock(
   types: ApiAppointmentType[],
+  extraLength: boolean | undefined,
   appointmentBlock: AppointmentBlockGroupValuesWithDays,
-  examinationDurations: ExaminationDurations,
+  standardDurations: AppointmentStandardDurations,
 ) {
   const { startDate, endDate, startTime, endTime, daysOfWeek } =
     appointmentBlock;
@@ -56,6 +56,10 @@ export function validateAppointmentBlock(
   const end = toLocalDateTime(endDate, endTime);
   const dailyStartTime = toLocalDateTime(startDate, startTime);
   const dailyEndTime = toLocalDateTime(startDate, endTime);
+  const examinationDurations = getStandardDurationsWithExtraLength(
+    standardDurations,
+    extraLength,
+  );
 
   if (isEqual(dailyStartTime, dailyEndTime)) {
     errors.endTime = "Die Endzeit ist identisch zur Startzeit.";
@@ -115,7 +119,7 @@ export function validateAppointmentEndTime(
   startTime: string,
   appointmentBlock: AppointmentBlock,
   types: ApiAppointmentType[],
-  standardDurations: Partial<Record<ApiAppointmentType, number>>,
+  standardDurations: AppointmentStandardDurations,
 ) {
   if (!isAfterTime(value, startTime)) {
     return "Die Endzeit muss nach der Startzeit liegen.";
@@ -136,6 +140,11 @@ export function validateAppointmentEndTime(
     }
   }
 
+  const examinationDurations = getStandardDurationsWithExtraLength(
+    standardDurations,
+    appointmentBlock.extraLength,
+  );
+
   if (
     types.every(
       (type) =>
@@ -143,14 +152,14 @@ export function validateAppointmentEndTime(
           type,
           parseTime(startTime, appointmentBlock.start),
           parseTime(value, appointmentBlock.end),
-          standardDurations,
+          examinationDurations,
         ) === 0,
     )
   ) {
     const appointmentDurationInMinutes =
       unique(
         types.map((type) =>
-          getAppointmentDurationInMinutes(type, standardDurations),
+          getAppointmentDurationInMinutes(type, examinationDurations),
         ),
       ).join(", ") + " Minuten";
     return `Die Dauer ist nicht teilbar durch die Terminlängen: ${appointmentDurationInMinutes}.`;
@@ -184,4 +193,18 @@ export function validateParallelExaminations(
     }
   }
   return undefined;
+}
+
+function getStandardDurationsWithExtraLength(
+  standardDurations: AppointmentStandardDurations,
+  extraLength?: boolean,
+) {
+  if (extraLength) {
+    return mapValues(
+      standardDurations.standardDurations,
+      (value) => value + standardDurations.extraDuration,
+    );
+  } else {
+    return standardDurations.standardDurations;
+  }
 }

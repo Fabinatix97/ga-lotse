@@ -30,6 +30,7 @@ export function mapApiAppointmentBlock(
     mfas: response.mfas,
     physicians: response.physicians,
     consultants: response.consultants,
+    sopasss: response.sopasss,
     room: response.room,
   };
 }

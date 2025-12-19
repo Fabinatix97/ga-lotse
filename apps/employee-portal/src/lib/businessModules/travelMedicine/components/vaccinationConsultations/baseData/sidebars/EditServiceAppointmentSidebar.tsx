@@ -106,7 +106,8 @@ function EditServiceAppointmentSidebar(
       appointmentType: procedureStep.appointmentType,
       userDefinedAppointmentDate: mapDateTimeToInput(new Date(), false),
       appointmentTypeStandardDuration:
-        standardDurations[ApiAppointmentType.Vaccination],
+        standardDurations.standardDurations[ApiAppointmentType.Vaccination] ??
+        0,
       appointmentDate: procedureStep.appointment,
       earliestDate: procedureStep.earliestDate,
     };

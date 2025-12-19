@@ -31,7 +31,11 @@ export function SidebarFormProvider<T>({
   title,
 }: SidebarFormProviderProps<T>) {
   return (
-    <Formik initialValues={initialValues} onSubmit={onSubmit}>
+    <Formik
+      initialValues={initialValues}
+      enableReinitialize
+      onSubmit={onSubmit}
+    >
       {({ isSubmitting }) => (
         <SidebarForm ref={formRef}>
           <SidebarContent title={title}>{children}</SidebarContent>

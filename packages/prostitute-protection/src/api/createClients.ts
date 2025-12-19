@@ -3,16 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {
-  Configuration as BaseConfiguration,
-  ConfigurationParameters as BaseConfigurationParameters,
-  UserApi,
-} from "@eshg/base-api";
-import {
-  ApiConfiguration,
-  apiMiddlewares,
-  useApiConfiguration,
-} from "@eshg/lib-portal";
+import { apiMiddlewares } from "@eshg/lib-portal";
 import {
   AppointmentBlockApi,
   ApprovalRequestApi,
@@ -51,21 +42,3 @@ export function createClients(baseUrl: string) {
   };
 }
 export type ProstituteProtectionClients = ReturnType<typeof createClients>;
-
-function useBaseEmployeePortalApiConfiguration(
-  basePathName: keyof ApiConfiguration,
-): BaseConfigurationParameters {
-  return useApiConfiguration(basePathName, "de");
-}
-
-export function useBaseConfiguration() {
-  const configurationParameters = useBaseEmployeePortalApiConfiguration(
-    "PUBLIC_BASE_BACKEND_URL" as keyof ApiConfiguration,
-  );
-  return new BaseConfiguration(configurationParameters);
-}
-
-export function useUserApi() {
-  const configuration = useBaseConfiguration();
-  return new UserApi(configuration);
-}

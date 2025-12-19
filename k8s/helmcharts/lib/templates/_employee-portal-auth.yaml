@@ -10,6 +10,14 @@
 
 {{- $selfManagedCacheHost := printf "employee-portal-auth-cache%s" .Values.domains.clusterLocalSuffix }}
 
+{{- $hasCache := eq .Values.employeeportalauth.cache.enabled true }}
+{{- $selfManagedRedis := and $hasCache .Values.employeeportalauth.cache.selfmanaged }}
+
+{{- $springProfiles := include "removeTestHelper" ($.Values.spring.profiles.active) }}
+{{- if not $hasCache }}
+  {{ $springProfiles = printf "%s, disable-redis" $springProfiles }}
+{{- end }}
+
 kind: Service
 apiVersion: v1
 metadata:
@@ -63,6 +71,7 @@ spec:
           configMap:
             name: ca
         {{- end }}
+        {{- if $hasCache }}
         - name: redis-certs
           secret:
             secretName: employeeportalauth-redis
@@ -70,6 +79,7 @@ spec:
             items:
               - key: ca.crt
                 path: ca.crt
+        {{- end }}
         {{- if eq "true" $createDebugLogMount }}
         - name: debuglog
           persistentVolumeClaim:
@@ -80,7 +90,7 @@ spec:
         {{- end }}
       initContainers:
       {{- include "waitForDeployment" (list .Values "lsd") | indent 8 }}
-      {{ if .Values.employeeportalauth.cache.selfmanaged -}}
+      {{ if $selfManagedRedis -}}
       {{- include "waitForDeployment" (list .Values "employee-portal-auth-cache") | indent 8 }}
       {{- end }}
       containers:
@@ -91,7 +101,7 @@ spec:
           {{- toYaml (default dict .Values.employeeportalauth.resources) | nindent 12 }}
           env:
             - name: spring.profiles.active
-              value: "{{ include "removeTestHelper" ($.Values.spring.profiles.active) }}"
+              value: "{{ $springProfiles }}"
             - name: spring.profiles.include
               value: employee-portal
             - name: server.servlet.session.cookie.name
@@ -106,6 +116,7 @@ spec:
             {{- end }}
             - name: eshg.reverse-proxy.url
               value: https://{{ .Values.domains.hosts.employeeportal }}
+            {{- if $hasCache }}
             - name: spring.data.redis.host
               valueFrom:
                 secretKeyRef:
@@ -116,7 +127,8 @@ spec:
                 secretKeyRef:
                   name: employeeportalauth-redis
                   key: REDIS_PASSWORD
-            {{ if not .Values.employeeportalauth.cache.selfmanaged -}}
+            {{- end }}
+            {{ if and $hasCache (not $selfManagedRedis) -}}
             - name: spring.data.redis.ssl.enabled
               value: "true"
             - name: spring.data.redis.ssl.bundle
@@ -159,16 +171,16 @@ spec:
             - name: debuglog
               mountPath: /var/log/eshg-debug
             {{- end }}
-            {{- if not .Values.employeeportalauth.cache.selfmanaged }}
+            {{ if and $hasCache (not $selfManagedRedis) -}}
             - mountPath: /var/run/redis-certs
               name: redis-certs
               readOnly: true
             {{- end }}
 
-    {{- include "module.spatz" (dict "Values" $.Values "v" $.Values.employeeportalauth "k" "employeeportalauth" "actorType" "WEB" "relay" false "createDebugLogMount" $createDebugLogMount) }}
+    {{- include "module.spatz" (dict "Values" $.Values "v" $.Values.employeeportalauth "k" "employeeportalauth" "actorType" "WEB" "relay" false "createDebugLogMount" $createDebugLogMount "hasCache" $hasCache) }}
 
 
-{{ if .Values.employeeportalauth.cache.selfmanaged -}}
+{{ if $selfManagedRedis -}}
 ---
 
 kind: Service
@@ -228,9 +240,9 @@ spec:
           livenessProbe:
             exec:
               command:
-                - /usr/bin/sh
+                - /bin/sh
                 - -c
-                - /usr/local/bin/redis-cli -a $REDIS_PASSWORD ping
+                - redis-cli -a $REDIS_PASSWORD ping
             initialDelaySeconds: 10
             timeoutSeconds: 5
           volumeMounts:
@@ -251,7 +263,7 @@ metadata:
   name: employeeportalauth-redis
 type: Opaque
 
-{{- else }}
+{{- else if $hasCache }}
   {{ include "lib.redis" (list "employeeportalauth" $) }}
 {{- end }}
 

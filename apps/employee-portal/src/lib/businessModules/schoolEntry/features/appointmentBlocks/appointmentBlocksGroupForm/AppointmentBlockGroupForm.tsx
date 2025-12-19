@@ -13,16 +13,14 @@ import {
   AppointmentLocationSelection,
   AppointmentRoomField,
   AppointmentStaffSelection,
+  AppointmentStandardDurations,
   FormButtonBar,
   FormSheet,
   validateAppointmentBlock,
   validateFieldArray,
 } from "@eshg/lib-employee-portal";
 import { CheckboxField } from "@eshg/lib-portal";
-import {
-  ApiAppointmentType,
-  ApiLocationSelectionMode,
-} from "@eshg/school-entry-api";
+import { ApiLocationSelectionMode } from "@eshg/school-entry-api";
 
 import { useAppointmentBlockApi } from "@/lib/businessModules/schoolEntry/api/clients";
 import { mapAppointmentBlockApi } from "@/lib/businessModules/schoolEntry/api/mapAppointmentBlockApi";
@@ -37,7 +35,7 @@ import { routes } from "@/lib/businessModules/schoolEntry/shared/routes";
 
 function validateForm(
   values: CreateAppointmentBlockGroupValues,
-  standardDurations: Partial<Record<ApiAppointmentType, number>>,
+  standardDurations: AppointmentStandardDurations,
 ) {
   const errors: FormikErrors<CreateAppointmentBlockGroupValues> = {};
 
@@ -46,6 +44,7 @@ function validateForm(
     (appointmentBlock) =>
       validateAppointmentBlock(
         values.types,
+        values.extraLength,
         appointmentBlock,
         standardDurations,
       ),
@@ -54,11 +53,18 @@ function validateForm(
     errors.appointmentBlocks = appointmentBlockErrors;
   }
 
-  if (isEmpty(values.physicians) && isEmpty(values.mfas)) {
-    const msg =
-      "Es muss mindestens ein Arzt/eine Ärztin oder ein:e MFA ausgewählt sein.";
-    errors.physicians = msg;
-    errors.mfas = msg;
+  if (values.extraLength) {
+    if (isEmpty(values.sopasss)) {
+      errors.sopasss =
+        "Es muss mindestens ein ein:e SOPASS qualifizierte:r MFA ausgewählt sein.";
+    }
+  } else {
+    if (isEmpty(values.physicians) && isEmpty(values.mfas)) {
+      const msg =
+        "Es muss mindestens ein Arzt/eine Ärztin oder ein:e MFA ausgewählt sein.";
+      errors.physicians = msg;
+      errors.mfas = msg;
+    }
   }
 
   return errors;
@@ -67,9 +73,10 @@ function validateForm(
 interface AppointmentBlockGroupFormProps {
   initialValues: CreateAppointmentBlockGroupValues;
   onSubmit: (values: CreateAppointmentBlockGroupValues) => Promise<void>;
-  standardDurations: Partial<Record<ApiAppointmentType, number>>;
+  standardDurations: AppointmentStandardDurations;
   allPhysicians: ApiUser[];
   allMfas: ApiUser[];
+  allSopasss: ApiUser[];
   locationSelectionMode: ApiLocationSelectionMode;
 }
 
@@ -85,6 +92,12 @@ export function AppointmentBlockGroupForm(
   }));
 
   const medicalAssistantsOptions = props.allMfas.map((option) => ({
+    userId: option.userId,
+    firstName: option.firstName,
+    lastName: option.lastName,
+  }));
+
+  const sopassOptions = props.allSopasss.map((option) => ({
     userId: option.userId,
     firstName: option.firstName,
     lastName: option.lastName,
@@ -125,8 +138,13 @@ export function AppointmentBlockGroupForm(
           )}
           <Stack gap={5}>
             <AppointmentStaffSelection
-              physicianOptions={physicianOptions}
-              medicalAssistantOptions={medicalAssistantsOptions}
+              physicianOptions={
+                values.extraLength ? undefined : physicianOptions
+              }
+              medicalAssistantOptions={
+                values.extraLength ? undefined : medicalAssistantsOptions
+              }
+              sopassOptions={values.extraLength ? sopassOptions : undefined}
               validateAppointmentBlocks={() => mapFormValues(values)}
               getCheckAvailabilityQuery={() =>
                 getValidateDailyAppointmentBlocksForGroupQuery(

@@ -49,6 +49,10 @@ export function ObjectTypesTable() {
     }),
     columnHelper.accessor("routineInterval", {
       header: "Intervall (Tage)",
+      cell: (info) => {
+        const value = info.getValue() ? info.getValue() : "Kein Intervall";
+        return "id" in info.row.original && info.row.original.id ? value : "";
+      },
       meta: {
         canNavigate: {
           parentRow: false,
@@ -58,6 +62,10 @@ export function ObjectTypesTable() {
     }),
     columnHelper.accessor("complaintInterval", {
       header: "nach Beanst. (Tage)",
+      cell: (info) => {
+        const value = info.getValue() ? info.getValue() : "Kein Intervall";
+        return "id" in info.row.original && info.row.original.id ? value : "";
+      },
       meta: {
         canNavigate: {
           parentRow: false,

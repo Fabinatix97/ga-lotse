@@ -8,12 +8,15 @@
 // Config
 export { routes } from "./config/routes";
 export { resolveSideNavigationItems } from "./config/sideNavigationItem";
+export { moduleUserGroup } from "./config/moduleUserGroup";
+export { taskTypes } from "./shared/constants";
 
 // Contexts
 export {
   ProstituteProtectionApiClientProvider as ProstituteProtectionProvider,
   useProstituteProtectionApiClients,
 } from "./contexts/ProstituteProtectionApi";
+export { SelectedPersonStoreProvider } from "./contexts/selectedPerson/SelectedPersonStoreProvider";
 
 // Pages
 export { ProstituteProtectionNewAppointmentBlockGroupsPage } from "./pages/ProstituteProtectionNewAppointmentBlockGroupsPage";

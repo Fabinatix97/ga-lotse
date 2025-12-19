@@ -1,11 +1,12 @@
 /*
  * Copyright 2025 cronn GmbH
- * SPDX-License-Identifier: Apache-2.0
+ * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 package de.eshg.prostituteprotection.api;
 
 public enum RequiredProcedureArea {
   DETAILS,
-  CONSULTATION
+  CONSULTATION_PARAGRAPH_10,
+  CONSULTATION_PARAGRAPH_7
 }

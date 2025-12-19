@@ -51,19 +51,16 @@ public class AppointmentBlockViewService {
   private final UserApi userApi;
   private final AbstractAppointmentService<?> appointmentService;
   private final AppointmentRepository appointmentRepository;
-  private final AppointmentBlockService appointmentBlockService;
 
   public AppointmentBlockViewService(
       AppointmentBlockRepository appointmentBlockRepository,
       UserApi userApi,
       AbstractAppointmentService<?> appointmentService,
-      AppointmentRepository appointmentRepository,
-      AppointmentBlockService appointmentBlockService) {
+      AppointmentRepository appointmentRepository) {
     this.appointmentBlockRepository = appointmentBlockRepository;
     this.userApi = userApi;
     this.appointmentService = appointmentService;
     this.appointmentRepository = appointmentRepository;
-    this.appointmentBlockService = appointmentBlockService;
   }
 
   public List<AppointmentBlockDto> findAppointmentBlocksInTimeRange(
@@ -112,6 +109,7 @@ public class AppointmentBlockViewService {
     allUserIds.addAll(appointmentBlock.getPhysicians());
     allUserIds.addAll(appointmentBlock.getMfas());
     allUserIds.addAll(appointmentBlock.getConsultants());
+    allUserIds.addAll(appointmentBlock.getSopasss());
     if (appointmentBlock.getAppointmentBlockGroup().getCreatorId() != null) {
       allUserIds.add(appointmentBlock.getAppointmentBlockGroup().getCreatorId());
     }
@@ -191,10 +189,12 @@ public class AppointmentBlockViewService {
           block.getAppointmentBlockStart(),
           block.getAppointmentBlockEnd(),
           block.getParallelExaminations(),
+          appointmentBlockGroup.isExtraLength(),
           appointmentTypes,
           block.getPhysicians(),
           block.getMfas(),
           block.getConsultants(),
+          block.getSopasss(),
           block.getRoom(),
           appointmentBlockGroup.getCreatorId(),
           resolvedUsers,
@@ -208,7 +208,9 @@ public class AppointmentBlockViewService {
           block.getAppointmentBlockStart(),
           block.getAppointmentBlockEnd(),
           block.getParallelExaminations(),
+          appointmentBlockGroup.isExtraLength(),
           appointmentTypes,
+          Collections.emptyList(),
           Collections.emptyList(),
           Collections.emptyList(),
           Collections.emptyList(),

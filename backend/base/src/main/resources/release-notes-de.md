@@ -2,6 +2,17 @@ GA-Lotse ist ein Kooperationsprojekt des Gesundheitsamts Frankfurt am Main mit d
 
 Finanziert von der Europäischen Union – NextGenerationEU
 
+## GA-Lotse 2.14
+_17.12.2025_
+
+Siebenundzwanzigster Release der Anwendung GA-Lotse
+
+### Einschulungsuntersuchungen:
+* SOPASS kann als neue Rolle in Keycloak zugewiesen werden
+* Erstellung von Terminblöcken mit Extralänge für SOPASS-Untersuchung möglich
+* Auswahl SOPASS qualifizierte:r MFA bei Terminblöcken mit Extralänge angezeigt
+* Dauer der SOPASS-Untersuchung kann im Konfigurator angepasst werden
+
 ## GA-Lotse 2.13
 _10.12.2025_
 

@@ -17,10 +17,12 @@ import java.util.UUID;
 public record CreateDailyAppointmentBlockGroupRequest(
     @NotNull @Size(min = 1) List<AppointmentTypeDto> types,
     @NotNull @Min(1) @Max(10) int parallelExaminations,
+    Boolean extraLength,
     @Valid @NotNull @NotEmpty List<CreateDailyAppointmentBlockDto> appointmentBlocks,
     List<UUID> physicians,
     List<UUID> mfas,
     List<UUID> consultants,
+    List<UUID> sopasss,
     @Size(min = 1, max = 60) String room,
     UUID locationId,
     Boolean availableForCitizen,
@@ -32,14 +34,17 @@ public record CreateDailyAppointmentBlockGroupRequest(
       List<CreateDailyAppointmentBlockDto> appointmentBlocks,
       List<UUID> physicians,
       List<UUID> mfas,
-      List<UUID> consultants) {
+      List<UUID> consultants,
+      List<UUID> sopasss) {
     this(
         types,
         parallelExaminations,
+        null,
         appointmentBlocks,
         physicians,
         mfas,
         consultants,
+        sopasss,
         null,
         null,
         null,

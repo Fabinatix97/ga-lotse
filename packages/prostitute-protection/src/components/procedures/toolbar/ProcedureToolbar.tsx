@@ -18,8 +18,10 @@ import {
   ToolbarBackButton,
   useHasUserRoleCheck,
 } from "@eshg/lib-employee-portal";
+import { isEmptyString } from "@eshg/lib-portal";
 
 import { routes } from "../../../config/routes";
+import { useSelectedPerson } from "../../../contexts/selectedPerson/SelectedPersonStoreProvider";
 
 import { ProcedureTabHeader } from "./ProcedureTabHeader";
 
@@ -28,17 +30,22 @@ interface ProcedureToolbarProps {
 }
 
 export function ProcedureToolbar({ procedureId }: ProcedureToolbarProps) {
+  const selectedPerson = useSelectedPerson();
   const hasProstituteProtectionAdminRole = useHasUserRoleCheck(
     ApiUserRole.ProstituteProtectionAdmin,
   );
   const tabItems = buildTabItems(procedureId);
+
+  const backRoute = !isEmptyString(selectedPerson.id)
+    ? routes.searchPerson.index
+    : routes.procedures.index;
 
   return (
     <TabNavigationToolbar
       header={<ProcedureTabHeader procedureId={procedureId} />}
       backButton={
         hasProstituteProtectionAdminRole ? (
-          <ToolbarBackButton href={routes.procedures.index} />
+          <ToolbarBackButton href={backRoute} />
         ) : null
       }
       items={tabItems}

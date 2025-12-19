@@ -22,7 +22,7 @@ thirdPartyImages:
     pullPolicy: IfNotPresent
   redis:
     name: redis
-    tag: "8.2.0-alpine3.22@sha256:7521abdff715d396aa482183942f3fe643344287c29ccb66eee16ac08a92190f"
+    tag: "8.4.0-alpine3.22@sha256:6cbef353e480a8a6e7f10ec545f13d7d3fa85a212cdcc5ffaf5a1c818b9d3798"
     registry: "docker.io"
     pullPolicy: IfNotPresent
   postgres:
@@ -168,6 +168,7 @@ employeeportalauth:
       memory: 1024Mi
   javaToolOptions:
   cache:
+    enabled: true # if false no external cache will be used
     selfmanaged: false
     resources:
       requests:
@@ -209,6 +210,7 @@ citizenportalauth:
       memory: 1024Mi
   javaToolOptions:
   cache:
+    enabled: true
     selfmanaged: false
     resources:
       requests:

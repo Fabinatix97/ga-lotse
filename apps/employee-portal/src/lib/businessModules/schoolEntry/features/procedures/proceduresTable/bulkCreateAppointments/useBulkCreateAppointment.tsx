@@ -9,6 +9,7 @@ import { useBulkAppointmentCreationMessage } from "@/lib/businessModules/schoolE
 export interface AppointmentCriteria {
   physicianId?: string;
   mfaId?: string;
+  sopassId?: string;
   room?: string;
 }
 

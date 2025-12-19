@@ -203,6 +203,7 @@ public class AppointmentBlockService {
       Boolean availableForBulkBooking,
       UUID physician,
       UUID mfa,
+      UUID sopass,
       String room) {
     Instant start = earliestStart == null ? Instant.now(clock) : earliestStart;
 
@@ -216,6 +217,7 @@ public class AppointmentBlockService {
                 availableForBulkBooking,
                 physician,
                 mfa,
+                sopass,
                 room);
 
     return filterAndMapAppointments(latestStart, appointmentType, appointmentBlocks, start);
@@ -258,7 +260,8 @@ public class AppointmentBlockService {
         location,
         mapAppointmentBlockToData(appointmentBlockGroup, appointmentBlockData),
         appointmentBlockGroup.isAvailableForCitizen(),
-        appointmentBlockGroup.isAvailableForBulkBooking());
+        appointmentBlockGroup.isAvailableForBulkBooking(),
+        appointmentBlockGroup.isExtraLength());
   }
 
   private static List<AppointmentBlockData> mapAppointmentBlockToData(
@@ -303,9 +306,11 @@ public class AppointmentBlockService {
         new CreateDailyAppointmentBlockGroupRequest(
             List.of(toInterfaceType(appointmentType)),
             1,
+            false,
             List.of(
                 new CreateDailyAppointmentBlockDto(
                     appointmentStart, appointmentEnd, DayOfWeekDto.allDays())),
+            null,
             null,
             null,
             null,
@@ -332,8 +337,15 @@ public class AppointmentBlockService {
                 type -> {
                   AppointmentTypeHolder holder = new AppointmentTypeHolder();
                   holder.setType(type);
-                  holder.setSlotDuration(
-                      appointmentStandardDurationService.getStandardDuration(type));
+                  if (Boolean.TRUE.equals(request.extraLength())) {
+                    holder.setSlotDuration(
+                        appointmentStandardDurationService
+                            .getStandardDuration(type)
+                            .plus(appointmentStandardDurationService.getExtraDuration()));
+                  } else {
+                    holder.setSlotDuration(
+                        appointmentStandardDurationService.getStandardDuration(type));
+                  }
                   return holder;
                 })
             .toList();
@@ -342,7 +354,7 @@ public class AppointmentBlockService {
     appointmentBlockValidator.validateStartAndEndTimes(
         request.appointmentBlocks(), shortestDuration);
     appointmentBlockValidator.validateTechnicalGroups(
-        request.physicians(), request.mfas(), request.consultants());
+        request.physicians(), request.mfas(), request.consultants(), request.sopasss());
     appointmentBlockValidator.validateLocation(request.locationId());
 
     List<CreateAppointmentBlockData> appointmentBlocks =
@@ -378,6 +390,9 @@ public class AppointmentBlockService {
       if (request.consultants() != null) {
         appointmentBlock.setConsultants(request.consultants());
       }
+      if (request.sopasss() != null) {
+        appointmentBlock.setSopasss(request.sopasss());
+      }
       appointmentBlock.setRoom(request.room() != null ? request.room().trim() : null);
       appointmentBlockGroup.addAppointmentBlock(appointmentBlock);
     }
@@ -398,6 +413,7 @@ public class AppointmentBlockService {
             request.physicians(),
             request.mfas(),
             request.consultants(),
+            request.sopasss(),
             CurrentUserHelper.getCurrentUserId());
     checkForCalendarConflicts(usersForEvent, appointmentBlocks);
     return usersForEvent;
@@ -411,14 +427,19 @@ public class AppointmentBlockService {
   }
 
   private List<UUID> getUserIdsForEvent(
-      List<UUID> physicians, List<UUID> mfas, List<UUID> consultants, UUID creatorId) {
-    return getUserIdsForEvent(physicians, mfas, consultants, creatorId, null);
+      List<UUID> physicians,
+      List<UUID> mfas,
+      List<UUID> consultants,
+      List<UUID> sopasss,
+      UUID creatorId) {
+    return getUserIdsForEvent(physicians, mfas, consultants, sopasss, creatorId, null);
   }
 
   private List<UUID> getUserIdsForEvent(
       List<UUID> physicians,
       List<UUID> mfas,
       List<UUID> consultants,
+      List<UUID> sopasss,
       UUID creatorId,
       UUID eventId) {
     Set<UUID> usersForEvent = new HashSet<>();
@@ -430,6 +451,9 @@ public class AppointmentBlockService {
     }
     if (consultants != null) {
       usersForEvent.addAll(consultants);
+    }
+    if (sopasss != null) {
+      usersForEvent.addAll(sopasss);
     }
 
     if (eventId != null) {
@@ -454,6 +478,7 @@ public class AppointmentBlockService {
     appointmentBlockGroup.setLocationId(request.locationId());
     appointmentBlockGroup.setAvailableForCitizen(request.availableForCitizen());
     appointmentBlockGroup.setAvailableForBulkBooking(request.availableForBulkBooking());
+    appointmentBlockGroup.setExtraLength(Boolean.TRUE.equals(request.extraLength()));
     return appointmentBlockGroup;
   }
 
@@ -507,6 +532,7 @@ public class AppointmentBlockService {
             request.physicians(),
             request.mfas(),
             request.consultants(),
+            request.sopasss(),
             CurrentUserHelper.getCurrentUserId());
     if (usersForEvent.isEmpty()) {
       return new ValidateAppointmentBlockGroupResponse(
@@ -566,6 +592,7 @@ public class AppointmentBlockService {
     appointmentBlock.setPhysicians(request.physicians());
     appointmentBlock.setMfas(request.mfas());
     appointmentBlock.setConsultants(request.consultants());
+    appointmentBlock.setSopasss(request.sopasss());
     appointmentBlock.setRoom(request.room() != null ? request.room().trim() : null);
   }
 
@@ -590,13 +617,15 @@ public class AppointmentBlockService {
     appointmentBlockValidator.validateTechnicalGroups(
         CollectionUtils.difference(request.physicians(), appointmentBlock.getPhysicians()),
         CollectionUtils.difference(request.mfas(), appointmentBlock.getMfas()),
-        CollectionUtils.difference(request.consultants(), appointmentBlock.getConsultants()));
+        CollectionUtils.difference(request.consultants(), appointmentBlock.getConsultants()),
+        CollectionUtils.difference(request.sopasss(), appointmentBlock.getSopasss()));
 
     List<UUID> oldUsers =
         getUserIdsForEvent(
             appointmentBlock.getPhysicians(),
             appointmentBlock.getMfas(),
             appointmentBlock.getConsultants(),
+            appointmentBlock.getSopasss(),
             appointmentBlock.getAppointmentBlockGroup().getCreatorId(),
             appointmentBlock.getCalendarEventId());
 
@@ -605,6 +634,7 @@ public class AppointmentBlockService {
             request.physicians(),
             request.mfas(),
             request.consultants(),
+            request.sopasss(),
             appointmentBlock.getAppointmentBlockGroup().getCreatorId());
 
     return new UserChange(

@@ -1,6 +1,6 @@
 /*
  * Copyright 2025 cronn GmbH
- * SPDX-License-Identifier: Apache-2.0
+ * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 package de.eshg.prostituteprotection.api;
@@ -21,7 +21,7 @@ public record UpdateEncryptedPersonalDataRequest(
         long version,
     @NotNull @Size(min = 1, max = 80) String firstName,
     @NotNull @Size(min = 1, max = 120) String lastName,
-    @NotNull @DateOfBirth LocalDate dateOfBirth,
+    @NotNull @DateOfBirth(minAgeInclusive = 18) LocalDate dateOfBirth,
     @NotNull String alias,
     CountryCode nationality,
     DocumentTypeDto documentType,

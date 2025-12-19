@@ -4,8 +4,11 @@
  */
 
 import { Divider, Grid } from "@mui/joy";
+import { useFormikContext } from "formik";
+import { isDefined, isObjectType } from "remeda";
 
 import {
+  BooleanSelectField,
   MultiAutocompleteField,
   NumberField,
   SelectOption,
@@ -33,6 +36,12 @@ interface AppointmentBlockGroupFieldsProps {
 export function AppointmentBlockGroupFields(
   props: Readonly<AppointmentBlockGroupFieldsProps>,
 ) {
+  const { values } = useFormikContext();
+  const showExtraLength =
+    isObjectType(values) &&
+    "extraLength" in values &&
+    isDefined(values.extraLength);
+
   return (
     <>
       <FormGroupGrid>
@@ -52,6 +61,15 @@ export function AppointmentBlockGroupFields(
               label="Parallele Untersuchungen"
               required="Bitte die Anzahl paralleler Untersuchungen angeben."
               validate={validateParallelExaminations}
+            />
+          </Grid>
+        ) : null}
+        {showExtraLength ? (
+          <Grid xs={3}>
+            <BooleanSelectField
+              name="extraLength"
+              required="Eine Auswahl muss getroffen werden"
+              label="Extralänge"
             />
           </Grid>
         ) : null}

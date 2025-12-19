@@ -2496,6 +2496,13 @@
             "format" : "int32",
             "default" : 25
           }
+        }, {
+          "in" : "query",
+          "name" : "alias",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
         } ],
         "responses" : {
           "200" : {
@@ -2537,6 +2544,74 @@
           }
         },
         "summary" : "Create a new prostitute-protection procedure.",
+        "tags" : [ "ProstituteProtection" ]
+      }
+    },
+    "/prostitute-protection-procedures/person-search" : {
+      "post" : {
+        "operationId" : "personSearch",
+        "parameters" : [ {
+          "in" : "query",
+          "name" : "sortKey",
+          "required" : false,
+          "schema" : {
+            "$ref" : "#/components/schemas/ProstitutionProtectionProcedureSortKey"
+          }
+        }, {
+          "in" : "query",
+          "name" : "sortDirection",
+          "required" : false,
+          "schema" : {
+            "$ref" : "#/components/schemas/SortDirection"
+          }
+        }, {
+          "description" : "Offset used for pagination",
+          "in" : "query",
+          "name" : "pageNumber",
+          "required" : false,
+          "schema" : {
+            "maximum" : 2000,
+            "minimum" : 0,
+            "type" : "integer",
+            "format" : "int32",
+            "default" : 0
+          }
+        }, {
+          "description" : "Limit of returned procedures",
+          "in" : "query",
+          "name" : "pageSize",
+          "required" : false,
+          "schema" : {
+            "maximum" : 200,
+            "minimum" : 1,
+            "type" : "integer",
+            "format" : "int32",
+            "default" : 25
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/ProstituteProtectionProcedurePersonSearchParameters"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/GetProstituteProtectionPersonSearchResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Search for procedures with firstName, lastName and dateOfBirth.",
         "tags" : [ "ProstituteProtection" ]
       }
     },
@@ -2831,6 +2906,13 @@
         }, {
           "in" : "query",
           "name" : "withAlias",
+          "required" : true,
+          "schema" : {
+            "type" : "boolean"
+          }
+        }, {
+          "in" : "query",
+          "name" : "withRegistrationCertificate",
           "required" : true,
           "schema" : {
             "type" : "boolean"
@@ -3480,7 +3562,7 @@
         "description" : "Appointment of a procedure."
       },
       "AppointmentBlock" : {
-        "required" : [ "appointmentBlockBins", "bookedAppointments", "consultants", "end", "id", "mfas", "parallelExaminations", "physicians", "resolvedUsers", "start", "types" ],
+        "required" : [ "appointmentBlockBins", "bookedAppointments", "consultants", "end", "extraLength", "id", "mfas", "parallelExaminations", "physicians", "resolvedUsers", "sopasss", "start", "types" ],
         "type" : "object",
         "properties" : {
           "appointmentBlockBins" : {
@@ -3520,6 +3602,9 @@
             "format" : "date-time",
             "example" : "2016-01-01T01:45:00.123456+01:00"
           },
+          "extraLength" : {
+            "type" : "boolean"
+          },
           "id" : {
             "type" : "string",
             "description" : "Id of the AppointmentBlock.",
@@ -3554,6 +3639,13 @@
           },
           "room" : {
             "type" : "string"
+          },
+          "sopasss" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "format" : "uuid"
+            }
           },
           "start" : {
             "type" : "string",
@@ -4029,9 +4121,23 @@
         }
       },
       "CreateCertificateRequest" : {
-        "required" : [ "withAlias", "withRegistrationCertificate" ],
+        "required" : [ "dateOfBirth", "firstName", "lastName", "withAlias", "withRegistrationCertificate" ],
         "type" : "object",
         "properties" : {
+          "dateOfBirth" : {
+            "type" : "string",
+            "format" : "date"
+          },
+          "firstName" : {
+            "maxLength" : 80,
+            "minLength" : 1,
+            "type" : "string"
+          },
+          "lastName" : {
+            "maxLength" : 120,
+            "minLength" : 1,
+            "type" : "string"
+          },
           "withAlias" : {
             "type" : "boolean"
           },
@@ -4089,6 +4195,9 @@
               "format" : "uuid"
             }
           },
+          "extraLength" : {
+            "type" : "boolean"
+          },
           "locationId" : {
             "type" : "string",
             "format" : "uuid"
@@ -4117,6 +4226,13 @@
             "maxLength" : 60,
             "minLength" : 1,
             "type" : "string"
+          },
+          "sopasss" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "format" : "uuid"
+            }
           },
           "types" : {
             "maxItems" : 2147483647,
@@ -4361,7 +4477,7 @@
       },
       "DocumentType" : {
         "type" : "string",
-        "enum" : [ "IDENTIFICATION_CARD", "PASSPORT" ]
+        "enum" : [ "IDENTIFICATION_CARD", "PASSPORT", "RESIDENCE_PERMIT", "TOLERANCE_PERMIT", "OTHER" ]
       },
       "DomesticAddress" : {
         "required" : [ "city", "country", "postalCode", "street" ],
@@ -5557,6 +5673,22 @@
           }
         }
       },
+      "GetProstituteProtectionPersonSearchResponse" : {
+        "required" : [ "elements", "totalNumberOfElements" ],
+        "type" : "object",
+        "properties" : {
+          "elements" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/ProstituteProtectionProcedureSearchOverview"
+            }
+          },
+          "totalNumberOfElements" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        }
+      },
       "GetProstituteProtectionProceduresResponse" : {
         "required" : [ "elements", "totalNumberOfElements" ],
         "type" : "object",
@@ -6393,7 +6525,7 @@
       },
       "ProcedureProperty" : {
         "type" : "string",
-        "enum" : [ "ALIAS", "FIRST_NAME", "DATE_OF_BIRTH", "NATIONALITY", "DOCUMENT_TYPE", "LEGAL_ADVICES", "HEALTH_AND_SOCIAL_INSURANCE", "CONSULTING_SERVICES", "EMERGENCY_HELP", "TAX_LIABILITY", "CLEARING", "INFORMATION_MATERIAL", "PREDICAMENT", "DISEASE_PREVENTION", "BIRTH_CONTROL", "PREGNANCY", "ALCOHOL_AND_DURG_USAGE", "REFERRAL" ]
+        "enum" : [ "ALIAS", "FIRST_NAME", "LAST_NAME", "DATE_OF_BIRTH", "NATIONALITY", "DOCUMENT_TYPE", "LEGAL_ADVICES", "HEALTH_AND_SOCIAL_INSURANCE", "CONSULTING_SERVICES", "EMERGENCY_HELP", "TAX_LIABILITY", "DISEASE_PREVENTION", "BIRTH_CONTROL", "PREGNANCY", "ALCOHOL_AND_DRUG_USAGE" ]
       },
       "ProcedureStatus" : {
         "type" : "string",
@@ -6565,6 +6697,59 @@
           "version" : {
             "type" : "integer",
             "format" : "int64"
+          }
+        }
+      },
+      "ProstituteProtectionProcedurePersonSearchParameters" : {
+        "required" : [ "dateOfBirth", "firstName", "lastName" ],
+        "type" : "object",
+        "properties" : {
+          "dateOfBirth" : {
+            "type" : "string",
+            "format" : "date"
+          },
+          "firstName" : {
+            "type" : "string"
+          },
+          "lastName" : {
+            "type" : "string"
+          }
+        }
+      },
+      "ProstituteProtectionProcedureSearchOverview" : {
+        "required" : [ "dateOfBirth", "firstName", "id", "lastName", "status" ],
+        "type" : "object",
+        "properties" : {
+          "alias" : {
+            "type" : "string"
+          },
+          "appointmentStart" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "consultationType" : {
+            "$ref" : "#/components/schemas/ConsultationType"
+          },
+          "dateOfBirth" : {
+            "type" : "string",
+            "format" : "date"
+          },
+          "firstName" : {
+            "maxLength" : 80,
+            "minLength" : 1,
+            "type" : "string"
+          },
+          "id" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "lastName" : {
+            "maxLength" : 120,
+            "minLength" : 1,
+            "type" : "string"
+          },
+          "status" : {
+            "$ref" : "#/components/schemas/ProcedureStatus"
           }
         }
       },
@@ -6827,7 +7012,7 @@
         "enum" : [ "SYSTEM_AUTOMATIC", "EMPLOYEE", "CITIZEN" ]
       },
       "UpdateAppointmentBlockRequest" : {
-        "required" : [ "consultants", "end", "mfas", "parallelExaminations", "physicians", "start" ],
+        "required" : [ "consultants", "end", "mfas", "parallelExaminations", "physicians", "sopasss", "start" ],
         "type" : "object",
         "properties" : {
           "consultants" : {
@@ -6865,6 +7050,13 @@
           },
           "room" : {
             "type" : "string"
+          },
+          "sopasss" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "format" : "uuid"
+            }
           },
           "start" : {
             "type" : "string",

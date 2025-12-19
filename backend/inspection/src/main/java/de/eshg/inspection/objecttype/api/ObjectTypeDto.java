@@ -15,8 +15,8 @@ import java.util.UUID;
 public record ObjectTypeDto(
     @NotNull UUID id,
     @NotNull String name,
-    @Min(1) @Max(9999) Integer routineInterval,
-    @Min(1) @Max(9999) Integer complaintInterval,
+    @Schema(nullable = true) @Min(1) @Max(9999) Integer routineInterval,
+    @Schema(nullable = true) @Min(1) @Max(9999) Integer complaintInterval,
     @Min(1) @Max(99) Integer standardDuration,
     @Min(0) @Max(9999) Integer standardBufferTime,
     @NotNull boolean emailAnnouncement,

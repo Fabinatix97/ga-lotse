@@ -33,8 +33,14 @@ function mapEditableObjectTypeToUpdateObjectTypeRequest(
   objectType: EditableObjectType,
 ): ApiUpdateObjectTypeRequest {
   return {
-    routineInterval: mapOptionalValue(objectType.routineInterval),
-    complaintInterval: mapOptionalValue(objectType.complaintInterval),
+    routineInterval:
+      objectType.routineIntervalRadio === "false"
+        ? null
+        : mapOptionalValue(objectType.routineInterval),
+    complaintInterval:
+      objectType.complaintIntervalRadio === "false"
+        ? null
+        : mapOptionalValue(objectType.complaintInterval),
     standardDuration: mapOptionalValue(objectType.standardDuration),
     standardBufferTime: mapOptionalValue(objectType.standardBufferTime),
     emailAnnouncement: objectType.emailAnnouncement,

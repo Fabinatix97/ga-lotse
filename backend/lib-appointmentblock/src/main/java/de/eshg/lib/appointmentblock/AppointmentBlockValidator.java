@@ -36,6 +36,7 @@ public class AppointmentBlockValidator {
   public static final String TECHNICAL_GROUP_PHYSICIANS = "technicalGroupPhysicians";
   public static final String TECHNICAL_GROUP_MFAS = "technicalGroupMfas";
   public static final String TECHNICAL_GROUP_CONSULTANTS = "technicalGroupConsultants";
+  public static final String TECHNICAL_GROUP_SOPASSS = "technicalGroupSopasss";
 
   private final AppointmentBlockConfig appointmentBlockConfig;
   private final UserApi userApi;
@@ -45,6 +46,7 @@ public class AppointmentBlockValidator {
   private final Optional<TechnicalGroup> groupPhysicians;
   private final Optional<TechnicalGroup> groupMfas;
   private final Optional<TechnicalGroup> groupConsultants;
+  private final Optional<TechnicalGroup> groupSopasss;
 
   public AppointmentBlockValidator(
       AppointmentBlockConfig appointmentBlockConfig,
@@ -53,7 +55,8 @@ public class AppointmentBlockValidator {
       Clock clock,
       @Qualifier(TECHNICAL_GROUP_PHYSICIANS) Optional<TechnicalGroup> groupPhysicians,
       @Qualifier(TECHNICAL_GROUP_MFAS) Optional<TechnicalGroup> groupMfas,
-      @Qualifier(TECHNICAL_GROUP_CONSULTANTS) Optional<TechnicalGroup> groupConsultants) {
+      @Qualifier(TECHNICAL_GROUP_CONSULTANTS) Optional<TechnicalGroup> groupConsultants,
+      @Qualifier(TECHNICAL_GROUP_SOPASSS) Optional<TechnicalGroup> groupSopasss) {
     this.appointmentBlockConfig = appointmentBlockConfig;
     this.userApi = userApi;
     this.contactClient = contactClient;
@@ -61,6 +64,7 @@ public class AppointmentBlockValidator {
     this.groupPhysicians = groupPhysicians;
     this.groupMfas = groupMfas;
     this.groupConsultants = groupConsultants;
+    this.groupSopasss = groupSopasss;
   }
 
   void validateNumberOfAppointmentBlocks(CreateDailyAppointmentBlockGroupRequest request) {
@@ -111,7 +115,8 @@ public class AppointmentBlockValidator {
     }
   }
 
-  void validateTechnicalGroups(List<UUID> physicians, List<UUID> mfas, List<UUID> consultants) {
+  void validateTechnicalGroups(
+      List<UUID> physicians, List<UUID> mfas, List<UUID> consultants, List<UUID> sopasss) {
     if (physicians != null && !physicians.isEmpty()) {
       validateTechnicalGroup(
           physicians,
@@ -135,6 +140,14 @@ public class AppointmentBlockValidator {
               () ->
                   new BadRequestException(
                       "Cannot validate Consultants, because technical group ist not configured.")));
+    }
+    if (sopasss != null && !sopasss.isEmpty()) {
+      validateTechnicalGroup(
+          sopasss,
+          groupSopasss.orElseThrow(
+              () ->
+                  new BadRequestException(
+                      "Cannot validate SOPASS qualified MFAs, because technical group ist not configured.")));
     }
   }
 

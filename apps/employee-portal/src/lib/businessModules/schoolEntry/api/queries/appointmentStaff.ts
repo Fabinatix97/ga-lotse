@@ -25,6 +25,14 @@ export function getAllMedicalAssistantsQuery(userApi: UserApi) {
   });
 }
 
+export function getAllSopassQualifiedMFAsQuery(userApi: UserApi) {
+  return queryOptions({
+    queryKey: appointmentStaffApiQueryKey(["getAllSopassQualifiedMFAs"]),
+    queryFn: () => userApi.getUsersByGroup("[System] ESU-SOPASS"),
+    select: mapUsers,
+  });
+}
+
 function mapUsers(response: ApiGetUsersResponse): ApiUser[] {
   return response.users;
 }

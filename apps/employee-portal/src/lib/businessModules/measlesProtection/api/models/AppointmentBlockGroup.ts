@@ -14,14 +14,9 @@ import {
 import { assertNonEmptyArray, durationToSecond } from "@eshg/lib-portal";
 import {
   ApiAppointmentBlock,
-  ApiAppointmentType,
   ApiGetAppointmentBlock,
   ApiGetAppointmentBlockGroup,
 } from "@eshg/measles-protection-api";
-
-export type AppointmentDurationsMeasles = Partial<
-  Record<ApiAppointmentType, number>
->;
 
 function mapAppointmentBlock(
   response: ApiGetAppointmentBlock,
@@ -46,6 +41,7 @@ export function mapApiAppointmentBlock(
     mfas: response.mfas,
     physicians: response.physicians,
     consultants: response.consultants,
+    sopasss: response.sopasss,
     room: response.room,
   };
 }

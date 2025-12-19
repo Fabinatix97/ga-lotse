@@ -28,4 +28,5 @@ public record UpdateAppointmentBlockRequest(
     @NotNull List<UUID> physicians,
     @NotNull List<UUID> mfas,
     @NotNull List<UUID> consultants,
+    @NotNull List<UUID> sopasss,
     String room) {}

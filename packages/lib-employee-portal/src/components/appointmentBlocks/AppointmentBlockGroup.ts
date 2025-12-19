@@ -21,12 +21,14 @@ export interface AppointmentBlock extends BaseEntity {
   readonly start: Date;
   readonly end: Date;
   readonly parallelExaminations?: number;
+  readonly extraLength?: boolean;
   readonly freeDuration?: string;
   readonly bookedDuration?: string;
   readonly bookedAppointments?: Appointment[];
   readonly mfas?: string[];
   readonly physicians?: string[];
   readonly consultants?: string[];
+  readonly sopasss?: string[];
   readonly room?: string;
 }
 

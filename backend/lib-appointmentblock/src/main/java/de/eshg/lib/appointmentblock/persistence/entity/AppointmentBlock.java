@@ -64,6 +64,12 @@ public class AppointmentBlock extends BaseEntityWithExternalId {
   private List<UUID> consultants = new ArrayList<>();
 
   @DataSensitivity(SensitivityLevel.PSEUDONYMIZED)
+  @ElementCollection
+  @Column(name = "sopass_id", nullable = false)
+  @OrderColumn
+  private List<UUID> sopasss = new ArrayList<>();
+
+  @DataSensitivity(SensitivityLevel.PSEUDONYMIZED)
   private String room;
 
   @DataSensitivity(SensitivityLevel.PUBLIC)
@@ -127,6 +133,14 @@ public class AppointmentBlock extends BaseEntityWithExternalId {
 
   public void setConsultants(List<UUID> consultants) {
     this.consultants = consultants;
+  }
+
+  public List<UUID> getSopasss() {
+    return sopasss;
+  }
+
+  public void setSopasss(List<UUID> sopasss) {
+    this.sopasss = sopasss;
   }
 
   public void setCalendarEventId(UUID calendarEventId) {

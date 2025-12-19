@@ -11,6 +11,7 @@ import {
   AppointmentBlockGroupFields,
   AppointmentBlockGroupValuesWithDays,
   AppointmentRoomField,
+  AppointmentStandardDurations,
   FormButtonBar,
   FormSheet,
   validateAppointmentBlock,
@@ -40,7 +41,7 @@ export interface ProstituteProtectionAppointmentValues {
 
 function validateForm(
   values: ProstituteProtectionAppointmentValues,
-  standardDurations: Partial<Record<ApiAppointmentType, number>>,
+  standardDurations: AppointmentStandardDurations,
 ) {
   const errors: FormikErrors<ProstituteProtectionAppointmentValues> = {};
   const appointmentBlockErrors = validateFieldArray(
@@ -48,6 +49,7 @@ function validateForm(
     (appointmentBlock) =>
       validateAppointmentBlock(
         values.types,
+        false,
         appointmentBlock,
         standardDurations,
       ),
@@ -62,7 +64,7 @@ function validateForm(
 
 interface AppointmentBlockGroupFormProps {
   onSubmit: (values: AppointmentBlockGroupValues) => Promise<void>;
-  standardDurations: Partial<Record<ApiAppointmentType, number>>;
+  standardDurations: AppointmentStandardDurations;
   initialValues: ProstituteProtectionAppointmentValues;
 }
 

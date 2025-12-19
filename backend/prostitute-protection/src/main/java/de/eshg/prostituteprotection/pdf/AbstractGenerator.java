@@ -1,6 +1,6 @@
 /*
  * Copyright 2025 cronn GmbH
- * SPDX-License-Identifier: Apache-2.0
+ * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 package de.eshg.prostituteprotection.pdf;
@@ -10,6 +10,7 @@ import de.eshg.config.departmentinfo.DepartmentInfoConfigService;
 import de.eshg.lib.document.generator.DocumentGenerator;
 import de.eshg.lib.document.generator.department.DepartmentLogo;
 import de.eshg.lib.document.generator.department.DepartmentLogoClient;
+import de.eshg.prostituteprotection.crypto.DecryptedPersonalDataDto;
 import de.eshg.prostituteprotection.domain.model.ProstituteProtectionProcedure;
 import java.io.ByteArrayOutputStream;
 import java.time.Clock;
@@ -62,12 +63,13 @@ public abstract class AbstractGenerator {
   }
 
   protected static PersonData getPersonData(
-      ProstituteProtectionProcedure procedure, boolean withAlias) {
-    // TODO: Decrypt first-name, last-name, date-of-birth from EncryptedPersonalData
+      ProstituteProtectionProcedure procedure,
+      DecryptedPersonalDataDto decryptedPersonalDataDto,
+      boolean withAlias) {
     return new PersonData(
-        "",
-        "",
-        "",
+        decryptedPersonalDataDto.firstName(),
+        decryptedPersonalDataDto.lastName(),
+        getFormattedDate(decryptedPersonalDataDto.dateOfBirth()),
         withAlias ? procedure.getPersonalData().getAlias() : null,
         procedure.getPersonalData().getNationality().name());
   }

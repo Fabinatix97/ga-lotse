@@ -4,6 +4,7 @@
  */
 
 import { useState } from "react";
+import { identity } from "remeda";
 
 import { ApiContactCategory } from "@eshg/base-api";
 import { SelectObjectField } from "@eshg/lib-portal";
@@ -39,7 +40,7 @@ export function SelectMultipleContactsField(props: SelectContactFieldProps) {
       isOptionEqualToValue={isSameEntity}
       placeholder={`${categories} suchen`}
       loading={searchContacts.isLoading}
-      disableFiltering
+      filterOptions={identity()}
       onInputChange={(_, newInputValue) => setContactName(newInputValue)}
     />
   );

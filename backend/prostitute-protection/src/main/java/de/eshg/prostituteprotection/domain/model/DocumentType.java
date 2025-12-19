@@ -1,13 +1,16 @@
 /*
  * Copyright 2025 cronn GmbH
- * SPDX-License-Identifier: Apache-2.0
+ * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 package de.eshg.prostituteprotection.domain.model;
 
 public enum DocumentType {
   IDENTIFICATION_CARD("Personalausweis"),
-  PASSPORT("Reisepass");
+  PASSPORT("Reisepass"),
+  RESIDENCE_PERMIT("Aufenthaltstitel"),
+  TOLERANCE_PERMIT("Duldung"),
+  OTHER("Sonstige");
 
   private final String description;
 

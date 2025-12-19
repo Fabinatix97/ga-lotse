@@ -1,7 +1,7 @@
 <?xml version="1.1" encoding="UTF-8" standalone="no"?>
 <!--
  Copyright 2025 cronn GmbH
- SPDX-License-Identifier: Apache-2.0
+ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
@@ -28,4 +28,8 @@
   <include file="migrations/0019_add_appointment_extraduration.xml"/>
   <include file="migrations/0020_add_random_salt.xml"/>
   <include file="migrations/0021_add_certificate_with_alias_created.xml"/>
+  <include file="migrations/0022_add_sopass_to_appointment_blocks.xml"/>
+  <include file="migrations/0023_remove_last_consultation_date.xml"/>
+  <include file="migrations/0024_add_document_type_values.xml"/>
+  <include file="migrations/0025_add_trgm_extensions.xml"/>
 </databaseChangeLog>

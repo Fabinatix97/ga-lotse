@@ -35,6 +35,7 @@ interface UpdateAppointmentBlockProps {
   appointmentBlock: ApiAppointmentBlock;
   allPhysicians: ApiUser[];
   allMfas: ApiUser[];
+  allSopasss: ApiUser[];
   formRef: Ref<SidebarFormHandle>;
   onCancel: () => void;
   onClose: (force?: boolean) => void;
@@ -55,11 +56,18 @@ export function UpdateAppointmentBlockSidebar(
   function handleValidate(values: UpdateAppointmentBlockValues) {
     const errors: FormikErrors<UpdateAppointmentBlockValues> = {};
 
-    if (isEmpty(values.physicians ?? []) && isEmpty(values.mfas ?? [])) {
-      const msg =
-        "Es muss mindestens ein Arzt/eine Ärztin oder ein:e MFA ausgewählt sein.";
-      errors.physicians = msg;
-      errors.mfas = msg;
+    if (appointmentBlock.extraLength) {
+      if (isEmpty(values.sopasss ?? [])) {
+        errors.sopasss =
+          "Es muss mindestens ein ein:e SOPASS qualifizierte:r MFA ausgewählt sein.";
+      }
+    } else {
+      if (isEmpty(values.physicians ?? []) && isEmpty(values.mfas ?? [])) {
+        const msg =
+          "Es muss mindestens ein Arzt/eine Ärztin oder ein:e MFA ausgewählt sein.";
+        errors.physicians = msg;
+        errors.mfas = msg;
+      }
     }
 
     return errors;
@@ -82,6 +90,7 @@ export function UpdateAppointmentBlockSidebar(
         parallelExaminations: appointmentBlock.parallelExaminations,
         physicians: appointmentBlock.physicians,
         mfas: appointmentBlock.mfas,
+        sopasss: appointmentBlock.sopasss,
         room: parseOptionalValue(appointmentBlock.room),
       }}
       validate={handleValidate}
@@ -94,8 +103,13 @@ export function UpdateAppointmentBlockSidebar(
             appointmentTypes={appointmentBlock.types}
             appointmentBlockApi={mapAppointmentBlockApi(appointmentBlockApi)}
             appointmentBlockApiQueryKey={appointmentBlockApiQueryKey}
-            physicians={props.allPhysicians}
-            mfas={props.allMfas}
+            physicians={
+              appointmentBlock.extraLength ? undefined : props.allPhysicians
+            }
+            mfas={appointmentBlock.extraLength ? undefined : props.allMfas}
+            sopasss={
+              appointmentBlock.extraLength ? props.allSopasss : undefined
+            }
             standardDurations={standardDurations}
             formValues={values}
           />

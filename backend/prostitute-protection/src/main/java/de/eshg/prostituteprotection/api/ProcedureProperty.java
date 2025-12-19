@@ -1,6 +1,6 @@
 /*
  * Copyright 2025 cronn GmbH
- * SPDX-License-Identifier: Apache-2.0
+ * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 package de.eshg.prostituteprotection.api;
@@ -8,6 +8,7 @@ package de.eshg.prostituteprotection.api;
 public enum ProcedureProperty {
   ALIAS,
   FIRST_NAME,
+  LAST_NAME,
   DATE_OF_BIRTH,
   NATIONALITY,
   DOCUMENT_TYPE,
@@ -17,12 +18,8 @@ public enum ProcedureProperty {
   CONSULTING_SERVICES,
   EMERGENCY_HELP,
   TAX_LIABILITY,
-  CLEARING,
-  INFORMATION_MATERIAL,
-  PREDICAMENT,
   DISEASE_PREVENTION,
   BIRTH_CONTROL,
   PREGNANCY,
-  ALCOHOL_AND_DURG_USAGE,
-  REFERRAL,
+  ALCOHOL_AND_DRUG_USAGE,
 }

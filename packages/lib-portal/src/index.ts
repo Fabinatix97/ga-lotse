@@ -353,6 +353,7 @@ export { getLastPage } from "./helpers/paginationHelper";
 export { isValidURL } from "./helpers/url";
 export {
   validateDateOfBirth,
+  validateDateOfBirthOfLegaLAge,
   validateDateTime,
   validateEmail,
   validateHexColorCode,

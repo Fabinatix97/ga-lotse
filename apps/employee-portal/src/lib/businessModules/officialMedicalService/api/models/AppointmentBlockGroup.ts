@@ -68,10 +68,12 @@ export function mapApiAppointmentBlock(
     start: response.start,
     end: response.end,
     parallelExaminations: response.parallelExaminations,
+    extraLength: response.extraLength,
     bookedAppointments: response.bookedAppointments,
     mfas: response.mfas,
     physicians: response.physicians,
     consultants: response.consultants,
+    sopasss: response.sopasss,
     room: response.room,
   };
 }

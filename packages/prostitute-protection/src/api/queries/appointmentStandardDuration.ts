@@ -5,6 +5,7 @@
 
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 
+import { AppointmentStandardDurations } from "@eshg/lib-employee-portal";
 import { durationToMinutes } from "@eshg/lib-portal";
 import {
   ApiAppointmentType,
@@ -27,11 +28,14 @@ export function useGetAppointmentStandardDurationOptions() {
 
 function mapStandardDurations(
   standardDurations: ApiProstituteProtectionAppointmentStandardDurations,
-) {
+): AppointmentStandardDurations {
   return {
-    [ApiAppointmentType.ProstituteProtectionConsultation]: durationToMinutes(
-      standardDurations.consultation,
-    ),
+    standardDurations: {
+      [ApiAppointmentType.ProstituteProtectionConsultation]: durationToMinutes(
+        standardDurations.consultation,
+      ),
+    },
+    extraDuration: 0,
   };
 }
 

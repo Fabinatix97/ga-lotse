@@ -506,7 +506,8 @@ public class InspectionService {
     return inspectionFinalizer.downloadReport(reportId);
   }
 
-  public void updateInspectionsWithChangedIntervals(
+  public void updateInspectionsWithChangedIntervals( // no need for this function when intervals are
+      // nullable
       ObjectType objectType, int intervalDifference, InspectionType inspectionType) {
     if (objectType.getStandardDuration() == null) {
       return;
@@ -521,8 +522,10 @@ public class InspectionService {
     }
   }
 
-  private void updateInspectionAppointmentWithChangedInterval(
-      InspectionAppointment appointment, Duration difference, int standardDuration) {
+  private void
+      updateInspectionAppointmentWithChangedInterval( // no need for this function when intervals
+          // are nullable
+          InspectionAppointment appointment, Duration difference, int standardDuration) {
     Instant newStart = appointment.getAppointmentStart().plus(difference);
     Instant newEnd = newStart.plus(Duration.ofHours(standardDuration));
     appointment.setAppointmentStart(newStart);

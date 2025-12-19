@@ -98,5 +98,6 @@
   <include file="migrations/0083_parameter_adjustment.xml"/>
   <include file="migrations/0084_sample_templates.xml"/>
   <include file="migrations/0085_sample_numbers.xml"/>
+  <include file="migrations/0086_make_object_type_intervals_nullable.xml"/>
 
 </databaseChangeLog>

@@ -20,6 +20,7 @@ import {
   CheckboxField,
   NumberField,
   OptionalFieldValue,
+  RadioButtonsField,
   TextareaField,
   validateIntegerAnd,
   validateRange,
@@ -29,12 +30,14 @@ import { useUpdateObjectType } from "@/lib/businessModules/inspection/api/mutati
 
 export interface EditableObjectType {
   id: string;
-  routineInterval: OptionalFieldValue<number>;
-  complaintInterval: OptionalFieldValue<number>;
+  routineInterval?: OptionalFieldValue<number> | null;
+  complaintInterval?: OptionalFieldValue<number> | null;
   standardDuration: OptionalFieldValue<number>;
   standardBufferTime: OptionalFieldValue<number>;
   emailAnnouncement: boolean;
   legalBasis: OptionalFieldValue<string>;
+  routineIntervalRadio: string;
+  complaintIntervalRadio: string;
 }
 
 interface EditObjectTypeSidebarProps extends SidebarWithFormRefProps {
@@ -56,25 +59,44 @@ function EditObjectTypeSidebarWithQueriesAndMutations({
 
   const initialValues: EditableObjectType = {
     ...objectType,
-    routineInterval: objectType.routineInterval ?? 730,
-    complaintInterval: objectType.complaintInterval ?? 365,
+    routineInterval: objectType.routineInterval ?? null,
+    complaintInterval: objectType.complaintInterval ?? null,
     standardDuration: objectType.standardDuration ?? 3,
     standardBufferTime: objectType.standardBufferTime ?? 120,
     legalBasis: objectType.legalBasis ?? "",
+    routineIntervalRadio: objectType.routineInterval
+      ? "Intervall festlegen"
+      : "Kein Intervall",
+    complaintIntervalRadio: objectType.complaintInterval
+      ? "Intervall festlegen"
+      : "Kein Intervall",
   };
 
   const { mutateAsync: saveObjectType } = useUpdateObjectType();
 
   function saveWithConfirmation(values: EditableObjectType) {
+    const updatedValues: EditableObjectType = {
+      ...values,
+      routineInterval:
+        values.routineIntervalRadio === "Kein Intervall"
+          ? null
+          : values.routineInterval,
+      complaintInterval:
+        values.complaintIntervalRadio === "Kein Intervall"
+          ? null
+          : values.complaintInterval,
+    };
     async function confirmSave() {
-      await saveObjectType(values, {
+      await saveObjectType(updatedValues, {
         onSuccess: () => onClose(true),
       });
     }
 
     if (
       initialValues.routineInterval !== values.routineInterval ||
-      initialValues.complaintInterval !== values.complaintInterval
+      initialValues.complaintInterval !== values.complaintInterval ||
+      initialValues.routineIntervalRadio !== values.routineIntervalRadio ||
+      initialValues.complaintIntervalRadio !== values.complaintIntervalRadio
     ) {
       openConfirmationDialog({
         title: "Änderung speichern?",
@@ -92,71 +114,120 @@ function EditObjectTypeSidebarWithQueriesAndMutations({
     return Promise.resolve();
   }
 
+  const intervalOptions = [
+    { label: "Kein Intervall", value: "Kein Intervall" },
+    { label: "Intervall festlegen", value: "Intervall festlegen" },
+  ];
+
   return (
     <Formik
       initialValues={initialValues}
       enableReinitialize
       onSubmit={saveWithConfirmation}
     >
-      {({ isSubmitting }) => (
-        <SidebarForm ref={formRef} aria-label={`${objectType.name} bearbeiten`}>
-          <SidebarContent title={`${objectType.name} bearbeiten`}>
-            <Grid container columnSpacing={1} rowSpacing={3}>
-              <Grid xs={12}>
-                <NumberField
-                  name="routineInterval"
-                  label="Intervall für Routinebegehungen (Tage)"
-                  required="Bitte füllen Sie dieses Feld aus"
-                  validate={validateIntegerAnd(validateRange(1, 9999))}
-                />
+      {({ isSubmitting, values }) => {
+        return (
+          <SidebarForm ref={formRef} aria-label={`${objectType.name}`}>
+            <SidebarContent title={objectType.name}>
+              <Grid container columnSpacing={1} rowSpacing={3}>
+                <Grid xs={12}>
+                  <RadioButtonsField
+                    data-testid="routineIntervalRadio"
+                    label="Intervall für Routinebegehungen"
+                    name="routineIntervalRadio"
+                    options={intervalOptions}
+                    orientation="vertical"
+                  />
+                  <Grid paddingLeft={4}>
+                    <NumberField
+                      data-testid="routineIntervalInput"
+                      name="routineInterval"
+                      label="Tage"
+                      disabled={
+                        values.routineIntervalRadio === "Kein Intervall"
+                      }
+                      required={
+                        values.routineIntervalRadio === "Kein Intervall"
+                          ? undefined
+                          : "Bitte füllen Sie dieses Feld aus"
+                      }
+                      validate={
+                        values.routineIntervalRadio === "Intervall festlegen"
+                          ? validateIntegerAnd(validateRange(1, 9999))
+                          : undefined
+                      }
+                    />
+                  </Grid>
+                </Grid>
+                <Grid xs={12}>
+                  <RadioButtonsField
+                    data-testid="complaintIntervalRadio"
+                    label="Intervall für Routinebegehungen nach Beanstandungen"
+                    name="complaintIntervalRadio"
+                    options={intervalOptions}
+                    orientation="vertical"
+                  />
+                  <Grid paddingLeft={4}>
+                    <NumberField
+                      data-testid="complaintIntervalInput"
+                      name="complaintInterval"
+                      label="Tage"
+                      disabled={
+                        values.complaintIntervalRadio === "Kein Intervall"
+                      }
+                      required={
+                        values.complaintIntervalRadio === "Kein Intervall"
+                          ? undefined
+                          : "Bitte füllen Sie dieses Feld aus"
+                      }
+                      validate={
+                        values.complaintIntervalRadio === "Intervall festlegen"
+                          ? validateIntegerAnd(validateRange(1, 9999))
+                          : undefined
+                      }
+                    />
+                  </Grid>
+                </Grid>
+                <Grid xs={12}>
+                  <NumberField
+                    name="standardDuration"
+                    label="Standarddauer (Stunden)"
+                    required="Bitte füllen Sie dieses Feld aus"
+                    validate={validateIntegerAnd(validateRange(1, 99))}
+                  />
+                </Grid>
+                <Grid xs={12}>
+                  <NumberField
+                    name="standardBufferTime"
+                    label="Standardpufferzeit für die Anfahrt (Minuten)"
+                    required="Bitte füllen Sie dieses Feld aus"
+                    validate={validateIntegerAnd(validateRange(0, 9999))}
+                  />
+                </Grid>
+                <Grid xs={12}>
+                  <CheckboxField
+                    name="emailAnnouncement"
+                    label="Begehungen für diesen Objekttyp müssen angekündigt werden"
+                  />
+                </Grid>
+                <Grid xs={12}>
+                  <TextareaField
+                    name="legalBasis"
+                    label="Standardtext Rechtsgrundlage"
+                  />
+                </Grid>
               </Grid>
-              <Grid xs={12}>
-                <NumberField
-                  name="complaintInterval"
-                  label="Intervall für Begehungen nach Beanstandungen (Tage)"
-                  required="Bitte füllen Sie dieses Feld aus"
-                  validate={validateIntegerAnd(validateRange(1, 9999))}
-                />
-              </Grid>
-              <Grid xs={12}>
-                <NumberField
-                  name="standardDuration"
-                  label="Standarddauer (Stunden)"
-                  required="Bitte füllen Sie dieses Feld aus"
-                  validate={validateIntegerAnd(validateRange(1, 99))}
-                />
-              </Grid>
-              <Grid xs={12}>
-                <NumberField
-                  name="standardBufferTime"
-                  label="Standardpufferzeit für die Anfahrt (Minuten)"
-                  required="Bitte füllen Sie dieses Feld aus"
-                  validate={validateIntegerAnd(validateRange(0, 9999))}
-                />
-              </Grid>
-              <Grid xs={12}>
-                <CheckboxField
-                  name="emailAnnouncement"
-                  label="Begehungen für diesen Objekttyp müssen angekündigt werden"
-                />
-              </Grid>
-              <Grid xs={12}>
-                <TextareaField
-                  name="legalBasis"
-                  label="Standardtext Rechtsgrundlage"
-                />
-              </Grid>
-            </Grid>
-          </SidebarContent>
-          <SidebarActions>
-            <FormButtonBar
-              submitLabel="Speichern"
-              submitting={isSubmitting}
-              onCancel={() => onClose(false)}
-            />
-          </SidebarActions>
-        </SidebarForm>
-      )}
+            </SidebarContent>
+            <SidebarActions>
+              <FormButtonBar
+                submitLabel="Speichern"
+                submitting={isSubmitting}
+                onCancel={() => onClose(false)}
+              />
+            </SidebarActions>
+          </SidebarForm>
+        );
+      }}
     </Formik>
   );
 }

@@ -1,0 +1,34 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<!--
+ Copyright 2025 cronn GmbH
+ SPDX-License-Identifier: AGPL-3.0-only
+-->
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+  <changeSet author="GA-Lotse" id="1734005000000">
+    <sql
+      dbms="postgresql"
+      splitStatements="true"
+      stripComments="true"
+    >
+      CREATE
+      EXTENSION IF NOT EXISTS unaccent;
+        CREATE
+      EXTENSION IF NOT EXISTS pg_trgm;
+    </sql>
+    <sql
+      dbms="postgresql"
+      splitStatements="true"
+      stripComments="true"
+    >
+      CREATE
+      OR REPLACE FUNCTION normalize_text(input text)
+          RETURNS text AS
+      $body$
+      select public.unaccent(regdictionary 'public.unaccent', $1)
+               $body$ LANGUAGE SQL IMMUTABLE;
+    </sql>
+  </changeSet>
+</databaseChangeLog>

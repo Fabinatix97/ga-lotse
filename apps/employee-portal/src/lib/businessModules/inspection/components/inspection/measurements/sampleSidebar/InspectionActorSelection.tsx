@@ -5,8 +5,8 @@
 
 "use client";
 
-import { Stack } from "@mui/joy";
-import { useState } from "react";
+import { Stack, createFilterOptions } from "@mui/joy";
+import { useEffect, useState } from "react";
 import { useDebounce } from "use-debounce";
 
 import { ApiAutocompleteActorResponseElementsInner } from "@eshg/inspection-api";
@@ -40,18 +40,30 @@ interface InspectionActorSelectionProps {
 export function InspectionActorSelection(props: InspectionActorSelectionProps) {
   const [inputValue, setInputValue] = useState("");
   const [parameterQuery] = useDebounce(inputValue, 100);
+  const [options, setOptions] = useState<
+    {
+      label: string;
+      value: {
+        id: string;
+        type: "AutocompleteContact" | "InspectionSampleUserReference";
+      };
+    }[]
+  >([]);
 
   const query = useAutocompleteUserFacilityContactQuery({
     prefix: parameterQuery,
     useLaboratories: props.useLaboratories,
   });
 
-  const options = query.isSuccess
-    ? query.data.elements.map((element) => ({
+  useEffect(() => {
+    if (!query.isSuccess) return;
+    setOptions(
+      query.data.elements.map((element) => ({
         label: getLabelOfOption(element),
         value: { id: getValueOfOption(element), type: element.type },
-      }))
-    : [];
+      })),
+    );
+  }, [query.isSuccess, query.data]);
 
   function getValueOfOption(option: ApiAutocompleteActorResponseElementsInner) {
     switch (option.type) {
@@ -74,6 +86,7 @@ export function InspectionActorSelection(props: InspectionActorSelectionProps) {
   return (
     <Stack direction="column" spacing={2}>
       <SelectObjectField
+        filterOptions={createFilterOptions({ matchFrom: "start" })}
         loading={query.isLoading}
         options={options}
         sx={{ flex: 1 }}

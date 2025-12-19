@@ -5,9 +5,11 @@
 
 package de.eshg.inspection.objecttype.api;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 public record UpdateObjectTypeRequest(
-    Integer routineInterval,
-    Integer complaintInterval,
+    @Schema(nullable = true) Integer routineInterval,
+    @Schema(nullable = true) Integer complaintInterval,
     Integer standardDuration,
     Integer standardBufferTime,
     Boolean emailAnnouncement,

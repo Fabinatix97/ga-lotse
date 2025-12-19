@@ -12,6 +12,8 @@ import de.eshg.inspection.checklist.persistence.element.ChecklistElement;
 import de.eshg.inspection.client.CalendarClient;
 import de.eshg.inspection.common.persistence.MediaFile;
 import de.eshg.inspection.facility.FacilityClient;
+import de.eshg.inspection.feature.InspectionFeature;
+import de.eshg.inspection.feature.InspectionFeatureToggle;
 import de.eshg.inspection.inspection.api.FinalizeInspectionRequest;
 import de.eshg.inspection.inspection.api.FollowupType;
 import de.eshg.inspection.inspection.api.InspectionPhase;
@@ -61,6 +63,8 @@ import org.springframework.web.multipart.MultipartFile;
 @Component
 public class InspectionFinalizer {
 
+  private final InspectionFeatureToggle inspectionFeatureToggle;
+
   @Value("${de.eshg.inspection.signature.max.image.sidelength}")
   private long maxImageSignatureSideLength;
 
@@ -85,7 +89,8 @@ public class InspectionFinalizer {
       FacilityClient facilityClient,
       CalendarClient calendarClient,
       Clock clock,
-      AuditLogger auditLogger) {
+      AuditLogger auditLogger,
+      InspectionFeatureToggle inspectionFeatureToggle) {
     this.inspectionUpdater = inspectionUpdater;
     this.inspectionReportService = inspectionReportService;
     this.inspectionReportBuilder = inspectionReportBuilder;
@@ -96,19 +101,24 @@ public class InspectionFinalizer {
     this.calendarClient = calendarClient;
     this.clock = clock;
     this.auditLogger = auditLogger;
+    this.inspectionFeatureToggle = inspectionFeatureToggle;
   }
 
-  private static void checkApprovalPrerequisites(Inspection inspection) {
+  private void checkApprovalPrerequisites(
+      Inspection inspection) { // static removed for feature toggle implementation
     if (inspection.getPhase() != InspectionPhase.CREATING_REPORT_AND_INVOICE) {
       throw new BadRequestException(
           "wrong phase; expected: %s; actual: %s"
               .formatted(InspectionPhase.CREATING_REPORT_AND_INVOICE, inspection.getPhase()));
     }
     if (inspection.getResult() == InspectionResult.SUCCESSFUL_WITH_INCIDENTS) {
-      if (inspection.getFollowupType() == null) {
+      if (inspectionFeatureToggle.isNewFeatureDisabled(InspectionFeature.OBJECT_TYPE_HIERARCHY)
+          && inspection.getFollowupType() == null) {
         throw new BadRequestException(
             "inspection is SUCCESSFUL_WITH_INCIDENTS but followupType is missing");
-      } else if (inspection.getFollowupType() == FollowupType.REVIEW
+      }
+      if (inspectionFeatureToggle.isNewFeatureDisabled(InspectionFeature.OBJECT_TYPE_HIERARCHY)
+          && inspection.getFollowupType() == FollowupType.REVIEW
           && inspection.getFollowupDate() == null) {
         throw new BadRequestException(
             "inspection is SUCCESSFUL_WITH_INCIDENTS and followupType is REVIEW but followupDate has not been set");
@@ -168,8 +178,51 @@ public class InspectionFinalizer {
 
     // We only create a followup inspection if the result is not negative
     if (inspection.getResult() != InspectionResult.FAILED) {
-      Inspection followupInspection = createFollowupInspection(inspection);
-      inspection.setFollowupInspection(followupInspection);
+      if (inspectionFeatureToggle.isNewFeatureEnabled(InspectionFeature.OBJECT_TYPE_HIERARCHY)) {
+        // If an explicit date is set, we always create the follow-up
+        if (inspection.getFollowupDate() != null) {
+          Inspection followupInspection = createFollowupInspectionIfApplicable(inspection);
+          if (followupInspection != null) {
+            inspection.setFollowupInspection(followupInspection);
+          }
+        } else if (inspection.getFollowupType() != null) {
+          // For SUCCESSFUL_WITH_INCIDENTS + REVIEW without date -> do NOT create follow-up
+          if (inspection.getResult() == InspectionResult.SUCCESSFUL_WITH_INCIDENTS
+              && inspection.getFollowupType() == FollowupType.REVIEW) {
+            // Intentionally do nothing: user set no date -> no follow-up
+          } else {
+            // If only a type is set, only create if an appointment can be computed (interval
+            // exists)
+            InspectionType nextType = inspection.getFollowupType().asInspectionType;
+            InspectionAppointment appt = computeFollowupAppointment(inspection, nextType);
+            if (appt != null) {
+              Inspection followupInspection = createFollowupInspectionIfApplicable(inspection);
+              if (followupInspection != null) {
+                inspection.setFollowupInspection(followupInspection);
+              }
+            }
+          }
+        } else {
+          // Only create automatic follow-up if applicable interval exists
+          InspectionType nextType;
+          if (InspectionResult.SUCCESSFUL_WITH_INCIDENTS.equals(inspection.getResult())) {
+            nextType = InspectionType.REGULAR_AFTER_INCIDENTS;
+          } else if (InspectionResult.FAILED.equals(inspection.getResult())) {
+            nextType = InspectionType.REVIEW;
+          } else {
+            nextType = InspectionType.REGULAR;
+          }
+          InspectionAppointment appt = computeFollowupAppointment(inspection, nextType);
+          if (appt != null) {
+            Inspection followupInspection = createFollowupInspectionIfApplicable(inspection);
+            inspection.setFollowupInspection(followupInspection);
+          }
+          // If appt is null: no relevant interval configured -> do not create a follow-up
+        }
+      } else {
+        Inspection followupInspection = createFollowupInspectionIfApplicable(inspection);
+        inspection.setFollowupInspection(followupInspection);
+      }
     }
     inspection.getReportTaskOrThrow().setTaskStatus(TaskStatus.CLOSED);
     inspection.getRelatedFacility().getFacility().setLastInspected(clock.instant());
@@ -211,7 +264,11 @@ public class InspectionFinalizer {
     report.setReportFile(pdf);
   }
 
-  public Inspection createFollowupInspection(Inspection precedingInspection) {
+  /**
+   * Tries to create a follow-up inspection based on a preceding inspection. Returns null if no
+   * automatic follow-up can be determined (e.g., missing interval).
+   */
+  public Inspection createFollowupInspectionIfApplicable(Inspection precedingInspection) {
     Inspection followupInspection = new Inspection();
     followupInspection.setModifiedBy(precedingInspection.getModifiedBy());
     followupInspection.setPhase(InspectionPhase.NEW);
@@ -234,7 +291,7 @@ public class InspectionFinalizer {
     if (followupType != null) {
       type = followupType.asInspectionType;
     } else {
-      if (precedingInspection.getType().isComplaint()) {
+      if (InspectionResult.SUCCESSFUL_WITH_INCIDENTS.equals(precedingInspection.getResult())) {
         type = InspectionType.REGULAR_AFTER_INCIDENTS;
       } else if (InspectionResult.FAILED.equals(precedingInspection.getResult())) {
         type = InspectionType.REVIEW;
@@ -247,15 +304,27 @@ public class InspectionFinalizer {
     // determine followup appointment
     InspectionAppointment followupAppointment =
         computeFollowupAppointment(precedingInspection, type);
-    followupInspection.setPlannedAppointment(followupAppointment);
 
-    // In case of new inspection after negative review
+    if (inspectionFeatureToggle.isNewFeatureDisabled(InspectionFeature.OBJECT_TYPE_HIERARCHY)) {
+      followupInspection.setPlannedAppointment(followupAppointment);
+    }
+
     if (followupAppointment != null) {
+      if (inspectionFeatureToggle.isNewFeatureEnabled(InspectionFeature.OBJECT_TYPE_HIERARCHY)) {
+        // set planned appointment only when it could be computed
+        followupInspection.setPlannedAppointment(followupAppointment);
+      }
+
       // create calendar event for followup appointment
       UUID calenderEventId =
           calendarClient.createEventInUserCalendar(
               followupAppointment.getAppointmentStart(), followupAppointment.getAppointmentEnd());
       followupInspection.setCalendarEventId(calenderEventId);
+    } else {
+      if (inspectionFeatureToggle.isNewFeatureEnabled(InspectionFeature.OBJECT_TYPE_HIERARCHY)) {
+        // If no appointment is computable, do not create a follow-up inspection
+        return null;
+      }
     }
 
     // copy checklists
@@ -302,7 +371,8 @@ public class InspectionFinalizer {
     return followupInspection;
   }
 
-  private static InspectionAppointment computeFollowupAppointment(
+  private InspectionAppointment
+      computeFollowupAppointment( // originally static -> removed for feature toggle
       Inspection precedingInspection, InspectionType followupInspectionType) {
     if (precedingInspection.getResult().equals(InspectionResult.FAILED)) {
       return null;
@@ -312,10 +382,26 @@ public class InspectionFinalizer {
     if (precedingInspection.getFollowupDate() != null) {
       followupStartDate = precedingInspection.getFollowupDate();
     } else {
-      int interval =
-          (followupInspectionType == InspectionType.REGULAR_AFTER_INCIDENTS)
-              ? objectType.getComplaintInterval()
-              : objectType.getRoutineInterval();
+      Integer interval;
+      if (inspectionFeatureToggle.isNewFeatureEnabled(InspectionFeature.OBJECT_TYPE_HIERARCHY)) {
+        if (followupInspectionType == InspectionType.REGULAR_AFTER_INCIDENTS) {
+          interval = objectType.getComplaintInterval();
+        } else {
+          interval = objectType.getRoutineInterval();
+        }
+
+        if (interval == null) {
+          // No interval configured for the chosen follow-up type => no automatic follow-up
+          // appointment
+          return null;
+        }
+      } else {
+        interval =
+            (followupInspectionType == InspectionType.REGULAR_AFTER_INCIDENTS)
+                ? objectType.getComplaintInterval()
+                : objectType.getRoutineInterval();
+      }
+
       Instant previousAppointmentStart =
           precedingInspection.getExecutionAppointment().getAppointmentStart();
       followupStartDate = previousAppointmentStart.plus(interval, ChronoUnit.DAYS);

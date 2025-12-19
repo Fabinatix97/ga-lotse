@@ -37,6 +37,7 @@ export function DisplayAppointmentBlockSidebar(
   const deleteAppointmentBlock = useDeleteAppointmentBlock();
   const hasPhysicians = appointmentBlock.physicians.length !== 0;
   const hasMfa = appointmentBlock.mfas.length !== 0;
+  const hasSopass = appointmentBlock.sopasss.length !== 0;
   const canDeleteAppointmentBlock =
     appointmentBlock.bookedAppointments.length === 0;
   const formattedAppointmentDate = new Intl.DateTimeFormat("de-DE", {
@@ -91,6 +92,18 @@ export function DisplayAppointmentBlockSidebar(
             {hasMfa && (
               <DetailsBlock title="MFA:" contentRole="list">
                 {appointmentBlock.mfas.map((id) => (
+                  <Typography key={id} level="body-md" role="listitem">
+                    {formatUserName(appointmentBlock.resolvedUsers[id])}
+                  </Typography>
+                ))}
+              </DetailsBlock>
+            )}
+            {hasSopass && (
+              <DetailsBlock
+                title="SOPASS qualifizierte:r MFA:"
+                contentRole="list"
+              >
+                {appointmentBlock.sopasss.map((id) => (
                   <Typography key={id} level="body-md" role="listitem">
                     {formatUserName(appointmentBlock.resolvedUsers[id])}
                   </Typography>

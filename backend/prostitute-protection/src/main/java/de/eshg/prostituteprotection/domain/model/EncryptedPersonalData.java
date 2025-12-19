@@ -1,6 +1,6 @@
 /*
  * Copyright 2025 cronn GmbH
- * SPDX-License-Identifier: Apache-2.0
+ * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 package de.eshg.prostituteprotection.domain.model;
@@ -9,7 +9,6 @@ import de.eshg.domain.model.BaseEntity;
 import de.eshg.lib.common.DataSensitivity;
 import de.eshg.lib.common.SensitivityLevel;
 import jakarta.persistence.Entity;
-import java.time.Instant;
 
 @Entity
 @DataSensitivity(SensitivityLevel.SENSITIVE)
@@ -19,8 +18,6 @@ public class EncryptedPersonalData extends BaseEntity {
   private byte[] nonce;
 
   private byte[] hashedPersonIdentifier;
-
-  private Instant lastConsultationDate;
 
   public byte[] getEncryptedData() {
     return encryptedData;
@@ -44,13 +41,5 @@ public class EncryptedPersonalData extends BaseEntity {
 
   public void setHashedPersonIdentifier(byte[] hashedPersonIdentifier) {
     this.hashedPersonIdentifier = hashedPersonIdentifier;
-  }
-
-  public Instant getLastConsultationDate() {
-    return lastConsultationDate;
-  }
-
-  public void setLastConsultationDate(Instant lastConsultationDate) {
-    this.lastConsultationDate = lastConsultationDate;
   }
 }

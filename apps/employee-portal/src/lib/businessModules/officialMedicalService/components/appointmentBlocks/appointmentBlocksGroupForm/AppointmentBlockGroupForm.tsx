@@ -9,10 +9,10 @@ import { isDefined } from "remeda";
 
 import { ApiUser } from "@eshg/base-api";
 import {
-  ApiAppointmentType,
   AppointmentBlockGroupFields,
   AppointmentRoomField,
   AppointmentStaffSelection,
+  AppointmentStandardDurations,
   FormButtonBar,
   FormSheet,
   validateAppointmentBlock,
@@ -32,7 +32,7 @@ import { appointmentBlockApiQueryKey } from "@/lib/businessModules/schoolEntry/a
 
 function validateForm(
   values: CreateAppointmentBlockGroupValues,
-  appointmentDurations: Record<string, number>,
+  appointmentDurations: AppointmentStandardDurations,
 ) {
   const errors: FormikErrors<CreateAppointmentBlockGroupValues> = {};
 
@@ -41,6 +41,7 @@ function validateForm(
     (appointmentBlock) =>
       validateAppointmentBlock(
         values.types,
+        false,
         appointmentBlock,
         appointmentDurations,
       ),
@@ -55,7 +56,7 @@ function validateForm(
 interface AppointmentBlockGroupFormProps {
   initialValues: CreateAppointmentBlockGroupValues;
   onSubmit: (values: CreateAppointmentBlockGroupValues) => Promise<void>;
-  standardDuration: Partial<Record<ApiAppointmentType, number>>;
+  standardDuration: AppointmentStandardDurations;
   allPhysicians: ApiUser[];
 }
 

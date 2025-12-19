@@ -6,33 +6,37 @@
 "use client";
 
 import { Chip } from "@mui/joy";
+import { useQuery } from "@tanstack/react-query";
 import { ColumnSort, createColumnHelper } from "@tanstack/react-table";
 
 import {
   DataTable,
   Pagination,
+  PersonSearchForm,
   TablePage,
   TableSheet,
+  usePersonSearch,
   useTableControl,
 } from "@eshg/lib-employee-portal";
 import {
   PERSON_FIELD_NAME,
   formatDate,
-  formatWeekdayDateTime,
+  formatDateTime,
+  useNavigation,
 } from "@eshg/lib-portal";
 import {
   ApiConsultationType,
   ApiProcedureStatus,
 } from "@eshg/prostitute-protection-api";
 
+import { usePersonSearchOptions } from "../../api/queries/person";
 import { routes } from "../../config/routes";
+import { useSetSelectedPerson } from "../../contexts/selectedPerson/SelectedPersonStoreProvider";
 import {
   CONSULTATION_TYPE_VALUES,
   PROCEDURE_STATUS_COLORS,
   PROCEDURE_STATUS_VALUES,
 } from "../../shared/constants";
-
-import { ProstituteProtectionPersonSearch } from "./ProstituteProtectionPersonSearch";
 
 interface PersonSearchResult {
   id: string;
@@ -46,44 +50,11 @@ interface PersonSearchResult {
 }
 
 const initialSorting: ColumnSort = {
-  id: "firstName",
+  id: "appointmentStart",
   desc: false,
 };
 
 const columnHelper = createColumnHelper<PersonSearchResult>();
-
-const mockData: PersonSearchResult[] = [
-  {
-    id: "1",
-    firstName: "Anastasia",
-    lastName: "Nowaka",
-    alias: "Minnie Maus",
-    dateOfBirth: new Date("1985-04-24"),
-    consultationType: ApiConsultationType.Initial,
-    appointmentStart: new Date("2025-11-09T11:20:00"),
-    status: ApiProcedureStatus.Open,
-  },
-  {
-    id: "2",
-    firstName: "Anastasia",
-    lastName: "Nowaka",
-    alias: "Minnie Maus",
-    dateOfBirth: new Date("1985-04-24"),
-    consultationType: ApiConsultationType.FollowUp,
-    appointmentStart: new Date("2025-10-30T10:30:00"),
-    status: ApiProcedureStatus.Aborted,
-  },
-  {
-    id: "3",
-    firstName: "Anastasia",
-    lastName: "Nowaka",
-    alias: "Minnie Maus",
-    dateOfBirth: new Date("1985-04-24"),
-    consultationType: ApiConsultationType.Initial,
-    appointmentStart: new Date("2024-12-01T10:30:00"),
-    status: ApiProcedureStatus.Closed,
-  },
-];
 
 function getProceduresColumns() {
   return [
@@ -122,7 +93,7 @@ function getProceduresColumns() {
     }),
     columnHelper.accessor("appointmentStart", {
       header: "Termin",
-      cell: ({ getValue }) => formatWeekdayDateTime(getValue()),
+      cell: ({ getValue }) => formatDateTime(getValue()),
       enableSorting: true,
       meta: { width: 200, canNavigate: { parentRow: true } },
     }),
@@ -140,6 +111,10 @@ function getProceduresColumns() {
 }
 
 export function ProstituteProtectionPersonSearchTable() {
+  const { formValues, ...personSearch } = usePersonSearch();
+  const setSelectedPerson = useSetSelectedPerson();
+  const { tryNavigate } = useNavigation();
+
   const tableControl = useTableControl({
     serverSideSorting: true,
     initialSorting,
@@ -147,15 +122,28 @@ export function ProstituteProtectionPersonSearchTable() {
     sortDirectionName: "sortOrder",
   });
 
+  const personSearchOptions = usePersonSearchOptions({
+    search: {
+      firstName: formValues.firstName,
+      lastName: formValues.lastName,
+      dateOfBirth: new Date(formValues.dateOfBirth),
+    },
+    page: tableControl.paginationProps,
+    sorting: tableControl.tableSorting,
+  });
+
+  const { data, refetch: getPersons } = useQuery(personSearchOptions);
+
   return (
     <TablePage
       data-testid="personSearchTable"
       aria-label="Personensuche"
       controls={
-        <ProstituteProtectionPersonSearch
-          onChange={(v) => {
-            // eslint-disable-next-line no-console
-            console.log("changed", v);
+        <PersonSearchForm
+          {...personSearch.formProps}
+          onChange={async (v) => {
+            personSearch.setValues(v);
+            await getPersons();
           }}
         />
       }
@@ -165,17 +153,19 @@ export function ProstituteProtectionPersonSearchTable() {
         loading={false}
         footer={
           <Pagination
-            totalCount={mockData.length}
+            totalCount={data?.totalNumberOfElements ?? 0}
             {...tableControl.paginationProps}
           />
         }
       >
         <DataTable
-          data={mockData}
+          data={data?.elements ?? []}
           columns={getProceduresColumns()}
           rowNavigation={{
-            route: ({ original: { id: procedureId } }) =>
-              routes.procedures.byId(procedureId).details,
+            onClick: (row) => () => {
+              setSelectedPerson(row.original);
+              tryNavigate(routes.procedures.byId(row.original.id).details);
+            },
             focusColumnAccessorKey: "appointmentStart",
           }}
         />

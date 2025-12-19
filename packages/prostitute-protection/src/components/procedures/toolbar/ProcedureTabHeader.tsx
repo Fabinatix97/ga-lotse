@@ -9,26 +9,26 @@ import {
   TabNavigationHeader,
   TabNavigationHeaderTypography,
 } from "@eshg/lib-employee-portal";
-import { formatDate, formatPersonName } from "@eshg/lib-portal";
+import { formatPersonName } from "@eshg/lib-portal";
 
 import { useGetProcedure } from "../../../api/queries/procedures";
 
 export function ProcedureTabHeader(props: Readonly<{ procedureId: string }>) {
   const { data: procedure } = useGetProcedure(props.procedureId);
-  const { firstName, lastName, dateOfBirth } = procedure;
+  const { firstName, lastName, alias } = procedure;
 
   return (
     <TabNavigationHeader titleAsH1>
-      <TabNavigationHeaderTypography>
-        {formatPersonName({
-          firstName,
-          lastName,
-        })}
-      </TabNavigationHeaderTypography>
-      {isDefined(dateOfBirth) && (
+      {isDefined(firstName ?? lastName) && (
         <TabNavigationHeaderTypography>
-          Geb. {formatDate(new Date(dateOfBirth))}
+          {formatPersonName({
+            firstName,
+            lastName,
+          })}
         </TabNavigationHeaderTypography>
+      )}
+      {isDefined(alias) && (
+        <TabNavigationHeaderTypography>{alias}</TabNavigationHeaderTypography>
       )}
     </TabNavigationHeader>
   );

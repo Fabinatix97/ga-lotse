@@ -63,30 +63,33 @@ public class CreateInspectionSampleTemplatesTask {
     if (inspectionFeatureToggle.isNewFeatureEnabled(InspectionFeature.SAMPLES))
       transactionHelper.executeInTransaction(
           () -> {
-            createSampleTemplate(
-                "Trinkwasser",
-                "Bad Herren links",
-                InspectionSampleType.DRINKING_WATER,
-                InspectionSampleEvaluationType.ON_SITE,
-                List.of(
-                    createMeasurementParameterTemplate(
-                        ZID_P_1_2_DICHLORETHAN, ZID_U_1_2_DICHLORETHAN),
-                    createMeasurementParameterTemplate(ZID_P_ACRYLAMID, ZID_U_ACRYLAMID),
-                    createMeasurementParameterTemplate(
-                        ZID_P_ALUMINIUM_GESAMT, ZID_U_ALUMINIUM_GESAMT),
-                    createMeasurementParameterTemplate(ZID_P_AMMONIUM, ZID_U_AMMONIUM)));
+            if (inspectionSampleTemplateRepository.count() == 0) {
+              createSampleTemplate(
+                  "Trinkwasser",
+                  "Bad Herren links",
+                  InspectionSampleType.DRINKING_WATER,
+                  InspectionSampleEvaluationType.ON_SITE,
+                  List.of(
+                      createMeasurementParameterTemplate(
+                          ZID_P_1_2_DICHLORETHAN, ZID_U_1_2_DICHLORETHAN),
+                      createMeasurementParameterTemplate(ZID_P_ACRYLAMID, ZID_U_ACRYLAMID),
+                      createMeasurementParameterTemplate(
+                          ZID_P_ALUMINIUM_GESAMT, ZID_U_ALUMINIUM_GESAMT),
+                      createMeasurementParameterTemplate(ZID_P_AMMONIUM, ZID_U_AMMONIUM)));
 
-            createSampleTemplate(
-                "Badewasser",
-                "Schwimmerbecken",
-                InspectionSampleType.DRINKING_WATER,
-                InspectionSampleEvaluationType.ON_SITE,
-                List.of(
-                    createMeasurementParameterTemplate(ZID_P_PH_WERT, ZID_U_PH_WERT),
-                    createMeasurementParameterTemplate(ZID_P_CHLOR_FREI, ZID_U_CHLOR_FREI),
-                    createMeasurementParameterTemplate(ZID_P_CHLOR_GEBUNDEN, ZID_U_CHLOR_GEBUNDEN),
-                    createMeasurementParameterTemplate(ZID_P_CHLOR_GESAMT, null),
-                    createMeasurementParameterTemplate(ZID_P_SUMME_TRIHALOGENMETHANE, null)));
+              createSampleTemplate(
+                  "Badewasser",
+                  "Schwimmerbecken",
+                  InspectionSampleType.DRINKING_WATER,
+                  InspectionSampleEvaluationType.ON_SITE,
+                  List.of(
+                      createMeasurementParameterTemplate(ZID_P_PH_WERT, ZID_U_PH_WERT),
+                      createMeasurementParameterTemplate(ZID_P_CHLOR_FREI, ZID_U_CHLOR_FREI),
+                      createMeasurementParameterTemplate(
+                          ZID_P_CHLOR_GEBUNDEN, ZID_U_CHLOR_GEBUNDEN),
+                      createMeasurementParameterTemplate(ZID_P_CHLOR_GESAMT, null),
+                      createMeasurementParameterTemplate(ZID_P_SUMME_TRIHALOGENMETHANE, null)));
+            }
           });
   }
 

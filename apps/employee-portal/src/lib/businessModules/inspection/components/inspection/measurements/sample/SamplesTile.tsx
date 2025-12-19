@@ -13,7 +13,11 @@ import {
 import { Button, Checkbox, Divider, Stack, Typography } from "@mui/joy";
 import { useState } from "react";
 
-import { ApiInspFacility, ApiInspectionSample } from "@eshg/inspection-api";
+import {
+  ApiInspFacility,
+  ApiInspectionSample,
+  ApiInspectionSampleEvaluationType,
+} from "@eshg/inspection-api";
 
 import { useGetSamples } from "@/lib/businessModules/inspection/api/queries/sample";
 import { useInspectionAddSampleSidebar } from "@/lib/businessModules/inspection/components/inspection/measurements/InspectionAddSampleSidebar";
@@ -34,9 +38,29 @@ export function SamplesTile({
   const inspectionAddMeasurementSidebar = useInspectionAddSampleSidebar();
   const inspectionTemplateSampleSidebar = useInspectionTemplateSampleSidebar();
 
-  const [showOnlyConspicuousParameters, setShowOnlyConspicuousParameters] =
+  const [showOnlySuspiciousParameters, setShowOnlySuspiciousParameters] =
     useState(false);
+  const [showOnlyLaboratoryParameters, setShowOnlyLaboratoryParameters] =
+    useState(false);
+  const [expandedItems, setExpandedItems] = useState<Record<string, boolean>>(
+    {},
+  );
+
   const { data: samples } = useGetSamples(procedureId);
+
+  const visibleSamples = samples.filter((sample) => {
+    const suspicious = sample.measurementParameters.some(
+      (p) =>
+        p.preclassification === "TOO_HIGH" || p.preclassification === "TOO_LOW",
+    );
+
+    if (showOnlySuspiciousParameters && !suspicious) return false;
+
+    return !(
+      showOnlyLaboratoryParameters &&
+      sample.evaluationType !== ApiInspectionSampleEvaluationType.Laboratory
+    );
+  });
 
   function handleAdd(e: React.MouseEvent) {
     e.stopPropagation();
@@ -85,34 +109,40 @@ export function SamplesTile({
     return "OK";
   }
 
-  function setupItems(showOnlyConspicuousParameters: boolean) {
-    const result = [];
-    let index = 0;
+  function toggleExpandAll() {
+    const expand = !visibleSamples.every((s) => expandedItems[s.sampleId]);
 
-    for (const sample of samples) {
-      const hasError = sample.measurementParameters.some(
-        (p) =>
-          p.preclassification === "TOO_HIGH" ||
-          p.preclassification === "TOO_LOW",
-      );
-
-      if (showOnlyConspicuousParameters && !hasError) {
-        continue;
-      }
-
-      result.push(
-        <Sample
-          sample={sample}
-          procedureId={procedureId}
-          sampleIndex={index++}
-          facility={facility}
-          classification={getSampleClassification(sample)}
-          showOnlyConspicuousParameters={showOnlyConspicuousParameters}
-        />,
-      );
+    const newState: Record<string, boolean> = {};
+    for (const s of visibleSamples) {
+      newState[s.sampleId] = expand;
     }
 
-    return result;
+    setExpandedItems((prev) => ({ ...prev, ...newState }));
+  }
+
+  function setupItems() {
+    return visibleSamples.map((sample, index) => {
+      const expanded = expandedItems[sample.sampleId] ?? false;
+
+      return (
+        <Sample
+          key={sample.sampleId}
+          sample={sample}
+          procedureId={procedureId}
+          sampleIndex={index}
+          facility={facility}
+          classification={getSampleClassification(sample)}
+          showOnlySuspiciousParameters={showOnlySuspiciousParameters}
+          expand={expanded}
+          onSetExpand={(open) =>
+            setExpandedItems((prev) => ({
+              ...prev,
+              [sample.sampleId]: open,
+            }))
+          }
+        />
+      );
+    });
   }
 
   const addAction = (
@@ -167,18 +197,46 @@ export function SamplesTile({
       controls={addAction}
     >
       <Divider />
-      <Stack sx={{ alignItems: "flex-end" }}>
-        <Checkbox
-          name="showOnlyConspicuousParameters"
-          label="Nur auffällige Parameter anzeigen"
-          onChange={(event) => {
-            setShowOnlyConspicuousParameters(event.target.checked);
+      <Stack
+        sx={{ alignItems: "center", justifyContent: "space-between" }}
+        direction="row"
+      >
+        <Button
+          name="expandAllSamples"
+          variant="plain"
+          onClick={toggleExpandAll}
+        >
+          {visibleSamples.length > 0 &&
+          visibleSamples.every((s) => expandedItems[s.sampleId])
+            ? "Alle Proben zuklappen"
+            : "Alle Proben aufklappen"}
+        </Button>
+        <Stack
+          direction="row"
+          gap={2}
+          sx={{
+            paddingX: 2,
           }}
-        />
+        >
+          <Checkbox
+            name="showOnlyLaboratoryParameters"
+            label="Externe Laborauswertungen"
+            onChange={(event) => {
+              setShowOnlyLaboratoryParameters(event.target.checked);
+            }}
+          />
+          <Checkbox
+            name="showOnlySuspiciousParameters"
+            label="Nur auffällige Parameter anzeigen"
+            onChange={(event) => {
+              setShowOnlySuspiciousParameters(event.target.checked);
+            }}
+          />
+        </Stack>
       </Stack>
 
       {samples.length > 0 ? (
-        setupItems(showOnlyConspicuousParameters)
+        setupItems()
       ) : (
         <Typography component="span" level="title-md">
           Keine Proben angelegt.

@@ -25,10 +25,12 @@ export function mapApiAppointmentBlock(
     ...mapBaseEntity(response),
     start: response.start,
     end: response.end,
+    extraLength: response.extraLength,
     bookedAppointments: response.bookedAppointments,
     mfas: response.mfas,
     physicians: response.physicians,
     consultants: response.consultants,
+    sopasss: response.sopasss,
     room: response.room,
   };
 }

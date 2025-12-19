@@ -31,7 +31,6 @@ import org.bouncycastle.asn1.x509.ExtendedKeyUsage;
 import org.bouncycastle.asn1.x509.Extension;
 import org.bouncycastle.asn1.x509.GeneralName;
 import org.bouncycastle.asn1.x509.GeneralNames;
-import org.bouncycastle.asn1.x509.KeyPurposeId;
 import org.bouncycastle.asn1.x509.KeyUsage;
 import org.bouncycastle.cert.CertIOException;
 import org.bouncycastle.cert.X509v3CertificateBuilder;
@@ -58,6 +57,7 @@ public class CertificateBuilder {
   private int keySize = DefaultKeyParameters.RSA.keySize;
   private boolean ca = false;
   private CertificateBuild signingCA;
+  private ExtendedKeyUsageType extendedKeyUsageType = ExtendedKeyUsageType.SERVER_AND_CLIENT;
 
   private CertificateBuilder(String subject) {
     this.subject = subject;
@@ -114,6 +114,11 @@ public class CertificateBuilder {
 
   public CertificateBuilder signedBy(CertificateBuild ca) {
     this.signingCA = ca;
+    return this;
+  }
+
+  public CertificateBuilder extendedKeyUsageType(ExtendedKeyUsageType extendedKeyUsageType) {
+    this.extendedKeyUsageType = extendedKeyUsageType;
     return this;
   }
 
@@ -241,10 +246,8 @@ public class CertificateBuilder {
     return new KeyUsage(keyUsage);
   }
 
-  private static ExtendedKeyUsage getExtendedKeyUsage() {
-    KeyPurposeId[] purposes =
-        new KeyPurposeId[] {KeyPurposeId.id_kp_serverAuth, KeyPurposeId.id_kp_clientAuth};
-    return new ExtendedKeyUsage(purposes);
+  private ExtendedKeyUsage getExtendedKeyUsage() {
+    return new ExtendedKeyUsage(extendedKeyUsageType.getKeyPurposeIds());
   }
 
   private GeneralNames getGeneralNames() {

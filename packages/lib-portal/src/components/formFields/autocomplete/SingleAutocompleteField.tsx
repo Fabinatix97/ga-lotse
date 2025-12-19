@@ -4,7 +4,6 @@
  */
 
 import { ReactNode, SyntheticEvent } from "react";
-import { identity } from "remeda";
 
 import { useIsFormDisabled } from "../../form/DisabledFormContext";
 import { CustomAutocomplete } from "../../inputs/CustomAutocomplete";
@@ -18,7 +17,6 @@ import {
 export interface SingleAutocompleteFieldProps
   extends CommonAutocompleteFieldProps<string> {
   freeSolo?: boolean;
-  disableFiltering?: boolean;
   popupIcon?: ReactNode;
   disabled?: boolean;
 }
@@ -54,7 +52,6 @@ export function SingleAutocompleteField(props: SingleAutocompleteFieldProps) {
         forcePopupIcon={!props.freeSolo}
         value={field.input.value}
         options={options}
-        filterOptions={props.disableFiltering ? identity() : undefined}
         disabled={disabled || props.disabled}
         popupIcon={props.popupIcon}
         onChange={(_, newValue) => {

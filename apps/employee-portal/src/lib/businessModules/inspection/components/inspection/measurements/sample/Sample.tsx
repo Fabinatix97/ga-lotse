@@ -34,7 +34,7 @@ import {
   Stack,
   Typography,
 } from "@mui/joy";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import {
   ApiInspFacility,
@@ -68,7 +68,9 @@ interface MeasurementsTileItemProps {
   sampleIndex: number;
   facility: ApiInspFacility;
   classification: "SUSPICIOUS" | "PENDING" | "NO_NORM" | "OK";
-  showOnlyConspicuousParameters: boolean;
+  showOnlySuspiciousParameters: boolean;
+  expand: boolean;
+  onSetExpand: (expanded: boolean) => void;
 }
 
 export function Sample({
@@ -77,7 +79,9 @@ export function Sample({
   sampleIndex,
   facility,
   classification,
-  showOnlyConspicuousParameters,
+  showOnlySuspiciousParameters,
+  expand,
+  onSetExpand,
 }: Readonly<MeasurementsTileItemProps>) {
   const [open, setOpen] = useState(false);
   const inspectionEditSampleSidebar = useInspectionEditSampleSidebar();
@@ -88,6 +92,10 @@ export function Sample({
   const { mutateAsync: deleteSample } = useDeleteSample();
 
   const { openCancelDialog } = useConfirmationDialog();
+
+  useEffect(() => {
+    setOpen(expand);
+  }, [expand]);
 
   function handleOpenEditSidebar(e: React.MouseEvent) {
     e.stopPropagation();
@@ -100,6 +108,7 @@ export function Sample({
 
   function handleOpenCloseAccordion(e: React.MouseEvent) {
     e.stopPropagation();
+    onSetExpand(!open);
     setOpen(!open);
   }
 
@@ -253,7 +262,7 @@ export function Sample({
 
   const initObject: ApiInspectionSample = {
     ...sample,
-    measurementParameters: showOnlyConspicuousParameters
+    measurementParameters: showOnlySuspiciousParameters
       ? sample.measurementParameters.filter(
           (p) =>
             p.preclassification === "TOO_HIGH" ||
@@ -300,6 +309,9 @@ export function Sample({
               lg={1}
               sx={{
                 alignContent: "center",
+              }}
+              onClick={(e) => {
+                handleOpenCloseAccordion(e);
               }}
             >
               <Typography component="span" level="title-lg">
@@ -469,7 +481,7 @@ export function Sample({
                   }
                 />
                 <DetailsItem
-                  label="Zeipunkt der Auswertung"
+                  label="Zeitpunkt der Auswertung"
                   value={
                     initObject?.timeOfEvaluation
                       ? formatDateTime(initObject.timeOfEvaluation)
@@ -504,7 +516,7 @@ export function Sample({
               >
                 {initObject.measurementParameters.map((parameter, index) => (
                   <Grid
-                    key={"measurementParameter-" + index}
+                    key={"measurementParameter-" + sampleIndex + "-" + index}
                     container
                     direction={{ lg: "row", sm: "column" }}
                     columns={2}
@@ -553,7 +565,9 @@ export function Sample({
                         >
                           <DebouncedInput
                             data-testid={"measurementParameterInput-" + index}
-                            name={"measurementValue-" + index}
+                            name={
+                              "measurementValue-" + sampleIndex + "-" + index
+                            }
                             inputMode="numeric"
                             type="number"
                             defaultValue={parameter.measurementValue}

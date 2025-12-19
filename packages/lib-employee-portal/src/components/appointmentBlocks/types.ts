@@ -32,3 +32,8 @@ export const ApiAppointmentType = {
 } as const;
 export type ApiAppointmentType =
   (typeof ApiAppointmentType)[keyof typeof ApiAppointmentType];
+
+export interface AppointmentStandardDurations {
+  standardDurations: Partial<Record<ApiAppointmentType, number>>;
+  extraDuration: number;
+}

@@ -23,6 +23,7 @@ import {
   getSelectedEnumFilterValues,
   useFilterSettings,
 } from "@eshg/lib-employee-portal";
+import { taskTypes as prostituteProtectionTaskTypes } from "@eshg/prostitute-protection";
 
 import { AggregateTaskFilters } from "@/lib/baseModule/api/queries/tasks";
 import { businessModuleUserGroups } from "@/lib/baseModule/moduleRegister/moduleUserGroupResolver";
@@ -44,6 +45,7 @@ export const FILTER_KEYS = {
   taskTypeSchoolEntry: "taskTypeSchoolEntry",
   taskTypeTravelMedicine: "taskTypeTravelMedicine",
   taskTypeMeaslesProtection: "taskTypeMeaslesProtection",
+  taskTypeProstituteProtection: "taskTypeProstituteProtection",
   assignedById: "assignedById",
   taskStatus: "taskStatus",
 };
@@ -126,6 +128,16 @@ export function useTaskTableFilterSettings({
           },
         ] as EnumFilterDefinition[])
       : []),
+    ...(isGroupMember(ApiBusinessModule.ProstituteProtection)
+      ? ([
+          {
+            type: "Enum",
+            key: FILTER_KEYS.taskTypeProstituteProtection,
+            name: getTaskTypeFilterName(ApiBusinessModule.ProstituteProtection),
+            options: buildOptionsFromTaskTypes(prostituteProtectionTaskTypes),
+          },
+        ] as EnumFilterDefinition[])
+      : []),
     ...(leaders.length > 0
       ? ([
           {
@@ -182,6 +194,7 @@ function getTaskTypeFilters(filters: FilterValue[]) {
     FILTER_KEYS.taskTypeSchoolEntry,
     FILTER_KEYS.taskTypeTravelMedicine,
     FILTER_KEYS.taskTypeMeaslesProtection,
+    FILTER_KEYS.taskTypeProstituteProtection,
   ).map((v) => ApiTaskTypeFromJSON(v));
 
   return selectedValues.length !== 0 ? new Set(selectedValues) : undefined;

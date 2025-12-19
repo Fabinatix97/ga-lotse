@@ -22,4 +22,9 @@ public class SchoolEntryAppointmentBlockConfiguration {
   TechnicalGroup technicalGroupMfas() {
     return TechnicalGroup.SCHOOL_ENTRY_MFA;
   }
+
+  @Bean(name = AppointmentBlockValidator.TECHNICAL_GROUP_SOPASSS)
+  TechnicalGroup technicalGroupSopasss() {
+    return TechnicalGroup.SCHOOL_ENTRY_SOPASS;
+  }
 }

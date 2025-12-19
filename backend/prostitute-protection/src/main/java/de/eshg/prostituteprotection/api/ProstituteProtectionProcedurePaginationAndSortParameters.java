@@ -1,6 +1,6 @@
 /*
  * Copyright 2025 cronn GmbH
- * SPDX-License-Identifier: Apache-2.0
+ * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 package de.eshg.prostituteprotection.api;
@@ -44,5 +44,9 @@ public record ProstituteProtectionProcedurePaginationAndSortParameters(
     this.sortDirection = Objects.requireNonNullElse(sortDirection, SortDirection.ASC);
     this.pageNumber = Objects.requireNonNullElse(pageNumber, 0);
     this.pageSize = Objects.requireNonNullElse(pageSize, 25);
+  }
+
+  public ProstituteProtectionProcedurePaginationAndSortParameters() {
+    this(null, null, null, null);
   }
 }

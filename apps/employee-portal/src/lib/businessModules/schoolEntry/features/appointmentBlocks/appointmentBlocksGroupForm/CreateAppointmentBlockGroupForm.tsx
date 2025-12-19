@@ -35,6 +35,7 @@ import { getAppointmentBlockDefaultAvailabilityQuery } from "@/lib/businessModul
 import {
   getAllMedicalAssistantsQuery,
   getAllPhysiciansQuery,
+  getAllSopassQualifiedMFAsQuery,
 } from "@/lib/businessModules/schoolEntry/api/queries/appointmentStaff";
 import { useGetAppointmentStandardDurationsQuery } from "@/lib/businessModules/schoolEntry/api/queries/appointmentStandardDuration";
 import { getLocationSelectionModeQuery } from "@/lib/businessModules/schoolEntry/api/queries/configApi";
@@ -50,6 +51,7 @@ const INITIAL_VALUES: CreateAppointmentBlockGroupValues = {
   appointmentBlocks: [emptyAppointmentBlockGroup()],
   physicians: [],
   mfas: [],
+  sopasss: [],
   room: "",
   location: null,
   availableForCitizen: true,
@@ -62,9 +64,11 @@ export function mapFormValues(
   return {
     types: values.types,
     parallelExaminations: mapRequiredValue(values.parallelExaminations),
+    extraLength: values.extraLength,
     appointmentBlocks: values.appointmentBlocks.map(mapAppointmentBlock),
-    physicians: values.physicians,
-    mfas: values.mfas,
+    physicians: values.extraLength ? undefined : values.physicians,
+    mfas: values.extraLength ? undefined : values.mfas,
+    sopasss: values.extraLength ? values.sopasss : undefined,
     locationId: mapOptionalValue(values.location)?.id,
     availableForCitizen: values.availableForCitizen,
     availableForBulkBooking: values.availableForBulkBooking,
@@ -85,9 +89,11 @@ function mapAppointmentBlock(
 export interface CreateAppointmentBlockGroupValues {
   types: ApiAppointmentType[];
   parallelExaminations: OptionalFieldValue<number>;
+  extraLength?: boolean;
   appointmentBlocks: AppointmentBlockGroupValuesWithDays[];
   physicians: string[];
   mfas: string[];
+  sopasss: string[];
   room: string;
   location: ApiAddContact200Response | null;
   availableForCitizen: boolean;
@@ -109,6 +115,7 @@ export function CreateAppointmentBlockGroupForm() {
     { data: standardDurations },
     { data: allPhysicians },
     { data: allMfas },
+    { data: allSopasss },
     { data: defaultAvailabilityFlags },
   ] = useSuspenseQueries({
     queries: [
@@ -116,15 +123,21 @@ export function CreateAppointmentBlockGroupForm() {
       useGetAppointmentStandardDurationsQuery(standardDurationApi),
       getAllPhysiciansQuery(userApi),
       getAllMedicalAssistantsQuery(userApi),
+      getAllSopassQualifiedMFAsQuery(userApi),
       getAppointmentBlockDefaultAvailabilityQuery(
         appointmentBlockDefaultAvailabilityApi,
       ),
     ],
   });
 
+  // If extra-duration is configured non-zero, show extra-length checkbox with initial value false.
+  const extraDuration =
+    standardDurations.extraDuration !== 0 ? { extraLength: false } : {};
+
   const initialValues = {
     ...INITIAL_VALUES,
     ...defaultAvailabilityFlags,
+    ...extraDuration,
   };
 
   async function handleSubmit(values: CreateAppointmentBlockGroupValues) {
@@ -139,6 +152,7 @@ export function CreateAppointmentBlockGroupForm() {
       standardDurations={standardDurations}
       allPhysicians={allPhysicians}
       allMfas={allMfas}
+      allSopasss={allSopasss}
       locationSelectionMode={locationSelectionMode}
       onSubmit={handleSubmit}
     />

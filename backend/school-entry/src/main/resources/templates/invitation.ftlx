@@ -11,7 +11,7 @@
 <#-- @ftlvariable name="invitationInfo" type="de.eshg.schoolentry.pdf.invitation.InvitationInfo" -->
 <#-- @ftlvariable name="accentColorHex" type="java.lang.String" -->
 <#-- @ftlvariable name="qrBoxBackgroundColorHex" type="java.lang.String" -->
-<#-- @ftlvariable name="physicianOrMfaName" type="java.lang.String" -->
+<#-- @ftlvariable name="examiner" type="java.lang.String" -->
 <#-- @ftlvariable name="roomName" type="java.lang.String" -->
 
 <html xml:lang="de" lang="de">
@@ -227,10 +227,10 @@
 </p>
   <div>Die Einschulungsuntersuchung für ihr Kind <span style="font-weight: 500;">${child.name}</span></div>
   <div>findet am: <span style="font-weight: 500;">${examination.executionDate}</span> um <span style="font-weight: 500;">${examination.executionTime} Uhr</span> in dem/der ${examination.executionLocation.name} statt.</div>
-  <#if physicianOrMfaName?? && roomName??>
-  <div>Ihr Termin findet im Raum <span style="font-weight: 500;">${roomName}</span> bei <span style="font-weight: 500;">${physicianOrMfaName}</span> statt.</div>
-  <#elseif physicianOrMfaName??>
-  <div>Ihr Termin findet bei <span style="font-weight: 500;">${physicianOrMfaName}</span> statt.</div>
+  <#if examiner?? && roomName??>
+  <div>Ihr Termin findet im Raum <span style="font-weight: 500;">${roomName}</span> bei <span style="font-weight: 500;">${examiner}</span> statt.</div>
+  <#elseif examiner??>
+  <div>Ihr Termin findet bei <span style="font-weight: 500;">${examiner}</span> statt.</div>
   <#elseif roomName??>
   <div>Ihr Termin findet im Raum <span style="font-weight: 500;">${roomName}</span> statt.</div>
   </#if>

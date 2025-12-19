@@ -11,6 +11,7 @@ import inspectionProcedureDefinitionDiagram from "@/lib/businessModules/inspecti
 import measlesProtectionProcedureDefinitionDiagram from "@/lib/businessModules/measlesProtection/shared/procedureDefinition.svg";
 import medicalRegistryProcedureDefinitionDiagram from "@/lib/businessModules/medicalRegistry/shared/procedureDefinition.svg";
 import officialMedicalServiceProcedureDefinitionDiagram from "@/lib/businessModules/officialMedicalService/shared/procedureDefinition.svg";
+import prostituteProtectionProcedureDefinitionDiagram from "@/lib/businessModules/prostituteProtection/shared/procedureDefinition.svg";
 import schoolEntryProcedureDefinitionDiagram from "@/lib/businessModules/schoolEntry/shared/procedureDefinition.svg";
 import stiProtectionProcedureDefinitionDiagram from "@/lib/businessModules/stiProtection/shared/procedureDefinition.svg";
 import travelMedicineProcedureDefinitionDiagram from "@/lib/businessModules/travelMedicine/shared/procedureDefinition.svg";
@@ -37,6 +38,6 @@ export function resolveProcedureDefinitionDiagram(
     case "DENTAL":
       return undefined;
     case "PROSTITUTE_PROTECTION":
-      return undefined;
+      return prostituteProtectionProcedureDefinitionDiagram;
   }
 }

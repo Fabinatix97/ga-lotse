@@ -6,6 +6,7 @@
 package de.eshg.inspection.facility.persistence;
 
 import de.eshg.inspection.inspection.api.InspectionResult;
+import de.eshg.inspection.objecttype.persistence.ObjectType;
 import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
@@ -97,4 +98,32 @@ public interface FacilityRepository
         order by f.id asc
         """)
   Page<Facility> findFacilitiesWithInspectionsBefore(Instant endTime, Pageable pageable);
+
+  @Query(
+      """
+        select distinct f
+        from Inspection i
+        join InspectionRelatedFacility irf on irf.procedure = i
+        join Facility f on f = irf.facility
+        where f.objectType = :objectType
+          and i.createdAt < :endTime
+      """)
+  List<Facility> findFacilitiesByObjectTypeWithInspectionsBefore(
+      @org.springframework.data.repository.query.Param("objectType") ObjectType objectType,
+      @org.springframework.data.repository.query.Param("endTime") Instant endTime);
+
+  @Query(
+      """
+        select distinct f
+        from Inspection i
+        join InspectionRelatedFacility irf on irf.procedure = i
+        join Facility f on f = irf.facility
+        where f.objectType = :objectType
+          and i.createdAt < :endTime
+          and i.result = :result
+      """)
+  List<Facility> findFacilitiesByObjectTypeWithResultInLastInspectionBefore(
+      @org.springframework.data.repository.query.Param("objectType") ObjectType objectType,
+      @org.springframework.data.repository.query.Param("endTime") Instant endTime,
+      @org.springframework.data.repository.query.Param("result") InspectionResult result);
 }

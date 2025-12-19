@@ -13,6 +13,7 @@ import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OrderBy;
+import jakarta.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -47,6 +48,8 @@ public class AppointmentBlockGroup extends BaseEntityWithExternalId {
   private Boolean availableForCitizen;
 
   private Boolean availableForBulkBooking;
+
+  @NotNull private boolean extraLength = false;
 
   public Boolean isAvailableForBulkBooking() {
     return availableForBulkBooking;
@@ -105,5 +108,13 @@ public class AppointmentBlockGroup extends BaseEntityWithExternalId {
 
   public void setCreatorId(UUID userId) {
     this.creatorId = userId;
+  }
+
+  public boolean isExtraLength() {
+    return extraLength;
+  }
+
+  public void setExtraLength(boolean extraLength) {
+    this.extraLength = extraLength;
   }
 }

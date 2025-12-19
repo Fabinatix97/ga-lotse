@@ -89,7 +89,13 @@ export function StiProtectionAppointmentBlockGroupsTable(
     appointmentBlockApiQueryKey,
     physicians,
     consultants,
-    standardDurations: { ...standardDurationsHiv, ...standardDurationsSexWork },
+    standardDurations: {
+      standardDurations: {
+        ...standardDurationsHiv,
+        ...standardDurationsSexWork,
+      },
+      extraDuration: 0,
+    },
     columnHelper,
     showWeekDays: true,
   });

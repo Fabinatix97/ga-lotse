@@ -13,6 +13,7 @@ import {
   AppointmentBlockGroupValuesWithDays,
   AppointmentRoomField,
   AppointmentStaffSelection,
+  AppointmentStandardDurations,
   FormButtonBar,
   FormSheet,
   validateAppointmentBlock,
@@ -31,7 +32,7 @@ import { routes } from "@/lib/businessModules/travelMedicine/shared/routes";
 
 function validateForm(
   values: AppointmentBlockGroupValues,
-  standardDurations: Partial<Record<ApiAppointmentType, number>>,
+  standardDurations: AppointmentStandardDurations,
 ) {
   const errors: FormikErrors<AppointmentBlockGroupValues> = {};
 
@@ -40,6 +41,7 @@ function validateForm(
     (appointmentBlock) =>
       validateAppointmentBlock(
         values.types,
+        false,
         appointmentBlock,
         standardDurations,
       ),
@@ -61,7 +63,7 @@ function validateForm(
 interface AppointmentBlockGroupFormProps {
   initialValues: AppointmentBlockGroupValues;
   onSubmit: (values: AppointmentBlockGroupValues) => Promise<void>;
-  standardDurations: Partial<Record<ApiAppointmentType, number>>;
+  standardDurations: AppointmentStandardDurations;
   allMedicalAssistants: ApiUser[];
   allPhysicians: ApiUser[];
 }

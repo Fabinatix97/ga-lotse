@@ -4,7 +4,7 @@
  */
 
 import { Stack } from "@mui/joy";
-import { isDefined, isNullish } from "remeda";
+import { isNullish } from "remeda";
 
 import {
   ContentPanel,
@@ -16,12 +16,17 @@ import {
 import { DetailsColumn, DetailsList, formatDate } from "@eshg/lib-portal";
 import { ApiProcedureDetails } from "@eshg/prostitute-protection-api";
 
+import { usePersonDataFromStore } from "../../../contexts/selectedPerson/usePersonDataFromStore";
 import {
   DOCUMENT_TYPE_VALUES,
   NATIONALITY_VALUES,
   PERSON_FIELD_NAME,
 } from "../../../shared/constants";
-import { formatLanguages, isProcedureFinalized } from "../../../shared/helpers";
+import {
+  formatLanguages,
+  hasSufficientGermanLanguageSkills,
+  isProcedureFinalized,
+} from "../../../shared/helpers";
 
 import { useEditPersonDetailsSidebar } from "./sidebar/EditPersonDetailsSidebar";
 
@@ -31,6 +36,7 @@ export function PersonDetails({
   procedure: ApiProcedureDetails;
 }>) {
   const editPersonDetailsSidebar = useEditPersonDetailsSidebar(procedure);
+  const personData = usePersonDataFromStore(procedure);
 
   return (
     <ContentPanel>
@@ -53,36 +59,32 @@ export function PersonDetails({
             width="100%"
           >
             <DetailsColumn>
-              {isDefined(procedure.firstName) && (
-                <DetailsItem
-                  label={PERSON_FIELD_NAME.firstName}
-                  value={procedure.firstName}
-                />
-              )}
+              <DetailsItem
+                label={PERSON_FIELD_NAME.firstName}
+                value={personData.firstName}
+              />
               <DetailsItem
                 label={PERSON_FIELD_NAME.lastName}
-                value={procedure.lastName}
+                value={personData.lastName}
               />
-              {isDefined(procedure.dateOfBirth) && (
-                <DetailsItem
-                  label={PERSON_FIELD_NAME.dateOfBirth}
-                  value={formatDate(procedure.dateOfBirth)}
-                />
-              )}
-              {isDefined(procedure.alias) && (
-                <DetailsItem
-                  label={PERSON_FIELD_NAME.alias}
-                  value={procedure.alias}
-                />
-              )}
+              <DetailsItem
+                label={PERSON_FIELD_NAME.alias}
+                value={procedure.alias}
+              />
+              <DetailsItem
+                label={PERSON_FIELD_NAME.dateOfBirth}
+                value={formatDate(personData.dateOfBirth)}
+              />
             </DetailsColumn>
             <DetailsColumn>
-              {isDefined(procedure.languages) && (
-                <DetailsItem
-                  label={PERSON_FIELD_NAME.languages}
-                  value={formatLanguages(procedure.languages)}
-                />
-              )}
+              <DetailsItem
+                label={PERSON_FIELD_NAME.hasSufficientGermanLanguageSkills}
+                value={hasSufficientGermanLanguageSkills(procedure.languages)}
+              />
+              <DetailsItem
+                label={PERSON_FIELD_NAME.otherLanguages}
+                value={formatLanguages(procedure.languages)}
+              />
               {!isNullish(procedure.nationality) && (
                 <DetailsItem
                   label={PERSON_FIELD_NAME.nationality}

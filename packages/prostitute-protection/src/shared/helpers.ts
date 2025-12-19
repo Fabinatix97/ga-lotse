@@ -3,9 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { differenceInMinutes, format, isPast } from "date-fns";
-import { de } from "date-fns/locale";
+import { differenceInMinutes, isPast } from "date-fns";
 
+import { formatDate, formatTime } from "@eshg/lib-portal";
 import {
   ApiPersonLanguage,
   ApiProcedureDetails,
@@ -44,24 +44,22 @@ export function isProcedureFinalized(procedure: ApiProcedureDetails) {
 export function formatLanguages(languages: ApiPersonLanguage[]) {
   const languagesArray = languages
     ? [...languages]
-        .sort((a, b) =>
-          a === ApiPersonLanguage.German
-            ? -1
-            : b === ApiPersonLanguage.German
-              ? 1
-              : 0,
-        )
+        .filter((lang) => lang !== ApiPersonLanguage.German)
         .map((lang) => LANGUAGE_VALUE[lang])
     : [];
 
-  return languagesArray.join(", ");
+  return languagesArray.length > 0 ? languagesArray.join(", ") : "-";
 }
 
-export function formatAppointmentTime(date?: Date) {
-  if (!date) {
+export function formatAppointmentWithDuration(start?: Date, end?: Date) {
+  if (!start) {
     return "-";
   }
-  return `${format(date, "dd.MM.yyyy", { locale: de })}, ${format(date, "HH:mm", { locale: de })} Uhr`;
+
+  const dateTime = `${formatDate(start, "de")}, ${formatTime(start, "de")} Uhr`;
+  const durationMinutes = getDurationMinutes(start, end);
+
+  return `${dateTime}, Dauer ${durationMinutes} Min.`;
 }
 
 export function getDurationMinutes(start?: Date, end?: Date): number {
@@ -71,10 +69,11 @@ export function getDurationMinutes(start?: Date, end?: Date): number {
   return differenceInMinutes(end, start);
 }
 
-export function formatDuration(start?: Date, end?: Date) {
-  const durationMinutes = getDurationMinutes(start, end);
-  if (durationMinutes === 0) {
+export function hasSufficientGermanLanguageSkills(
+  languages?: ApiPersonLanguage[],
+): string {
+  if (!languages || languages.length === 0) {
     return "-";
   }
-  return `${durationMinutes} min`;
+  return languages.includes(ApiPersonLanguage.German) ? "Ja" : "Nein";
 }

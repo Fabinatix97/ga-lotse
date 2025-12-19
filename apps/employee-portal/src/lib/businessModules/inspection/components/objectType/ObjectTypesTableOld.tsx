@@ -18,13 +18,13 @@ import {
 
 import { useGetObjectTypes } from "@/lib/businessModules/inspection/api/queries/objectTypes";
 
-import { useEditObjectTypeSidebar } from "./EditObjectTypeSidebar";
+import { useEditObjectTypeSidebarOld } from "./EditObjectTypeSidebarOld";
 
 export function ObjectTypesTableOld() {
   const { data: objectTypes, isFetching } = useGetObjectTypes();
   const canEdit = useHasUserRoleCheck(ApiUserRole.InspectionObjecttypesWrite);
 
-  const sidebar = useEditObjectTypeSidebar();
+  const sidebar = useEditObjectTypeSidebarOld();
 
   const columnHelper: ColumnHelper<ApiObjectType> =
     createColumnHelper<ApiObjectType>();

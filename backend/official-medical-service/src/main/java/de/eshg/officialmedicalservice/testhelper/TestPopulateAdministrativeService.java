@@ -1,6 +1,6 @@
 /*
- * Copyright 2025 cronn GmbH
- * SPDX-License-Identifier: Apache-2.0
+ * Copyright 2025 SCOOP Software GmbH, cronn GmbH
+ * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 package de.eshg.officialmedicalservice.testhelper;
@@ -102,6 +102,7 @@ public class TestPopulateAdministrativeService {
                                 DayOfWeekDto.WEDNESDAY))),
                     List.of(physician),
                     List.of(),
+                    List.of(),
                     List.of()))
             .id();
 
@@ -117,6 +118,7 @@ public class TestPopulateAdministrativeService {
                             endBlock_omsNow,
                             List.of(DayOfWeekDto.THURSDAY, DayOfWeekDto.FRIDAY))),
                     List.of(physician),
+                    List.of(),
                     List.of(),
                     List.of()))
             .id();

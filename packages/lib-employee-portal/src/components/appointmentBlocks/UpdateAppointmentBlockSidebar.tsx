@@ -37,7 +37,7 @@ import { FormButtonBar } from "../form/FormButtonBar";
 
 import { AppointmentBlock } from "./AppointmentBlockGroup";
 import { UpdateAppointmentBlockSidebarContent } from "./UpdateAppointmentBlockSidebarContent";
-import { ApiAppointmentType } from "./types";
+import { ApiAppointmentType, AppointmentStandardDurations } from "./types";
 
 export function useUpdateAppointmentBlockSidebar(): UseSidebarWithFormRefResult<UpdateAppointmentBlockProps> {
   return useSidebarWithFormRef({ component: UpdateAppointmentBlockSidebar });
@@ -50,10 +50,11 @@ interface UpdateAppointmentBlockProps extends SidebarWithFormRefProps {
   physicians?: User[];
   mfas?: User[];
   consultants?: User[];
+  sopasss?: User[];
   formRef: Ref<SidebarFormHandle>;
   appointmentBlockApi: AppointmentBlockApi;
   appointmentBlockApiQueryKey: QueryKeyFactory;
-  standardDurations: Partial<Record<ApiAppointmentType, number>>;
+  standardDurations: AppointmentStandardDurations;
 }
 
 export interface UpdateAppointmentBlockValues {
@@ -63,6 +64,7 @@ export interface UpdateAppointmentBlockValues {
   physicians?: string[];
   mfas?: string[];
   consultants?: string[];
+  sopasss?: string[];
   room: string;
 }
 
@@ -84,6 +86,18 @@ function UpdateAppointmentBlockSidebar(props: UpdateAppointmentBlockProps) {
     props.onClose(true);
   }
 
+  // special logic for school-entry: when appointment blocks with extra length use sopass instead of physicians and MFAs
+  const physicianOptions =
+    appointmentBlock.extraLength && props.sopasss
+      ? undefined
+      : props.physicians;
+  const medicalAssistantOptions =
+    appointmentBlock.extraLength && props.sopasss ? undefined : props.mfas;
+  const consultantOptions = props.consultants;
+  const sopassOptions = appointmentBlock.extraLength
+    ? props.sopasss
+    : undefined;
+
   function handleValidate(values: UpdateAppointmentBlockValues) {
     if (!props.withTeam) {
       return;
@@ -93,22 +107,27 @@ function UpdateAppointmentBlockSidebar(props: UpdateAppointmentBlockProps) {
     const physiciansEmpty = isEmpty(values.physicians ?? []);
     const mfasEmpty = isEmpty(values.mfas ?? []);
     const consultantsEmpty = isEmpty(values.consultants ?? []);
+    const sopasssEmpty = isEmpty(values.sopasss ?? []);
 
-    if (isDefined(props.physicians) && physiciansEmpty) {
+    if (isDefined(physicianOptions) && physiciansEmpty) {
       missing.push("einen Arzt/eine Ärztin");
     }
-    if (isDefined(props.mfas) && mfasEmpty) {
+    if (isDefined(medicalAssistantOptions) && mfasEmpty) {
       missing.push("ein:e MFA");
     }
-    if (isDefined(props.consultants) && consultantsEmpty) {
+    if (isDefined(consultantOptions) && consultantsEmpty) {
       missing.push("ein:e Berater:in");
     }
+    if (isDefined(sopassOptions) && sopasssEmpty) {
+      missing.push("ein:e SOPASS qualifizierte:r MFA");
+    }
 
-    if (physiciansEmpty && mfasEmpty && consultantsEmpty) {
+    if (physiciansEmpty && mfasEmpty && consultantsEmpty && sopasssEmpty) {
       const msg = `Es muss mindestens ${missing.join(" oder ")} ausgewählt sein.`;
       errors.physicians = msg;
       errors.mfas = msg;
       errors.consultants = msg;
+      errors.sopasss = msg;
     }
 
     return errors;
@@ -123,6 +142,7 @@ function UpdateAppointmentBlockSidebar(props: UpdateAppointmentBlockProps) {
         mfas: appointmentBlock.mfas,
         physicians: appointmentBlock.physicians,
         consultants: appointmentBlock.consultants,
+        sopasss: appointmentBlock.sopasss,
         room: parseOptionalValue(appointmentBlock.room),
       }}
       validate={handleValidate}
@@ -135,9 +155,10 @@ function UpdateAppointmentBlockSidebar(props: UpdateAppointmentBlockProps) {
             appointmentBlock={appointmentBlock}
             appointmentTypes={props.appointmentTypes}
             withTeam={props.withTeam}
-            physicians={props.physicians}
-            mfas={props.mfas}
-            consultants={props.consultants}
+            physicians={physicianOptions}
+            mfas={medicalAssistantOptions}
+            consultants={consultantOptions}
+            sopasss={sopassOptions}
             appointmentBlockApi={props.appointmentBlockApi}
             appointmentBlockApiQueryKey={props.appointmentBlockApiQueryKey}
             standardDurations={props.standardDurations}
@@ -174,6 +195,7 @@ export function mapFormValuesToApiValues(
       mfas: values.mfas ?? [],
       physicians: values.physicians ?? [],
       consultants: values.consultants ?? [],
+      sopasss: values.sopasss ?? [],
       room: mapOptionalValue(values.room),
     },
   };

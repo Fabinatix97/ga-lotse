@@ -10,4 +10,4 @@ import java.util.List;
 import java.util.UUID;
 
 public record CreateAppointmentsBulkRequest(
-    @NotEmpty List<UUID> procedureIds, UUID physicianId, UUID mfaId, String room) {}
+    @NotEmpty List<UUID> procedureIds, UUID physicianId, UUID mfaId, UUID sopassId, String room) {}

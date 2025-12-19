@@ -3,125 +3,125 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Button } from "@mui/joy";
-import { ReactEventHandler, useState } from "react";
+import { isDefined } from "remeda";
 
-import { ApiProcedureStatus, ApiUserRole } from "@eshg/base-api";
-import { ContentPanel, useHasUserRoleCheck } from "@eshg/lib-employee-portal";
+import {
+  ConfirmationDialog,
+  ContentPanel,
+  OpenModalButton,
+} from "@eshg/lib-employee-portal";
 import { ApiProcedureDetails } from "@eshg/prostitute-protection-api";
 
 import {
-  isProcedureClosed,
-  isProcedureFinalized,
-} from "../../../shared/helpers";
-
-import {
-  CloseConfirmationDialog,
-  CreateCertificateConfirmationDialog,
-} from "./ConfirmationDialogs";
+  useAbortProcedureMutation,
+  useCloseProcedureMutation,
+} from "../../../api/mutations/procedures";
+import { isProcedureFinalized } from "../../../shared/helpers";
 
 export function FinalProcedureActionPanel({
   procedure,
 }: Readonly<{ procedure: ApiProcedureDetails }>) {
-  const isLeader = useHasUserRoleCheck(ApiUserRole.ProstituteProtectionLeader);
-
-  if (procedure.procedureStatus === ApiProcedureStatus.Aborted) {
-    return null;
-  }
-
-  if (isProcedureClosed(procedure) && !isLeader) {
-    return null;
-  }
-
-  return (
-    <ContentPanel dense>
-      <OpenProcedureActions procedure={procedure} />
-    </ContentPanel>
-  );
-}
-
-const FinalAction = {
-  Cancel: "CANCEL",
-  Close: "CLOSE",
-  Certificate: "CERTIFICATE",
-};
-
-type FinalAction = (typeof FinalAction)[keyof typeof FinalAction];
-
-function OpenProcedureActions({
-  procedure,
-}: Readonly<{ procedure: ApiProcedureDetails }>) {
-  const [action, setAction] = useState<FinalAction | undefined>();
+  const abortProcedure = useAbortProcedureMutation();
+  const closeProcedure = useCloseProcedureMutation();
 
   if (isProcedureFinalized(procedure)) {
     return null;
   }
 
-  function handleCloseDialog() {
-    setAction(undefined);
+  const isCertificateCreated = isDefined(
+    procedure.consultationCertificateCreatedAt,
+  );
+
+  async function handleCloseProcedure() {
+    await closeProcedure.mutateAsync({
+      procedureId: procedure.id,
+      apiCloseProcedureRequest: {
+        version: procedure.version,
+      },
+    });
+  }
+
+  async function handleAbortProcedure() {
+    await abortProcedure.mutateAsync({
+      procedureId: procedure.id,
+      apiAbortProcedureRequest: {
+        version: procedure.version,
+      },
+    });
   }
 
   return (
-    <>
-      <CreateCertificateButton
-        onClick={() => setAction(FinalAction.Certificate)}
-      />
-      <CloseButton onClick={() => setAction(FinalAction.Close)} />
-      <CreateCertificateConfirmationDialog
-        open={action === FinalAction.Certificate}
-        onClose={handleCloseDialog}
-        onConfirm={() => {
-          return new Promise((resolve) => {
-            setTimeout(() => {
-              resolve();
-            }, 1000);
-          });
-        }}
-      />
-      <CloseConfirmationDialog
-        procedure={procedure}
-        open={action === FinalAction.Close}
-        onClose={handleCloseDialog}
-        onConfirm={() => {
-          return new Promise((resolve) => {
-            setTimeout(() => {
-              resolve();
-            }, 1000);
-          });
-        }}
-      />
-    </>
+    <ContentPanel dense>
+      {isCertificateCreated ? (
+        <OpenModalButton
+          key="closeProcedure"
+          renderModal={(modalProps) => (
+            <CloseConfirmationDialog
+              {...modalProps}
+              onConfirm={handleCloseProcedure}
+            />
+          )}
+        >
+          Vorgang abschließen
+        </OpenModalButton>
+      ) : (
+        <OpenModalButton
+          key="abortProcedure"
+          renderModal={(modalProps) => (
+            <AbortConfirmationDialog
+              {...modalProps}
+              onConfirm={handleAbortProcedure}
+            />
+          )}
+          color="danger"
+          variant="soft"
+        >
+          Vorgang abbrechen
+        </OpenModalButton>
+      )}
+    </ContentPanel>
   );
 }
 
-export function CancelButton({
-  onClick,
-}: {
-  onClick: ReactEventHandler<HTMLButtonElement>;
-}) {
+interface ConfirmationDialogProps {
+  open: boolean;
+  onClose: () => void;
+  onConfirm: () => Promise<void>;
+  procedure?: ApiProcedureDetails;
+}
+
+export function CloseConfirmationDialog({
+  open,
+  onClose,
+  onConfirm,
+}: ConfirmationDialogProps) {
   return (
-    <Button variant="soft" color="danger" onClick={onClick}>
-      Vorgang abbrechen
-    </Button>
+    <ConfirmationDialog
+      title="Vorgang abschließen?"
+      description="Möchten Sie diesen Vorgang wirklich abschließen?"
+      confirmLabel="Abschließen"
+      color="primary"
+      open={open}
+      onClose={onClose}
+      onConfirm={onConfirm}
+    />
   );
 }
 
-function CloseButton({
-  onClick,
-}: {
-  onClick: ReactEventHandler<HTMLButtonElement>;
-}) {
-  return <Button onClick={onClick}>Vorgang abschließen</Button>;
-}
-
-function CreateCertificateButton({
-  onClick,
-}: {
-  onClick: ReactEventHandler<HTMLButtonElement>;
-}) {
+export function AbortConfirmationDialog({
+  open,
+  onClose,
+  onConfirm,
+}: Omit<ConfirmationDialogProps, "procedure">) {
   return (
-    <Button variant="soft" color="primary" onClick={onClick}>
-      Zertifikat erstellen
-    </Button>
+    <ConfirmationDialog
+      title="Möchten Sie diesen Vorgang wirklich abbrechen?"
+      description="Diese Aktion kann nicht rückgängig gemacht werden. Bitte informieren Sie ggf. den Antragsteller darüber, dass der Antrag abgebrochen wurde."
+      confirmLabel="Vorgang abbrechen"
+      color="danger"
+      open={open}
+      onClose={onClose}
+      onConfirm={onConfirm}
+    />
   );
 }

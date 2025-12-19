@@ -21,7 +21,7 @@ import {
   UpdateAppointmentBlockValues,
   mapFormValuesToApiValues,
 } from "./UpdateAppointmentBlockSidebar";
-import { ApiAppointmentType } from "./types";
+import { ApiAppointmentType, AppointmentStandardDurations } from "./types";
 import {
   validateAppointmentEndTime,
   validateAppointmentStartTime,
@@ -35,9 +35,10 @@ export function UpdateAppointmentBlockSidebarContent(props: {
   physicians?: User[];
   mfas?: User[];
   consultants?: User[];
+  sopasss?: User[];
   appointmentBlockApi: AppointmentBlockApi;
   appointmentBlockApiQueryKey: QueryKeyFactory;
-  standardDurations: Partial<Record<ApiAppointmentType, number>>;
+  standardDurations: AppointmentStandardDurations;
   formValues: UpdateAppointmentBlockValues;
 }) {
   const { appointmentBlock, formValues, withTeam = true } = props;
@@ -89,6 +90,7 @@ export function UpdateAppointmentBlockSidebarContent(props: {
             physicianOptions={props.physicians}
             medicalAssistantOptions={props.mfas}
             consultantOptions={props.consultants}
+            sopassOptions={props.sopasss}
             validateAppointmentBlocks={() =>
               mapFormValuesToApiValues(appointmentBlock, formValues)
             }

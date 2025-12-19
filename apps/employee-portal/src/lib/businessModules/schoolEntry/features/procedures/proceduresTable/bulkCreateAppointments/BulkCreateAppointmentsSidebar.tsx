@@ -22,13 +22,18 @@ import {
 } from "@eshg/lib-employee-portal";
 
 import { useUserApi } from "@/lib/baseModule/api/clients";
-import { useAppointmentBlockApi } from "@/lib/businessModules/schoolEntry/api/clients";
+import {
+  useAppointmentBlockApi,
+  useAppointmentStandardDurationsApi,
+} from "@/lib/businessModules/schoolEntry/api/clients";
 import { mapAppointmentBlockApi } from "@/lib/businessModules/schoolEntry/api/mapAppointmentBlockApi";
 import { appointmentBlockApiQueryKey } from "@/lib/businessModules/schoolEntry/api/queries/apiQueryKeys";
 import {
   getAllMedicalAssistantsQuery,
   getAllPhysiciansQuery,
+  getAllSopassQualifiedMFAsQuery,
 } from "@/lib/businessModules/schoolEntry/api/queries/appointmentStaff";
+import { useGetAppointmentStandardDurationsQuery } from "@/lib/businessModules/schoolEntry/api/queries/appointmentStandardDuration";
 import {
   AppointmentCriteria,
   UseBulkCreateAppointmentResult,
@@ -47,23 +52,33 @@ interface BulkCreateAppointmentsSidebar extends SidebarWithFormRefProps {
 interface BulkCreateAppointmentValues {
   physicians: string;
   mfas: string;
+  sopasss: string;
   room: string;
 }
 
 function BulkCreateAppointmentsSidebar(props: BulkCreateAppointmentsSidebar) {
   const appointmentBlockApi = useAppointmentBlockApi();
   const userApi = useUserApi();
+  const standardDurationApi = useAppointmentStandardDurationsApi();
 
   const INITIAL_VALUES: BulkCreateAppointmentValues = {
     physicians: "",
     mfas: "",
+    sopasss: "",
     room: "",
   };
 
-  const [{ data: allPhysicians }, { data: allMfas }] = useSuspenseQueries({
+  const [
+    { data: allPhysicians },
+    { data: allMfas },
+    { data: allSopasss },
+    { data: standardDurations },
+  ] = useSuspenseQueries({
     queries: [
       getAllPhysiciansQuery(userApi),
       getAllMedicalAssistantsQuery(userApi),
+      getAllSopassQualifiedMFAsQuery(userApi),
+      useGetAppointmentStandardDurationsQuery(standardDurationApi),
     ],
   });
 
@@ -78,6 +93,14 @@ function BulkCreateAppointmentsSidebar(props: BulkCreateAppointmentsSidebar) {
     firstName: option.firstName,
     lastName: option.lastName,
   }));
+
+  const sopassOptions = standardDurations.extraDuration
+    ? allSopasss.map((option) => ({
+        userId: option.userId,
+        firstName: option.firstName,
+        lastName: option.lastName,
+      }))
+    : undefined;
 
   async function handleSubmit(data: BulkCreateAppointmentValues) {
     await props.startAppointmentCreation(mapToRequest(data));
@@ -94,6 +117,7 @@ function BulkCreateAppointmentsSidebar(props: BulkCreateAppointmentsSidebar) {
                 singleSelection
                 physicianOptions={physicianOptions}
                 medicalAssistantOptions={medicalAssistantsOptions}
+                sopassOptions={sopassOptions}
                 singleColumn
               />
 
@@ -125,6 +149,7 @@ function mapToRequest(
   return {
     physicianId: values.physicians !== "" ? values.physicians : undefined,
     mfaId: values.mfas !== "" ? values.mfas : undefined,
+    sopassId: values.sopasss !== "" ? values.sopasss : undefined,
     room: values.room !== "" ? values.room : undefined,
   };
 }

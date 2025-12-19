@@ -27,9 +27,10 @@ public class CsvValidator {
           new ForbiddenSequence(";@"));
 
   public static void validate(byte[] fileContent) {
+    String withoutCrlf = new String(fileContent).replace("\r\n", "\n");
 
     for (ForbiddenSequence forbiddenSequence : forbiddenSequence) {
-      if (new String(fileContent).contains(forbiddenSequence.sequence)) {
+      if (withoutCrlf.contains(forbiddenSequence.sequence)) {
         throw new BadRequestException(forbiddenSequence.getEffectiveErrorMessage());
       }
     }

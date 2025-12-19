@@ -12,6 +12,7 @@ import {
   AppointmentBlockGroupValuesWithDays,
   AppointmentRoomField,
   AppointmentStaffSelection,
+  AppointmentStandardDurations,
   FormButtonBar,
   FormSheet,
   NamedUser,
@@ -53,7 +54,7 @@ export interface StiProtectionAppointmentValues {
 
 function validateForm(
   values: StiProtectionAppointmentValues,
-  standardDurations: Partial<Record<ApiAppointmentType, number>>,
+  standardDurations: AppointmentStandardDurations,
 ) {
   const errors: FormikErrors<StiProtectionAppointmentValues> = {};
 
@@ -62,6 +63,7 @@ function validateForm(
     (appointmentBlock) =>
       validateAppointmentBlock(
         values.types,
+        false,
         appointmentBlock,
         standardDurations,
       ),
@@ -90,7 +92,7 @@ function userToOption(user: ApiUser): NamedUser {
 
 interface AppointmentBlockGroupFormProps {
   onSubmit: (values: AppointmentBlockGroupValues) => Promise<void>;
-  standardDurations: Partial<Record<ApiAppointmentType, number>>;
+  standardDurations: AppointmentStandardDurations;
   initialValues: StiProtectionAppointmentValues;
   consultants: ApiUser[];
   physicians: ApiUser[];

@@ -33,6 +33,7 @@ interface StaffSelection {
   physicians?: string[];
   mfas?: string[];
   consultants?: string[];
+  sopasss?: string[];
 }
 
 interface BaseAppointmentStaffSelectionProps {
@@ -40,6 +41,7 @@ interface BaseAppointmentStaffSelectionProps {
   physicianRequired?: string;
   medicalAssistantOptions?: NamedUser[];
   consultantOptions?: NamedUser[];
+  sopassOptions?: NamedUser[];
   singleColumn?: boolean;
   singleSelection?: boolean;
 }
@@ -106,6 +108,10 @@ export function AppointmentStaffSelection(
       teamMembers += staffSelection.consultants?.length ?? 0;
       groups.push("eine:n Berater:in");
     }
+    if (props.sopassOptions) {
+      teamMembers += staffSelection.sopasss?.length ?? 0;
+      groups.push("ein:e SOPASS qualifizierte:r MFA");
+    }
     if (teamMembers === 0) {
       snackbar.notification(
         `Bitte mindestens ${groups.join(" oder ")} für die Validierung auswählen`,
@@ -144,6 +150,13 @@ export function AppointmentStaffSelection(
     options: props.consultantOptions ?? [],
   };
 
+  const sopassProps = {
+    name: "sopasss",
+    label: "SOPASS qualifizierte:r MFA",
+    placeholder: "auswählen",
+    options: props.sopassOptions ?? [],
+  };
+
   return (
     <FormGroupGrid>
       {props.physicianOptions && (
@@ -170,6 +183,15 @@ export function AppointmentStaffSelection(
             <SingleUserField {...consultantProps} />
           ) : (
             <UserField {...consultantProps} {...validationProps} />
+          )}
+        </Grid>
+      )}
+      {props.sopassOptions && (
+        <Grid xs={size}>
+          {props.singleSelection ? (
+            <SingleUserField {...sopassProps} />
+          ) : (
+            <UserField {...sopassProps} {...validationProps} />
           )}
         </Grid>
       )}

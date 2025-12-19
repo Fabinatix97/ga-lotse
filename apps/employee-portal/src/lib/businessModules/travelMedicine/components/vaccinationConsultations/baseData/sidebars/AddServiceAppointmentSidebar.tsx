@@ -114,7 +114,7 @@ function AddServiceAppointmentSidebar(
     blockAppointment: undefined,
     userDefinedAppointmentDate: format(new Date(), "yyyy-MM-dd'T'HH:mm"),
     appointmentTypeStandardDuration:
-      standardDurations[ApiAppointmentType.Vaccination],
+      standardDurations.standardDurations[ApiAppointmentType.Vaccination] ?? 0,
     appointmentType: "" as ApiAppointmentType,
     earliestDate: format(new Date(), "yyyy-MM-dd"),
   };

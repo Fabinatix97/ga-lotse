@@ -10710,7 +10710,8 @@
             "maximum" : 9999,
             "minimum" : 1,
             "type" : "integer",
-            "format" : "int32"
+            "format" : "int32",
+            "nullable" : true
           },
           "emailAnnouncement" : {
             "type" : "boolean"
@@ -10729,7 +10730,8 @@
             "maximum" : 9999,
             "minimum" : 1,
             "type" : "integer",
-            "format" : "int32"
+            "format" : "int32",
+            "nullable" : true
           },
           "standardBufferTime" : {
             "maximum" : 9999,
@@ -12147,7 +12149,8 @@
         "properties" : {
           "complaintInterval" : {
             "type" : "integer",
-            "format" : "int32"
+            "format" : "int32",
+            "nullable" : true
           },
           "emailAnnouncement" : {
             "type" : "boolean"
@@ -12157,7 +12160,8 @@
           },
           "routineInterval" : {
             "type" : "integer",
-            "format" : "int32"
+            "format" : "int32",
+            "nullable" : true
           },
           "standardBufferTime" : {
             "type" : "integer",

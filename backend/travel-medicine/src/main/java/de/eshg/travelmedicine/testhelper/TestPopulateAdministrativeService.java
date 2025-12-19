@@ -340,6 +340,7 @@ public class TestPopulateAdministrativeService {
                             startBlock_consultNow, endBlock_consultNow, DayOfWeekDto.allDays())),
                     List.of(physician),
                     List.of(mfa),
+                    List.of(),
                     List.of()))
             .id();
 
@@ -362,6 +363,7 @@ public class TestPopulateAdministrativeService {
                             startBlock_2, endBlock_2, DayOfWeekDto.allDays())),
                     List.of(physician),
                     List.of(mfa),
+                    List.of(),
                     List.of()))
             .id();
 

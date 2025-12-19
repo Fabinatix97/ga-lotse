@@ -18,6 +18,7 @@ import { getAppointmentBlockQuery } from "@/lib/businessModules/schoolEntry/api/
 import {
   getAllMedicalAssistantsQuery,
   getAllPhysiciansQuery,
+  getAllSopassQualifiedMFAsQuery,
 } from "@/lib/businessModules/schoolEntry/api/queries/appointmentStaff";
 import { DisplayAppointmentBlockSidebar } from "@/lib/businessModules/schoolEntry/features/appointments/sidebars/DisplayAppointmentBlockSidebar";
 import { UpdateAppointmentBlockSidebar } from "@/lib/businessModules/schoolEntry/features/appointments/sidebars/UpdateAppointmentBlockSidebar";
@@ -48,11 +49,13 @@ function AppointmentBlockSidebar({
     { data: appointmentBlock },
     { data: allPhysicians },
     { data: allMfas },
+    { data: allSopasss },
   ] = useSuspenseQueries({
     queries: [
       getAppointmentBlockQuery(appointmentBlockApi, appointmentBlockId),
       getAllPhysiciansQuery(userApi),
       getAllMedicalAssistantsQuery(userApi),
+      getAllSopassQualifiedMFAsQuery(userApi),
     ],
   });
 
@@ -72,6 +75,7 @@ function AppointmentBlockSidebar({
         appointmentBlock={appointmentBlock}
         allPhysicians={allPhysicians}
         allMfas={allMfas}
+        allSopasss={allSopasss}
         refetchEvents={refetchEvents}
         formRef={formRef}
         onCancel={() => setState("display")}

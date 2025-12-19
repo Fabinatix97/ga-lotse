@@ -5,7 +5,10 @@
 
 import { SidebarScope } from "@eshg/lib-employee-portal";
 import { RequiresChildren } from "@eshg/lib-portal";
-import { ProstituteProtectionProvider } from "@eshg/prostitute-protection";
+import {
+  ProstituteProtectionProvider,
+  SelectedPersonStoreProvider,
+} from "@eshg/prostitute-protection";
 
 import { env } from "@/env/server";
 
@@ -14,7 +17,9 @@ export default function ProstituteProtectionLayout(props: RequiresChildren) {
     <ProstituteProtectionProvider
       baseUrl={env.PUBLIC_PROSTITUTE_PROTECTION_BACKEND_URL}
     >
-      <SidebarScope>{props.children}</SidebarScope>
+      <SelectedPersonStoreProvider>
+        <SidebarScope>{props.children}</SidebarScope>
+      </SelectedPersonStoreProvider>
     </ProstituteProtectionProvider>
   );
 }

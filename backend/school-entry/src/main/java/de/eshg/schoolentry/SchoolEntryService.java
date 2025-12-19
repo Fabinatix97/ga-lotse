@@ -499,6 +499,7 @@ public class SchoolEntryService {
         availableForBulkBooking,
         null,
         null,
+        null,
         null);
   }
 
@@ -511,6 +512,7 @@ public class SchoolEntryService {
       Boolean availableForBulkBooking,
       UUID physician,
       UUID mfa,
+      UUID sopass,
       String room) {
 
     if (procedure.hasBeenClosed()) {
@@ -535,6 +537,7 @@ public class SchoolEntryService {
         availableForBulkBooking,
         physician,
         mfa,
+        sopass,
         room);
   }
 
@@ -641,12 +644,14 @@ public class SchoolEntryService {
     CitizenAccessCodeUserDto citizenAccessCodeUser = createOrGetCitizenAccessCodeUser(procedure);
     String accessCode = citizenAccessCodeUser.accessCode();
     AppointmentBlock appointmentBlock = getAppointmentBlock(procedure);
-    UUID physicianOrMfaId = null;
+    UUID examinerId = null;
     String room = null;
     if (appointmentBlock != null) {
-      physicianOrMfaId =
+      examinerId =
           Streams.concat(
-                  appointmentBlock.getPhysicians().stream(), appointmentBlock.getMfas().stream())
+                  appointmentBlock.getPhysicians().stream(),
+                  appointmentBlock.getSopasss().stream(),
+                  appointmentBlock.getMfas().stream())
               .findFirst()
               .orElse(null);
       room = appointmentBlock.getRoom();
@@ -657,7 +662,7 @@ public class SchoolEntryService {
             childDataWithPersonIdAndCustodian,
             start,
             getAppointmentLocation(procedure),
-            physicianOrMfaId,
+            examinerId,
             room);
     progressEntryUtil.addProgressEntry(
         procedure,
@@ -763,6 +768,7 @@ public class SchoolEntryService {
                   true,
                   request.physicianId(),
                   request.mfaId(),
+                  request.sopassId(),
                   request.room());
           if (freeAppointments.isEmpty()) {
             stats.countError();

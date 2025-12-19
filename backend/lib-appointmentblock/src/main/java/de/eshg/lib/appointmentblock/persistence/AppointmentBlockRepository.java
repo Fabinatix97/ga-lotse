@@ -46,6 +46,7 @@ public interface AppointmentBlockRepository extends JpaRepository<AppointmentBlo
           + "and (:locationId is null or abg.locationId = :locationId) "
           + "and (:physicianId is null or :physicianId member of a.physicians) "
           + "and (:mfaId is null or :mfaId member of a.mfas) "
+          + "and (:sopassId is null or :sopassId member of a.sopasss) "
           + "and (:room is null or a.room = :room) "
           + "and a.appointmentBlockEnd >= :appointmentBlockEnd order by a.id")
   List<AppointmentBlock>
@@ -57,6 +58,7 @@ public interface AppointmentBlockRepository extends JpaRepository<AppointmentBlo
           @Param("availableForBulkBooking") Boolean availableForBulkBooking,
           @Param("physicianId") UUID physicianId,
           @Param("mfaId") UUID mfaId,
+          @Param("sopassId") UUID sopassId,
           @Param("room") String room);
 
   @Lock(LockModeType.PESSIMISTIC_WRITE)

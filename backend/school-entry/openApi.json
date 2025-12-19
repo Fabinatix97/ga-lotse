@@ -5624,7 +5624,7 @@
         }
       },
       "AppointmentBlock" : {
-        "required" : [ "appointmentBlockBins", "bookedAppointments", "consultants", "end", "id", "mfas", "parallelExaminations", "physicians", "resolvedUsers", "start", "types" ],
+        "required" : [ "appointmentBlockBins", "bookedAppointments", "consultants", "end", "extraLength", "id", "mfas", "parallelExaminations", "physicians", "resolvedUsers", "sopasss", "start", "types" ],
         "type" : "object",
         "properties" : {
           "appointmentBlockBins" : {
@@ -5664,6 +5664,9 @@
             "format" : "date-time",
             "example" : "2016-01-01T01:45:00.123456+01:00"
           },
+          "extraLength" : {
+            "type" : "boolean"
+          },
           "id" : {
             "type" : "string",
             "description" : "Id of the AppointmentBlock.",
@@ -5698,6 +5701,13 @@
           },
           "room" : {
             "type" : "string"
+          },
+          "sopasss" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "format" : "uuid"
+            }
           },
           "start" : {
             "type" : "string",
@@ -6338,6 +6348,10 @@
           },
           "room" : {
             "type" : "string"
+          },
+          "sopassId" : {
+            "type" : "string",
+            "format" : "uuid"
           }
         }
       },
@@ -6420,6 +6434,9 @@
               "format" : "uuid"
             }
           },
+          "extraLength" : {
+            "type" : "boolean"
+          },
           "locationId" : {
             "type" : "string",
             "format" : "uuid"
@@ -6448,6 +6465,13 @@
             "maxLength" : 60,
             "minLength" : 1,
             "type" : "string"
+          },
+          "sopasss" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "format" : "uuid"
+            }
           },
           "types" : {
             "maxItems" : 2147483647,
@@ -11231,7 +11255,7 @@
         "description" : "A request containing the availability flags and lead times."
       },
       "UpdateAppointmentBlockRequest" : {
-        "required" : [ "consultants", "end", "mfas", "parallelExaminations", "physicians", "start" ],
+        "required" : [ "consultants", "end", "mfas", "parallelExaminations", "physicians", "sopasss", "start" ],
         "type" : "object",
         "properties" : {
           "consultants" : {
@@ -11269,6 +11293,13 @@
           },
           "room" : {
             "type" : "string"
+          },
+          "sopasss" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "format" : "uuid"
+            }
           },
           "start" : {
             "type" : "string",

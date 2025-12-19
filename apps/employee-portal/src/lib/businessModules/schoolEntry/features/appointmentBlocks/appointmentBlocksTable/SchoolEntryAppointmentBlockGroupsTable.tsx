@@ -35,6 +35,7 @@ import { getAppointmentBlockGroupsQuery } from "@/lib/businessModules/schoolEntr
 import {
   getAllMedicalAssistantsQuery,
   getAllPhysiciansQuery,
+  getAllSopassQualifiedMFAsQuery,
 } from "@/lib/businessModules/schoolEntry/api/queries/appointmentStaff";
 import { useGetAppointmentStandardDurationsQuery } from "@/lib/businessModules/schoolEntry/api/queries/appointmentStandardDuration";
 import { getLocationSelectionModeQuery } from "@/lib/businessModules/schoolEntry/api/queries/configApi";
@@ -65,6 +66,7 @@ export function SchoolEntryAppointmentBlockGroupsTable(
     { data: standardDurations },
     { data: physicians },
     { data: mfas },
+    { data: sopasss },
   ] = useSuspenseQueries({
     queries: [
       getLocationSelectionModeQuery(configApi),
@@ -79,6 +81,7 @@ export function SchoolEntryAppointmentBlockGroupsTable(
       useGetAppointmentStandardDurationsQuery(standardDurationApi),
       getAllPhysiciansQuery(userApi),
       getAllMedicalAssistantsQuery(userApi),
+      getAllSopassQualifiedMFAsQuery(userApi),
     ],
   });
 
@@ -88,6 +91,7 @@ export function SchoolEntryAppointmentBlockGroupsTable(
     appointmentBlockApiQueryKey,
     physicians,
     mfas,
+    sopasss,
     standardDurations,
     columnHelper,
     additionalColumn:

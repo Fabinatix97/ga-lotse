@@ -21,12 +21,12 @@ import {
   useTableControl,
 } from "@eshg/lib-employee-portal";
 import { Row, formatWeekdayDateTime } from "@eshg/lib-portal";
-import { ApiProstituteProtectionProcedureOverview } from "@eshg/prostitute-protection-api";
-
 import {
-  AbortProcedureParams,
-  useAbortProcedureMutation,
-} from "../../../api/mutations/procedures";
+  AbortProcedureRequest,
+  ApiProstituteProtectionProcedureOverview,
+} from "@eshg/prostitute-protection-api";
+
+import { useAbortProcedureMutation } from "../../../api/mutations/procedures";
 import { useProceduresQueryOptions } from "../../../api/queries/procedures";
 import { routes } from "../../../config/routes";
 import { CONSULTATION_TYPE_VALUES } from "../../../shared/constants";
@@ -117,7 +117,7 @@ function getProceduresColumns({ onAbortProcedure }: RowActions) {
 
 export function ProstituteProtectionProceduresTable() {
   const [confirmAbort, setConfirmAbort] = useState<
-    AbortProcedureParams | undefined
+    AbortProcedureRequest | undefined
   >();
   const tableControl = useTableControl({
     serverSideSorting: true,
@@ -169,7 +169,10 @@ export function ProstituteProtectionProceduresTable() {
             data={elements}
             columns={getProceduresColumns({
               onAbortProcedure: (id, version) =>
-                setConfirmAbort({ id, data: { version } }),
+                setConfirmAbort({
+                  procedureId: id,
+                  apiAbortProcedureRequest: { version },
+                }),
             })}
             rowNavigation={{
               route: ({ original: { id: procedureId } }) =>

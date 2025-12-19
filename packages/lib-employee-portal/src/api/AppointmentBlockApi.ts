@@ -14,6 +14,7 @@ export interface ApiUpdateAppointmentBlockRequest {
   mfas: string[];
   physicians: string[];
   consultants: string[];
+  sopasss: string[];
   room?: string;
 }
 

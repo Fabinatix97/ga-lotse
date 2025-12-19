@@ -34,7 +34,7 @@ import { ActionsItem, ActionsMenu } from "../buttons/ActionsMenu";
 import { AppointmentBlockRow } from "./AppointmentBlockGroupsTable";
 import { useUpdateAppointmentBlockSidebar } from "./UpdateAppointmentBlockSidebar";
 import { APPOINTMENT_TYPES } from "./translations";
-import { ApiAppointmentType } from "./types";
+import { ApiAppointmentType, AppointmentStandardDurations } from "./types";
 
 function toggleRowExpanded({
   getIsExpanded,
@@ -50,6 +50,7 @@ export function useAppointmentBlockGroupsColumns({
   physicians,
   mfas,
   consultants,
+  sopasss,
   standardDurations,
   columnHelper,
   additionalColumn,
@@ -61,7 +62,8 @@ export function useAppointmentBlockGroupsColumns({
   physicians?: User[];
   mfas?: User[];
   consultants?: User[];
-  standardDurations: Partial<Record<ApiAppointmentType, number>>;
+  sopasss?: User[];
+  standardDurations: AppointmentStandardDurations;
   columnHelper: ColumnHelper<AppointmentBlockRow>;
   additionalColumn?: ColumnDef<AppointmentBlockRow, string>;
   showWeekDays?: boolean;
@@ -234,6 +236,7 @@ export function useAppointmentBlockGroupsColumns({
                       physicians,
                       mfas,
                       consultants,
+                      sopasss,
                       standardDurations,
                     });
                   },

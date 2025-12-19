@@ -233,7 +233,7 @@ public class FacilityService {
       if (newestInspection == null) {
         isNew = true;
         newestInspection =
-            inspectionFinalizer.createFollowupInspection(
+            inspectionFinalizer.createFollowupInspectionIfApplicable(
                 inspectionService.findNewestClosedInspectionForFacility(inspFacility));
       }
     }

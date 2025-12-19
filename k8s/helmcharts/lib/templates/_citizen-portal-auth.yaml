@@ -10,6 +10,14 @@
 
 {{- $selfManagedCacheHost := printf "citizen-portal-auth-cache%s" .Values.domains.clusterLocalSuffix }}
 
+{{- $hasCache := eq .Values.citizenportalauth.cache.enabled true }}
+{{- $selfManagedRedis := and $hasCache .Values.citizenportalauth.cache.selfmanaged }}
+
+{{- $springProfiles := include "removeTestHelper" ($.Values.spring.profiles.active) }}
+{{- if not $hasCache }}
+  {{ $springProfiles = printf "%s, disable-redis" $springProfiles }}
+{{- end }}
+
 kind: Service
 apiVersion: v1
 metadata:
@@ -63,6 +71,7 @@ spec:
           configMap:
             name: ca
         {{- end }}
+        {{- if $hasCache }}
         - name: redis-certs
           secret:
             secretName: citizenportalauth-redis
@@ -70,6 +79,7 @@ spec:
             items:
               - key: ca.crt
                 path: ca.crt
+        {{- end }}
         {{- if eq "true" $createDebugLogMount }}
         - name: debuglog
           persistentVolumeClaim:
@@ -80,7 +90,7 @@ spec:
         {{- end }}
       initContainers:
       {{- include "waitForDeployment" (list .Values "lsd") | indent 8 }}
-      {{ if .Values.citizenportalauth.cache.selfmanaged -}}
+      {{ if $selfManagedRedis -}}
       {{- include "waitForDeployment" (list .Values "citizen-portal-auth-cache") | indent 8 }}
       {{- end }}
       containers:
@@ -91,7 +101,7 @@ spec:
           {{- toYaml (default dict .Values.citizenportalauth.resources) | nindent 12 }}
           env:
             - name: spring.profiles.active
-              value: "{{ include "removeTestHelper" ($.Values.spring.profiles.active) }}"
+              value: "{{ $springProfiles }}"
             - name: spring.profiles.include
               value: citizen-portal
             - name: server.servlet.session.cookie.name
@@ -102,6 +112,7 @@ spec:
               value: "https://{{ .Values.domains.hosts.keycloakInternal}}"
             - name: eshg.reverse-proxy.url
               value: https://{{ .Values.domains.hosts.citizenportal }}
+            {{- if $hasCache }}
             - name: spring.data.redis.host
               valueFrom:
                 secretKeyRef:
@@ -112,7 +123,8 @@ spec:
                 secretKeyRef:
                   name: citizenportalauth-redis
                   key: REDIS_PASSWORD
-            {{ if not .Values.citizenportalauth.cache.selfmanaged -}}
+            {{- end }}
+            {{ if and $hasCache (not $selfManagedRedis) -}}
             - name: spring.data.redis.ssl.enabled
               value: "true"
             - name: spring.data.redis.ssl.bundle
@@ -155,15 +167,15 @@ spec:
             - name: debuglog
               mountPath: /var/log/eshg-debug
             {{- end }}
-            {{- if not .Values.citizenportalauth.cache.selfmanaged }}
+            {{ if and $hasCache (not $selfManagedRedis) -}}
             - mountPath: /var/run/redis-certs
               name: redis-certs
               readOnly: true
           {{- end }}
-    {{- include "module.spatz" (dict "Values" $.Values "v" $.Values.citizenportalauth "k" "citizenportalauth" "actorType" "WEB" "relay" false "createDebugLogMount" $createDebugLogMount) }}
+    {{- include "module.spatz" (dict "Values" $.Values "v" $.Values.citizenportalauth "k" "citizenportalauth" "actorType" "WEB" "relay" false "createDebugLogMount" $createDebugLogMount "hasCache" $hasCache) }}
 
 
-{{ if .Values.citizenportalauth.cache.selfmanaged -}}
+{{ if $selfManagedRedis -}}
 ---
 
 kind: Service
@@ -223,9 +235,9 @@ spec:
           livenessProbe:
             exec:
               command:
-                - /usr/bin/sh
-                - -c
-                - /usr/local/bin/redis-cli -a $REDIS_PASSWORD ping
+                  - /bin/sh
+                  - -c
+                  - redis-cli -a $REDIS_PASSWORD ping
             initialDelaySeconds: 10
             timeoutSeconds: 5
           volumeMounts:
@@ -246,7 +258,7 @@ metadata:
   namespace: {{ .Release.Namespace }}
 type: Opaque
 
-{{- else }}
+{{- else if $hasCache }}
   {{ include "lib.redis" (list "citizenportalauth" $) }}
 {{- end }}
 

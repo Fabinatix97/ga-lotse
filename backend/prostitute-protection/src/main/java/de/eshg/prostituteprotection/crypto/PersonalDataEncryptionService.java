@@ -1,11 +1,12 @@
 /*
  * Copyright 2025 cronn GmbH
- * SPDX-License-Identifier: Apache-2.0
+ * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 package de.eshg.prostituteprotection.crypto;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import de.eshg.prostituteprotection.domain.model.EncryptedPersonalData;
 import java.nio.charset.StandardCharsets;
 import java.security.GeneralSecurityException;
 import java.security.MessageDigest;
@@ -100,13 +101,27 @@ public class PersonalDataEncryptionService {
     }
   }
 
+  public DecryptedPersonalDataDto decrypt(
+      EncryptedPersonalData encryptedPersonalData,
+      String firstName,
+      String lastName,
+      LocalDate dateOfBirth) {
+    byte encryptionKey[] = generateEncryptionKey(firstName, lastName, dateOfBirth);
+    return decrypt(
+        new EncryptedPersonalDataDto(
+            encryptedPersonalData.getHashedPersonIdentifier(),
+            encryptedPersonalData.getEncryptedData(),
+            encryptedPersonalData.getNonce()),
+        encryptionKey);
+  }
+
   private byte[] normalizedPersonalDataAsByteArray(
       String firstName, String lastName, LocalDate dateOfBirth) {
     return PersonalDataNormalizer.createNormalizedPersonalData(firstName, lastName, dateOfBirth)
         .getBytes(StandardCharsets.UTF_8);
   }
 
-  private byte[] generateHashedPersonIdentifier(byte[] encryptionKey) {
+  public byte[] generateHashedPersonIdentifier(byte[] encryptionKey) {
     try {
       MessageDigest digest = MessageDigest.getInstance(HASH_ALGORITHM);
       return digest.digest(encryptionKey);

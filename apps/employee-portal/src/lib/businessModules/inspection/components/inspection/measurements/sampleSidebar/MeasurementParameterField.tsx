@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Stack } from "@mui/joy";
-import { useState } from "react";
+import { Stack, createFilterOptions } from "@mui/joy";
+import { useEffect, useState } from "react";
 import { useDebounce } from "use-debounce";
 
 import { SelectObjectField } from "@eshg/lib-portal";
@@ -25,15 +25,21 @@ export function MeasurementParameterField(props: ParameterFieldProps) {
   const [parameterInputValue, setParameterInputValue] = useState("");
   const [parameterQuery] = useDebounce(parameterInputValue, 100);
   const [selectedParameterZid, setSelectedParameterZid] = useState("");
+  const [options, setOptions] = useState<{ label: string; value: string }[]>(
+    [],
+  );
 
   const query = useAutocompleteParameterQuery({ prefix: parameterQuery });
 
-  const options = query.isSuccess
-    ? query.data.elements.map((element) => ({
+  useEffect(() => {
+    if (!query.isSuccess) return;
+    setOptions(
+      query.data.elements.map((element) => ({
         label: element.name,
         value: element.zid,
-      }))
-    : [];
+      })),
+    );
+  }, [query.isSuccess, query.data]);
 
   const queryRegulations = useAutocompleteParameterRegulationQuery({
     parameterZid: selectedParameterZid,
@@ -49,6 +55,7 @@ export function MeasurementParameterField(props: ParameterFieldProps) {
     <Stack sx={{ flex: 1 }} gap={2}>
       <SelectObjectField
         {...props}
+        filterOptions={createFilterOptions({ matchFrom: "start" })}
         name={props.name + ".parent"}
         loading={query.isLoading}
         options={options}

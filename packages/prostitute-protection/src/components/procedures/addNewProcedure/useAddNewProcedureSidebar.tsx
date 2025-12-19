@@ -5,37 +5,42 @@
 
 import { Formik } from "formik";
 import { useRouter } from "next/navigation";
-import { Ref } from "react";
+import { ReactNode } from "react";
 
 import {
-  SidebarFormHandle,
-  useSidebarFromSearchParam,
+  SidebarWithFormRefProps,
+  UseSidebarWithFormRefResult,
+  useSidebarWithFormRef,
   useStepper,
 } from "@eshg/lib-employee-portal";
+import { isNonEmptyString, mapOptionalValue } from "@eshg/lib-portal";
 import {
-  isNonEmptyString,
-  mapOptionalValue,
-  useSnackbar,
-} from "@eshg/lib-portal";
-import {
-  ApiAppointment,
   ApiAppointmentBookingType,
   ApiConsultationType,
   ApiCreateProstituteProtectionProcedureRequest,
-  ApiPersonLanguage,
 } from "@eshg/prostitute-protection-api";
 
 import { useCreateProcedureMutation } from "../../../api/mutations/procedures";
 import { useGetAppointmentStandardDuration } from "../../../api/queries/appointmentStandardDuration";
 import { routes } from "../../../config/routes";
+import { AppointmentFieldsData } from "../../form/AppointmentFields";
+import { LanguageFieldsData } from "../../form/LanguageFields";
 
 import { AppointmentStep } from "./AppointmentStep";
 import { PersonStep } from "./PersonStep";
 import { SummaryFormStep } from "./SummaryForm";
 
-export interface FieldProps {
-  formRef: Ref<SidebarFormHandle>;
-  onClose: () => void;
+export interface LayoutProps<T> extends SidebarWithFormRefProps {
+  children: ReactNode;
+  handleNext: (newValues: T) => Promise<unknown> | void;
+  handlePrev: () => void;
+  isOnLastStep: boolean;
+  isOnFirstStep: boolean;
+  title: string;
+  subTitle?: string;
+}
+
+export interface FieldProps extends SidebarWithFormRefProps {
   handleNext: (newValues: AddNewProcedureForm) => Promise<unknown> | void;
   handlePrev: () => void;
   changeToStep: (index: number) => void;
@@ -64,53 +69,41 @@ const steps = [
   },
 ];
 
-export interface AddNewProcedureForm {
+export interface AddNewProcedureForm
+  extends LanguageFieldsData,
+    AppointmentFieldsData {
   alias: string;
-  hasSufficientGermanLanguageSkills?: boolean;
-  languages: ApiPersonLanguage[];
   consultationType: ApiConsultationType | "";
-  customAppointmentDate?: string;
-  duration: number;
-  blockAppointment?: ApiAppointment;
-  appointmentBookingType: ApiAppointmentBookingType | "";
 }
 
-const searchParam = "add-procedure";
-
-export function useAddNewProcedureSidebar() {
-  return useSidebarFromSearchParam({
-    component: ({ formRef, onClose }) => (
-      <SidebarWrapper formRef={formRef} onClose={onClose} />
-    ),
-    searchParam,
+export function useAddNewProcedureSidebar(): UseSidebarWithFormRefResult {
+  return useSidebarWithFormRef({
+    component: SidebarWrapper,
   });
 }
 
-function SidebarWrapper({
-  formRef,
-  onClose,
-}: {
-  formRef: Ref<SidebarFormHandle>;
-  onClose: () => void;
-}) {
-  const snackbar = useSnackbar();
+function SidebarWrapper(props: SidebarWithFormRefProps) {
   const addNewProcedure = useCreateProcedureMutation();
   const { data } = useGetAppointmentStandardDuration();
   const router = useRouter();
+
   const initialValues: AddNewProcedureForm = {
     alias: "",
     languages: [],
+    hasSufficientGermanLanguageSkills: false,
     customAppointmentDate: "",
     consultationType: "",
-    duration: data.PROSTITUTE_PROTECTION_CONSULTATION,
+    duration: data.standardDurations.PROSTITUTE_PROTECTION_CONSULTATION ?? 0,
     appointmentBookingType: "",
   };
 
   async function onFinalSubmit(newValues: AddNewProcedureForm) {
     const mappedValues = mapProcedureFormToApi(newValues);
-    const { id } = await addNewProcedure.mutateAsync(mappedValues);
-    router.push(routes.procedures.byId(id).details);
-    snackbar.confirmation("Vorgang erstellt");
+    await addNewProcedure.mutateAsync(mappedValues, {
+      onSuccess: (response) => {
+        router.push(routes.procedures.byId(response.id).details);
+      },
+    });
   }
 
   const {
@@ -135,7 +128,7 @@ function SidebarWrapper({
       <Fields
         title={step.title}
         subTitle={step.subTitle}
-        formRef={formRef}
+        formRef={props.formRef}
         isOnLastStep={isOnLastStep}
         isOnFirstStep={isOnFirstStep}
         handleNext={handleNext}
@@ -143,7 +136,7 @@ function SidebarWrapper({
         changeToStep={changeToStep}
         jumpToAppointmentSelection={jumpToAppointmentSelection}
         jumpToPersonalData={jumpToPersonalData}
-        onClose={onClose}
+        onClose={props.onClose}
       />
     </Formik>
   );
