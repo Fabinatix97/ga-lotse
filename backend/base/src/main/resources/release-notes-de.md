@@ -2,6 +2,16 @@ GA-Lotse ist ein Kooperationsprojekt des Gesundheitsamts Frankfurt am Main mit d
 
 Finanziert von der Europäischen Union – NextGenerationEU
 
+## GA-Lotse 2.15
+_07.01.2026_
+
+Achtundzwanzigster Release der Anwendung GA-Lotse
+
+### Hygiene:
+* Neue Objekttypen und Kategorien für Einrichtungen in der Benutzeroberfläche verfügbar
+* Kategoriehierarchie wird bei allen Objekttypen angezeigt
+* Bestehende Vorgänge sind in den neuen Kategoriebaum eingeordnet
+
 ## GA-Lotse 2.14
 _17.12.2025_
 

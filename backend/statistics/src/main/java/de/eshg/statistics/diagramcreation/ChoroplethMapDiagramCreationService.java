@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 cronn GmbH
+ * Copyright 2026 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -115,9 +115,9 @@ public class ChoroplethMapDiagramCreationService
             notNullSpecifications.add(
                 TableRowSpecifications.getNotNullSpecification(secondaryTableColumn));
         case TableColumnValueType.DECIMAL,
-                TableColumnValueType.DECIMAL_INTERVAL,
-                TableColumnValueType.INTEGER,
-                TableColumnValueType.INTEGER_INTERVAL ->
+            TableColumnValueType.DECIMAL_INTERVAL,
+            TableColumnValueType.INTEGER,
+            TableColumnValueType.INTEGER_INTERVAL ->
             notNullSpecifications.add(
                 TableRowSpecifications.getNotNullAndNotUnknownSpecificationDecimalAndInteger(
                     secondaryTableColumn));

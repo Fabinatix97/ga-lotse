@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 cronn GmbH
+ * Copyright 2026 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -27,6 +27,7 @@ import de.eshg.dental.api.UpdateProphylaxisSessionParticipantsRequest;
 import de.eshg.dental.api.UpdateProphylaxisSessionRequest;
 import de.eshg.dental.business.model.ChildWithPersonAndContactData;
 import de.eshg.dental.business.model.ChildWithPersonData;
+import de.eshg.dental.business.model.ProphylaxisSessionExaminationUpdateResult;
 import de.eshg.dental.business.model.ProphylaxisSessionWithAugmentedData;
 import de.eshg.dental.business.model.ProphylaxisSessionWithAugmentedInstitution;
 import de.eshg.dental.client.PersonClient;
@@ -291,7 +292,7 @@ public class ProphylaxisSessionService {
       List<Examination> examinations) {
     List<Child> children = examinations.stream().map(Examination::getChild).toList();
     List<ChildWithPersonAndContactData> augmentedChildren =
-        childService.augmentWithChildAndContactData(children);
+        childService.augmentWithChildAndContactData(children, true);
     return augmentedChildren.stream()
         .collect(StreamUtil.toLinkedHashMap(child -> child.child().getChildIdFromCentralFile()));
   }
@@ -395,33 +396,47 @@ public class ProphylaxisSessionService {
     prophylaxisSessionRepository.flush();
   }
 
-  public ProphylaxisSessionWithAugmentedData updateProphylaxisSessionExaminations(
+  public ProphylaxisSessionExaminationUpdateResult updateProphylaxisSessionExaminations(
       UUID prophylaxisSessionId, UpdateProphylaxisSessionExaminationsRequest updateRequest) {
+    List<UUID> failedPersonUpdates = new ArrayList<>();
+    List<UUID> failedExaminationUpdates = new ArrayList<>();
+
     // must happen before examinationUpdates -> version conflict
     if (!updateRequest.childUpdates().isEmpty()) {
-      updateChildDetails(updateRequest.childUpdates());
+      failedPersonUpdates = updateChildDetails(updateRequest.childUpdates());
     }
     if (!updateRequest.examinationUpdates().isEmpty()) {
-      updateExaminations(updateRequest.examinationUpdates());
+      failedExaminationUpdates = updateExaminations(updateRequest.examinationUpdates());
     }
-    return getProphylaxisSessionWithDetails(prophylaxisSessionId);
+    ProphylaxisSessionWithAugmentedData prophylaxisSessionWithDetails =
+        getProphylaxisSessionWithDetails(prophylaxisSessionId);
+
+    return new ProphylaxisSessionExaminationUpdateResult(
+        failedPersonUpdates, failedExaminationUpdates, prophylaxisSessionWithDetails);
   }
 
-  private void updateChildDetails(List<UpdateChildDetailsInBulkRequest> childUpdates) {
+  private List<UUID> updateChildDetails(List<UpdateChildDetailsInBulkRequest> childUpdates) {
+    List<UUID> failedPersonUpdates = new ArrayList<>();
+
     List<UUID> childIds =
         childUpdates.stream().map(UpdateChildDetailsInBulkRequest::childId).toList();
 
     List<Child> children = childRepository.findByExternalIdsForUpdate(childIds).toList();
     Map<UUID, ChildWithPersonData> augmentedChildren =
         childService.augmentWithChildData(children).stream()
-            .collect(StreamUtil.toLinkedHashMap((child) -> child.child().getExternalId()));
+            .collect(StreamUtil.toLinkedHashMap(child -> child.child().getExternalId()));
     for (UpdateChildDetailsInBulkRequest childUpdate : childUpdates) {
       ChildWithPersonData augmentedChild = augmentedChildren.get(childUpdate.childId());
       Child child = augmentedChild.child();
-      ValidationUtil.validateVersion(childUpdate.version(), child);
       if (hasChangedPersonAttribute(childUpdate, augmentedChild.person())) {
-        childService.updateChildPerson(
-            child, mapToPersonDetailsDto(augmentedChild.person(), childUpdate));
+        try {
+          ValidationUtil.validateVersion(childUpdate.version(), child);
+          childService.updateChildPerson(
+              child, mapToPersonDetailsDto(augmentedChild.person(), childUpdate));
+        } catch (Exception e) {
+          failedPersonUpdates.add(childUpdate.childId());
+          log.error("Person update failed for child {}", childUpdate.childId(), e);
+        }
       }
       childService.updateChildData(
           child,
@@ -433,6 +448,8 @@ public class ProphylaxisSessionService {
               childUpdate.procedureLabels()));
     }
     childRepository.flush();
+
+    return failedPersonUpdates;
   }
 
   private PersonDetailsDto mapToPersonDetailsDto(
@@ -461,7 +478,8 @@ public class ProphylaxisSessionService {
         && Objects.equals(childUpdate.gender(), personData.gender()));
   }
 
-  private void updateExaminations(List<UpdateExaminationsInBulkRequest> examinationUpdates) {
+  private List<UUID> updateExaminations(List<UpdateExaminationsInBulkRequest> examinationUpdates) {
+    List<UUID> failedExaminationUpdates = new ArrayList<>();
     List<UUID> examinationIds =
         examinationUpdates.stream().map(UpdateExaminationsInBulkRequest::id).toList();
 
@@ -474,15 +492,23 @@ public class ProphylaxisSessionService {
     for (UpdateExaminationsInBulkRequest examinationUpdate : examinationUpdates) {
       Examination persistedExamination = persistedExaminations.get(examinationUpdate.id());
       if (persistedExamination == null) {
-        throw new NotFoundException(
-            "Examination with id %s not found".formatted(examinationUpdate.id()));
+        failedExaminationUpdates.add(examinationUpdate.id());
+        log.error("Examination with id {} was not found", examinationUpdate.id());
+        continue;
       }
-      examinationService.updateExamination(
-          persistedExamination,
-          new UpdateExaminationRequest(
-              examinationUpdate.version(), examinationUpdate.note(), examinationUpdate.result()));
+      try {
+        examinationService.updateExamination(
+            persistedExamination,
+            new UpdateExaminationRequest(
+                examinationUpdate.version(), examinationUpdate.note(), examinationUpdate.result()));
+      } catch (Exception e) {
+        failedExaminationUpdates.add(examinationUpdate.id());
+        log.error("Update of examination with id {} failed", examinationUpdate.id(), e);
+      }
     }
+
     examinationRepository.flush();
+    return failedExaminationUpdates;
   }
 
   private ProphylaxisSession mapProphylaxisSessionRequest(

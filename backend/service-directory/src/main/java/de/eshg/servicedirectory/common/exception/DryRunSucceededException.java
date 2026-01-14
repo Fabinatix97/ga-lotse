@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 SCOOP Software GmbH, cronn GmbH
+ * Copyright 2026 SCOOP Software GmbH, cronn GmbH
  * SPDX-License-Identifier: Apache-2.0
  */
 

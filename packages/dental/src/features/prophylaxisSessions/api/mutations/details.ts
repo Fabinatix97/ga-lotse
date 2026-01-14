@@ -1,5 +1,5 @@
 /**
- * Copyright 2025 cronn GmbH
+ * Copyright 2026 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -14,6 +14,7 @@ import {
 import { useHandledMutation, useSnackbar } from "@eshg/lib-portal";
 
 import { useDentalApi } from "../../../../contexts/dental";
+import { useUpdateExaminationResultMessage } from "../../components/prophylaxisSessionDetails/useUpdateExaminationResultMessage";
 import { ProphylaxisSessionExamination } from "../models/ProphylaxisSessionExamination";
 import { getProphylaxisSessionQuery } from "../queries/details";
 
@@ -102,7 +103,7 @@ export function useUpdateProphylaxisSessionExaminations(
   const { queryKey } = getProphylaxisSessionQuery(prophylaxisSessionApi, {
     prophylaxisSessionId,
   });
-  const snackbar = useSnackbar();
+  const updateExaminationResultMessage = useUpdateExaminationResultMessage();
 
   return useHandledMutation({
     meta: { updatesQuery: queryKey },
@@ -112,8 +113,8 @@ export function useUpdateProphylaxisSessionExaminations(
         request,
       ),
     onSuccess: (response) => {
-      queryClient.setQueryData(queryKey, response);
-      snackbar.confirmation("Untersuchungen erfolgreich gespeichert.");
+      queryClient.setQueryData(queryKey, response.prophylaxisSessionDetails);
+      updateExaminationResultMessage.open(response);
       options?.onSuccess?.();
     },
     alertOptions: {

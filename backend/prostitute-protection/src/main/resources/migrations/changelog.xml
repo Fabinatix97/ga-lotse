@@ -1,6 +1,6 @@
 <?xml version="1.1" encoding="UTF-8" standalone="no"?>
 <!--
- Copyright 2025 cronn GmbH
+ Copyright 2026 cronn GmbH
  SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -32,4 +32,7 @@
   <include file="migrations/0023_remove_last_consultation_date.xml"/>
   <include file="migrations/0024_add_document_type_values.xml"/>
   <include file="migrations/0025_add_trgm_extensions.xml"/>
+  <include file="migrations/0026_add_encrypted_file_table.xml"/>
+  <include file="migrations/0027_add_external_id_to_encrypted_file.xml"/>
+  <include file="migrations/0028_add_consultant_and_calendar_event_id.xml"/>
 </databaseChangeLog>

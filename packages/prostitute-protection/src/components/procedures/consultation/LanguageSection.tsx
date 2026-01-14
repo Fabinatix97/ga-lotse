@@ -1,14 +1,15 @@
 /**
- * Copyright 2025 cronn GmbH
+ * Copyright 2026 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Box, Sheet, Stack, Typography } from "@mui/joy";
+import { Stack } from "@mui/joy";
 import { useFormikContext } from "formik";
 
 import {
   CheckboxField,
   InputField,
+  InputFieldProps,
   SelectField,
   useValidateLength,
 } from "@eshg/lib-portal";
@@ -19,85 +20,63 @@ import {
 } from "../../../shared/constants";
 
 import { ConsultationFormData } from "./ConsultationForm";
+import { Section, SectionColumn, SectionGridContainer } from "./Section";
 
 export function LanguageSection() {
   return (
-    <Sheet component={Stack}>
-      <Typography level="h3" mb={3}>
-        Sprache
-      </Typography>
-      <Stack gap={2}>
-        <SelectField
-          name="languageOfConsultation"
-          label={CONSULTATION_FIELD_NAME.languageOfConsultation}
-          options={LANGUAGE_OPTIONS}
-        />
-        <InterpreterCheckbox
-          name="interpreterConsulted"
-          label={CONSULTATION_FIELD_NAME.interpreterConsulted}
-        />
-      </Stack>
-    </Sheet>
+    <Section title="Sprache">
+      <SectionGridContainer>
+        <SectionColumn>
+          <SelectField
+            options={LANGUAGE_OPTIONS}
+            name="languageOfConsultation"
+            label={CONSULTATION_FIELD_NAME.languageOfConsultation}
+          />
+          <InterpreterInputFields />
+        </SectionColumn>
+      </SectionGridContainer>
+    </Section>
   );
 }
 
-function InterpreterCheckbox({ name, label }: { name: string; label: string }) {
-  const { getFieldMeta, setFieldValue } =
-    useFormikContext<ConsultationFormData>();
+function InterpreterInputFields() {
+  const { values } = useFormikContext<ConsultationFormData>();
+  return (
+    <Stack gap={3} role="group" aria-label="Dolmetscher">
+      <CheckboxField
+        name="interpreterConsulted"
+        label={CONSULTATION_FIELD_NAME.interpreterConsulted}
+        aria-label={
+          values.interpreterConsulted ? "Nicht mehr hinzuziehen" : "Hinzuziehen"
+        }
+      />
+      <Stack
+        display={values.interpreterConsulted ? "flex" : "none"}
+        direction="row"
+        gap={3}
+        flexWrap="wrap"
+      >
+        <InterpreterInputField
+          name="interpreterFirstName"
+          label={CONSULTATION_FIELD_NAME.interpreterFirstName}
+        />
+        <InterpreterInputField
+          name="interpreterLastName"
+          label={CONSULTATION_FIELD_NAME.interpreterLastName}
+        />
+      </Stack>
+    </Stack>
+  );
+}
+
+function InterpreterInputField(props: InputFieldProps) {
   const validateLength = useValidateLength();
 
-  function isInterpreterChecked() {
-    return getFieldMeta(name).value === true;
-  }
-
   return (
-    <Stack
-      component="fieldset"
-      aria-label={label}
-      border={0}
-      margin={0}
-      padding={0}
-      spacing={0}
-      gap={2}
-    >
-      <CheckboxField
-        name={name}
-        label={label}
-        onChange={async (e) => {
-          const { checked } = e.target;
-          await setFieldValue(name, checked);
-          if (!checked) {
-            await setFieldValue("interpreterFirstName", "");
-            await setFieldValue("interpreterLastName", "");
-          }
-        }}
-      />
-      {isInterpreterChecked() && (
-        <Box
-          sx={{
-            display: "grid",
-            gridTemplateColumns: "repeat(2, 1fr)",
-            gap: 2,
-          }}
-        >
-          <InputField
-            name="interpreterFirstName"
-            label={CONSULTATION_FIELD_NAME.interpreterFirstName}
-            validate={(value) =>
-              value ? validateLength(1, 80)(value) : undefined
-            }
-            sx={{ minWidth: 0 }}
-          />
-          <InputField
-            name="interpreterLastName"
-            label={CONSULTATION_FIELD_NAME.interpreterLastName}
-            validate={(value) =>
-              value ? validateLength(1, 80)(value) : undefined
-            }
-            sx={{ minWidth: 0 }}
-          />
-        </Box>
-      )}
-    </Stack>
+    <InputField
+      {...props}
+      validate={(value) => (value ? validateLength(1, 80)(value) : undefined)}
+      sx={{ flex: 1 }}
+    />
   );
 }

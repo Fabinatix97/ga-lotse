@@ -1,5 +1,5 @@
 /**
- * Copyright 2025 cronn GmbH
+ * Copyright 2026 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -129,6 +129,7 @@ export function AppointmentForm<TForm extends CreateAppointmentForm>({
         ) : null}
         <RadioSheets
           name="appointmentBookingType"
+          aria-label="Buchungsart"
           required="Bitte eine Buchungsart auswählen"
         >
           <RadioSheetOption

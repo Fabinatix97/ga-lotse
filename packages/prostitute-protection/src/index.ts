@@ -1,5 +1,5 @@
 /**
- * Copyright 2025 cronn GmbH
+ * Copyright 2026 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -16,7 +16,7 @@ export {
   ProstituteProtectionApiClientProvider as ProstituteProtectionProvider,
   useProstituteProtectionApiClients,
 } from "./contexts/ProstituteProtectionApi";
-export { SelectedPersonStoreProvider } from "./contexts/selectedPerson/SelectedPersonStoreProvider";
+export { DecryptedPersonsStoreProvider as SelectedPersonStoreProvider } from "./contexts/decryptedPersons/DecryptedPersonsStoreProvider";
 
 // Pages
 export { ProstituteProtectionNewAppointmentBlockGroupsPage } from "./pages/ProstituteProtectionNewAppointmentBlockGroupsPage";

@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 cronn GmbH
+ * Copyright 2026 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -12,7 +12,7 @@ import java.time.Instant;
 import java.util.List;
 
 public record CreateProstituteProtectionProcedureRequest(
-    @NotNull String alias,
+    String alias,
     @NotNull List<LanguageDto> languages,
     ConsultationTypeDto consultationType,
     @NotNull AppointmentBookingTypeDto appointmentBookingType,

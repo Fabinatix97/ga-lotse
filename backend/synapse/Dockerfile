@@ -1,4 +1,4 @@
-# Copyright 2025 cronn GmbH
+# Copyright 2026 cronn GmbH
 # SPDX-License-Identifier: Apache-2.0
 
 FROM matrixdotorg/synapse:v1.128.0@sha256:5765b7f1bd46b3ded0a59546c8e69b33e57ef6007854791701943f0414557e39

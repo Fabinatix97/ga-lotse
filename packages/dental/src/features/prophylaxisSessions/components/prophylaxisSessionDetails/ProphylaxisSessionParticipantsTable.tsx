@@ -1,5 +1,5 @@
 /**
- * Copyright 2025 cronn GmbH
+ * Copyright 2026 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -13,9 +13,10 @@ import {
   CheckCircleOutlined,
   CircleOutlined,
   DeleteOutlined,
+  OpenInNewOutlined,
   Start,
 } from "@mui/icons-material";
-import { Button, Divider, Stack, Typography } from "@mui/joy";
+import { Button, Divider, Stack, Tooltip, Typography } from "@mui/joy";
 import { createColumnHelper } from "@tanstack/react-table";
 import { useEffect, useState } from "react";
 import { isDefined } from "remeda";
@@ -38,6 +39,7 @@ import {
   useTableControl,
 } from "@eshg/lib-employee-portal";
 import {
+  ExternalLink,
   GENDER_VALUES,
   InternalLinkButton,
   formatDate,
@@ -415,17 +417,43 @@ function columnDefs(
     ...(isFluoridation
       ? [
           columnHelper.accessor("currentFluoridationConsent", {
-            header: "Fluoridierungseinverständnis",
+            header: () => (
+              <Tooltip title="Fluoridierungseinverständnis">
+                <Typography>Fluorid. EV</Typography>
+              </Tooltip>
+            ),
             cell: (props) =>
               formatBooleanWithUnknown(props.getValue()?.consented),
             enableSorting: true,
             meta: {
               canNavigate: { parentRow: true },
-              width: 260,
+              width: 130,
             },
           }),
         ]
       : []),
+    columnHelper.accessor("updatePending", {
+      header: () => (
+        <Tooltip title="Persönliche Daten">
+          <Typography>Pers. Daten</Typography>
+        </Tooltip>
+      ),
+      cell: (props) =>
+        props.getValue() && (
+          <ExternalLink
+            href={routes.children.byId(props.row.original.id).details}
+            openInNewTab
+            sx={{ alignSelf: "flex-end" }}
+            endDecorator={<OpenInNewOutlined />}
+          >
+            Update
+          </ExternalLink>
+        ),
+      enableSorting: true,
+      meta: {
+        width: 130,
+      },
+    }),
     columnHelper.display({
       header: "Aktionen",
       id: "actions",

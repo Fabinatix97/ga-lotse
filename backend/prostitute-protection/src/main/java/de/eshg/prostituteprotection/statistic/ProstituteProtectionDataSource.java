@@ -1,11 +1,10 @@
 /*
- * Copyright 2025 cronn GmbH
+ * Copyright 2026 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 package de.eshg.prostituteprotection.statistic;
 
-import de.eshg.lib.common.CountryCode;
 import de.eshg.lib.procedure.domain.model.ProcedureStatus;
 import de.eshg.lib.procedure.domain.model.Procedure_;
 import de.eshg.lib.statistics.api.DataSourceSensitivity;
@@ -87,7 +86,16 @@ public class ProstituteProtectionDataSource
       case REFERRAL -> getConsultationAttribute(procedure, Consultation::isReferral);
       case PREDICAMENT -> getConsultationAttribute(procedure, Consultation::isPredicament);
       case INTERPRETER -> getConsultationAttribute(procedure, Consultation::isInterpreterConsulted);
+      case GERMAN -> getGermanLanguage(procedure.getConsultation());
     };
+  }
+
+  private Boolean getGermanLanguage(Consultation consultation) {
+    if (consultation == null) {
+      return null;
+    }
+    return de.eshg.prostituteprotection.domain.model.Language.GERMAN.equals(
+        consultation.getLanguageOfConsultation());
   }
 
   private String getConsultationType(ProstituteProtectionProcedure procedure) {
@@ -112,7 +120,7 @@ public class ProstituteProtectionDataSource
     if (personalData == null) {
       return null;
     }
-    return CountryCode.getCountryName(personalData.getNationality());
+    return personalData.getNationality().getContinent();
   }
 
   private String getDocumentType(PersonalData personalData) {

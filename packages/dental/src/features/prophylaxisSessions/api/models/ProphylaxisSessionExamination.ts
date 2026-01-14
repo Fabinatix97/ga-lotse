@@ -1,5 +1,5 @@
 /**
- * Copyright 2025 cronn GmbH
+ * Copyright 2026 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -36,6 +36,7 @@ export interface ParticipantDetails extends Versioned {
   firstName: string;
   lastName: string;
   dateOfBirth: Date;
+  updatePending?: boolean;
   gender?: ApiGender;
   groupName?: string;
   procedureLabels: ProcedureLabel[];
@@ -71,6 +72,7 @@ export function mapProphylaxisSessionExamination(
     firstName: response.firstName,
     lastName: response.lastName,
     dateOfBirth: response.dateOfBirth,
+    updatePending: response.outdated,
     institution: mapInstitution(response.institution),
     groupName: response.groupName,
     gender: response.gender,

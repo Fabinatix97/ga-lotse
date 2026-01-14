@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 cronn GmbH
+ * Copyright 2026 cronn GmbH
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -110,8 +110,8 @@ public abstract class AbstractPublicSecurityConfiguration {
   private static AuthorizationDefinition combine(
       AuthorizationDefinition publicAccess, AuthorizationDefinition internalAccess) {
     switch (publicAccess) {
-      case AnyRole(Set<String> rolesForPublicAccess) when internalAccess
-          instanceof AnyRole(Set<String> rolesForInternalAccess) -> {
+      case AnyRole(Set<String> rolesForPublicAccess)
+          when internalAccess instanceof AnyRole(Set<String> rolesForInternalAccess) -> {
         Set<String> combinedRoleNames = new LinkedHashSet<>(rolesForPublicAccess);
         combinedRoleNames.addAll(rolesForInternalAccess);
         return new AnyRole(combinedRoleNames);

@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 SCOOP Software GmbH, cronn GmbH
+ * Copyright 2026 SCOOP Software GmbH, cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -103,9 +103,6 @@ public class ObjectTypeController {
   @Operation(summary = "Get the tree of all objecttypes")
   @Transactional(readOnly = true)
   public GetObjectTypesHierarchyResponse getObjectTypesHierarchy() {
-    if (!inspectionFeatureToggle.isNewFeatureEnabled(InspectionFeature.OBJECT_TYPE_HIERARCHY)) {
-      throw new BadRequestException("Feature toggle for object type hierarchy is not enabled!");
-    }
     return new GetObjectTypesHierarchyResponse(
         objectTypeHierarchyTreeNodeRepository
             .findByRootNode(true)

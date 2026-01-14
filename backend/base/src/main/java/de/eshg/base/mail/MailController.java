@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 cronn GmbH
+ * Copyright 2026 cronn GmbH
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -18,8 +18,9 @@ import jakarta.mail.internet.MimeMessage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.time.Clock;
+import java.time.LocalDate;
 import java.util.Base64;
-import java.util.Calendar;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import org.apache.batik.transcoder.TranscoderException;
@@ -47,6 +48,7 @@ public class MailController implements MailApi {
   private final TemplateEngine templateEngine;
   private final String defaultFrom;
   private final String citizenPortalUrl;
+  private final Clock clock;
 
   public MailController(
       AuditLogger auditLogger,
@@ -55,6 +57,7 @@ public class MailController implements MailApi {
       BaseDepartmentInfoConfigService baseDepartmentInfoService,
       JavaMailSender mailSender,
       TemplateEngine templateEngine,
+      Clock clock,
       @Value("${eshg.mail.noreply}") String defaultFrom,
       @Value("${eshg.citizen-portal.reverse-proxy.url}") String citizenPortalUrl) {
     this.auditLogger = auditLogger;
@@ -65,6 +68,7 @@ public class MailController implements MailApi {
     this.templateEngine = templateEngine;
     this.defaultFrom = defaultFrom;
     this.citizenPortalUrl = citizenPortalUrl;
+    this.clock = clock;
   }
 
   @Override
@@ -138,7 +142,7 @@ public class MailController implements MailApi {
     context.setVariable("departmentCity", departmentInfo.city());
     context.setVariable("logoBase64Png", svgToBase64Png(departmentConfigurationService.getLogo()));
     context.setVariable("citizenPortalUrl", citizenPortalUrl);
-    context.setVariable("year", Calendar.getInstance().get(Calendar.YEAR));
+    context.setVariable("year", LocalDate.now(clock).getYear());
 
     return templateEngine.process("citizen-email", context);
   }

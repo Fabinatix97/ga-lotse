@@ -1,5 +1,5 @@
 /**
- * Copyright 2025 cronn GmbH
+ * Copyright 2026 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -8,20 +8,37 @@
 import { Add } from "@mui/icons-material";
 import { Button } from "@mui/joy";
 
-import { ButtonBar } from "@eshg/lib-employee-portal";
+import {
+  ButtonBar,
+  SearchFilter,
+  UseTableControlResult,
+} from "@eshg/lib-employee-portal";
 
 import { useAddNewProcedureSidebar } from "../addNewProcedure/useAddNewProcedureSidebar";
 
-export function ProstituteProtectionProceduresTableControls() {
-  return <ButtonBar left={null} right={<ControlsRight />} />;
+interface ProceduresTableControlsProps {
+  tableControl: UseTableControlResult;
 }
 
-function ControlsRight() {
+export function ProstituteProtectionProceduresTableControls({
+  tableControl,
+}: ProceduresTableControlsProps) {
   const { open } = useAddNewProcedureSidebar();
 
   return (
-    <Button startDecorator={<Add />} onClick={open}>
-      Neuen Vorgang anlegen
-    </Button>
+    <ButtonBar
+      left={
+        <SearchFilter
+          tableControl={tableControl}
+          searchParamName="alias"
+          label="Alias Suche"
+        />
+      }
+      right={
+        <Button startDecorator={<Add />} onClick={open}>
+          Neuen Vorgang anlegen
+        </Button>
+      }
+    />
   );
 }

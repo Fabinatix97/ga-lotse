@@ -1,5 +1,5 @@
 /**
- * Copyright 2025 SCOOP Software GmbH, cronn GmbH
+ * Copyright 2026 SCOOP Software GmbH, cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -26,7 +26,8 @@ export interface InspectionSampleSidebarFormType {
       type:
         | "InspectionSampleContactReference"
         | "InspectionSampleInspectedFacilityReference"
-        | "InspectionSampleUserReference";
+        | "InspectionSampleUserReference"
+        | "AutocompleteContact";
     };
   };
   evaluationType: ApiInspectionSampleEvaluationType;
@@ -79,7 +80,9 @@ export function makeUpdateInspectionSampleRequest(
 }
 
 function createActor(input: {
-  type: ApiCreateInspectionSampleRequestEvaluatingActor["type"];
+  type:
+    | ApiCreateInspectionSampleRequestEvaluatingActor["type"]
+    | "AutocompleteContact";
   id?: string;
 }): ApiCreateInspectionSampleRequestEvaluatingActor {
   switch (input.type) {
@@ -89,9 +92,10 @@ function createActor(input: {
         userId: input.id!,
       };
 
+    case "AutocompleteContact":
     case "InspectionSampleContactReference":
       return {
-        type: input.type,
+        type: "InspectionSampleContactReference",
         contactId: input.id!,
       };
 

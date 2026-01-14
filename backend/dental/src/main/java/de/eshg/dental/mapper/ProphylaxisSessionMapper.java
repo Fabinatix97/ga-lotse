@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 cronn GmbH
+ * Copyright 2026 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -11,6 +11,7 @@ import de.eshg.base.contact.api.ContactDto;
 import de.eshg.base.user.api.UserDto;
 import de.eshg.dental.api.*;
 import de.eshg.dental.business.model.ChildWithPersonAndContactData;
+import de.eshg.dental.business.model.ProphylaxisSessionExaminationUpdateResult;
 import de.eshg.dental.business.model.ProphylaxisSessionWithAugmentedData;
 import de.eshg.dental.business.model.ProphylaxisSessionWithAugmentedInstitution;
 import de.eshg.dental.domain.model.*;
@@ -108,6 +109,15 @@ public final class ProphylaxisSessionMapper {
         mapPersons(session.getZfaIds(), userMap));
   }
 
+  public static ProphylaxisSessionExaminationUpdateResultDto
+      mapProphylaxisSessionExaminationUpdateResultToDto(
+          ProphylaxisSessionExaminationUpdateResult result) {
+    return new ProphylaxisSessionExaminationUpdateResultDto(
+        result.failedPersonUpdates(),
+        result.failedExaminationUpdates(),
+        mapProphylaxisSessionToDetailsDto(result.prophylaxisSession()));
+  }
+
   private static List<ProphylaxisSessionChildExaminationDto> getParticipants(
       ProphylaxisSessionWithAugmentedData prophylaxisSessionAugmented) {
     Map<Examination, ChildWithPersonAndContactData> childrenData =
@@ -150,6 +160,7 @@ public final class ProphylaxisSessionMapper {
         personData.firstName(),
         personData.lastName(),
         personData.dateOfBirth(),
+        personData.outdated(),
         InstitutionMapper.mapContactToInstitutionDto(childData.contact()),
         childData.child().getGroupName(),
         personData.gender(),

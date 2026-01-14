@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 cronn GmbH
+ * Copyright 2026 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -69,6 +69,7 @@ public class AppointmentMapper {
       case null -> null;
       case USER_DEFINED -> AppointmentBookingType.USER_DEFINED;
       case APPOINTMENT_BLOCK -> AppointmentBookingType.APPOINTMENT_BLOCK;
+      case SPONTANEOUS -> AppointmentBookingType.SPONTANEOUS;
     };
   }
 }

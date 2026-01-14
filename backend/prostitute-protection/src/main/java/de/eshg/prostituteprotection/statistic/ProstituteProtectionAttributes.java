@@ -1,11 +1,10 @@
 /*
- * Copyright 2025 cronn GmbH
+ * Copyright 2026 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 package de.eshg.prostituteprotection.statistic;
 
-import static de.eshg.lib.common.CountryCode.getCountryName;
 import static de.eshg.lib.statistics.util.ConvertToValueOptionHelper.convertToValueOptions;
 
 import de.eshg.lib.common.CountryCode;
@@ -17,6 +16,7 @@ import de.eshg.lib.statistics.attributes.AttributeInfo;
 import de.eshg.lib.statistics.attributes.BooleanAttribute;
 import de.eshg.lib.statistics.attributes.IntegerAttribute;
 import de.eshg.lib.statistics.attributes.ProcedureAttribute;
+import de.eshg.lib.statistics.attributes.SensitiveParameters;
 import de.eshg.lib.statistics.attributes.TextAttribute;
 import de.eshg.lib.statistics.attributes.ValueWithOptionsAttribute;
 import de.eshg.prostituteprotection.statistic.model.DocumentType;
@@ -42,15 +42,16 @@ public enum ProstituteProtectionAttributes implements AttributeInfo {
           "ALIAS",
           ProstituteProtectionAttributes.CATEGORY_PERSON,
           true,
-          DataPrivacyCategory.QUASI_IDENTIFYING)),
+          DataPrivacyCategory.INSENSITIVE)),
   DOCUMENT_TYPE(
-      ValueWithOptionsAttribute.create(
+      ValueWithOptionsAttribute.createSensitive(
           "Ausweisdokument",
           "DOCUMENT_TYPE",
           ProstituteProtectionAttributes.CATEGORY_PERSON,
           true,
           convertToValueOptions(DocumentType.values()),
-          DataPrivacyCategory.INSENSITIVE)),
+          new SensitiveParameters(null, 0.2),
+          null)),
   NATIONALITY(
       ValueWithOptionsAttribute.create(
           "Staatsangehörigkeit",
@@ -58,7 +59,7 @@ public enum ProstituteProtectionAttributes implements AttributeInfo {
           ProstituteProtectionAttributes.CATEGORY_PERSON,
           true,
           Stream.of(CountryCode.values())
-              .map(e -> new ValueOptionInternal(e.name(), getCountryName(e), false))
+              .map(e -> new ValueOptionInternal(e.name(), e.getContinent(), false))
               .toList(),
           DataPrivacyCategory.QUASI_IDENTIFYING)),
   CONSULTATION_DATE(
@@ -78,13 +79,14 @@ public enum ProstituteProtectionAttributes implements AttributeInfo {
           null,
           DataPrivacyCategory.INSENSITIVE)),
   CONSULTATION_LANGUAGE(
-      ValueWithOptionsAttribute.create(
+      ValueWithOptionsAttribute.createSensitive(
           "Sprache der Beratung",
           "CONSULTATION_LANGUAGE",
           ProstituteProtectionAttributes.CATEGORY_CONSULTATION,
           true,
           convertToValueOptions(Language.values()),
-          DataPrivacyCategory.QUASI_IDENTIFYING)),
+          new SensitiveParameters(2, null),
+          null)),
   INFORMATION_MATERIAL(
       BooleanAttribute.createSensitive(
           "Infomaterial",
@@ -114,12 +116,19 @@ public enum ProstituteProtectionAttributes implements AttributeInfo {
           true,
           0.2)),
   INTERPRETER(
-      BooleanAttribute.create(
+      BooleanAttribute.createSensitive(
           "Dolmetscher",
           "INTERPRETER",
           ProstituteProtectionAttributes.CATEGORY_CONSULTATION,
           true,
-          DataPrivacyCategory.QUASI_IDENTIFYING)),
+          0.2)),
+  GERMAN(
+      BooleanAttribute.createSensitive(
+          "Beratung auf deutsch",
+          "GERMAN",
+          ProstituteProtectionAttributes.CATEGORY_CONSULTATION,
+          true,
+          0.2)),
   ;
 
   static final String CATEGORY_PERSON = "Person";

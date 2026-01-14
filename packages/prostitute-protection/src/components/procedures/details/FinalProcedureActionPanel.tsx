@@ -1,5 +1,5 @@
 /**
- * Copyright 2025 cronn GmbH
+ * Copyright 2026 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -87,10 +87,9 @@ interface ConfirmationDialogProps {
   open: boolean;
   onClose: () => void;
   onConfirm: () => Promise<void>;
-  procedure?: ApiProcedureDetails;
 }
 
-export function CloseConfirmationDialog({
+function CloseConfirmationDialog({
   open,
   onClose,
   onConfirm,
@@ -108,7 +107,7 @@ export function CloseConfirmationDialog({
   );
 }
 
-export function AbortConfirmationDialog({
+function AbortConfirmationDialog({
   open,
   onClose,
   onConfirm,

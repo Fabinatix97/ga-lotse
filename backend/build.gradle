@@ -1,4 +1,4 @@
-// Copyright 2025 cronn GmbH
+// Copyright 2026 cronn GmbH
 // SPDX-License-Identifier: Apache-2.0
 
 import de.eshg.FindUnusedValidationFiles
@@ -175,17 +175,17 @@ subprojects {
             targetExclude '**/generated/**'
             importOrder 'java', 'jakarta', 'org', 'com', ''
             removeUnusedImports()
-            googleJavaFormat()
+            googleJavaFormat('1.28.0') // https://github.com/diffplug/spotless/issues/2468
         }
         enforceCheck = true
     }
 
     java {
-        sourceCompatibility = '21'
-        targetCompatibility = '21'
+        sourceCompatibility = '25'
+        targetCompatibility = '25'
 
         toolchain {
-            languageVersion = JavaLanguageVersion.of(21)
+            languageVersion = JavaLanguageVersion.of(25)
         }
 
         consistentResolution {

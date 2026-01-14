@@ -1,5 +1,5 @@
 /**
- * Copyright 2025 cronn GmbH
+ * Copyright 2026 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -10,16 +10,20 @@ import { isEmpty } from "remeda";
 
 import { useSnackbar } from "@eshg/lib-portal";
 import {
-  ApiCreateCertificateRequest,
   ApiProcedureDetails,
   ApiProcedureProperty,
+  GenerateConsultationCertificatePdfRequest,
 } from "@eshg/prostitute-protection-api";
 
 import { useGenerateConsultationCertificateMutation } from "../../../api/mutations/certificate";
 import { useProstituteProtectionApiClients } from "../../../contexts/ProstituteProtectionApi";
+import { useDecryptedPersons } from "../../../contexts/decryptedPersons/DecryptedPersonsStoreProvider";
 import { isProcedureFinalized } from "../../../shared/helpers";
 
-import { CertificateConfirmationModal } from "./CertificateConfirmationModal";
+import {
+  CertificateConfirmationModal,
+  CertificateCreationOptions,
+} from "./CertificateConfirmationModal";
 import { IncompleteProcedureAreasModal } from "./IncompleteProcedureAreasModal";
 
 export function CertificateActionPanel({
@@ -56,34 +60,37 @@ function CertificateButton({ procedureId }: CertificateButtonProps) {
   >({});
   const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
 
-  async function onConfirm({
-    withAlias,
-    withRegistrationCertificate,
-    dateOfBirth,
-    firstName,
-    lastName,
-  }: ApiCreateCertificateRequest) {
+  const { getDecryptedPerson } = useDecryptedPersons();
+  const personData = getDecryptedPerson(procedureId);
+
+  async function onConfirm(options: CertificateCreationOptions) {
     try {
       const response = await prostituteProtectionApi.validateCompleteness(
         procedureId,
-        withAlias,
-        withRegistrationCertificate,
+        options.withAlias,
+        options.withRegistrationCertificate,
       );
       const incompleteAreas = response.incompleteAreas;
 
       if (isEmpty(incompleteAreas)) {
-        await generateCertificateMutation.mutateAsync({
+        if (!personData) {
+          snackbar.error("Die Personendaten sind nicht verfügbar");
+          return;
+        }
+
+        const request: GenerateConsultationCertificatePdfRequest = {
           procedureId,
           apiCreateCertificateRequest: {
-            withAlias,
-            withRegistrationCertificate,
-            dateOfBirth,
-            firstName,
-            lastName,
+            withAlias: options.withAlias,
+            withRegistrationCertificate: options.withRegistrationCertificate,
+            firstName: personData.firstName,
+            lastName: personData.lastName,
+            dateOfBirth: personData.dateOfBirth,
           },
-        });
-      }
+        };
 
+        await generateCertificateMutation.mutateAsync(request);
+      }
       setIncompleteProcedureAreas(incompleteAreas);
     } catch {
       snackbar.error("Die Vollständigkeitsprüfung ist fehlgeschlagen");

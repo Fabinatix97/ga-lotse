@@ -1,5 +1,5 @@
 /**
- * Copyright 2025 cronn GmbH
+ * Copyright 2026 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -12,7 +12,12 @@ import {
   SidebarContent,
   SidebarForm,
 } from "@eshg/lib-employee-portal";
-import { InputField, useValidateLength } from "@eshg/lib-portal";
+import {
+  InputField,
+  OptionalFieldValue,
+  useValidateLength,
+} from "@eshg/lib-portal";
+import { ApiAppointmentBookingType } from "@eshg/prostitute-protection-api";
 
 import { PERSON_FIELD_NAME } from "../../../shared/constants";
 import { LanguageFields } from "../../form/LanguageFields";
@@ -23,28 +28,31 @@ import {
   LayoutProps,
 } from "./useAddNewProcedureSidebar";
 
-export function PersonStep(props: FieldProps) {
-  return (
-    <Layout {...props}>
-      <Fields />
-    </Layout>
-  );
+interface PersonStepProps extends FieldProps {
+  appointmentBookingType: OptionalFieldValue<ApiAppointmentBookingType>;
 }
 
-function Fields() {
+export function PersonStep(props: PersonStepProps) {
   const validateLength = useValidateLength();
 
   return (
-    <Stack gap={2} mt={2}>
-      <InputField
-        name="alias"
-        label={PERSON_FIELD_NAME.alias}
-        required="Bitte einen Alias angeben."
-        validate={validateLength(1, 80)}
-      />
-      <Divider sx={{ marginBlock: 1 }} />
-      <LanguageFields />
-    </Stack>
+    <Layout {...props}>
+      <Stack gap={2} mt={2}>
+        <InputField
+          name="alias"
+          label={PERSON_FIELD_NAME.alias}
+          required={
+            props.appointmentBookingType ===
+            ApiAppointmentBookingType.Spontaneous
+              ? undefined
+              : "Bitte einen Alias angeben."
+          }
+          validate={validateLength(1, 80)}
+        />
+        <Divider sx={{ marginBlock: 1 }} />
+        <LanguageFields />
+      </Stack>
+    </Layout>
   );
 }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 cronn GmbH
+ * Copyright 2026 cronn GmbH
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -13,7 +13,7 @@ import java.util.List;
 
 @Schema(
     description =
-        """
+"""
 Contains the details on the encrypted private key from a user, which is necessary for decrypting the symmetric key which is used for decrypting audit log files.
 Can be decrypted with the password of the corresponding user.
 """)

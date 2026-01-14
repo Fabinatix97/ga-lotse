@@ -1,5 +1,5 @@
 /**
- * Copyright 2025 cronn GmbH
+ * Copyright 2026 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -31,7 +31,7 @@ import {
 
 import { usePersonSearchOptions } from "../../api/queries/person";
 import { routes } from "../../config/routes";
-import { useSetSelectedPerson } from "../../contexts/selectedPerson/SelectedPersonStoreProvider";
+import { useDecryptedPersons } from "../../contexts/decryptedPersons/DecryptedPersonsStoreProvider";
 import {
   CONSULTATION_TYPE_VALUES,
   PROCEDURE_STATUS_COLORS,
@@ -112,7 +112,7 @@ function getProceduresColumns() {
 
 export function ProstituteProtectionPersonSearchTable() {
   const { formValues, ...personSearch } = usePersonSearch();
-  const setSelectedPerson = useSetSelectedPerson();
+  const { addDecryptedPerson } = useDecryptedPersons();
   const { tryNavigate } = useNavigation();
 
   const tableControl = useTableControl({
@@ -136,7 +136,7 @@ export function ProstituteProtectionPersonSearchTable() {
 
   return (
     <TablePage
-      data-testid="personSearchTable"
+      data-testid="person-search-table"
       aria-label="Personensuche"
       controls={
         <PersonSearchForm
@@ -163,7 +163,7 @@ export function ProstituteProtectionPersonSearchTable() {
           columns={getProceduresColumns()}
           rowNavigation={{
             onClick: (row) => () => {
-              setSelectedPerson(row.original);
+              addDecryptedPerson(row.original);
               tryNavigate(routes.procedures.byId(row.original.id).details);
             },
             focusColumnAccessorKey: "appointmentStart",

@@ -1,16 +1,20 @@
 /**
- * Copyright 2025 cronn GmbH
+ * Copyright 2026 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 import { differenceInMinutes, isPast } from "date-fns";
 
-import { formatDate, formatTime } from "@eshg/lib-portal";
+import { formatDate, formatTime, isNonEmptyString } from "@eshg/lib-portal";
 import {
+  ApiAppointmentBookingType,
   ApiPersonLanguage,
   ApiProcedureDetails,
   ApiProcedureStatus,
 } from "@eshg/prostitute-protection-api";
+
+import { AddNewProcedureForm } from "../components/procedures/addNewProcedure/useAddNewProcedureSidebar";
+import { EditProcedureDetailsDataForm } from "../components/procedures/details/sidebar/EditAdditionalDataSidebar";
 
 import { LANGUAGE_VALUE } from "./constants";
 
@@ -76,4 +80,33 @@ export function hasSufficientGermanLanguageSkills(
     return "-";
   }
   return languages.includes(ApiPersonLanguage.German) ? "Ja" : "Nein";
+}
+
+export function getAppointmentDate(
+  form: AddNewProcedureForm | EditProcedureDetailsDataForm,
+) {
+  const customAppointmentDate = isNonEmptyString(form.customAppointmentDate)
+    ? new Date(form.customAppointmentDate)
+    : undefined;
+  const date =
+    form.appointmentBookingType === ApiAppointmentBookingType.AppointmentBlock
+      ? form.blockAppointment?.start
+      : customAppointmentDate;
+  return date ?? undefined;
+}
+
+export function getDuration(
+  form: AddNewProcedureForm | EditProcedureDetailsDataForm,
+) {
+  if (
+    form.appointmentBookingType === ApiAppointmentBookingType.AppointmentBlock
+  ) {
+    return form.blockAppointment?.end && form.blockAppointment?.start
+      ? differenceInMinutes(
+          form.blockAppointment.end,
+          form.blockAppointment.start,
+        )
+      : undefined;
+  }
+  return form.duration;
 }

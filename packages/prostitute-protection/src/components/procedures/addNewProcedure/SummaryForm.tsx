@@ -1,31 +1,33 @@
 /**
- * Copyright 2025 cronn GmbH
+ * Copyright 2026 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 import { EditOutlined } from "@mui/icons-material";
 import { Divider, IconButton, Stack, Typography } from "@mui/joy";
 import { useFormikContext } from "formik";
-import { ReactNode, useId } from "react";
+import { ReactNode } from "react";
 
 import {
+  DetailsItem,
   MultiFormButtonBar,
   SidebarActions,
   SidebarContent,
   SidebarForm,
 } from "@eshg/lib-employee-portal";
+import { DetailsList } from "@eshg/lib-portal";
 import { ApiPersonLanguage } from "@eshg/prostitute-protection-api";
 
 import {
   CONSULTATION_TYPE_VALUES,
   LANGUAGE_VALUE,
 } from "../../../shared/constants";
+import { getAppointmentDate } from "../../../shared/helpers";
 
 import {
   AddNewProcedureForm,
   FieldProps,
   LayoutProps,
-  getAppointmentDate,
 } from "./useAddNewProcedureSidebar";
 
 const germanDateFormatter = Intl.DateTimeFormat("de-DE", {
@@ -82,18 +84,20 @@ function SummaryForm({
           title="Termin"
         />
       </Stack>
-      <LabelValuePair
-        label="Terminart"
-        value={
-          values.consultationType
-            ? `ProstSchG ${CONSULTATION_TYPE_VALUES[values.consultationType]}`
-            : "-"
-        }
-      />
-      <LabelValuePair
-        label="Datum und Zeit"
-        value={`${dateAndTime}, ${values.duration} Min.`}
-      />
+      <DetailsList>
+        <DetailsItem
+          label="Terminart"
+          value={
+            values.consultationType
+              ? `ProstSchG ${CONSULTATION_TYPE_VALUES[values.consultationType]}`
+              : "-"
+          }
+        />
+        <DetailsItem
+          label="Datum und Zeit"
+          value={`${dateAndTime}, ${values.duration} Min.`}
+        />
+      </DetailsList>
 
       <Divider orientation="horizontal" />
 
@@ -105,16 +109,18 @@ function SummaryForm({
         }}
         title="Persönliche Daten"
       />
-      <LabelValuePair
-        label="Deutschkenntnisse"
-        value={
-          hasSufficientLanguageSkills ? "Ausreichend" : "Nicht ausreichend"
-        }
-      />
-      <LabelValuePair
-        label="Weitere Sprachen"
-        value={values.languages.length ? languagesMap : "-"}
-      />
+      <DetailsList>
+        <DetailsItem
+          label="Deutschkenntnisse"
+          value={
+            hasSufficientLanguageSkills ? "Ausreichend" : "Nicht ausreichend"
+          }
+        />
+        <DetailsItem
+          label="Weitere Sprachen"
+          value={values.languages.length ? languagesMap : "-"}
+        />
+      </DetailsList>
     </Stack>
   );
 }
@@ -147,26 +153,6 @@ function Layout<T>({
   );
 }
 
-function LabelValuePair({
-  label,
-  value,
-}: {
-  label: string;
-  value: string | undefined | null;
-}) {
-  const labelId = useId();
-  return (
-    <Stack direction="row" justifyContent="space-between">
-      <Typography component="h4" level="body-md" id={labelId}>
-        {label}
-      </Typography>
-      <Typography level="title-md" aria-describedby={labelId}>
-        {value}
-      </Typography>
-    </Stack>
-  );
-}
-
 function ActionTitle({
   action,
   title,
@@ -180,7 +166,7 @@ function ActionTitle({
 }) {
   return (
     <Stack direction="row" justifyContent="space-between" mt={2}>
-      <Typography component="h3" level="title-lg" alignSelf="center">
+      <Typography component="h2" level="title-lg" alignSelf="center">
         {title}
       </Typography>
       <IconButton

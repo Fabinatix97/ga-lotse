@@ -1,5 +1,5 @@
 /**
- * Copyright 2025 cronn GmbH
+ * Copyright 2026 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -30,7 +30,11 @@ import {
   ADDITIONAL_DATA_FIELD_NAME,
   CONSULTATION_TYPE_VALUES,
 } from "../../../../shared/constants";
-import { getDurationMinutes } from "../../../../shared/helpers";
+import {
+  getAppointmentDate,
+  getDuration,
+  getDurationMinutes,
+} from "../../../../shared/helpers";
 import {
   AppointmentFields,
   AppointmentFieldsData,
@@ -39,7 +43,7 @@ import {
 import "./EditAdditionalDataSidebar";
 import { SidebarFormProvider } from "./SidebarFormProvider";
 
-interface EditProcedureDetailsDataForm extends AppointmentFieldsData {
+export interface EditProcedureDetailsDataForm extends AppointmentFieldsData {
   customAppointmentDate: string;
   appointmentBookingType: ApiAppointmentBookingType;
   consultationType: OptionalFieldValue<ApiConsultationType>;
@@ -101,7 +105,7 @@ function mapApiToForm(
 ): EditProcedureDetailsDataForm {
   const { start, end } = procedure.appointment ?? {};
   return {
-    appointmentBookingType: ApiAppointmentBookingType.UserDefined,
+    appointmentBookingType: ApiAppointmentBookingType.UserDefined, // TODO: This needs to be fixed – value should come from BE
     customAppointmentDate: start ? toDateTimeString(start) : "",
     duration: getDurationMinutes(start, end),
     consultationType: parseOptionalValue(procedure.consultationType),
@@ -112,10 +116,22 @@ function mapApiToForm(
 function mapFormToApi(
   values: EditProcedureDetailsDataForm,
 ): ApiUpdateProstituteProtectionProcedureRequest {
+  if (!values.appointmentBookingType) {
+    throw new Error("Appointment booking type must be defined");
+  }
+  const appointmentStart = getAppointmentDate(values);
+
+  if (!appointmentStart) {
+    throw new Error("Appointment start must be defined");
+  }
+  const durationInMinutes = getDuration(values);
+  if (!durationInMinutes) {
+    throw new Error("Duration must be defined");
+  }
   return {
     appointmentBookingType: values.appointmentBookingType,
-    appointmentStart: new Date(values.customAppointmentDate),
-    durationInMinutes: values.duration,
+    appointmentStart,
+    durationInMinutes,
     consultationType: mapRequiredValue(values.consultationType),
     version: values.version,
   };

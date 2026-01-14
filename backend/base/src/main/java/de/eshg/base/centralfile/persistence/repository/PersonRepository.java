@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 cronn GmbH
+ * Copyright 2026 cronn GmbH
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -155,7 +155,7 @@ public interface PersonRepository
   boolean isReferencePersonObsolete(UUID externalId);
 
   @Query(
-      """
+"""
 select fileState.externalId from Person fileState
 join Person ref on fileState.referencePerson.id = ref.id
 where ref.externalId in :refExternalIds

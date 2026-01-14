@@ -1,11 +1,12 @@
 /**
- * Copyright 2025 cronn GmbH
+ * Copyright 2026 cronn GmbH
  * SPDX-License-Identifier: Apache-2.0
  */
 
 import { Radio, Sheet, Stack, Typography } from "@mui/joy";
 import { useFormikContext } from "formik";
 import { PropsWithChildren, useId } from "react";
+import { isDefined } from "remeda";
 
 import { RadioGroupField, RadioGroupFieldProps, Row } from "@eshg/lib-portal";
 
@@ -21,12 +22,14 @@ interface RadioSheetOptionProps {
   value: string;
   name: string;
   label: string;
+  onSelect?: () => void;
 }
 export function RadioSheetOption({
   value,
   name,
   children,
   label,
+  onSelect,
 }: PropsWithChildren<RadioSheetOptionProps>) {
   const { getFieldMeta, setFieldValue } = useFormikContext();
   const { value: formValue } = getFieldMeta(name);
@@ -47,6 +50,9 @@ export function RadioSheetOption({
       onClick={() => {
         if (isSelected) {
           return;
+        }
+        if (isDefined(onSelect)) {
+          onSelect();
         }
         void setFieldValue(name, value);
       }}

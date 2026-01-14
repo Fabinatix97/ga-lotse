@@ -1,5 +1,5 @@
 /**
- * Copyright 2025 cronn GmbH
+ * Copyright 2026 cronn GmbH
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -28,6 +28,7 @@ export function useAutocompleteStreetQuery(
     },
     queryKey: streetApiQueryKey(["autocompleteStreet", street, streetApi]),
     enabled,
+    throwOnError: false,
     gcTime: 60000, // 1 minute cache
     staleTime: 60000,
   });

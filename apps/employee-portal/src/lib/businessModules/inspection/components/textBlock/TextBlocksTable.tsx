@@ -1,5 +1,5 @@
 /**
- * Copyright 2025 SCOOP Software GmbH, cronn GmbH
+ * Copyright 2026 SCOOP Software GmbH, cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -15,6 +15,7 @@ import {
   ButtonBar,
   DataTable,
   Pagination,
+  SearchFilter,
   TablePage,
   TableSheet,
   useConfirmationDialog,
@@ -23,7 +24,6 @@ import {
 
 import { useDeleteTextBlock } from "@/lib/businessModules/inspection/api/mutations/textblocks";
 import { useEditTextBlockSidebar } from "@/lib/businessModules/inspection/components/textBlock/EditTextBlockSidebar";
-import { SearchFilter } from "@/lib/shared/components/tableFilters/SearchFilter";
 
 const columnHelper = createColumnHelper<ApiTextBlock>();
 

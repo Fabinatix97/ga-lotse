@@ -1,5 +1,5 @@
 /**
- * Copyright 2025 cronn GmbH
+ * Copyright 2026 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -37,6 +37,7 @@ interface ExaminedChild {
   firstName: string;
   lastName: string;
   dateOfBirth: Date;
+  updatePending?: boolean;
   procedureLabels: ProcedureLabel[];
   allFluoridationConsents: ApiFluoridationConsent[];
 }
@@ -74,6 +75,7 @@ export function ExaminationFormLayout(props: ExaminationFormLayoutProps) {
       lastName={child.lastName}
       gender={child.gender}
       dateOfBirth={child.dateOfBirth}
+      updatePending={child.updatePending}
       dateOfExamination={dateAndTime}
       groupName={groupName}
       institution={institution}

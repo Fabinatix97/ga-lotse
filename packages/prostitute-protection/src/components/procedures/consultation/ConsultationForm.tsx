@@ -1,5 +1,5 @@
 /**
- * Copyright 2025 cronn GmbH
+ * Copyright 2026 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -18,11 +18,13 @@ import {
 } from "@eshg/lib-portal";
 import {
   ApiConsultation,
+  type ApiPersonLanguage,
   ApiProcedureDetails,
 } from "@eshg/prostitute-protection-api";
 
 import { useUpsertConsultationOptions } from "../../../api/mutations/consultation";
 
+import { LanguageSection } from "./LanguageSection";
 import { NotesSection } from "./NotesSection";
 import { PPA7Section } from "./PPA7Section";
 import { PPA10Section } from "./PPA10Section";
@@ -46,6 +48,9 @@ export interface ConsultationFormData {
   taxLiability: boolean;
   version: number;
   remark: OptionalFieldValue<string>;
+  interpreterFirstName?: string;
+  interpreterLastName?: string;
+  languageOfConsultation?: ApiPersonLanguage | "";
 }
 
 export function ConsultationForm({
@@ -100,6 +105,7 @@ export function ConsultationForm({
 
               <PPA7Section />
               <PPA10Section />
+              <LanguageSection />
               <NotesSection />
             </Sheet>
           </Stack>
@@ -114,6 +120,11 @@ function mapApiToForm(consultation: ApiConsultation): ConsultationFormData {
   return {
     ...consultation,
     remark: parseOptionalValue(consultation.remark),
+    interpreterLastName: parseOptionalValue(consultation.interpreterLastName),
+    interpreterFirstName: parseOptionalValue(consultation.interpreterFirstName),
+    languageOfConsultation: parseOptionalValue(
+      consultation.languageOfConsultation,
+    ),
   };
 }
 
@@ -121,5 +132,12 @@ function mapFormToApi(values: ConsultationFormData): ApiConsultation {
   return {
     ...values,
     remark: mapOptionalValue(values.remark),
+    interpreterLastName: values.interpreterConsulted
+      ? mapOptionalValue(values.interpreterLastName)
+      : undefined,
+    interpreterFirstName: values.interpreterConsulted
+      ? mapOptionalValue(values.interpreterFirstName)
+      : undefined,
+    languageOfConsultation: mapOptionalValue(values.languageOfConsultation),
   };
 }

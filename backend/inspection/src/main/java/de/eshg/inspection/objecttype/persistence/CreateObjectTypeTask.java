@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 SCOOP Software GmbH, cronn GmbH
+ * Copyright 2026 SCOOP Software GmbH, cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -35,7 +35,7 @@ public class CreateObjectTypeTask {
                   .map(ObjectType::getName)
                   .collect(Collectors.toSet());
 
-          this.objectTypeProperties.defaultObjectTypes().stream()
+          this.objectTypeProperties.legacyObjectTypes().stream()
               .filter(o -> !existingObjectTypes.contains(o))
               .forEach(
                   newObjTypeName -> {

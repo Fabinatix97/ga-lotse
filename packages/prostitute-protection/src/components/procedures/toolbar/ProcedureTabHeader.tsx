@@ -1,5 +1,5 @@
 /**
- * Copyright 2025 cronn GmbH
+ * Copyright 2026 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -9,24 +9,15 @@ import {
   TabNavigationHeader,
   TabNavigationHeaderTypography,
 } from "@eshg/lib-employee-portal";
-import { formatPersonName } from "@eshg/lib-portal";
 
 import { useGetProcedure } from "../../../api/queries/procedures";
 
 export function ProcedureTabHeader(props: Readonly<{ procedureId: string }>) {
   const { data: procedure } = useGetProcedure(props.procedureId);
-  const { firstName, lastName, alias } = procedure;
+  const { alias } = procedure;
 
   return (
     <TabNavigationHeader titleAsH1>
-      {isDefined(firstName ?? lastName) && (
-        <TabNavigationHeaderTypography>
-          {formatPersonName({
-            firstName,
-            lastName,
-          })}
-        </TabNavigationHeaderTypography>
-      )}
       {isDefined(alias) && (
         <TabNavigationHeaderTypography>{alias}</TabNavigationHeaderTypography>
       )}

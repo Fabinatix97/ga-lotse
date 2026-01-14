@@ -1,5 +1,5 @@
 /**
- * Copyright 2025 cronn GmbH
+ * Copyright 2026 cronn GmbH
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -24,6 +24,7 @@ export interface RadioGroupFieldProps
   onChange?: (newValue: string) => void;
   "data-testid"?: string;
   "aria-labelledby"?: string;
+  "aria-label"?: string;
 }
 
 export function RadioGroupField(props: RadioGroupFieldProps) {
@@ -96,6 +97,7 @@ function InnerRadioGroupField({
           root: rootSlotProps,
         }}
         tabIndex={-1}
+        aria-label={props["aria-label"]}
         onChange={handleChange}
         onFocus={(el) => {
           // Transfer the focus to its first Radio input

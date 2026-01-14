@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 cronn GmbH
+ * Copyright 2026 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -20,7 +20,7 @@ public class SerializationHelper {
     try {
       return objectMapper.writeValueAsBytes(decryption);
     } catch (JsonProcessingException e) {
-      throw new PersonalDataEncryptionException("Failed to serialize personal data", e);
+      throw new EncryptionException("Failed to serialize personal data", e);
     }
   }
 

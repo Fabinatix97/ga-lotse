@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 cronn GmbH
+ * Copyright 2026 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -83,7 +83,26 @@ public class PersonalDataEncryptionService {
       byte[] encryptedData = encrypt(decryptedData, encryptionKey, nonce);
       return new EncryptedPersonalDataDto(hashedPersonIdentifier, encryptedData, nonce);
     } catch (GeneralSecurityException e) {
-      throw new PersonalDataEncryptionException("Personal data encryption failed", e);
+      throw new EncryptionException("Personal data encryption failed", e);
+    }
+  }
+
+  public EncryptedFileDataDto encryptFile(
+      DecryptedPersonalDataDto decryptedPersonalData, byte[] file) {
+    if (decryptedPersonalData == null) {
+      throw new IllegalArgumentException("Data for encryption is null");
+    }
+    byte[] nonce = generateNonce();
+    byte[] encryptionKey =
+        generateEncryptionKey(
+            decryptedPersonalData.firstName(),
+            decryptedPersonalData.lastName(),
+            decryptedPersonalData.dateOfBirth());
+    try {
+      byte[] encryptedData = encrypt(file, encryptionKey, nonce);
+      return new EncryptedFileDataDto(encryptedData, nonce);
+    } catch (GeneralSecurityException e) {
+      throw new EncryptionException("File encryption failed", e);
     }
   }
 
@@ -115,6 +134,17 @@ public class PersonalDataEncryptionService {
         encryptionKey);
   }
 
+  public byte[] decryptFile(EncryptedFileDataDto encryptedFileData, byte[] encryptionKey) {
+    if (encryptedFileData == null) {
+      throw new IllegalArgumentException("Data for decryption is null");
+    }
+    try {
+      return decrypt(encryptedFileData.data(), encryptionKey, encryptedFileData.nonce());
+    } catch (GeneralSecurityException e) {
+      throw new PersonalDataDecryptionException("File decryption failed", e);
+    }
+  }
+
   private byte[] normalizedPersonalDataAsByteArray(
       String firstName, String lastName, LocalDate dateOfBirth) {
     return PersonalDataNormalizer.createNormalizedPersonalData(firstName, lastName, dateOfBirth)
@@ -126,7 +156,7 @@ public class PersonalDataEncryptionService {
       MessageDigest digest = MessageDigest.getInstance(HASH_ALGORITHM);
       return digest.digest(encryptionKey);
     } catch (NoSuchAlgorithmException e) {
-      throw new PersonalDataEncryptionException("hashedPersonIdentifier generation failed", e);
+      throw new EncryptionException("hashedPersonIdentifier generation failed", e);
     }
   }
 

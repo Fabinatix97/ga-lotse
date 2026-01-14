@@ -1,5 +1,5 @@
 /**
- * Copyright 2025 cronn GmbH
+ * Copyright 2026 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -31,18 +31,23 @@ const SortByMap: Record<string, ApiProstitutionProtectionProcedureSortKey> = {
 export function useProceduresQueryOptions({
   page,
   sorting,
+  alias,
 }: {
   page: PageRequest;
   sorting: TableSortingProps;
+  alias?: string;
 }) {
   const { prostituteProtectionApi } = useProstituteProtectionApiClients();
   const sortKey = getSortKey(sorting, SortByMap);
+
   const request: GetProceduresRequest = {
     pageNumber: page.pageNumber,
     pageSize: page.pageSize,
     sortKey,
     sortDirection: getSortDirection(sorting),
+    alias,
   };
+
   return queryOptions({
     queryFn: () =>
       prostituteProtectionApi.getProceduresRaw(request).then(unwrapRawResponse),

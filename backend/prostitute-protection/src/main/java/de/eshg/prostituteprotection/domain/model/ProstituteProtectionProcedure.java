@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 cronn GmbH
+ * Copyright 2026 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -10,17 +10,25 @@ import de.eshg.lib.appointmentblock.EntityWithAppointment;
 import de.eshg.lib.appointmentblock.persistence.entity.Appointment;
 import de.eshg.lib.common.DataSensitivity;
 import de.eshg.lib.common.SensitivityLevel;
+import de.eshg.lib.procedure.domain.model.BasicSystemProgressEntryType;
 import de.eshg.lib.procedure.domain.model.Procedure;
 import de.eshg.lib.procedure.domain.model.TaskType;
+import de.eshg.lib.procedure.domain.model.TriggerType;
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.Index;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
+import jakarta.persistence.OrderBy;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 import java.util.stream.Stream;
 import org.hibernate.annotations.JdbcType;
 import org.hibernate.dialect.PostgreSQLEnumJdbcType;
@@ -77,6 +85,27 @@ public class ProstituteProtectionProcedure
   private Instant consultationCertificateCreatedAt;
 
   private Boolean certificateWithAliasCreated;
+
+  @OneToMany(
+      mappedBy = EncryptedFile_.PROCEDURE,
+      cascade = CascadeType.PERSIST,
+      orphanRemoval = true)
+  @OrderBy("createdAt ASC")
+  private final List<EncryptedFile> encryptedFiles = new ArrayList<>();
+
+  private UUID consultantId;
+
+  @Column(unique = true)
+  private UUID calendarEventId;
+
+  public ProstituteProtectionProcedure() {
+    super();
+  }
+
+  public ProstituteProtectionProcedure(
+      BasicSystemProgressEntryType basicSystemProgressEntryType, TriggerType triggerType) {
+    super(basicSystemProgressEntryType, triggerType);
+  }
 
   public ProstituteProtectionTask getTaskOfType(TaskType taskType) {
     return getTasksOfType(taskType).collect(StreamUtil.toSingleElement());
@@ -188,5 +217,29 @@ public class ProstituteProtectionProcedure
 
   public void setCertificateWithAliasCreated(Boolean certificateWithAliasCreated) {
     this.certificateWithAliasCreated = certificateWithAliasCreated;
+  }
+
+  public List<EncryptedFile> getEncryptedFiles() {
+    return encryptedFiles;
+  }
+
+  public void addEncryptedFile(EncryptedFile encryptedFile) {
+    encryptedFiles.add(encryptedFile);
+  }
+
+  public UUID getConsultantId() {
+    return consultantId;
+  }
+
+  public void setConsultantId(UUID consultantId) {
+    this.consultantId = consultantId;
+  }
+
+  public UUID getCalendarEventId() {
+    return calendarEventId;
+  }
+
+  public void setCalendarEventId(UUID calendarEventId) {
+    this.calendarEventId = calendarEventId;
   }
 }

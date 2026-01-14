@@ -1,9 +1,11 @@
-# Copyright 2025 SCOOP Software GmbH, cronn GmbH
+# Copyright 2026 SCOOP Software GmbH, cronn GmbH
 # SPDX-License-Identifier: AGPL-3.0-only
 
 {{- define "http-checks" }}
 
 {{- $host := .Values.domains.hosts.citizenportal }}
+{{- $kcHost := .Values.domains.hosts.keycloak }}
+{{- $epHost := .Values.domains.hosts.employeeportal }}
 ---
 kind : Probe
 apiVersion: monitoring.coreos.com/v1
@@ -25,5 +27,11 @@ spec:
         {{ end}}
         {{ if .Values.businessmodules.travelmedicine.enabled }}
         - "https://{{ $host }}/api/travel-medicine/citizen/public/opening-hours"
+        {{ end}}
+        {{ if .Values.keycloak.enabled }}
+        - "https://{{ $kcHost }}"
+        {{ end}}
+        {{ if .Values.employeeportal.enabled }}
+        - "https://{{ $epHost }}"
         {{ end}}
 {{- end }}

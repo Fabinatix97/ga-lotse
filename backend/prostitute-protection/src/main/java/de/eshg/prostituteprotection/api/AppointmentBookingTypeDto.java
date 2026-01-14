@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 cronn GmbH
+ * Copyright 2026 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -12,5 +12,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
     description = "Specifies whether the appointment is a block type or an individual type.")
 public enum AppointmentBookingTypeDto {
   USER_DEFINED,
-  APPOINTMENT_BLOCK
+  APPOINTMENT_BLOCK,
+  SPONTANEOUS
 }

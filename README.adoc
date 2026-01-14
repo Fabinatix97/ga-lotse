@@ -15,7 +15,7 @@ This guide will help you get a test instance of GA-Lotse running locally. Follow
 
 Before starting, make sure you have the following software installed:
 
-* Java 21
+* Java 25
 * Docker
 
 === Starting the GA-Lotse architecture

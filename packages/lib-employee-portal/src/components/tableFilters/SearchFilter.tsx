@@ -1,14 +1,14 @@
 /**
- * Copyright 2025 cronn GmbH
+ * Copyright 2026 cronn GmbH
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import SearchIcon from "@mui/icons-material/Search";
+import { Search } from "@mui/icons-material";
 import { Input } from "@mui/joy";
 import { useSearchParams } from "next/navigation";
 import { useDebouncedCallback } from "use-debounce";
 
-import { UseTableControlResult } from "@eshg/lib-employee-portal";
+import { UseTableControlResult } from "../../features/table/hooks/useTableControl";
 
 interface SearchFilterProps {
   tableControl: UseTableControlResult;
@@ -51,7 +51,7 @@ export function SearchFilter({
           "aria-label": label,
         },
       }}
-      startDecorator={<SearchIcon />}
+      startDecorator={<Search />}
       defaultValue={searchParams.get(searchParamName) ?? undefined}
       onChange={(event) => {
         onValueChange(event.target.value);

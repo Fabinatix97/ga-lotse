@@ -1,5 +1,5 @@
 /**
- * Copyright 2025 cronn GmbH
+ * Copyright 2026 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -301,6 +301,7 @@ function BookingForm({
       <AssignedPhysician physician={physician} />
       <RadioAccordionGroupField
         name="bookingType"
+        aria-label="Buchungsart"
         data-testid="booking-type-radio-control"
       >
         <RadioAccordionItem

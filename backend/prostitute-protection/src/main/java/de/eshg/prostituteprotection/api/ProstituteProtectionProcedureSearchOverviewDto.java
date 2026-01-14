@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 cronn GmbH
+ * Copyright 2026 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -21,6 +21,8 @@ public record ProstituteProtectionProcedureSearchOverviewDto(
     @NotNull @Size(min = 1, max = 120) String lastName,
     String alias,
     @NotNull @DateOfBirth LocalDate dateOfBirth,
+    String creatorName,
+    String consultantName,
     ConsultationTypeDto consultationType,
     Instant appointmentStart,
     @NotNull ProcedureStatusDto status) {}

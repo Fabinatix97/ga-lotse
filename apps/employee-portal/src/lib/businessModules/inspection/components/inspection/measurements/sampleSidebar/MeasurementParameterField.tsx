@@ -1,9 +1,10 @@
 /**
- * Copyright 2025 SCOOP Software GmbH, cronn GmbH
+ * Copyright 2026 SCOOP Software GmbH, cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 import { Stack, createFilterOptions } from "@mui/joy";
+import { useFormikContext } from "formik";
 import { useEffect, useState } from "react";
 import { useDebounce } from "use-debounce";
 
@@ -13,21 +14,27 @@ import {
   useAutocompleteParameterQuery,
   useAutocompleteParameterRegulationQuery,
 } from "@/lib/businessModules/inspection/api/queries/autocomplete";
+import { InspectionSampleSidebarFormType } from "@/lib/businessModules/inspection/components/inspection/measurements/sampleSidebar/InspectionSampleSidebarHelper";
 
 export interface ParameterFieldProps {
   name: string;
   label: string;
   required?: string;
   placeholder?: string;
+  index: number;
 }
 
 export function MeasurementParameterField(props: ParameterFieldProps) {
+  const { values, setFieldValue } =
+    useFormikContext<InspectionSampleSidebarFormType>();
   const [parameterInputValue, setParameterInputValue] = useState("");
   const [parameterQuery] = useDebounce(parameterInputValue, 100);
-  const [selectedParameterZid, setSelectedParameterZid] = useState("");
   const [options, setOptions] = useState<{ label: string; value: string }[]>(
     [],
   );
+
+  const selectedParameterZid =
+    values.measurementParameters[props.index]?.parent?.value ?? "";
 
   const query = useAutocompleteParameterQuery({ prefix: parameterQuery });
 
@@ -60,13 +67,17 @@ export function MeasurementParameterField(props: ParameterFieldProps) {
         loading={query.isLoading}
         options={options}
         sx={{ flex: 1 }}
-        isOptionEqualToValue={(option, value) => option.value === value.value}
         getOptionLabel={(option) => option.label}
         getOptionKey={(option) => option.value}
+        isOptionEqualToValue={(option, value) => value.value === option.value}
         onInputChange={(e, value) => setParameterInputValue(value)}
-        onValueChanged={(value) => {
+        onValueChanged={async (value) => {
           if (value) {
-            setSelectedParameterZid(value.value);
+            await setFieldValue(props.name + ".parent", value);
+            await setFieldValue(props.name + ".child", {
+              label: "",
+              value: null,
+            });
           }
         }}
       />

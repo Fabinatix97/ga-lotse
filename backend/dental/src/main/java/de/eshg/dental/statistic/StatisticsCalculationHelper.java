@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 cronn GmbH
+ * Copyright 2026 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -55,7 +55,7 @@ public class StatisticsCalculationHelper {
           case 4 -> primaryDmftValue > 2;
           case 5 -> primaryDmftValue > 4;
           case 6, 7 -> primaryDmftValue + secondaryDmftValue > 5 || secondaryDValue > 0;
-          case 8, 9 -> primaryDmftValue + secondaryDmftValue > 5 || secondaryDValue > 2;
+          case 8, 9 -> primaryDmftValue + secondaryDmftValue > 7 || secondaryDValue > 2;
           default -> false;
         };
     return Optional.of(decayRisk);

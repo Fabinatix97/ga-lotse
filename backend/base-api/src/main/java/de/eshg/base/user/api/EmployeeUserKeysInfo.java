@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 cronn GmbH
+ * Copyright 2026 cronn GmbH
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -12,7 +12,7 @@ public interface EmployeeUserKeysInfo {
 
   @Schema(
       description =
-          """
+"""
 The version of the crypto settings used.
 A new crypto version (increased by 1) will become available every time something is changed regarding the GA-Lotse crypto settings for the keys stored here.
 This attribute tracks, which settings were in use, when the key pair was created""",

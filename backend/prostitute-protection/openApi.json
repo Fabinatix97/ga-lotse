@@ -768,6 +768,25 @@
         "tags" : [ "ProstituteProtectionPublicCitizen" ]
       }
     },
+    "/citizen/public/free-appointments" : {
+      "get" : {
+        "operationId" : "getFreeAppointmentsForCitizen",
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/GetFreeAppointmentsResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Get free appointments.",
+        "tags" : [ "ProstituteProtectionPublicCitizen" ]
+      }
+    },
     "/citizen/public/opening-hours" : {
       "get" : {
         "operationId" : "getOpeningHours",
@@ -784,6 +803,35 @@
           }
         },
         "summary" : "Get the official opening hours.",
+        "tags" : [ "ProstituteProtectionPublicCitizen" ]
+      }
+    },
+    "/citizen/public/procedures" : {
+      "post" : {
+        "operationId" : "createCitizenProcedure",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/CreateCitizenProcedureRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/CreateProstituteProtectionProcedureResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Save a new citizen procedure.",
         "tags" : [ "ProstituteProtectionPublicCitizen" ]
       }
     },
@@ -2716,6 +2764,73 @@
         "tags" : [ "ProstituteProtection" ]
       }
     },
+    "/prostitute-protection-procedures/{procedureId}/certificate" : {
+      "post" : {
+        "operationId" : "downloadCertificate",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "procedureId",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/DownloadCertificateRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "type" : "string",
+                  "format" : "binary"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Decrypt and download a previously generated consultation certificate",
+        "tags" : [ "ProstituteProtection" ]
+      }
+    },
+    "/prostitute-protection-procedures/{procedureId}/certificates" : {
+      "get" : {
+        "operationId" : "getCertificates",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "procedureId",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/GetCertificatesResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Get a list of certificates for a procedure.",
+        "tags" : [ "ProstituteProtection" ]
+      }
+    },
     "/prostitute-protection-procedures/{procedureId}/close-procedure" : {
       "post" : {
         "operationId" : "closeProcedure",
@@ -3735,7 +3850,7 @@
       "AppointmentBookingType" : {
         "type" : "string",
         "description" : "Specifies whether the appointment is a block type or an individual type.",
-        "enum" : [ "USER_DEFINED", "APPOINTMENT_BLOCK" ]
+        "enum" : [ "USER_DEFINED", "APPOINTMENT_BLOCK", "SPONTANEOUS" ]
       },
       "AppointmentLocation" : {
         "required" : [ "id", "name" ],
@@ -3930,6 +4045,10 @@
             "$ref" : "#/components/schemas/BusinessProcedureInclusionStatus"
           }
         }
+      },
+      "CertificateType" : {
+        "type" : "string",
+        "enum" : [ "SECTION_10", "SECTION_7" ]
       },
       "CheckFileStateUsageRequest" : {
         "required" : [ "fileStatesIds" ],
@@ -4146,6 +4265,28 @@
           }
         }
       },
+      "CreateCitizenProcedureRequest" : {
+        "required" : [ "alias", "appointment", "consultationType", "languages" ],
+        "type" : "object",
+        "properties" : {
+          "alias" : {
+            "type" : "string"
+          },
+          "appointment" : {
+            "$ref" : "#/components/schemas/Appointment"
+          },
+          "consultationType" : {
+            "$ref" : "#/components/schemas/ConsultationType"
+          },
+          "languages" : {
+            "minItems" : 1,
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/PersonLanguage"
+            }
+          }
+        }
+      },
       "CreateDailyAppointmentBlock" : {
         "required" : [ "daysOfWeek", "end", "start" ],
         "type" : "object",
@@ -4290,7 +4431,7 @@
         }
       },
       "CreateProstituteProtectionProcedureRequest" : {
-        "required" : [ "alias", "appointmentBookingType", "appointmentStart", "durationInMinutes", "languages" ],
+        "required" : [ "appointmentBookingType", "appointmentStart", "durationInMinutes", "languages" ],
         "type" : "object",
         "properties" : {
           "alias" : {
@@ -4535,6 +4676,50 @@
             }
           }
         } ]
+      },
+      "DownloadCertificateRequest" : {
+        "required" : [ "dateOfBirth", "firstName", "id", "lastName" ],
+        "type" : "object",
+        "properties" : {
+          "dateOfBirth" : {
+            "type" : "string",
+            "format" : "date"
+          },
+          "firstName" : {
+            "maxLength" : 80,
+            "minLength" : 1,
+            "type" : "string"
+          },
+          "id" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "lastName" : {
+            "maxLength" : 120,
+            "minLength" : 1,
+            "type" : "string"
+          }
+        }
+      },
+      "EncryptedFile" : {
+        "required" : [ "certificateType", "createdAt", "encryptedFileId", "withAlias" ],
+        "type" : "object",
+        "properties" : {
+          "certificateType" : {
+            "$ref" : "#/components/schemas/CertificateType"
+          },
+          "createdAt" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "encryptedFileId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "withAlias" : {
+            "type" : "boolean"
+          }
+        }
       },
       "ExportArchivingRelevantProceduresRequest" : {
         "required" : [ "procedures" ],
@@ -5012,6 +5197,18 @@
           "gracePeriodMonths" : {
             "type" : "integer",
             "format" : "int32"
+          }
+        }
+      },
+      "GetCertificatesResponse" : {
+        "required" : [ "encryptedFiles" ],
+        "type" : "object",
+        "properties" : {
+          "encryptedFiles" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/EncryptedFile"
+            }
           }
         }
       },
@@ -6432,7 +6629,7 @@
         }
       },
       "ProcedureDetails" : {
-        "required" : [ "id", "languages", "procedureStatus", "version" ],
+        "required" : [ "appointmentFromAppointmentBlock", "id", "languages", "procedureStatus", "version" ],
         "type" : "object",
         "properties" : {
           "alias" : {
@@ -6441,6 +6638,12 @@
           "appointment" : {
             "$ref" : "#/components/schemas/Appointment"
           },
+          "appointmentFromAppointmentBlock" : {
+            "type" : "boolean"
+          },
+          "consultant" : {
+            "$ref" : "#/components/schemas/UserName"
+          },
           "consultationCertificateCreatedAt" : {
             "type" : "string",
             "format" : "date-time"
@@ -6448,17 +6651,11 @@
           "consultationType" : {
             "$ref" : "#/components/schemas/ConsultationType"
           },
-          "dateOfBirth" : {
-            "type" : "string",
-            "format" : "date"
+          "creator" : {
+            "$ref" : "#/components/schemas/UserName"
           },
           "documentTypeDto" : {
             "$ref" : "#/components/schemas/DocumentType"
-          },
-          "firstName" : {
-            "maxLength" : 80,
-            "minLength" : 1,
-            "type" : "string"
           },
           "id" : {
             "type" : "string",
@@ -6469,11 +6666,6 @@
             "items" : {
               "$ref" : "#/components/schemas/PersonLanguage"
             }
-          },
-          "lastName" : {
-            "maxLength" : 120,
-            "minLength" : 1,
-            "type" : "string"
           },
           "nationality" : {
             "$ref" : "#/components/schemas/CountryCode"
@@ -6727,8 +6919,14 @@
             "type" : "string",
             "format" : "date-time"
           },
+          "consultantName" : {
+            "type" : "string"
+          },
           "consultationType" : {
             "$ref" : "#/components/schemas/ConsultationType"
+          },
+          "creatorName" : {
+            "type" : "string"
           },
           "dateOfBirth" : {
             "type" : "string",
@@ -7067,7 +7265,7 @@
         }
       },
       "UpdateEncryptedPersonalDataRequest" : {
-        "required" : [ "alias", "dateOfBirth", "firstName", "lastName", "version" ],
+        "required" : [ "dateOfBirth", "firstName", "lastName", "version" ],
         "type" : "object",
         "properties" : {
           "alias" : {
@@ -7125,6 +7323,11 @@
             "type" : "string",
             "description" : "The start date and time of the appointment.",
             "format" : "date-time"
+          },
+          "consultantId" : {
+            "type" : "string",
+            "description" : "User id of the appointments consultant.",
+            "format" : "uuid"
           },
           "consultationType" : {
             "$ref" : "#/components/schemas/ConsultationType"
@@ -7187,6 +7390,22 @@
             "type" : "string",
             "description" : "The username which is displayed in the application and can be used for the login.",
             "example" : "testuser"
+          }
+        }
+      },
+      "UserName" : {
+        "required" : [ "firstName", "lastName", "userId" ],
+        "type" : "object",
+        "properties" : {
+          "firstName" : {
+            "type" : "string"
+          },
+          "lastName" : {
+            "type" : "string"
+          },
+          "userId" : {
+            "type" : "string",
+            "format" : "uuid"
           }
         }
       },

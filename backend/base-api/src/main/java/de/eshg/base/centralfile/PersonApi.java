@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 cronn GmbH
+ * Copyright 2026 cronn GmbH
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -107,7 +107,7 @@ public interface PersonApi {
   @ApiResponse(responseCode = "200")
   @Operation(
       summary =
-          """
+"""
 Search reference persons by humanReadableId.
 Includes persons created from external sources.
 Caution: The returned ids of the reference persons must not be stored.
@@ -121,7 +121,7 @@ Caution: The returned ids of the reference persons must not be stored.
   @ApiResponse(responseCode = "200")
   @Operation(
       summary =
-          """
+"""
 Search reference persons for the given knowledge factors 'firstName', 'lastName' and 'dateOfBirth',
 without the need for specifying all three. However, searching for only a first name or only a last
 name is prohibited.
@@ -240,7 +240,7 @@ Caution: The returned ids of the reference persons must not be stored.
   @ApiResponse(responseCode = "200")
   @Operation(
       summary =
-          """
+"""
 Update a differing person file state by taking over the personal data from the
 associated reference person
 """)
@@ -251,7 +251,7 @@ associated reference person
   @ApiResponse(responseCode = "200")
   @Operation(
       summary =
-          """
+"""
 Get the difference between the requested file state and its associated reference person.
 """)
   GetPersonDiffResponse getPersonDiff(@PathVariable("id") UUID id);
@@ -271,7 +271,7 @@ Get the difference between the requested file state and its associated reference
   @ApiResponse(responseCode = "200")
   @Operation(
       summary =
-          """
+"""
 Create a new person file state as well as a new associated reference person,
 without any matching to existing data.
 This endpoint requires a valid authentication from the citizen portal.

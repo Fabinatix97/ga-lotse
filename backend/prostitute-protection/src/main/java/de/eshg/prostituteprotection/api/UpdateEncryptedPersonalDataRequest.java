@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 cronn GmbH
+ * Copyright 2026 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -22,7 +22,7 @@ public record UpdateEncryptedPersonalDataRequest(
     @NotNull @Size(min = 1, max = 80) String firstName,
     @NotNull @Size(min = 1, max = 120) String lastName,
     @NotNull @DateOfBirth(minAgeInclusive = 18) LocalDate dateOfBirth,
-    @NotNull String alias,
+    String alias,
     CountryCode nationality,
     DocumentTypeDto documentType,
     List<LanguageDto> languages) {}

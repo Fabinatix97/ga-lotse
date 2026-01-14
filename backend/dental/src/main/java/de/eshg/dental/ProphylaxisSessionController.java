@@ -1,10 +1,11 @@
 /*
- * Copyright 2025 cronn GmbH
+ * Copyright 2026 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 package de.eshg.dental;
 
+import static de.eshg.dental.mapper.ProphylaxisSessionMapper.mapProphylaxisSessionExaminationUpdateResultToDto;
 import static de.eshg.dental.mapper.ProphylaxisSessionMapper.mapProphylaxisSessionToDetailsDto;
 
 import de.eshg.api.commons.InlineParameterObject;
@@ -96,10 +97,10 @@ public class ProphylaxisSessionController {
   @PatchMapping("/{prophylaxisSessionId}/examinations")
   @Transactional
   @Operation(summary = "Updates an examination of a given prophylaxis session")
-  public ProphylaxisSessionDetailsDto updateProphylaxisSessionExaminations(
+  public ProphylaxisSessionExaminationUpdateResultDto updateProphylaxisSessionExaminations(
       @PathVariable("prophylaxisSessionId") UUID prophylaxisSessionId,
       @Valid @RequestBody UpdateProphylaxisSessionExaminationsRequest request) {
-    return mapProphylaxisSessionToDetailsDto(
+    return mapProphylaxisSessionExaminationUpdateResultToDto(
         prophylaxisSessionService.updateProphylaxisSessionExaminations(
             prophylaxisSessionId, request));
   }

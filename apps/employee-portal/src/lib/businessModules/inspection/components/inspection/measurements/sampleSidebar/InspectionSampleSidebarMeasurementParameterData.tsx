@@ -1,5 +1,5 @@
 /**
- * Copyright 2025 SCOOP Software GmbH, cronn GmbH
+ * Copyright 2026 SCOOP Software GmbH, cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -39,7 +39,12 @@ export function InspectionSampleSidebarMeasurementParameterData({
               }}
             >
               {values.measurementParameters.map((element, elementIndex) => (
-                <Stack key={elementIndex} direction="row" spacing={2}>
+                <Stack
+                  key={elementIndex}
+                  direction="row"
+                  spacing={2}
+                  sx={{ alignItems: "center" }}
+                >
                   <MeasurementParameterField
                     data-testid={
                       "measurementParameterAutocomplete-" + elementIndex
@@ -47,6 +52,7 @@ export function InspectionSampleSidebarMeasurementParameterData({
                     label={`${elementIndex + 1}. Messparameter`}
                     name={`measurementParameters.${elementIndex}`}
                     placeholder={`Messparameter ${elementIndex + 1} auswählen`}
+                    index={elementIndex}
                     required={`Messparameter ${elementIndex + 1} auswählen`}
                   />
                   {values.measurementParameters.length >= 2 && (

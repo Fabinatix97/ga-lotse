@@ -1,5 +1,5 @@
 /**
- * Copyright 2025 cronn GmbH
+ * Copyright 2026 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -8,6 +8,7 @@
 import { DeleteOutline } from "@mui/icons-material";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { ColumnSort, createColumnHelper } from "@tanstack/react-table";
+import { useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { isNullish } from "remeda";
 
@@ -116,6 +117,7 @@ function getProceduresColumns({ onAbortProcedure }: RowActions) {
 }
 
 export function ProstituteProtectionProceduresTable() {
+  const searchParams = useSearchParams();
   const [confirmAbort, setConfirmAbort] = useState<
     AbortProcedureRequest | undefined
   >();
@@ -129,6 +131,7 @@ export function ProstituteProtectionProceduresTable() {
   const proceduresQueryOptions = useProceduresQueryOptions({
     page: tableControl.paginationProps,
     sorting: tableControl.tableSorting,
+    alias: searchParams.get("alias") ?? undefined,
   });
 
   const abortProcedure = useAbortProcedureMutation();
@@ -151,7 +154,11 @@ export function ProstituteProtectionProceduresTable() {
       <TablePage
         data-testid="procedureTable"
         aria-label="Vorgänge"
-        controls={<ProstituteProtectionProceduresTableControls />}
+        controls={
+          <ProstituteProtectionProceduresTableControls
+            tableControl={tableControl}
+          />
+        }
         filterSettings={null}
         search={null}
         fullHeight

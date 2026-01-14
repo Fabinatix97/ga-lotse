@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 cronn GmbH
+ * Copyright 2026 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -546,8 +546,13 @@ public class ChildService {
   }
 
   public List<ChildWithPersonAndContactData> augmentWithChildAndContactData(List<Child> children) {
+    return augmentWithChildAndContactData(children, false);
+  }
+
+  public List<ChildWithPersonAndContactData> augmentWithChildAndContactData(
+      List<Child> children, boolean checkOutdated) {
     Map<UUID, GetPersonFileStateResponse> persons =
-        personClient.fetchPersonDataInBulkToMap(children);
+        personClient.fetchPersonDataInBulkToMap(children, checkOutdated);
     Map<UUID, ContactDto> contacts = fetchContactsInBulk(children);
 
     return children.stream()

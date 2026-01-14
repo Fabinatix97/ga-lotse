@@ -1,4 +1,4 @@
-// Copyright 2025 cronn GmbH
+// Copyright 2026 cronn GmbH
 // SPDX-License-Identifier: Apache-2.0
 
 import com.bmuschko.gradle.docker.tasks.image.DockerBuildImage
@@ -78,7 +78,7 @@ bootJar {
 
 ext {
     listenPort = 8080
-    jreDockerImage = 'eclipse-temurin:21.0.8_9-jre-noble@sha256:57877e7a14e2ccedbc5454af7288227b40891f945377d4de66d8573066b3f957'
+    jreDockerImage = 'eclipse-temurin:25.0.1_8-jre-noble@sha256:d8dd4342b7dbb5a9c06d0499eecca86315346acc6a20026080642610344ceb2c'
 }
 
 tasks.register('createDockerfile', Dockerfile) {
@@ -100,7 +100,7 @@ tasks.register('createDockerfile', Dockerfile) {
 
     exposePort(listenPort)
 
-    healthcheck(new Dockerfile.Healthcheck("curl --silent --fail http://localhost:${listenPort}/actuator/health || exit 1").withInterval(Duration.ofSeconds(5)).withRetries(36))
+    healthcheck(new Dockerfile.Healthcheck("bash -c \"{ printf 'GET /actuator/health HTTP/1.0\\r\\n\\r\\n' >&0; grep -q 'HTTP/1\\.. 200' || exit 1; } 0<>/dev/tcp/localhost/${listenPort}\"").withInterval(Duration.ofSeconds(5)).withRetries(36))
 
     if (dockerResourcesSrcDir.isDirectory()) {
         copyFile(new Dockerfile.CopyFile('resources/', '/').withChown("${userName}:${groupName}"))

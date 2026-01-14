@@ -1,5 +1,5 @@
 /**
- * Copyright 2025 cronn GmbH
+ * Copyright 2026 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -23,11 +23,8 @@ import {
 } from "@eshg/prostitute-protection-api";
 
 import { useUpdateProcedurePersonalDataMutation } from "../../../../api/mutations/procedures";
-import { useUpdateSelectedPerson } from "../../../../contexts/selectedPerson/SelectedPersonStoreProvider";
-import {
-  PersonDataFromStore,
-  usePersonDataFromStore,
-} from "../../../../contexts/selectedPerson/usePersonDataFromStore";
+import { useDecryptedPersons } from "../../../../contexts/decryptedPersons/DecryptedPersonsStoreProvider";
+import { DecryptedPerson } from "../../../../contexts/decryptedPersons/decryptedPersonsStore";
 import { LanguageFieldsData } from "../../../form/LanguageFields";
 
 import { EditPersonDetailsForm } from "./EditPersonDetailsForm";
@@ -53,8 +50,8 @@ function EditPersonDetailsSidebar({
   procedure,
 }: EditPersonDetailsSidebarProps) {
   const updateProcedurePersonalData = useUpdateProcedurePersonalDataMutation();
-  const personData = usePersonDataFromStore(procedure);
-  const updateSelectedPerson = useUpdateSelectedPerson();
+  const { addDecryptedPerson, getDecryptedPerson } = useDecryptedPersons();
+  const personData = getDecryptedPerson(procedure.id);
 
   async function handleSubmit(values: EditPersonalDataForm) {
     const personalData = mapFormToApi(values);
@@ -65,7 +62,7 @@ function EditPersonDetailsSidebar({
       },
       {
         onSuccess: () => {
-          updateSelectedPerson({
+          addDecryptedPerson({
             id: procedure.id,
             firstName: values.firstName,
             lastName: values.lastName,
@@ -94,15 +91,15 @@ function EditPersonDetailsSidebar({
 
 function mapApiToForm(
   procedure: ApiProcedureDetails,
-  personData: PersonDataFromStore,
+  personData?: DecryptedPerson,
 ): EditPersonalDataForm {
   const hasGerman = procedure.languages.includes(ApiPersonLanguage.German);
 
   return {
-    firstName: parseOptionalValue(personData.firstName),
-    lastName: parseOptionalValue(personData.lastName),
+    firstName: parseOptionalValue(personData?.firstName),
+    lastName: parseOptionalValue(personData?.lastName),
     alias: parseOptionalValue(procedure.alias),
-    dateOfBirth: parseOptionalDate(personData.dateOfBirth),
+    dateOfBirth: parseOptionalDate(personData?.dateOfBirth),
     languages: procedure.languages,
     hasSufficientGermanLanguageSkills: hasGerman,
     nationality: parseOptionalValue(procedure.nationality),
@@ -117,7 +114,7 @@ function mapFormToApi(
   return {
     firstName: values.firstName,
     lastName: values.lastName,
-    alias: values.alias,
+    alias: mapOptionalValue(values.alias),
     dateOfBirth: new Date(values.dateOfBirth),
     languages: values.languages,
     nationality: mapOptionalValue(values.nationality),

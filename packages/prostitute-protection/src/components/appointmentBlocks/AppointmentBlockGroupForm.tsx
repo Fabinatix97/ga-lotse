@@ -1,16 +1,18 @@
 /**
- * Copyright 2025 cronn GmbH
+ * Copyright 2026 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 import { Divider, Grid, Stack } from "@mui/joy";
 import { Formik, FormikErrors } from "formik";
-import { isDefined } from "remeda";
+import { isDefined, isEmpty } from "remeda";
 
+import { ApiUser } from "@eshg/base-api";
 import {
   AppointmentBlockGroupFields,
   AppointmentBlockGroupValuesWithDays,
   AppointmentRoomField,
+  AppointmentStaffSelection,
   AppointmentStandardDurations,
   FormButtonBar,
   FormSheet,
@@ -22,21 +24,18 @@ import { ApiAppointmentType } from "@eshg/prostitute-protection-api";
 
 import { mapAppointmentBlockApi } from "../../api/mapAppointmentBlockApi";
 import { appointmentBlockApiQueryKey } from "../../api/queries/apiQueryKeys";
+import { getValidateDailyAppointmentBlocksForGroupQuery } from "../../api/queries/appointmentBlockApi";
 import { routes } from "../../config/routes";
 import { useProstituteProtectionApiClients } from "../../contexts/ProstituteProtectionApi";
 
+import { mapFormValues } from "./ProstituteProtectionCreateAppointmentBlockGroupForm";
 import { APPOINTMENT_TYPE_OPTIONS } from "./options";
-
-export interface AppointmentBlockGroupValues {
-  types: ApiAppointmentType[];
-  appointmentBlocks: AppointmentBlockGroupValuesWithDays[];
-  room: OptionalFieldValue<string>;
-}
 
 export interface ProstituteProtectionAppointmentValues {
   types: ApiAppointmentType[];
   room: OptionalFieldValue<string>;
   appointmentBlocks: AppointmentBlockGroupValuesWithDays[];
+  consultants: string[];
 }
 
 function validateForm(
@@ -59,21 +58,32 @@ function validateForm(
     errors.appointmentBlocks = appointmentBlockErrors;
   }
 
+  if (isEmpty(values.consultants)) {
+    errors.consultants = "Es muss mindestens ein:e Berater:in ausgewählt sein.";
+  }
   return errors;
 }
 
 interface AppointmentBlockGroupFormProps {
-  onSubmit: (values: AppointmentBlockGroupValues) => Promise<void>;
+  onSubmit: (values: ProstituteProtectionAppointmentValues) => Promise<void>;
   standardDurations: AppointmentStandardDurations;
   initialValues: ProstituteProtectionAppointmentValues;
+  allConsultants: ApiUser[];
 }
 
 export function AppointmentBlockGroupForm({
   onSubmit,
   standardDurations,
   initialValues,
+  allConsultants,
 }: Readonly<AppointmentBlockGroupFormProps>) {
   const { appointmentBlockApi } = useProstituteProtectionApiClients();
+  const consultantOptions = allConsultants.map((option) => ({
+    userId: option.userId,
+    firstName: option.firstName,
+    lastName: option.lastName,
+  }));
+
   return (
     <Formik
       initialValues={initialValues}
@@ -86,6 +96,19 @@ export function AppointmentBlockGroupForm({
             <AppointmentBlockGroupFields
               appointmentBlocksWithDays={values.appointmentBlocks}
               options={APPOINTMENT_TYPE_OPTIONS}
+            />
+          </Stack>
+          <Stack>
+            <AppointmentStaffSelection
+              consultantOptions={consultantOptions}
+              consultantRequired="Es muss mindestens eine:n Berater:in ausgewählt sein."
+              validateAppointmentBlocks={() => mapFormValues(values)}
+              getCheckAvailabilityQuery={() =>
+                getValidateDailyAppointmentBlocksForGroupQuery(
+                  appointmentBlockApi,
+                  mapFormValues(values),
+                )
+              }
             />
           </Stack>
           <Grid container>

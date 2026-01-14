@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 cronn GmbH
+ * Copyright 2026 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -64,23 +64,42 @@ public class PersonClient {
         .toList();
   }
 
+  public Map<UUID, GetPersonFileStateResponse> fetchPersonDataInBulkToMap(
+      List<Child> children, boolean checkOutdated) {
+    return fetchPersonDataInBulk(children, checkOutdated).stream()
+        .collect(StreamUtil.toLinkedHashMap(GetPersonFileStateResponse::id));
+  }
+
   public Map<UUID, GetPersonFileStateResponse> fetchPersonDataInBulkToMap(List<Child> children) {
     return fetchPersonDataInBulk(children).stream()
         .collect(StreamUtil.toLinkedHashMap(GetPersonFileStateResponse::id));
   }
 
   public List<GetPersonFileStateResponse> fetchPersonDataInBulk(List<Child> children) {
+    return fetchPersonDataInBulk(children, false);
+  }
+
+  public List<GetPersonFileStateResponse> fetchPersonDataInBulk(
+      List<Child> children, boolean checkOutdated) {
     List<UUID> fileStateIds = children.stream().map(Child::getChildIdFromCentralFile).toList();
-    return fetchPersonDataInBulk(fileStateIds, null);
+    return fetchPersonDataInBulk(fileStateIds, null, checkOutdated);
   }
 
   public List<GetPersonFileStateResponse> fetchPersonDataInBulk(
       List<UUID> fileStateIds, GetPersonFileStatesSortParameters sortParameters) {
+    return fetchPersonDataInBulk(fileStateIds, sortParameters, false);
+  }
+
+  public List<GetPersonFileStateResponse> fetchPersonDataInBulk(
+      List<UUID> fileStateIds,
+      GetPersonFileStatesSortParameters sortParameters,
+      boolean checkOutdated) {
     if (fileStateIds.isEmpty()) {
       return List.of();
     }
     GetPersonFileStatesResponse response =
-        personApi.getPersonFileStates(new GetPersonFileStatesRequest(fileStateIds, sortParameters));
+        personApi.getPersonFileStates(
+            new GetPersonFileStatesRequest(fileStateIds, checkOutdated, sortParameters));
 
     int expectedResponseSize =
         !hasPagination(sortParameters)

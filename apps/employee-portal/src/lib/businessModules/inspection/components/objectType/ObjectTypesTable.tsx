@@ -1,5 +1,5 @@
 /**
- * Copyright 2025 SCOOP Software GmbH, cronn GmbH
+ * Copyright 2026 SCOOP Software GmbH, cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -19,16 +19,21 @@ import {
   useHasUserRoleCheck,
 } from "@eshg/lib-employee-portal";
 
+import { useIsNewFeatureEnabled } from "@/lib/businessModules/inspection/api/queries/feature";
 import { useGetObjectTypeHierarchyTree } from "@/lib/businessModules/inspection/api/queries/objectTypes";
 
 import { useEditObjectTypeSidebar } from "./EditObjectTypeSidebar";
+import { useEditObjectTypeSidebarOld } from "./EditObjectTypeSidebarOld";
 
 export function ObjectTypesTable() {
   const canEdit = useHasUserRoleCheck(ApiUserRole.InspectionObjecttypesWrite);
   const { data: objectTypeHierarchyTree, isFetching } =
     useGetObjectTypeHierarchyTree();
 
+  const featureToggleEnabled = useIsNewFeatureEnabled("OBJECT_TYPE_HIERARCHY");
+
   const sidebar = useEditObjectTypeSidebar();
+  const sidebarOld = useEditObjectTypeSidebarOld();
 
   const columnHelper: ColumnHelper<
     ApiObjectTypeHierarchyTreeNode | ApiObjectType
@@ -105,7 +110,11 @@ export function ObjectTypesTable() {
               ? {
                   onClick: (row) => () => {
                     if (isApiObjectType(row.original)) {
-                      sidebar.open({ objectType: row.original });
+                      if (featureToggleEnabled) {
+                        sidebar.open({ objectType: row.original });
+                      } else {
+                        sidebarOld.open({ objectType: row.original });
+                      }
                     }
                   },
                   focusColumnAccessorKey: "name",

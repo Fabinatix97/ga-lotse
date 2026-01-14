@@ -1,5 +1,5 @@
 /**
- * Copyright 2025 cronn GmbH
+ * Copyright 2026 cronn GmbH
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -41,6 +41,7 @@ interface BaseAppointmentStaffSelectionProps {
   physicianRequired?: string;
   medicalAssistantOptions?: NamedUser[];
   consultantOptions?: NamedUser[];
+  consultantRequired?: string;
   sopassOptions?: NamedUser[];
   singleColumn?: boolean;
   singleSelection?: boolean;
@@ -92,6 +93,10 @@ export function AppointmentStaffSelection(
     }
     if (props.physicianRequired && isEmpty(staffSelection.physicians ?? [])) {
       snackbar.notification(props.physicianRequired);
+      return;
+    }
+    if (props.consultantRequired && isEmpty(staffSelection.consultants ?? [])) {
+      snackbar.notification(props.consultantRequired);
       return;
     }
     let teamMembers = 0;
@@ -148,6 +153,7 @@ export function AppointmentStaffSelection(
     label: "Berater:in",
     placeholder: "auswählen",
     options: props.consultantOptions ?? [],
+    required: props.consultantRequired,
   };
 
   const sopassProps = {

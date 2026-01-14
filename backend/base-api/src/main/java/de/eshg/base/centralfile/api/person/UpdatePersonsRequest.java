@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 cronn GmbH
+ * Copyright 2026 cronn GmbH
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -13,7 +13,7 @@ import java.util.List;
 
 @Schema(
     description =
-        """
+"""
 Request used for performing the consistent updates of file states and their associated reference persons in a bulk operation
 """)
 public record UpdatePersonsRequest(

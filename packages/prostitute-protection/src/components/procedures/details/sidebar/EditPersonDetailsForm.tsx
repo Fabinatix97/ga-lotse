@@ -1,5 +1,5 @@
 /**
- * Copyright 2025 cronn GmbH
+ * Copyright 2026 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -38,12 +38,7 @@ export function EditPersonDetailsForm() {
         required="Bitte einen Nachnamen angeben."
         validate={validateLength(1, 120)}
       />
-      <InputField
-        name="alias"
-        label="Alias"
-        required="Bitte ein Alias angeben."
-        validate={validateLength(1, 80)}
-      />
+      <InputField name="alias" label="Alias" validate={validateLength(1, 80)} />
       <DateField
         name="dateOfBirth"
         label={PERSON_FIELD_NAME.dateOfBirth}

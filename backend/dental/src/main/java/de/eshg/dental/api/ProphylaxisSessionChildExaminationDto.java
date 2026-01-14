@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 cronn GmbH
+ * Copyright 2026 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -24,6 +24,7 @@ public record ProphylaxisSessionChildExaminationDto(
     @NotNull String firstName,
     @NotNull String lastName,
     @NotNull LocalDate dateOfBirth,
+    Boolean outdated,
     @Valid @NotNull InstitutionDto institution,
     String groupName,
     GenderDto gender,

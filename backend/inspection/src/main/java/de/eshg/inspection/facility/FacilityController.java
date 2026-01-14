@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 SCOOP Software GmbH, cronn GmbH
+ * Copyright 2026 SCOOP Software GmbH, cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -85,7 +85,7 @@ public class FacilityController {
   @PutMapping(path = "/{id}")
   @Operation(
       summary =
-          """
+"""
 Perform a consistent update of the existent facility file state and its
 associated reference facility
 """)

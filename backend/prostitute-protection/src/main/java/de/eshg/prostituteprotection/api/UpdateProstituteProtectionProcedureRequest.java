@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 cronn GmbH
+ * Copyright 2026 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import java.time.Instant;
+import java.util.UUID;
 
 public record UpdateProstituteProtectionProcedureRequest(
     @NotNull
@@ -23,4 +24,5 @@ public record UpdateProstituteProtectionProcedureRequest(
     @Schema(description = "Duration of the appointment in minutes.", example = "30")
         @NotNull
         @Positive
-        Integer durationInMinutes) {}
+        Integer durationInMinutes,
+    @Schema(description = "User id of the appointments consultant.") UUID consultantId) {}

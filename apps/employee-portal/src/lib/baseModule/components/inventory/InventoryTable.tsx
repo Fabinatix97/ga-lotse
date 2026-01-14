@@ -1,5 +1,5 @@
 /**
- * Copyright 2025 cronn GmbH
+ * Copyright 2026 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -14,6 +14,7 @@ import {
   FilterSettingsContent,
   FilterSettingsSheet,
   Pagination,
+  SearchFilter,
   TablePage,
   TableSheet,
   ToggleFilterButton,
@@ -28,7 +29,6 @@ import { useInventoryCountCorrectionSidebar } from "@/lib/baseModule/components/
 import { useInventoryRestockSidebar } from "@/lib/baseModule/components/inventory/modals/InventoryRestockSidebar";
 import { useInventoryUpdateSidebar } from "@/lib/baseModule/components/inventory/modals/InventoryUpdateSidebar";
 import { routes } from "@/lib/baseModule/shared/routes";
-import { SearchFilter } from "@/lib/shared/components/tableFilters/SearchFilter";
 
 import { inventoryColumns } from "./columns";
 

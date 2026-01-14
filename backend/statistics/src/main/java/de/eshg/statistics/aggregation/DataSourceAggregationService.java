@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 cronn GmbH
+ * Copyright 2026 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -26,7 +26,6 @@ import de.eshg.statistics.api.datasource.BusinessDataSourceAttribute;
 import de.eshg.statistics.api.datasource.GetAvailableDataSourcesResponse;
 import de.eshg.statistics.config.StatisticsConfig;
 import de.eshg.statistics.config.StatisticsConfig.BusinessModuleConfig;
-import de.eshg.statistics.config.StatisticsFeatureToggle;
 import de.eshg.statistics.mapper.EvaluationMapper;
 import java.util.Collection;
 import java.util.Comparator;
@@ -41,17 +40,14 @@ public class DataSourceAggregationService {
   private final BusinessModuleAggregationHelper businessModuleAggregationHelper;
   private final BaseStatisticsApi baseModuleStatisticsApi;
   private final BusinessModuleConfig businessModuleConfig;
-  private final StatisticsFeatureToggle statisticsFeatureToggle;
 
   public DataSourceAggregationService(
       BusinessModuleAggregationHelper businessModuleAggregationHelper,
       BaseStatisticsApi baseModuleStatisticsApi,
-      StatisticsConfig statisticsConfig,
-      StatisticsFeatureToggle statisticsFeatureToggle) {
+      StatisticsConfig statisticsConfig) {
     this.businessModuleAggregationHelper = businessModuleAggregationHelper;
     this.baseModuleStatisticsApi = baseModuleStatisticsApi;
     this.businessModuleConfig = statisticsConfig.businessModule();
-    this.statisticsFeatureToggle = statisticsFeatureToggle;
   }
 
   public GetAvailableDataSourcesResponse getAvailableDataSources() {

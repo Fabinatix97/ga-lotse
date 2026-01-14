@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 cronn GmbH
+ * Copyright 2026 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -42,11 +42,11 @@ public class DeleteEncryptedDataService {
     Instant retentionThreshold =
         LocalDate.now(clock).minus(RETENTION_PERIOD).atStartOfDay(clock.getZone()).toInstant();
     log.info(
-        "Starting deletion encrypted data - attempting to delete encrypted data of procedures with appointment start before {}",
+        "Starting deletion encrypted data - attempting to delete encrypted data of procedures without emergency situation and with appointment start before {}",
         retentionThreshold);
 
     List<ProstituteProtectionProcedure> procedures =
-        procedureRepository.findByAppointmentStartBefore(retentionThreshold);
+        procedureRepository.findByNoEmergencySituationAndAppointmentStartBefore(retentionThreshold);
 
     for (ProstituteProtectionProcedure procedure : procedures) {
       procedure.setEncryptedPersonalData(null);

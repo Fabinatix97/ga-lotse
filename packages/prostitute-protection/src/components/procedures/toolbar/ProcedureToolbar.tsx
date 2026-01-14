@@ -1,5 +1,5 @@
 /**
- * Copyright 2025 cronn GmbH
+ * Copyright 2026 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -18,10 +18,9 @@ import {
   ToolbarBackButton,
   useHasUserRoleCheck,
 } from "@eshg/lib-employee-portal";
-import { isEmptyString } from "@eshg/lib-portal";
 
 import { routes } from "../../../config/routes";
-import { useSelectedPerson } from "../../../contexts/selectedPerson/SelectedPersonStoreProvider";
+import { useDecryptedPersons } from "../../../contexts/decryptedPersons/DecryptedPersonsStoreProvider";
 
 import { ProcedureTabHeader } from "./ProcedureTabHeader";
 
@@ -30,13 +29,15 @@ interface ProcedureToolbarProps {
 }
 
 export function ProcedureToolbar({ procedureId }: ProcedureToolbarProps) {
-  const selectedPerson = useSelectedPerson();
+  const { getDecryptedPerson } = useDecryptedPersons();
+  const personData = getDecryptedPerson(procedureId);
+
   const hasProstituteProtectionAdminRole = useHasUserRoleCheck(
     ApiUserRole.ProstituteProtectionAdmin,
   );
   const tabItems = buildTabItems(procedureId);
 
-  const backRoute = !isEmptyString(selectedPerson.id)
+  const backRoute = personData?.id
     ? routes.searchPerson.index
     : routes.procedures.index;
 

@@ -1,5 +1,5 @@
 /**
- * Copyright 2025 cronn GmbH
+ * Copyright 2026 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -49,7 +49,7 @@ export function calculateDecayRiskValue(
     case 8:
     case 9:
       return (
-        primaryTeethDmftValue + secondaryTeethDmftValue > 5 ||
+        primaryTeethDmftValue + secondaryTeethDmftValue > 7 ||
         secondaryTeethDecayValue > 2
       );
     default:

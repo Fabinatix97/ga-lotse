@@ -1,9 +1,9 @@
 /**
- * Copyright 2025 cronn GmbH
+ * Copyright 2026 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { OpenInNewOutlined } from "@mui/icons-material";
+import { ErrorOutlineOutlined, OpenInNewOutlined } from "@mui/icons-material";
 import { Divider, Stack } from "@mui/joy";
 import { ReactNode } from "react";
 
@@ -48,6 +48,7 @@ interface ExaminationChildDetailsSectionProps {
   lastName: string;
   gender?: ApiGender;
   dateOfBirth: Date;
+  updatePending?: boolean;
   dateOfExamination: Date;
   institution?: Institution;
   groupName?: string;
@@ -73,6 +74,7 @@ export function ExaminationChildDetailsSection(
             lastName: props.lastName,
             gender: props.gender,
             dateOfBirth: props.dateOfBirth,
+            updatePending: props.updatePending,
             groupName: props.groupName,
             procedureLabels: props.procedureLabels,
             currentFluoridationConsent: props.allFluoridationConsents[0],
@@ -144,6 +146,14 @@ function DetailsSectionHeader(props: DetailsSectionHeaderProps) {
           variant="outlined"
           href={routes.children.byId(props.participantDetails.id).details}
           openInNewTab
+          startDecorator={
+            props.participantDetails.updatePending ? (
+              <ErrorOutlineOutlined
+                color="warning"
+                aria-label="Update verfügbar"
+              />
+            ) : undefined
+          }
           endDecorator={<OpenInNewOutlined />}
         >
           Profil

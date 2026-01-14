@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 cronn GmbH
+ * Copyright 2026 cronn GmbH
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -21,14 +21,15 @@ public interface AppointmentBlockRepository extends JpaRepository<AppointmentBlo
   List<AppointmentBlock> findAllByOrderById();
 
   @Query(
-      "select distinct a from AppointmentBlock a "
-          + "left join fetch a.appointments "
-          + "left join fetch a.appointmentBlockGroup abg "
-          + "left join fetch abg.appointmentTypeHolders h "
-          + "where h.type = :appointmentType "
-          + "and (:locationId is null or abg.locationId = :locationId) "
-          + "and (:physicianId is null or :physicianId member of a.physicians) "
-          + "and a.appointmentBlockEnd >= :appointmentBlockEnd order by a.id")
+      """
+      select a from AppointmentBlock a
+      left join fetch a.appointments
+      left join fetch a.appointmentBlockGroup abg
+      left join fetch abg.appointmentTypeHolders h
+      where exists (select 1 from abg.appointmentTypeHolders ath where ath.type = :appointmentType)
+      and (:locationId is null or abg.locationId = :locationId)
+      and (:physicianId is null or :physicianId member of a.physicians)
+      and a.appointmentBlockEnd >= :appointmentBlockEnd order by a.id""")
   List<AppointmentBlock> findBlockByAppointmentTypeAndLocationAndAppointmentBlockEndGreaterThan(
       @Param("appointmentType") AppointmentType appointmentType,
       @Param("locationId") UUID locationId,
@@ -36,19 +37,20 @@ public interface AppointmentBlockRepository extends JpaRepository<AppointmentBlo
       @Param("appointmentBlockEnd") Instant appointmentBlockEnd);
 
   @Query(
-      "select distinct a from AppointmentBlock a "
-          + "left join fetch a.appointments "
-          + "left join fetch a.appointmentBlockGroup abg "
-          + "left join fetch abg.appointmentTypeHolders h "
-          + "where h.type = :appointmentType "
-          + "and (:availableForCitizen is null or abg.availableForCitizen = :availableForCitizen) "
-          + "and (:availableForBulkBooking is null or abg.availableForBulkBooking = :availableForBulkBooking) "
-          + "and (:locationId is null or abg.locationId = :locationId) "
-          + "and (:physicianId is null or :physicianId member of a.physicians) "
-          + "and (:mfaId is null or :mfaId member of a.mfas) "
-          + "and (:sopassId is null or :sopassId member of a.sopasss) "
-          + "and (:room is null or a.room = :room) "
-          + "and a.appointmentBlockEnd >= :appointmentBlockEnd order by a.id")
+      """
+      select a from AppointmentBlock a
+      left join fetch a.appointments
+      left join fetch a.appointmentBlockGroup abg
+      left join fetch abg.appointmentTypeHolders h
+      where exists (select 1 from abg.appointmentTypeHolders ath where ath.type = :appointmentType)
+      and (:availableForCitizen is null or abg.availableForCitizen = :availableForCitizen)
+      and (:availableForBulkBooking is null or abg.availableForBulkBooking = :availableForBulkBooking)
+      and (:locationId is null or abg.locationId = :locationId)
+      and (:physicianId is null or :physicianId member of a.physicians)
+      and (:mfaId is null or :mfaId member of a.mfas)
+      and (:sopassId is null or :sopassId member of a.sopasss)
+      and (:room is null or a.room = :room)
+      and a.appointmentBlockEnd >= :appointmentBlockEnd order by a.id""")
   List<AppointmentBlock>
       findBlockByAvailabilityAndAppointmentTypeAndLocationAndStaffAndRoomAndAppointmentBlockEndGreaterThan(
           @Param("appointmentType") AppointmentType appointmentType,
@@ -63,12 +65,13 @@ public interface AppointmentBlockRepository extends JpaRepository<AppointmentBlo
 
   @Lock(LockModeType.PESSIMISTIC_WRITE)
   @Query(
-      "select distinct a from AppointmentBlock a "
-          + "left join a.appointmentBlockGroup abg "
-          + "left join AppointmentTypeHolder h on h.appointmentBlockGroup.id = abg.id "
-          + "where h.type = :appointmentType "
-          + "and (:locationId is null or a.appointmentBlockGroup.locationId = :locationId) "
-          + "and a.appointmentBlockStart <= :appointmentStart and a.appointmentBlockEnd >= :appointmentEnd order by a.id")
+      """
+      select a from AppointmentBlock a
+      left join a.appointmentBlockGroup abg
+      left join AppointmentTypeHolder h on h.appointmentBlockGroup.id = abg.id
+      where exists (select 1 from abg.appointmentTypeHolders ath where ath.type = :appointmentType)
+      and (:locationId is null or a.appointmentBlockGroup.locationId = :locationId)
+      and a.appointmentBlockStart <= :appointmentStart and a.appointmentBlockEnd >= :appointmentEnd order by a.id""")
   List<AppointmentBlock> findBlockByAppointmentTypeAndLocationAndAppointmentInBlockWithLock(
       @Param("appointmentType") AppointmentType appointmentType,
       @Param("locationId") UUID locationId,

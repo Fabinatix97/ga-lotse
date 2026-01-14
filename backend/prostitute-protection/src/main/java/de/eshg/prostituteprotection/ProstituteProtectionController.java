@@ -1,15 +1,12 @@
 /*
- * Copyright 2025 cronn GmbH
+ * Copyright 2026 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 package de.eshg.prostituteprotection;
 
 import de.eshg.api.commons.InlineParameterObject;
-import de.eshg.lib.procedure.domain.model.Pdf;
-import de.eshg.lib.procedure.domain.model.PdfMetaData;
 import de.eshg.lib.procedure.domain.model.TaskType;
-import de.eshg.lib.procedure.file.FileFactory;
 import de.eshg.lib.procedure.util.ProcedureValidator;
 import de.eshg.prostituteprotection.api.AbortProcedureRequest;
 import de.eshg.prostituteprotection.api.CloseProcedureRequest;
@@ -17,6 +14,8 @@ import de.eshg.prostituteprotection.api.ConsultationDto;
 import de.eshg.prostituteprotection.api.CreateCertificateRequest;
 import de.eshg.prostituteprotection.api.CreateProstituteProtectionProcedureRequest;
 import de.eshg.prostituteprotection.api.CreateProstituteProtectionProcedureResponse;
+import de.eshg.prostituteprotection.api.DownloadCertificateRequest;
+import de.eshg.prostituteprotection.api.GetCertificatesResponse;
 import de.eshg.prostituteprotection.api.GetProstituteProtectionPersonSearchResponse;
 import de.eshg.prostituteprotection.api.GetProstituteProtectionProceduresResponse;
 import de.eshg.prostituteprotection.api.ProcedureDetailsDto;
@@ -30,10 +29,11 @@ import de.eshg.prostituteprotection.api.UpdateEncryptedPersonalDataRequest;
 import de.eshg.prostituteprotection.api.UpdateProstituteProtectionProcedureRequest;
 import de.eshg.prostituteprotection.api.ValidateRequiredProcedureDataResponse;
 import de.eshg.prostituteprotection.crypto.DecryptedPersonalDataDto;
-import de.eshg.prostituteprotection.crypto.PersonalDataDecryptionException;
-import de.eshg.prostituteprotection.crypto.PersonalDataEncryptionService;
+import de.eshg.prostituteprotection.domain.data.ProstituteProtectionProcedureWithAugmentedData;
+import de.eshg.prostituteprotection.domain.model.CertificateType;
 import de.eshg.prostituteprotection.domain.model.Consultation;
 import de.eshg.prostituteprotection.domain.model.ConsultationType;
+import de.eshg.prostituteprotection.domain.model.EncryptedFile;
 import de.eshg.prostituteprotection.domain.model.ProstituteProtectionProcedure;
 import de.eshg.prostituteprotection.mapper.AppointmentMapper;
 import de.eshg.prostituteprotection.mapper.ProstituteProtectionMapper;
@@ -43,15 +43,17 @@ import de.eshg.prostituteprotection.pdf.RegistrationConsultationCertificateGener
 import de.eshg.prostituteprotection.util.ProgressEntryUtil;
 import de.eshg.prostituteprotection.util.ProstituteProtectionProgressEntryType;
 import de.eshg.prostituteprotection.util.TaskUtil;
-import de.eshg.rest.service.error.BadRequestException;
 import de.eshg.rest.service.security.config.BaseUrls;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import java.time.Clock;
 import java.time.Instant;
+import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.EnumSet;
+import java.util.Locale;
 import java.util.Map;
 import java.util.UUID;
 import org.springdoc.core.annotations.ParameterObject;
@@ -87,7 +89,6 @@ public class ProstituteProtectionController {
   private final RegistrationConsultationCertificateGenerator
       registrationConsultationCertificateGenerator;
   private final Clock clock;
-  private final PersonalDataEncryptionService personalDataEncryptionService;
 
   public ProstituteProtectionController(
       ProstituteProtectionService prostituteProtectionService,
@@ -95,8 +96,7 @@ public class ProstituteProtectionController {
       ProgressEntryUtil progressEntryUtil,
       ConsultationCertificateGenerator consultationCertificateGenerator,
       RegistrationConsultationCertificateGenerator registrationConsultationCertificateGenerator,
-      Clock clock,
-      PersonalDataEncryptionService personalDataEncryptionService) {
+      Clock clock) {
     this.prostituteProtectionService = prostituteProtectionService;
     this.prostituteProtectionAppointmentService = prostituteProtectionAppointmentService;
     this.progressEntryUtil = progressEntryUtil;
@@ -104,7 +104,6 @@ public class ProstituteProtectionController {
     this.registrationConsultationCertificateGenerator =
         registrationConsultationCertificateGenerator;
     this.clock = clock;
-    this.personalDataEncryptionService = personalDataEncryptionService;
   }
 
   @PostMapping
@@ -112,6 +111,7 @@ public class ProstituteProtectionController {
   @Transactional
   public CreateProstituteProtectionProcedureResponse createProcedure(
       @Valid @RequestBody CreateProstituteProtectionProcedureRequest request) {
+    ProstituteProtectionValidator.validateAlias(request.alias(), request.appointmentBookingType());
     return prostituteProtectionService.createProcedure(request);
   }
 
@@ -150,8 +150,9 @@ public class ProstituteProtectionController {
   @Transactional(readOnly = true)
   @Operation(summary = "Returns procedure details identified by UUID")
   public ProcedureDetailsDto getProcedure(@PathVariable("procedureId") UUID procedureId) {
-    return ProstituteProtectionMapper.mapToDetailsDto(
-        prostituteProtectionService.findByExternalIdOrThrow(procedureId));
+    ProstituteProtectionProcedureWithAugmentedData procedureWithAugmentedData =
+        prostituteProtectionService.findAndAugment(procedureId);
+    return ProstituteProtectionMapper.mapToDetailsDto(procedureWithAugmentedData);
   }
 
   @PatchMapping("/{procedureId}")
@@ -164,7 +165,7 @@ public class ProstituteProtectionController {
         prostituteProtectionService.findByExternalIdForUpdate(procedureId, request.version());
     prostituteProtectionService.updateProcedure(procedure, request);
     prostituteProtectionAppointmentService.bookAppointment(
-        procedure, AppointmentMapper.toDataType(request));
+        procedure, AppointmentMapper.toDataType(request), request.consultantId());
 
     progressEntryUtil.addSystemProgressEntry(
         procedure, ProstituteProtectionProgressEntryType.PROCEDURE_DETAILS_MODIFIED);
@@ -241,7 +242,8 @@ public class ProstituteProtectionController {
       @Valid @RequestBody CreateCertificateRequest request) {
     ProstituteProtectionProcedure procedure =
         prostituteProtectionService.findByExternalIdOrThrow(procedureId);
-    DecryptedPersonalDataDto decryptedPersonalDataDto = decryptPersonalData(procedure, request);
+    DecryptedPersonalDataDto decryptedPersonalDataDto =
+        prostituteProtectionService.decryptPersonalData(procedure, request);
 
     ProstituteProtectionValidator.validateForPdfGeneration(
         procedure,
@@ -256,13 +258,14 @@ public class ProstituteProtectionController {
     ByteArrayResource consultationCertificate =
         consultationCertificateGenerator.generateConsultationCertificate(
             procedure, decryptedPersonalDataDto, request.withAlias());
+
+    prostituteProtectionService.encryptAndSaveFile(
+        procedure, request, consultationCertificate.getByteArray(), false);
+
     progressEntryUtil.addSystemProgressEntry(
         procedure,
         ProstituteProtectionProgressEntryType.CONSULTATION_CERTIFICATE_GENERATED,
-        getCertificateCreatedDescription(procedure.getConsultationType()),
-        generatePdf(
-            consultationCertificate, PrintDocumentType.CONSULTATION_CERTIFICATE.getDescription()),
-        PrintDocumentType.CONSULTATION_CERTIFICATE);
+        getCertificateCreatedDescription(procedure.getConsultationType()));
     procedure.setConsultationCertificateCreatedAt(Instant.now(clock));
     multipart.add(CONSULTATION_CERTIFICATE_KEY, consultationCertificate);
 
@@ -270,14 +273,13 @@ public class ProstituteProtectionController {
       ByteArrayResource registrationCertificate =
           registrationConsultationCertificateGenerator.generateRegistrationConsultationCertificate(
               procedure, decryptedPersonalDataDto, request.withAlias());
+
+      prostituteProtectionService.encryptAndSaveFile(
+          procedure, request, registrationCertificate.getByteArray(), true);
       progressEntryUtil.addSystemProgressEntry(
           procedure,
           ProstituteProtectionProgressEntryType.REGISTRATION_CONSULTATION_CERTIFICATE_GENERATED,
-          getCertificateCreatedDescription(procedure.getConsultationType()),
-          generatePdf(
-              registrationCertificate,
-              PrintDocumentType.REGISTRATION_CONSULTATION_CERTIFICATE.getDescription()),
-          PrintDocumentType.REGISTRATION_CONSULTATION_CERTIFICATE);
+          getCertificateCreatedDescription(procedure.getConsultationType()));
 
       multipart.add(REGISTRATION_CERTIFICATE_KEY, registrationCertificate);
     }
@@ -288,34 +290,49 @@ public class ProstituteProtectionController {
     return ResponseEntity.ok().contentType(MediaType.MULTIPART_FORM_DATA).body(multipart);
   }
 
-  private DecryptedPersonalDataDto decryptPersonalData(
-      ProstituteProtectionProcedure procedure, CreateCertificateRequest request) {
-    try {
-      return personalDataEncryptionService.decrypt(
-          procedure.getEncryptedPersonalData(),
-          request.firstName(),
-          request.lastName(),
-          request.dateOfBirth());
-    } catch (PersonalDataDecryptionException e) {
-      throw new BadRequestException("Error reading personal data", e.getMessage());
-    }
-  }
-
-  protected Pdf generatePdf(ByteArrayResource resource, String description) {
-    ZonedDateTime now = ZonedDateTime.now(clock);
-    PdfMetaData pdfMetaData = new PdfMetaData();
-    pdfMetaData.setCreatedDate(now.toInstant());
-    pdfMetaData.setDescription(description);
-    return FileFactory.createPdfWithMetaData(
-        resource.getFilename(), resource.getByteArray(), pdfMetaData);
-  }
-
   private String getCertificateCreatedDescription(ConsultationType consultationType) {
     return switch (consultationType) {
       case null -> null;
       case INITIAL -> "Das Zertifikat wurde für die Erstberatung erstellt.";
       case FOLLOW_UP -> "Das Zertifikat wurde für die Folgeberatung erstellt.";
     };
+  }
+
+  @PostMapping("/{procedureId}/certificate")
+  @Transactional(readOnly = true)
+  @Operation(summary = "Decrypt and download a previously generated consultation certificate")
+  public ResponseEntity<ByteArrayResource> downloadCertificate(
+      @PathVariable("procedureId") UUID procedureId,
+      @Valid @RequestBody DownloadCertificateRequest request) {
+
+    EncryptedFile encryptedFile =
+        prostituteProtectionService.findEncryptedFileOrThrow(procedureId, request.id());
+
+    byte[] decryptedFile = prostituteProtectionService.decryptFile(encryptedFile, request);
+
+    ByteArrayResource resource = new ByteArrayResource(decryptedFile);
+
+    String filename =
+        String.format(
+            "%s_%s.pdf",
+            (encryptedFile.getCertificateType() == CertificateType.SECTION_7)
+                ? PrintDocumentType.REGISTRATION_CONSULTATION_CERTIFICATE.getFileNamePrefix()
+                : PrintDocumentType.CONSULTATION_CERTIFICATE.getFileNamePrefix(),
+            ZonedDateTime.ofInstant(encryptedFile.getCreatedAt(), ZoneId.systemDefault())
+                .format(DateTimeFormatter.ofPattern("yyyy-MM-dd-HH-mm-ss", Locale.GERMANY)));
+
+    return ResponseEntity.ok()
+        .contentType(MediaType.APPLICATION_PDF)
+        .header("Content-Disposition", "attachment; filename=\"" + filename + "\"")
+        .body(resource);
+  }
+
+  @GetMapping("/{procedureId}/certificates")
+  @Transactional(readOnly = true)
+  @Operation(summary = "Get a list of certificates for a procedure.")
+  public GetCertificatesResponse getCertificates(@PathVariable("procedureId") UUID procedureId) {
+    return new GetCertificatesResponse(
+        prostituteProtectionService.getEncryptedFilesForProcedure(procedureId));
   }
 
   @PostMapping("/{procedureId}/close-procedure")
@@ -328,7 +345,8 @@ public class ProstituteProtectionController {
     ProstituteProtectionValidator.validateConsultationCertificateCreated(procedure);
     prostituteProtectionService.closeProcedure(procedure);
     TaskUtil.closeSingleTaskOfType(procedure, TaskType.PROSTITUTE_PROTECTION);
-    return ProstituteProtectionMapper.mapToDetailsDto(procedure);
+    return ProstituteProtectionMapper.mapToDetailsDto(
+        prostituteProtectionService.augmentWithDetails(procedure));
   }
 
   @PostMapping("/{procedureId}/abort-procedure")
@@ -340,6 +358,7 @@ public class ProstituteProtectionController {
         prostituteProtectionService.findByExternalIdForUpdate(procedureId, request.version());
     prostituteProtectionService.abortProcedureAndFlush(procedure);
     TaskUtil.closeSingleTaskOfType(procedure, TaskType.PROSTITUTE_PROTECTION);
-    return ProstituteProtectionMapper.mapToDetailsDto(procedure);
+    return ProstituteProtectionMapper.mapToDetailsDto(
+        prostituteProtectionService.augmentWithDetails(procedure));
   }
 }

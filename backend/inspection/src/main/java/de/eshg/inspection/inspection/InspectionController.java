@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 SCOOP Software GmbH, cronn GmbH
+ * Copyright 2026 SCOOP Software GmbH, cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -169,7 +169,7 @@ public class InspectionController {
   @PostMapping(path = "/{id}/sync-file-state")
   @Operation(
       summary =
-          """
+"""
 Update a differing facility file state by taking over the data from the
 associated reference facility
 """)

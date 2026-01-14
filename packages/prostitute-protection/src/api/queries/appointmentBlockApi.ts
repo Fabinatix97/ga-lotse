@@ -1,14 +1,16 @@
 /**
- * Copyright 2025 cronn GmbH
+ * Copyright 2026 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { queryOptions, useQuery } from "@tanstack/react-query";
+import { DefaultError, queryOptions, useQuery } from "@tanstack/react-query";
 
 import { mapPaginatedList } from "@eshg/lib-employee-portal";
 import { unwrapRawResponse } from "@eshg/lib-portal";
 import {
   ApiAppointmentType,
+  ApiCreateDailyAppointmentBlockGroupRequest,
+  ApiValidateAppointmentBlockGroupResponse,
   AppointmentBlockApi,
   GetAppointmentBlockGroupsRequest,
 } from "@eshg/prostitute-protection-api";
@@ -54,5 +56,24 @@ export function useGetFreeAppointments(request: GetFreeAppointmentsArgs) {
     },
     select: (data) => data.appointments,
     enabled: request.appointmentType !== undefined,
+  });
+}
+
+export function getValidateDailyAppointmentBlocksForGroupQuery(
+  appointmentBlockApi: AppointmentBlockApi,
+  request: ApiCreateDailyAppointmentBlockGroupRequest,
+) {
+  return queryOptions<
+    ApiValidateAppointmentBlockGroupResponse,
+    DefaultError,
+    ApiValidateAppointmentBlockGroupResponse,
+    readonly unknown[]
+  >({
+    queryKey: appointmentBlockApiQueryKey([
+      "validateDailyAppointmentBlocksForGroup",
+      request,
+    ]),
+    queryFn: () =>
+      appointmentBlockApi.validateDailyAppointmentBlocksForGroup(request),
   });
 }

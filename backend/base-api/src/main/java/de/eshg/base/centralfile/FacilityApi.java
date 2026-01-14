@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 cronn GmbH
+ * Copyright 2026 cronn GmbH
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -114,7 +114,7 @@ public interface FacilityApi {
   @ApiResponse(responseCode = "200")
   @Operation(
       summary =
-          """
+"""
 Add multiple facility file states in a bulk operation.
 Each file state is linked to a reference facility whose name and mandatory
 contact address fields match; other fields are not taken into account here. If
@@ -161,7 +161,7 @@ no such facility exists, a new one will be created.
   @ApiResponse(responseCode = "200")
   @Operation(
       summary =
-          """
+"""
 Perform a consistent update of the existent facility file state and its
 associated reference facility
 """)
@@ -173,7 +173,7 @@ associated reference facility
   @ApiResponse(responseCode = "200")
   @Operation(
       summary =
-          """
+"""
 Update a differing facility file state by taking over the data from the
 associated reference facility
 """)
@@ -185,7 +185,7 @@ associated reference facility
   @ApiResponse(responseCode = "200")
   @Operation(
       summary =
-          """
+"""
 Create a new facility file state as well as a new associated reference
 facility, without any matching to existing data.
 This endpoint requires a valid authentication from the citizen portal.
@@ -202,7 +202,7 @@ used immediately.
   @ApiResponse(responseCode = "200")
   @Operation(
       summary =
-          """
+"""
 Updates reference facility data identified by given id. Sets dataOrigin to DataOrigin.EDIT.
 Returns a new file state with the resulting new state.
 """)
@@ -214,7 +214,7 @@ Returns a new file state with the resulting new state.
   @ApiResponse(responseCode = "200")
   @Operation(
       summary =
-          """
+"""
 Gets the file number for a facility file state, if it can be determined from its address.
 """)
   FacilityFileNumberResponse getFacilityFileNumber(

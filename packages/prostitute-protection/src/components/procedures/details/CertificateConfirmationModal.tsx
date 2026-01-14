@@ -1,5 +1,5 @@
 /**
- * Copyright 2025 cronn GmbH
+ * Copyright 2026 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -13,14 +13,13 @@ import {
 } from "@eshg/lib-portal";
 import { ApiCreateCertificateRequest } from "@eshg/prostitute-protection-api";
 
+export type CertificateCreationOptions = Pick<
+  ApiCreateCertificateRequest,
+  "withAlias" | "withRegistrationCertificate"
+>;
+
 type BaseConfirmationDialogProps = {
-  onConfirm: ({
-    withAlias,
-    withRegistrationCertificate,
-    dateOfBirth,
-    firstName,
-    lastName,
-  }: ApiCreateCertificateRequest) => Promise<void> | void;
+  onConfirm: (options: CertificateCreationOptions) => Promise<void> | void;
 } & Omit<WithRequired<ConfirmationDialogProps, "title">, "onConfirm">;
 
 export function CertificateConfirmationModal({
@@ -48,10 +47,6 @@ export function CertificateConfirmationModal({
         onConfirm({
           withAlias,
           withRegistrationCertificate,
-          // TODO replace placeholders with actual values from local storage
-          dateOfBirth: new Date(),
-          firstName: "",
-          lastName: "",
         })
       }
       onClose={onClose}

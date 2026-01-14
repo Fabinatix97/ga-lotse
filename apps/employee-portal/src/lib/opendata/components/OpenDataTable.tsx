@@ -1,5 +1,5 @@
 /**
- * Copyright 2025 cronn GmbH
+ * Copyright 2026 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -14,6 +14,7 @@ import {
   FilterSettings,
   FilterSettingsSheet,
   Pagination,
+  SearchFilter,
   TablePage,
   TableSheet,
   ToggleFilterButton,
@@ -36,7 +37,6 @@ import {
 } from "@/lib/opendata/hooks/useOpenDataFilterSettings";
 import { useDeleteVersion } from "@/lib/opendata/mutations/opendata";
 import { useGetOpenDocuments } from "@/lib/opendata/queries/opendata";
-import { SearchFilter } from "@/lib/shared/components/tableFilters/SearchFilter";
 
 export function OpenDataTable() {
   const tableControl = useTableControl({ serverSideSorting: true });

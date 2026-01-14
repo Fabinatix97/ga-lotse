@@ -1,11 +1,12 @@
 /*
- * Copyright 2025 cronn GmbH
+ * Copyright 2026 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 package de.eshg.prostituteprotection;
 
 import de.eshg.lib.procedure.util.ProcedureValidator;
+import de.eshg.prostituteprotection.api.AppointmentBookingTypeDto;
 import de.eshg.prostituteprotection.api.ProcedureProperty;
 import de.eshg.prostituteprotection.api.RequiredProcedureArea;
 import de.eshg.prostituteprotection.crypto.DecryptedPersonalDataDto;
@@ -178,6 +179,16 @@ public class ProstituteProtectionValidator {
     if (!map.isEmpty()) {
       throw new BadRequestException(
           "Procedure %s is not complete.".formatted(procedure.getExternalId()));
+    }
+  }
+
+  public static void validateAlias(String alias, AppointmentBookingTypeDto appointmentBookingType) {
+    if ((AppointmentBookingTypeDto.USER_DEFINED.equals(appointmentBookingType)
+            || AppointmentBookingTypeDto.APPOINTMENT_BLOCK.equals(appointmentBookingType))
+        && alias == null) {
+      throw new BadRequestException(
+          "An alias must be provided with appointment booking type %s"
+              .formatted(appointmentBookingType));
     }
   }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 cronn GmbH
+ * Copyright 2026 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -12,6 +12,8 @@ import de.eshg.lib.appointmentblock.model.AppointmentBlockData;
 import de.eshg.lib.appointmentblock.persistence.AppointmentBlockRepository;
 import de.eshg.lib.appointmentblock.persistence.AppointmentType;
 import de.eshg.lib.appointmentblock.persistence.entity.AppointmentBlock;
+import de.eshg.prostituteprotection.domain.model.ProstituteProtectionProcedure;
+import de.eshg.prostituteprotection.domain.repository.ProstituteProtectionProcedureRepository;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -21,25 +23,44 @@ import org.springframework.stereotype.Service;
 @Service
 public class ProstituteProtectionEventMetadataService implements EventMetadataService {
 
+  public static final String SUBJECT = "Prostituiertenschutzgesetz";
   private final AppointmentBlockRepository appointmentBlockRepository;
   private final AppointmentBlockSlotUtil appointmentBlockSlotUtil;
+  private final ProstituteProtectionProcedureRepository prostituteProtectionProcedureRepository;
 
   public ProstituteProtectionEventMetadataService(
       AppointmentBlockRepository appointmentBlockRepository,
-      AppointmentBlockSlotUtil appointmentBlockSlotUtil) {
+      AppointmentBlockSlotUtil appointmentBlockSlotUtil,
+      ProstituteProtectionProcedureRepository prostituteProtectionProcedureRepository) {
     this.appointmentBlockRepository = appointmentBlockRepository;
     this.appointmentBlockSlotUtil = appointmentBlockSlotUtil;
+    this.prostituteProtectionProcedureRepository = prostituteProtectionProcedureRepository;
   }
 
   @Override
   public Stream<EventWithMetaData> findByCalendarEventIds(List<UUID> eventIds) {
     List<AppointmentBlock> appointmentBlocks =
         appointmentBlockRepository.findAllByCalendarEventIdInOrderById(eventIds);
-    return appointmentBlockSlotUtil
-        .augmentAppointmentBlocksWithEventDetails(appointmentBlocks)
-        .values()
-        .stream()
-        .map(ProstituteProtectionEventMetadataService::mapAppointmentBlockToEventMetaData);
+    Stream<EventWithMetaData> appointmentBlockEvents =
+        appointmentBlockSlotUtil
+            .augmentAppointmentBlocksWithEventDetails(appointmentBlocks)
+            .values()
+            .stream()
+            .map(ProstituteProtectionEventMetadataService::mapAppointmentBlockToEventMetaData);
+
+    Stream<EventWithMetaData> procedureEvents =
+        prostituteProtectionProcedureRepository
+            .findAllByCalendarEventIdInOrderByCalendarEventId(eventIds)
+            .stream()
+            .map(this::mapUserDefinedAppointmentToEventMetaData);
+
+    return Stream.concat(appointmentBlockEvents, procedureEvents);
+  }
+
+  private EventWithMetaData mapUserDefinedAppointmentToEventMetaData(
+      ProstituteProtectionProcedure procedure) {
+    return new EventWithMetaData(
+        procedure.getCalendarEventId(), SUBJECT, null, null, procedure.getExternalId());
   }
 
   private static EventWithMetaData mapAppointmentBlockToEventMetaData(
@@ -47,14 +68,13 @@ public class ProstituteProtectionEventMetadataService implements EventMetadataSe
     Set<AppointmentType> types =
         appointmentBlockData.appointmentBlock().getAppointmentBlockGroup().getTypes();
 
-    String subject = "Prostituiertenschutzgesetz";
     String description =
         AppointmentBlockSlotUtil.getAppointmentBlockDescription(
             AppointmentBlockSlotUtil.mapAppointmentTypesToNames(types), appointmentBlockData);
 
     return new EventWithMetaData(
         appointmentBlockData.appointmentBlock().getCalendarEventId(),
-        subject,
+        SUBJECT,
         description,
         null,
         null);

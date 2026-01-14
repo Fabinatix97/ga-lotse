@@ -1,4 +1,4 @@
-// Copyright 2025 cronn GmbH
+// Copyright 2026 cronn GmbH
 // SPDX-License-Identifier: Apache-2.0
 
 import com.bmuschko.gradle.docker.tasks.image.DockerBuildImage
@@ -9,6 +9,15 @@ plugins {
     id "docker-compose"
     id "eshg.image-push-sign"
     id 'reverse-proxy'
+}
+
+java {
+    sourceCompatibility = '21'
+    targetCompatibility = '21'
+
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(25)
+    }
 }
 
 def dockerBuildContext = file(layout.buildDirectory.dir('docker'))

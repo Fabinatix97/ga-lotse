@@ -1,4 +1,4 @@
-# Copyright 2025 SCOOP Software GmbH, cronn GmbH
+# Copyright 2026 SCOOP Software GmbH, cronn GmbH
 # SPDX-License-Identifier: AGPL-3.0-only
 
 
@@ -497,4 +497,5 @@ limitReqZone:
   tmCitizenProcedure:
     limitRate: "1r/m"
   baseStreets:
-    limitRate: "10r/m"
+    limitRate: "20r/m"
+    burst: "30"

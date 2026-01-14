@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 cronn GmbH
+ * Copyright 2026 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -59,6 +59,8 @@ public class ConsultationCertificateGenerator extends AbstractGenerator {
         getFormattedDate(consultationDate),
         getFormattedDate(validToDate),
         procedure.getPersonalData().getDocumentType().getDescription(),
+        procedure.getConsultation().isReferral(),
+        procedure.getConsultation().isClearing(),
         getDepartmentData());
   }
 

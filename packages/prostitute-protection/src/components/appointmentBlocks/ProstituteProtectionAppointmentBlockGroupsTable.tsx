@@ -1,5 +1,5 @@
 /**
- * Copyright 2025 cronn GmbH
+ * Copyright 2026 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -16,6 +16,7 @@ import {
   getSortDirection,
   getSortKey,
   useAppointmentBlockGroupsColumns,
+  useGetUsersByGroupQuery,
   useTableControl,
 } from "@eshg/lib-employee-portal";
 import { ApiAppointmentBlockSortKey } from "@eshg/prostitute-protection-api";
@@ -43,20 +44,24 @@ export function ProstituteProtectionAppointmentBlockGroupsTable(
 
   const { appointmentBlockApi } = useProstituteProtectionApiClients();
 
-  const [appointmentBlockGroups, { data: standardDurations }] =
-    useSuspenseQueries({
-      queries: [
-        getAppointmentBlockGroupsQuery(appointmentBlockApi, {
-          pageNumber: tableControl.paginationProps.pageNumber,
-          pageSize: tableControl.paginationProps.pageSize,
-          sortKey: getSortKey<ApiAppointmentBlockSortKey>(
-            tableControl.tableSorting,
-          ),
-          sortDirection: getSortDirection(tableControl.tableSorting),
-        }),
-        useGetAppointmentStandardDurationOptions(),
-      ],
-    });
+  const [
+    appointmentBlockGroups,
+    { data: standardDurations },
+    { data: allConsultants },
+  ] = useSuspenseQueries({
+    queries: [
+      getAppointmentBlockGroupsQuery(appointmentBlockApi, {
+        pageNumber: tableControl.paginationProps.pageNumber,
+        pageSize: tableControl.paginationProps.pageSize,
+        sortKey: getSortKey<ApiAppointmentBlockSortKey>(
+          tableControl.tableSorting,
+        ),
+        sortDirection: getSortDirection(tableControl.tableSorting),
+      }),
+      useGetAppointmentStandardDurationOptions(),
+      useGetUsersByGroupQuery("[System] ProstSchG-Berater"),
+    ],
+  });
 
   const columnHelper = createColumnHelper<AppointmentBlockRow>();
   const appointmentBlockGroupsColumns = useAppointmentBlockGroupsColumns({
@@ -65,7 +70,7 @@ export function ProstituteProtectionAppointmentBlockGroupsTable(
     standardDurations,
     columnHelper,
     showWeekDays: true,
-    withTeam: false,
+    consultants: allConsultants,
   });
 
   return (

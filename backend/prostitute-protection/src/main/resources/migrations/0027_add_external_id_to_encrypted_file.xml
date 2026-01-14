@@ -1,0 +1,23 @@
+<!--
+ Copyright 2026 cronn GmbH
+ SPDX-License-Identifier: AGPL-3.0-only
+-->
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+  <changeSet author="GA-Lotse" id="1766399586306-1">
+    <addColumn tableName="encrypted_file">
+      <column name="external_id" type="UUID" defaultValueComputed="gen_random_uuid()">
+        <constraints nullable="false"/>
+      </column>
+    </addColumn>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1766399586306-2">
+    <dropDefaultValue tableName="encrypted_file" columnName="external_id"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1766399586306-3">
+    <addUniqueConstraint columnNames="external_id" constraintName="encrypted_file_external_id_key" tableName="encrypted_file"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1766399586306-4">
+    <createSequence cacheSize="1" cycle="false" dataType="bigint" incrementBy="50" maxValue="9223372036854775807" minValue="1" sequenceName="encrypted_file_seq" startValue="1"/>
+  </changeSet>
+</databaseChangeLog>

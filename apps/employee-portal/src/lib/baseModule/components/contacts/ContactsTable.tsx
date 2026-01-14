@@ -1,5 +1,5 @@
 /**
- * Copyright 2025 cronn GmbH
+ * Copyright 2026 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -27,6 +27,7 @@ import {
   Contact,
   DataTable,
   Pagination,
+  SearchFilter,
   TablePage,
   TableSheet,
   UseTableControlResult,
@@ -42,7 +43,6 @@ import { useMergeInstitutionContactSidebar } from "@/lib/baseModule/components/c
 import { useMergePersonContactSidebar } from "@/lib/baseModule/components/contacts/modals/MergePersonContactSidebar";
 import { useUpdateContactSidebar } from "@/lib/baseModule/components/contacts/modals/UpdateContactSidebar";
 import { routes } from "@/lib/baseModule/shared/routes";
-import { SearchFilter } from "@/lib/shared/components/tableFilters/SearchFilter";
 import { SingleSelectFilter } from "@/lib/shared/components/tableFilters/SingleSelectFilter";
 
 import { contactTableColumns } from "./columns";

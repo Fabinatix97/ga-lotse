@@ -1,11 +1,11 @@
 <#import "common/base.ftlh" as base />
+<#import "common/letterhead.ftlh" as letterhead />
 <#import "common/footer.ftlh" as footer />
 <#import "common/checkbox.ftlh" as checkbox />
 <#import "common/date_and_signature_line.ftlh" as date_and_signature />
 
 <#macro additionalStyle>
   .headline {
-    text-align: center;
     font-size: 14pt;
     font-weight: 800;
     margin-top: 3mm;
@@ -40,69 +40,28 @@
     line-height: 1.5em;
     text-align: center;
   }
+
+  .right-half {
+      width: 50%;
+      margin-left: auto;
+      margin-top: 6mm;
+  }
+
 </#macro>
+
+
 
 <@base.document title="§ 10 mit Gesundheitsbescheinigung" styles=[
 additionalStyle,
 footer.style
 ]>
   <@footer.content department=department />
+  <@letterhead.content person=person department=department extraLine="Ausgewiesen durch: ${idDocument}"/>
 
   <div class="body">
-    <table style="width: 100%;">
-      <colgroup>
-        <col style="width: 35%;"/>
-        <col style="width: 25%;"/>
-        <col style="width: 40%;"/>
-      </colgroup>
-
-      <tr>
-        <td>
-        </td>
-        <td>
-        </td>
-        <td>
-          <img
-            src="data:${department.contentType};base64,${department.contentAsBase64}"
-            alt="logo"
-            style="width: 130px; height: 2cm"/>
-        </td>
-      </tr>
-
-      <tr>
-        <td>
-          Name: ${person.lastName}
-        </td>
-        <td colspan="2">
-          Geburtsdatum: ${person.dateOfBirth}
-        </td>
-      </tr>
-
-      <tr>
-        <td>
-          Vorname: ${person.firstName}
-        </td>
-        <td colspan="2">
-          ausgewiesen durch: ${idDocument}
-        </td>
-        <td>
-        </td>
-      </tr>
-
-      <tr>
-        <td>
-          ggf. Alias: ${person.alias!""}
-        </td>
-        <td colspan="2">
-        </td>
-      </tr>
-    </table>
-
     <div>
-      <div class="headline">Dokumentation über die gesundheitliche Beratung
-      </div>
-      <div class="headline">gemäß § 10 Prostituiertenschutzgesetz (ProstSchG)
-      </div>
+      <div class="headline">Dokumentation über die gesundheitliche Beratung gemäß § 10</div>
+      <div class="headline">Prostituiertenschutzgesetz (ProstSchG)</div>
     </div>
 
     <div style="margin-top: 3mm">
@@ -113,14 +72,14 @@ footer.style
       Wunsch ausgehändigt
     </div>
 
-    <@date_and_signature.content date=dateOfConsultation labelSignature="Unterschrift der beratenen Person" />
+    <@date_and_signature.content date=dateOfConsultation labelSignature="Unterschrift der/des Beratenden" />
 
     <div style="margin-top: 10mm">
       Ich bin mit dem Hinzuziehen einer Sprachmittlerin/eines Sprachmittlers
       einverstanden.
     </div>
 
-    <@date_and_signature.content date=dateOfConsultation labelSignature="Unterschrift der beratenen Person" />
+    <@date_and_signature.content date=dateOfConsultation labelSignature="Unterschrift der/des Beratenden" />
 
     <table style="width: 100%; margin-top: 5mm">
       <colgroup>
@@ -133,6 +92,7 @@ footer.style
           Beratungsinhalte:
         </td>
         <td>
+          Weitere Anmerkungen des Beratenden:
         </td>
       </tr>
 
@@ -141,7 +101,7 @@ footer.style
           <@checkbox.content checked=true /><span class="italic">Fragen der Krankheitsverhütung</span>
         </td>
         <td>
-          Weitere Anmerkungen des Beratenden:
+          <@checkbox.content checked=referral /><span class="italic">Weiterverweis an Maßnahmen nach § 19 lfSG</span>
         </td>
       </tr>
 
@@ -150,7 +110,7 @@ footer.style
           <@checkbox.content checked=true /><span class="italic">Fragen der Empfängnisregelung</span>
         </td>
         <td>
-          <@checkbox.content checked=true /><span class="italic">Weiterverweis an Maßnahmen nach § 19 lfSG</span>
+          <@checkbox.content checked=clearing /><span class="italic">Offenbarung Zwangslage / Notlage</span>
         </td>
       </tr>
 
@@ -159,7 +119,6 @@ footer.style
           <@checkbox.content checked=true /><span class="italic">Fragen der Schwangerschaft</span>
         </td>
         <td>
-          <@checkbox.content checked=true /><span class="italic">Offenbarung Zwangslage / Notlage</span>
         </td>
       </tr>
 
@@ -172,106 +131,78 @@ footer.style
       </tr>
     </table>
 
-    <div style="width: 100%; margin-top: 1mm;" class="signature-line">&#160;
-    </div>
-    <div style="width: 100%; margin-top: 5mm;" class="signature-line">&#160;
-    </div>
-
     <div style="margin-top: 3mm">
       Die Bescheinigung über die gesundheitliche Beratung wurde ausgestellt.
     </div>
 
-    <@date_and_signature.content date=dateOfConsultation labelSignature="Unterschrift des Beratenden" />
+    <@date_and_signature.content date=dateOfConsultation labelSignature="Unterschrift der/des Beratenden" />
 
-    <table style="width: 100%; margin-top: 2mm;">
+
+    <table class="right-half">
       <colgroup>
-        <col style="width: 35%;"/>
-        <col style="width: 40%;"/>
-        <col style="width: 25%;"/>
+        <col style="width: 50%;"/>
+        <col style="width: 50%;"/>
       </colgroup>
 
       <tr>
-        <td></td>
         <td colspan="2" class="small-font" style="text-align: center">
           ${department.name}
         </td>
       </tr>
 
       <tr>
-        <td></td>
         <td colspan="2" class="small-font" style="text-align: center">
           ${department.street}, ${department.zipCode} ${department.city}
         </td>
       </tr>
 
       <tr>
-        <td></td>
         <td colspan="2" class="font-bold-center">
           Bescheinigung
         </td>
       </tr>
 
       <tr>
-        <td></td>
         <td colspan="2" class="small-font" style="text-align: center">
           über die gesundheitliche Beratung nach § 10 ProstSchG
         </td>
       </tr>
 
       <tr>
-        <td></td>
-        <td style="text-align: center;">
-          ${person.lastName}, ${person.firstName}
-        </td>
-        <td></td>
-      </tr>
-
-      <tr>
-        <td></td>
-        <td class="small-font" style="text-align: center; padding-top: 2px; padding-bottom: 8px;">
-          Name, Vorname
-        </td>
-        <td></td>
-      </tr>
-
-      <tr>
-        <td></td>
-        <td style="text-align: center;">
-          ${person.dateOfBirth}
-        </td>
         <td>
-          <div style="width: 100%;" class="signature-line">&#160;</div>
+         <#if person.alias?has_content>
+           ${person.alias}<br/>
+           <span class="small-font">Alias</span>
+           <#else>
+           ${person.firstName}, ${person.lastName}<br/>
+           <span class="small-font">Vorname, Nachname</span>
+          </#if>
+        </td>
+        <td>${dateValidTo}<br/>
+        <span class="small-font">Gültig bis</span>
         </td>
       </tr>
 
-      <tr>
-        <td></td>
-        <td class="small-font" style="text-align: center; padding-top: 2px; padding-bottom: 8px;">
-          Geburtsdatum
-        </td>
-        <td class="small-font" style="text-align: center; padding-top: 2px; padding-bottom: 8px;">
-          Siegel + Unterschrift
-        </td>
-      </tr>
+      <#if !person.alias?has_content>
+        <tr>
+          <td>
+            ${person.dateOfBirth}<br/>
+            <span class="small-font">Geburtsdatum</span>
+          </td>
+          <td>
+          </td>
+        </tr>
+      </#if>
 
       <tr>
-        <td></td>
-        <td style="text-align: center;">
-          ${dateOfConsultation}
-        </td>
-        <td></td>
-      </tr>
-
-      <tr>
-        <td></td>
-        <td class="small-font" style="text-align: center; padding-top: 2px; padding-bottom: 8px;">
-          Datum der Beratung
-        </td>
         <td>
-          <span style="font-size: 7pt;
-            font-weight: 400;
-            line-height: 1.5em;">Gültig bis &#160;</span>
-          <span>${dateValidTo}</span>
+          ${dateOfConsultation}<br/>
+          <span class="small-font">Datum der Beratung</span>
+        </td>
+        <td class="small-font">
+          <br/>
+          <div style="width: 80%;" class="signature-line">&#160;</div>
+                  Siegel + Unterschrift
         </td>
       </tr>
     </table>

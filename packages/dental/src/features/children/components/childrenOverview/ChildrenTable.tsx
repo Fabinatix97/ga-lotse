@@ -1,5 +1,5 @@
 /**
- * Copyright 2025 cronn GmbH
+ * Copyright 2026 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -284,7 +284,7 @@ const COLUMNS = [
   }),
   columnHelper.accessor("fluoridationConsent", {
     header: () => (
-      <Tooltip title="Fluoridierungseinverständis">
+      <Tooltip title="Fluoridierungseinverständnis">
         <Typography>Fluorid. EV</Typography>
       </Tooltip>
     ),

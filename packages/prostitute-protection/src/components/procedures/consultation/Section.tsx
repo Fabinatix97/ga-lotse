@@ -1,5 +1,5 @@
 /**
- * Copyright 2025 cronn GmbH
+ * Copyright 2026 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -20,13 +20,15 @@ export const SectionGridContainer = styled((props: GridProps) => (
 
 export function Section({
   title,
+  titleId,
   children,
 }: PropsWithChildren<{
   title: string;
+  titleId?: string;
 }>) {
   return (
     <Sheet sx={{ p: 3 }}>
-      <Typography level="h3" sx={{ mb: 3 }}>
+      <Typography level="h3" id={titleId} sx={{ mb: 3 }}>
         {title}
       </Typography>
       {children}

@@ -1,5 +1,5 @@
 /**
- * Copyright 2025 cronn GmbH
+ * Copyright 2026 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -12,6 +12,7 @@ import {
   AppointmentBlockGroupValuesWithDays,
   emptyAppointmentBlockGroup,
   toLocalDateTime,
+  useGetUsersByGroupQuery,
 } from "@eshg/lib-employee-portal";
 import { mapOptionalValue } from "@eshg/lib-portal";
 import {
@@ -26,7 +27,6 @@ import { routes } from "../../config/routes";
 
 import {
   AppointmentBlockGroupForm,
-  AppointmentBlockGroupValues,
   ProstituteProtectionAppointmentValues,
 } from "./AppointmentBlockGroupForm";
 
@@ -38,6 +38,7 @@ const INITIAL_VALUES: ProstituteProtectionAppointmentValues = {
   types: APPOINTMENT_TYPES,
   appointmentBlocks: [emptyAppointmentBlockGroup()],
   room: "",
+  consultants: [],
 };
 
 function mapAppointmentBlock(
@@ -58,6 +59,7 @@ export function mapFormValues(
     parallelExaminations: 1,
     appointmentBlocks: values.appointmentBlocks.map(mapAppointmentBlock),
     room: mapOptionalValue(values.room),
+    consultants: values.consultants,
   };
 }
 
@@ -66,11 +68,15 @@ export function CreateAppointmentBlockGroupForm() {
   const createDailyAppointmentBlocksForGroup =
     useCreateDailyAppointmentBlocksForGroup();
 
-  const [{ data: standardDurations }] = useSuspenseQueries({
-    queries: [useGetAppointmentStandardDurationOptions()],
-  });
+  const [{ data: standardDurations }, { data: allConsultants }] =
+    useSuspenseQueries({
+      queries: [
+        useGetAppointmentStandardDurationOptions(),
+        useGetUsersByGroupQuery("[System] ProstSchG-Berater"),
+      ],
+    });
 
-  async function handleSubmit(values: AppointmentBlockGroupValues) {
+  async function handleSubmit(values: ProstituteProtectionAppointmentValues) {
     const appointmentBlockGroupValues = mapFormValues(values);
     await createDailyAppointmentBlocksForGroup.mutateAsync(
       appointmentBlockGroupValues,
@@ -86,6 +92,7 @@ export function CreateAppointmentBlockGroupForm() {
     <AppointmentBlockGroupForm
       initialValues={INITIAL_VALUES}
       standardDurations={standardDurations}
+      allConsultants={allConsultants}
       onSubmit={async (values) => {
         await handleSubmit(values);
       }}

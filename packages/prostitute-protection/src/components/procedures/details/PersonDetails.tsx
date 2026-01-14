@@ -1,5 +1,5 @@
 /**
- * Copyright 2025 cronn GmbH
+ * Copyright 2026 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -13,10 +13,16 @@ import {
   EditButton,
   ResponsiveDivider,
 } from "@eshg/lib-employee-portal";
-import { DetailsColumn, DetailsList, formatDate } from "@eshg/lib-portal";
+import {
+  DetailsColumn,
+  DetailsList,
+  OPTIONAL_FALLBACK_VALUE,
+  formatDate,
+  formatOptionalKey,
+} from "@eshg/lib-portal";
 import { ApiProcedureDetails } from "@eshg/prostitute-protection-api";
 
-import { usePersonDataFromStore } from "../../../contexts/selectedPerson/usePersonDataFromStore";
+import { useDecryptedPersons } from "../../../contexts/decryptedPersons/DecryptedPersonsStoreProvider";
 import {
   DOCUMENT_TYPE_VALUES,
   NATIONALITY_VALUES,
@@ -36,7 +42,8 @@ export function PersonDetails({
   procedure: ApiProcedureDetails;
 }>) {
   const editPersonDetailsSidebar = useEditPersonDetailsSidebar(procedure);
-  const personData = usePersonDataFromStore(procedure);
+  const { getDecryptedPerson } = useDecryptedPersons();
+  const personData = getDecryptedPerson(procedure.id);
 
   return (
     <ContentPanel>
@@ -61,19 +68,23 @@ export function PersonDetails({
             <DetailsColumn>
               <DetailsItem
                 label={PERSON_FIELD_NAME.firstName}
-                value={personData.firstName}
+                value={personData?.firstName ?? OPTIONAL_FALLBACK_VALUE}
               />
               <DetailsItem
                 label={PERSON_FIELD_NAME.lastName}
-                value={personData.lastName}
+                value={personData?.lastName ?? OPTIONAL_FALLBACK_VALUE}
               />
               <DetailsItem
                 label={PERSON_FIELD_NAME.alias}
-                value={procedure.alias}
+                value={procedure.alias ?? OPTIONAL_FALLBACK_VALUE}
               />
               <DetailsItem
                 label={PERSON_FIELD_NAME.dateOfBirth}
-                value={formatDate(personData.dateOfBirth)}
+                value={
+                  isNullish(personData?.dateOfBirth)
+                    ? OPTIONAL_FALLBACK_VALUE
+                    : formatDate(personData.dateOfBirth)
+                }
               />
             </DetailsColumn>
             <DetailsColumn>
@@ -85,18 +96,20 @@ export function PersonDetails({
                 label={PERSON_FIELD_NAME.otherLanguages}
                 value={formatLanguages(procedure.languages)}
               />
-              {!isNullish(procedure.nationality) && (
-                <DetailsItem
-                  label={PERSON_FIELD_NAME.nationality}
-                  value={NATIONALITY_VALUES[procedure.nationality]}
-                />
-              )}
-              {!isNullish(procedure.documentTypeDto) && (
-                <DetailsItem
-                  label={PERSON_FIELD_NAME.documentType}
-                  value={DOCUMENT_TYPE_VALUES[procedure.documentTypeDto]}
-                />
-              )}
+              <DetailsItem
+                label={PERSON_FIELD_NAME.nationality}
+                value={formatOptionalKey(
+                  procedure.nationality,
+                  NATIONALITY_VALUES,
+                )}
+              />
+              <DetailsItem
+                label={PERSON_FIELD_NAME.documentType}
+                value={formatOptionalKey(
+                  procedure.documentTypeDto,
+                  DOCUMENT_TYPE_VALUES,
+                )}
+              />
             </DetailsColumn>
           </Stack>
         </DetailsList>

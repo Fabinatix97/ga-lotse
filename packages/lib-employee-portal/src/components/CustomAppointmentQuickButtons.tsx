@@ -1,5 +1,5 @@
 /**
- * Copyright 2025 cronn GmbH
+ * Copyright 2026 cronn GmbH
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -7,7 +7,7 @@ import { Button } from "@mui/joy";
 import { addMinutes } from "date-fns";
 import { useFormikContext } from "formik";
 
-import { Row } from "@eshg/lib-portal";
+import { Row, toDateTimeString } from "@eshg/lib-portal";
 
 export function CustomAppointmentQuickButtons<TForm>() {
   const { setFieldValue } = useFormikContext<TForm>();
@@ -17,11 +17,8 @@ export function CustomAppointmentQuickButtons<TForm>() {
     const roundMinutes = now.getMinutes() % roundTo;
     const minutesToAdd =
       inMinutes > 0 ? inMinutes - roundMinutes : roundTo - roundMinutes;
-    const customTime = addMinutes(now, minutesToAdd - now.getTimezoneOffset());
-    void setFieldValue(
-      "customAppointmentDate",
-      customTime.toISOString().slice(0, 16),
-    );
+    const customTime = addMinutes(now, minutesToAdd);
+    void setFieldValue("customAppointmentDate", toDateTimeString(customTime));
   }
 
   return (

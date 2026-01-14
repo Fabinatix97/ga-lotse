@@ -1,5 +1,5 @@
 /**
- * Copyright 2025 cronn GmbH
+ * Copyright 2026 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -14,6 +14,7 @@ import { AdditionalDataSection } from "../components/procedures/details/Addition
 import { CertificateActionPanel } from "../components/procedures/details/CertificateActionPanel";
 import { FinalProcedureActionPanel } from "../components/procedures/details/FinalProcedureActionPanel";
 import { PersonDetails } from "../components/procedures/details/PersonDetails";
+import { RelatedProceduresTable } from "../components/procedures/details/RelatedProceduresTable";
 import { ProstituteProtectionProcedureRouteParams } from "../schemas/ProstituteProtectionProcedureRouteParams";
 import { isProcedureFinalized } from "../shared/helpers";
 import { useProcedureRouteParams } from "../shared/hooks/useProcedureRouteParams";
@@ -30,6 +31,7 @@ export function ProstituteProtectionProcedureDetailsPage(
         <Grid xxs={12} lg={8}>
           <Stack spacing={2}>
             <PersonDetails procedure={procedure} />
+            <RelatedProceduresTable procedureId={procedure.id} />
           </Stack>
         </Grid>
         <Grid xxs={12} lg={4}>

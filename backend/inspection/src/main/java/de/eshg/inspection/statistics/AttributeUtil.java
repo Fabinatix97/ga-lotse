@@ -1,10 +1,11 @@
 /*
- * Copyright 2025 SCOOP Software GmbH, cronn GmbH
+ * Copyright 2026 SCOOP Software GmbH, cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 package de.eshg.inspection.statistics;
 
+import com.google.common.collect.Streams;
 import de.eshg.inspection.inspection.api.InspectionResult;
 import de.eshg.inspection.objecttype.ObjectTypeProperties;
 import de.eshg.inspection.objecttype.persistence.ObjectType;
@@ -21,7 +22,9 @@ class AttributeUtil {
 
   static void addValueOptions(AttributeInfo attribute, ObjectTypeProperties objectTypeProperties) {
     List<ValueOptionInternal> valueOptions = attribute.getValueOptions();
-    objectTypeProperties.defaultObjectTypes().stream()
+    Streams.concat(
+            objectTypeProperties.legacyObjectTypes().stream(),
+            objectTypeProperties.treeObjectTypes().stream())
         .map(value -> new ValueOptionInternal(value, value, false))
         .forEach(valueOptions::add);
   }

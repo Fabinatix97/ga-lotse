@@ -1,10 +1,10 @@
 /**
- * Copyright 2025 cronn GmbH
+ * Copyright 2026 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 import { Box, Stack } from "@mui/joy";
-import { startOfHour } from "date-fns";
+import { addMinutes, startOfHour } from "date-fns";
 import { useFormikContext } from "formik";
 import { useState } from "react";
 
@@ -19,6 +19,7 @@ import {
   AppointmentPickerField,
   NumberField,
   OptionalFieldValue,
+  toDateTimeString,
   validateIntegerAnd,
   validateRange,
 } from "@eshg/lib-portal";
@@ -39,7 +40,7 @@ export interface AppointmentFieldsData {
   duration: number;
 }
 
-export function ConnectedAppointmentPicker({ name }: { name: string }) {
+function ConnectedAppointmentPicker({ name }: { name: string }) {
   const {
     values: { blockAppointment },
   } = useFormikContext<AppointmentFieldsData>();
@@ -75,10 +76,17 @@ export function ConnectedAppointmentPicker({ name }: { name: string }) {
   );
 }
 
-export function AppointmentFields() {
+interface AppointmentFieldsProps {
+  isCreation?: boolean;
+}
+
+export function AppointmentFields(props: AppointmentFieldsProps) {
+  const formikContext = useFormikContext<AppointmentFieldsData>();
+
   return (
     <RadioSheets
       name="appointmentBookingType"
+      aria-label="Buchungsart"
       required="Bitte eine Buchungsart auswählen"
     >
       <RadioSheetOption
@@ -109,6 +117,34 @@ export function AppointmentFields() {
           />
         </Stack>
       </RadioSheetOption>
+      {props.isCreation && (
+        <RadioSheetOption
+          label="Spontaner Termin"
+          name="appointmentBookingType"
+          value={ApiAppointmentBookingType.Spontaneous}
+          onSelect={() => {
+            const now = new Date();
+            void formikContext.setFieldValue(
+              "customAppointmentDate",
+              toDateTimeString(addMinutes(now, 5 - (now.getMinutes() % 5))),
+            );
+          }}
+        >
+          <Stack gap={1} mt={2}>
+            <DateTimeField
+              name="customAppointmentDate"
+              label={APPOINTMENT_FORM_LABELS.appointmentDate}
+              disabled
+            />
+            <NumberField
+              name="duration"
+              label={APPOINTMENT_FORM_LABELS.appointmentDuration}
+              required="Die Besuchsdauer ist erforderlich"
+              validate={validateIntegerAnd(validateRange(1, 1440))}
+            />
+          </Stack>
+        </RadioSheetOption>
+      )}
     </RadioSheets>
   );
 }

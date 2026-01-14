@@ -1,13 +1,11 @@
 /*
- * Copyright 2025 SCOOP Software GmbH, cronn GmbH
+ * Copyright 2026 SCOOP Software GmbH, cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 package de.eshg.inspection.objecttype.persistence;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import de.eshg.inspection.feature.InspectionFeature;
-import de.eshg.inspection.feature.InspectionFeatureToggle;
 import de.eshg.inspection.objecttype.ObjectTypeProperties;
 import de.eshg.persistence.TransactionHelper;
 import jakarta.annotation.PostConstruct;
@@ -31,7 +29,6 @@ public class CreateObjectTypeHierarchyTask {
   private final TransactionHelper transactionHelper;
   private final ObjectMapper objectMapper;
   private final CreateObjectTypeTask createObjectTypeTask;
-  private final InspectionFeatureToggle inspectionFeatureToggle;
 
   public CreateObjectTypeHierarchyTask(
       @Value(HIERARCHY_JSON_FILE) ClassPathResource hierarchyJsonFile,
@@ -40,12 +37,10 @@ public class CreateObjectTypeHierarchyTask {
       ObjectTypeProperties objectTypeProperties,
       TransactionHelper transactionHelper,
       ObjectMapper objectMapper,
-      CreateObjectTypeTask createObjectTypeTask,
-      InspectionFeatureToggle inspectionFeatureToggle) {
+      CreateObjectTypeTask createObjectTypeTask) {
     this.objectTypeHierarchyTreeNodeRepository = objectTypeHierarchyTreeNodeRepository;
     this.objectMapper = objectMapper;
     this.createObjectTypeTask = createObjectTypeTask;
-    this.inspectionFeatureToggle = inspectionFeatureToggle;
     Assert.isTrue(hierarchyJsonFile.exists(), hierarchyJsonFile + " does not exist");
     this.hierarchyJsonFile = hierarchyJsonFile;
     this.objectTypeRepository = objectTypeRepository;
@@ -58,22 +53,23 @@ public class CreateObjectTypeHierarchyTask {
     // This creates the legacy object types, if necessary.
     createObjectTypeTask.createObjectTypes();
 
-    if (inspectionFeatureToggle.isNewFeatureEnabled(InspectionFeature.OBJECT_TYPE_HIERARCHY))
-      transactionHelper.executeInTransaction(
-          () -> {
-            // If the root node is present, we assume that this already ran and we shouldn't do it
-            // again.
-            // If we ever need to import an updated version, we need to think about how to do a
-            // migration.
-            if (objectTypeHierarchyTreeNodeRepository.findByRootNode(true).isEmpty()) {
-              List<ObjectType> legacyObjectTypes = objectTypeRepository.findAll();
+    transactionHelper.executeInTransaction(
+        () -> {
+          // If the root node is present, we assume that this already ran and we shouldn't do it
+          // again.
+          // If we ever need to import an updated version, we need to think about how to do a
+          // migration.
+          // Furthermore, the spring property de.eshg.inspection.object-types.treeObjectTypes has to
+          // be kept in sync with the json.
+          if (objectTypeHierarchyTreeNodeRepository.findByRootNode(true).isEmpty()) {
+            List<ObjectType> legacyObjectTypes = objectTypeRepository.findAll();
 
-              JsonTreeNode root =
-                  objectMapper.readValue(hierarchyJsonFile.getInputStream(), JsonTreeNode.class);
+            JsonTreeNode root =
+                objectMapper.readValue(hierarchyJsonFile.getInputStream(), JsonTreeNode.class);
 
-              toDatabaseTreeNode(root, true, legacyObjectTypes);
-            }
-          });
+            toDatabaseTreeNode(root, true, legacyObjectTypes);
+          }
+        });
   }
 
   private ObjectTypeHierarchyTreeNode toDatabaseTreeNode(

@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 SCOOP Software GmbH, cronn GmbH
+ * Copyright 2026 SCOOP Software GmbH, cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -341,13 +341,13 @@ class InspectionImporter extends Importer<InspectionImporterRow, InspectionListC
     return switch (row.getStatus()) {
       case null -> false;
       case ERROR_INPUT_DATA,
-              INVALID_ENTITY_ID,
-              IMPORTED_PREVIOUSLY,
-              DUPLICATE_WITHIN_LIST,
-              DUPLICATE_IN_ASSET,
-              EXCEPTION,
-              BATCH_ERROR,
-              MERGE_FAILED ->
+          INVALID_ENTITY_ID,
+          IMPORTED_PREVIOUSLY,
+          DUPLICATE_WITHIN_LIST,
+          DUPLICATE_IN_ASSET,
+          EXCEPTION,
+          BATCH_ERROR,
+          MERGE_FAILED ->
           true;
       case IMPORTED_SUCCESSFULLY, MERGED_SUCCESSFULLY -> false;
     };

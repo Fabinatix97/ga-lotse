@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 cronn GmbH
+ * Copyright 2026 cronn GmbH
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -14,7 +14,7 @@ import java.util.UUID;
 @Schema(
     name = "PublicEmployeeUserKey",
     description =
-        """
+"""
 Contains the details on the public key of a user, used for encrypting the symmetric key which is used for encrypting the audit log files
 """)
 public record PublicEmployeeUserKeyDto(

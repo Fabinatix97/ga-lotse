@@ -3113,7 +3113,7 @@
             "content" : {
               "*/*" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/ProphylaxisSessionDetails"
+                  "$ref" : "#/components/schemas/ProphylaxisSessionExaminationUpdateResult"
                 }
               }
             },
@@ -7084,6 +7084,9 @@
           "note" : {
             "type" : "string"
           },
+          "outdated" : {
+            "type" : "boolean"
+          },
           "previousScreeningExaminationResults" : {
             "type" : "object",
             "additionalProperties" : {
@@ -7178,6 +7181,29 @@
                 "$ref" : "#/components/schemas/NonExistingUser"
               } ]
             }
+          }
+        }
+      },
+      "ProphylaxisSessionExaminationUpdateResult" : {
+        "required" : [ "failedExaminationUpdates", "failedPersonUpdates", "prophylaxisSessionDetails" ],
+        "type" : "object",
+        "properties" : {
+          "failedExaminationUpdates" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "format" : "uuid"
+            }
+          },
+          "failedPersonUpdates" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "format" : "uuid"
+            }
+          },
+          "prophylaxisSessionDetails" : {
+            "$ref" : "#/components/schemas/ProphylaxisSessionDetails"
           }
         }
       },
