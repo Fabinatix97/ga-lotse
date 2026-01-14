@@ -47,6 +47,7 @@ export function ProcessImportForm({
           <SidebarContent title="Daten importieren">
             <Stack gap={2}>
               <FileField
+                autoFocus
                 label="Wählen Sie eine XLSX-Datei aus"
                 name="file"
                 required="Datei ist erforderlich"

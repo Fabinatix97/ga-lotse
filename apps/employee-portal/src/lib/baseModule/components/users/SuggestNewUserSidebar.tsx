@@ -119,6 +119,7 @@ function SuggestNewUserFormSidebar({
             <Grid container spacing={2}>
               <Grid xxs={12}>
                 <InputField
+                  autoFocus
                   name="username"
                   label="Benutzername"
                   placeholder="Beispielsweise erika.mustermann"

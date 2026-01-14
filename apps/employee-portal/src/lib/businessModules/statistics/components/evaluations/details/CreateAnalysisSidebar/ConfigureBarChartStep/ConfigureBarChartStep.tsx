@@ -47,6 +47,7 @@ export function ConfigureBarChartStep({
       <Stack gap={3}>
         <Stack gap={2}>
           <SingleAutocompleteField
+            autoFocus
             options={autocompleteSelectOptions}
             name={fieldName("primaryAttribute")}
             placeholder="Bitte wählen"

@@ -25,7 +25,6 @@ import { ApiProcedureDetails } from "@eshg/prostitute-protection-api";
 import { useDecryptedPersons } from "../../../contexts/decryptedPersons/DecryptedPersonsStoreProvider";
 import {
   DOCUMENT_TYPE_VALUES,
-  NATIONALITY_VALUES,
   PERSON_FIELD_NAME,
 } from "../../../shared/constants";
 import {
@@ -95,13 +94,6 @@ export function PersonDetails({
               <DetailsItem
                 label={PERSON_FIELD_NAME.otherLanguages}
                 value={formatLanguages(procedure.languages)}
-              />
-              <DetailsItem
-                label={PERSON_FIELD_NAME.nationality}
-                value={formatOptionalKey(
-                  procedure.nationality,
-                  NATIONALITY_VALUES,
-                )}
               />
               <DetailsItem
                 label={PERSON_FIELD_NAME.documentType}

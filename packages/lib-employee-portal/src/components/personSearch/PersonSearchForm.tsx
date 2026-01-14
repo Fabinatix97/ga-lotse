@@ -4,16 +4,9 @@
  */
 
 import { Close, InsertLinkOutlined, SearchOutlined } from "@mui/icons-material";
-import { Button, List, ListItem, Stack, styled } from "@mui/joy";
+import { Button, Stack, styled } from "@mui/joy";
 import { Formik, FormikState } from "formik";
-import {
-  AriaRole,
-  SetStateAction,
-  useEffect,
-  useId,
-  useMemo,
-  useState,
-} from "react";
+import { AriaRole, SetStateAction, useId, useMemo, useState } from "react";
 
 import {
   Alert,
@@ -77,42 +70,20 @@ interface PersonSearchFormProps {
   onChange: (searchParams: PersonSearchFormValues) => void;
   onReset: () => void;
   allowPartialSearch?: boolean;
-  disablePartialSearchAlert?: boolean;
   allowPersonIdSearch?: boolean;
   isHidden?: boolean;
   role?: AriaRole;
 }
 
-interface ValidationResult {
-  valid: boolean;
-  message?: string;
-}
-
 export function PersonSearchForm(props: PersonSearchFormProps) {
   const [alertMessage, setAlertMessage] = useState<string | undefined>();
 
-  useEffect(() => {
-    setAlertMessage(
-      validateSearchParameters(
-        props.initialValues,
-        props.disablePartialSearchAlert,
-      ).message,
-    );
-  }, [props.initialValues, props.disablePartialSearchAlert]);
-
   function handleChange(formValues: PersonSearchFormValues) {
-    const validationResult = validateSearchParameters(
-      formValues,
-      props.disablePartialSearchAlert,
-    );
-    if (validationResult.valid) {
-      if (hasAtLeastOneValue(formValues)) {
-        props.onChange(formValues);
-      } else {
-        props.onReset();
-      }
+    if (hasAtLeastOneValue(formValues)) {
+      props.onChange(formValues);
+    } else {
+      props.onReset();
     }
-    setAlertMessage(validationResult.message);
   }
 
   return (
@@ -124,21 +95,6 @@ export function PersonSearchForm(props: PersonSearchFormProps) {
     >
       {({ resetForm }) => (
         <Stack gap={2} sx={{ display: props.isHidden ? "none" : undefined }}>
-          {props.allowPersonIdSearch && (
-            <Alert
-              color="primary"
-              message={
-                <>
-                  Möchten Sie auch geschlossene Vorgänge durchsuchen, benötigen
-                  Sie
-                  <List marker="disc" component="ul">
-                    <ListItem>Vorname + Nachname + Geburtsdatum</ListItem>
-                    <ListItem>oder Personen-ID.</ListItem>
-                  </List>
-                </>
-              }
-            />
-          )}
           <SearchFormSheet
             id={props.id}
             data-testid="personSearch"
@@ -274,34 +230,6 @@ function Buttons({
   );
 }
 
-function validateSearchParameters(
-  values: PersonSearchFormValues,
-  disablePartialSearchAlert?: boolean,
-): ValidationResult {
-  if (!hasAtLeastOneValue(values)) {
-    return { valid: true };
-  }
-
-  if (isFullSearch(values)) {
-    return { valid: true };
-  }
-
-  if (isInvalidPartialSearch(values)) {
-    return {
-      valid: false,
-      message:
-        "Die Suche ausschließlich nach Vor- oder Nachname ist nicht erlaubt.",
-    };
-  } else {
-    return {
-      valid: true,
-      message: disablePartialSearchAlert
-        ? undefined
-        : "Es werden aus Datenschutzgründen nur offene Vorgänge angezeigt. Geben Sie alle 3 Such-Faktoren an, um auch geschlossene Vorgänge anzuzeigen.",
-    };
-  }
-}
-
 function hasAtLeastOneValue(values: PersonSearchFormValues) {
   return !!(
     values.firstName ||
@@ -309,29 +237,6 @@ function hasAtLeastOneValue(values: PersonSearchFormValues) {
     values.dateOfBirth ||
     values.humanReadableId
   );
-}
-
-function isFullSearch(values: PersonSearchFormValues) {
-  return !!(values.firstName && values.lastName && values.dateOfBirth);
-}
-
-function isInvalidPartialSearch(values: PersonSearchFormValues) {
-  if (values.humanReadableId) {
-    return false;
-  }
-
-  const hasOnlyFirstNameFilled = !!(
-    values.firstName &&
-    !values.lastName &&
-    !values.dateOfBirth
-  );
-  const hasOnlyLastNameFilled = !!(
-    !values.firstName &&
-    values.lastName &&
-    !values.dateOfBirth
-  );
-
-  return hasOnlyFirstNameFilled || hasOnlyLastNameFilled;
 }
 
 export interface PersonSearchParams {

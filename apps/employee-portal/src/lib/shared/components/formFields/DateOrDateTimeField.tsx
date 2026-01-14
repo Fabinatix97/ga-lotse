@@ -11,15 +11,27 @@ export function DateOrDateTimeField({
   name,
   label,
   required,
+  autoFocus,
 }: {
   wholeDay: boolean;
   name: string;
   label: string;
   required: string;
+  autoFocus?: boolean;
 }) {
   return wholeDay ? (
-    <DateField name={name} label={label} required={required} />
+    <DateField
+      name={name}
+      autoFocus={autoFocus}
+      label={label}
+      required={required}
+    />
   ) : (
-    <DateTimeField name={name} label={label} required={required} />
+    <DateTimeField
+      name={name}
+      autoFocus={autoFocus}
+      label={label}
+      required={required}
+    />
   );
 }

@@ -88,6 +88,7 @@ function ImportChildrenSidebar(props: SidebarWithFormRefProps) {
         >
           <Stack spacing={2}>
             <SelectContactField
+              autoFocus
               name="institution"
               label="Einrichtung"
               categories={SCHOOL_OR_DAYCARE_CONTACT}

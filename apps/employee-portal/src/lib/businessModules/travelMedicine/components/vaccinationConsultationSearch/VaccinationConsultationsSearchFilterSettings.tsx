@@ -25,7 +25,7 @@ import { ApiProcedureStatus } from "@eshg/travel-medicine-api";
 import { PROCEDURE_STATUS_OPTIONS_FOR_SEARCH } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/shared/options";
 
 type AllowedKeys = Extract<
-  "DRAFT" | "IN_PROGRESS" | "OPEN",
+  "DRAFT" | "IN_PROGRESS" | "OPEN" | "CLOSED" | "ABORTED",
   keyof typeof ApiProcedureStatus
 >;
 export type AllowedProcedureStatusForSearch =

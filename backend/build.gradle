@@ -1,6 +1,7 @@
 // Copyright 2026 cronn GmbH
 // SPDX-License-Identifier: Apache-2.0
 
+import de.eshg.AggregateJunitTestReportsTask
 import de.eshg.FindUnusedValidationFiles
 
 buildscript {
@@ -69,6 +70,11 @@ sonar {
 wrapper {
     gradleVersion = "9.1.0"
     distributionType = Wrapper.DistributionType.ALL
+}
+
+tasks.register('aggregateTestReports', AggregateJunitTestReportsTask) {
+    reportDir = layout.buildDirectory.dir('reports/aggregated-reports')
+    mustRunAfter subprojects.collect { it.tasks.withType(Test) }
 }
 
 allprojects {

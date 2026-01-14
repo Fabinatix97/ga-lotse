@@ -16,7 +16,6 @@ import {
 
 import {
   DOCUMENT_TYPE_VALUES,
-  NATIONALITY_OPTIONS,
   PERSON_FIELD_NAME,
 } from "../../../../shared/constants";
 import { LanguageFields } from "../../../form/LanguageFields";
@@ -27,6 +26,7 @@ export function EditPersonDetailsForm() {
   return (
     <Stack gap={2}>
       <InputField
+        autoFocus
         name="firstName"
         label={PERSON_FIELD_NAME.firstName}
         required="Bitte einen Vornamen angeben."
@@ -48,11 +48,6 @@ export function EditPersonDetailsForm() {
       <Divider sx={{ marginBlock: 1 }} />
       <LanguageFields />
       <Divider sx={{ marginBlock: 1 }} />
-      <SelectField
-        name="nationality"
-        label={PERSON_FIELD_NAME.nationality}
-        options={NATIONALITY_OPTIONS}
-      />
       <SelectField
         name="documentType"
         label={PERSON_FIELD_NAME.documentType}

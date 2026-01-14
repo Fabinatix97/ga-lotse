@@ -91,6 +91,61 @@ public interface PersonRepository
       @Param("includeExternal") boolean includeExternal,
       @Param("limit") Integer limit);
 
+  @Query(
+      """
+    select p from Person p
+    where p.referencePerson is null
+    and p.deleteAt is null
+    and p.dataOrigin <> DataOrigin.EXTERNAL
+    and p.firstName = :firstName
+    order by p.id
+    """)
+  List<Person> searchReferencePersonsByFirstName(String firstName, Pageable pageable);
+
+  @Query(
+      """
+    select p from Person p
+    where p.referencePerson is null
+    and p.deleteAt is null
+    and p.dataOrigin <> DataOrigin.EXTERNAL
+    and p.lastName = :lastName
+    order by p.id
+    """)
+  List<Person> searchReferencePersonsByLastName(String lastName, Pageable pageable);
+
+  @Query(
+      """
+    select p from Person p
+    where p.referencePerson is null
+    and p.deleteAt is null
+    and p.dataOrigin <> DataOrigin.EXTERNAL
+    and p.birthDetails.dateOfBirth = :dateOfBirth
+    order by p.id
+    """)
+  List<Person> searchReferencePersonsByDateOfBirth(LocalDate dateOfBirth, Pageable pageable);
+
+  @Query(
+      """
+    select p from Person p
+    where p.referencePerson is null
+    and p.deleteAt is null
+    and p.dataOrigin <> DataOrigin.EXTERNAL
+    and p.firstName like %:firstNameSubstring%
+    """)
+  List<Person> searchReferencePersonsByFirstNameContaining(
+      String firstNameSubstring, Pageable pageable);
+
+  @Query(
+      """
+    select p from Person p
+    where p.referencePerson is null
+    and p.deleteAt is null
+    and p.dataOrigin <> DataOrigin.EXTERNAL
+    and p.lastName like %:lastNameSubstring%
+    """)
+  List<Person> searchReferencePersonsByLastNameContaining(
+      String lastNameSubstring, Pageable pageable);
+
   Optional<Person> findByExternalId(UUID externalId);
 
   @Query(

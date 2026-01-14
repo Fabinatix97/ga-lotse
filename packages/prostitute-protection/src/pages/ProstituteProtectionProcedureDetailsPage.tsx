@@ -15,6 +15,7 @@ import { CertificateActionPanel } from "../components/procedures/details/Certifi
 import { FinalProcedureActionPanel } from "../components/procedures/details/FinalProcedureActionPanel";
 import { PersonDetails } from "../components/procedures/details/PersonDetails";
 import { RelatedProceduresTable } from "../components/procedures/details/RelatedProceduresTable";
+import { WaitingRoomPanel } from "../components/procedures/details/WaitingRoomPanel";
 import { ProstituteProtectionProcedureRouteParams } from "../schemas/ProstituteProtectionProcedureRouteParams";
 import { isProcedureFinalized } from "../shared/helpers";
 import { useProcedureRouteParams } from "../shared/hooks/useProcedureRouteParams";
@@ -37,6 +38,7 @@ export function ProstituteProtectionProcedureDetailsPage(
         <Grid xxs={12} lg={4}>
           <Stack spacing={2}>
             <AdditionalDataSection procedure={procedure} />
+            <WaitingRoomPanel procedure={procedure} />
             <CertificateActionPanel procedure={procedure} />
             <FinalProcedureActionPanel procedure={procedure} />
           </Stack>

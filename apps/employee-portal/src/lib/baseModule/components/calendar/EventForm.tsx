@@ -33,6 +33,7 @@ export function EventFormInputs({ hideWholeDay }: { hideWholeDay?: boolean }) {
   return (
     <Stack flexDirection="column" gap={2}>
       <DateOrDateTimeField
+        autoFocus
         wholeDay={values.wholeDay}
         name="start"
         label="Start"

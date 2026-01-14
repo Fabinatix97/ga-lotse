@@ -5,6 +5,8 @@
 
 package de.eshg.prostituteprotection.mapper;
 
+import static de.eshg.prostituteprotection.mapper.WaitingRoomMapper.mapWaitingRoomToDto;
+
 import de.eshg.lib.procedure.mapping.ProcedureMapper;
 import de.eshg.prostituteprotection.api.ConsultationDto;
 import de.eshg.prostituteprotection.api.ConsultationTypeDto;
@@ -16,7 +18,6 @@ import de.eshg.prostituteprotection.api.ProcedureDetailsDto;
 import de.eshg.prostituteprotection.api.ProstituteProtectionProcedureOverviewDto;
 import de.eshg.prostituteprotection.api.ProstituteProtectionProcedureSearchOverviewDto;
 import de.eshg.prostituteprotection.api.UpdateEncryptedPersonalDataRequest;
-import de.eshg.prostituteprotection.api.UpdateProstituteProtectionProcedureRequest;
 import de.eshg.prostituteprotection.crypto.DecryptedPersonalDataDto;
 import de.eshg.prostituteprotection.crypto.EncryptedPersonalDataDto;
 import de.eshg.prostituteprotection.domain.data.ProstituteProtectionProcedureWithAugmentedData;
@@ -24,6 +25,7 @@ import de.eshg.prostituteprotection.domain.model.Consultation;
 import de.eshg.prostituteprotection.domain.model.ConsultationType;
 import de.eshg.prostituteprotection.domain.model.DocumentType;
 import de.eshg.prostituteprotection.domain.model.EncryptedFile;
+import de.eshg.prostituteprotection.domain.model.EncryptedPersonalData;
 import de.eshg.prostituteprotection.domain.model.Language;
 import de.eshg.prostituteprotection.domain.model.PersonalData;
 import de.eshg.prostituteprotection.domain.model.ProstituteProtectionProcedure;
@@ -63,7 +65,6 @@ public class ProstituteProtectionMapper {
     procedure.getPersonalData().setAlias(request.alias());
     procedure.getPersonalData().setLanguages(mapLanguages(request.languages()));
     procedure.getPersonalData().setDocumentType(mapDocumentType(request.documentType()));
-    procedure.getPersonalData().setNationality(request.nationality());
 
     procedure.getEncryptedPersonalData().setEncryptedData(encryptedPersonalDataDto.data());
     procedure
@@ -76,6 +77,7 @@ public class ProstituteProtectionMapper {
   public static ProcedureDetailsDto mapToDetailsDto(
       ProstituteProtectionProcedureWithAugmentedData procedureWithAugmentedData) {
     ProstituteProtectionProcedure procedure = procedureWithAugmentedData.procedure();
+    EncryptedPersonalData encryptedPersonalData = procedure.getEncryptedPersonalData();
     return new ProcedureDetailsDto(
         procedure.getExternalId(),
         procedure.getVersion(),
@@ -86,11 +88,12 @@ public class ProstituteProtectionMapper {
         mapToLanguagesDto(procedure.getPersonalData().getLanguages()),
         mapToConsultationTypeDto(procedure.getConsultationType()),
         ProcedureMapper.toInterfaceType(procedure.getProcedureStatus()),
-        procedure.getPersonalData().getNationality(),
         mapToDocumentTypeDto(procedure.getPersonalData().getDocumentType()),
         procedure.getConsultationCertificateCreatedAt(),
+        encryptedPersonalData != null && encryptedPersonalData.getHashedPersonIdentifier() != null,
         procedureWithAugmentedData.consultant(),
-        procedureWithAugmentedData.creator());
+        procedureWithAugmentedData.creator(),
+        mapWaitingRoomToDto(procedure.getWaitingRoom()));
   }
 
   public static ConsultationDto mapConsultationToDto(Consultation consultation) {
@@ -282,12 +285,6 @@ public class ProstituteProtectionMapper {
     return procedure.getPersonalData().getLanguages().stream()
         .map(ProstituteProtectionMapper::mapToLanguageDto)
         .toList();
-  }
-
-  public static void mapRequestToDomain(
-      ProstituteProtectionProcedure procedure, UpdateProstituteProtectionProcedureRequest request) {
-    procedure.setConsultationType(
-        ProstituteProtectionMapper.mapConsultationType(request.consultationType()));
   }
 
   public static EncryptedFileOverviewDto mapEncryptedFileToOverviewDto(

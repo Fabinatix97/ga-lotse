@@ -34,6 +34,7 @@ dependencies {
     implementation 'org.hibernate.orm:hibernate-envers'
     implementation 'de.cronn:reflection-util:latest.release'
     implementation 'org.apache.commons:commons-text:latest.release'
+    implementation 'com.bucket4j:bucket4j-core:latest.release'
 
     implementation platform('org.apache.tika:tika-bom:latest.release')
     implementation 'org.apache.tika:tika-core'

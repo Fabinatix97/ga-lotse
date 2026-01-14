@@ -51,7 +51,7 @@ export function useProceduresQueryOptions({
   return queryOptions({
     queryFn: () =>
       prostituteProtectionApi.getProceduresRaw(request).then(unwrapRawResponse),
-    queryKey: proceduresQueryKey(["list", request]),
+    queryKey: proceduresQueryKey(["getProcedures", request]),
   });
 }
 
@@ -59,7 +59,7 @@ export function useGetProcedureOptions(procedureId: string) {
   const { prostituteProtectionApi } = useProstituteProtectionApiClients();
   return queryOptions({
     queryFn: () => prostituteProtectionApi.getProcedure(procedureId),
-    queryKey: proceduresQueryKey([procedureId, "details"]),
+    queryKey: proceduresQueryKey([procedureId, "getProcedure"]),
   });
 }
 

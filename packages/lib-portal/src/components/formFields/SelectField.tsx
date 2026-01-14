@@ -3,7 +3,14 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { Select, SelectProps } from "@mui/joy";
+import {
+  List,
+  ListItem,
+  Option,
+  Select,
+  SelectProps,
+  Typography,
+} from "@mui/joy";
 import { SxProps } from "@mui/joy/styles/types";
 import { FieldHelperProps, FormikHandlers } from "formik";
 import {
@@ -40,13 +47,19 @@ export type SelectFieldValue<TMultiple extends boolean> = NonNullable<
   JoyUiSelectValue<TMultiple>
 >;
 
+export interface GroupedOption {
+  id: string;
+  name: string;
+}
+
 export interface SelectFieldProps<
   TMultiple extends boolean,
   TOptionLabel extends string | ReactNode = string,
 > extends FieldProps<SelectFieldValue<TMultiple>>,
     FieldComponentProps,
     FieldVariantProps {
-  options: SelectOption<string, TOptionLabel>[];
+  options?: SelectOption<string, TOptionLabel>[];
+  groupedOptions?: Record<string, GroupedOption[]>;
   multiple?: TMultiple;
   placeholder?: string;
   disabled?: boolean;
@@ -56,6 +69,7 @@ export interface SelectFieldProps<
   className?: string | undefined;
   sx?: SxProps;
   ref?: (el: HTMLElement | null) => void;
+  autoFocus?: boolean;
 }
 
 type RenderValueFunction<TMultiple extends boolean> = SelectProps<
@@ -114,6 +128,8 @@ function InnerSelectField<
   const SelectComponent = props.select ?? Select;
   const disabled = useIsFormDisabled() || props.disabled;
 
+  const options = props.options ?? [];
+
   const { enqueue } = usePromiseSequencer();
 
   return (
@@ -127,6 +143,7 @@ function InnerSelectField<
       disabled={disabled}
     >
       <SelectComponent
+        autoFocus={props.autoFocus}
         slotProps={{
           button: {
             ref: props.ref,
@@ -163,7 +180,28 @@ function InnerSelectField<
           }
         }}
       >
-        <SelectOptions options={props.options} />
+        {props.groupedOptions ? (
+          Object.entries(props.groupedOptions).map(([groupName, items]) => (
+            <List key={groupName} aria-labelledby={groupName}>
+              <ListItem
+                id={groupName}
+                sticky
+                sx={{
+                  backgroundColor: (theme) => theme.palette.background.level1,
+                }}
+              >
+                <Typography level="body-md">{groupName}</Typography>
+              </ListItem>
+              {items.map((item) => (
+                <Option key={item.id} value={item.id} sx={{ paddingLeft: 4 }}>
+                  {item.name}
+                </Option>
+              ))}
+            </List>
+          ))
+        ) : (
+          <SelectOptions options={options} />
+        )}
       </SelectComponent>
     </FieldComponent>
   );

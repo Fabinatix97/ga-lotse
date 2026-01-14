@@ -49,6 +49,9 @@ import de.eshg.lib.procedure.procedures.ProcedureDeletionService;
 import de.eshg.lib.procedure.procedures.ProcedureQuery;
 import de.eshg.lib.procedure.procedures.ProcedureSearchService;
 import de.eshg.lib.procedure.progressentry.ProgressEntryConfiguration;
+import de.eshg.lib.procedure.rate.limit.ProcedureSearchGuard;
+import de.eshg.lib.procedure.rate.limit.ProcedureSearchGuardConfig;
+import de.eshg.lib.procedure.rate.limit.ProcedureSearchGuardResetAction;
 import de.eshg.lib.procedure.tasks.TaskController;
 import de.eshg.lib.procedure.tasks.TaskDueAtReminderNotificationService;
 import de.eshg.lib.procedure.tasks.TaskService;
@@ -91,6 +94,9 @@ import org.springframework.context.annotation.Import;
   ProcedureSearchService.class,
   ProcedureQuery.class,
   ProcedureDeletionService.class,
+  ProcedureSearchGuard.class,
+  ProcedureSearchGuardConfig.class,
+  ProcedureSearchGuardResetAction.class,
   CemeteryConfiguration.class,
   SerializationService.class,
   DefaultProcedureAsSearchableStringFormatter.class,

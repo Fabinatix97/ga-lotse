@@ -56,6 +56,8 @@ export const PROCEDURE_STATUS_NAMES_FOR_SEARCH: EnumMap<AllowedProcedureStatusFo
     [ApiProcedureStatus.Draft]: "Geplant",
     [ApiProcedureStatus.InProgress]: "In Ausführung",
     [ApiProcedureStatus.Open]: "Offen",
+    [ApiProcedureStatus.Closed]: "Geschlossen",
+    [ApiProcedureStatus.Aborted]: "Abgebrochen",
   };
 
 export const STATUS_NAMES_MEDICAL_HISTORY_ANSWER = {

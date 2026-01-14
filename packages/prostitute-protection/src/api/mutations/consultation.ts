@@ -3,21 +3,28 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { useQueryClient } from "@tanstack/react-query";
+
 import { unwrapRawResponse, useSnackbar } from "@eshg/lib-portal";
-import { UpdateConsultationRequest } from "@eshg/prostitute-protection-api";
+import { ApiConsultation } from "@eshg/prostitute-protection-api";
 
 import { useProstituteProtectionApiClients } from "../../contexts/ProstituteProtectionApi";
+import { useGetConsultationQueryOptions } from "../queries/consultation";
 
-export function useUpsertConsultationOptions() {
+export function useUpsertConsultationOptions(procedureId: string) {
   const snackbar = useSnackbar();
   const { prostituteProtectionApi } = useProstituteProtectionApiClients();
+  const { queryKey } = useGetConsultationQueryOptions(procedureId);
+  const queryClient = useQueryClient();
 
   return {
-    mutationFn: (request: UpdateConsultationRequest) =>
+    meta: { updatesQuery: queryKey },
+    mutationFn: (apiConsultation: ApiConsultation) =>
       prostituteProtectionApi
-        .updateConsultationRaw(request)
+        .updateConsultationRaw({ procedureId, apiConsultation })
         .then(unwrapRawResponse),
-    onSuccess: () => {
+    onSuccess: (response: ApiConsultation) => {
+      queryClient.setQueryData(queryKey, response);
       snackbar.confirmation("Die Beratung wurde erfolgreich geändert.");
     },
   };

@@ -31,6 +31,7 @@ function Fields() {
   return (
     <Stack gap={2} mt={2}>
       <SelectField
+        autoFocus
         name="consultationType"
         label="Beratungstyp"
         options={buildEnumOptions(CONSULTATION_TYPE_VALUES)}

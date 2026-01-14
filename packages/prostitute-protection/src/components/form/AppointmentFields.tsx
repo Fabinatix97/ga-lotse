@@ -16,6 +16,7 @@ import {
 } from "@eshg/lib-employee-portal";
 import {
   APPOINTMENT_PICKER_FIELD_LABELS_DE,
+  Alert,
   AppointmentPickerField,
   NumberField,
   OptionalFieldValue,
@@ -31,7 +32,6 @@ import {
 
 import { useGetFreeAppointments } from "../../api/queries/appointmentBlockApi";
 import { APPOINTMENT_FORM_LABELS } from "../../shared/constants";
-import { validateDateTimeIsTodayOrFuture } from "../../shared/helpers";
 
 export interface AppointmentFieldsData {
   appointmentBookingType: OptionalFieldValue<ApiAppointmentBookingType>;
@@ -40,19 +40,19 @@ export interface AppointmentFieldsData {
   duration: number;
 }
 
-function ConnectedAppointmentPicker({ name }: { name: string }) {
+function ConnectedAppointmentPicker({
+  name,
+  freeAppointments,
+}: {
+  name: string;
+  freeAppointments: ApiAppointment[];
+}) {
   const {
     values: { blockAppointment },
   } = useFormikContext<AppointmentFieldsData>();
 
   const initialMonth = blockAppointment?.start ?? null;
   const [currentMonth, setCurrentMonth] = useState(initialMonth ?? new Date());
-  const now = new Date();
-  const freeAppointments = useGetFreeAppointments({
-    appointmentType: ApiAppointmentType.ProstituteProtectionConsultation,
-    earliestDate: startOfHour(now),
-  });
-  const monthAppointments = freeAppointments.data ?? [];
 
   return (
     <Box
@@ -68,7 +68,7 @@ function ConnectedAppointmentPicker({ name }: { name: string }) {
         name={name}
         currentMonth={currentMonth}
         setCurrentMonth={setCurrentMonth}
-        monthAppointments={monthAppointments}
+        monthAppointments={freeAppointments}
         required
         labels={APPOINTMENT_PICKER_FIELD_LABELS_DE}
       />
@@ -83,18 +83,35 @@ interface AppointmentFieldsProps {
 export function AppointmentFields(props: AppointmentFieldsProps) {
   const formikContext = useFormikContext<AppointmentFieldsData>();
 
+  const now = new Date();
+  const appointmentsFromBlock = useGetFreeAppointments({
+    appointmentType: ApiAppointmentType.ProstituteProtectionConsultation,
+    earliestDate: startOfHour(now),
+  });
+  const freeAppointments = appointmentsFromBlock.data ?? [];
+
   return (
     <RadioSheets
       name="appointmentBookingType"
       aria-label="Buchungsart"
       required="Bitte eine Buchungsart auswählen"
     >
+      {freeAppointments.length === 0 && (
+        <Alert
+          color="warning"
+          message="Es sind keine freien Terminblöcke verfügbar."
+        />
+      )}
       <RadioSheetOption
         name="appointmentBookingType"
         value={ApiAppointmentBookingType.AppointmentBlock}
         label="Aus Terminblock"
+        disabled={freeAppointments.length === 0}
       >
-        <ConnectedAppointmentPicker name="blockAppointment" />
+        <ConnectedAppointmentPicker
+          name="blockAppointment"
+          freeAppointments={freeAppointments}
+        />
       </RadioSheetOption>
       <RadioSheetOption
         label="Individueller Termin"
@@ -106,7 +123,6 @@ export function AppointmentFields(props: AppointmentFieldsProps) {
             name="customAppointmentDate"
             label={APPOINTMENT_FORM_LABELS.appointmentDate}
             required="Datum und Zeit sind erforderlich"
-            validate={validateDateTimeIsTodayOrFuture}
           />
           <CustomAppointmentQuickButtons />
           <NumberField

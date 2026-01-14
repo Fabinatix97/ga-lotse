@@ -21,8 +21,8 @@ import { isProcedureFinalized } from "../../../shared/helpers";
 export function FinalProcedureActionPanel({
   procedure,
 }: Readonly<{ procedure: ApiProcedureDetails }>) {
-  const abortProcedure = useAbortProcedureMutation();
-  const closeProcedure = useCloseProcedureMutation();
+  const abortProcedure = useAbortProcedureMutation(procedure.id);
+  const closeProcedure = useCloseProcedureMutation(procedure.id);
 
   if (isProcedureFinalized(procedure)) {
     return null;
@@ -33,20 +33,12 @@ export function FinalProcedureActionPanel({
   );
 
   async function handleCloseProcedure() {
-    await closeProcedure.mutateAsync({
-      procedureId: procedure.id,
-      apiCloseProcedureRequest: {
-        version: procedure.version,
-      },
-    });
+    await closeProcedure.mutateAsync({ version: procedure.version });
   }
 
   async function handleAbortProcedure() {
     await abortProcedure.mutateAsync({
-      procedureId: procedure.id,
-      apiAbortProcedureRequest: {
-        version: procedure.version,
-      },
+      version: procedure.version,
     });
   }
 

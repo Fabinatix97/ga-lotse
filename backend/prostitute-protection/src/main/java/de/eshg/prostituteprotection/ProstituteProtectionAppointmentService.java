@@ -28,6 +28,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
 import org.springframework.stereotype.Service;
 
@@ -71,13 +72,36 @@ public class ProstituteProtectionAppointmentService
   private void bookUserDefinedAppointment(
       ProstituteProtectionProcedure procedure, Instant start, Instant end, UUID consultantId) {
     procedure.setAppointment(null);
-    if (procedure.getUserDefinedAppointment() == null) {
-      procedure.setUserDefinedAppointment(new UserDefinedAppointment());
+    boolean appointmentHasChanged = appointmentHasChanged(procedure, start, end);
+    boolean consultantHasChanged = consultantHasChanged(procedure, consultantId);
+
+    if (appointmentHasChanged) {
+      if (procedure.getUserDefinedAppointment() == null) {
+        procedure.setUserDefinedAppointment(new UserDefinedAppointment());
+      }
+      procedure.getUserDefinedAppointment().setAppointmentStart(start);
+      procedure.getUserDefinedAppointment().setAppointmentEnd(end);
     }
-    procedure.getUserDefinedAppointment().setAppointmentStart(start);
-    procedure.getUserDefinedAppointment().setAppointmentEnd(end);
-    procedure.setConsultantId(consultantId);
-    createAppointmentCalendarEvent(procedure, start, end);
+    if (consultantHasChanged) {
+      procedure.setConsultantId(consultantId);
+    }
+    if (consultantHasChanged || appointmentHasChanged) {
+      deleteAppointmentCalendarEvent(procedure);
+      createAppointmentCalendarEvent(procedure, start, end);
+    }
+  }
+
+  private boolean consultantHasChanged(ProstituteProtectionProcedure procedure, UUID consultantId) {
+    return !Objects.equals(procedure.getConsultantId(), consultantId);
+  }
+
+  private boolean appointmentHasChanged(
+      ProstituteProtectionProcedure procedure, Instant start, Instant end) {
+    if (procedure.getUserDefinedAppointment() == null) {
+      return true;
+    }
+    return !(Objects.equals(procedure.getUserDefinedAppointment().getAppointmentStart(), start)
+        && Objects.equals(procedure.getUserDefinedAppointment().getAppointmentEnd(), end));
   }
 
   public void bookAppointmentFromAppointmentBlock(

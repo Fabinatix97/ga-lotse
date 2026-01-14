@@ -39,6 +39,7 @@ export function PersonStep(props: PersonStepProps) {
     <Layout {...props}>
       <Stack gap={2} mt={2}>
         <InputField
+          autoFocus
           name="alias"
           label={PERSON_FIELD_NAME.alias}
           required={

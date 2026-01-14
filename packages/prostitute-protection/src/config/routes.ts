@@ -19,6 +19,7 @@ export const routes = defineRoutes(basePath, (prostituteProtectionPath) => ({
           details: procedurePath("/details"),
           progressEntries: procedurePath("/progress-entries"),
           consultation: procedurePath("/consultation"),
+          certificates: procedurePath("/certificates"),
         })),
     }),
   ),
@@ -35,4 +36,5 @@ export const routes = defineRoutes(basePath, (prostituteProtectionPath) => ({
       new: appointmentBlockGroupsPath("/new"),
     }),
   ),
+  waitingRoom: prostituteProtectionPath("/waiting-room"),
 }));

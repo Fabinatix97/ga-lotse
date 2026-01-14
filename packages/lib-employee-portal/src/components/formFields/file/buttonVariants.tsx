@@ -30,6 +30,7 @@ interface FileButtonProps
   > {
   activeDragOver?: boolean;
   error: boolean;
+  autoFocus?: boolean;
 }
 
 export function FileInputButton(props: FileButtonProps) {

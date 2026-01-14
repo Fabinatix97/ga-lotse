@@ -7,7 +7,7 @@ import { useSuspenseQueries } from "@tanstack/react-query";
 
 import { DisabledFormProvider, DynamicPageProps } from "@eshg/lib-portal";
 
-import { useConsultationQueryOptions } from "../api/queries/consultation";
+import { useGetConsultationQueryOptions } from "../api/queries/consultation";
 import { useGetProcedureOptions } from "../api/queries/procedures";
 import { ConsultationForm } from "../components/procedures/consultation/ConsultationForm";
 import { ProstituteProtectionProcedureRouteParams } from "../schemas/ProstituteProtectionProcedureRouteParams";
@@ -21,7 +21,7 @@ export function ProstituteProtectionConsultationPage(
   const [{ data: procedure }, { data: consultation }] = useSuspenseQueries({
     queries: [
       useGetProcedureOptions(procedureId),
-      useConsultationQueryOptions(procedureId),
+      useGetConsultationQueryOptions(procedureId),
     ],
   });
 

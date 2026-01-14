@@ -1051,6 +1051,40 @@
         "tags" : [ "InboxProcedure" ]
       }
     },
+    "/limit-test" : {
+      "get" : {
+        "operationId" : "getLimitTest",
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "type" : "boolean"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "Procedure" ]
+      },
+      "post" : {
+        "operationId" : "postLimitTest",
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "type" : "boolean"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "Procedure" ]
+      }
+    },
     "/procedure-metrics" : {
       "get" : {
         "operationId" : "getProcedureMetrics",

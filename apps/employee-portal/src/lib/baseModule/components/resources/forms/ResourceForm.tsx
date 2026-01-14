@@ -56,6 +56,7 @@ export function ResourceForm(props: ResourceFormProps) {
           <SidebarContent title={props.title}>
             <Stack spacing={2}>
               <InputField
+                autoFocus
                 name="name"
                 label="Name"
                 required="Bitte einen Namen angeben"

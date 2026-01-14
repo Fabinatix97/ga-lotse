@@ -2,6 +2,20 @@ GA-Lotse ist ein Kooperationsprojekt des Gesundheitsamts Frankfurt am Main mit d
 
 Finanziert von der Europäischen Union – NextGenerationEU
 
+## GA-Lotse 2.16
+_14.01.2026_
+
+Neunundzwanzigster Release der Anwendung GA-Lotse
+
+### Grundfunktionen:
+
+* Vorgangssuche erweitert: Suche nach Vorname oder Nachname ist nun auch einzeln möglich
+* Gleiches Suchverhalten für offene und abgeschlossene Vorgänge
+
+### Reisemedizinische Impfberatung:
+
+* Suche nach geschlossenen Vorgängen möglich
+
 ## GA-Lotse 2.15
 _07.01.2026_
 

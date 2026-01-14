@@ -44,6 +44,7 @@ export function UploadVCardForm({
         <SidebarForm ref={sidebarFormRef}>
           <SidebarContent title="Kontakt importieren">
             <FileField
+              autoFocus
               name="file"
               label="Wählen Sie eine Datei aus"
               accept={FileType.Vcf}

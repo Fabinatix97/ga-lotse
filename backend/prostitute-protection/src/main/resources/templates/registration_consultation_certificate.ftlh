@@ -32,7 +32,7 @@ additionalStyle,
 footer.style
 ]>
   <@footer.content department=department />
-  <@letterhead.content person=person department=department extraLine="Nationalität: ${person.nationality}"/>
+  <@letterhead.content person=person department=department/>
 
   <div class="body">
     <div style="margin-top: 20mm">

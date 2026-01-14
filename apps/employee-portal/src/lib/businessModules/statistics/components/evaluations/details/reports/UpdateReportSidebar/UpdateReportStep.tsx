@@ -17,6 +17,7 @@ export function UpdateReportStep(
     <Stack gap={3}>
       <Stack gap={2}>
         <InputField
+          autoFocus
           name={props.fieldName("name")}
           label="Name"
           required="Bitte Name angeben."

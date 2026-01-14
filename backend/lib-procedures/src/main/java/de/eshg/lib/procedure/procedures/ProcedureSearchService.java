@@ -213,9 +213,7 @@ public class ProcedureSearchService<ProcedureT extends Procedure<ProcedureT, ?, 
     if (isFullSearch(searchParameters)) {
       return processSearchResult(performFullSearch(searchParameters), personType);
     } else {
-      return processSearchResult(performPartialSearch(searchParameters), personType).stream()
-          .filter(procedure -> procedure.getProcedureStatus().isOpen())
-          .toList();
+      return processSearchResult(performPartialSearch(searchParameters), personType);
     }
   }
 

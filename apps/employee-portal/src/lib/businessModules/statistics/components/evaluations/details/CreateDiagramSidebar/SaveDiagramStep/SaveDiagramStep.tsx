@@ -16,6 +16,7 @@ export function SaveDiagramStep(
   return (
     <Stack gap={2}>
       <InputField
+        autoFocus
         name={props.fieldName("title")}
         label="Diagrammtitel"
         required="Bitte Titel angeben."

@@ -10,7 +10,9 @@ import de.eshg.prostituteprotection.api.AppointmentBookingTypeDto;
 import de.eshg.prostituteprotection.api.ProcedureProperty;
 import de.eshg.prostituteprotection.api.RequiredProcedureArea;
 import de.eshg.prostituteprotection.crypto.DecryptedPersonalDataDto;
+import de.eshg.prostituteprotection.crypto.EncryptedPersonalDataDto;
 import de.eshg.prostituteprotection.domain.model.Consultation;
+import de.eshg.prostituteprotection.domain.model.EncryptedPersonalData;
 import de.eshg.prostituteprotection.domain.model.ProstituteProtectionProcedure;
 import de.eshg.rest.service.error.BadRequestException;
 import io.micrometer.common.util.StringUtils;
@@ -108,8 +110,6 @@ public class ProstituteProtectionValidator {
           properties, ProcedureProperty.ALIAS, procedure.getPersonalData().getAlias());
     }
     addPropertyIfNull(
-        properties, ProcedureProperty.NATIONALITY, procedure.getPersonalData().getNationality());
-    addPropertyIfNull(
         properties, ProcedureProperty.DOCUMENT_TYPE, procedure.getPersonalData().getDocumentType());
 
     return properties;
@@ -189,6 +189,21 @@ public class ProstituteProtectionValidator {
       throw new BadRequestException(
           "An alias must be provided with appointment booking type %s"
               .formatted(appointmentBookingType));
+    }
+  }
+
+  public static void validateEncryptedData(
+      ProstituteProtectionProcedure procedure, EncryptedPersonalDataDto requestedEncryptedData) {
+    EncryptedPersonalData persistedEncryptedPersonalData = procedure.getEncryptedPersonalData();
+    if (persistedEncryptedPersonalData == null) {
+      return;
+    }
+
+    if (procedure.getConsultationCertificateCreatedAt() != null
+        && persistedEncryptedPersonalData.getHashedPersonIdentifier()
+            != requestedEncryptedData.hashedPersonIdentifier()) {
+      throw new BadRequestException(
+          "Personal data cannot be updated after a certificate was created.");
     }
   }
 }

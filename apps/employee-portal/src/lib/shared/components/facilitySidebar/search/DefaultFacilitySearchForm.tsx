@@ -18,6 +18,7 @@ export function DefaultFacilitySearchForm<
   return (
     <Stack gap={2}>
       <InputField
+        autoFocus
         name="name"
         label="Name der Einrichtung"
         required="Bitte den Namen der Einrichtung angeben"

@@ -21,6 +21,11 @@
     secretKeyRef:
       name: prostituteprotection-db
       key: POSTGRESQL_DB
+- name: eshg.keycloak.test-users-secret-override
+  valueFrom:
+    secretKeyRef:
+      name: keycloak-test-user-secrets
+      key: test-users-secret-override
 - name: spring.datasource.username
   valueFrom:
     secretKeyRef:

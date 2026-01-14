@@ -11,6 +11,7 @@ import de.eshg.base.calendar.api.BaseEventRequest;
 import de.eshg.base.calendar.api.BaseEventTypeDto;
 import de.eshg.base.calendar.api.EventTimeData;
 import de.eshg.base.calendar.api.UserCalendar;
+import de.eshg.base.centralfile.rate.limit.PartialPersonSearchGuard;
 import de.eshg.base.citizenuser.AccessCodeGenerator;
 import de.eshg.base.contact.api.ContactDto;
 import de.eshg.base.contact.api.SearchContactsResponse;
@@ -80,6 +81,7 @@ public class BaseTestHelperService extends DefaultTestHelperService {
   private final CitizenKeycloakTestClient citizenKeycloakTestClient;
   private final CitizenKeycloakTestProvisioning citizenKeycloakTestProvisioning;
   private final HealthDepartmentContactPopulator healthDepartmentContactPopulator;
+  private final PartialPersonSearchGuard partialPersonSearchGuard;
 
   private final CalendarService calendarService;
 
@@ -113,7 +115,8 @@ public class BaseTestHelperService extends DefaultTestHelperService {
       List<TestHelperServiceResetAction> resetActions,
       EnvironmentConfig environmentConfig,
       HealthDepartmentContactPopulator healthDepartmentContactPopulator,
-      DaycareContactPopulator daycareContactPopulator) {
+      DaycareContactPopulator daycareContactPopulator,
+      PartialPersonSearchGuard partialPersonSearchGuard) {
     super(
         databaseResetHelper,
         testRequestInterceptor,
@@ -135,6 +138,7 @@ public class BaseTestHelperService extends DefaultTestHelperService {
     this.citizenKeycloakTestProvisioning = citizenKeycloakTestProvisioning;
     this.healthDepartmentContactPopulator = healthDepartmentContactPopulator;
     this.daycareContactPopulator = daycareContactPopulator;
+    this.partialPersonSearchGuard = partialPersonSearchGuard;
   }
 
   public void resetKeycloak() {
@@ -147,6 +151,12 @@ public class BaseTestHelperService extends DefaultTestHelperService {
     citizenKeycloakTestProvisioning.removeUnmanagedUsers();
     citizenKeycloakTestProvisioning.createOrUpdateUsers();
     accessCodeGenerator.reset();
+  }
+
+  @Override
+  public Instant reset() throws Exception {
+    partialPersonSearchGuard.resetRateLimit();
+    return super.reset();
   }
 
   public void invalidateAllKeycloakSessions() {

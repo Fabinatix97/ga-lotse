@@ -15,8 +15,12 @@ import {
   useInspectionApi,
   useObjectTypeApi,
 } from "@/lib/businessModules/inspection/api/clients";
+import { useIsNewFeatureEnabled } from "@/lib/businessModules/inspection/api/queries/feature";
 import { getInspectionQuery } from "@/lib/businessModules/inspection/api/queries/inspection";
-import { getObjectTypesQuery } from "@/lib/businessModules/inspection/api/queries/objectTypes";
+import {
+  getObjectTypesHierarchyTreeQuery,
+  getObjectTypesQuery,
+} from "@/lib/businessModules/inspection/api/queries/objectTypes";
 import {
   getAllAssignableUsersQuery,
   getSelfUserQuery,
@@ -31,14 +35,18 @@ export default function NewInspectionProcedurePage(
   const objectTypeApi = useObjectTypeApi();
   const userApi = useUserApi();
 
+  const featureToggleEnabled = useIsNewFeatureEnabled("OBJECT_TYPE_HIERARCHY");
+
   const [
     { data: inspection },
+    { data: objectTypesHierarchyTree },
     { data: objectTypes },
     { data: selfUser },
     { data: allAssignableUsers },
   ] = useSuspenseQueries({
     queries: [
       getInspectionQuery(inspectionApi, procedureId),
+      getObjectTypesHierarchyTreeQuery(objectTypeApi),
       getObjectTypesQuery(objectTypeApi),
       getSelfUserQuery(userApi),
       getAllAssignableUsersQuery(userApi),
@@ -48,7 +56,9 @@ export default function NewInspectionProcedurePage(
   return (
     <AddInspectionTiles
       inspection={inspection}
-      objectTypes={objectTypes}
+      objectTypes={
+        featureToggleEnabled ? objectTypesHierarchyTree : objectTypes
+      }
       selfUser={selfUser}
       allAssignableUsers={allAssignableUsers}
     />

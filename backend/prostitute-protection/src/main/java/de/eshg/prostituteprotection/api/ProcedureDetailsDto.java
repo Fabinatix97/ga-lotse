@@ -6,7 +6,6 @@
 package de.eshg.prostituteprotection.api;
 
 import de.eshg.lib.appointmentblock.api.AppointmentDto;
-import de.eshg.lib.common.CountryCode;
 import de.eshg.lib.procedure.model.ProcedureStatusDto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
@@ -25,8 +24,9 @@ public record ProcedureDetailsDto(
     @NotNull List<LanguageDto> languages,
     ConsultationTypeDto consultationType,
     @NotNull ProcedureStatusDto procedureStatus,
-    CountryCode nationality,
     DocumentTypeDto documentTypeDto,
     Instant consultationCertificateCreatedAt,
+    @NotNull boolean hasEncryptedData,
     @Valid UserNameDto consultant,
-    @Valid UserNameDto creator) {}
+    @Valid UserNameDto creator,
+    @NotNull @Valid WaitingRoomDto waitingRoom) {}

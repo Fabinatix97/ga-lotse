@@ -92,6 +92,7 @@ function Summary(props: SummaryProps) {
   return (
     <Stack gap={3}>
       <InputField
+        autoFocus
         name={props.fieldName("evaluationName")}
         label="Name der Auswertung"
         required="Bitte Name angeben."

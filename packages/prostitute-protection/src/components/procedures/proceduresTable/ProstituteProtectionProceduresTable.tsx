@@ -27,7 +27,7 @@ import {
   ApiProstituteProtectionProcedureOverview,
 } from "@eshg/prostitute-protection-api";
 
-import { useAbortProcedureMutation } from "../../../api/mutations/procedures";
+import { useSimpleAbortProcedureMutation } from "../../../api/mutations/procedures";
 import { useProceduresQueryOptions } from "../../../api/queries/procedures";
 import { routes } from "../../../config/routes";
 import { CONSULTATION_TYPE_VALUES } from "../../../shared/constants";
@@ -98,7 +98,7 @@ function getProceduresColumns({ onAbortProcedure }: RowActions) {
       id: "actions",
       header: "Aktionen",
       cell: ({ row: { original: procedure } }) => (
-        <Row>
+        <Row justifyContent="flex-end">
           <IconButton
             variant="plain"
             label="Löschen"
@@ -111,6 +111,7 @@ function getProceduresColumns({ onAbortProcedure }: RowActions) {
       meta: {
         cellStyle: "button",
         width: 90,
+        textAlign: "right",
       },
     }),
   ];
@@ -134,7 +135,7 @@ export function ProstituteProtectionProceduresTable() {
     alias: searchParams.get("alias") ?? undefined,
   });
 
-  const abortProcedure = useAbortProcedureMutation();
+  const abortProcedure = useSimpleAbortProcedureMutation();
 
   async function handleAbort() {
     if (confirmAbort === undefined) {

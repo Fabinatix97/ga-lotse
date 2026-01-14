@@ -85,7 +85,7 @@ public abstract class AccessCodeForm extends AbstractFormAuthenticator {
     String accessCode = formData.getFirst(ACCESS_CODE_FIELD).replaceAll("\\s+", "");
     applyCustomFormTemplateValues(context);
     addContextInfo(context, formData);
-    validateAccesCodeField(accessCode, errors);
+    validateAccessCodeField(accessCode, errors);
     validateCredentialField(formData, errors);
 
     if (errors.isEmpty()) {
@@ -107,6 +107,7 @@ public abstract class AccessCodeForm extends AbstractFormAuthenticator {
                     errors.put(ACCESS_CODE_FIELD, ACCOUNT_LOCKED_OUT_MESSAGE);
                   } else {
                     errors.put(ACCESS_CODE_FIELD, getInvalidCredentialsMessage());
+                    errors.put(getCredentialsField(), getInvalidCredentialsMessage());
                   }
                 }
               },
@@ -114,6 +115,7 @@ public abstract class AccessCodeForm extends AbstractFormAuthenticator {
                 // Invalid access code, but display the same error
                 formData.remove(ACCESS_CODE_FIELD);
                 errors.put(ACCESS_CODE_FIELD, getInvalidCredentialsMessage());
+                errors.put(getCredentialsField(), getInvalidCredentialsMessage());
               });
     }
 
@@ -122,7 +124,7 @@ public abstract class AccessCodeForm extends AbstractFormAuthenticator {
     }
   }
 
-  private void validateAccesCodeField(String accessCode, Map<String, String> errors) {
+  private void validateAccessCodeField(String accessCode, Map<String, String> errors) {
     if (StringUtil.isBlank(accessCode)) {
       errors.put(ACCESS_CODE_FIELD, MISSING_ACCESS_CODE_MESSAGE);
     }
@@ -146,6 +148,8 @@ public abstract class AccessCodeForm extends AbstractFormAuthenticator {
 
   protected abstract boolean validateCredentials(
       MultivaluedMap<String, String> formData, UserModel user);
+
+  protected abstract String getCredentialsField();
 
   /*
    * This creates the custom code form which asks for an access code and a second authentication information

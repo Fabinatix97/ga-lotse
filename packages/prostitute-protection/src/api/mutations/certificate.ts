@@ -4,8 +4,13 @@
  */
 
 import { ApiResponse } from "@eshg/base-api";
-import { downloadFileAndOpen, useHandledMutation } from "@eshg/lib-portal";
 import {
+  downloadFileAndOpen,
+  useFileDownload,
+  useHandledMutation,
+} from "@eshg/lib-portal";
+import {
+  DownloadCertificateRequest,
   GenerateConsultationCertificatePdfRequest,
   ProstituteProtectionApi,
 } from "@eshg/prostitute-protection-api";
@@ -19,6 +24,13 @@ export function useGenerateConsultationCertificateMutation() {
     mutationFn: (request: GenerateConsultationCertificatePdfRequest) =>
       getCertificate(prostituteProtectionApi, request),
   });
+}
+
+export function useDownloadCertificateMutation() {
+  const { prostituteProtectionApi } = useProstituteProtectionApiClients();
+  return useFileDownload((request: DownloadCertificateRequest) =>
+    prostituteProtectionApi.downloadCertificateRaw(request),
+  );
 }
 
 async function getCertificate(

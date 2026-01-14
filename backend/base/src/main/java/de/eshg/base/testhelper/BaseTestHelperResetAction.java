@@ -5,6 +5,7 @@
 
 package de.eshg.base.testhelper;
 
+import de.eshg.base.centralfile.rate.limit.PartialPersonSearchGuard;
 import de.eshg.base.config.DepartmentConfigurationService;
 import de.eshg.base.street.MunicipalityDirectory;
 import de.eshg.base.street.StreetDirectoryService;
@@ -23,18 +24,21 @@ public class BaseTestHelperResetAction implements TestHelperServiceResetAction {
   private final DepartmentConfigurationService departmentConfigurationService;
   private final StreetDirectoryService streetDirectoryService;
   private final MunicipalityDirectory municipalityDirectory;
+  private final PartialPersonSearchGuard partialPersonSearchGuard;
 
   public BaseTestHelperResetAction(
       UserControllerRateLimiter userControllerRateLimiter,
       Icd10CodeTestHelper icd10CodeTestHelper,
       DepartmentConfigurationService departmentConfigurationService,
       StreetDirectoryService streetDirectoryService,
-      MunicipalityDirectory municipalityDirectory) {
+      MunicipalityDirectory municipalityDirectory,
+      PartialPersonSearchGuard partialPersonSearchGuard) {
     this.userControllerRateLimiter = userControllerRateLimiter;
     this.icd10CodeTestHelper = icd10CodeTestHelper;
     this.departmentConfigurationService = departmentConfigurationService;
     this.streetDirectoryService = streetDirectoryService;
     this.municipalityDirectory = municipalityDirectory;
+    this.partialPersonSearchGuard = partialPersonSearchGuard;
   }
 
   @Override
@@ -44,5 +48,6 @@ public class BaseTestHelperResetAction implements TestHelperServiceResetAction {
     departmentConfigurationService.init();
     streetDirectoryService.init();
     municipalityDirectory.init();
+    partialPersonSearchGuard.resetRateLimit();
   }
 }

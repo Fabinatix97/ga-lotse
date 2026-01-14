@@ -76,6 +76,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
@@ -708,12 +709,8 @@ public class VaccinationConsultationService {
   }
 
   private List<ProcedureStatus> getStatusList(ProcedureStatus procedureStatus) {
-    if (ProcedureStatus.ABORTED == procedureStatus || ProcedureStatus.CLOSED == procedureStatus) {
-      throw new BadRequestException(
-          "Search is allowed for procedure status DRAFT, OPEN and  IN_PROGRESS");
-    }
     return procedureStatus == null
-        ? List.of(ProcedureStatus.IN_PROGRESS, ProcedureStatus.DRAFT, ProcedureStatus.OPEN)
+        ? Arrays.stream(ProcedureStatus.values()).toList()
         : List.of(procedureStatus);
   }
 

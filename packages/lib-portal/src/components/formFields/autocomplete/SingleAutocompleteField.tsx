@@ -19,6 +19,7 @@ export interface SingleAutocompleteFieldProps
   freeSolo?: boolean;
   popupIcon?: ReactNode;
   disabled?: boolean;
+  autoFocus?: boolean;
 }
 
 export function SingleAutocompleteField(props: SingleAutocompleteFieldProps) {
@@ -47,6 +48,7 @@ export function SingleAutocompleteField(props: SingleAutocompleteFieldProps) {
     <BaseField {...fieldProps}>
       <CustomAutocomplete
         {...autocompleteProps}
+        autoFocus={props.autoFocus}
         multiple={false}
         freeSolo={props.freeSolo}
         forcePopupIcon={!props.freeSolo}

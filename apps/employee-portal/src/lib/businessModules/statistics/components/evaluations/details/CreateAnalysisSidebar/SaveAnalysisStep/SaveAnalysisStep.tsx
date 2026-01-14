@@ -16,6 +16,7 @@ export function SaveAnalysisStep(
   return (
     <Stack gap={2}>
       <InputField
+        autoFocus
         name={props.fieldName("name")}
         label="Name der Analyse"
         required="Bitte Name angeben."

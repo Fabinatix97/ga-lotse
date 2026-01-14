@@ -3,7 +3,12 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { type Locale, formatDistanceStrict } from "date-fns";
+import {
+  FormatDistanceToNowOptions,
+  type Locale,
+  formatDistanceStrict,
+  formatDistanceToNowStrict,
+} from "date-fns";
 import { isNullish } from "remeda";
 
 import { Nullable } from "@eshg/lib-portal";
@@ -56,4 +61,14 @@ export function formatDurationFromNowUntil(
         locale: options?.locale ?? getDateFnsLocale(),
       })
     : undefined;
+}
+
+export function formatDateTimeRangeToNowInMinutes(
+  date: Date,
+  options?: FormatDistanceToNowOptions,
+) {
+  return formatDistanceToNowStrict(date, {
+    locale: options?.locale ?? getDateFnsLocale(),
+    unit: "minute",
+  });
 }

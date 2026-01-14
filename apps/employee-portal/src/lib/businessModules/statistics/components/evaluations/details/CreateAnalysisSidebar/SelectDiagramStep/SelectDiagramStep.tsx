@@ -75,6 +75,7 @@ export function SelectDiagramStep(
       </Typography>
 
       <SelectableCardsField
+        autoFocus
         name={props.fieldName("diagramType")}
         required="Bitte Darstellungsform wählen."
         options={options}

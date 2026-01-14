@@ -5,7 +5,6 @@
 
 package de.eshg.prostituteprotection.api;
 
-import de.eshg.lib.common.CountryCode;
 import de.eshg.validation.constraints.DateOfBirth;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
@@ -23,6 +22,5 @@ public record UpdateEncryptedPersonalDataRequest(
     @NotNull @Size(min = 1, max = 120) String lastName,
     @NotNull @DateOfBirth(minAgeInclusive = 18) LocalDate dateOfBirth,
     String alias,
-    CountryCode nationality,
     DocumentTypeDto documentType,
     List<LanguageDto> languages) {}

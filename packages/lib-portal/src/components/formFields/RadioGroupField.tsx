@@ -6,9 +6,17 @@
 import { FormControl, FormLabel, RadioGroup } from "@mui/joy";
 import { SxProps } from "@mui/joy/styles/types";
 import { FieldHelperProps } from "formik";
-import { ChangeEvent, PropsWithChildren, ReactNode, memo } from "react";
+import {
+  ChangeEvent,
+  PropsWithChildren,
+  ReactNode,
+  memo,
+  useEffect,
+  useState,
+} from "react";
 import { isDefined } from "remeda";
 
+import { useFocus } from "../../hooks/useFocus";
 import { ValidationRules } from "../../types/form";
 import { useIsFormDisabled } from "../form/DisabledFormContext";
 
@@ -25,6 +33,7 @@ export interface RadioGroupFieldProps
   "data-testid"?: string;
   "aria-labelledby"?: string;
   "aria-label"?: string;
+  autoFocus?: boolean;
 }
 
 export function RadioGroupField(props: RadioGroupFieldProps) {
@@ -80,6 +89,15 @@ function InnerRadioGroupField({
       }
     : {};
 
+  const [initFocus, setInitFocus] = useState(props.autoFocus);
+  const { ref, focus } = useFocus();
+  useEffect(() => {
+    if (initFocus) {
+      setInitFocus(false);
+      focus();
+    }
+  }, [initFocus, focus]);
+
   return (
     <FormControl
       error={fieldError}
@@ -90,6 +108,9 @@ function InnerRadioGroupField({
     >
       {label && <FormLabel>{label}</FormLabel>}
       <RadioGroup
+        ref={(el) => {
+          ref.current = el;
+        }}
         name={fieldInputName}
         value={fieldInputValue}
         orientation={orientation}

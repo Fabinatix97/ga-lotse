@@ -93,6 +93,7 @@ function CreateGDPRProcedureSidebar({
             <Grid container spacing={3}>
               <Grid xxs={12}>
                 <SelectField
+                  autoFocus
                   options={TYPE_OPTIONS}
                   name={fieldName("type")}
                   label="Vorgangsart"

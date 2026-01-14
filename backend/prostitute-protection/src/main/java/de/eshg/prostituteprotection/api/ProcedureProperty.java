@@ -10,7 +10,6 @@ public enum ProcedureProperty {
   FIRST_NAME,
   LAST_NAME,
   DATE_OF_BIRTH,
-  NATIONALITY,
   DOCUMENT_TYPE,
 
   LEGAL_ADVICES,

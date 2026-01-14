@@ -23,6 +23,7 @@ export function ProcedureLabelFormFields() {
   return (
     <Stack gap={2}>
       <InputField
+        autoFocus
         label="Kennung"
         name="name"
         required="Bitte eine Kennung angeben."

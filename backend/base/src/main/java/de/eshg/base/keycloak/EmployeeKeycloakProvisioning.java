@@ -208,7 +208,7 @@ public class EmployeeKeycloakProvisioning extends KeycloakProvisioning<EmployeeK
     clientRepresentation.setPublicClient(false);
     clientRepresentation.setSecret(moduleClientSecret);
     clientRepresentation.setStandardFlowEnabled(false);
-    clientRepresentation.setDirectAccessGrantsEnabled(true);
+    clientRepresentation.setDirectAccessGrantsEnabled(false);
     clientRepresentation.setServiceAccountsEnabled(true);
     clientRepresentation.setFrontchannelLogout(false);
     clientRepresentation.setRedirectUris(List.of());

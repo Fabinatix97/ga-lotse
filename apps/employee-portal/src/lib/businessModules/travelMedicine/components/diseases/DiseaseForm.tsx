@@ -55,6 +55,7 @@ export function DiseaseForm(props: Readonly<DiseaseFormProps>) {
           <SidebarContent title={props.title}>
             <Stack gap={2} rowGap={2}>
               <InputField
+                autoFocus
                 name="diseaseName"
                 label="Name"
                 required="Bitte einen Namen angeben"

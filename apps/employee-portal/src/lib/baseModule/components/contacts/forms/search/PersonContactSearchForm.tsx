@@ -60,6 +60,7 @@ export function PersonContactSearchForm({
         <SidebarContent title="Neue Person anlegen">
           <Stack gap={2}>
             <InputField
+              autoFocus
               label="Vorname"
               name="firstName"
               onChange={setFirstName}

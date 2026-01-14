@@ -10,7 +10,6 @@ import {
   format,
   formatDistanceStrict,
   formatDistanceToNow,
-  formatDistanceToNowStrict,
   formatISO,
   getWeek,
   isSameDay,
@@ -107,16 +106,6 @@ export function formatDateTimeRangeToNow(
 ) {
   return formatDistanceToNow(date, {
     locale: options?.locale ?? getDateFnsLocale(),
-  });
-}
-
-export function formatDateTimeRangeToNowInMinutes(
-  date: Date,
-  options?: FormatDistanceToNowOptions,
-) {
-  return formatDistanceToNowStrict(date, {
-    locale: options?.locale ?? getDateFnsLocale(),
-    unit: "minute",
   });
 }
 

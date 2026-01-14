@@ -59,7 +59,7 @@ export function InstitutionContactSearchForm({
       <SidebarForm>
         <SidebarContent title="Neue Institution anlegen">
           <Stack gap={2}>
-            <InputField label="Name" name="name" onChange={setName} />
+            <InputField autoFocus label="Name" name="name" onChange={setName} />
             <InputField name="street" label="Straße" onChange={setStreet} />
             {enabled &&
               (query.isLoading || query.isPlaceholderData ? (

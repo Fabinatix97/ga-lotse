@@ -103,6 +103,7 @@ export function FacilitySearchResults(props: FacilitySearchResultsProps) {
               props.header ?? (
                 <Stack gap={2}>
                   <Button
+                    autoFocus
                     variant="plain"
                     startDecorator={<ArrowBackIosOutlined />}
                     sx={{ alignSelf: "start", paddingInline: 0 }}

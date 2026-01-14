@@ -76,6 +76,7 @@ export function FilterTemplates(props: FilterTemplatesProps) {
       </FormDialog>
       <Stack direction="row" gap={0.5} data-testid="filter-templates">
         <Select
+          autoFocus
           sx={{ flex: 1 }}
           placeholder="Filter-Vorlagen"
           aria-label="Filter-Vorlagen"

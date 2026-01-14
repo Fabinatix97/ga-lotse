@@ -41,6 +41,8 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
@@ -161,6 +163,51 @@ public class PersonService {
     return fileStates.stream()
         .map(PersonService::personKeyAttributesOf)
         .collect(StreamUtil.toLinkedHashSet());
+  }
+
+  public List<Person> searchReferencePersonsWithPartialKnowledgeFactors(
+      String firstName, String lastName, LocalDate dateOfBirth, int limit) {
+    if (getNumberOfKnowledgeFactors(firstName, lastName, dateOfBirth) > 1) {
+      return fuzzySearch(firstName, lastName, dateOfBirth, true, limit);
+    } else {
+      if (!StringUtils.isBlank(firstName)) {
+        return searchReferencePersonsByFirstName(firstName, limit);
+      } else if (!StringUtils.isBlank(lastName)) {
+        return searchReferencePersonsByLastName(lastName, limit);
+      } else if (dateOfBirth != null) {
+        return personRepository.searchReferencePersonsByDateOfBirth(dateOfBirth, pageable(limit));
+      } else {
+        return Collections.emptyList();
+      }
+    }
+  }
+
+  private static int getNumberOfKnowledgeFactors(
+      String firstName, String lastName, LocalDate dateOfBirth) {
+    return (StringUtils.isBlank(firstName) ? 0 : 1)
+        + (StringUtils.isBlank(lastName) ? 0 : 1)
+        + (dateOfBirth == null ? 0 : 1);
+  }
+
+  private List<Person> searchReferencePersonsByFirstName(String firstName, int limit) {
+    if (firstName.length() < 4) {
+      return personRepository.searchReferencePersonsByFirstName(firstName, pageable(limit));
+    } else {
+      return personRepository.searchReferencePersonsByFirstNameContaining(
+          firstName, pageable(limit));
+    }
+  }
+
+  private List<Person> searchReferencePersonsByLastName(String lastName, int limit) {
+    if (lastName.length() < 4) {
+      return personRepository.searchReferencePersonsByLastName(lastName, pageable(limit));
+    } else {
+      return personRepository.searchReferencePersonsByLastNameContaining(lastName, pageable(limit));
+    }
+  }
+
+  private static Pageable pageable(int limit) {
+    return PageRequest.of(0, limit);
   }
 
   public List<Person> fuzzySearch(

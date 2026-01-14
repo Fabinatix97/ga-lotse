@@ -11,5 +11,4 @@ public record PersonData(
     @NotNull String firstName,
     @NotNull String lastName,
     @NotNull String dateOfBirth,
-    String alias,
-    @NotNull String nationality) {}
+    String alias) {}

@@ -1,5 +1,9 @@
 <#import "template.ftl" as layout>
+<#import "field.ftl" as field>
+<#import "buttons.ftl" as buttons>
+
 <@layout.registrationLayout; section>
+<!-- template: pin-access-code.ftl -->
     <#if section = "title">
 
         ${msg("loginTitle",(realm.displayName!''))}
@@ -14,48 +18,23 @@
 
     <#elseif section = "form">
 
-        <div id="kc-form">
-        <div id="kc-form-wrapper">
-        <form id="kc-form-login" class="form" onsubmit="return true;" action="${url.loginAction}" method="post" autocomplete="off">
+        <form id="kc-form-login" class="${properties.kcFormClass!}" onsubmit="return true;" action="${url.loginAction}" method="post" autocomplete="off">
 
-            <div class="${properties.kcFormGroupClass!}">
-                <label for="access-code" class="${properties.kcLabelClass!}">
-                    ${msg("accessCodeLabel")}
-                </label>
-                <input tabindex="1" id="access-code" class="${properties.kcInputClass!}" name="access_code" type="text"
-                    value="${(access_code!'')}" <#if access_code?exists>readonly</#if>
-                    aria-invalid="<#if messagesPerField.existsError('access_code')>true</#if>"
-                />
-                <#if messagesPerField.existsError('access_code')>
-                    <span id="input-error" class="${properties.kcInputErrorMessageClass!}" aria-live="polite">
-                        ${kcSanitize(messagesPerField.getFirstError('access_code'))?no_esc}
-                    </span>
-                </#if>
-            </div>
+            <@field.input name="access_code" label=msg("accessCodeLabel") value="${(access_code!'')}" fieldName="access_code" />
 
-            <div class="${properties.kcFormGroupClass!}">
-                <label for="pin" class="${properties.kcLabelClass!}">
-                    ${msg("pinLabel")}
-                </label>
-                <input tabindex="2" id="pin" class="${properties.kcInputClass!}" name="pin" type="password" maxlength="6"
-                    aria-invalid="<#if messagesPerField.existsError('access_code')>true</#if>"
-                />
-                <#if messagesPerField.existsError('access_code')>
-                    <span id="input-error" class="${properties.kcInputErrorMessageClass!}" aria-live="polite">
-                        ${kcSanitize(messagesPerField.getFirstError('access_code'))?no_esc}
-                    </span>
-                </#if>
-            </div>
+            <#assign pin_error = kcSanitize(messagesPerField.get('pin'))?no_esc>
+            <@field.group name="pin" label=msg("pinLabel") error=pin_error required=false>
+                <span class="${properties.kcInputClass} <#if pin_error?has_content>${properties.kcError}</#if>">
+                    <input id="pin" name="pin" value="" type="password" autocomplete="off" aria-invalid="<#if pin_error?has_content>true</#if>"/>
+                    <@field.errorIcon error=pin_error/>
+                </span>
+            </@field.group>
 
             <div id="kc-form-buttons" class="${properties.kcFormGroupClass!}">
-                <input tabindex="3" class="${properties.kcButtonClass!} ${properties.kcButtonPrimaryClass!} ${properties.kcButtonBlockClass!} ${properties.kcButtonLargeClass!}"
-                    name="login" id="kc-login" type="submit" value="${msg("doSubmit")}"
-                />
+              <@buttons.button name="login" id="kc-login" label="doSubmit" class=["kcButtonPrimaryClass", "kcButtonBlockClass"]/>
             </div>
 
         </form>
-        </div>
-        </div>
 
     </#if>
 </@layout.registrationLayout>

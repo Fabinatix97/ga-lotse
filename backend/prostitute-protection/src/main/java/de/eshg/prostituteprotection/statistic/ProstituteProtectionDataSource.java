@@ -76,7 +76,6 @@ public class ProstituteProtectionDataSource
       case AGE -> procedure.getAgeAtConsultation();
       case ALIAS -> Boolean.TRUE.equals(procedure.getCertificateWithAliasCreated());
       case DOCUMENT_TYPE -> getDocumentType(personalData);
-      case NATIONALITY -> getNationality(personalData);
       case CONSULTATION_DATE -> getConsultationDate(procedure);
       case CONSULTATION_TYPE -> getConsultationType(procedure);
       case CONSULTATION_LANGUAGE -> getLanguageOfConsultation(procedure.getConsultation());
@@ -114,13 +113,6 @@ public class ProstituteProtectionDataSource
       return null;
     }
     return procedure.getAppointmentStart().atZone(ZoneId.systemDefault()).format(DATE_FORMAT);
-  }
-
-  private String getNationality(PersonalData personalData) {
-    if (personalData == null) {
-      return null;
-    }
-    return personalData.getNationality().getContinent();
   }
 
   private String getDocumentType(PersonalData personalData) {

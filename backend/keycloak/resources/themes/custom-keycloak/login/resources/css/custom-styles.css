@@ -1,0 +1,214 @@
+/**
+ * Copyright 2026 cronn GmbH
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+@font-face {
+  font-style: normal;
+  font-weight: 400;
+  src: url("../fonts/Poppins/Poppins-Regular.ttf") format("truetype");
+  font-family: "Poppins";
+}
+
+body {
+  --pf-v5-global--FontFamily--text: Poppins;
+  --pf-v5-global--FontFamily--heading: Poppins;
+
+  --pf-v5-global--BackgroundColor--light-300: #f0f4f8;
+  --pf-v5-global--primary-color--100: #0b6bcb;
+  --pf-v5-global--primary-color--200: #12467b;
+  --pf-v5-global--danger-color--100: #f09898;
+  --pf-v5-global--danger-color--200: #c41c1c;
+  --pf-v5-global--BorderColor--200: #cdd7e1;
+  --pf-v5-global--BorderColor--300: #cdd7e1;
+
+  --pf-v5-global--BoxShadow--xl: none;
+  --pf-v5-global--BorderRadius--sm: 6px;
+  --pf-v5-global--spacer--md: 1.5rem;
+
+  --pf-v5-c-page__header--BackgroundColor: var(
+    --pf-v5-global--BackgroundColor--light-300
+  );
+
+  --keycloak-card-top-color: transparent;
+  --keycloak-bg-logo-url: none;
+  --keycloak-logo-width: 150px;
+  --keycloak-logo-height: 150px;
+}
+
+@media (min-width: 768px) {
+  body {
+    --keycloak-logo-width: 200px;
+    --keycloak-logo-height: 200px;
+  }
+}
+
+.pf-v5-c-login {
+  --pf-v5-c-login__main-header--md--PaddingLeft: 0;
+  --pf-v5-c-login__main-header--md--PaddingRight: 0;
+  --pf-v5-c-login__main-header--PaddingRight: 0;
+  --pf-v5-c-login__main-header--PaddingLeft: 0;
+  --pf-v5-c-login__main-header--PaddingBottom: 0;
+  --pf-v5-c-login__main-header--PaddingTop: 0;
+  --pf-v5-c-login__main-body--PaddingLeft: 0;
+  --pf-v5-c-login__main-body--PaddingRight: 0;
+  --pf-v5-c-login__main-body--PaddingBottom: 0;
+  padding: 0;
+}
+
+.pf-v5-c-login__container {
+  display: grid;
+  grid-template-rows:
+    calc(var(--keycloak-logo-height) + var(--pf-v5-global--spacer--xl))
+    max-content max-content max-content auto;
+  grid-template-columns: 0 auto 0;
+  column-gap: max(var(--pf-v5-global--spacer--xl), 7vw);
+  row-gap: var(--pf-v5-global--spacer--xl);
+  justify-content: initial;
+  padding: 0;
+  width: 100%;
+  max-width: 100%;
+  height: 100vh;
+}
+
+@media (min-width: 768px) {
+  .pf-v5-c-login__container {
+    grid-template-rows: auto max-content max-content max-content auto;
+    grid-template-columns: auto 388px 0;
+  }
+}
+
+/* allow children to be placed in grid cells */
+.pf-v5-c-login__header {
+  display: contents;
+}
+
+.pf-v5-c-login__main {
+  display: contents;
+
+  & > * {
+    grid-column: 2;
+  }
+}
+
+#kc-header-wrapper {
+  grid-column: 2;
+  align-self: end;
+  margin: 0;
+  background-image: url("../img/logo.png");
+  background-position: center center;
+  background-size: var(--keycloak-logo-width) var(--keycloak-logo-height);
+  background-repeat: no-repeat;
+  width: var(--keycloak-logo-width);
+  height: var(--keycloak-logo-height);
+  font-size: 0;
+}
+
+/* show logo left of form on large screens */
+@media (min-width: 768px) {
+  #kc-header-wrapper {
+    grid-row: 1/-1;
+    grid-column: 1;
+    background-color: var(--pf-v5-c-page__header--BackgroundColor);
+    width: 100%;
+    height: 100%;
+  }
+}
+
+.pf-v5-c-login__main-header {
+  display: initial;
+  grid-row: 2;
+}
+
+.pf-v5-c-login__main-body {
+  grid-row: 3;
+
+  /* add gaps around interactive elements on logout page and pin-access-code login page */
+
+  & > .content-area,
+  & > .form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--pf-v5-global--spacer--md);
+  }
+}
+
+.pf-v5-c-login__main-footer {
+  grid-row: 4;
+}
+
+.pf-v5-c-form {
+  --pf-v5-c-form__label-text--FontWeight: var(--pf-v5-global--FontWeight--normal);
+}
+
+/* no line between password input and show/hide password button */
+.pf-v5-c-input-group {
+  --pf-v5-c-input-group__item--MarginLeft: 0;
+}
+
+/* style password field */
+:not(.pf-v5-c-input-group__item) > .pf-v5-c-form-control,
+.pf-v5-c-input-group {
+  border: var(--pf-v5-global--BorderColor--200) solid 1px;
+  border-radius: var(--pf-v5-global--BorderRadius--sm);
+
+  &:hover {
+    border-color: var(--pf-v5-global--primary-color--100);
+  }
+
+  & * {
+    border-radius: inherit;
+  }
+}
+
+/* remove multi colored border around input fields */
+.pf-v5-c-form-control::before,
+.pf-v5-c-form-control::after,
+.pf-v5-c-button.pf-m-control::after {
+  display: none;
+}
+
+/* hide language selector */
+.pf-v5-c-login__main-header-utilities {
+  display: none;
+}
+
+#kc-page-title {
+  font-weight: var(--pf-v5-global--FontWeight--bold);
+  font-size: 32px;
+  text-align: left;
+}
+
+@media (min-width: 768px) {
+  #kc-page-title {
+    font-size: 48px;
+  }
+}
+
+.pf-v5-c-alert {
+  --pf-v5-c-alert--BorderTopWidth: 0;
+  border-radius: var(--pf-v5-global--BorderRadius--sm);
+
+  & .pf-v5-c-alert__title {
+    font-weight: var(--pf-v5-global--FontWeight--normal);
+    font-size: 16px;
+  }
+}
+
+/* keep gap between buttons on small screens */
+.pf-v5-u-mt-md-on-md {
+  margin-block-start: var(--pf-v5-global--gutter--md);
+}
+
+/* thin horizontal lines on xs screens */
+.pf-v5-c-data-list {
+  --pf-v5-c-data-list--BorderTopWidth: var(--pf-v5-c-data-list--sm--BorderTopWidth);
+  --pf-v5-c-data-list__item--BorderBottomWidth: var(--pf-v5-c-data-list__item--sm--BorderBottomWidth);
+}
+
+/* used in access code login flows */
+#page-title-info-text {
+  margin-top: var(--pf-v5-global--spacer--md);
+  font-weight: var(--pf-v5-global--FontWeight--normal);
+  font-size: 16px;
+}

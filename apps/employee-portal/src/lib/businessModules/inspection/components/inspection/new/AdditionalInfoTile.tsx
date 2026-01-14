@@ -15,6 +15,7 @@ import {
   ApiInspFacility,
   ApiInspectionType,
   ApiObjectType,
+  ApiObjectTypeHierarchyTreeNode,
 } from "@eshg/inspection-api";
 import { useHasUserRoleCheck } from "@eshg/lib-employee-portal";
 import {
@@ -31,6 +32,7 @@ import {
 } from "@eshg/lib-portal";
 
 import { useStartInspection } from "@/lib/businessModules/inspection/api/mutations/inspection";
+import { useIsNewFeatureEnabled } from "@/lib/businessModules/inspection/api/queries/feature";
 import { InspectionAssigneeSelection } from "@/lib/businessModules/inspection/components/inspection/assignee/InspectionAssigneeSelection";
 import { useEditFileNumberSidebar } from "@/lib/businessModules/inspection/components/inspection/basedata/EditFileNumberSidebar";
 import { inspectionTypeNames } from "@/lib/businessModules/inspection/shared/enums";
@@ -47,10 +49,15 @@ interface FormData {
 
 interface AdditionalInfoTileProps {
   procedureId: string;
-  objectTypes: ApiObjectType[];
+  objectTypes: ApiObjectTypeHierarchyTreeNode[] | ApiObjectType[];
   facility: ApiInspFacility;
   selfUser: ApiUser;
   allAssignableUsers: ApiUser[];
+}
+
+export interface GroupedOption {
+  id: string;
+  name: string;
 }
 
 export function AdditionalInfoTile({
@@ -66,6 +73,7 @@ export function AdditionalInfoTile({
   const onlySelfAssignable = !useHasUserRoleCheck(
     ApiUserRole.InspectionProcedureAssign,
   );
+  const featureToggleEnabled = useIsNewFeatureEnabled("OBJECT_TYPE_HIERARCHY");
 
   const router = useRouter();
 
@@ -79,10 +87,18 @@ export function AdditionalInfoTile({
     assigneeName: onlySelfAssignable ? formatUserName(selfUser) : null,
   };
 
-  const objectTypeOptions = objectTypes.map((o) => ({
-    value: o.id,
-    label: o.name,
-  }));
+  function isApiObjectType(
+    row: ApiObjectTypeHierarchyTreeNode | ApiObjectType,
+  ): row is ApiObjectType {
+    return !("subNodes" in row);
+  }
+
+  const objectTypeOptions = featureToggleEnabled
+    ? []
+    : objectTypes.filter(isApiObjectType).map((o) => ({
+        value: o.id,
+        label: o.name,
+      }));
 
   function handleSuccess() {
     router.push(routes.procedures.basedata(procedureId));
@@ -149,6 +165,9 @@ export function AdditionalInfoTile({
                 label="Objekttyp"
                 required="Bitte einen Objekttyp auswählen."
                 options={objectTypeOptions}
+                groupedOptions={
+                  featureToggleEnabled ? transformData(objectTypes) : undefined
+                }
               />
             )}
             <SelectField
@@ -198,4 +217,41 @@ function ButtonBar({ isSubmitting }: Readonly<{ isSubmitting: boolean }>) {
       </SubmitButton>
     </Stack>
   );
+}
+
+interface ObjectType {
+  id: string;
+  name: string;
+}
+
+interface DataNode {
+  name: string;
+  objectTypes?: ObjectType[];
+  subNodes?: DataNode[];
+}
+
+export function transformData(
+  data: DataNode | DataNode[],
+): Record<string, GroupedOption[]> {
+  const groups: Record<string, GroupedOption[]> = {};
+
+  function traverse(node: DataNode): void {
+    if (!node) return;
+
+    if (node.name) {
+      groups[node.name] = node.objectTypes ?? [];
+    }
+
+    if (node.subNodes && node.subNodes.length > 0) {
+      node.subNodes.forEach((subNode) => traverse(subNode));
+    }
+  }
+
+  if (Array.isArray(data)) {
+    data.forEach((item) => traverse(item));
+  } else {
+    traverse(data);
+  }
+
+  return groups;
 }

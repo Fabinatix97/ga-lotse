@@ -52,6 +52,7 @@ export function SchoolYearAutocomplete(props: SchoolYearAutocompleteProps) {
 
 interface SchoolYearFieldProps extends FieldProps<OptionalFieldValue<number>> {
   range?: YearRange;
+  autoFocus?: boolean;
 }
 
 export function SchoolYearField(props: SchoolYearFieldProps) {
@@ -67,6 +68,7 @@ export function SchoolYearField(props: SchoolYearFieldProps) {
       helperText={field.helperText}
     >
       <SchoolYearAutocomplete
+        autoFocus={props.autoFocus}
         name={props.name}
         value={value}
         range={props.range}

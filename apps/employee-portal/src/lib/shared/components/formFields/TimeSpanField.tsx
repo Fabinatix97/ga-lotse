@@ -30,6 +30,7 @@ export function isEqualTimeSpan(timeSpan1: TimeSpan, timeSpan2: TimeSpan) {
 interface TimeSpanFieldProps extends Omit<FieldProps<TimeSpan>, "label"> {
   initialExplicitStartAndEndChecked?: boolean;
   label?: string;
+  autoFocus?: boolean;
 }
 
 export function TimeSpanField(props: TimeSpanFieldProps) {
@@ -54,6 +55,7 @@ export function TimeSpanField(props: TimeSpanFieldProps) {
       <FormControl disabled={checked}>
         <FormLabel>{props.label ?? "Zeitraum"}</FormLabel>
         <Select
+          autoFocus={props.autoFocus}
           aria-label={props.label ?? "Zeitraum"}
           value={numberOfMonths}
           onChange={async (event, newValue) => setTimeRange(newValue!)}

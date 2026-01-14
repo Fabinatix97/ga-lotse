@@ -284,6 +284,7 @@ function UpdateProcedureSidebar(props: UpdateProcedureSidebarProps) {
         <SidebarContent title="Zusatzinfos">
           <Stack gap={2}>
             <SelectField
+              autoFocus
               label="Art"
               name="procedureType"
               options={

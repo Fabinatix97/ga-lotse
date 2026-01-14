@@ -52,6 +52,7 @@ export interface SearchableGroupsProps<
     group: SearchableGroup<TItem>,
     renderItems: (items: TItem[]) => ReactNode,
   ) => ReactNode;
+  autoFocus?: boolean;
 }
 
 export function SearchableGroups<
@@ -112,6 +113,7 @@ export function SearchableGroups<
                   <FormLabel>{props.searchLabel}</FormLabel>
                 )}
                 <Input
+                  autoFocus={props.autoFocus}
                   size="md"
                   placeholder={props.placeholder}
                   value={searchTerm}

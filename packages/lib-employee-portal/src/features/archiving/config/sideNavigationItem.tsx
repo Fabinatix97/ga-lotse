@@ -65,6 +65,11 @@ const subItemsArchiveMap: SubItemMap = {
     href: archivingRoutes.module[ApiBusinessModule.MedsAbroad],
     accessCheck: hasUserRole(ApiUserRole.ProcedureArchive),
   },
+  [ApiBusinessModule.ProstituteProtection]: {
+    name: "ProstSchG",
+    href: archivingRoutes.module[ApiBusinessModule.ProstituteProtection],
+    accessCheck: hasUserRole(ApiUserRole.ProcedureArchive),
+  },
 };
 
 const subItemsArchiveAdminMap: SubItemMap = {
@@ -111,6 +116,11 @@ const subItemsArchiveAdminMap: SubItemMap = {
   [ApiBusinessModule.MedsAbroad]: {
     name: "Reisen mit BtM",
     href: archivingAdminRoutes.module[ApiBusinessModule.MedsAbroad],
+    accessCheck: hasUserRole(ApiUserRole.ProcedureArchiveAdmin),
+  },
+  [ApiBusinessModule.ProstituteProtection]: {
+    name: "ProstSchG",
+    href: archivingAdminRoutes.module[ApiBusinessModule.ProstituteProtection],
     accessCheck: hasUserRole(ApiUserRole.ProcedureArchiveAdmin),
   },
 };

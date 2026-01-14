@@ -26,6 +26,11 @@ const defaultSubItems: SideNavigationSubItem[] = [
     accessCheck: hasUserRole(ApiUserRole.ProstituteProtectionAdmin),
   },
   {
+    name: "Wartezimmer",
+    href: routes.waitingRoom,
+    accessCheck: hasUserRole(ApiUserRole.ProstituteProtectionAdmin),
+  },
+  {
     name: "Personensuche",
     href: routes.searchPerson.index,
     accessCheck: hasUserRole(ApiUserRole.ProstituteProtectionAdmin),

@@ -9,11 +9,11 @@ import { useProstituteProtectionApiClients } from "../../contexts/ProstituteProt
 
 import { proceduresQueryKey } from "./apiQueryKeys";
 
-export function useConsultationQueryOptions(procedureId: string) {
+export function useGetConsultationQueryOptions(procedureId: string) {
   const { prostituteProtectionApi } = useProstituteProtectionApiClients();
 
   return queryOptions({
     queryFn: () => prostituteProtectionApi.getConsultation(procedureId),
-    queryKey: proceduresQueryKey([procedureId, "consultation"]),
+    queryKey: proceduresQueryKey([procedureId, "getConsultation"]),
   });
 }

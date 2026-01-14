@@ -41,7 +41,7 @@ function InnerMultiSelectWithCheckboxesField<
   fieldInputValue,
   ...props
 }: InnerMultiSelectWithCheckboxesFieldProps<TOptionLabel>) {
-  const renderedOptions = props.options.map((option) => {
+  const renderedOptions = props.options?.map((option) => {
     return {
       value: option.value,
       label: (

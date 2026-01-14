@@ -70,6 +70,7 @@ function ExportChildDataSidebar(props: SidebarWithFormRefProps) {
           <SidebarContent title="Daten exportieren">
             <Stack gap={2}>
               <SchoolYearField
+                autoFocus
                 name="schoolYear"
                 label="Wählen Sie ein Schuljahr aus"
                 required="Bitte ein Schuljahr auswählen."

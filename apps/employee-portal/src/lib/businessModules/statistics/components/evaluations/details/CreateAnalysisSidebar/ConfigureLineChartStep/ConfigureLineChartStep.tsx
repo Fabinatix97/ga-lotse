@@ -56,6 +56,7 @@ export function ConfigureLineChartStep({
       <Stack gap={3}>
         <Stack gap={2}>
           <SingleAutocompleteField
+            autoFocus
             options={axisAttributes}
             name={fieldName("xAxis")}
             placeholder="Bitte wählen"

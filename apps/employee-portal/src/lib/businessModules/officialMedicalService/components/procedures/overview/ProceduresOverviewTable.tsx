@@ -261,7 +261,6 @@ export function ProceduresOverviewTable(
                   <PersonSearchForm
                     {...personSearch.formProps}
                     allowPartialSearch
-                    disablePartialSearchAlert
                     allowPersonIdSearch
                     onChange={handleChangePersonSearch}
                     onReset={handleResetPersonSearch}

@@ -93,6 +93,13 @@ public class ProstituteProtectionProcedure
   @OrderBy("createdAt ASC")
   private final List<EncryptedFile> encryptedFiles = new ArrayList<>();
 
+  @OneToOne(
+      optional = false,
+      cascade = {CascadeType.PERSIST, CascadeType.REMOVE},
+      mappedBy = WaitingRoom_.PROCEDURE,
+      orphanRemoval = true)
+  private WaitingRoom waitingRoom;
+
   private UUID consultantId;
 
   @Column(unique = true)
@@ -223,6 +230,10 @@ public class ProstituteProtectionProcedure
     return encryptedFiles;
   }
 
+  public void deleteEncryptedFiles() {
+    encryptedFiles.clear();
+  }
+
   public void addEncryptedFile(EncryptedFile encryptedFile) {
     encryptedFiles.add(encryptedFile);
   }
@@ -241,5 +252,14 @@ public class ProstituteProtectionProcedure
 
   public void setCalendarEventId(UUID calendarEventId) {
     this.calendarEventId = calendarEventId;
+  }
+
+  public WaitingRoom getWaitingRoom() {
+    return waitingRoom;
+  }
+
+  public void setWaitingRoom(WaitingRoom waitingRoom) {
+    this.waitingRoom = waitingRoom;
+    waitingRoom.setProcedure(this);
   }
 }

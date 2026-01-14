@@ -54,6 +54,7 @@ export function InventoryRestockForm(props: InventoryRestockFormProps) {
                 value={props.minCount}
               />
               <NumberField
+                autoFocus
                 name="count"
                 label="Menge"
                 required="Bitte eine Menge angeben"

@@ -33,6 +33,7 @@ export function ImportDataFormSidebar({ onClose }: ImportDataFormSidebarProps) {
           <Alert
             color="danger"
             title="Duplikate vermeiden"
+            messageComponent="div"
             message={
               <List
                 marker="disc"
@@ -56,6 +57,7 @@ export function ImportDataFormSidebar({ onClose }: ImportDataFormSidebarProps) {
           />
           <Stack gap={2}>
             <FileField
+              autoFocus
               name="importFile"
               label="XLSX-Datei auswählen (Max. 4000 Einträge)"
               required="Bitte eine XLSX-Datei auswählen."

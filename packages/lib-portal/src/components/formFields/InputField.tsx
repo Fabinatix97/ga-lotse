@@ -125,6 +125,7 @@ const MemoizedInputField = memo(function InnerInputField(
       disabled={disabled}
     >
       <InputComponent
+        autoFocus={props.autoFocus}
         type={props.type}
         name={props.name}
         value={fieldInputValue}
@@ -144,7 +145,6 @@ const MemoizedInputField = memo(function InnerInputField(
             maxLength: props.maxLength,
             "aria-details": props["aria-details"],
             "aria-describedby": props["aria-describedby"],
-            autoFocus: props.autoFocus ?? false,
             max: props.type === "date" ? "9999-12-31" : undefined,
           },
         }}

@@ -58,6 +58,7 @@ export function InventoryForm(props: UpdateInventoryFormProps) {
           <SidebarContent title={props.title}>
             <Stack spacing={2}>
               <InputField
+                autoFocus
                 name="name"
                 label="Name"
                 required="Bitte einen Namen angeben"

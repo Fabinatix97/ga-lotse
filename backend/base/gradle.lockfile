@@ -19,6 +19,7 @@ com.fasterxml.jackson:jackson-bom:2.19.4=compileClasspath,productionRuntimeClass
 com.fasterxml.woodstox:woodstox-core:7.1.1=compileClasspath,productionRuntimeClasspath,runtimeClasspath,testCompileClasspath,testRuntimeClasspath
 com.fasterxml:classmate:1.7.1=annotationProcessor,compileClasspath,productionRuntimeClasspath,runtimeClasspath,testCompileClasspath,testRuntimeClasspath
 com.github.albfernandez:juniversalchardet:2.5.0=productionRuntimeClasspath,runtimeClasspath,testRuntimeClasspath
+com.github.ben-manes.caffeine:caffeine:3.2.3=compileClasspath,productionRuntimeClasspath,runtimeClasspath,testCompileClasspath,testRuntimeClasspath
 com.github.curious-odd-man:rgxgen:3.1=compileClasspath,productionRuntimeClasspath,runtimeClasspath,testCompileClasspath,testRuntimeClasspath
 com.github.docker-java:docker-java-api:3.4.2=testCompileClasspath,testRuntimeClasspath
 com.github.docker-java:docker-java-transport-zerodep:3.4.2=testCompileClasspath,testRuntimeClasspath

@@ -66,6 +66,11 @@ public class DateOfBirthAccessCodeForm extends AccessCodeForm {
   }
 
   @Override
+  protected String getCredentialsField() {
+    return DATE_OF_BIRTH_FIELD;
+  }
+
+  @Override
   protected boolean validateCredentials(MultivaluedMap<String, String> formData, UserModel user) {
     // Is submitted in the format yyyy-mm-dd from the html input tag with type=date
     String dateOfBirth = formData.getFirst(DATE_OF_BIRTH_FIELD);

@@ -6,7 +6,7 @@
 import DeleteIcon from "@mui/icons-material/DeleteOutlined";
 import { Divider, IconButton, Stack, Typography } from "@mui/joy";
 import { FieldArray } from "formik";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 import { FormAddMoreButton, NestedFormProps } from "@eshg/lib-portal";
 
@@ -26,6 +26,7 @@ export function FacilityContactPersonArrayForm({
   contactPersonRequired,
   allowMainContactPerson,
 }: FacilityContactPersonArrayFormProps) {
+  const [initialAmountOfContactPersons] = useState(values.length);
   useEffect(() => {
     if (contactPersonRequired && values.length === 0) {
       values.push(createEmptyContactPerson());
@@ -59,6 +60,7 @@ export function FacilityContactPersonArrayForm({
                   )}
                 </Stack>
                 <ContactPersonForm
+                  autoFocus={values.length > initialAmountOfContactPersons}
                   name={`contactPersons.${index}`}
                   allowMainContactPerson={allowMainContactPerson}
                 />

@@ -55,6 +55,7 @@ export interface SelectObjectFieldProps<
   sx?: SxProps;
   endDecorator?: ReactNode;
   isOptionEqualToValue?: (option: TValue, value: TValue) => boolean;
+  autoFocus?: boolean;
 }
 
 export function SelectObjectField<
@@ -76,6 +77,7 @@ export function SelectObjectField<
     >
       <AutocompleteComponent
         name={props.name}
+        autoFocus={props.autoFocus}
         value={field.input.value}
         options={props.options}
         getOptionLabel={props.getOptionLabel}

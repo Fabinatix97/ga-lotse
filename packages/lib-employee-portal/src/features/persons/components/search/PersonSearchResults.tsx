@@ -77,6 +77,7 @@ export function PersonSearchResults(props: PersonSearchResultsProps) {
               <Stack gap={2} marginRight={SIDEBAR_PADDING}>
                 {isDefined(props.onBack) && (
                   <Button
+                    autoFocus
                     variant="plain"
                     startDecorator={<ArrowBackIosOutlined />}
                     sx={{ alignSelf: "start", paddingInline: 0 }}

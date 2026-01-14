@@ -33,6 +33,7 @@ public interface PersonApi {
   String REFERENCE_URL = "/reference";
   String REFERENCE_UPDATE_URL = REFERENCE_URL + "/{id}/update";
   String ARCHIVE_DELETION = "/archive-deletion";
+  String PARTIAL_PERSON_SEARCH = "/partial";
 
   @PostExchange(FILE_STATES_URL)
   @ApiResponse(responseCode = "200")
@@ -117,14 +118,14 @@ Caution: The returned ids of the reference persons must not be stored.
           @RequestParam(name = "humanReadableId")
           String humanReadableId);
 
-  @GetExchange("/partial")
+  @GetExchange(PARTIAL_PERSON_SEARCH)
   @ApiResponse(responseCode = "200")
   @Operation(
       summary =
 """
 Search reference persons for the given knowledge factors 'firstName', 'lastName' and 'dateOfBirth',
-without the need for specifying all three. However, searching for only a first name or only a last
-name is prohibited.
+without the need for specifying all three. If more than one factor is provided, fuzzy search is
+applied. Otherwise, substring search is applied if a string with length >= 4 is provided.
 Excludes persons created from external sources.
 Caution: The returned ids of the reference persons must not be stored.
 """)

@@ -8,7 +8,11 @@
 import { Grid } from "@mui/joy";
 
 import { ApiUser } from "@eshg/base-api";
-import { ApiInspection, ApiObjectType } from "@eshg/inspection-api";
+import {
+  ApiInspection,
+  ApiObjectType,
+  ApiObjectTypeHierarchyTreeNode,
+} from "@eshg/inspection-api";
 
 import { useEditFacilitySidebar } from "@/lib/businessModules/inspection/components/inspection/EditFacilitySidebar";
 import { FacilityTile } from "@/lib/businessModules/inspection/components/inspection/common/facility/FacilityTile";
@@ -22,7 +26,7 @@ export function AddInspectionTiles({
   allAssignableUsers,
 }: Readonly<{
   inspection: ApiInspection;
-  objectTypes: ApiObjectType[];
+  objectTypes: ApiObjectTypeHierarchyTreeNode[] | ApiObjectType[];
   allAssignableUsers: ApiUser[];
   selfUser: ApiUser;
 }>) {

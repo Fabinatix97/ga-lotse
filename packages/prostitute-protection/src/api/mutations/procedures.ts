@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { useQueryClient } from "@tanstack/react-query";
+
 import {
   unwrapRawResponse,
   useHandledMutation,
@@ -10,13 +12,16 @@ import {
 } from "@eshg/lib-portal";
 import {
   AbortProcedureRequest,
+  ApiAbortProcedureRequest,
+  ApiCloseProcedureRequest,
   ApiCreateProstituteProtectionProcedureRequest,
-  CloseProcedureRequest,
-  UpdateProcedurePersonalDataRequest,
-  UpdateProcedureRequest,
+  ApiUpdateEncryptedPersonalDataRequest,
+  ApiUpdateProstituteProtectionProcedureRequest,
+  ApiWaitingRoom,
 } from "@eshg/prostitute-protection-api";
 
 import { useProstituteProtectionApiClients } from "../../contexts/ProstituteProtectionApi";
+import { useGetProcedureOptions } from "../queries/procedures";
 
 export function useCreateProcedureMutation() {
   const { prostituteProtectionApi } = useProstituteProtectionApiClients();
@@ -29,36 +34,53 @@ export function useCreateProcedureMutation() {
   });
 }
 
-export function useUpdateProcedurePersonalDataMutation() {
+export function useUpdateProcedurePersonalDataMutation(procedureId: string) {
   const { prostituteProtectionApi } = useProstituteProtectionApiClients();
   const snackbar = useSnackbar();
+  const { queryKey } = useGetProcedureOptions(procedureId);
+  const queryClient = useQueryClient();
 
   return useHandledMutation({
-    mutationFn: (request: UpdateProcedurePersonalDataRequest) =>
+    mutationFn: (
+      apiUpdateEncryptedPersonalDataRequest: ApiUpdateEncryptedPersonalDataRequest,
+    ) =>
       prostituteProtectionApi
-        .updateProcedurePersonalDataRaw(request)
+        .updateProcedurePersonalDataRaw({
+          procedureId,
+          apiUpdateEncryptedPersonalDataRequest,
+        })
         .then(unwrapRawResponse),
-    onSuccess: () =>
-      snackbar.confirmation("Persönliche Daten erfolgreich aktualisiert"),
+    onSuccess: (response) => {
+      queryClient.setQueryData(queryKey, response);
+      snackbar.confirmation("Persönliche Daten erfolgreich aktualisiert");
+    },
   });
 }
 
-export function useUpdateProcedureMutation() {
+export function useUpdateProcedureMutation(procedureId: string) {
   const { prostituteProtectionApi } = useProstituteProtectionApiClients();
   const snackbar = useSnackbar();
+  const { queryKey } = useGetProcedureOptions(procedureId);
+  const queryClient = useQueryClient();
 
   return useHandledMutation({
-    mutationFn: (request: UpdateProcedureRequest) =>
+    mutationFn: (
+      apiUpdateProstituteProtectionProcedureRequest: ApiUpdateProstituteProtectionProcedureRequest,
+    ) =>
       prostituteProtectionApi
-        .updateProcedureRaw(request)
+        .updateProcedureRaw({
+          procedureId,
+          apiUpdateProstituteProtectionProcedureRequest,
+        })
         .then(unwrapRawResponse),
-    onSuccess: () => {
+    onSuccess: (response) => {
+      queryClient.setQueryData(queryKey, response);
       snackbar.confirmation("Zusätzliche Angaben erfolgreich aktualisiert");
     },
   });
 }
 
-export function useAbortProcedureMutation() {
+export function useSimpleAbortProcedureMutation() {
   const { prostituteProtectionApi } = useProstituteProtectionApiClients();
   const snackbar = useSnackbar();
 
@@ -72,17 +94,64 @@ export function useAbortProcedureMutation() {
   });
 }
 
-export function useCloseProcedureMutation() {
+export function useAbortProcedureMutation(procedureId: string) {
   const { prostituteProtectionApi } = useProstituteProtectionApiClients();
   const snackbar = useSnackbar();
+  const { queryKey } = useGetProcedureOptions(procedureId);
+  const queryClient = useQueryClient();
 
   return useHandledMutation({
-    mutationFn: (request: CloseProcedureRequest) =>
+    mutationFn: (apiAbortProcedureRequest: ApiAbortProcedureRequest) =>
       prostituteProtectionApi
-        .closeProcedureRaw(request)
+        .abortProcedureRaw({ procedureId, apiAbortProcedureRequest })
         .then(unwrapRawResponse),
-    onSuccess: () => {
+    onSuccess: (response) => {
+      queryClient.setQueryData(queryKey, response);
+      snackbar.confirmation("Der Vorgang wurde erfolgreich verworfen.");
+    },
+  });
+}
+
+export function useCloseProcedureMutation(procedureId: string) {
+  const { prostituteProtectionApi } = useProstituteProtectionApiClients();
+  const snackbar = useSnackbar();
+  const { queryKey } = useGetProcedureOptions(procedureId);
+  const queryClient = useQueryClient();
+
+  return useHandledMutation({
+    mutationFn: (apiCloseProcedureRequest: ApiCloseProcedureRequest) =>
+      prostituteProtectionApi
+        .closeProcedureRaw({ procedureId, apiCloseProcedureRequest })
+        .then(unwrapRawResponse),
+    onSuccess: (response) => {
+      queryClient.setQueryData(queryKey, response);
       snackbar.confirmation("Der Vorgang wurde erfolgreich abgeschlossen.");
+    },
+  });
+}
+
+export function useUpdateWaitingRoom(procedureId: string) {
+  const { prostituteProtectionApi } = useProstituteProtectionApiClients();
+  const snackbar = useSnackbar();
+  const { queryKey } = useGetProcedureOptions(procedureId);
+  const queryClient = useQueryClient();
+
+  return useHandledMutation({
+    mutationFn: (request: ApiWaitingRoom) =>
+      prostituteProtectionApi
+        .updateWaitingRoomRaw({ procedureId, apiWaitingRoom: request })
+        .then(unwrapRawResponse),
+    onSuccess: (response) => {
+      queryClient.setQueryData(queryKey, (procedureResponse) => {
+        if (procedureResponse === undefined) {
+          return undefined;
+        }
+
+        return { ...procedureResponse, waitingRoom: response };
+      });
+      snackbar.confirmation(
+        "Die Wartezimmer Informationen wurden erfolgreich geändert.",
+      );
     },
   });
 }

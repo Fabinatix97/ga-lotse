@@ -81,6 +81,7 @@ function CreateProgressEntrySidebar(props: SidebarWithFormRefProps) {
           <SidebarContent title="Neuer Verlaufseintrag">
             <Stack spacing={3}>
               <SelectField
+                autoFocus
                 label="Typ"
                 name="type"
                 options={buildEnumOptions(manualProgressEntryTypeNames)}

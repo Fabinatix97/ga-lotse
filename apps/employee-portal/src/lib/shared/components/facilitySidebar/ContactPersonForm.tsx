@@ -25,6 +25,7 @@ interface ContactPersonFormProps {
   extraFieldsTop?: ReactNode;
   extraFieldsBottom?: ReactNode;
   allowMainContactPerson?: boolean;
+  autoFocus?: boolean;
 }
 
 export function ContactPersonForm({
@@ -32,6 +33,7 @@ export function ContactPersonForm({
   extraFieldsTop,
   extraFieldsBottom,
   allowMainContactPerson,
+  autoFocus,
 }: ContactPersonFormProps) {
   const validateLength = useValidateLength();
   const fieldName = createFieldNameMapper<BaseFacilityContactPerson>(name);
@@ -51,6 +53,7 @@ export function ContactPersonForm({
       <Grid container columnSpacing={2}>
         <Grid xs={6}>
           <SelectField
+            autoFocus={autoFocus}
             name={fieldName("salutation")}
             label="Anrede"
             required="Bitte eine Anrede auswählen."

@@ -23,6 +23,7 @@ interface RadioSheetOptionProps {
   name: string;
   label: string;
   onSelect?: () => void;
+  disabled?: boolean;
 }
 export function RadioSheetOption({
   value,
@@ -30,6 +31,7 @@ export function RadioSheetOption({
   children,
   label,
   onSelect,
+  disabled,
 }: PropsWithChildren<RadioSheetOptionProps>) {
   const { getFieldMeta, setFieldValue } = useFormikContext();
   const { value: formValue } = getFieldMeta(name);
@@ -46,9 +48,10 @@ export function RadioSheetOption({
         borderColor: isSelected
           ? theme.palette.a11y.primary
           : theme.palette.a11y.neutral,
+        opacity: disabled ? 0.75 : 1,
       })}
       onClick={() => {
-        if (isSelected) {
+        if (disabled || isSelected) {
           return;
         }
         if (isDefined(onSelect)) {
@@ -64,6 +67,7 @@ export function RadioSheetOption({
           sx={{ flexBasis: "max-content" }}
           name={name}
           value={value}
+          disabled={disabled}
         />
         <Stack>
           <RadioButtonLabel id={labelId} htmlFor={radioId} label={label} />

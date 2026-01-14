@@ -7,9 +7,7 @@ package de.eshg.prostituteprotection.statistic;
 
 import static de.eshg.lib.statistics.util.ConvertToValueOptionHelper.convertToValueOptions;
 
-import de.eshg.lib.common.CountryCode;
 import de.eshg.lib.statistics.api.DataPrivacyCategory;
-import de.eshg.lib.statistics.api.ValueOptionInternal;
 import de.eshg.lib.statistics.api.interval.IntegerMinMaxCountIntervalConfiguration;
 import de.eshg.lib.statistics.attributes.AttributeData;
 import de.eshg.lib.statistics.attributes.AttributeInfo;
@@ -21,7 +19,6 @@ import de.eshg.lib.statistics.attributes.TextAttribute;
 import de.eshg.lib.statistics.attributes.ValueWithOptionsAttribute;
 import de.eshg.prostituteprotection.statistic.model.DocumentType;
 import de.eshg.prostituteprotection.statistic.model.Language;
-import java.util.stream.Stream;
 
 public enum ProstituteProtectionAttributes implements AttributeInfo {
   PROCEDURE_ID(
@@ -52,16 +49,6 @@ public enum ProstituteProtectionAttributes implements AttributeInfo {
           convertToValueOptions(DocumentType.values()),
           new SensitiveParameters(null, 0.2),
           null)),
-  NATIONALITY(
-      ValueWithOptionsAttribute.create(
-          "Staatsangehörigkeit",
-          "NATIONALITY",
-          ProstituteProtectionAttributes.CATEGORY_PERSON,
-          true,
-          Stream.of(CountryCode.values())
-              .map(e -> new ValueOptionInternal(e.name(), e.getContinent(), false))
-              .toList(),
-          DataPrivacyCategory.QUASI_IDENTIFYING)),
   CONSULTATION_DATE(
       TextAttribute.create(
           "Datum der Beratung",

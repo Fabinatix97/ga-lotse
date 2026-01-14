@@ -11,7 +11,6 @@ import {
   Configuration,
   FileApi,
   GdprValidationTaskApi,
-  InboxProcedureApi,
   ProcedureApi,
   ProgressEntryApi,
   ProstituteProtectionApi,
@@ -30,7 +29,6 @@ export function createClients(baseUrl: string) {
     appointmentStandardDurationApi:
       new ProstituteProtectionAppointmentStandardDurationApi(config),
     archivingApi: new ArchivingApi(config),
-    inboxProcedureApi: new InboxProcedureApi(config),
     procedureApi: new ProcedureApi(config),
     testHelperApi: new TestHelperApi(config),
     fileApi: new FileApi(config),

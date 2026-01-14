@@ -26,6 +26,8 @@ export { ProstituteProtectionProgressEntriesPage } from "./pages/ProstituteProte
 export { ProstituteProtectionProcedureDetailsPage } from "./pages/ProstituteProtectionProcedureDetailsPage";
 export { ProstituteProtectionConsultationPage } from "./pages/ProstituteProtectionConsultationPage";
 export { ProstituteProtectionPersonSearchPage } from "./pages/ProstituteProtectionPersonSearchPage";
+export { ProstituteProtectionCertificatesPage } from "./pages/ProstituteProtectionCertificatesPage";
+export { ProstituteProtectionWaitingRoomOverviewPage } from "./pages/ProstituteProtectionWaitingRoomOverviewPage";
 
 // Layouts
 export { ProstituteProtectionProcedureLayout } from "./layouts/ProstituteProtectionProcedureLayout";

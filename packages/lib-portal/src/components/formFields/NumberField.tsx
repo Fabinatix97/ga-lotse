@@ -31,6 +31,7 @@ export interface NumberFieldProps
   placeholder?: string;
   ref?: (el: HTMLInputElement) => void;
   "aria-labelledby"?: string;
+  autoFocus?: boolean;
 }
 
 export function NumberField(props: NumberFieldProps) {
@@ -65,6 +66,7 @@ export function NumberField(props: NumberFieldProps) {
         value={field.input.value}
         slotProps={{
           input: {
+            autoFocus: props.autoFocus,
             min: props.min,
             max: props.max,
             ref: props.ref,
@@ -78,6 +80,7 @@ export function NumberField(props: NumberFieldProps) {
         endDecorator={props.endDecorator}
         placeholder={props.placeholder}
         aria-labelledby={props["aria-labelledby"]}
+        autoFocus={props.autoFocus}
         onChange={handleChange}
         onBlur={field.input.onBlur}
       />

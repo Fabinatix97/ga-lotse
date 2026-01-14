@@ -121,17 +121,16 @@ public class PersonController implements PersonApi {
   public SearchReferencePersonsWithPartialKnowledgeFactorsResponse
       searchReferencePersonsWithPartialKnowledgeFactors(
           String firstName, String lastName, LocalDate dateOfBirth) {
-    List<Person> fuzzySearchResult =
-        personService.fuzzySearch(
+    List<Person> searchResult =
+        personService.searchReferencePersonsWithPartialKnowledgeFactors(
             firstName,
             lastName,
             dateOfBirth,
-            true,
             MAX_RESULTS_FOR_PERSON_SEARCH_WITH_PARTIAL_KNOWLEDGE_FACTORS + 1);
     boolean overflow =
-        fuzzySearchResult.size() > MAX_RESULTS_FOR_PERSON_SEARCH_WITH_PARTIAL_KNOWLEDGE_FACTORS;
+        searchResult.size() > MAX_RESULTS_FOR_PERSON_SEARCH_WITH_PARTIAL_KNOWLEDGE_FACTORS;
     return new SearchReferencePersonsWithPartialKnowledgeFactorsResponse(
-        fuzzySearchResult.stream()
+        searchResult.stream()
             .limit(MAX_RESULTS_FOR_PERSON_SEARCH_WITH_PARTIAL_KNOWLEDGE_FACTORS)
             .map(PersonMapper::mapReferencePersonToApi)
             .toList(),

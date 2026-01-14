@@ -53,6 +53,11 @@ public class PinAccessCodeForm extends AccessCodeForm {
   }
 
   @Override
+  protected String getCredentialsField() {
+    return PIN_FIELD;
+  }
+
+  @Override
   protected String getFormTemplate() {
     return FORM_TEMPLATE;
   }

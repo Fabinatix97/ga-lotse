@@ -4662,7 +4662,7 @@
             "description" : "OK"
           }
         },
-        "summary" : "Search reference persons for the given knowledge factors 'firstName', 'lastName' and 'dateOfBirth',\nwithout the need for specifying all three. However, searching for only a first name or only a last\nname is prohibited.\nExcludes persons created from external sources.\nCaution: The returned ids of the reference persons must not be stored.\n",
+        "summary" : "Search reference persons for the given knowledge factors 'firstName', 'lastName' and 'dateOfBirth',\nwithout the need for specifying all three. If more than one factor is provided, fuzzy search is\napplied. Otherwise, substring search is applied if a string with length >= 4 is provided.\nExcludes persons created from external sources.\nCaution: The returned ids of the reference persons must not be stored.\n",
         "tags" : [ "Person" ]
       }
     },

@@ -78,6 +78,7 @@ export function ConfigureChoroplethChartStep({
     <Stack gap={4}>
       <Stack gap={3}>
         <SingleAutocompleteField
+          autoFocus
           options={primaryAttributeSelectOptions}
           name={fieldName("geoReferencedAttribute")}
           placeholder="Bitte wählen"

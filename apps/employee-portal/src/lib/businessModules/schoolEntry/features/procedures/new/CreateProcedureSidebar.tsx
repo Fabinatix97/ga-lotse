@@ -55,6 +55,7 @@ const personSearchFormInitialValues: EsuSearchForm = {
 function ProcedureTypeField() {
   return (
     <SelectField
+      autoFocus
       name="type"
       label="Art"
       options={PROCEDURE_TYPE_OPTIONS_EXCLUDING_DRAFT}

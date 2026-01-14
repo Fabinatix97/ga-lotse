@@ -18,6 +18,7 @@ export function ImportGeoShapeStep({
   return (
     <Stack gap={3}>
       <DeletableFileField
+        autoFocus
         name={fieldName("file")}
         label="Karten-Datei für den Import auswählen:"
         required="Bitte GeoJSON-Datei importieren."

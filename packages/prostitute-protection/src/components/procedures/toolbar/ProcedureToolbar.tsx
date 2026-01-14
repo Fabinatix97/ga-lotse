@@ -6,6 +6,7 @@
 "use client";
 
 import {
+  DescriptionOutlined,
   FormatListBulleted,
   TextSnippetOutlined,
   TimelineOutlined,
@@ -65,6 +66,11 @@ function buildTabItems(procedureId: string): TabNavigationItem[] {
       tabButtonName: "Beratung",
       href: routes.procedures.byId(procedureId).consultation,
       decorator: <FormatListBulleted />,
+    },
+    {
+      tabButtonName: "Zertifikate",
+      href: routes.procedures.byId(procedureId).certificates,
+      decorator: <DescriptionOutlined />,
     },
     {
       tabButtonName: "Verlaufseinträge",

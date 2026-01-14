@@ -49,8 +49,10 @@ public class DeleteEncryptedDataService {
         procedureRepository.findByNoEmergencySituationAndAppointmentStartBefore(retentionThreshold);
 
     for (ProstituteProtectionProcedure procedure : procedures) {
+      procedure.deleteEncryptedFiles();
       procedure.setEncryptedPersonalData(null);
     }
+
     procedureRepository.flush();
     log.info("{} encrypted data deleted", procedures.size());
   }

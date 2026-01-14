@@ -105,6 +105,7 @@ export function ChooseAttributesStep({
     return (
       <Stack>
         <SearchableGroups
+          autoFocus
           groups={searchableCheckboxGroups}
           label={dataSourceName}
           placeholder="Attribut suchen"

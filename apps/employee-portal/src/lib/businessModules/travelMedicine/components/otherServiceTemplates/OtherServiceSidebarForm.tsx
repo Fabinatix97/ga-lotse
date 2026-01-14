@@ -53,6 +53,7 @@ export function OtherServiceSidebarForm(
           <SidebarContent title={props.title}>
             <Stack gap={2}>
               <InputField
+                autoFocus
                 name="description"
                 label="Name"
                 required="Bitte einen Namen angeben."

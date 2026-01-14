@@ -65,6 +65,7 @@ export function ConfigureHistogramChartStep({
       <Stack gap={3}>
         <Stack gap={2}>
           <SingleAutocompleteField
+            autoFocus
             options={primaryAutocompleteSelectOptions}
             name={fieldName("primaryAttribute")}
             placeholder="Bitte wählen"

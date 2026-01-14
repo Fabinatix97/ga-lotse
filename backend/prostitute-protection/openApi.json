@@ -2663,6 +2663,57 @@
         "tags" : [ "ProstituteProtection" ]
       }
     },
+    "/prostitute-protection-procedures/waiting-room-procedures" : {
+      "get" : {
+        "operationId" : "getWaitingRoomProcedures",
+        "parameters" : [ {
+          "in" : "query",
+          "name" : "sortKey",
+          "required" : false,
+          "schema" : {
+            "$ref" : "#/components/schemas/WaitingRoomSortKey"
+          }
+        }, {
+          "in" : "query",
+          "name" : "sortDirection",
+          "required" : false,
+          "schema" : {
+            "$ref" : "#/components/schemas/SortDirection"
+          }
+        }, {
+          "in" : "query",
+          "name" : "pageNumber",
+          "required" : false,
+          "schema" : {
+            "minimum" : 0,
+            "type" : "integer",
+            "format" : "int32"
+          }
+        }, {
+          "in" : "query",
+          "name" : "pageSize",
+          "required" : false,
+          "schema" : {
+            "minimum" : 1,
+            "type" : "integer",
+            "format" : "int32"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/GetWaitingRoomProceduresResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "ProstituteProtection" ]
+      }
+    },
     "/prostitute-protection-procedures/{procedureId}" : {
       "get" : {
         "operationId" : "getProcedure",
@@ -3045,6 +3096,44 @@
             "description" : "OK"
           }
         },
+        "tags" : [ "ProstituteProtection" ]
+      }
+    },
+    "/prostitute-protection-procedures/{procedureId}/waiting-room" : {
+      "put" : {
+        "operationId" : "updateWaitingRoom",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "procedureId",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/WaitingRoom"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/WaitingRoom"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Update the waiting room for a procedure.",
         "tags" : [ "ProstituteProtection" ]
       }
     },
@@ -6016,6 +6105,22 @@
         "default" : "ASC",
         "enum" : [ "ASC", "DESC" ]
       },
+      "GetWaitingRoomProceduresResponse" : {
+        "required" : [ "elements", "totalNumberOfElements" ],
+        "type" : "object",
+        "properties" : {
+          "elements" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/WaitingRoomProcedure"
+            }
+          },
+          "totalNumberOfElements" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        }
+      },
       "HttpMethod" : {
         "type" : "string",
         "enum" : [ "GET", "HEAD", "POST", "PUT", "PATCH", "DELETE", "OPTIONS", "TRACE" ]
@@ -6629,7 +6734,7 @@
         }
       },
       "ProcedureDetails" : {
-        "required" : [ "appointmentFromAppointmentBlock", "id", "languages", "procedureStatus", "version" ],
+        "required" : [ "appointmentFromAppointmentBlock", "hasEncryptedData", "id", "languages", "procedureStatus", "version", "waitingRoom" ],
         "type" : "object",
         "properties" : {
           "alias" : {
@@ -6657,6 +6762,9 @@
           "documentTypeDto" : {
             "$ref" : "#/components/schemas/DocumentType"
           },
+          "hasEncryptedData" : {
+            "type" : "boolean"
+          },
           "id" : {
             "type" : "string",
             "format" : "uuid"
@@ -6667,15 +6775,15 @@
               "$ref" : "#/components/schemas/PersonLanguage"
             }
           },
-          "nationality" : {
-            "$ref" : "#/components/schemas/CountryCode"
-          },
           "procedureStatus" : {
             "$ref" : "#/components/schemas/ProcedureStatus"
           },
           "version" : {
             "type" : "integer",
             "format" : "int64"
+          },
+          "waitingRoom" : {
+            "$ref" : "#/components/schemas/WaitingRoom"
           }
         }
       },
@@ -6717,7 +6825,7 @@
       },
       "ProcedureProperty" : {
         "type" : "string",
-        "enum" : [ "ALIAS", "FIRST_NAME", "LAST_NAME", "DATE_OF_BIRTH", "NATIONALITY", "DOCUMENT_TYPE", "LEGAL_ADVICES", "HEALTH_AND_SOCIAL_INSURANCE", "CONSULTING_SERVICES", "EMERGENCY_HELP", "TAX_LIABILITY", "DISEASE_PREVENTION", "BIRTH_CONTROL", "PREGNANCY", "ALCOHOL_AND_DRUG_USAGE" ]
+        "enum" : [ "ALIAS", "FIRST_NAME", "LAST_NAME", "DATE_OF_BIRTH", "DOCUMENT_TYPE", "LEGAL_ADVICES", "HEALTH_AND_SOCIAL_INSURANCE", "CONSULTING_SERVICES", "EMERGENCY_HELP", "TAX_LIABILITY", "DISEASE_PREVENTION", "BIRTH_CONTROL", "PREGNANCY", "ALCOHOL_AND_DRUG_USAGE" ]
       },
       "ProcedureStatus" : {
         "type" : "string",
@@ -7294,9 +7402,6 @@
             "minLength" : 1,
             "type" : "string"
           },
-          "nationality" : {
-            "$ref" : "#/components/schemas/CountryCode"
-          },
           "version" : {
             "type" : "integer",
             "description" : "Version of the entity. Each time the entity is changed, it is incremented by one.",
@@ -7443,6 +7548,53 @@
             }
           }
         }
+      },
+      "WaitingRoom" : {
+        "required" : [ "version" ],
+        "type" : "object",
+        "properties" : {
+          "description" : {
+            "maxLength" : 60,
+            "minLength" : 0,
+            "type" : "string"
+          },
+          "status" : {
+            "$ref" : "#/components/schemas/WaitingStatus"
+          },
+          "version" : {
+            "type" : "integer",
+            "description" : "Version of the entity. Each time the entity is changed, it is incremented by one.",
+            "format" : "int64"
+          }
+        }
+      },
+      "WaitingRoomProcedure" : {
+        "required" : [ "id", "modifiedAt", "waitingRoom" ],
+        "type" : "object",
+        "properties" : {
+          "alias" : {
+            "type" : "string"
+          },
+          "id" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "modifiedAt" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "waitingRoom" : {
+            "$ref" : "#/components/schemas/WaitingRoom"
+          }
+        }
+      },
+      "WaitingRoomSortKey" : {
+        "type" : "string",
+        "enum" : [ "ID", "ALIAS", "INFO", "MODIFIED_AT" ]
+      },
+      "WaitingStatus" : {
+        "type" : "string",
+        "enum" : [ "WAITING", "IN_CONSULTATION", "DONE" ]
       }
     }
   }

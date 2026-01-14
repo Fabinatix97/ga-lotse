@@ -4,7 +4,6 @@
  */
 
 import { Stack } from "@mui/joy";
-import { isDefined } from "remeda";
 
 import {
   ContentPanel,
@@ -13,7 +12,13 @@ import {
   EditButton,
   ResponsiveDivider,
 } from "@eshg/lib-employee-portal";
-import { DetailsColumn, DetailsList } from "@eshg/lib-portal";
+import {
+  DetailsColumn,
+  DetailsList,
+  OPTIONAL_FALLBACK_VALUE,
+  formatOptionalKey,
+  formatPersonName,
+} from "@eshg/lib-portal";
 import { ApiProcedureDetails } from "@eshg/prostitute-protection-api";
 
 import {
@@ -53,17 +58,32 @@ export function AdditionalDataSection({
         >
           <DetailsList>
             <DetailsColumn>
-              {isDefined(procedure.consultationType) && (
-                <DetailsItem
-                  label={ADDITIONAL_DATA_FIELD_NAME.consultationType}
-                  value={CONSULTATION_TYPE_VALUES[procedure.consultationType]}
-                />
-              )}
+              <DetailsItem
+                label={ADDITIONAL_DATA_FIELD_NAME.consultationType}
+                value={formatOptionalKey(
+                  procedure.consultationType,
+                  CONSULTATION_TYPE_VALUES,
+                )}
+              />
               <DetailsItem
                 label={ADDITIONAL_DATA_FIELD_NAME.appointment}
                 value={formatAppointmentWithDuration(
                   procedure.appointment?.start,
                   procedure.appointment?.end,
+                )}
+              />
+              <DetailsItem
+                label={ADDITIONAL_DATA_FIELD_NAME.consultant}
+                value={formatPersonName(
+                  procedure.consultant,
+                  OPTIONAL_FALLBACK_VALUE,
+                )}
+              />
+              <DetailsItem
+                label={ADDITIONAL_DATA_FIELD_NAME.createdBy}
+                value={formatPersonName(
+                  procedure.creator,
+                  OPTIONAL_FALLBACK_VALUE,
                 )}
               />
             </DetailsColumn>

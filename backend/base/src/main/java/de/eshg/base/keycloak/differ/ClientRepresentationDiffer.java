@@ -19,6 +19,7 @@ public class ClientRepresentationDiffer extends KeycloakDiffer<ClientRepresentat
       target.setRootUrl(source.getRootUrl());
       target.setBaseUrl(source.getBaseUrl());
       target.setAdminUrl(source.getAdminUrl());
+      target.setDirectAccessGrantsEnabled(source.isDirectAccessGrantsEnabled());
       target.setFrontchannelLogout(source.isFrontchannelLogout());
       target.setRedirectUris(source.getRedirectUris());
       target.setWebOrigins(source.getWebOrigins());

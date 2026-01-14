@@ -23,11 +23,21 @@ export function useGetObjectTypeHierarchyTree() {
   );
 }
 
-function getObjectTypesHierarchyTree(objectTypeApi: ObjectTypeApi) {
+export function getObjectTypesHierarchyTree(objectTypeApi: ObjectTypeApi) {
   return queryOptions({
     queryKey: objectTypeApiQueryKey(["getObjectTypesHierarchy"]),
     queryFn: () => objectTypeApi.getObjectTypesHierarchy(),
     select: (response) => response.root.subNodes ?? [],
+  });
+}
+
+export function getObjectTypesHierarchyTreeQuery(objectTypeApi: ObjectTypeApi) {
+  return queryOptions({
+    queryKey: objectTypeApiQueryKey(["getObjectTypesHierarchy"]),
+    queryFn: () => objectTypeApi.getObjectTypesHierarchy(),
+    select: (response) => response.root.subNodes ?? [],
+    gcTime: STATIC_QUERY_OPTIONS.gcTime,
+    staleTime: STATIC_QUERY_OPTIONS.staleTime,
   });
 }
 

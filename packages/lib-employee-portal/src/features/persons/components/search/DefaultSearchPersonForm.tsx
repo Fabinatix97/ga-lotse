@@ -31,7 +31,7 @@ export function DefaultSearchPersonForm<
     <>
       <SidebarContent title={props.title}>
         <Stack gap={2}>
-          {props.children ?? <DefaultSearchPersonFormFields />}
+          {props.children ?? <DefaultSearchPersonFormFields autoFocus />}
         </Stack>
       </SidebarContent>
       <SidebarActions>

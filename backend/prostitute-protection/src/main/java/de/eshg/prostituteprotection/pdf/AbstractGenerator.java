@@ -70,8 +70,7 @@ public abstract class AbstractGenerator {
         decryptedPersonalDataDto.firstName(),
         decryptedPersonalDataDto.lastName(),
         getFormattedDate(decryptedPersonalDataDto.dateOfBirth()),
-        withAlias ? procedure.getPersonalData().getAlias() : null,
-        procedure.getPersonalData().getNationality().name());
+        withAlias ? procedure.getPersonalData().getAlias() : null);
   }
 
   protected LocalDate toLocalDate(Instant instant) {

@@ -58,6 +58,7 @@ function AddServiceFormInputs() {
   return (
     <Stack flexDirection="column" gap={2}>
       <InputField
+        autoFocus
         name="reason"
         label="Grund"
         required="Bitte einen Grund angeben."

@@ -494,6 +494,7 @@ export {
   createCountFormatter,
   formatBoolean,
   formatDurationFromNowUntil,
+  formatDateTimeRangeToNowInMinutes,
   formatSchoolYear,
 } from "./utils/formatters";
 

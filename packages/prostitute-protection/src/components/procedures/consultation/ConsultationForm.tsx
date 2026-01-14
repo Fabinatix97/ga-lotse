@@ -60,15 +60,11 @@ export function ConsultationForm({
   procedure: ApiProcedureDetails;
   consultation: ApiConsultation;
 }>) {
-  const upsertConsultationOptions = useUpsertConsultationOptions();
+  const upsertConsultationOptions = useUpsertConsultationOptions(procedure.id);
   const upsertConsultation = useHandledMutation(upsertConsultationOptions);
 
   function onSubmit(values: ConsultationFormData) {
-    const apiConsultation = mapFormToApi(values);
-    return upsertConsultation.mutateAsync({
-      procedureId: procedure.id,
-      apiConsultation,
-    });
+    return upsertConsultation.mutateAsync(mapFormToApi(values));
   }
 
   const initialValues = mapApiToForm(consultation);

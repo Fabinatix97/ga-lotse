@@ -255,6 +255,7 @@ public abstract class KeycloakProvisioning<T extends RealmBoundKeycloakClient> {
     clientRepresentation.setClientId(ESHG_AUTH_SERVICE_CLIENT_ID);
     clientRepresentation.setName(SYSTEM_CLIENT_NAME_PREFIX + "ESHG Auth Service");
     clientRepresentation.setPublicClient(false);
+    clientRepresentation.setDirectAccessGrantsEnabled(false);
     clientRepresentation.setSecret(realmProperties.authClientSecret());
     clientRepresentation.setRootUrl(reverseProxyUrl.toString());
     clientRepresentation.setBaseUrl(reverseProxyUrl.toString());

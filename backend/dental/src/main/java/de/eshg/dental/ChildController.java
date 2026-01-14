@@ -99,7 +99,6 @@ public class ChildController {
           ChildPaginationAndSortParameters paginationAndSortParameters,
       @InlineParameterObject @ParameterObject @Valid ProcedureSearchParameters searchParameters) {
     Validator.validateOnlyOneOfSearchAndFilterParametersAreSet(filterParameters, searchParameters);
-    ProcedureValidator.validatePartialSearchParameters(searchParameters);
 
     PagedChildren pagedChildren =
         childService.getChildren(filterParameters, paginationAndSortParameters, searchParameters);

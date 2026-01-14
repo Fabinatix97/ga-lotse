@@ -112,6 +112,7 @@ export function FacilityForm(props: FacilityFormProps) {
           >
             <Stack gap={2}>
               <InputField
+                autoFocus={props.mode === "edit"}
                 name={fieldName("name")}
                 label="Name"
                 validate={validateLength(1, 300)}

@@ -32,6 +32,7 @@ export function PersonalFormSection<TValues>(props: PersonFormProps<TValues>) {
       <Grid container spacing={2}>
         <Grid xxs>
           <SelectField
+            autoFocus
             name={fieldName("salutation")}
             label={PERSON_FIELD_NAME.salutation}
             options={SALUTATION_OPTIONS}

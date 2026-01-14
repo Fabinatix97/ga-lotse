@@ -36,6 +36,7 @@ export function ConfigurePieChartStep({
   return (
     <Stack gap={4}>
       <SingleAutocompleteField
+        autoFocus
         options={primaryAttributes}
         name={fieldName("primaryAttribute")}
         placeholder="Bitte wählen"

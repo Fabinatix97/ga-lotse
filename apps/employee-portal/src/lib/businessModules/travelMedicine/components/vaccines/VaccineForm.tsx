@@ -177,6 +177,7 @@ export function VaccineForm(props: Readonly<VaccineFormProps>) {
           <SidebarContent title={props.title}>
             <Stack gap={2} rowGap={2}>
               <InputField
+                autoFocus
                 name="name"
                 label="Name"
                 required="Bitte einen Namen angeben"

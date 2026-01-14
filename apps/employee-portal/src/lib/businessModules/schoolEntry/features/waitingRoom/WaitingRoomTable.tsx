@@ -13,6 +13,7 @@ import {
   Pagination,
   TablePage,
   TableSheet,
+  formatDateTimeRangeToNowInMinutes,
   getSortDirection,
   getSortKey,
   usePersistentTableControl,
@@ -24,7 +25,6 @@ import { WaitingRoomProcedure } from "@/lib/businessModules/schoolEntry/api/mode
 import { useGetWaitingRoomProcedures } from "@/lib/businessModules/schoolEntry/api/queries/schoolEntryApi";
 import { WAITING_STATUS_VALUES } from "@/lib/businessModules/schoolEntry/features/procedures/translations";
 import { routes } from "@/lib/businessModules/schoolEntry/shared/routes";
-import { formatDateTimeRangeToNowInMinutes } from "@/lib/shared/helpers/dateTime";
 
 const initialSorting: ColumnSort = {
   id: "modifiedAt",

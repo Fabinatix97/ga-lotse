@@ -6,7 +6,6 @@
 package de.eshg.prostituteprotection.domain.model;
 
 import de.eshg.domain.model.BaseEntity;
-import de.eshg.lib.common.CountryCode;
 import de.eshg.lib.common.DataSensitivity;
 import de.eshg.lib.common.SensitivityLevel;
 import jakarta.persistence.ElementCollection;
@@ -26,9 +25,6 @@ public class PersonalData extends BaseEntity {
   private String alias;
 
   @JdbcType(PostgreSQLEnumJdbcType.class)
-  private CountryCode nationality;
-
-  @JdbcType(PostgreSQLEnumJdbcType.class)
   private DocumentType documentType;
 
   @ElementCollection
@@ -42,14 +38,6 @@ public class PersonalData extends BaseEntity {
 
   public void setAlias(String alias) {
     this.alias = alias;
-  }
-
-  public CountryCode getNationality() {
-    return nationality;
-  }
-
-  public void setNationality(CountryCode nationality) {
-    this.nationality = nationality;
   }
 
   public DocumentType getDocumentType() {

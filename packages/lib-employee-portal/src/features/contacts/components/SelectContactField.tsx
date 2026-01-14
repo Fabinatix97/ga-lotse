@@ -29,6 +29,7 @@ interface SelectContactFieldProps {
   endDecorator?: ReactNode;
   disabled?: boolean;
   validate?: Validator<SelectObjectFieldValue<object, false>>;
+  autoFocus?: boolean;
 }
 
 export function SelectContactField(props: SelectContactFieldProps) {
@@ -50,6 +51,7 @@ export function SelectContactField(props: SelectContactFieldProps) {
       placeholder={props.placeholder}
       endDecorator={props.endDecorator}
       disabled={props.disabled}
+      autoFocus={props.autoFocus}
       onInputChange={(_, newInputValue) => setSearchString(newInputValue)}
       onValueChanged={props.onChange}
     />

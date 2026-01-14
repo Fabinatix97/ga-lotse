@@ -30,6 +30,7 @@ export function SearchChildForm(
   return (
     <DefaultSearchPersonForm {...props}>
       <SchoolYearField
+        autoFocus
         name="schoolYear"
         label="Wählen Sie ein Schuljahr aus"
         required="Bitte ein Schuljahr angeben."

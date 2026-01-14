@@ -5,6 +5,7 @@
 
 package de.eshg.prostituteprotection;
 
+import de.eshg.api.commons.SortDirection;
 import de.eshg.base.user.UserApi;
 import de.eshg.base.user.api.GetUsersRequest;
 import de.eshg.base.user.api.UserDto;
@@ -27,23 +28,29 @@ import de.eshg.prostituteprotection.api.ProstituteProtectionProcedureSearchParam
 import de.eshg.prostituteprotection.api.UpdateEncryptedPersonalDataRequest;
 import de.eshg.prostituteprotection.api.UpdateProstituteProtectionProcedureRequest;
 import de.eshg.prostituteprotection.api.UserNameDto;
+import de.eshg.prostituteprotection.api.WaitingRoomProcedurePaginationAndSortParameters;
+import de.eshg.prostituteprotection.api.WaitingRoomSortKey;
 import de.eshg.prostituteprotection.crypto.DecryptedPersonalDataDto;
 import de.eshg.prostituteprotection.crypto.EncryptedFileDataDto;
 import de.eshg.prostituteprotection.crypto.EncryptedPersonalDataDto;
 import de.eshg.prostituteprotection.crypto.PersonalDataDecryptionException;
 import de.eshg.prostituteprotection.crypto.PersonalDataEncryptionService;
 import de.eshg.prostituteprotection.domain.data.ProstituteProtectionProcedureWithAugmentedData;
+import de.eshg.prostituteprotection.domain.data.WaitingRoomProcedureData;
 import de.eshg.prostituteprotection.domain.model.CertificateType;
 import de.eshg.prostituteprotection.domain.model.Consultation;
 import de.eshg.prostituteprotection.domain.model.EncryptedFile;
 import de.eshg.prostituteprotection.domain.model.EncryptedPersonalData;
 import de.eshg.prostituteprotection.domain.model.ProstituteProtectionProcedure;
 import de.eshg.prostituteprotection.domain.model.ProstituteProtectionTask;
+import de.eshg.prostituteprotection.domain.model.WaitingRoom;
 import de.eshg.prostituteprotection.domain.repository.ConsultationRepository;
 import de.eshg.prostituteprotection.domain.repository.EncryptedFileRepository;
 import de.eshg.prostituteprotection.domain.repository.ProstituteProtectionProcedureRepository;
+import de.eshg.prostituteprotection.domain.repository.WaitingRoomRepository;
 import de.eshg.prostituteprotection.mapper.AppointmentMapper;
 import de.eshg.prostituteprotection.mapper.ProstituteProtectionMapper;
+import de.eshg.prostituteprotection.mapper.WaitingRoomMapper;
 import de.eshg.prostituteprotection.util.ExceptionUtil;
 import de.eshg.rest.service.error.BadRequestException;
 import de.eshg.rest.service.error.NotFoundException;
@@ -63,6 +70,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -74,6 +82,7 @@ public class ProstituteProtectionService {
   private final ProstituteProtectionProcedureRepository procedureRepository;
   private final ConsultationRepository consultationRepository;
   private final EncryptedFileRepository encryptedFileRepository;
+  private final WaitingRoomRepository waitingRoomRepository;
   private final ProstituteProtectionAppointmentService appointmentService;
   private final Clock clock;
   private final AuditLogger auditLogger;
@@ -84,6 +93,7 @@ public class ProstituteProtectionService {
       ProstituteProtectionProcedureRepository procedureRepository,
       ConsultationRepository consultationRepository,
       EncryptedFileRepository encryptedFileRepository,
+      WaitingRoomRepository waitingRoomRepository,
       ProstituteProtectionAppointmentService appointmentService,
       Clock clock,
       AuditLogger auditLogger,
@@ -92,6 +102,7 @@ public class ProstituteProtectionService {
     this.procedureRepository = procedureRepository;
     this.consultationRepository = consultationRepository;
     this.encryptedFileRepository = encryptedFileRepository;
+    this.waitingRoomRepository = waitingRoomRepository;
     this.appointmentService = appointmentService;
     this.clock = clock;
     this.auditLogger = auditLogger;
@@ -121,11 +132,13 @@ public class ProstituteProtectionService {
     prostituteProtectionProcedure.updateProcedureStatus(ProcedureStatus.OPEN, clock, auditLogger);
     prostituteProtectionProcedure.setConsultation(new Consultation());
     prostituteProtectionProcedure.setEncryptedPersonalData(new EncryptedPersonalData());
+    prostituteProtectionProcedure.setWaitingRoom(new WaitingRoom());
   }
 
   void updateProcedure(
       ProstituteProtectionProcedure procedure, UpdateProstituteProtectionProcedureRequest request) {
-    ProstituteProtectionMapper.mapRequestToDomain(procedure, request);
+    procedure.setConsultationType(
+        ProstituteProtectionMapper.mapConsultationType(request.consultationType()));
     procedureRepository.flush();
   }
 
@@ -151,6 +164,7 @@ public class ProstituteProtectionService {
         personalDataEncryptionService.encrypt(
             new DecryptedPersonalDataDto(
                 request.firstName(), request.lastName(), request.dateOfBirth()));
+    ProstituteProtectionValidator.validateEncryptedData(procedure, encryptedPersonalData);
     ProstituteProtectionMapper.mapPersonalData(procedure, request, encryptedPersonalData);
     procedure.updateProcedureStatus(ProcedureStatus.IN_PROGRESS, clock, auditLogger);
     procedureRepository.flush();
@@ -404,6 +418,25 @@ public class ProstituteProtectionService {
     persistedConsultation.setInterpreterLastName(newConsultation.getInterpreterLastName());
   }
 
+  public WaitingRoom findWaitingRoomForUpdate(UUID procedureId, long version) {
+    WaitingRoom waitingRoom =
+        waitingRoomRepository
+            .findByProcedureExternalIdForUpdate(procedureId)
+            .orElseThrow(ExceptionUtil::procedureNotFoundException);
+    ValidationUtil.validateVersion(version, waitingRoom);
+    return waitingRoom;
+  }
+
+  public void updateWaitingRoom(WaitingRoom persistedWaitingRoom, WaitingRoom newWaitingRoom) {
+    copyValues(persistedWaitingRoom, newWaitingRoom);
+    waitingRoomRepository.flush();
+  }
+
+  private void copyValues(WaitingRoom persistedWaitingRoom, WaitingRoom newWaitingRoom) {
+    persistedWaitingRoom.setDescription(newWaitingRoom.getDescription());
+    persistedWaitingRoom.setStatus(newWaitingRoom.getStatus());
+  }
+
   public ProstituteProtectionProcedure findByExternalIdForUpdate(UUID procedureId, long version) {
     ProstituteProtectionProcedure procedure = findByExternalIdOrThrow(procedureId);
     ValidationUtil.validateVersion(version, procedure);
@@ -427,5 +460,38 @@ public class ProstituteProtectionService {
   public void setCertificateWithAliasCreated(ProstituteProtectionProcedure procedure) {
     procedure.setCertificateWithAliasCreated(true);
     procedureRepository.flush();
+  }
+
+  public PagedWaitingRoomProcedures getWaitingRoomProcedures(
+      WaitingRoomProcedurePaginationAndSortParameters paginationAndSortParameters) {
+    WaitingRoomPageSpec pageSpec =
+        WaitingRoomMapper.mapToPageSpec(
+            paginationAndSortParameters.pageNumberOrFallback(0),
+            paginationAndSortParameters.pageSizeOrFallback(25),
+            paginationAndSortParameters.sortKeyOrFallback(WaitingRoomSortKey.ID),
+            paginationAndSortParameters.sortDirectionOrFallback(SortDirection.DESC));
+
+    WaitingRoomSpecification waitingRoomSpecification =
+        new WaitingRoomSpecification(pageSpec.sortKey(), pageSpec.direction());
+    Page<ProstituteProtectionProcedure> procedures =
+        procedureRepository.findAll(
+            waitingRoomSpecification, PageRequest.of(pageSpec.pageNumber(), pageSpec.pageSize()));
+    List<WaitingRoomProcedureData> procedureData =
+        augmentWithWaitingRoomData(procedures.getContent()).toList();
+    return new PagedWaitingRoomProcedures(procedureData, procedures.getTotalElements());
+  }
+
+  private Stream<WaitingRoomProcedureData> augmentWithWaitingRoomData(
+      List<ProstituteProtectionProcedure> procedures) {
+    return procedures.stream()
+        .map(
+            procedure -> {
+              WaitingRoom waitingRoom = procedure.getWaitingRoom();
+              return new WaitingRoomProcedureData(
+                  procedure.getExternalId(),
+                  procedure.getPersonalData().getAlias(),
+                  waitingRoom,
+                  waitingRoom.getModifiedAt());
+            });
   }
 }

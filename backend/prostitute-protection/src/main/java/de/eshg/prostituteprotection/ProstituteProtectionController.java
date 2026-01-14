@@ -18,6 +18,7 @@ import de.eshg.prostituteprotection.api.DownloadCertificateRequest;
 import de.eshg.prostituteprotection.api.GetCertificatesResponse;
 import de.eshg.prostituteprotection.api.GetProstituteProtectionPersonSearchResponse;
 import de.eshg.prostituteprotection.api.GetProstituteProtectionProceduresResponse;
+import de.eshg.prostituteprotection.api.GetWaitingRoomProceduresResponse;
 import de.eshg.prostituteprotection.api.ProcedureDetailsDto;
 import de.eshg.prostituteprotection.api.ProcedureProperty;
 import de.eshg.prostituteprotection.api.ProstituteProtectionProcedurePaginationAndSortParameters;
@@ -28,6 +29,8 @@ import de.eshg.prostituteprotection.api.RequiredProcedureArea;
 import de.eshg.prostituteprotection.api.UpdateEncryptedPersonalDataRequest;
 import de.eshg.prostituteprotection.api.UpdateProstituteProtectionProcedureRequest;
 import de.eshg.prostituteprotection.api.ValidateRequiredProcedureDataResponse;
+import de.eshg.prostituteprotection.api.WaitingRoomDto;
+import de.eshg.prostituteprotection.api.WaitingRoomProcedurePaginationAndSortParameters;
 import de.eshg.prostituteprotection.crypto.DecryptedPersonalDataDto;
 import de.eshg.prostituteprotection.domain.data.ProstituteProtectionProcedureWithAugmentedData;
 import de.eshg.prostituteprotection.domain.model.CertificateType;
@@ -35,8 +38,10 @@ import de.eshg.prostituteprotection.domain.model.Consultation;
 import de.eshg.prostituteprotection.domain.model.ConsultationType;
 import de.eshg.prostituteprotection.domain.model.EncryptedFile;
 import de.eshg.prostituteprotection.domain.model.ProstituteProtectionProcedure;
+import de.eshg.prostituteprotection.domain.model.WaitingRoom;
 import de.eshg.prostituteprotection.mapper.AppointmentMapper;
 import de.eshg.prostituteprotection.mapper.ProstituteProtectionMapper;
+import de.eshg.prostituteprotection.mapper.WaitingRoomMapper;
 import de.eshg.prostituteprotection.pdf.ConsultationCertificateGenerator;
 import de.eshg.prostituteprotection.pdf.PrintDocumentType;
 import de.eshg.prostituteprotection.pdf.RegistrationConsultationCertificateGenerator;
@@ -81,6 +86,7 @@ public class ProstituteProtectionController {
   public static final String BASE_URL = BaseUrls.ProstituteProtection.PROCEDURE_CONTROLLER;
   public static final String CONSULTATION_CERTIFICATE_KEY = "consultationCertificate";
   public static final String REGISTRATION_CERTIFICATE_KEY = "registrationCertificate";
+  public static final String PERSON_SEARCH = "/person-search";
 
   private final ProstituteProtectionService prostituteProtectionService;
   private final ProstituteProtectionAppointmentService prostituteProtectionAppointmentService;
@@ -132,7 +138,7 @@ public class ProstituteProtectionController {
         pagedProcedures.getTotalElements());
   }
 
-  @PostMapping("/person-search")
+  @PostMapping(PERSON_SEARCH)
   @Transactional(readOnly = true)
   @Operation(summary = "Search for procedures with firstName, lastName and dateOfBirth.")
   public GetProstituteProtectionPersonSearchResponse personSearch(
@@ -217,6 +223,33 @@ public class ProstituteProtectionController {
         procedure, ProstituteProtectionProgressEntryType.CONSULTATION_MODIFIED);
 
     return ProstituteProtectionMapper.mapConsultationToDto(consultation);
+  }
+
+  @PutMapping("/{procedureId}/waiting-room")
+  @Transactional
+  @Operation(summary = "Update the waiting room for a procedure.")
+  public WaitingRoomDto updateWaitingRoom(
+      @PathVariable("procedureId") UUID procedureId, @Valid @RequestBody WaitingRoomDto request) {
+    WaitingRoom waitingRoom =
+        prostituteProtectionService.findWaitingRoomForUpdate(procedureId, request.version());
+
+    prostituteProtectionService.updateWaitingRoom(
+        waitingRoom, WaitingRoomMapper.mapWaitingRoomToDomain(request));
+
+    return WaitingRoomMapper.mapWaitingRoomToDto(waitingRoom);
+  }
+
+  @GetMapping("/waiting-room-procedures")
+  @Transactional(readOnly = true)
+  public GetWaitingRoomProceduresResponse getWaitingRoomProcedures(
+      @InlineParameterObject @ParameterObject @Valid
+          WaitingRoomProcedurePaginationAndSortParameters paginationAndSortParameters) {
+
+    PagedWaitingRoomProcedures pagedProcedures =
+        prostituteProtectionService.getWaitingRoomProcedures(paginationAndSortParameters);
+    return new GetWaitingRoomProceduresResponse(
+        pagedProcedures.stream().map(WaitingRoomMapper::mapWaitingRoomProcedureToDto).toList(),
+        pagedProcedures.totalNumberOfProcedures());
   }
 
   @GetMapping("/{procedureId}/validate-completeness")

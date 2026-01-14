@@ -394,6 +394,10 @@ businessmodules:
     imageName: meds-abroad
   prostituteprotection:
     enabled: false
+    database:
+      extensions:
+        - name: unaccent
+        - name: pg_trgm
     waitFor:
       - lsd
       - base

@@ -3,7 +3,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiCountryCode } from "@eshg/base-api";
 import {
   SidebarWithFormRefProps,
   UseSidebarWithFormRefResult,
@@ -35,7 +34,6 @@ export interface EditPersonalDataForm extends LanguageFieldsData {
   lastName: string;
   alias: OptionalFieldValue<string>;
   dateOfBirth: OptionalFieldValue<string>;
-  nationality: OptionalFieldValue<ApiCountryCode>;
   documentType: OptionalFieldValue<ApiDocumentType>;
   version: number;
 }
@@ -49,29 +47,25 @@ function EditPersonDetailsSidebar({
   onClose,
   procedure,
 }: EditPersonDetailsSidebarProps) {
-  const updateProcedurePersonalData = useUpdateProcedurePersonalDataMutation();
+  const updateProcedurePersonalData = useUpdateProcedurePersonalDataMutation(
+    procedure.id,
+  );
   const { addDecryptedPerson, getDecryptedPerson } = useDecryptedPersons();
   const personData = getDecryptedPerson(procedure.id);
 
   async function handleSubmit(values: EditPersonalDataForm) {
     const personalData = mapFormToApi(values);
-    await updateProcedurePersonalData.mutateAsync(
-      {
-        procedureId: procedure.id,
-        apiUpdateEncryptedPersonalDataRequest: personalData,
+    await updateProcedurePersonalData.mutateAsync(personalData, {
+      onSuccess: () => {
+        addDecryptedPerson({
+          id: procedure.id,
+          firstName: values.firstName,
+          lastName: values.lastName,
+          dateOfBirth: new Date(values.dateOfBirth),
+        });
+        onClose(true);
       },
-      {
-        onSuccess: () => {
-          addDecryptedPerson({
-            id: procedure.id,
-            firstName: values.firstName,
-            lastName: values.lastName,
-            dateOfBirth: new Date(values.dateOfBirth),
-          });
-          onClose(true);
-        },
-      },
-    );
+    });
   }
 
   const initialValues = mapApiToForm(procedure, personData);
@@ -102,7 +96,6 @@ function mapApiToForm(
     dateOfBirth: parseOptionalDate(personData?.dateOfBirth),
     languages: procedure.languages,
     hasSufficientGermanLanguageSkills: hasGerman,
-    nationality: parseOptionalValue(procedure.nationality),
     documentType: parseOptionalValue(procedure.documentTypeDto),
     version: procedure.version,
   };
@@ -117,7 +110,6 @@ function mapFormToApi(
     alias: mapOptionalValue(values.alias),
     dateOfBirth: new Date(values.dateOfBirth),
     languages: values.languages,
-    nationality: mapOptionalValue(values.nationality),
     documentType: mapOptionalValue(values.documentType),
     version: values.version,
   };

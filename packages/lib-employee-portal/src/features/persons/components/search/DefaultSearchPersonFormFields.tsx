@@ -13,13 +13,14 @@ import {
 
 import { SearchPersonFormValues } from "./SearchPersonSidebar";
 
-export function DefaultSearchPersonFormFields() {
+export function DefaultSearchPersonFormFields(props: { autoFocus?: boolean }) {
   const validateLength = useValidateLength();
   const fieldName = createFieldNameMapper<SearchPersonFormValues>();
 
   return (
     <>
       <InputField
+        autoFocus={props.autoFocus}
         name={fieldName("firstName")}
         label="Vorname"
         required="Bitte einen Vornamen angeben."

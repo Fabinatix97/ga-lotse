@@ -66,6 +66,7 @@ function ConfigureDataSource(props: ConfigureDataSourceProps) {
         {props.name}
       </Typography>
       <TimeSpanField
+        autoFocus
         name={props.fieldName("timeSpan")}
         label="Betrachtungszeitraum"
         initialExplicitStartAndEndChecked={props.explicitStartAndEnd}
