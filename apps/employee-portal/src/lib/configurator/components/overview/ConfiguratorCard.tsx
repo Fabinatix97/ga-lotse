@@ -14,10 +14,12 @@ export function ConfiguratorCard({
   title,
   link,
   status,
+  autoFocus,
 }: {
   title: string;
   link: string;
   status: ConfiguratorStatus;
+  autoFocus?: boolean;
 }) {
   return (
     <Card sx={{ padding: 3 }}>
@@ -28,7 +30,12 @@ export function ConfiguratorCard({
             alignItems="center"
             justifyContent="space-between"
           >
-            <InternalLink overlay underline="none" href={link}>
+            <InternalLink
+              overlay
+              autoFocus={autoFocus}
+              underline="none"
+              href={link}
+            >
               <Typography level="h3">{title}</Typography>
             </InternalLink>
             <InternalLinkIconButton

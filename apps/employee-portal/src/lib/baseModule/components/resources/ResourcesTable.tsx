@@ -10,6 +10,7 @@ import { Button, Stack } from "@mui/joy";
 
 import { ApiUserRole, GetResourcesRequest } from "@eshg/base-api";
 import {
+  ButtonBar,
   DataTable,
   FilterSettingsContent,
   FilterSettingsSheet,
@@ -68,33 +69,34 @@ export function ResourcesTable({ params }: ResourcesTableProps) {
         )
       }
       controls={
-        <Stack
-          direction="row"
-          gap={2}
-          flexWrap="wrap-reverse"
-          justifyContent="space-between"
-        >
-          <Stack direction="row" gap="inherit" flexWrap="wrap">
-            <ToggleFilterButton {...filterSettings.filterButtonProps} />
-            <SearchFilter
-              tableControl={tableControl}
-              searchParamName="name"
-              label="Suche"
-            />
-          </Stack>
-          {hasWritePerms && (
-            <Button
-              startDecorator={<AddIcon />}
-              onClick={() =>
-                addResourceSidebar.open({
-                  labels: labels.elements,
-                })
-              }
-            >
-              Ressource hinzufügen
-            </Button>
-          )}
-        </Stack>
+        <ButtonBar
+          left={
+            <Stack direction="row" gap="inherit" flexWrap="wrap">
+              <ToggleFilterButton {...filterSettings.filterButtonProps} />
+              <SearchFilter
+                tableControl={tableControl}
+                searchParamName="name"
+                label="Suche"
+              />
+            </Stack>
+          }
+          right={
+            hasWritePerms && (
+              <Button
+                autoFocus
+                startDecorator={<AddIcon />}
+                onClick={() =>
+                  addResourceSidebar.open({
+                    labels: labels.elements,
+                  })
+                }
+              >
+                Ressource hinzufügen
+              </Button>
+            )
+          }
+          invertDomOrder
+        />
       }
     >
       <TableSheet

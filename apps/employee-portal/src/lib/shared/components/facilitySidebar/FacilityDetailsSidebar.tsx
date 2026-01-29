@@ -16,6 +16,7 @@ import {
   styled,
 } from "@mui/joy";
 import { Formik } from "formik";
+import { ReactNode } from "react";
 import { isDefined } from "remeda";
 
 import {
@@ -38,10 +39,7 @@ import {
   getOptionalTitle,
 } from "@eshg/lib-portal";
 
-import {
-  MeaslesFacilityTypeSelect,
-  MeaslesFacilityTypeSelectFormValues,
-} from "@/lib/businessModules/measlesProtection/components/procedures/procedureDetails/MeaslesFacilityTypeSelect";
+import { MeaslesFacilityTypeSelectFormValues } from "@/lib/businessModules/measlesProtection/components/procedures/procedureDetails/MeaslesFacilityTypeSelect";
 
 export type ReferenceFacilityWithOptionalMeaslesFacilityType =
   ApiGetReferenceFacilityResponse & {
@@ -57,7 +55,7 @@ interface FacilityDetailsSidebarProps {
   ) => Promise<void>;
   onBack?: () => void;
   onCancel: () => void;
-  showMeaslesFacilityType?: boolean;
+  additionalFields?: ReactNode;
 }
 
 export function FacilityDetailsSidebar(props: FacilityDetailsSidebarProps) {
@@ -82,7 +80,7 @@ export function FacilityDetailsSidebar(props: FacilityDetailsSidebarProps) {
             <DetailsList>
               <Stack gap={2}>
                 <DetailsItem label="Name" value={facility.name} />
-                {props.showMeaslesFacilityType && <MeaslesFacilityTypeSelect />}
+                {props.additionalFields}
 
                 {isDefined(facility.contactAddress) && (
                   <>

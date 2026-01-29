@@ -119,6 +119,8 @@ export function RelatedProceduresTable({
     ...personSearchOptions,
     select: (data) =>
       data.elements.filter((procedure) => procedure.id !== procedureId),
+    gcTime: 60000,
+    staleTime: 60000,
   });
 
   return (

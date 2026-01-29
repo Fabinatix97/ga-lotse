@@ -52,6 +52,7 @@ export function DocumentsTable({ procedureId }: Readonly<DocumentsTableProps>) {
           <ButtonBar
             right={
               <Button
+                autoFocus
                 endDecorator={<AddOutlined />}
                 aria-label="Dokument hinzufügen"
                 onClick={() => addDocumentSidebar.open({ procedureId })}

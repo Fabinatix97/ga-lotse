@@ -287,6 +287,7 @@ export function EvaluationReports({
       {userPermissions.canWrite() && (
         <Stack alignSelf="flex-end" direction="row" gap={3}>
           <RefreshButton
+            autoFocus
             loading={isFetchingReports}
             queryKey={getEvaluationReportsQueryKey([data.evaluationId])}
           />

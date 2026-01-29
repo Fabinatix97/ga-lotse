@@ -54,6 +54,7 @@ export function ProceduresTableControls({
     } else if (filterSettings) {
       filterButton = (
         <GenericFilterButton
+          autoFocus
           {...filterSettings.filterButtonProps}
           isFilterVisible={activeTableControl === "filters"}
           activeFilters={filterSettings.filterButtonProps.activeFilters}
@@ -76,6 +77,7 @@ export function ProceduresTableControls({
         >
           {({ setFieldValue }) => (
             <FormPlus
+              autoFocus
               sx={{
                 display: "flex",
                 flexWrap: "wrap",
@@ -96,6 +98,7 @@ export function ProceduresTableControls({
               ) : (
                 <>
                   <InputField
+                    autoFocus
                     label={null}
                     placeholder="Suche"
                     aria-label="Suche"

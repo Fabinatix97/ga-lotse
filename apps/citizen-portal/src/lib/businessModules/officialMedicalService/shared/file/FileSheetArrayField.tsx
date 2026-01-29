@@ -7,7 +7,7 @@ import { FormControl } from "@mui/joy";
 import {
   ArrayHelpers,
   FieldArray,
-  FieldConfig,
+  FieldHookConfig,
   useField,
   useFormikContext,
 } from "formik";
@@ -39,7 +39,8 @@ const BYTES_PER_MB = 1048576;
 const MAX_FILE_SIZE = 10 * BYTES_PER_MB;
 
 interface FileSheetArrayFieldProps
-  extends Omit<FieldProps<File[] | null>, "label" | "validate">,
+  extends
+    Omit<FieldProps<File[] | null>, "label" | "validate">,
     Omit<
       FileSheetArrayProps,
       | "files"
@@ -178,7 +179,7 @@ function FileSheetArrayFieldInner({
   );
 }
 
-function FakeField(props: FieldConfig<File>) {
+function FakeField(props: FieldHookConfig<File>) {
   // Registers and unregisters the validation for the individual files.
 
   // Using ctx.registerField doesn't disable the validation when the field isn't rendered,

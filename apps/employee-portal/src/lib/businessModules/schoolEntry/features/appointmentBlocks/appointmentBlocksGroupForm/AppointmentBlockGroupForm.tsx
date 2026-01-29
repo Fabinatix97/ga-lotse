@@ -110,7 +110,12 @@ export function AppointmentBlockGroupForm(
       onSubmit={props.onSubmit}
     >
       {({ values, isSubmitting, handleSubmit }) => (
-        <FormSheet gap={5} aria-label="Terminblock" onSubmit={handleSubmit}>
+        <FormSheet
+          autoFocus
+          gap={5}
+          aria-label="Terminblock"
+          onSubmit={handleSubmit}
+        >
           <Stack gap={5}>
             <AppointmentBlockGroupFields
               appointmentBlocksWithDays={values.appointmentBlocks}

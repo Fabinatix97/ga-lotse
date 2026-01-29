@@ -230,8 +230,16 @@ public final class BaseUrls {
   public static final class ProstituteProtection {
     public static final String PROCEDURE_CONTROLLER = "/prostitute-protection-procedures";
     public static final String PUBLIC_CITIZEN_CONTROLLER = "/citizen/public";
+    public static final String CONFIG_CONTROLLER = "/configuration";
 
     private ProstituteProtection() {}
+  }
+
+  public static final class InfectionBriefing {
+    public static final String PROCEDURE_CONTROLLER = "/infection-briefing-procedures";
+    public static final String PUBLIC_CITIZEN_CONTROLLER = "/citizen/public";
+
+    private InfectionBriefing() {}
   }
 
   public static final class Statistics {

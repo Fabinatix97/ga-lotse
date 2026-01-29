@@ -42,7 +42,10 @@ type: Opaque
 ---
 
 {{ include "ingress" (list "adminportal" .Values.ingress.type .Values.domains.hosts.adminportal "proxy-incoming" "adminportal" .Release.Namespace)}}
-{{ include "lib.certificate" (list .Values.adminportal.certificate.secret .Values.domains.hosts.adminportal .Values.domains.clusterIssuer .Release.Namespace .Values.development.injectSelfSignedCA) }}
+{{ include "lib.certificate" (list .Values.adminportal.certificate.secret .Values.domains.hosts.adminportal .Values.domains.clusterIssuers.public .Release.Namespace .Values.development.injectSelfSignedCA) }}
+{{- if .Values.createSplitCertificates }}
+{{ include "lib.splitCertificates" (list .Values.adminportal.certificate.secret .Values.domains.hosts.adminportal .Values.domains.clusterIssuers.publicClient .Values.domains.clusterIssuers.publicServer .Release.Namespace .Values.development.injectSelfSignedCA) }}
+{{- end }}
 
 ---
 

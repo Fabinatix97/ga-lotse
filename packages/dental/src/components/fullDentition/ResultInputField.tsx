@@ -65,13 +65,22 @@ export function ResultInputField(props: ResultInputFieldProps) {
       }
       type="text"
       onChange={(event) =>
-        setResultAction(toothContext, normalizeValue(event.target.value))
+        setResultAction(
+          toothContext,
+          isMainResultField
+            ? normalizeMainResultValue(event.target.value)
+            : normalizeValue(event.target.value),
+        )
       }
       onFocus={focusHandler}
       onBlur={blurHandler}
       onKeyDown={keyboardNavigationHandler}
     />
   );
+}
+
+function normalizeMainResultValue(value: string): string {
+  return value.trim();
 }
 
 function normalizeValue(value: string): string {

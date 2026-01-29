@@ -190,7 +190,7 @@ export function ConfiguratorForm<T extends FormikValues>({
       }}
     >
       {({ values, handleReset, isSubmitting, handleSubmit, errors, dirty }) => (
-        <FormPlus data-testid="configurator-form">
+        <FormPlus data-testid="configurator-form" autoFocus>
           <ErrorListener
             noErrors={() => setShowError(false)}
             onError={() => setShowError(true)}

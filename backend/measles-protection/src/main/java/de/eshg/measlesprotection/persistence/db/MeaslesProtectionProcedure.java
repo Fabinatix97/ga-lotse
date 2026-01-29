@@ -14,6 +14,8 @@ import de.eshg.lib.procedure.domain.model.Procedure;
 import de.eshg.lib.procedure.domain.model.ProgressEntry;
 import de.eshg.lib.procedure.domain.model.SystemProgressEntry;
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -27,6 +29,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import org.hibernate.annotations.BatchSize;
 import org.hibernate.annotations.JdbcType;
 import org.hibernate.dialect.PostgreSQLEnumJdbcType;
 import org.springframework.util.Assert;
@@ -80,6 +83,13 @@ public class MeaslesProtectionProcedure
   @OneToOne(orphanRemoval = true, cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
   @DataSensitivity(SensitivityLevel.SENSITIVE)
   private Appointment appointment;
+
+  @Column(unique = true)
+  @DataSensitivity(SensitivityLevel.PSEUDONYMIZED)
+  @ElementCollection(fetch = FetchType.LAZY)
+  @OrderBy
+  @BatchSize(size = 100)
+  private List<UUID> custodiansWithoutDob = new ArrayList<>();
 
   public void setOrganisationUserId(UUID organisationUserId) {
     Assert.notEmpty(
@@ -184,6 +194,20 @@ public class MeaslesProtectionProcedure
   @Override
   public void setAppointment(Appointment appointment) {
     this.appointment = appointment;
+  }
+
+  /**
+   * custodians without a date of birth
+   *
+   * <p>custodians with a date of birth are stored in {@link
+   * MeaslesProtectionProcedure#getRelatedPersons}
+   */
+  public List<UUID> getCustodiansWithoutDob() {
+    return custodiansWithoutDob;
+  }
+
+  public void setCustodianWithoutDobIds(List<UUID> custodianIds) {
+    this.custodiansWithoutDob = custodianIds;
   }
 
   public void addProofRequestLetter(ProofRequestLetter letter) {

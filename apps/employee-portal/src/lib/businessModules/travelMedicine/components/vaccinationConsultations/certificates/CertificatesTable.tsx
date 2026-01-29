@@ -83,6 +83,7 @@ export function CertificatesTable({
           <ButtonBar
             right={
               <Button
+                autoFocus
                 sx={{ py: 1 / 2 }}
                 startDecorator={<AddOutlined />}
                 data-testid="create-certificate-buttonbar"

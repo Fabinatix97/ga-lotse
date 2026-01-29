@@ -7,7 +7,7 @@
 
 import { Stack, Typography } from "@mui/joy";
 import { Formik, FormikHelpers, FormikValues } from "formik";
-import { RefObject, useId } from "react";
+import { useId } from "react";
 
 import {
   FormPlus,
@@ -37,14 +37,17 @@ export function MultiStepFormWrapper(props: Readonly<MultiStepFormProps>) {
     <Formik initialValues={props.initialValues} onSubmit={props.onSubmit}>
       <Stack gap={2}>
         <MultiStepFormTitle
-          titleRef={props.titleRef}
           title={props.title}
           titleId={titleId}
           stepperTitleId={stepperTitleId}
           stepperTitle={props.stepperTitle}
           withLogoutButton={props.withLogoutButton}
         />
-        <FormPlus aria-labelledby={titleId} aria-describedby={stepperTitleId}>
+        <FormPlus
+          autoFocus
+          aria-labelledby={titleId}
+          aria-describedby={stepperTitleId}
+        >
           {props.children}
         </FormPlus>
       </Stack>
@@ -60,7 +63,6 @@ interface StepCounterProps {
 interface MultiStepFormTitleProps extends StepCounterProps {
   title: string;
   withLogoutButton: boolean;
-  titleRef?: RefObject<HTMLDivElement | null>;
   titleId?: string;
 }
 
@@ -86,7 +88,6 @@ export function MultiStepFormTitle({
   stepperTitle,
   stepperTitleId,
   withLogoutButton,
-  titleRef,
   titleId,
 }: Readonly<MultiStepFormTitleProps>) {
   const isMobile = useIsMobile();
@@ -96,7 +97,6 @@ export function MultiStepFormTitle({
 
   return (
     <PageTitle
-      titleRef={titleRef}
       titleId={titleId}
       toolbar={
         <>

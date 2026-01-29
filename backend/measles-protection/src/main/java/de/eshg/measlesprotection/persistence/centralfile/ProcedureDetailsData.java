@@ -6,6 +6,7 @@
 package de.eshg.measlesprotection.persistence.centralfile;
 
 import de.eshg.base.centralfile.api.person.GetPersonFileStateResponse;
+import de.eshg.base.centralfile.api.person.GetPersonWithoutDateOfBirthResponse;
 import de.eshg.lib.appointmentblock.api.AppointmentDto;
 import de.eshg.lib.procedure.domain.model.ProcedureStatus;
 import de.eshg.measlesprotection.api.AccessRestrictionDto;
@@ -26,6 +27,7 @@ public record ProcedureDetailsData(
     RoleStatus roleStatus,
     GetPersonFileStateResponse person,
     List<GetPersonFileStateResponse> custodians,
+    List<GetPersonWithoutDateOfBirthResponse> custodiansWithoutDob,
     FacilityData facilityData,
     List<ProofSubmissionDto> proofSubmissions,
     ReportDataDto reportDataDto,

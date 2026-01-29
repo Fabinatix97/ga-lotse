@@ -71,6 +71,7 @@ export function MedicalHistoryTemplateOverviewTable() {
         <ButtonBar
           right={
             <Button
+              autoFocus
               startDecorator={<AddOutlinedIcon />}
               onClick={() => router.push(routes.medicalHistoryTemplates.new)}
             >

@@ -67,6 +67,7 @@ const screeningExaminationResultEmptinessRules: EmptinessRules<ScreeningExaminat
     gingivitisTreatment: (value) => !value,
     orthodonticTreatment: (value) => !value,
     plaqueTreatment: (value) => !value,
+    primaryDentitionObstructsSecondary: (value) => !value,
     inspectionAppointment: (value) => !value,
   };
 

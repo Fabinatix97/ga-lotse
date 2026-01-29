@@ -23,9 +23,7 @@ import {
 } from "@eshg/lib-portal";
 
 interface ChatInputFieldProps
-  extends FieldProps<string>,
-    FieldComponentProps,
-    FieldVariantProps {
+  extends FieldProps<string>, FieldComponentProps, FieldVariantProps {
   type?: HTMLInputTypeAttribute;
   placeholder?: string;
   unstyledReadOnly?: boolean;

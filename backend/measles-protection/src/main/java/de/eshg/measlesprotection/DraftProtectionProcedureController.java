@@ -6,6 +6,7 @@
 package de.eshg.measlesprotection;
 
 import de.eshg.base.centralfile.api.person.AddPersonFileStateRequest;
+import de.eshg.base.centralfile.api.person.AddPersonWithoutDateOfBirthRequest;
 import de.eshg.measlesprotection.api.ProtectionProcedureHeaderDto;
 import de.eshg.measlesprotection.api.draft.*;
 import de.eshg.measlesprotection.mapper.AffectedPersonDetailsMapper;
@@ -57,6 +58,20 @@ public class DraftProtectionProcedureController {
         AffectedPersonDetailsMapper.getAddPersonRequest(request.custodian());
     MeaslesProtectionProcedure procedure = draftProcedureService.addCustodian(id, addCustodian);
     return new AddCustodianResponse(procedure.getExternalId(), request.custodian());
+  }
+
+  @PostMapping("{id}/custodians-without-dob")
+  @Operation(
+      summary = "Add custodian without date of birth to a draft measles protection procedure.")
+  public AddCustodianWithoutDateOfBirthResponse addCustodianWithoutDateOfBirth(
+      @PathVariable("id") UUID id,
+      @Valid @RequestBody AddCustodianWithoutDateOfBirthRequest request) {
+    AddPersonWithoutDateOfBirthRequest addCustodian =
+        AffectedPersonDetailsMapper.getAddPersonWithoutDateOfBirthRequest(request.custodian());
+    MeaslesProtectionProcedure procedure =
+        draftProcedureService.addCustodianWithoutDateOfBirth(id, addCustodian);
+    return new AddCustodianWithoutDateOfBirthResponse(
+        procedure.getExternalId(), request.custodian());
   }
 
   @PostMapping("{id}/facilities")

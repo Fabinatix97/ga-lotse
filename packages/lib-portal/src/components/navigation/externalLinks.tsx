@@ -21,7 +21,8 @@ type ExternalLinkComponent = "a";
 type FixedExternalLinkProps = "component" | "target";
 
 interface ExternalLinkProps
-  extends BaseLinkProps,
+  extends
+    BaseLinkProps,
     Omit<LinkProps<ExternalLinkComponent>, FixedExternalLinkProps> {}
 
 export function ExternalLink(props: ExternalLinkProps) {
@@ -30,7 +31,8 @@ export function ExternalLink(props: ExternalLinkProps) {
 }
 
 interface ExternalLinkButtonProps
-  extends BaseLinkProps,
+  extends
+    BaseLinkProps,
     Omit<ButtonProps<ExternalLinkComponent>, FixedExternalLinkProps> {}
 
 export function ExternalLinkButton(props: ExternalLinkButtonProps) {
@@ -39,7 +41,8 @@ export function ExternalLinkButton(props: ExternalLinkButtonProps) {
 }
 
 interface ExternalLinkIconButtonProps
-  extends BaseLinkProps,
+  extends
+    BaseLinkProps,
     Omit<IconButtonProps<ExternalLinkComponent>, FixedExternalLinkProps> {}
 
 export function ExternalLinkIconButton(props: ExternalLinkIconButtonProps) {

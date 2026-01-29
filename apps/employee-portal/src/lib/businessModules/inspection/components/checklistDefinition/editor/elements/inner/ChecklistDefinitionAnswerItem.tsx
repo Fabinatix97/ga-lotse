@@ -45,8 +45,7 @@ export function ChecklistDefinitionAnswerItem(
   );
 }
 
-interface InnerChecklistDefinitionAnswerItemProps
-  extends ChecklistDefinitionAnswerItemProps {
+interface InnerChecklistDefinitionAnswerItemProps extends ChecklistDefinitionAnswerItemProps {
   element?: ApiCLSectionContextElementsInner;
 }
 

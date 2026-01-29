@@ -7,6 +7,5 @@ package de.eshg.prostituteprotection.api;
 
 public enum RequiredProcedureArea {
   DETAILS,
-  CONSULTATION_PARAGRAPH_10,
   CONSULTATION_PARAGRAPH_7
 }

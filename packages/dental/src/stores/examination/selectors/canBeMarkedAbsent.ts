@@ -61,6 +61,7 @@ const examinationFormValuesEmptinessRules: EmptinessRules<ExaminationFormValues>
     gingivitisTreatment: (value) => !value,
     orthodonticTreatment: (value) => !value,
     plaqueTreatment: (value) => !value,
+    primaryDentitionObstructsSecondary: (value) => !value,
     inspectionAppointment: (value) => !value,
   };
 

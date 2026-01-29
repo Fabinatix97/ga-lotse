@@ -9,6 +9,7 @@ import { ApiMainResult, ApiSecondaryResult } from "@eshg/dental-api";
 import { isEmptyString } from "@eshg/lib-portal";
 
 import {
+  DentitionTypeValuesState,
   DirtyState,
   DmftValuesState,
   ExaminationState,
@@ -24,6 +25,7 @@ import {
   ToothWithDiagnosis,
 } from "../types";
 
+import { calcDentitionType } from "./dentitionType";
 import { calculateDmftValuesByDentitionType } from "./dmftValues";
 import { NavigateFromOutputState, navigateFrom } from "./navigateFrom";
 import { toggleToothType } from "./tooth";
@@ -36,27 +38,64 @@ export function setMainResult(
   toothContext: ToothContext,
   newValue: string,
   state: SetMainResultState & PreviousDiagnosesState,
-): SetMainResultState & DmftValuesState & DirtyState & HasResultState {
+): SetMainResultState &
+  DmftValuesState &
+  DirtyState &
+  HasResultState &
+  DentitionTypeValuesState {
   const { dentition, currentFocus, previousToothDiagnoses } = state;
   const tooth = getToothFromToothContext(dentition, toothContext);
+  const newValueUpperCase = newValue.toUpperCase();
 
-  if (!tooth.isRemovable && newValue === "B") {
+  if (!tooth.isRemovable && newValueUpperCase === "B") {
+    const toggledDentition = toggleToothType(
+      toothContext,
+      true,
+      dentition,
+      previousToothDiagnoses,
+    );
+
     return {
-      ...toggleToothType(toothContext, true, dentition, previousToothDiagnoses),
+      ...toggledDentition,
       hasResult: hasAnyResult(dentition),
     };
   }
 
   const isInvalid = isEmptyString(newValue)
     ? !isEmptyString(tooth.secondaryResult.value)
-    : !isValidMainResult(newValue);
+    : !isValidMainResult(newValueUpperCase);
+
+  let toggledDentition = dentition;
+
+  if (!isInvalid) {
+    if (tooth.isRemovable) {
+      newValue = newValueUpperCase;
+    } else if (
+      !isEmptyString(newValue) &&
+      ((tooth.toothType === "PRIMARY_TOOTH" &&
+        newValue === newValueUpperCase) ||
+        (tooth.toothType === "SECONDARY_TOOTH" &&
+          newValue !== newValueUpperCase))
+    ) {
+      toggledDentition = toggleToothType(
+        toothContext,
+        false,
+        dentition,
+        previousToothDiagnoses,
+      ).dentition;
+    }
+  }
 
   const navigateDirection = isInUpperJaw(toothContext.quadrantNumber)
     ? "RIGHT"
     : "LEFT";
-  const newDentition = updateToothWithDiagnosis(toothContext, dentition, {
-    mainResult: createToothResult(newValue, isInvalid),
-  });
+  const newDentition = updateToothWithDiagnosis(
+    toothContext,
+    toggledDentition,
+    {
+      mainResult: createToothResult(newValue, isInvalid),
+    },
+  );
   const keepCurrentFocus = isInvalid || newValue === "";
 
   return {
@@ -64,6 +103,7 @@ export function setMainResult(
       ? { currentFocus }
       : navigateFrom(navigateDirection, state)),
     dentition: newDentition,
+    dentitionType: calcDentitionType(newDentition),
     dmftValues: calculateDmftValuesByDentitionType(newDentition),
     dirty: true,
     hasResult: hasAnyResult(newDentition),

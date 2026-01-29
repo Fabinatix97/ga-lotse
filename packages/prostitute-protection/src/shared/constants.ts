@@ -27,6 +27,7 @@ export const systemProgressEntryTypeTitles: Record<string, string> = {
   REGISTRATION_CONSULTATION_CERTIFICATE_GENERATED:
     "Beratungszertifikat_Anmeldung erstellt",
   CONSULTATION_CERTIFICATE_GENERATED: "Beratungszertifikat erstellt",
+  CERTIFICATE_DOWNLOADED: "Zertifikat heruntergeladen",
 } as const;
 
 export const taskTypes = [ApiTaskType.ProstituteProtection];
@@ -41,6 +42,7 @@ export const PERSON_FIELD_NAME = {
   lastName: "Nachname",
   dateOfBirth: "Geburtsdatum",
   alias: "Alias",
+  phoneNumber: "Telefonnummer",
   otherLanguages: "Weitere Sprachen",
   gender: "Geschlecht",
   countryOfBirth: "Geburtsland",
@@ -78,8 +80,6 @@ export const CONSULTATION_FIELD_NAME: Record<
   pregnancy: "Schwangerschaft",
   alcoholAndDrugUsage: "Alkohol- / Drogengebrauch",
   referral: "Weitervermittlung § 19",
-  supervisedConsultation: "Beratung unter Aufsicht",
-  remark: "Anmerkungen",
   interpreterConsulted: "Dolmetscher hinzugezogen",
   interpreterFirstName: PERSON_FIELD_NAME.firstName,
   interpreterLastName: PERSON_FIELD_NAME.lastName,
@@ -151,7 +151,6 @@ export const PROCEDURE_STATUS_VALUES: EnumMap<ApiProcedureStatus> = {
 export const REQUIRED_PROCEDURE_AREAS: EnumMap<string> = {
   DETAILS: "Vorgangsdaten",
   CONSULTATION_PARAGRAPH_7: "Beratung nach §7",
-  CONSULTATION_PARAGRAPH_10: "Beratung nach §10",
 };
 
 export const REQUIRED_PROCEDURE_PROPERTIES: EnumMap<ApiProcedureProperty> = {
@@ -170,8 +169,6 @@ export const REQUIRED_PROCEDURE_PROPERTIES: EnumMap<ApiProcedureProperty> = {
   PREGNANCY: CONSULTATION_FIELD_NAME.pregnancy,
   ALCOHOL_AND_DRUG_USAGE: CONSULTATION_FIELD_NAME.alcoholAndDrugUsage,
 };
-
-export const OPTIONAL_TAG = "(optional)";
 
 export const WAITING_STATUS_VALUES: EnumMap<ApiWaitingStatus> = {
   WAITING: "Wartet",

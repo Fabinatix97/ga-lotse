@@ -1,11 +1,10 @@
 /**
  * Copyright 2026 cronn GmbH
- * SPDX-License-Identifier: AGPL-3.0-only
+ * SPDX-License-Identifier: Apache-2.0
  */
 
 import { Grid, Stack } from "@mui/joy";
 
-import { DefaultPersonFormValues } from "@eshg/lib-employee-portal";
 import {
   GENDER_OPTIONS,
   InputField,
@@ -16,6 +15,8 @@ import {
   createFieldNameMapper,
   useValidateLength,
 } from "@eshg/lib-portal";
+
+import { DefaultPersonFormValues } from "../../features/persons/components/form/DefaultPersonForm";
 
 export function PersonalFormSectionWithoutDateOfBirthDetails() {
   const validateLength = useValidateLength();

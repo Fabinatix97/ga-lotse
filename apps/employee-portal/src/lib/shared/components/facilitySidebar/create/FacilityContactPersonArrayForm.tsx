@@ -5,10 +5,13 @@
 
 import DeleteIcon from "@mui/icons-material/DeleteOutlined";
 import { Divider, IconButton, Stack, Typography } from "@mui/joy";
-import { FieldArray } from "formik";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
-import { FormAddMoreButton, NestedFormProps } from "@eshg/lib-portal";
+import {
+  FieldArrayWithFocus,
+  FormAddMoreButton,
+  NestedFormProps,
+} from "@eshg/lib-portal";
 
 import { ContactPersonForm } from "@/lib/shared/components/facilitySidebar/ContactPersonForm";
 import { BaseFacilityContactPerson } from "@/lib/shared/components/facilitySidebar/types";
@@ -33,8 +36,14 @@ export function FacilityContactPersonArrayForm({
     }
   }, [contactPersonRequired, values]);
 
+  const fallbackRef = useRef<HTMLElement | undefined>(undefined);
   return (
-    <FieldArray name={name} validateOnChange={false}>
+    <FieldArrayWithFocus
+      valueLength={values.length}
+      name={name}
+      validateOnChange={false}
+      fallbackFocusInputElement={fallbackRef.current}
+    >
       {({ push, remove }) => (
         <>
           {values.map((_contactPerson, index) => {
@@ -67,11 +76,16 @@ export function FacilityContactPersonArrayForm({
               </Stack>
             );
           })}
-          <FormAddMoreButton onClick={() => push(createEmptyContactPerson())}>
+          <FormAddMoreButton
+            ref={(el) => {
+              fallbackRef.current = el ?? undefined;
+            }}
+            onClick={() => push(createEmptyContactPerson())}
+          >
             Kontaktperson hinzufügen
           </FormAddMoreButton>
         </>
       )}
-    </FieldArray>
+    </FieldArrayWithFocus>
   );
 }

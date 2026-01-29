@@ -55,6 +55,7 @@ export function InboxProceduresTable(props: InboxProceduresTableProps) {
       controls={
         <Stack direction="row" flexWrap="wrap" gap={1}>
           <MultiSelectFilter
+            autoFocus
             searchParamName="inboxProcedureType"
             placeholder="Typ"
             options={buildOptionsFromProcedureTypes(props.procedureTypes)}

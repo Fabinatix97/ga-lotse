@@ -20,8 +20,10 @@ import {
   mapProphylaxisSessionExamination,
 } from "./ProphylaxisSessionExamination";
 
-export interface ProphylaxisSessionDetails
-  extends Omit<ProphylaxisSession, "isDeletable"> {
+export interface ProphylaxisSessionDetails extends Omit<
+  ProphylaxisSession,
+  "isDeletable"
+> {
   dentitionType?: ApiDentitionType;
   participants: ProphylaxisSessionExamination[];
   dentists: ApiPerformingPerson[];

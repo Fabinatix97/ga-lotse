@@ -15,6 +15,7 @@ import {
 import {
   InputField,
   OptionalFieldValue,
+  PhoneNumberField,
   useValidateLength,
 } from "@eshg/lib-portal";
 import { ApiAppointmentBookingType } from "@eshg/prostitute-protection-api";
@@ -49,6 +50,11 @@ export function PersonStep(props: PersonStepProps) {
               : "Bitte einen Alias angeben."
           }
           validate={validateLength(1, 80)}
+        />
+        <PhoneNumberField
+          name="phoneNumber"
+          label="Telefonnummer"
+          validate={validateLength(1, 23)}
         />
         <Divider sx={{ marginBlock: 1 }} />
         <LanguageFields />

@@ -5,10 +5,14 @@
 
 import { Add, Delete } from "@mui/icons-material";
 import { Button, Divider, IconButton, Stack, Typography } from "@mui/joy";
-import { FieldArray, useField } from "formik";
+import { useField } from "formik";
 import { ReactElement } from "react";
 
-import { InputField, TextareaField } from "@eshg/lib-portal";
+import {
+  FieldArrayWithFocus,
+  InputField,
+  TextareaField,
+} from "@eshg/lib-portal";
 
 interface OpeningHoursFieldProps {
   name: string;
@@ -24,28 +28,8 @@ export interface OpeningHoursFieldValue {
 }
 
 export function OpeningHoursField(props: OpeningHoursFieldProps) {
-  const [input, _, helpers] = useField<OpeningHoursFieldValue>(props.name);
+  const [input, _] = useField<OpeningHoursFieldValue>(props.name);
   const amountRows = input.value.rows.length || 1;
-
-  async function deleteRow(index: number) {
-    if (amountRows === 1) {
-      return;
-    }
-
-    const newValue = {
-      ...input.value,
-      rows: input.value.rows.toSpliced(index, 1),
-    };
-    await helpers.setValue(newValue);
-  }
-
-  async function addRow() {
-    const newValue = {
-      ...input.value,
-      rows: [...input.value.rows, { weekday: "", timeWindow: "" }],
-    };
-    await helpers.setValue(newValue);
-  }
 
   function validateField(
     maxLength: number,
@@ -86,59 +70,73 @@ export function OpeningHoursField(props: OpeningHoursFieldProps) {
     };
   }
 
-  const rows: ReactElement[] = [];
-  for (let i = 0; i < amountRows; ++i) {
-    rows.push(
-      <Stack key={`row-${amountRows}-${i + 1}`} gap={0.5}>
-        <Typography level="title-md">{`Zeile ${i + 1}`}</Typography>
-        <Stack direction="row" gap={3}>
-          <InputField
-            sx={{
-              flex: 0.5,
-            }}
-            type="text"
-            name={`${props.name}.rows.${i}.weekday`}
-            label="Wochentag"
-            placeholder={props.english ? "e.g. Monday" : "z.B. Montag"}
-            validate={validateField(75, i)}
-          />
-          <InputField
-            sx={{
-              flex: 1,
-            }}
-            type="text"
-            name={`${props.name}.rows.${i}.timeWindow`}
-            label="Zeitfenster"
-            placeholder={
-              props.english
-                ? "e.g. 08:00 am to 12:00 pm"
-                : "z.B. 08:00 Uhr bis 12:00 Uhr"
-            }
-            validate={validateField(100, i, true)}
-          />
-          {amountRows > 1 && (
-            <IconButton
-              color="danger"
-              variant="outlined"
-              aria-label="Zeile löschen"
-              sx={{ marginTop: "auto" }}
-              onClick={() => deleteRow(i)}
-            >
-              <Delete />
-            </IconButton>
-          )}
-        </Stack>
-      </Stack>,
-    );
+  function createRows(
+    remove: (index: number) => void,
+    setInputElementRef: (ref: HTMLElement, index: number) => void,
+  ) {
+    const rows: ReactElement[] = [];
+    for (let i = 0; i < amountRows; ++i) {
+      rows.push(
+        <Stack key={`row-${amountRows}-${i + 1}`} gap={0.5}>
+          <Typography level="title-md">{`Zeile ${i + 1}`}</Typography>
+          <Stack direction="row" gap={3}>
+            <InputField
+              ref={(el) => {
+                setInputElementRef(el, i);
+              }}
+              sx={{
+                flex: 0.5,
+              }}
+              type="text"
+              name={`${props.name}.rows.${i}.weekday`}
+              label="Wochentag"
+              placeholder={props.english ? "e.g. Monday" : "z.B. Montag"}
+              validate={validateField(75, i)}
+            />
+            <InputField
+              sx={{
+                flex: 1,
+              }}
+              type="text"
+              name={`${props.name}.rows.${i}.timeWindow`}
+              label="Zeitfenster"
+              placeholder={
+                props.english
+                  ? "e.g. 08:00 am to 12:00 pm"
+                  : "z.B. 08:00 Uhr bis 12:00 Uhr"
+              }
+              validate={validateField(100, i, true)}
+            />
+            {amountRows > 1 && (
+              <IconButton
+                color="danger"
+                variant="outlined"
+                aria-label="Zeile löschen"
+                sx={{
+                  marginTop: "1.6875rem",
+                  marginBottom: "auto",
+                }}
+                onClick={() => remove(i)}
+              >
+                <Delete />
+              </IconButton>
+            )}
+          </Stack>
+        </Stack>,
+      );
+    }
+
+    return rows;
   }
 
   return (
     <Stack gap={3} flex={1}>
-      <FieldArray
+      <FieldArrayWithFocus
         name={`${props.name}.rows`}
-        render={() => (
+        valueLength={amountRows}
+        render={({ push, remove, setInputElementRef }) => (
           <Stack gap={3}>
-            {rows}
+            {createRows(remove, setInputElementRef)}
             <Button
               color="primary"
               variant="plain"
@@ -146,7 +144,7 @@ export function OpeningHoursField(props: OpeningHoursFieldProps) {
                 alignSelf: "flex-start",
               }}
               startDecorator={<Add />}
-              onClick={addRow}
+              onClick={() => push({ weekday: "", timeWindow: "" })}
             >
               Weitere Zeile
             </Button>

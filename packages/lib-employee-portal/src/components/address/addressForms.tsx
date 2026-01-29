@@ -21,6 +21,7 @@ import {
   SelectOption,
   StreetField,
   createFieldNameMapper,
+  useFocus,
   useValidateLength,
   validatePipe,
   validateZipCode,
@@ -63,12 +64,19 @@ export function OptionalContactAddressForm(props: {
 }) {
   const { setFieldValue } = useFormikContext();
   const id = useId();
+  const { ref, focus } = useFocus();
 
   if (props.values === undefined) {
     return (
       <Grid xxs={12}>
         <FormAddMoreButton
-          onClick={() => setFieldValue(props.name, createEmptyAddress())}
+          ref={(el) => {
+            ref.current = el;
+          }}
+          onClick={() => {
+            void setFieldValue(props.name, createEmptyAddress());
+            ref.current = null;
+          }}
         >
           Kontaktadresse hinzufügen
         </FormAddMoreButton>
@@ -87,7 +95,10 @@ export function OptionalContactAddressForm(props: {
             props.optional ? (
               <IconButton
                 aria-label="Entfernen"
-                onClick={() => setFieldValue(props.name, undefined, false)}
+                onClick={() => {
+                  void setFieldValue(props.name, undefined, false);
+                  focus();
+                }}
               >
                 <DeleteOutlined color="primary" />
               </IconButton>
@@ -103,7 +114,7 @@ export function OptionalContactAddressForm(props: {
 }
 
 export function BillingAddressForm(
-  props: AddressFormProps & { optional?: boolean },
+  props: AddressFormProps & { optional?: boolean; focus?: () => void },
 ) {
   const validateLength = useValidateLength();
   const name = props.name;
@@ -136,7 +147,10 @@ export function BillingAddressForm(
             <IconButton
               aria-label="Entfernen"
               color="primary"
-              onClick={() => setFieldValue(name, undefined, false)}
+              onClick={() => {
+                void setFieldValue(name, undefined, false);
+                props.focus?.();
+              }}
             >
               <DeleteOutlined color="primary" />
             </IconButton>
@@ -145,6 +159,7 @@ export function BillingAddressForm(
       )}
       <Grid xxs={12}>
         <InputField
+          autoFocus
           name={fieldName("differentName")}
           label="Abweichender Empfänger"
           placeholder="Wenn der Name von der Kontaktadresse abweicht"
@@ -161,16 +176,23 @@ export function OptionalBillingAddressForm(props: {
   values?: BaseAddressFormInputs;
 }) {
   const { setFieldValue } = useFormikContext();
+  const { ref, focus } = useFocus();
 
   if (props.values === undefined) {
     return (
       <Grid xxs={12}>
         <Button
+          ref={(el) => {
+            ref.current = el;
+          }}
           variant="plain"
           size="sm"
           sx={{ padding: 0, margin: 0, "--Button-minHeight": 0 }}
           startDecorator={<Add />}
-          onClick={() => setFieldValue(props.name, createEmptyAddress())}
+          onClick={() => {
+            void setFieldValue(props.name, createEmptyAddress());
+            ref.current = null;
+          }}
         >
           Abweichende Rechnungsadresse eingeben
         </Button>
@@ -179,7 +201,12 @@ export function OptionalBillingAddressForm(props: {
   }
 
   return (
-    <BillingAddressForm optional name={props.name} type={props.values.type} />
+    <BillingAddressForm
+      optional
+      name={props.name}
+      type={props.values.type}
+      focus={focus}
+    />
   );
 }
 

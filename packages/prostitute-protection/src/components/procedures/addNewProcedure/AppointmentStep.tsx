@@ -12,33 +12,50 @@ import {
   SidebarContent,
   SidebarForm,
 } from "@eshg/lib-employee-portal";
-import { SelectField, buildEnumOptions } from "@eshg/lib-portal";
+import {
+  OptionalFieldValue,
+  SelectField,
+  buildEnumOptions,
+} from "@eshg/lib-portal";
+import { ApiAppointmentBookingType } from "@eshg/prostitute-protection-api";
 
 import { CONSULTATION_TYPE_VALUES } from "../../../shared/constants";
 import { AppointmentFields } from "../../form/AppointmentFields";
+import { ConsultantSelectField } from "../../form/ConsultantSelectField";
 
 import { FieldProps, LayoutProps } from "./useAddNewProcedureSidebar";
 
-export function AppointmentStep(props: FieldProps) {
-  return (
-    <Layout {...props}>
-      <Fields />
-    </Layout>
-  );
+interface AppointmentStepProps extends FieldProps {
+  appointmentBookingType: OptionalFieldValue<ApiAppointmentBookingType>;
 }
 
-function Fields() {
+export function AppointmentStep(props: AppointmentStepProps) {
   return (
-    <Stack gap={2} mt={2}>
-      <SelectField
-        autoFocus
-        name="consultationType"
-        label="Beratungstyp"
-        options={buildEnumOptions(CONSULTATION_TYPE_VALUES)}
-      />
-      <Divider sx={{ marginBlock: 1 }} />
-      <AppointmentFields isCreation />
-    </Stack>
+    <Layout {...props}>
+      <Stack gap={2} mt={2}>
+        <SelectField
+          autoFocus
+          name="consultationType"
+          label="Beratungstyp"
+          options={buildEnumOptions(CONSULTATION_TYPE_VALUES)}
+        />
+        <ConsultantSelectField
+          name="consultantId"
+          options={props.allAssignableUsers}
+          required={
+            props.appointmentBookingType !==
+            ApiAppointmentBookingType.AppointmentBlock
+              ? "Bitte einen Berater auswählen."
+              : undefined
+          }
+        />
+        <Divider sx={{ marginBlock: 1 }} />
+        <AppointmentFields
+          isCreation
+          freeAppointments={props.freeAppointments}
+        />
+      </Stack>
+    </Layout>
   );
 }
 

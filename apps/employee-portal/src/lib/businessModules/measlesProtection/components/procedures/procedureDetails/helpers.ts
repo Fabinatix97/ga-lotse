@@ -25,6 +25,7 @@ import {
   ApiUpdateProcedureRequest,
 } from "@eshg/measles-protection-api";
 
+import { MeaslesProtectionFacilityFormValues } from "@/lib/businessModules/measlesProtection/components/procedures/procedureDetails/NewFacilitySidebar";
 import { ReferenceFacilityWithOptionalMeaslesFacilityType } from "@/lib/shared/components/facilitySidebar/FacilityDetailsSidebar";
 import { DefaultFacilityFormValues } from "@/lib/shared/components/facilitySidebar/create/FacilityForm";
 import { mapApiContactPersonToForm } from "@/lib/shared/helpers/facilityUtils";
@@ -117,10 +118,9 @@ export function validateProcedure(
   proc: ApiMeaslesProtectionProcedure | ApiDraftMeaslesProcedure,
 ) {
   let errors: (keyof typeof DRAFT_PROCEDURE_ERROR_MESSAGES)[] = [];
-  if (
-    !isAdult(proc.affectedPerson.dateOfBirth) &&
-    (proc.custodians?.length ?? 0) < 1
-  ) {
+  const numberCustodians =
+    (proc.custodians?.length ?? 0) + (proc.custodiansWithoutDoB?.length ?? 0);
+  if (!isAdult(proc.affectedPerson.dateOfBirth) && numberCustodians < 1) {
     errors = [...errors, "missingCustodian"];
   }
   if (!proc.facility) {
@@ -209,7 +209,7 @@ export function formatName(
 
 export function mapToDefaultFacilityFormValues(
   facility: ReferenceFacilityWithOptionalMeaslesFacilityType,
-): DefaultFacilityFormValues {
+): MeaslesProtectionFacilityFormValues {
   return {
     name: facility.name,
     contactAddress: mapApiAddressToForm(facility.contactAddress!),

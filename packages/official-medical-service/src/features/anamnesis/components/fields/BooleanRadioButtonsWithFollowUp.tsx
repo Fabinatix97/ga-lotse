@@ -13,8 +13,7 @@ import { FieldSetControl, RequiresChildren } from "@eshg/lib-portal";
 import { BooleanRadioField, BooleanRadioFieldProps } from "./BooleanRadioField";
 
 interface BooleanRadioButtonsWithFollowUpProps
-  extends Omit<BooleanRadioFieldProps, "label" | "children">,
-    RequiresChildren {
+  extends Omit<BooleanRadioFieldProps, "label" | "children">, RequiresChildren {
   label: string;
   sx?: SxProps;
   followUpOn: boolean;
@@ -29,8 +28,7 @@ export function BooleanRadioButtonsWithFollowUp(
   return <MemoizedBooleanRadioButtonsWithFollowUp value={value} {...props} />;
 }
 
-interface InnerBooleanRadioButtonsWithFollowUpProps
-  extends BooleanRadioButtonsWithFollowUpProps {
+interface InnerBooleanRadioButtonsWithFollowUpProps extends BooleanRadioButtonsWithFollowUpProps {
   value: boolean;
 }
 const MemoizedBooleanRadioButtonsWithFollowUp = memo(

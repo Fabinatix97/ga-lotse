@@ -19,7 +19,10 @@ import {
 
 import { useProstituteProtectionApiClients } from "../../contexts/ProstituteProtectionApi";
 
-import { proceduresQueryKey } from "./apiQueryKeys";
+import {
+  appointmentBlockApiQueryKey,
+  proceduresQueryKey,
+} from "./apiQueryKeys";
 
 type PageRequest = Pick<PaginationProps, "pageSize" | "pageNumber">;
 
@@ -66,4 +69,20 @@ export function useGetProcedureOptions(procedureId: string) {
 export function useGetProcedure(procedureId: string) {
   const options = useGetProcedureOptions(procedureId);
   return useSuspenseQuery(options);
+}
+
+export function useGetFreeAppointments(procedureId: string) {
+  const { prostituteProtectionApi } = useProstituteProtectionApiClients();
+  return queryOptions({
+    queryKey: appointmentBlockApiQueryKey([
+      "getFreeAppointmentsForProcedure",
+      procedureId,
+    ]),
+    queryFn: () => {
+      return prostituteProtectionApi.getFreeAppointmentsForProcedure(
+        procedureId,
+      );
+    },
+    select: (data) => data.appointments,
+  });
 }

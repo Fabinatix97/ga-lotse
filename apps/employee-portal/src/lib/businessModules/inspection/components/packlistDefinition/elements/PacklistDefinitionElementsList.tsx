@@ -15,9 +15,10 @@ import {
 import { Add } from "@mui/icons-material";
 import { Box, Button, Stack, Typography } from "@mui/joy";
 import { useFormikContext } from "formik";
+import { useRef } from "react";
 import { v4 as uuidv4 } from "uuid";
 
-import { FieldArrayWithFocus as FieldArray } from "@eshg/lib-portal";
+import { FieldArrayWithFocus } from "@eshg/lib-portal";
 
 import { FormPacklistDefinitionRevision } from "@/lib/businessModules/inspection/api/mutations/packlistDefinition";
 
@@ -31,6 +32,7 @@ export function PacklistDefinitionElementsList({
   readOnlyMode,
 }: Readonly<PacklistDefinitionElementsListProps>) {
   const { values } = useFormikContext<FormPacklistDefinitionRevision>();
+  const fallbackRef = useRef<HTMLElement>(null);
 
   if (readOnlyMode) {
     return values.elements.map((element, elementIndex) => (
@@ -46,7 +48,11 @@ export function PacklistDefinitionElementsList({
   return (
     <Stack spacing={2}>
       <Typography level="title-sm">Einträge</Typography>
-      <FieldArray valueLength={values.elements.length} name="elements">
+      <FieldArrayWithFocus
+        valueLength={values.elements.length}
+        name="elements"
+        fallbackFocusInputElement={fallbackRef.current ?? undefined}
+      >
         {({ push, remove, replace, move, setInputElementRef }) => (
           <>
             <DragDropContext
@@ -102,6 +108,9 @@ export function PacklistDefinitionElementsList({
             </DragDropContext>
 
             <Button
+              ref={(el) => {
+                fallbackRef.current = el;
+              }}
               disabled={readOnlyMode}
               variant="plain"
               startDecorator={<Add />}
@@ -112,7 +121,7 @@ export function PacklistDefinitionElementsList({
             </Button>
           </>
         )}
-      </FieldArray>
+      </FieldArrayWithFocus>
     </Stack>
   );
 }

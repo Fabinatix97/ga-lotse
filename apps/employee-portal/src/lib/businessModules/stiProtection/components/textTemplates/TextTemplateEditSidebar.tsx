@@ -29,13 +29,11 @@ interface TextTemplateEditSidebarProps {
   onClose: () => void;
 }
 
-interface TextTemplateEditSidebarCreateProps
-  extends TextTemplateEditSidebarProps {
+interface TextTemplateEditSidebarCreateProps extends TextTemplateEditSidebarProps {
   onCreate: (values: ApiCreateTextTemplateRequest) => Promise<void>;
 }
 
-interface TextTemplateEditSidebarEditProps
-  extends TextTemplateEditSidebarProps {
+interface TextTemplateEditSidebarEditProps extends TextTemplateEditSidebarProps {
   onUpdate: (values: ApiTextTemplate) => Promise<void>;
   initialValues: ApiTextTemplate | undefined;
 }

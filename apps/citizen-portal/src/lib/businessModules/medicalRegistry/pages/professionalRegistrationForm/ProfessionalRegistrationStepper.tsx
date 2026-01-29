@@ -52,7 +52,7 @@ export function ProfessionalRegistrationStepper(
     <MultiStepForm<MedicalRegistryCreateProcedureFormValues>
       steps={steps(changeType)}
     >
-      {({ Outlet, currentStep, totalSteps, titleRef }) => (
+      {({ Outlet, currentStep, totalSteps }) => (
         <>
           <ConfirmLeaveDirtyFormEffect
             description={t("leave_form.message")}
@@ -60,7 +60,6 @@ export function ProfessionalRegistrationStepper(
             confirmLabel={t("leave_form.confirm")}
           />
           <PageTitle
-            titleRef={titleRef}
             titleId={titleId}
             toolbar={
               <StepIndicator
@@ -72,7 +71,11 @@ export function ProfessionalRegistrationStepper(
           >
             {t("navigation.pageTitle")}
           </PageTitle>
-          <FormPlus aria-labelledby={titleId} aria-describedby={stepperLabelId}>
+          <FormPlus
+            autoFocus
+            aria-labelledby={titleId}
+            aria-describedby={stepperLabelId}
+          >
             <TwoColumnGrid
               content={<Outlet {...props.formikProps} />}
               sidePanel={<ProfessionalRegistrationSidePanel />}

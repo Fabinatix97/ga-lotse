@@ -32,7 +32,11 @@ import { geoShapeTableColumns } from "./columns";
 
 function ImportGeoShapesButton({ onClick }: { onClick: () => void }) {
   return (
-    <Button startDecorator={<FileUploadOutlinedIcon />} onClick={onClick}>
+    <Button
+      autoFocus
+      startDecorator={<FileUploadOutlinedIcon />}
+      onClick={onClick}
+    >
       Geo-Shapes importieren
     </Button>
   );

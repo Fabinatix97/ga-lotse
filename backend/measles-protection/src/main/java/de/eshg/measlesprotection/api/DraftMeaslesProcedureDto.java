@@ -22,6 +22,7 @@ public record DraftMeaslesProcedureDto(
     @NotNull Instant createdAt,
     @NotNull @Valid AffectedPersonDto affectedPerson,
     @Valid List<CustodianDto> custodians,
+    @Valid List<CustodianWithoutDateOfBirthDto> custodiansWithoutDoB,
     @Valid FacilityDto facility,
     @Valid ReportDataDto reportData,
     @NotNull ProcedureStatusDto procedureStatus,

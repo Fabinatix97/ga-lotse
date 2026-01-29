@@ -44,8 +44,7 @@ enum FormNames {
   VACCINATION = "vaccination",
 }
 
-interface TravelMedicineAppointmentStandardDurationFormValues
-  extends FormikValues {
+interface TravelMedicineAppointmentStandardDurationFormValues extends FormikValues {
   [FormNames.CONSULTATION]: OptionalFieldValue<number>;
   [FormNames.VACCINATION]: OptionalFieldValue<number>;
 }

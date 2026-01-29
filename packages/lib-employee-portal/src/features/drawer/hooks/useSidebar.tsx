@@ -18,8 +18,9 @@ interface UseParameterlessSidebarResult extends CommonUseSidebarResult {
   open: () => void;
 }
 
-interface UseParameterizedSidebarResult<TSidebarProps extends DrawerProps>
-  extends CommonUseSidebarResult {
+interface UseParameterizedSidebarResult<
+  TSidebarProps extends DrawerProps,
+> extends CommonUseSidebarResult {
   open: (customOverlayProps: CustomSidebarProps<TSidebarProps>) => void;
 }
 

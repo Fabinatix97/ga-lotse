@@ -39,6 +39,7 @@ export const SidebarForm = forwardRef<SidebarFormHandle, SidebarFormProps>(
 
     return (
       <FormPlus
+        autoFocus
         role="form"
         aria-labelledby={props["aria-labelledby"] ?? context?.labelledBy}
         {...props}

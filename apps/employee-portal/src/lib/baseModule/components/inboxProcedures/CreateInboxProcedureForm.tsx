@@ -90,7 +90,7 @@ export function CreateInboxProcedureForm(props: CreateInboxProcedureFormProps) {
     >
       {({ handleSubmit, isSubmitting, values }) => {
         return (
-          <FormSheet onSubmit={handleSubmit}>
+          <FormSheet autoFocus onSubmit={handleSubmit}>
             <Typography level="h3" component="h2">
               Neuen Posteingangsvorgang anlegen
             </Typography>

@@ -76,7 +76,11 @@ export function LaboratoryTestExamination(
       onSubmit={onSubmit}
     >
       {({ values }) => (
-        <FormPlus sx={{ height: "100%" }} aria-labelledby="labtest-title">
+        <FormPlus
+          autoFocus
+          sx={{ height: "100%" }}
+          aria-labelledby="labtest-title"
+        >
           <ConfirmLeaveDirtyFormEffect
             onSaveMutation={{
               mutationOptions: upsertLaboratoryTestOptions,

@@ -22,7 +22,7 @@ spec:
       name: keycloak
 
 ---
-{{ include "lib.certificate" (list .Values.keycloak.certificate.privateSecret .Values.domains.hosts.keycloakInternal .Values.domains.internalClusterIssuer .Release.Namespace .Values.development.injectSelfSignedCA) }}
+{{ include "lib.certificate" (list .Values.keycloak.certificate.privateSecret .Values.domains.hosts.keycloakInternal .Values.domains.clusterIssuers.internal .Release.Namespace .Values.development.injectSelfSignedCA) }}
 {{ if eq .Values.ingress.type "openshift" }}
 
 kind: Ingress
@@ -297,6 +297,7 @@ data:
   opendata-module-client-secret: {{ include "getOrCreateSecretValue" (list $ "keycloak-client-secrets" "opendata-module-client-secret") }}
   meds-abroad-module-client-secret: {{ include "getOrCreateSecretValue" (list $ "keycloak-client-secrets" "meds-abroad-module-client-secret") }}
   prostitute-protection-module-client-secret: {{ include "getOrCreateSecretValue" (list $ "keycloak-client-secrets" "prostitute-protection-module-client-secret") }}
+  infection-briefing-module-client-secret: {{ include "getOrCreateSecretValue" (list $ "keycloak-client-secrets" "infection-briefing-module-client-secret") }}
   {{- range $k, $v := .Values.keycloak.additionalModuleClientSecrets }}
   {{ $v }}: {{ include "getOrCreateSecretValue" (list $ "keycloak-client-secrets" $v) }}
   {{- end }}

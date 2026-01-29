@@ -38,8 +38,7 @@ export function useCreateEvaluationFromTemplateSidebar(): UseSidebarWithFormRefR
   });
 }
 
-interface CreateEvaluationFromTemplateSidebarProps
-  extends SidebarWithFormRefProps {
+interface CreateEvaluationFromTemplateSidebarProps extends SidebarWithFormRefProps {
   evaluationTemplateId: string;
 }
 

@@ -19,8 +19,7 @@ import { CreateEvaluationStepFormModel } from "@/lib/businessModules/statistics/
 import { SidebarStepContentProps } from "@/lib/shared/components/SidebarStepper/sidebarStep";
 import { TimeSpanField } from "@/lib/shared/components/formFields/TimeSpanField";
 
-interface CreateEvaluationStepProps
-  extends SidebarStepContentProps<CreateEvaluationStepFormModel> {
+interface CreateEvaluationStepProps extends SidebarStepContentProps<CreateEvaluationStepFormModel> {
   evaluationTemplateDetails: EvaluationTemplateDetails;
 }
 

@@ -36,8 +36,6 @@ import org.slf4j.LoggerFactory;
 public class X509Utils {
   private static final Logger logger = LoggerFactory.getLogger(X509Utils.class);
 
-  public static final String ESHGACTOR_BUNDLE_NAME = "eshgactor";
-
   private static final String BEGIN_CERT = "-----BEGIN CERTIFICATE-----";
   private static final String END_CERT = "-----END CERTIFICATE-----";
 

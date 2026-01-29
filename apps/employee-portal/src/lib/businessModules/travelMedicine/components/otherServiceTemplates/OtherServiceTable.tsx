@@ -99,6 +99,7 @@ export function OtherServiceTable() {
         <ButtonBar
           right={
             <Button
+              autoFocus
               startDecorator={<AddIcon />}
               onClick={() =>
                 otherServiceSidebar.open({

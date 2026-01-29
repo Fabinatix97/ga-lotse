@@ -163,7 +163,8 @@ type KnownSources =
   | "DENTAL"
   | "OFFICIAL_MEDICAL_SERVICE"
   | "MEDS_ABROAD"
-  | "PROSTITUTE_PROTECTION";
+  | "PROSTITUTE_PROTECTION"
+  | "INFECTION_BRIEFING";
 
 function OpenDataVersionInfo({ version }: { version: ApiVersion }) {
   const { t } = useTranslation(["opendata/details", "opendata/shared"]);

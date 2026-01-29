@@ -5,6 +5,7 @@
 
 package de.eshg.inspection.objecttype.api;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -20,4 +21,7 @@ public record ObjectTypeDto(
     @Min(1) @Max(99) Integer standardDuration,
     @Min(0) @Max(9999) Integer standardBufferTime,
     @NotNull boolean emailAnnouncement,
-    String legalBasis) {}
+    String legalBasis,
+    @Schema(nullable = true) @JsonInclude(JsonInclude.Include.NON_NULL) UUID designatedAssigneeId,
+    @Schema(nullable = true) @JsonInclude(JsonInclude.Include.NON_NULL)
+        String designatedAssigneeName) {}

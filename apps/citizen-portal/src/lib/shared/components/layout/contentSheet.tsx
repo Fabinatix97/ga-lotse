@@ -47,8 +47,7 @@ export function ContentSheet(props: ContentSheetProps) {
 }
 
 interface ContentSheetTitleProps
-  extends Pick<TypographyProps, "sx">,
-    RequiresChildren {
+  extends Pick<TypographyProps, "sx">, RequiresChildren {
   "data-testid"?: string;
 }
 

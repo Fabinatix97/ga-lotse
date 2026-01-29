@@ -10,8 +10,7 @@ import { SyncFormButtonBar, SyncFormButtonBarProps } from "./SyncFormButtonBar";
 import { SyncFormGrid } from "./SyncFormGrid";
 
 interface CentralFileSyncFormProps
-  extends SyncFormButtonBarProps,
-    PropsWithChildren {
+  extends SyncFormButtonBarProps, PropsWithChildren {
   title: string;
 }
 

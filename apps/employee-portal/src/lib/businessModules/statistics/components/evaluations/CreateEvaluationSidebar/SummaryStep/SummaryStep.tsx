@@ -23,8 +23,7 @@ import { SidebarStepContentProps } from "@/lib/shared/components/SidebarStepper/
 import { TimeSpan } from "@/lib/shared/components/formFields/TimeSpanField";
 import { formatDateRangeNumeric } from "@/lib/shared/helpers/dateTime";
 
-interface SummaryStepProps
-  extends SidebarStepContentProps<SummaryStepFormModel> {
+interface SummaryStepProps extends SidebarStepContentProps<SummaryStepFormModel> {
   isEvaluationTemplateBranch: boolean;
   timeSpan: TimeSpan;
   anonymized: AnonymizedFieldValue;
@@ -55,8 +54,7 @@ export function SummaryStep(props: SummaryStepProps) {
   );
 }
 
-interface SummaryStepFromTemplateProps
-  extends SidebarStepContentProps<SummaryStepFormModel> {
+interface SummaryStepFromTemplateProps extends SidebarStepContentProps<SummaryStepFormModel> {
   timeSpan: TimeSpan;
   anonymized: AnonymizedFieldValue;
   evaluationTemplateId: string;

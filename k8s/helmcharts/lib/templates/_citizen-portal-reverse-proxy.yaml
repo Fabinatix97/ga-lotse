@@ -23,7 +23,7 @@ spec:
 
 ---
 
-{{ include "lib.certificate" (list .Values.citizenportal.certificate.secret .Values.domains.hosts.citizenportal .Values.domains.clusterIssuer .Release.Namespace .Values.development.injectSelfSignedCA) }}
+{{ include "lib.certificate" (list .Values.citizenportal.certificate.secret .Values.domains.hosts.citizenportal .Values.domains.clusterIssuers.public .Release.Namespace .Values.development.injectSelfSignedCA) }}
 {{ include "ingress" (list "citizen-portal" .Values.ingress.type .Values.domains.hosts.citizenportal "proxy-incoming" "citizen-portal-reverse-proxy" .Release.Namespace)}}
 
 {{- if .Values.monitoring.httpChecks.enabled -}}

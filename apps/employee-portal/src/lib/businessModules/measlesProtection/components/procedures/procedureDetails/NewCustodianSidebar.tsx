@@ -3,19 +3,29 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { isEmptyish } from "remeda";
+
 import { ApiGetReferencePersonResponse } from "@eshg/base-api";
 import {
   DefaultPersonFormValues,
   PersonSidebar,
   PersonSidebarProps,
+  SearchCustodianForm,
   SidebarWithFormRefProps,
   UseSidebarWithFormRefResult,
+  defaultPersonFormValues,
+  defaultSearchPersonValues,
   useSidebarWithFormRef,
 } from "@eshg/lib-employee-portal";
 
-import { useAddCustodian } from "@/lib/businessModules/measlesProtection/api/mutations/procedures";
+import {
+  useAddCustodian,
+  useAddCustodianWithoutDateOfBirth,
+} from "@/lib/businessModules/measlesProtection/api/mutations/procedures";
+import { CustodianForm } from "@/lib/businessModules/measlesProtection/components/procedures/procedureDetails/CustodianForm";
 import {
   mapToAddCustodianRequest,
+  mapToAddCustodianWithoutDateOfBirthRequest,
   mapToAffectedPerson,
 } from "@/lib/businessModules/measlesProtection/shared/helpers";
 
@@ -29,6 +39,7 @@ interface NewCustodianSidebarProps extends SidebarWithFormRefProps {
 
 function NewCustodianSidebar(props: Readonly<NewCustodianSidebarProps>) {
   const addCustodian = useAddCustodian();
+  const addCustodianWithoutDateOfBirth = useAddCustodianWithoutDateOfBirth();
 
   async function createProcedureWithNewPerson(person: DefaultPersonFormValues) {
     const request = mapToAddCustodianRequest(person);
@@ -48,12 +59,30 @@ function NewCustodianSidebar(props: Readonly<NewCustodianSidebarProps>) {
     });
   }
 
+  async function createProcedureWithCustodianWithoutDateOfBirth(
+    createInputs: DefaultPersonFormValues,
+  ) {
+    const request = mapToAddCustodianWithoutDateOfBirthRequest(createInputs);
+    await addCustodianWithoutDateOfBirth.mutateAsync({
+      procedureId: props.procedureId,
+      data: request,
+    });
+  }
+
+  async function handleCreate(createInputs: DefaultPersonFormValues) {
+    if (isEmptyish(createInputs.dateOfBirth)) {
+      await createProcedureWithCustodianWithoutDateOfBirth(createInputs);
+    } else {
+      await createProcedureWithNewPerson(createInputs);
+    }
+  }
+
   const personSidebarProps: PersonSidebarProps = {
     onSelect: async (values) => {
       await createProcedureWithExistingPerson(values.person);
     },
     onCreate: async (values) => {
-      await createProcedureWithNewPerson(values.createInputs);
+      await handleCreate(values.createInputs);
     },
     title: "PSB hinzufügen",
     submitLabel: "Anlegen",
@@ -61,5 +90,13 @@ function NewCustodianSidebar(props: Readonly<NewCustodianSidebarProps>) {
     ...props,
   };
 
-  return <PersonSidebar {...personSidebarProps} />;
+  return (
+    <PersonSidebar
+      searchFormComponent={SearchCustodianForm}
+      createFormComponent={CustodianForm}
+      initialSearchState={defaultSearchPersonValues()}
+      initialCreateState={defaultPersonFormValues}
+      {...personSidebarProps}
+    />
+  );
 }

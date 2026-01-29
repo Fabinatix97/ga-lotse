@@ -59,8 +59,11 @@ domains:
     adminportal: admin-portal.cs.my-ga-lotse.de
     keycloak: keycloak-central-internal.cs.my-ga-lotse.de
     keycloakInternal: keycloak-central-internal.cs.my-ga-lotse.de
-  clusterIssuer: letsencrypt-production
-  internalClusterIssuer: letsencrypt-production-internal
+  clusterIssuers:
+    public: letsencrypt-production
+    publicClient: letsencrypt-production-client-certs
+    publicServer: letsencrypt-production-server-certs
+    internal: letsencrypt-production-internal
 
 databaseSecurity:
   enabled: true
@@ -255,6 +258,8 @@ businessmodules:
     enabled: false
   prostituteprotection:
     enabled: false
+  infectionbriefing:
+    enabled: false
 
 springBootStartupProbe:
   enabled: true
@@ -343,3 +348,5 @@ secrets:
 backend:
   upload:
     maxFileUploadSizeInBytes: "26214400" # 25MB
+
+createSplitCertificates: false

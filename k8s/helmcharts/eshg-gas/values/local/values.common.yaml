@@ -83,6 +83,8 @@ businessmodules:
     enabled: true
   prostituteprotection:
     enabled: true
+  infectionbriefing:
+    enabled: true
 
 initContainerSecurityContext:
   seLinuxOptions:
@@ -97,3 +99,5 @@ podSecurityContext:
 
 development:
   alwaysCreateDebugLogMount: false
+
+createSplitCertificates: true

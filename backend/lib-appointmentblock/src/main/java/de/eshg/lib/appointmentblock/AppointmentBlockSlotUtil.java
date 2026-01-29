@@ -353,6 +353,8 @@ public class AppointmentBlockSlotUtil {
       case OFFICIAL_MEDICAL_SERVICE_LONG -> "Amtsärztliches Gutachten";
       case MEDS_ABROAD_CERTIFICATION -> "Reisen mit BTM - Beglaubigung";
       case PROSTITUTE_PROTECTION_CONSULTATION -> "Beratung";
+      case INFECTION_BRIEFING_NEW -> "Erstbescheinigung";
+      case INFECTION_BRIEFING_REPLACEMENT -> "Ersatzbescheinigung";
     };
   }
 

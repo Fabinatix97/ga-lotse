@@ -12,6 +12,7 @@ import java.time.Duration;
 import java.util.List;
 import org.springframework.boot.autoconfigure.ssl.PemSslBundleProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.util.Assert;
 
 /**
  * @param inbound configures connectivity for incoming encrypted data
@@ -28,6 +29,8 @@ public record SpatzConfigurationProperties(
     DnsServerProperties dns,
     SelfSignedConfiguration selfSigned,
     SslConfiguration ssl,
+    SslConfiguration serverSsl,
+    SslConfiguration clientSsl,
     RelayConfiguration relay,
     ProxyClientConfiguration http) {
 
@@ -38,6 +41,8 @@ public record SpatzConfigurationProperties(
       DnsServerProperties dns,
       SelfSignedConfiguration selfSigned,
       SslConfiguration ssl,
+      SslConfiguration serverSsl,
+      SslConfiguration clientSsl,
       RelayConfiguration relay,
       ProxyClientConfiguration http) {
     this.actor = actor;
@@ -46,8 +51,24 @@ public record SpatzConfigurationProperties(
     this.dns = dns;
     this.selfSigned = selfSigned;
     this.ssl = ssl != null ? ssl : new SslConfiguration();
+    this.serverSsl = serverSsl;
+    this.clientSsl = clientSsl;
     this.relay = relay;
     this.http = http;
+
+    if (!selfSigned.isEnabled()) {
+      if (ssl == null) {
+        Assert.notNull(
+            serverSsl, "If ssl is not configured, serverSsl and clientSsl must be configured");
+        Assert.notNull(
+            clientSsl, "If ssl is not configured, serverSsl and clientSsl must be configured");
+      } else {
+        Assert.isNull(
+            serverSsl, "If ssl is configured, serverSsl and clientSsl must not be configured");
+        Assert.isNull(
+            clientSsl, "If ssl is configured, serverSsl and clientSsl must not be configured");
+      }
+    }
   }
 
   /**

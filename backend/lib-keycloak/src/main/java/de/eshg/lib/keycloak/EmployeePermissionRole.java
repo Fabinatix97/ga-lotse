@@ -56,6 +56,10 @@ public enum EmployeePermissionRole implements PermissionRole {
       LEADER_KEYCLOAK_NAME,
       LEADER_DESCRIPTION.formatted("Prostituiertenschutzgesetz"),
       Module.PROSTITUTE_PROTECTION),
+  INFECTION_BRIEFING_LEADER(
+      LEADER_KEYCLOAK_NAME,
+      LEADER_DESCRIPTION.formatted("Belehrung nach Infektionsschutz"),
+      Module.INFECTION_BRIEFING),
 
   BASE_PERSONS_READ(
       READ_PERMISSION_TEMPLATE.formatted("Personen (Stammdaten-Konverter)"),
@@ -406,6 +410,13 @@ public enum EmployeePermissionRole implements PermissionRole {
       BASE_PERSONS_READ, // required to access progress entries
       BASE_CALENDAR_BUSINESS_EVENTS_WRITE),
 
+  INFECTION_BRIEFING_ADMIN(
+      ADMIN_KEYCLOAK_NAME.formatted("Belehrung nach Infektionsschutz"),
+      "Standardberechtigung für das Fachmodul",
+      Module.INFECTION_BRIEFING,
+      BASE_PERSONS_READ, // required to access progress entries
+      BASE_CALENDAR_BUSINESS_EVENTS_WRITE),
+
   SCHOOL_ENTRY_VACCINATION_CHECK(
       READ_PERMISSION_TEMPLATE.formatted("Impfstatus"),
       "Berechtigung zum Abrufen des Impfstatus",
@@ -472,7 +483,8 @@ public enum EmployeePermissionRole implements PermissionRole {
     OFFICIAL_MEDICAL_SERVICE("Amtsärztlicher Dienst"),
     CONFIGURATION("Konfigurator"),
     MEDS_ABROAD("Reisen mit Betäubungsmitteln"),
-    PROSTITUTE_PROTECTION("Prostituiertenschutzgesetz");
+    PROSTITUTE_PROTECTION("Prostituiertenschutzgesetz"),
+    INFECTION_BRIEFING("Belehrung nach Infektionsschutz");
 
     private final String displayName;
 

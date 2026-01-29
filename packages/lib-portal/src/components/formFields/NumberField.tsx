@@ -15,7 +15,8 @@ import { BaseField, FieldComponentProps, useBaseField } from "./BaseField";
 import { FieldVariantProps } from "./types";
 
 export interface NumberFieldProps
-  extends FieldProps<OptionalFieldValue<number>>,
+  extends
+    FieldProps<OptionalFieldValue<number>>,
     FieldComponentProps,
     FieldVariantProps {
   input?: (props: InputProps) => ReactNode;

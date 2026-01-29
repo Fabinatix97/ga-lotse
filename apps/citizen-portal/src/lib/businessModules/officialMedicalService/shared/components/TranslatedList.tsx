@@ -7,8 +7,10 @@ import { List, ListItem, ListProps } from "@mui/joy";
 
 import { useTranslation } from "@/lib/i18n/client";
 
-interface TranslatedListProps
-  extends Pick<ListProps, "marker" | "component" | "sx"> {
+interface TranslatedListProps extends Pick<
+  ListProps,
+  "marker" | "component" | "sx"
+> {
   ns: string;
   translationKey: string;
 }

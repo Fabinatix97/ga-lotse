@@ -13,6 +13,7 @@ export function CreateProphylaxisSessionButton() {
 
   return (
     <Button
+      autoFocus
       startDecorator={<Add />}
       onClick={createProphylaxisSessionSidebar.open}
     >

@@ -176,10 +176,9 @@ export function ProstituteProtectionProceduresTable() {
           <DataTable
             data={elements}
             columns={getProceduresColumns({
-              onAbortProcedure: (id, version) =>
+              onAbortProcedure: (id) =>
                 setConfirmAbort({
                   procedureId: id,
-                  apiAbortProcedureRequest: { version },
                 }),
             })}
             rowNavigation={{

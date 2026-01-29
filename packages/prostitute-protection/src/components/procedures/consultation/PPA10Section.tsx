@@ -5,10 +5,7 @@
 
 import { CheckboxField, FieldSetControl } from "@eshg/lib-portal";
 
-import {
-  CONSULTATION_FIELD_NAME,
-  OPTIONAL_TAG,
-} from "../../../shared/constants";
+import { CONSULTATION_FIELD_NAME } from "../../../shared/constants";
 
 import { Section, SectionColumn, SectionGridContainer } from "./Section";
 
@@ -43,11 +40,11 @@ export function PPA10Section() {
           <SectionColumn>
             <CheckboxField
               name="referral"
-              label={`${CONSULTATION_FIELD_NAME.referral} ${OPTIONAL_TAG}`}
+              label={CONSULTATION_FIELD_NAME.referral}
             />
             <CheckboxField
               name="clearing"
-              label={`${CONSULTATION_FIELD_NAME.clearing} ${OPTIONAL_TAG}`}
+              label={CONSULTATION_FIELD_NAME.clearing}
             />
           </SectionColumn>
         </SectionGridContainer>

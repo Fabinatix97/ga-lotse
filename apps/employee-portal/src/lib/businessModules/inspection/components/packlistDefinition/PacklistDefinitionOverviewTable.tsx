@@ -156,6 +156,7 @@ export function PacklistDefinitionOverviewTable() {
         <ButtonBar
           right={
             <Button
+              autoFocus
               type="submit"
               startDecorator={<Add />}
               onClick={openCreatePacklist}

@@ -73,7 +73,13 @@ export function FacilityWebSearchForm(
       </Typography>
       <Formik initialValues={props.initialValues} onSubmit={onSubmit}>
         {({ isSubmitting }) => (
-          <Grid container columnSpacing={2} rowSpacing={3} component={FormPlus}>
+          <Grid
+            container
+            autoFocus
+            columnSpacing={2}
+            rowSpacing={3}
+            component={FormPlus}
+          >
             <Grid xs={12}>
               <InputField
                 name="name"

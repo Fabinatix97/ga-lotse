@@ -75,6 +75,8 @@ public class ScreeningExaminationResult extends ExaminationResult {
 
   private boolean plaqueTreatment;
 
+  private boolean primaryDentitionObstructsSecondary;
+
   private boolean inspectionAppointment;
 
   @JdbcType(PostgreSQLEnumJdbcType.class)
@@ -253,6 +255,14 @@ public class ScreeningExaminationResult extends ExaminationResult {
 
   public void setPlaqueTreatment(boolean plaqueTreatment) {
     this.plaqueTreatment = plaqueTreatment;
+  }
+
+  public boolean isPrimaryDentitionObstructsSecondary() {
+    return primaryDentitionObstructsSecondary;
+  }
+
+  public void setPrimaryDentitionObstructsSecondary(boolean primaryDentitionObstructsSecondary) {
+    this.primaryDentitionObstructsSecondary = primaryDentitionObstructsSecondary;
   }
 
   public boolean isInspectionAppointment() {

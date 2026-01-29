@@ -122,6 +122,7 @@ export function TextBlocksTable({
               tableControl={tableControl}
               searchParamName="searchQuery"
               label="Suche"
+              autoFocus
             />
           }
           right={

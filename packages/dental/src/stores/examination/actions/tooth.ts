@@ -18,6 +18,7 @@ import {
   isAddableTooth,
 } from "../types";
 
+import { calcDentitionType } from "./dentitionType";
 import { calculateDmftValuesByDentitionType } from "./dmftValues";
 import { hasAnyResult } from "./result";
 import { firstToothWithDiagnosis } from "./utils";
@@ -29,7 +30,7 @@ type AddToothInputState = Pick<
 
 type AddToothOutputState = Pick<
   ExaminationState,
-  "dentition" | "dirty" | "currentFocus"
+  "dentition" | "dirty" | "currentFocus" | "dentitionType"
 >;
 
 export function addTooth(
@@ -62,26 +63,29 @@ export function addTooth(
     newTooth,
   );
 
+  const newDentition = {
+    ...dentition,
+    [quadrantNumber]: {
+      ...targetQuadrant,
+      tabTarget: firstToothWithDiagnosis(updatedTeeth, quadrantNumber),
+      teeth: updatedTeeth,
+    },
+  };
+
   return {
     currentFocus: {
       toothContext: toothContext,
       element: focusMainResult ? "mainResultField" : "toothButton",
     },
-    dentition: {
-      ...dentition,
-      [quadrantNumber]: {
-        ...targetQuadrant,
-        tabTarget: firstToothWithDiagnosis(updatedTeeth, quadrantNumber),
-        teeth: updatedTeeth,
-      },
-    },
+    dentition: newDentition,
+    dentitionType: calcDentitionType(newDentition),
     dirty: true,
   };
 }
 
 type RemoveToothState = Pick<
   ExaminationState,
-  "dentition" | "dmftValues" | "dirty" | "hasResult"
+  "dentition" | "dmftValues" | "dirty" | "hasResult" | "dentitionType"
 >;
 
 export function removeTooth(
@@ -126,6 +130,7 @@ export function removeTooth(
 
   return {
     dentition: newDentition,
+    dentitionType: calcDentitionType(newDentition),
     dmftValues: calculateDmftValuesByDentitionType(newDentition),
     dirty: true,
     hasResult: hasAnyResult(newDentition),
@@ -139,7 +144,7 @@ export function toggleToothType(
   previousToothDiagnoses: ToothDiagnoses,
 ): Pick<
   ExaminationState,
-  "dentition" | "dirty" | "dmftValues" | "currentFocus"
+  "dentition" | "dirty" | "dmftValues" | "currentFocus" | "dentitionType"
 > {
   const { quadrantNumber, toothIndex } = toothContext;
   const targetQuadrant = dentition[quadrantNumber];
@@ -185,6 +190,7 @@ export function toggleToothType(
       element: focusMainResult ? "mainResultField" : "toothButton",
     },
     dentition: newDentition,
+    dentitionType: calcDentitionType(newDentition),
     dmftValues: calculateDmftValuesByDentitionType(newDentition),
     dirty: true,
   };

@@ -8,11 +8,8 @@ import { useFormikContext } from "formik";
 import { useEffect } from "react";
 
 import { ApiUser } from "@eshg/base-api";
-import {
-  ButtonLink,
-  SelectObjectField,
-  formatUserName,
-} from "@eshg/lib-portal";
+import { SingleUserField } from "@eshg/lib-employee-portal";
+import { ButtonLink } from "@eshg/lib-portal";
 import { ApiAppointmentBookingType } from "@eshg/prostitute-protection-api";
 
 import { ADDITIONAL_DATA_FIELD_NAME } from "../../shared/constants";
@@ -21,7 +18,7 @@ import { EditProcedureDetailsDataForm } from "../procedures/details/sidebar/Edit
 interface ConsultantSelectFieldProps {
   name: string;
   required?: string;
-  selfUser: ApiUser;
+  selfUser?: ApiUser;
   options: ApiUser[];
 }
 
@@ -34,48 +31,37 @@ export function ConsultantSelectField({
   const { setFieldValue, values } =
     useFormikContext<EditProcedureDetailsDataForm>();
 
-  const usersOptions = options.map((option) => ({
-    value: option.userId,
-    label: formatUserName(option),
-  }));
-
   async function handleSelfAssign() {
-    await setFieldValue("consultant", {
-      value: selfUser.userId,
-      label: formatUserName(selfUser),
-    });
+    if (selfUser) {
+      await setFieldValue("consultantId", selfUser.userId);
+    }
   }
 
   const isAppointmentBlockSelected =
     values.appointmentBookingType ===
     ApiAppointmentBookingType.AppointmentBlock;
 
-  const isSelfAssignButtonVisible = !(
-    isAppointmentBlockSelected || values.consultant?.value === selfUser.userId
-  );
+  const isSelfAssignButtonVisible =
+    selfUser &&
+    !(isAppointmentBlockSelected || values.consultantId === selfUser?.userId);
 
   useEffect(() => {
     if (isAppointmentBlockSelected) {
-      void setFieldValue("consultant", {
-        value: "",
-        label: "",
-      });
+      void setFieldValue("consultantId", null);
     }
   }, [isAppointmentBlockSelected, setFieldValue]);
 
   return (
     <Stack gap={1} sx={{ justifyContent: "flex-start" }}>
-      <SelectObjectField
+      <SingleUserField
         name={name}
         label={ADDITIONAL_DATA_FIELD_NAME.consultant}
+        options={options}
         placeholder={
           isAppointmentBlockSelected
             ? "Berater:in bei Terminblöcken nicht wählbar"
             : "auswählen"
         }
-        getOptionLabel={({ label }) => label}
-        isOptionEqualToValue={(option, value) => option.value === value.value}
-        options={usersOptions}
         required={required}
         disabled={isAppointmentBlockSelected}
       />

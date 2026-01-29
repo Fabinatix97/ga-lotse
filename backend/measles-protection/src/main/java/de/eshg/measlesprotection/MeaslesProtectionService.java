@@ -9,6 +9,7 @@ import static de.eshg.lib.procedure.MapperHelper.mapEnumSet;
 import static de.eshg.measlesprotection.persistence.support.MeaslesProtectionSystemProgressEntryType.CASE_STATUS_CHANGED;
 
 import de.cronn.commons.lang.StreamUtil;
+import de.eshg.base.centralfile.PersonWithoutDateOfBirthApi;
 import de.eshg.base.centralfile.api.facility.AddFacilityFileStateResponse;
 import de.eshg.base.centralfile.api.facility.GetFacilityFileStateResponse;
 import de.eshg.base.centralfile.api.facility.PutFacilityRequest;
@@ -23,7 +24,6 @@ import de.eshg.lib.procedure.domain.model.RelatedPerson_;
 import de.eshg.lib.procedure.domain.model.SystemProgressEntry;
 import de.eshg.lib.procedure.domain.model.TriggerType;
 import de.eshg.lib.procedure.mapping.ProcedureMapper;
-import de.eshg.lib.procedure.procedures.ProcedureDeletionService;
 import de.eshg.measlesprotection.api.CaseStatusDto;
 import de.eshg.measlesprotection.api.FacilityContactPersonDto;
 import de.eshg.measlesprotection.api.FacilityDto;
@@ -35,12 +35,14 @@ import de.eshg.measlesprotection.api.MPFacilityTypeDto;
 import de.eshg.measlesprotection.api.MeaslesVaccinationStatusDto;
 import de.eshg.measlesprotection.api.PatchAffectedPersonRequest;
 import de.eshg.measlesprotection.api.PatchCustodianRequest;
+import de.eshg.measlesprotection.api.PatchCustodianWithoutDateOfBirthRequest;
 import de.eshg.measlesprotection.api.SyncAffectedPersonRequest;
 import de.eshg.measlesprotection.api.SyncCustodianRequest;
 import de.eshg.measlesprotection.api.SyncFacilityRequest;
 import de.eshg.measlesprotection.api.UpdateProcedureRequest;
 import de.eshg.measlesprotection.api.draft.AffectedPersonDetailsDto;
 import de.eshg.measlesprotection.api.draft.CustodianDetailsDto;
+import de.eshg.measlesprotection.api.draft.CustodianWithoutDateOfBirthDetailsDto;
 import de.eshg.measlesprotection.api.draft.EditFacilityResponse;
 import de.eshg.measlesprotection.mapper.AccessRestrictionMapper;
 import de.eshg.measlesprotection.mapper.AffectedPersonDetailsMapper;
@@ -71,6 +73,7 @@ import de.eshg.measlesprotection.persistence.support.MeaslesProtectionProcedureS
 import de.eshg.measlesprotection.persistence.support.ResultPage;
 import de.eshg.measlesprotection.vaccinationcheck.VaccinationCheckService;
 import de.eshg.rest.service.error.BadRequestException;
+import jakarta.validation.Valid;
 import java.time.Clock;
 import java.time.Instant;
 import java.time.LocalDate;
@@ -96,31 +99,34 @@ public class MeaslesProtectionService {
 
   public static final String NOT_APPLICABLE = "k.A.";
 
+  private final PersonWithoutDateOfBirthApi personWithoutDateOfBirthApi;
   private final PersonClient personClient;
   private final FacilityClient facilityClient;
   private final VaccinationCheckService vaccinationCheckService;
   private final MeaslesProtectionProcedureRepository measlesProtectionProcedureRepository;
   private final PersonRepository personRepository;
   private final ProcedureFinder procedureFinder;
-  private final ProcedureDeletionService<MeaslesProtectionProcedure> procedureDeletionService;
+  private final MeaslesProtectionProcedureDeletionService measlesProtectionProcedureDeletionService;
   private final Clock clock;
 
   public MeaslesProtectionService(
+      PersonWithoutDateOfBirthApi personWithoutDateOfBirthApi,
       PersonClient personClient,
       FacilityClient facilityClient,
       VaccinationCheckService vaccinationCheckService,
       MeaslesProtectionProcedureRepository measlesProtectionProcedureRepository,
       PersonRepository personRepository,
       ProcedureFinder procedureFinder,
-      ProcedureDeletionService<MeaslesProtectionProcedure> procedureDeletionService,
+      MeaslesProtectionProcedureDeletionService measlesProtectionProcedureDeletionService,
       Clock clock) {
+    this.personWithoutDateOfBirthApi = personWithoutDateOfBirthApi;
     this.personClient = personClient;
     this.facilityClient = facilityClient;
     this.vaccinationCheckService = vaccinationCheckService;
     this.measlesProtectionProcedureRepository = measlesProtectionProcedureRepository;
     this.personRepository = personRepository;
     this.procedureFinder = procedureFinder;
-    this.procedureDeletionService = procedureDeletionService;
+    this.measlesProtectionProcedureDeletionService = measlesProtectionProcedureDeletionService;
     this.clock = clock;
   }
 
@@ -298,6 +304,7 @@ public class MeaslesProtectionService {
         patient.getRoleStatus(),
         personDetails.personDetails(),
         personDetails.custodianDetails(),
+        personDetails.custodianWithoutDateOfBirthDetails(),
         facilityData,
         ProofSubmissionMapper.toInterfaceType(procedure.getProofSubmissions()),
         ReportDataMapper.toInterfaceType(procedure.getReportData()),
@@ -403,7 +410,7 @@ public class MeaslesProtectionService {
   public void deleteProcedure(UUID id) {
     MeaslesProtectionProcedure procedure = procedureFinder.findProcedureByExternalId(id);
     if (procedure.getProcedureStatus().equals(ProcedureStatus.DRAFT)) {
-      procedureDeletionService.deleteAndWriteToCemetery(procedure);
+      measlesProtectionProcedureDeletionService.deleteAndWriteToCemetery(procedure);
     } else {
       throw new BadRequestException("Non-draft procedures cannot be deleted!");
     }
@@ -411,11 +418,8 @@ public class MeaslesProtectionService {
 
   @Transactional
   public EditFacilityResponse editFacility(UUID id, PutFacilityRequest putFacilityRequest) {
-    MeaslesProtectionProcedure procedure = procedureFinder.findProcedureByExternalId(id);
+    MeaslesProtectionProcedure procedure = getOpenMeaslesProtectionProcedure(id);
     Optional<Facility> optionalFacility = procedure.getFacility();
-    if (!procedure.getProcedureStatus().isOpen()) {
-      throw new BadRequestException("Procedure is closed");
-    }
     if (optionalFacility.isEmpty()) {
       throw new BadRequestException("Procedure doesn't have a facility");
     }
@@ -505,10 +509,7 @@ public class MeaslesProtectionService {
 
   @Transactional
   public void syncAffectedPerson(UUID id, SyncAffectedPersonRequest syncAffectedPersonRequest) {
-    MeaslesProtectionProcedure procedure = procedureFinder.findProcedureByExternalId(id);
-    if (!procedure.getProcedureStatus().isOpen()) {
-      throw new BadRequestException("Procedure is closed");
-    }
+    MeaslesProtectionProcedure procedure = getOpenMeaslesProtectionProcedure(id);
     UUID patientIdFromCentralFile = procedure.getPatientIdFromCentralFile();
     Person affectedPerson =
         procedure.getRelatedPersons().stream()
@@ -521,13 +522,18 @@ public class MeaslesProtectionService {
     affectedPerson.setCentralFileStateId(updatedFileStateId);
   }
 
-  @Transactional
-  public CustodianDetailsDto editCustodian(
-      UUID procedureId, UUID custodianId, PatchCustodianRequest request) {
-    MeaslesProtectionProcedure procedure = procedureFinder.findProcedureByExternalId(procedureId);
+  private MeaslesProtectionProcedure getOpenMeaslesProtectionProcedure(UUID id) {
+    MeaslesProtectionProcedure procedure = procedureFinder.findProcedureByExternalId(id);
     if (!procedure.getProcedureStatus().isOpen()) {
       throw new BadRequestException("Procedure is closed");
     }
+    return procedure;
+  }
+
+  @Transactional
+  public CustodianDetailsDto editCustodian(
+      UUID procedureId, UUID custodianId, PatchCustodianRequest request) {
+    MeaslesProtectionProcedure procedure = getOpenMeaslesProtectionProcedure(procedureId);
 
     Optional<Person> optionalCustodian =
         procedure.getRelatedPersons().stream()
@@ -535,12 +541,12 @@ public class MeaslesProtectionService {
                 person ->
                     person.getCentralFileStateId().equals(custodianId) && person.isCustodian())
             .findFirst();
+
     if (optionalCustodian.isEmpty()) {
       throw new BadRequestException("Custodian does not exist");
     }
     Person custodian = optionalCustodian.get();
     UUID previousFileStateId = custodian.getCentralFileStateId();
-
     AddPersonFileStateResponse baseResponse =
         personClient.updatePersonFileStateAndReference(
             previousFileStateId,
@@ -564,12 +570,25 @@ public class MeaslesProtectionService {
   }
 
   @Transactional
+  public CustodianWithoutDateOfBirthDetailsDto editCustodianWithoutDateOfBirth(
+      UUID procedureId, UUID custodianId, @Valid PatchCustodianWithoutDateOfBirthRequest request) {
+    MeaslesProtectionProcedure procedure = getOpenMeaslesProtectionProcedure(procedureId);
+    Optional<UUID> optionalCustodian =
+        procedure.getCustodiansWithoutDob().stream()
+            .filter(foundCustodianId -> foundCustodianId.equals(custodianId))
+            .findFirst();
+
+    if (optionalCustodian.isEmpty()) {
+      throw new BadRequestException("Custodian does not exist");
+    }
+    return personClient.updatePersonWithoutDateOfBirthInCentralFile(
+        custodianId, request.custodianDetails());
+  }
+
+  @Transactional
   public void syncCustodian(
       UUID procedureId, UUID custodianId, SyncCustodianRequest syncCustodianRequest) {
-    MeaslesProtectionProcedure procedure = procedureFinder.findProcedureByExternalId(procedureId);
-    if (!procedure.getProcedureStatus().isOpen()) {
-      throw new BadRequestException("Procedure is closed");
-    }
+    MeaslesProtectionProcedure procedure = getOpenMeaslesProtectionProcedure(procedureId);
 
     Optional<Person> optionalCustodian =
         procedure.getRelatedPersons().stream()
@@ -581,6 +600,7 @@ public class MeaslesProtectionService {
       throw new BadRequestException("Custodian does not exist");
     }
     Person custodian = optionalCustodian.get();
+
     UUID custodianIdFromCentralFile = custodian.getCentralFileStateId();
 
     UUID updatedFileStateId =

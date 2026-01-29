@@ -38,9 +38,10 @@ export function ConfiguratorOverview({
         </Typography>
         <Stack gap={5}>
           <Grid container spacing={2} sx={{ flexGrow: 1 }} role="list">
-            {data[module]?.endpointStates.map((tab) => (
+            {data[module]?.endpointStates.map((tab, index) => (
               <Grid key={tab.tabButtonName} xxs={12} xs={6} role="listitem">
                 <ConfiguratorCard
+                  autoFocus={index === 0}
                   title={tab.tabButtonName}
                   link={tab.link}
                   status={tab.status!} // TODO: raise error if status is undefined

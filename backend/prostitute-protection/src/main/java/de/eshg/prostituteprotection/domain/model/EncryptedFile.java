@@ -18,6 +18,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import java.time.Instant;
+import java.time.LocalDate;
 import org.hibernate.annotations.JdbcType;
 import org.hibernate.dialect.PostgreSQLEnumJdbcType;
 
@@ -35,6 +36,9 @@ public class EncryptedFile extends SequencedBaseEntityWithExternalId {
 
   @Column(nullable = false)
   private Instant createdAt;
+
+  @Column(nullable = false)
+  private LocalDate validUntil;
 
   @JdbcType(PostgreSQLEnumJdbcType.class)
   private CertificateType certificateType;
@@ -89,5 +93,13 @@ public class EncryptedFile extends SequencedBaseEntityWithExternalId {
 
   public void setProcedure(ProstituteProtectionProcedure procedure) {
     this.procedure = procedure;
+  }
+
+  public LocalDate getValidUntil() {
+    return validUntil;
+  }
+
+  public void setValidUntil(LocalDate validUntil) {
+    this.validUntil = validUntil;
   }
 }

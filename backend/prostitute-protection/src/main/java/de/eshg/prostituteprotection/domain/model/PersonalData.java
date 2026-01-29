@@ -32,6 +32,8 @@ public class PersonalData extends BaseEntity {
   @OrderColumn
   private List<Language> languages = new ArrayList<>();
 
+  private String phoneNumber;
+
   public String getAlias() {
     return alias;
   }
@@ -54,5 +56,13 @@ public class PersonalData extends BaseEntity {
 
   public void setLanguages(List<Language> languages) {
     this.languages = languages;
+  }
+
+  public String getPhoneNumber() {
+    return phoneNumber;
+  }
+
+  public void setPhoneNumber(String phoneNumber) {
+    this.phoneNumber = phoneNumber;
   }
 }

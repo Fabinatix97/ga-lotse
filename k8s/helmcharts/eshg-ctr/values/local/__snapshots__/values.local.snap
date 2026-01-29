@@ -70,6 +70,7 @@ data:
   opendata-module-client-secret: Zml4ZWQtc2VjcmV0LWZvci1zbmFwc2hvdA==
   meds-abroad-module-client-secret: Zml4ZWQtc2VjcmV0LWZvci1zbmFwc2hvdA==
   prostitute-protection-module-client-secret: Zml4ZWQtc2VjcmV0LWZvci1zbmFwc2hvdA==
+  infection-briefing-module-client-secret: Zml4ZWQtc2VjcmV0LWZvci1zbmFwc2hvdA==
   synapse-admin-password: Zml4ZWQtc2VjcmV0LWZvci1zbmFwc2hvdA==
   synapse-registration-shared-secret: Zml4ZWQtc2VjcmV0LWZvci1zbmFwc2hvdA==
   synapse-macaroon-secret: Zml4ZWQtc2VjcmV0LWZvci1zbmFwc2hvdA==
@@ -562,6 +563,15 @@ data:
               "active": true,
               "manualCertificate": false,
               "commonName": "dental.frankfurt.svc.cluster.local",
+              "certificate": null,
+              "networkId": "frankfurt"
+            },
+            {
+              "readableName": "infectionbriefing",
+              "type": "FM",
+              "active": true,
+              "manualCertificate": false,
+              "commonName": "infectionbriefing.frankfurt.svc.cluster.local",
               "certificate": null,
               "networkId": "frankfurt"
             },
@@ -3303,6 +3313,51 @@ spec:
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
+  name: "admin-portal-public-client"
+  namespace: snapshot-ns
+spec:
+  commonName: "ap.central.svc.cluster.local"
+  dnsNames:
+  - "ap.central.svc.cluster.local"
+  issuerRef:
+    kind: ClusterIssuer
+    name: local-ca
+  privateKey:
+    algorithm: ECDSA
+    encoding: PKCS1
+    size: 256
+    rotationPolicy: Always
+  secretName: "admin-portal-public-tls-client"
+  subject: {}
+  usages:
+  - client auth
+---
+# Source: ga-lotse-ctr/templates/admin-portal.yaml
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: "admin-portal-public-server"
+  namespace: snapshot-ns
+spec:
+  commonName: "ap.central.svc.cluster.local"
+  dnsNames:
+  - "ap.central.svc.cluster.local"
+  issuerRef:
+    kind: ClusterIssuer
+    name: local-ca
+  privateKey:
+    algorithm: ECDSA
+    encoding: PKCS1
+    size: 256
+    rotationPolicy: Always
+  secretName: "admin-portal-public-tls-server"
+  subject: {}
+  usages:
+  - server auth
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
   name: "keycloak-private"
   namespace: snapshot-ns
 spec:
@@ -3346,6 +3401,51 @@ spec:
   usages:
   - server auth
   - client auth
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: "lsd-public-client"
+  namespace: snapshot-ns
+spec:
+  commonName: "lsd.central.svc.cluster.local"
+  dnsNames:
+  - "lsd.central.svc.cluster.local"
+  issuerRef:
+    kind: ClusterIssuer
+    name: local-ca
+  privateKey:
+    algorithm: ECDSA
+    encoding: PKCS1
+    size: 256
+    rotationPolicy: Always
+  secretName: "lsd-public-tls-client"
+  subject: {}
+  usages:
+  - client auth
+---
+# Source: ga-lotse-ctr/templates/lsd.yaml
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: "lsd-public-server"
+  namespace: snapshot-ns
+spec:
+  commonName: "lsd.central.svc.cluster.local"
+  dnsNames:
+  - "lsd.central.svc.cluster.local"
+  issuerRef:
+    kind: ClusterIssuer
+    name: local-ca
+  privateKey:
+    algorithm: ECDSA
+    encoding: PKCS1
+    size: 256
+    rotationPolicy: Always
+  secretName: "lsd-public-tls-server"
+  subject: {}
+  usages:
+  - server auth
 ---
 # Source: ga-lotse-ctr/templates/pdf-converter-portal.yaml
 apiVersion: cert-manager.io/v1
@@ -3398,6 +3498,51 @@ spec:
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
+  name: "relay-server-public-client"
+  namespace: snapshot-ns
+spec:
+  commonName: "relay-server.central.svc.cluster.local"
+  dnsNames:
+  - "relay-server.central.svc.cluster.local"
+  issuerRef:
+    kind: ClusterIssuer
+    name: local-ca
+  privateKey:
+    algorithm: ECDSA
+    encoding: PKCS1
+    size: 256
+    rotationPolicy: Always
+  secretName: "relay-server-public-tls-client"
+  subject: {}
+  usages:
+  - client auth
+---
+# Source: ga-lotse-ctr/templates/relay-server.yaml
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: "relay-server-public-server"
+  namespace: snapshot-ns
+spec:
+  commonName: "relay-server.central.svc.cluster.local"
+  dnsNames:
+  - "relay-server.central.svc.cluster.local"
+  issuerRef:
+    kind: ClusterIssuer
+    name: local-ca
+  privateKey:
+    algorithm: ECDSA
+    encoding: PKCS1
+    size: 256
+    rotationPolicy: Always
+  secretName: "relay-server-public-tls-server"
+  subject: {}
+  usages:
+  - server auth
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
   name: "service-directory-public"
   namespace: snapshot-ns
 spec:
@@ -3417,6 +3562,51 @@ spec:
   usages:
   - server auth
   - client auth
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: "service-directory-public-client"
+  namespace: snapshot-ns
+spec:
+  commonName: "service-directory.central.svc.cluster.local"
+  dnsNames:
+  - "service-directory.central.svc.cluster.local"
+  issuerRef:
+    kind: ClusterIssuer
+    name: local-ca
+  privateKey:
+    algorithm: ECDSA
+    encoding: PKCS1
+    size: 256
+    rotationPolicy: Always
+  secretName: "service-directory-public-tls-client"
+  subject: {}
+  usages:
+  - client auth
+---
+# Source: ga-lotse-ctr/templates/service-directory.yaml
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: "service-directory-public-server"
+  namespace: snapshot-ns
+spec:
+  commonName: "service-directory.central.svc.cluster.local"
+  dnsNames:
+  - "service-directory.central.svc.cluster.local"
+  issuerRef:
+    kind: ClusterIssuer
+    name: local-ca
+  privateKey:
+    algorithm: ECDSA
+    encoding: PKCS1
+    size: 256
+    rotationPolicy: Always
+  secretName: "service-directory-public-tls-server"
+  subject: {}
+  usages:
+  - server auth
 ---
 # Source: ga-lotse-ctr/templates/admin-portal.yaml
 apiVersion: traefik.io/v1alpha1

@@ -73,6 +73,7 @@ interface PersonSearchFormProps {
   allowPersonIdSearch?: boolean;
   isHidden?: boolean;
   role?: AriaRole;
+  autoFocus?: boolean;
 }
 
 export function PersonSearchForm(props: PersonSearchFormProps) {
@@ -96,6 +97,7 @@ export function PersonSearchForm(props: PersonSearchFormProps) {
       {({ resetForm }) => (
         <Stack gap={2} sx={{ display: props.isHidden ? "none" : undefined }}>
           <SearchFormSheet
+            autoFocus={props.autoFocus}
             id={props.id}
             data-testid="personSearch"
             isSearchForm

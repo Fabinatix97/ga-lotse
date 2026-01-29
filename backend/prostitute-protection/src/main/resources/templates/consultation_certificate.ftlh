@@ -98,7 +98,7 @@ footer.style
 
       <tr>
         <td>
-          <@checkbox.content checked=true /><span class="italic">Fragen der Krankheitsverhütung</span>
+          <@checkbox.content checked=diseasePrevention /><span class="italic">Fragen der Krankheitsverhütung</span>
         </td>
         <td>
           <@checkbox.content checked=referral /><span class="italic">Weiterverweis an Maßnahmen nach § 19 lfSG</span>
@@ -107,7 +107,7 @@ footer.style
 
       <tr>
         <td>
-          <@checkbox.content checked=true /><span class="italic">Fragen der Empfängnisregelung</span>
+          <@checkbox.content checked=birthControl /><span class="italic">Fragen der Empfängnisregelung</span>
         </td>
         <td>
           <@checkbox.content checked=clearing /><span class="italic">Offenbarung Zwangslage / Notlage</span>
@@ -116,7 +116,7 @@ footer.style
 
       <tr>
         <td>
-          <@checkbox.content checked=true /><span class="italic">Fragen der Schwangerschaft</span>
+          <@checkbox.content checked=pregnancy /><span class="italic">Fragen der Schwangerschaft</span>
         </td>
         <td>
         </td>
@@ -124,7 +124,7 @@ footer.style
 
       <tr>
         <td>
-          <@checkbox.content checked=true /><span class="italic">Risiken des Alkohol - und Drogengebrauchs</span>
+          <@checkbox.content checked=alcoholAndDrugUsage /><span class="italic">Risiken des Alkohol - und Drogengebrauchs</span>
         </td>
         <td>
         </td>

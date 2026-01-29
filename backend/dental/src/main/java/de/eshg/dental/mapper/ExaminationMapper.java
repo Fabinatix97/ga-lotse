@@ -110,6 +110,7 @@ public final class ExaminationMapper {
               screeningExaminationResult.isGingivitisTreatment(),
               screeningExaminationResult.isOrthodonticTreatment(),
               screeningExaminationResult.isPlaqueTreatment(),
+              screeningExaminationResult.isPrimaryDentitionObstructsSecondary(),
               screeningExaminationResult.isInspectionAppointment());
       case AbsenceExaminationResult absenceExaminationResult ->
           new AbsenceExaminationResultDto(mapToDto(absenceExaminationResult.getReasonForAbsence()));

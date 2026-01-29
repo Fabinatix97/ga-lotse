@@ -172,6 +172,7 @@ export function VaccinationConsultationsOverviewTable(
             <Box display="contents" role="group" aria-label="Filter">
               <Stack direction="row" gap={1}>
                 <TextInputClientFilter
+                  autoFocus
                   placeholder="Vorname"
                   type="search"
                   setInputField={setFirstName}

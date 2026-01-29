@@ -142,10 +142,9 @@ export function AppointmentStepper() {
     <DepartmentContextProvider>
       <AppointmentStepperContext value={contextValue}>
         <MultiStepForm<InitialAppointmentFormValues> steps={STEPS}>
-          {({ Outlet, currentStep, totalSteps, setStep, titleRef }) => (
+          {({ Outlet, currentStep, totalSteps, setStep }) => (
             <>
               <MultiStepFormTitle
-                titleRef={titleRef}
                 title={t("common.title")}
                 titleId={titleId}
                 stepperTitleId={stepperTitleId}
@@ -164,6 +163,7 @@ export function AppointmentStepper() {
               >
                 {(formikProps) => (
                   <FormPlus
+                    autoFocus
                     aria-labelledby={titleId}
                     aria-describedby={stepperTitleId}
                   >

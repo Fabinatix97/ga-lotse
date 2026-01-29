@@ -4,7 +4,9 @@
  */
 
 import { Divider, Stack, Typography, styled } from "@mui/joy";
-import { ReactNode, useEffect, useRef } from "react";
+import { ReactNode } from "react";
+
+import { useAutoTitleFocus } from "@eshg/lib-portal";
 
 import { useLayoutConfig } from "../../contexts/layoutConfig";
 
@@ -41,12 +43,7 @@ export interface ToolbarProps {
 export function Toolbar(props: ToolbarProps) {
   const { title, backButton, afterTitle } = props;
   const { simpleToolbarHeight } = useLayoutConfig();
-  const titleRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    // Focus the title when the page is loaded
-    titleRef.current?.focus();
-  }, []);
+  const titleRef = useAutoTitleFocus();
 
   return (
     <ToolbarStack

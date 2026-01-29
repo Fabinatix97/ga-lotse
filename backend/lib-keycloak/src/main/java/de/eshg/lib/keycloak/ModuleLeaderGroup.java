@@ -58,7 +58,11 @@ public enum ModuleLeaderGroup implements KeycloakGroup {
   PROSTITUTE_PROTECTION(
       "Prostituiertenschutzgesetz",
       ModuleMemberGroup.PROSTITUTE_PROTECTION,
-      EmployeePermissionRole.PROSTITUTE_PROTECTION_LEADER);
+      EmployeePermissionRole.PROSTITUTE_PROTECTION_LEADER),
+  INFECTION_BRIEFING(
+      "Belehrung nach Infektionsschutzgesetz",
+      ModuleMemberGroup.INFECTION_BRIEFING,
+      EmployeePermissionRole.INFECTION_BRIEFING_LEADER);
 
   private final String keycloakNameWithoutPrefix;
   private final List<EmployeePermissionRole> roles;
@@ -99,6 +103,7 @@ public enum ModuleLeaderGroup implements KeycloakGroup {
       case OFFICIAL_MEDICAL_SERVICE -> ModuleLeaderGroup.OFFICIAL_MEDICAL_SERVICE;
       case MEDS_ABROAD -> ModuleLeaderGroup.MEDS_ABROAD;
       case PROSTITUTE_PROTECTION -> ModuleLeaderGroup.PROSTITUTE_PROTECTION;
+      case INFECTION_BRIEFING -> ModuleLeaderGroup.INFECTION_BRIEFING;
     };
   }
 

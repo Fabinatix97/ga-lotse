@@ -109,6 +109,8 @@ spec:
               value: https://{{ .Values.domains.hosts.employeeportal }}/api/meds-abroad
             - name: PUBLIC_PROSTITUTE_PROTECTION_BACKEND_URL
               value: https://{{ .Values.domains.hosts.employeeportal }}/api/prostitute-protection
+            - name: PUBLIC_INFECTION_BRIEFING_BACKEND_URL
+              value: https://{{ .Values.domains.hosts.employeeportal }}/api/infection-briefing
             - name: PUBLIC_CHAT_MANAGEMENT_BACKEND_URL
               value: https://{{ .Values.domains.hosts.employeeportal }}/api/chat-management
             - name: PUBLIC_PDF_CONVERTER_URL

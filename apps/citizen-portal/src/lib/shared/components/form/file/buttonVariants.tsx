@@ -10,20 +10,19 @@ const StyledButton = styled(Button)(({ theme }) => ({
   padding: theme.spacing(1, 6),
 }));
 
-interface FileButtonProps
-  extends Pick<
-    ButtonProps,
-    | "sx"
-    | "aria-controls"
-    | "onClick"
-    | "children"
-    | "onDrop"
-    | "onDragOver"
-    | "onDragLeave"
-    | "onDragEnd"
-    | "aria-describedby"
-    | "ref"
-  > {
+interface FileButtonProps extends Pick<
+  ButtonProps,
+  | "sx"
+  | "aria-controls"
+  | "onClick"
+  | "children"
+  | "onDrop"
+  | "onDragOver"
+  | "onDragLeave"
+  | "onDragEnd"
+  | "aria-describedby"
+  | "ref"
+> {
   activeDragOver?: boolean;
   error: boolean;
 }

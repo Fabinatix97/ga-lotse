@@ -43,7 +43,7 @@ export function OfflineNewPasswordDialog({
         onSubmit={handleSubmit}
       >
         {({ isSubmitting, values }) => (
-          <FormPlus>
+          <FormPlus autoFocus>
             <Stack gap={3}>
               <Stack gap={2}>
                 <PasswordField

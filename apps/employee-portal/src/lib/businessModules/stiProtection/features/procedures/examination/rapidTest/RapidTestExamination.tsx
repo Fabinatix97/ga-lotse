@@ -64,7 +64,11 @@ export function RapidTestExamination(props: RapidTestExaminationProps) {
       onSubmit={onSubmit}
     >
       {({ values }) => (
-        <FormPlus sx={{ height: "100%" }} aria-labelledby="rapidtest-title">
+        <FormPlus
+          autoFocus
+          sx={{ height: "100%" }}
+          aria-labelledby="rapidtest-title"
+        >
           <ConfirmLeaveDirtyFormEffect
             onSaveMutation={{
               mutationOptions: upsertRapidTestOptions,

@@ -75,8 +75,8 @@ export function SoftRequiredInput(props: InputProps) {
 export interface SoftRequiredSelectFieldProps<
   TMultiple extends boolean,
   TOptionLabel extends string | ReactNode = string,
-> extends SoftRequiredFieldProps,
-    SelectFieldProps<TMultiple, TOptionLabel> {}
+>
+  extends SoftRequiredFieldProps, SelectFieldProps<TMultiple, TOptionLabel> {}
 
 export function SoftRequiredSelectField<
   TMultiple extends boolean = false,
@@ -95,8 +95,8 @@ export function SoftRequiredSelectField<
 interface SoftRequiredSelectObjectFieldProps<
   TValue extends object | number,
   TMultiple extends boolean,
-> extends SoftRequiredFieldProps,
-    SelectObjectFieldProps<TValue, TMultiple> {}
+>
+  extends SoftRequiredFieldProps, SelectObjectFieldProps<TValue, TMultiple> {}
 
 export function SoftRequiredSelectObjectField<
   TValue extends object | number,
@@ -130,8 +130,7 @@ function SoftRequiredSelectObject<
 }
 
 interface SoftRequiredBooleanSelectFieldProps
-  extends SoftRequiredFieldProps,
-    BooleanSelectFieldProps {}
+  extends SoftRequiredFieldProps, BooleanSelectFieldProps {}
 
 export function SoftRequiredBooleanSelectField(
   props: SoftRequiredBooleanSelectFieldProps,
@@ -147,8 +146,7 @@ export function SoftRequiredBooleanSelectField(
 }
 
 interface SoftRequiredNumberFieldProps
-  extends SoftRequiredFieldProps,
-    NumberFieldProps {}
+  extends SoftRequiredFieldProps, NumberFieldProps {}
 
 export function SoftRequiredNumberField(props: SoftRequiredNumberFieldProps) {
   const { orientation, softRequired, ...fieldProps } = props;

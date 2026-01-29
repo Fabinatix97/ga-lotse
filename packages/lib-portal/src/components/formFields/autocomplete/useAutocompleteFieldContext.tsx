@@ -18,8 +18,7 @@ import {
 } from "./AutocompleteSelectOptions";
 
 export interface CommonAutocompleteFieldProps<T>
-  extends FieldProps<T>,
-    FieldVariantProps {
+  extends FieldProps<T>, FieldVariantProps {
   options: AutocompleteSelectOption[];
   placeholder?: string;
   loading?: boolean;

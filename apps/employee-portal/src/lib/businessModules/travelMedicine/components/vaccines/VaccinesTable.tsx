@@ -66,6 +66,7 @@ export function VaccinesTable() {
         <ButtonBar
           right={
             <Button
+              autoFocus
               startDecorator={<AddIcon />}
               onClick={() =>
                 vaccineSidebar.open({

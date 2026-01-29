@@ -5,7 +5,7 @@
 
 package de.eshg.spatz.common;
 
-import static de.eshg.servicedirectory.util.X509Utils.ESHGACTOR_BUNDLE_NAME;
+import static de.eshg.spatz.config.SelfSignedSecurityConfiguration.ESHGACTOR_BUNDLE_NAME;
 
 import de.eshg.spatz.LifecyclePhases;
 import de.eshg.spatz.config.SpatzConfigurationProperties;
@@ -150,6 +150,10 @@ public class SelfSignedCertService implements SmartLifecycle {
   }
 
   private void useCurrentCertificate() {
+    Assert.isNull(
+        sslBundleFactory.buildClientBundle(),
+        "Self signed certificates don't have a separate client bundle!");
+
     SslBundle newSslBundle =
         sslBundleFactory.buildWithNewServerCertificate(
             certificate.keyPair(), certificate.certificate());

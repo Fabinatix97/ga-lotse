@@ -5,7 +5,7 @@
 
 import { Box, Button, Divider, Stack, Typography } from "@mui/joy";
 import { visuallyHidden } from "@mui/utils";
-import { ReactNode } from "react";
+import { ReactNode, useMemo } from "react";
 
 import { DetailsList } from "@eshg/lib-portal";
 
@@ -28,7 +28,7 @@ export function AnalysisDiagramBox({
   getChart,
   onShowMoreDescription,
 }: AnalysisDiagramProps) {
-  function diagramContent() {
+  const diagramContent = useMemo(() => {
     if (evaluatedDataAmount === 0) {
       return (
         <Box
@@ -44,7 +44,7 @@ export function AnalysisDiagramBox({
       );
     }
     return getChart();
-  }
+  }, [evaluatedDataAmount, getChart]);
 
   return (
     <Stack
@@ -60,7 +60,7 @@ export function AnalysisDiagramBox({
       }}
     >
       {header}
-      {diagramContent()}
+      {diagramContent}
       <DetailsList>
         <Stack gap={2}>
           <Divider />

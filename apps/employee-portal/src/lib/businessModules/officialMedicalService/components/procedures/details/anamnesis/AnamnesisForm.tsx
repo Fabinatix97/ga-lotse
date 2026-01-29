@@ -42,7 +42,7 @@ export function AnamnesisForm({
       onSubmit={onSubmit}
     >
       {({ values }) => (
-        <FormPlus>
+        <FormPlus autoFocus>
           <ConfirmLeaveDirtyFormEffect
             onSaveMutation={props.valuesToMutationBundle(values)}
           />

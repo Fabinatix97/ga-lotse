@@ -12,8 +12,6 @@ import {
 } from "@eshg/lib-portal";
 import {
   AbortProcedureRequest,
-  ApiAbortProcedureRequest,
-  ApiCloseProcedureRequest,
   ApiCreateProstituteProtectionProcedureRequest,
   ApiUpdateEncryptedPersonalDataRequest,
   ApiUpdateProstituteProtectionProcedureRequest,
@@ -101,9 +99,9 @@ export function useAbortProcedureMutation(procedureId: string) {
   const queryClient = useQueryClient();
 
   return useHandledMutation({
-    mutationFn: (apiAbortProcedureRequest: ApiAbortProcedureRequest) =>
+    mutationFn: () =>
       prostituteProtectionApi
-        .abortProcedureRaw({ procedureId, apiAbortProcedureRequest })
+        .abortProcedureRaw({ procedureId })
         .then(unwrapRawResponse),
     onSuccess: (response) => {
       queryClient.setQueryData(queryKey, response);
@@ -119,9 +117,9 @@ export function useCloseProcedureMutation(procedureId: string) {
   const queryClient = useQueryClient();
 
   return useHandledMutation({
-    mutationFn: (apiCloseProcedureRequest: ApiCloseProcedureRequest) =>
+    mutationFn: () =>
       prostituteProtectionApi
-        .closeProcedureRaw({ procedureId, apiCloseProcedureRequest })
+        .closeProcedureRaw({ procedureId })
         .then(unwrapRawResponse),
     onSuccess: (response) => {
       queryClient.setQueryData(queryKey, response);

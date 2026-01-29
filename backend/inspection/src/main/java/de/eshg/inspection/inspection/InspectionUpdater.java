@@ -449,7 +449,7 @@ public class InspectionUpdater {
         cldVersionRepository.findAllById(selectedChecklistDefinitionVersionIds).stream()
             .collect(StreamUtil.toLinkedHashMap(ChecklistDefinitionVersion::getId));
 
-    // first, some basic user input validation
+    // check if the user provided ids actually exist in our database
     List<String> missingIds =
         selectedChecklistDefinitionVersionIds.stream()
             .filter(id -> !selectedVersionsMap.containsKey(id))
@@ -460,6 +460,7 @@ public class InspectionUpdater {
           "The following checklistDefinitionVersionIds were not found: "
               + String.join(",", missingIds));
     }
+
     Set<UUID> cldvDefinitionSet = new HashSet<>();
     selectedVersionsMap
         .values()
@@ -513,7 +514,9 @@ public class InspectionUpdater {
             .findNewestCoreCLDVersionsForObjectType(inspection.getFacility().getObjectType())
             .stream()
             .toList();
-    if (selectedVersionsMap.isEmpty() && coreCldvs.isEmpty()) {
+    if (inspectionFeatureToggle.isNewFeatureDisabled(InspectionFeature.CHECKLISTS_ALWAYS_REMOVABLE)
+        && selectedVersionsMap.isEmpty()
+        && coreCldvs.isEmpty()) {
       throw new BadRequestException(
           ErrorCode.BAD_REQUEST, "An inspection has to have at least one checklist");
     }
@@ -636,7 +639,8 @@ public class InspectionUpdater {
           }
         });
 
-    if (inspection.getChecklists().isEmpty()) {
+    if (inspectionFeatureToggle.isNewFeatureDisabled(InspectionFeature.CHECKLISTS_ALWAYS_REMOVABLE)
+        && inspection.getChecklists().isEmpty()) {
       throw new BadRequestException(
           ErrorCode.BAD_REQUEST, "An inspection has to have at least one checklist");
     }

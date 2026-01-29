@@ -280,7 +280,21 @@ public enum EmployeeTestUser implements KeycloakUser {
       "password",
       "Peter",
       "Schmidt",
-      List.of(ModuleMemberGroup.PROSTITUTE_PROTECTION, ModuleLeaderGroup.PROSTITUTE_PROTECTION));
+      List.of(ModuleMemberGroup.PROSTITUTE_PROTECTION, ModuleLeaderGroup.PROSTITUTE_PROTECTION)),
+  INFECTION_BRIEFING_MODULE_DUMMY(
+      "infection_briefing_dummy_user",
+      "+49 646 234 345",
+      "password",
+      "Tim",
+      "Klausen",
+      List.of(ModuleMemberGroup.INFECTION_BRIEFING)),
+  INFECTION_BRIEFING_MODULE_LEADER(
+      "infection_briefing_module_leader",
+      "+49 622 234 522",
+      "password",
+      "Timo",
+      "Breil",
+      List.of(ModuleMemberGroup.INFECTION_BRIEFING, ModuleLeaderGroup.INFECTION_BRIEFING));
 
   private final String username;
   private final String email;

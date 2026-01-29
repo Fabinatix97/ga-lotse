@@ -17,11 +17,10 @@ import {
 import { SidebarStepContentProps } from "@/lib/shared/components/SidebarStepper/sidebarStep";
 import { TimeSpanField } from "@/lib/shared/components/formFields/TimeSpanField";
 
-interface ConfigureDataSourceStepProps
-  extends SidebarStepContentProps<
-    | ChooseEvaluationTemplateOrConfigureDataSourceStepFormModel
-    | ChooseAttributeStepOrConfigureDataSourceStepFormModel
-  > {
+interface ConfigureDataSourceStepProps extends SidebarStepContentProps<
+  | ChooseEvaluationTemplateOrConfigureDataSourceStepFormModel
+  | ChooseAttributeStepOrConfigureDataSourceStepFormModel
+> {
   isEvaluationTemplateBranch: boolean;
   dataSource?: DataSource;
   evaluationTemplateId?: string;
@@ -48,11 +47,10 @@ export function ConfigureDataSourceStep(props: ConfigureDataSourceStepProps) {
   );
 }
 
-interface ConfigureDataSourceProps
-  extends SidebarStepContentProps<
-    | ChooseEvaluationTemplateOrConfigureDataSourceStepFormModel
-    | ChooseAttributeStepOrConfigureDataSourceStepFormModel
-  > {
+interface ConfigureDataSourceProps extends SidebarStepContentProps<
+  | ChooseEvaluationTemplateOrConfigureDataSourceStepFormModel
+  | ChooseAttributeStepOrConfigureDataSourceStepFormModel
+> {
   name: string;
   sensitivity: DataSourceSensitivity | undefined;
   anonymizationOptions: AnonymizationOptions;
@@ -80,11 +78,10 @@ function ConfigureDataSource(props: ConfigureDataSourceProps) {
   );
 }
 
-interface ConfigureDataSourceFromTemplateProps
-  extends SidebarStepContentProps<
-    | ChooseEvaluationTemplateOrConfigureDataSourceStepFormModel
-    | ChooseAttributeStepOrConfigureDataSourceStepFormModel
-  > {
+interface ConfigureDataSourceFromTemplateProps extends SidebarStepContentProps<
+  | ChooseEvaluationTemplateOrConfigureDataSourceStepFormModel
+  | ChooseAttributeStepOrConfigureDataSourceStepFormModel
+> {
   evaluationTemplateId: string;
   explicitStartAndEnd: boolean;
 }

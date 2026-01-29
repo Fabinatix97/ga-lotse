@@ -20,5 +20,6 @@
   <include file="migrations/0010_add_auditlogsource_opendata.xml"/>
   <include file="migrations/0011_add_meds_abroad_as_audit_log_source.xml"/>
   <include file="migrations/0012_add_prostitute_protection_as_audit_log_source.xml"/>
+  <include file="migrations/0013_add_infection_briefing_as_audit_log_source.xml"/>
 
 </databaseChangeLog>

@@ -14,8 +14,10 @@ import {
 
 import { useTranslation } from "@/lib/i18n/client";
 
-interface DocumentMultiSelectElementProps
-  extends Omit<BaseFieldProps, "required" | "children"> {
+interface DocumentMultiSelectElementProps extends Omit<
+  BaseFieldProps,
+  "required" | "children"
+> {
   anamnesisQuestion: ApiDocumentAnamnesisQuestion;
   elementIndex: number;
   name: string;

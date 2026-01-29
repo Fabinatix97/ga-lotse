@@ -18,7 +18,10 @@ import {
   FacilitySidebar,
   FacilitySidebarProps,
 } from "@/lib/shared/components/facilitySidebar/FacilitySidebar";
-import { DefaultFacilityFormValues } from "@/lib/shared/components/facilitySidebar/create/FacilityForm";
+import {
+  DefaultFacilityFormValues,
+  getInitialFacilityFormValues,
+} from "@/lib/shared/components/facilitySidebar/create/FacilityForm";
 import { FacilitySearchFormValues } from "@/lib/shared/components/facilitySidebar/search/FacilitySearchForm";
 import { InfoTileAddButton } from "@/lib/shared/components/infoTile/InfoTileAddButton";
 
@@ -68,9 +71,13 @@ function ConfiguredFacilitySidebar(
     });
   }
 
-  const facilitySidebarProps: FacilitySidebarProps<FacilitySearchFormValues> = {
+  const facilitySidebarProps: FacilitySidebarProps<
+    FacilitySearchFormValues,
+    DefaultFacilityFormValues
+  > = {
     title: "Auftraggeber hinzufügen",
     submitLabel: "Speichern",
+    getInitialCreateFormValues: getInitialFacilityFormValues,
     onCreateNew: (values) => handleSubmit(values.createInputs),
     onSelect: (values) => handleSelectFacility(values.facility),
     formRef: props.formRef,

@@ -23,8 +23,7 @@ import { useAddInstitutionContactSidebar } from "@/lib/baseModule/components/con
 import { useAddPersonContactSidebar } from "@/lib/baseModule/components/contacts/modals/AddPersonContactSidebar";
 
 export interface ContactOverviewSearchParams
-  extends PaginatedSearchParams,
-    SortableSearchParams<ApiContactSortKey> {
+  extends PaginatedSearchParams, SortableSearchParams<ApiContactSortKey> {
   type?: ApiContactType;
   name?: string;
   category?: ApiContactCategory;

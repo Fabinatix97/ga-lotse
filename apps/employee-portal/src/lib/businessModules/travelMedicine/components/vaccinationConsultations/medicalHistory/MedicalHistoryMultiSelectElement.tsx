@@ -12,8 +12,10 @@ import {
   ApiDocumentSubElementMultiSelect,
 } from "@eshg/travel-medicine-api";
 
-interface MedicalHistoryMultiSelectElementProps
-  extends Omit<BaseFieldProps, "required" | "children"> {
+interface MedicalHistoryMultiSelectElementProps extends Omit<
+  BaseFieldProps,
+  "required" | "children"
+> {
   element: ApiDocumentSectionElement;
   sectionIndex: number;
   elementIndex: number;

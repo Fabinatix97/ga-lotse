@@ -230,10 +230,6 @@ public class ProstituteProtectionProcedure
     return encryptedFiles;
   }
 
-  public void deleteEncryptedFiles() {
-    encryptedFiles.clear();
-  }
-
   public void addEncryptedFile(EncryptedFile encryptedFile) {
     encryptedFiles.add(encryptedFile);
   }

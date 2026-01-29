@@ -9,8 +9,10 @@ import {
   countryOptions,
 } from "@eshg/lib-portal";
 
-interface CountryFieldMultiProps
-  extends Omit<MultiAutocompleteFieldProps, "options"> {
+interface CountryFieldMultiProps extends Omit<
+  MultiAutocompleteFieldProps,
+  "options"
+> {
   label: string;
 }
 

@@ -88,6 +88,10 @@ export function PersonDetails({
             </DetailsColumn>
             <DetailsColumn>
               <DetailsItem
+                label={PERSON_FIELD_NAME.phoneNumber}
+                value={procedure.phoneNumber ?? OPTIONAL_FALLBACK_VALUE}
+              />
+              <DetailsItem
                 label={PERSON_FIELD_NAME.hasSufficientGermanLanguageSkills}
                 value={hasSufficientGermanLanguageSkills(procedure.languages)}
               />

@@ -6,6 +6,7 @@
 import { Divider, Stack } from "@mui/joy";
 
 import {
+  Alert,
   DateField,
   InputField,
   SelectField,
@@ -20,31 +21,46 @@ import {
 } from "../../../../shared/constants";
 import { LanguageFields } from "../../../form/LanguageFields";
 
-export function EditPersonDetailsForm() {
+interface EditPersonDetailsFormProps {
+  disablePersonFields: boolean;
+}
+
+export function EditPersonDetailsForm({
+  disablePersonFields,
+}: EditPersonDetailsFormProps) {
   const validateLength = useValidateLength();
 
   return (
     <Stack gap={2}>
+      {disablePersonFields && (
+        <Alert
+          color="warning"
+          message="Nach erstellen eines Zertifikats sind Vorname, Nachname und Geburtsdatum nicht mehr bearbeitbar."
+        />
+      )}
       <InputField
         autoFocus
         name="firstName"
         label={PERSON_FIELD_NAME.firstName}
         required="Bitte einen Vornamen angeben."
         validate={validateLength(1, 120)}
+        disabled={disablePersonFields}
       />
       <InputField
         name="lastName"
         label={PERSON_FIELD_NAME.lastName}
         required="Bitte einen Nachnamen angeben."
         validate={validateLength(1, 120)}
+        disabled={disablePersonFields}
       />
-      <InputField name="alias" label="Alias" validate={validateLength(1, 80)} />
       <DateField
         name="dateOfBirth"
         label={PERSON_FIELD_NAME.dateOfBirth}
         required="Bitte ein Geburtsdatum angeben."
         validate={validateDateOfBirthOfLegaLAge}
+        disabled={disablePersonFields}
       />
+      <InputField name="alias" label="Alias" validate={validateLength(1, 80)} />
       <Divider sx={{ marginBlock: 1 }} />
       <LanguageFields />
       <Divider sx={{ marginBlock: 1 }} />

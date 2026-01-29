@@ -15,8 +15,7 @@ import {
 } from "@eshg/lib-employee-portal";
 
 interface SidebarFormProviderProps<T>
-  extends SidebarWithFormRefProps,
-    PropsWithChildren {
+  extends SidebarWithFormRefProps, PropsWithChildren {
   onSubmit: (values: T) => Promise<unknown> | void;
   initialValues: T & FormikValues;
   title: string;

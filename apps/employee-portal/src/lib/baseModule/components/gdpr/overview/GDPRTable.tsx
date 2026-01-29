@@ -68,6 +68,7 @@ export function GDPRTable({ params }: { params: GetGdprProceduresRequest }) {
           right={
             hasWritePerms && (
               <Button
+                autoFocus
                 startDecorator={<AddIcon />}
                 onClick={() => sidebar.open()}
               >

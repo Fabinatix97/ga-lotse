@@ -21,7 +21,7 @@ catalogs:
 
   joy:
     "@mui/joy": "5.0.0-beta.52"
-    "@mui/icons-material": "5.17.1"
+    "@mui/icons-material": "5.18.0"
     "@mui/material": "npm:@mui/joy@5.0.0-beta.52"
     "@emotion/cache": "11.14.0"
     "@emotion/react": "11.14.0"
@@ -30,86 +30,81 @@ catalogs:
     "@fontsource/source-code-pro": "5.2.7"
 
   i18next:
-    "i18next": "25.6.0"
+    "i18next": "25.7.3"
     "i18next-resources-to-backend": "1.2.1"
-    "react-i18next": "16.2.1"
+    "react-i18next": "16.5.1"
 
   fullcalendar:
-    "@fullcalendar/core": "6.1.19"
-    "@fullcalendar/daygrid": "6.1.19"
-    "@fullcalendar/interaction": "6.1.19"
-    "@fullcalendar/list": "6.1.19"
-    "@fullcalendar/react": "6.1.19"
-    "@fullcalendar/timegrid": "6.1.19"
+    "@fullcalendar/core": "6.1.20"
+    "@fullcalendar/daygrid": "6.1.20"
+    "@fullcalendar/interaction": "6.1.20"
+    "@fullcalendar/list": "6.1.20"
+    "@fullcalendar/react": "6.1.20"
+    "@fullcalendar/timegrid": "6.1.20"
 
   eslint:
-    "eslint": "9.38.0"
-    "typescript-eslint": "8.46.2"
-    "@eslint/compat": "1.4.0"
-    "@eslint/eslintrc": "3.3.1"
-    "@eslint/js": "9.38.0"
+    "eslint": "9.39.2"
+    "typescript-eslint": "8.52.0"
+    "@eslint/compat": "2.0.0"
+    "@eslint/eslintrc": "3.3.3"
+    "@eslint/js": "9.39.2"
     "eslint-config-prettier": "10.1.8"
     "eslint-plugin-import": "2.32.0"
     "eslint-plugin-unused-imports": "4.3.0"
     "eslint-plugin-promise": "7.2.1"
 
   prettier:
-    "prettier": "3.6.2"
-    "@trivago/prettier-plugin-sort-imports": "5.2.2"
+    "prettier": "3.7.4"
+    "@trivago/prettier-plugin-sort-imports": "6.0.2"
 
   vite:
-    "vite": "7.1.12"
+    "vite": "7.3.1"
 
   vitest:
-    "vitest": "4.0.4"
-    "@vitest/coverage-istanbul": "4.0.4"
-    "@vitejs/plugin-react": "5.1.0"
-    "vite-tsconfig-paths": "5.1.4"
-    "@cronn/vitest-file-snapshots": "0.15.0"
+    "vitest": "4.0.16"
+    "@vitest/coverage-istanbul": "4.0.16"
+    "@vitejs/plugin-react": "5.1.2"
+    "vite-tsconfig-paths": "6.0.3"
+    "@cronn/vitest-file-snapshots": "0.17.0"
 
   playwright:
-    "@playwright/test": "1.56.1"
+    "@playwright/test": "1.57.0"
     "@axe-core/playwright": "4.11.0"
-    "axe-core": "4.11.0"
+    "axe-core": "4.11.1"
     "axe-html-reporter": "2.2.11"
-    "@cronn/playwright-file-snapshots": "0.24.1"
+    "@cronn/playwright-file-snapshots": "0.34.0"
 
   common:
     "typescript": "5.9.3"
-    "@types/node": "22.18.13"
-    "@tanstack/react-query": "5.90.5"
+    "@types/node": "22.19.3"
+    "@tanstack/react-query": "5.90.16"
     "@tanstack/eslint-plugin-query": "5.91.2"
     "@tanstack/react-table": "8.21.3"
     "date-fns": "4.1.0"
-    "formik": "2.4.6"
-    "react-error-boundary": "6.0.0"
-    "remeda": "2.32.0"
-    "valibot": "1.1.0"
+    "formik": "2.4.9"
+    "react-error-boundary": "6.0.2"
+    "remeda": "2.33.1"
+    "valibot": "1.2.0"
     "use-debounce": "10.0.6"
     "uuid": "13.0.0"
     "drauu": "0.4.3"
-    "tsup": "8.5.0"
-    "zustand": "5.0.8"
-    "@keycloak/keycloak-admin-client": "26.4.2"
+    "tsup": "8.5.1"
+    "zustand": "5.0.9"
+    "@keycloak/keycloak-admin-client": "26.5.0"
 
-    "tsx": "4.20.6"
-    "pdf-parse-new": "1.4.1"
+    "tsx": "4.21.0"
+    "pdf-parse-new": "2.0.0"
 
 # add new dependencies with exact version instead of semver ranges
 saveExact: true
 # do not use symlinks because they cause issues on Windows system
 # see https://github.com/vercel/next.js/issues/50803
 nodeLinker: "hoisted"
-minimumReleaseAge: 10080
+minimumReleaseAge: 10080  # 1 week
 minimumReleaseAgeExclude:
-  - next@15.4.10
-  - "@next/bundle-analyzer@15.4.10"
-  - eslint-config-next@15.4.10
-  - react@19.2.3
-  - react-dom@19.2.3
-  - "@next/env@15.4.10"
-  - "@next/eslint-plugin-next@15.4.10"
+  - "@types/k6@1.5.0"
 trustPolicy: no-downgrade
+trustPolicyIgnoreAfter: 40320 # 4 weeks
 trustPolicyExclude:
   - chokidar@4.0.3
   - eslint-import-resolver-typescript@3.10.1
@@ -118,6 +113,7 @@ trustPolicyExclude:
   - rxjs@7.8.2
   - semver@6.3.1
   - undici-types@6.21.0
+blockExoticSubdeps: true
 strictDepBuilds: true
 ignoredBuiltDependencies:
   - esbuild

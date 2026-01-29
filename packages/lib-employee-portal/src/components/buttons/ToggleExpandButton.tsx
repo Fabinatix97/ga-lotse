@@ -12,8 +12,10 @@ const ActiveStateText = styled("span")(({ theme }) => ({
   color: theme.palette.primary.outlinedColor,
 }));
 
-export interface ToggleExpandButtonProps
-  extends Omit<ButtonProps, "variant" | "color"> {
+export interface ToggleExpandButtonProps extends Omit<
+  ButtonProps,
+  "variant" | "color"
+> {
   expanded: boolean;
   "aria-controls"?: string;
   activeStateText?: ReactNode;

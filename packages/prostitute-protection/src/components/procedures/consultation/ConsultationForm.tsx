@@ -11,7 +11,6 @@ import { Formik } from "formik";
 import { ConfirmLeaveDirtyFormEffect } from "@eshg/lib-employee-portal";
 import {
   FormPlus,
-  OptionalFieldValue,
   mapOptionalValue,
   parseOptionalValue,
   useHandledMutation,
@@ -25,7 +24,6 @@ import {
 import { useUpsertConsultationOptions } from "../../../api/mutations/consultation";
 
 import { LanguageSection } from "./LanguageSection";
-import { NotesSection } from "./NotesSection";
 import { PPA7Section } from "./PPA7Section";
 import { PPA10Section } from "./PPA10Section";
 import { StickyBottomBar } from "./StickyBottomBar";
@@ -44,10 +42,8 @@ export interface ConsultationFormData {
   predicament: boolean;
   pregnancy: boolean;
   referral: boolean;
-  supervisedConsultation: boolean;
   taxLiability: boolean;
   version: number;
-  remark: OptionalFieldValue<string>;
   interpreterFirstName?: string;
   interpreterLastName?: string;
   languageOfConsultation?: ApiPersonLanguage | "";
@@ -98,11 +94,9 @@ export function ConsultationForm({
               <Typography level="h2" id="consultation-title">
                 Beratung Prostituiertenschutzgesetz
               </Typography>
-
               <PPA7Section />
               <PPA10Section />
               <LanguageSection />
-              <NotesSection />
             </Sheet>
           </Stack>
           <StickyBottomBar />
@@ -115,7 +109,6 @@ export function ConsultationForm({
 function mapApiToForm(consultation: ApiConsultation): ConsultationFormData {
   return {
     ...consultation,
-    remark: parseOptionalValue(consultation.remark),
     interpreterLastName: parseOptionalValue(consultation.interpreterLastName),
     interpreterFirstName: parseOptionalValue(consultation.interpreterFirstName),
     languageOfConsultation: parseOptionalValue(
@@ -127,7 +120,6 @@ function mapApiToForm(consultation: ApiConsultation): ConsultationFormData {
 function mapFormToApi(values: ConsultationFormData): ApiConsultation {
   return {
     ...values,
-    remark: mapOptionalValue(values.remark),
     interpreterLastName: values.interpreterConsulted
       ? mapOptionalValue(values.interpreterLastName)
       : undefined,

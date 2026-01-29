@@ -326,10 +326,12 @@ export function EvaluationsTable({
         fullHeight
         controls={
           <ButtonBar
+            invertDomOrder
             left={<ToggleFilterButton {...filterSettings.filterButtonProps} />}
             right={[
               <RefreshButton
                 key="refreshEvaluation"
+                autoFocus
                 loading={loading}
                 queryKey={getEvaluationsQueryKey([])}
               />,

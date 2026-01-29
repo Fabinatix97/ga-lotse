@@ -13,7 +13,6 @@ dependencies {
     implementation project(":lib-statistics")
     implementation project(':lib-appointmentblock')
     implementation project(':lib-calendar')
-    implementation project(':lib-config')
     implementation project(":lib-document-generator")
     implementation project(':lib-scheduling')
     implementation project(':rest-oauth-client-commons')

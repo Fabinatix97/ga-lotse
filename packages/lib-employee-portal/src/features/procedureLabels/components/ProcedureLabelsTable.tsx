@@ -43,6 +43,7 @@ export function ProcedureLabelsTable(props: ProcedureLabelsTableProps) {
           <ButtonBar
             right={
               <Button
+                autoFocus
                 startDecorator={<Add />}
                 size="sm"
                 onClick={() =>

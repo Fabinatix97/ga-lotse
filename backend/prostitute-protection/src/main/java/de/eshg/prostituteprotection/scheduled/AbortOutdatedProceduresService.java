@@ -51,7 +51,14 @@ public class AbortOutdatedProceduresService {
         retentionThreshold);
     List<ProstituteProtectionProcedure> proceduresToAbort =
         procedureRepository.findAllOpenByAppointmentStartBefore(retentionThreshold);
-    proceduresToAbort.forEach(prostituteProtectionService::abortProcedure);
+
+    procedureRepository.deleteEncryptedFiles(
+        proceduresToAbort.stream().map(ProstituteProtectionProcedure::getExternalId).toList());
+    for (ProstituteProtectionProcedure procedure : proceduresToAbort) {
+      procedure.getPersonalData().setPhoneNumber(null);
+      procedure.setEncryptedPersonalData(null);
+      prostituteProtectionService.abortProcedure(procedure);
+    }
     procedureRepository.flush();
     log.info("{} procedures aborted", proceduresToAbort.size());
   }

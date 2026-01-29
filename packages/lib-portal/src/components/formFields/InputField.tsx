@@ -22,9 +22,7 @@ import { BaseField, FieldComponentProps, useBaseField } from "./BaseField";
 import { FieldVariantProps } from "./types";
 
 export interface InputFieldProps
-  extends FieldProps<string>,
-    FieldComponentProps,
-    FieldVariantProps {
+  extends FieldProps<string>, FieldComponentProps, FieldVariantProps {
   type?: HTMLInputTypeAttribute;
   placeholder?: string;
   readOnly?: boolean;

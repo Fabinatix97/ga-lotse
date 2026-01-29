@@ -11,12 +11,11 @@ import {
   DefaultPersonFormValues,
   MultiFormButtonBar,
   PersonFormProps,
+  PersonalFormSectionWithoutDateOfBirthDetails,
   SidebarActions,
   SidebarContent,
 } from "@eshg/lib-employee-portal";
 import { Alert } from "@eshg/lib-portal";
-
-import { PersonalFormSectionWithoutDateOfBirthDetails } from "./PersonalFormSectionWithoutDateOfBirthDetails";
 
 export function PersonFormWithoutBirthDetails(
   props: PersonFormProps<DefaultPersonFormValues>,

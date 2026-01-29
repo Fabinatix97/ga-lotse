@@ -23,6 +23,7 @@ import { useEffect, useState } from "react";
 
 import { ApiContactType, ApiUserRole } from "@eshg/base-api";
 import {
+  ButtonBar,
   CONTACT_CATEGORY_NAMES,
   Contact,
   DataTable,
@@ -152,38 +153,38 @@ export function ContactsTable({
       data-testid="contacts-table"
       fullHeight
       controls={
-        <Stack
-          direction="row"
-          flexWrap="wrap"
-          gap={2}
-          justifyContent="space-between"
-        >
-          <Stack direction="row" gap={2} role="group" aria-label="Filter">
-            <SearchFilter
-              label="Suche"
-              searchParamName={contactSearchParamNames.name}
-              tableControl={tableControl}
-              relevanceSortFieldName="RELEVANCE"
-            />
-            <ContactTypeFilter tableControl={tableControl} />
-            <SingleSelectFilter
-              searchParamName={contactSearchParamNames.categories}
-              placeholder="Objekttyp"
-              options={buildEnumOptions(CONTACT_CATEGORY_NAMES)}
-              tableControl={tableControl}
-              sx={{
-                // width of longest option "Kindertagesstätte"
-                width: "20ch",
-              }}
-            />
-          </Stack>
-          {hasWritePerms && (
-            <Stack direction="row" spacing={2}>
-              <ImportContactButton onImport={onImport} />
-              <CreateContactButton onCreate={onCreate} />
+        <ButtonBar
+          left={
+            <Stack direction="row" gap={2} role="group" aria-label="Filter">
+              <SearchFilter
+                label="Suche"
+                searchParamName={contactSearchParamNames.name}
+                tableControl={tableControl}
+                relevanceSortFieldName="RELEVANCE"
+              />
+              <ContactTypeFilter tableControl={tableControl} />
+              <SingleSelectFilter
+                searchParamName={contactSearchParamNames.categories}
+                placeholder="Objekttyp"
+                options={buildEnumOptions(CONTACT_CATEGORY_NAMES)}
+                tableControl={tableControl}
+                sx={{
+                  // width of longest option "Kindertagesstätte"
+                  width: "20ch",
+                }}
+              />
             </Stack>
-          )}
-        </Stack>
+          }
+          right={
+            hasWritePerms && (
+              <Stack direction="row" spacing={2}>
+                <ImportContactButton onImport={onImport} />
+                <CreateContactButton onCreate={onCreate} />
+              </Stack>
+            )
+          }
+          invertDomOrder
+        />
       }
     >
       <TableSheet
@@ -256,6 +257,7 @@ function ImportContactButton(props: Pick<ContactsTableProps, "onImport">) {
   return (
     <Dropdown>
       <MenuButton
+        autoFocus
         startDecorator={<CachedIcon />}
         color="primary"
         variant="outlined"

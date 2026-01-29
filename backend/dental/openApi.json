@@ -4045,7 +4045,7 @@
       },
       "BusinessModule" : {
         "type" : "string",
-        "enum" : [ "INSPECTION", "SCHOOL_ENTRY", "TRAVEL_MEDICINE", "MEASLES_PROTECTION", "STI_PROTECTION", "MEDICAL_REGISTRY", "DENTAL", "OFFICIAL_MEDICAL_SERVICE", "MEDS_ABROAD", "PROSTITUTE_PROTECTION" ]
+        "enum" : [ "INSPECTION", "SCHOOL_ENTRY", "TRAVEL_MEDICINE", "MEASLES_PROTECTION", "STI_PROTECTION", "MEDICAL_REGISTRY", "DENTAL", "OFFICIAL_MEDICAL_SERVICE", "MEDS_ABROAD", "PROSTITUTE_PROTECTION", "INFECTION_BRIEFING" ]
       },
       "BusinessProcedureInclusionStatus" : {
         "type" : "string",
@@ -7253,7 +7253,7 @@
         "enum" : [ "COMPLETE", "INCOMPLETE" ]
       },
       "ScreeningExaminationResult" : {
-        "required" : [ "blackStain", "calculus", "dentitionType", "fissureSealing", "gingivitis", "gingivitisTreatment", "individualProphylaxis", "inspectionAppointment", "orthodonticFindings", "orthodonticTreatment", "parodontitis", "plaque", "plaqueTreatment", "tartarRemoval", "toothDiagnoses" ],
+        "required" : [ "blackStain", "calculus", "dentitionType", "fissureSealing", "gingivitis", "gingivitisTreatment", "individualProphylaxis", "inspectionAppointment", "orthodonticFindings", "orthodonticTreatment", "parodontitis", "plaque", "plaqueTreatment", "primaryDentitionObstructsSecondary", "tartarRemoval", "toothDiagnoses" ],
         "type" : "object",
         "allOf" : [ {
           "$ref" : "#/components/schemas/DentalExaminationResult"
@@ -7312,6 +7312,9 @@
               "type" : "boolean"
             },
             "plaqueTreatment" : {
+              "type" : "boolean"
+            },
+            "primaryDentitionObstructsSecondary" : {
               "type" : "boolean"
             },
             "tartarRemoval" : {

@@ -20,7 +20,7 @@ spec:
       targetPort: proxy-incoming
 
 ---
-{{ include "lib.certificate" (list .Values.keycloak.certificate.publicSecret .Values.domains.hosts.keycloak .Values.domains.clusterIssuer .Release.Namespace .Values.development.injectSelfSignedCA) }}
+{{ include "lib.certificate" (list .Values.keycloak.certificate.publicSecret .Values.domains.hosts.keycloak .Values.domains.clusterIssuers.public .Release.Namespace .Values.development.injectSelfSignedCA) }}
 {{ include "ingress" (list "keycloak" .Values.ingress.type .Values.domains.hosts.keycloak "proxy-incoming" "keycloak-reverse-proxy" .Release.Namespace)}}
 
 ---

@@ -39,7 +39,7 @@ export function TextTemplateFields() {
         message={
           <>
             Das <strong>$</strong>-Zeichen kann als Platzhalter verwendet
-            werden. Nach dem Einfügen kann man zwischen den Platzhalter mit{" "}
+            werden. Nach dem Einfügen kann man zwischen den Platzhaltern mit{" "}
             <strong>Strg+Leertaste</strong> oder <strong>Strg+Eingabe</strong>{" "}
             springen.
           </>

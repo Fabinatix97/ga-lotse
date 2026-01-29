@@ -16,6 +16,8 @@ import de.eshg.base.address.AddressDto;
 import de.eshg.base.address.DomesticAddressDto;
 import de.eshg.base.centralfile.api.DataOriginDto;
 import de.eshg.base.centralfile.api.facility.*;
+import de.eshg.base.user.UserApi;
+import de.eshg.base.user.api.UserDto;
 import de.eshg.domain.model.BaseEntity_;
 import de.eshg.domain.model.SequencedBaseEntity_;
 import de.eshg.inspection.facility.api.GetPendingFacilitiesFilterOptionsDto;
@@ -37,6 +39,7 @@ import de.eshg.inspection.facility.persistence.PendingFacilityView;
 import de.eshg.inspection.facility.websearch.WebSearchService;
 import de.eshg.inspection.facility.websearch.persistence.WebSearchEntry;
 import de.eshg.inspection.facility.websearch.persistence.WebSearchEntryStatus;
+import de.eshg.inspection.feature.InspectionFeature;
 import de.eshg.inspection.incident.persistence.InspectionIncident;
 import de.eshg.inspection.incident.persistence.InspectionIncident_;
 import de.eshg.inspection.inspection.InspectionFinalizer;
@@ -67,6 +70,7 @@ import de.eshg.lib.procedure.model.ProcedureStatusDto;
 import de.eshg.rest.service.error.BadRequestException;
 import de.eshg.rest.service.error.ErrorCode;
 import de.eshg.rest.service.error.NotFoundException;
+import de.eshg.testhelper.FeatureToggle;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
@@ -124,6 +128,8 @@ public class FacilityService {
   private final FacilityFileNumberService facilityFileNumberService;
   private final FileNumberCollisionService fileNumberCollisionService;
   private final InspectionProgressEntryService inspectionProgressEntryService;
+  private final UserApi userApi;
+  private final FeatureToggle<InspectionFeature> featureToggle;
 
   public FacilityService(
       FacilityRepository facilityRepository,
@@ -137,7 +143,9 @@ public class FacilityService {
       FacilityFileNumberService facilityFileNumberService,
       //      InspectionFeatureToggle inspectionFeatureToggle,
       FileNumberCollisionService fileNumberCollisionService,
-      InspectionProgressEntryService inspectionProgressEntryService) {
+      InspectionProgressEntryService inspectionProgressEntryService,
+      UserApi userApi,
+      FeatureToggle<InspectionFeature> featureToggle) {
     this.facilityRepository = facilityRepository;
     this.facilityClient = facilityClient;
     this.inspectionService = inspectionService;
@@ -149,6 +157,8 @@ public class FacilityService {
     this.facilityFileNumberService = facilityFileNumberService;
     this.fileNumberCollisionService = fileNumberCollisionService;
     this.inspectionProgressEntryService = inspectionProgressEntryService;
+    this.userApi = userApi;
+    this.featureToggle = featureToggle;
   }
 
   public InspAddFacilityResponse addFacility(InspAddFacilityRequest request) {
@@ -199,6 +209,38 @@ public class FacilityService {
     ProcedureStatus procedureStatus = inspection.getProcedureStatus();
     return new InspAddFacilityResponse(
         facilityDTO, inspectionId, ProcedureMapper.toInterfaceType(procedureStatus), isNew);
+  }
+
+  public void setAssignee(UUID externalId, UUID assigneeId) {
+    if (!featureToggle.isNewFeatureEnabled(InspectionFeature.SAMPLES)) {
+      throw new BadRequestException("Feature toggle SAMPLES is disabled");
+    }
+    Optional<Facility> optFac = facilityRepository.findByExternalId(externalId);
+    if (optFac.isEmpty()) {
+      throw new IllegalArgumentException(
+          "Facility with externalId " + externalId + " not found in table Inspection.facility");
+    }
+    Facility fac = optFac.get();
+    fac.setAssigneeId(assigneeId);
+    facilityRepository.save(fac);
+  }
+
+  public Optional<UserDto> getAssignee(UUID externalId) {
+    if (!featureToggle.isNewFeatureEnabled(InspectionFeature.SAMPLES)) {
+      throw new BadRequestException("Feature toggle SAMPLES is disabled");
+    }
+    Optional<Facility> optFac = facilityRepository.findByExternalId(externalId);
+    if (optFac.isEmpty()) {
+      throw new IllegalArgumentException(
+          "Facility with externalId " + externalId + " not found in table Inspection.facility");
+    }
+    Facility fac = optFac.get();
+    UUID assigneeId = fac.getAssigneeId();
+    if (assigneeId == null) {
+      return Optional.empty();
+    }
+    UserDto user = userApi.getUser(assigneeId);
+    return Optional.ofNullable(user);
   }
 
   InspLinkBaseFacilityResponse linkBaseFacility(InspLinkBaseFacilityRequest request) {

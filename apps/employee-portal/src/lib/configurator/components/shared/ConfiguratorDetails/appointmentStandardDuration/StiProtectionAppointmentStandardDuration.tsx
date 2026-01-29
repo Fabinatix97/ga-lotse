@@ -47,8 +47,7 @@ enum FormNames {
   RESULTS_REVIEW = "resultsReview",
 }
 
-interface StiProtectionAppointmentStandardDurationFormValues
-  extends FormikValues {
+interface StiProtectionAppointmentStandardDurationFormValues extends FormikValues {
   [FormNames.CONSULTATION]: OptionalFieldValue<number>;
   [FormNames.RESULTS_REVIEW]: OptionalFieldValue<number>;
 }

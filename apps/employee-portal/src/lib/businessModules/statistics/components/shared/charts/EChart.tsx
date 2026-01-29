@@ -46,6 +46,33 @@ echarts.use([
 ]);
 echarts.registerLocale("DE", langDE);
 
+export const colorPalette = [
+  "#226FB0",
+  "#DC69AA",
+  "#626C91",
+  "#07A2A4",
+  "#95706D",
+  "#588DD5",
+  "#C14089",
+  "#9A7FD1",
+  "#00815E",
+  "#C05050",
+  "#0073E6",
+  "#897400",
+  "#924AB8",
+  "#D43F49",
+  "#1876A6",
+  "#59678C",
+  "#054FB9",
+  "#5A53D8",
+  "#A33282",
+  "#6F5553",
+  "#0F7F39",
+  "#B03620",
+  "#015E1A",
+  "#8906A0",
+];
+
 export interface ChartApi {
   exportAsImage: (imageType: ImageType) => void;
 }
@@ -177,32 +204,7 @@ export function EChart(props: {
         top: 64,
         bottom: 56,
       },
-      color: [
-        "#226FB0",
-        "#DC69AA",
-        "#626C91",
-        "#07A2A4",
-        "#95706D",
-        "#588DD5",
-        "#C14089",
-        "#9A7FD1",
-        "#00815E",
-        "#C05050",
-        "#0073E6",
-        "#897400",
-        "#924AB8",
-        "#D43F49",
-        "#1876A6",
-        "#59678C",
-        "#054FB9",
-        "#5A53D8",
-        "#A33282",
-        "#6F5553",
-        "#0F7F39",
-        "#B03620",
-        "#015E1A",
-        "#8906A0",
-      ],
+      color: colorPalette,
     } as EChartsOption,
     props.option,
   );

@@ -148,10 +148,16 @@ domains:
     # hostname should match (and be a cluster internal only address!)
     keycloak: keycloak-central-internal.cs.my-ga-lotse.de
     keycloakInternal: keycloak-central-internal.cs.my-ga-lotse.de
-  # cluster issuer for cert manager for public URLs
-  clusterIssuer: letsencrypt-prod-issuer
-  # cluster issuer for cert manager for internal-only URLs
-  internalClusterIssuer: letsencrypt-internal-issuer
+  clusterIssuers:
+    # cluster issuers for cert manager for public URLs
+    # public dual-use certificates (client and server EKU)
+    public: letsencrypt-prod-issuer-dual-use-certs
+    # public client certificates
+    publicClient: letsencrypt-prod-issuer-client-certs
+    # public server certificates
+    publicServer: letsencrypt-prod-issuer-server-certs
+    # cluster issuer for cert manager for internal-only URLs
+    internal: letsencrypt-internal-issuer
 
 # !!! the lsd hostname of each orgUnit below will be included in the
 # service directory inbound client cname allow list !!!
@@ -420,10 +426,16 @@ domains:
     keycloak: keycloak.frankfurt.my-ga-lotse.de
     # cluster internal accesss via
     keycloakInternal: keycloak-internal.frankfurt.my-ga-lotse.de
-  # cluster issuer for cert manager for public URLs
-  clusterIssuer: letsencrypt-prod-issuer
-  # cluster issuer for cert manager for internal-only URLs
-  internalClusterIssuer: letsencrypt-internal-issuer
+  clusterIssuers:
+    # cluster issuers for cert manager for public URLs
+    # public dual-use certificates (client and server EKU)
+    public: letsencrypt-prod-issuer-dual-use-certs
+    # public client certificates
+    publicClient: letsencrypt-prod-issuer-client-certs
+    # public server certificates
+    publicServer: letsencrypt-prod-issuer-server-certs
+    # cluster issuer for cert manager for internal-only URLs
+    internal: letsencrypt-internal-issuer
 
 # currently traefik and openshift are supported as ingress controllers
 # traefik uses 'IngressRouteTCP'  - openshift uses 'Route'

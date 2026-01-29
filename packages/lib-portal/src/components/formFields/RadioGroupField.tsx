@@ -23,8 +23,7 @@ import { useIsFormDisabled } from "../form/DisabledFormContext";
 import { renderHelperText, useBaseField } from "./BaseField";
 
 export interface RadioGroupFieldProps
-  extends ValidationRules<string>,
-    PropsWithChildren {
+  extends ValidationRules<string>, PropsWithChildren {
   name: string;
   label?: string | ReactNode;
   sx?: SxProps;

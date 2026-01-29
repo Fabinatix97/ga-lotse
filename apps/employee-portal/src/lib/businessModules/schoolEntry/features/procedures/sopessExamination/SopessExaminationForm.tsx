@@ -145,8 +145,7 @@ export const MIN_0 = 0;
 export const MAX_9 = 9;
 export const MAX_99 = 99;
 
-interface SopessExaminationFormProps
-  extends FormProps<SopessExaminationFormValues> {
+interface SopessExaminationFormProps extends FormProps<SopessExaminationFormValues> {
   valuesToMutationBundle: (
     values: SopessExaminationFormValues,
   ) => MutationBundle<UpdateSopessExaminationResultRequest>;

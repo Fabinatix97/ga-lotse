@@ -23,7 +23,7 @@ spec:
 
 ---
 
-{{ include "lib.certificate" (list .Values.maildev.certificate.secret .Values.domains.hosts.maildev .Values.domains.clusterIssuer .Release.Namespace .Values.development.injectSelfSignedCA) }}
+{{ include "lib.certificate" (list .Values.maildev.certificate.secret .Values.domains.hosts.maildev .Values.domains.clusterIssuers.public .Release.Namespace .Values.development.injectSelfSignedCA) }}
 
 ---
 

@@ -28,7 +28,10 @@ import {
 } from "@/lib/businessModules/inspection/api/mutations/facility";
 import { routes } from "@/lib/businessModules/inspection/shared/routes";
 import { FacilitySidebar } from "@/lib/shared/components/facilitySidebar/FacilitySidebar";
-import { DefaultFacilityFormValues } from "@/lib/shared/components/facilitySidebar/create/FacilityForm";
+import {
+  DefaultFacilityFormValues,
+  getInitialFacilityFormValues,
+} from "@/lib/shared/components/facilitySidebar/create/FacilityForm";
 import { FacilitySearchFormValues } from "@/lib/shared/components/facilitySidebar/search/FacilitySearchForm";
 
 export function useInspectionInboxProcedureCreateSidebar(): UseSidebarWithFormRefResult<InspectionInboxProcedureCreateSidebarProps> {
@@ -37,8 +40,7 @@ export function useInspectionInboxProcedureCreateSidebar(): UseSidebarWithFormRe
   });
 }
 
-interface InspectionInboxProcedureCreateSidebarProps
-  extends SidebarWithFormRefProps {
+interface InspectionInboxProcedureCreateSidebarProps extends SidebarWithFormRefProps {
   inboxProcedureId: string;
 }
 
@@ -106,9 +108,13 @@ function InspectionInboxProcedureCreateSidebar({
       searchResultHeaderComponent={false}
       initialSearchInputs={initialSearchInputs}
       formRef={formRef}
-      getInitialCreateInputs={(searchInputs?: FacilitySearchFormValues) => ({
-        ...createBaseFacilityFromInboxProcedure(inboxProcedure, searchInputs),
-      })}
+      getInitialCreateFormValues={(searchInputs) =>
+        getInitialFacilityFormValues(
+          searchInputs,
+          false,
+          createBaseFacilityFromInboxProcedure(inboxProcedure, searchInputs),
+        )
+      }
       onCreateNew={async (values) => {
         await handleSaveFacility(values.createInputs);
       }}

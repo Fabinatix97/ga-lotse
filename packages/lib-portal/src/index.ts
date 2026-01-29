@@ -369,6 +369,7 @@ export {
   validateGermanZipCode,
   validateTodayOrFutureDate,
 } from "./helpers/validators";
+export { findFirstInteractableChild } from "./helpers/findFirstInteractableChild";
 
 export { useIsBreakpointDown, useIsMobile } from "./hooks/theme";
 export { useHasChanged } from "./hooks/useHasChanged";
@@ -391,6 +392,7 @@ export {
 export { useWindowDimensions } from "./hooks/useWindowDimension";
 export { useFocusToggle } from "./hooks/useFocusToggle";
 export { useFocus } from "./hooks/useFocus";
+export { useAutoTitleFocus } from "./hooks/useAutoTitleFocus";
 
 export { de } from "./i18n/locales/de";
 export { loadLocale } from "./i18n/loadLocale";

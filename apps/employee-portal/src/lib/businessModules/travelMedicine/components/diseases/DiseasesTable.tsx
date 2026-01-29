@@ -85,7 +85,11 @@ export function DiseasesTable() {
       controls={
         <ButtonBar
           right={
-            <Button startDecorator={<AddIcon />} onClick={() => newEntry()}>
+            <Button
+              autoFocus
+              startDecorator={<AddIcon />}
+              onClick={() => newEntry()}
+            >
               Krankheit hinzufügen
             </Button>
           }

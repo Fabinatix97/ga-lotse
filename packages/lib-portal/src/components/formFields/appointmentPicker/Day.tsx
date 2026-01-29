@@ -19,11 +19,10 @@ import { AppointmentCalendarProps } from "./AppointmentCalendar";
 import { MonthSelectionProps } from "./MonthSelection";
 import { dateInMonthForm } from "./helpers";
 
-interface DayProps
-  extends Omit<
-    AppointmentCalendarProps,
-    "monthSelectionLabel" | keyof MonthSelectionProps
-  > {
+interface DayProps extends Omit<
+  AppointmentCalendarProps,
+  "monthSelectionLabel" | keyof MonthSelectionProps
+> {
   locale: string;
   date: Date | null;
   focusedDay: Date | null;

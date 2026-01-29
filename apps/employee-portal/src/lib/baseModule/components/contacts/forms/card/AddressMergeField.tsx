@@ -36,8 +36,9 @@ interface AddressSelectOption {
   value: BaseAddressFormInputs | undefined;
 }
 
-interface AddressCardsFieldProps
-  extends FieldProps<BaseAddressFormInputs | undefined> {
+interface AddressCardsFieldProps extends FieldProps<
+  BaseAddressFormInputs | undefined
+> {
   options: AddressSelectOption[];
   value: BaseAddressFormInputs | undefined;
   readOnly: boolean;

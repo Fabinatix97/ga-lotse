@@ -30,6 +30,7 @@ public record ScreeningExaminationResultDto(
     @NotNull boolean gingivitisTreatment,
     @NotNull boolean orthodonticTreatment,
     @NotNull boolean plaqueTreatment,
+    @NotNull boolean primaryDentitionObstructsSecondary,
     @NotNull boolean inspectionAppointment)
     implements ExaminationResultDto, IsFluorideVarnishApplicable {
 
@@ -49,6 +50,7 @@ public record ScreeningExaminationResultDto(
         false,
         false,
         List.of(),
+        false,
         false,
         false,
         false,
@@ -112,6 +114,7 @@ public record ScreeningExaminationResultDto(
         parodontitis,
         blackStain,
         List.of(),
+        false,
         false,
         false,
         false,

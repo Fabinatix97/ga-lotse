@@ -5,8 +5,9 @@
 
 package de.eshg.spatz.common;
 
-import static de.eshg.servicedirectory.util.X509Utils.ESHGACTOR_BUNDLE_NAME;
 import static de.eshg.servicedirectory.util.X509Utils.getCertificateInfo;
+import static de.eshg.spatz.config.SelfSignedSecurityConfiguration.ESHGACTOR_BUNDLE_NAME;
+import static de.eshg.spatz.config.SelfSignedSecurityConfiguration.ESHGACTOR_CLIENT_BUNDLE_NAME;
 
 import de.eshg.lib.servicedirectory.ServiceDirectoryApiConfiguration.GetTrustedActorsCacheEntry;
 import de.eshg.lib.servicedirectory.ServiceDirectoryApiConfiguration.TrustedActorsSupplier;
@@ -312,7 +313,6 @@ public class ServiceDirectoryTopologyService implements SmartLifecycle {
 
     @Override
     public void trustedActorsChanged(TrustedActors trustedActors) {
-
       Map<String, ActorResponseDto> allTrustedActors =
           new HashMap<>(trustedActors.inboundByHostname());
       allTrustedActors.putAll(trustedActors.outboundByHostname());
@@ -325,10 +325,20 @@ public class ServiceDirectoryTopologyService implements SmartLifecycle {
               .flatMap(X509Utils::parseMultiPem)
               .toList();
 
-      SslBundle newSslBundle =
+      SslBundle newServerSslBundle =
           sslBundleFactory.buildWithNewDynamicRemoteCertificates(dynamicCertificates);
+      sslBundleRegistry.updateBundle(ESHGACTOR_BUNDLE_NAME, newServerSslBundle);
 
-      sslBundleRegistry.updateBundle(ESHGACTOR_BUNDLE_NAME, newSslBundle);
+      // `buildClientBundle()` works, because
+      // `buildWithNewDynamicRemoteCertificates(dynamicCertificates)` above updates the
+      // remote certificates in the factory.
+      // TODO: Move remote certificate update from `buildWithNewDynamicRemoteCertificates` into a
+      // separate method.
+      SslBundle newClientSslBundle = sslBundleFactory.buildClientBundle();
+      if (newClientSslBundle != null) {
+        sslBundleRegistry.updateBundle(ESHGACTOR_CLIENT_BUNDLE_NAME, newClientSslBundle);
+      }
+
       logger.info("updated SSL Truststore to reflect changed serviceDirectory topology");
     }
   }

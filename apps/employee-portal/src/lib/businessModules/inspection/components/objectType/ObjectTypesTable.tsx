@@ -31,6 +31,9 @@ export function ObjectTypesTable() {
     useGetObjectTypeHierarchyTree();
 
   const featureToggleEnabled = useIsNewFeatureEnabled("OBJECT_TYPE_HIERARCHY");
+  const featureToggleAssigneeEnabled = useIsNewFeatureEnabled(
+    "OBJECT_TYPE_ASSIGNEE",
+  );
 
   const sidebar = useEditObjectTypeSidebar();
   const sidebarOld = useEditObjectTypeSidebarOld();
@@ -40,6 +43,66 @@ export function ObjectTypesTable() {
   > = createColumnHelper<ApiObjectTypeHierarchyTreeNode | ApiObjectType>();
 
   const columns = [
+    columnHelper.accessor("name", {
+      header: "Name",
+      meta: {
+        indentSubRows: true,
+        width: "40%",
+        indentSize: 24,
+        canNavigate: {
+          parentRow: false,
+          subRow: true,
+        },
+      },
+    }),
+    columnHelper.accessor("routineInterval", {
+      header: "Intervall (Tage)",
+      cell: (info) => {
+        const value = info.getValue() ? info.getValue() : "Kein Intervall";
+        return "id" in info.row.original && info.row.original.id ? value : "";
+      },
+      meta: {
+        canNavigate: {
+          parentRow: false,
+          subRow: true,
+        },
+      },
+    }),
+    columnHelper.accessor("complaintInterval", {
+      header: "nach Beanst. (Tage)",
+      cell: (info) => {
+        const value = info.getValue() ? info.getValue() : "Kein Intervall";
+        return "id" in info.row.original && info.row.original.id ? value : "";
+      },
+      meta: {
+        canNavigate: {
+          parentRow: false,
+          subRow: true,
+        },
+      },
+    }),
+    columnHelper.accessor("standardDuration", {
+      header: "Dauer (Std.)",
+      meta: {
+        canNavigate: {
+          parentRow: false,
+          subRow: true,
+        },
+      },
+    }),
+    columnHelper.accessor("designatedAssigneeName", {
+      header: "Zuständiger Mitarbeiter::in",
+      meta: {
+        width: "20%",
+        canNavigate: {
+          parentRow: false,
+          subRow: true,
+        },
+      },
+    }),
+  ];
+
+  const oldColumns = [
     columnHelper.accessor("name", {
       header: "Name",
       meta: {
@@ -102,7 +165,7 @@ export function ObjectTypesTable() {
           data={objectTypeHierarchyTree}
           indentSize={24}
           indentSubRows
-          columns={columns}
+          columns={featureToggleAssigneeEnabled ? columns : oldColumns}
           getSubRows={getSubRows}
           minWidth={1000}
           rowNavigation={

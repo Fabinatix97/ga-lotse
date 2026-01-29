@@ -27,6 +27,7 @@ export default function AppointmentBlockGroupsOverviewPage() {
               left={<ToggleFilterButton disabled />}
               right={
                 <InternalLinkButton
+                  autoFocus
                   href={routes.appointmentBlockGroups.new}
                   size="sm"
                   startDecorator={<Schedule />}

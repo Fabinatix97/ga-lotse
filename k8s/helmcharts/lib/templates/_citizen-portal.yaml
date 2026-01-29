@@ -109,6 +109,8 @@ spec:
               value: https://{{ .Values.domains.centralservices.pdfaconverterportal }}
             - name: PUBLIC_PROSTITUTE_PROTECTION_BACKEND_URL
               value: "https://{{ .Values.domains.hosts.citizenportal }}/api/prostitute-protection"
+            - name: PUBLIC_INFECTION_BRIEFING_BACKEND_URL
+              value: "https://{{ .Values.domains.hosts.citizenportal }}/api/infection-briefing"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
       {{- include "module.spatz" (dict "Values" $.Values "v" $.Values.citizenportalnextjs "k" "citizenportalnextjs" "relay" false "createDebugLogMount" $createDebugLogMount) }}
 

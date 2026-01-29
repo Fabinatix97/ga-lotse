@@ -14,6 +14,7 @@ function citizenRoutes(locale: SupportedLanguage | undefined) {
     `${baseRoutes(locale).citizenPath.index}/prostituiertenschutz`,
     (prostituteProtectionPath) => ({
       overview: prostituteProtectionPath("/"),
+      bookAppointment: prostituteProtectionPath("/termin-buchen"),
     }),
   );
 }

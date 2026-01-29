@@ -15,7 +15,9 @@ import de.eshg.base.calendar.api.GetUserCalendarsRequest;
 import de.eshg.base.calendar.api.GetUserCalendarsResponse;
 import de.eshg.base.calendar.api.UserCalendar;
 import de.eshg.lib.appointmentblock.AbstractAppointmentService;
+import de.eshg.lib.appointmentblock.AppointmentBlockService;
 import de.eshg.lib.appointmentblock.AppointmentBlockSlotUtil;
+import de.eshg.lib.appointmentblock.api.AppointmentDto;
 import de.eshg.lib.appointmentblock.persistence.AppointmentType;
 import de.eshg.lib.appointmentblock.persistence.entity.Appointment;
 import de.eshg.prostituteprotection.domain.data.AppointmentData;
@@ -38,6 +40,7 @@ public class ProstituteProtectionAppointmentService
   private final Clock clock;
   private final ProstituteProtectionProcedureRepository prostituteProtectionProcedureRepository;
   private final AppointmentBlockSlotUtil appointmentBlockSlotUtil;
+  private final AppointmentBlockService appointmentBlockService;
   private final CalendarApi calendarApi;
   private final CalendarEventApi calendarEventApi;
 
@@ -45,24 +48,30 @@ public class ProstituteProtectionAppointmentService
       Clock clock,
       ProstituteProtectionProcedureRepository prostituteProtectionProcedureRepository,
       AppointmentBlockSlotUtil appointmentBlockSlotUtil,
+      AppointmentBlockService appointmentBlockService,
       CalendarApi calendarApi,
       CalendarEventApi calendarEventApi) {
     this.clock = clock;
     this.prostituteProtectionProcedureRepository = prostituteProtectionProcedureRepository;
     this.appointmentBlockSlotUtil = appointmentBlockSlotUtil;
+    this.appointmentBlockService = appointmentBlockService;
     this.calendarApi = calendarApi;
     this.calendarEventApi = calendarEventApi;
   }
 
-  void bookAppointment(
-      ProstituteProtectionProcedure procedure, AppointmentData appointment, UUID consultantId) {
+  List<AppointmentDto> getFreeAppointments() {
+    return appointmentBlockService.getFreeAppointments(
+        null, null, AppointmentType.PROSTITUTE_PROTECTION_CONSULTATION, null, null);
+  }
+
+  void bookAppointment(ProstituteProtectionProcedure procedure, AppointmentData appointment) {
     AppointmentType type = appointment.appointmentType();
     Instant start = appointment.appointmentStart();
     Instant end = start.plus(Duration.ofMinutes(appointment.durationInMinutes()));
     switch (appointment.appointmentBookingType()) {
       case APPOINTMENT_BLOCK -> bookAppointmentFromAppointmentBlock(procedure, type, start, end);
       case USER_DEFINED, SPONTANEOUS ->
-          bookUserDefinedAppointment(procedure, start, end, consultantId);
+          bookUserDefinedAppointment(procedure, start, end, appointment.consultantId());
       default ->
           throw new BadRequestException(
               "Unsupported booking type: " + appointment.appointmentBookingType());

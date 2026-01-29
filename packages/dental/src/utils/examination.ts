@@ -106,6 +106,8 @@ function mapExaminationResultFormValues(
       gingivitisTreatment: examinationResult.gingivitisTreatment,
       orthodonticTreatment: examinationResult.orthodonticTreatment,
       plaqueTreatment: examinationResult.plaqueTreatment,
+      primaryDentitionObstructsSecondary:
+        examinationResult.primaryDentitionObstructsSecondary,
       inspectionAppointment: examinationResult.inspectionAppointment,
     };
   }
@@ -131,6 +133,7 @@ function mapExaminationResultFormValues(
       gingivitisTreatment: false,
       orthodonticTreatment: false,
       plaqueTreatment: false,
+      primaryDentitionObstructsSecondary: false,
       inspectionAppointment: false,
     };
   }
@@ -153,6 +156,7 @@ function mapExaminationResultFormValues(
     gingivitisTreatment: false,
     orthodonticTreatment: false,
     plaqueTreatment: false,
+    primaryDentitionObstructsSecondary: false,
     inspectionAppointment: false,
   };
 }

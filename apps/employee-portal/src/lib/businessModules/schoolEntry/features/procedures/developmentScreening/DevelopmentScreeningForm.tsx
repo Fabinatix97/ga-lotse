@@ -60,8 +60,7 @@ export interface DevelopmentScreeningFormValues {
   schoolFeedback: OptionalFieldValue<ApiSchoolFeedback>;
 }
 
-interface DevelopmentScreeningFormProps
-  extends FormProps<DevelopmentScreeningFormValues> {
+interface DevelopmentScreeningFormProps extends FormProps<DevelopmentScreeningFormValues> {
   procedureId: string;
   initialPercentiles: Percentiles;
   valuesToMutationBundle: (

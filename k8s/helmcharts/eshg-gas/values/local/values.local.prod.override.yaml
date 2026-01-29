@@ -68,8 +68,11 @@ domains:
     maildev: mail.frankfurt.svc.cluster.local
     keycloak: keycloak.frankfurt.svc.cluster.local
     keycloakInternal: keycloak.frankfurt.svc.cluster.local
-  clusterIssuer: local-ca
-  internalClusterIssuer: local-ca
+  clusterIssuers:
+    public: local-ca
+    publicClient: local-ca
+    publicServer: local-ca
+    internal: local-ca
 
 keycloak:
   database:

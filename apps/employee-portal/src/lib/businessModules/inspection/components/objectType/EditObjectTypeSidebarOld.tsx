@@ -4,6 +4,7 @@
  */
 
 import { Grid } from "@mui/joy";
+import { useSuspenseQueries } from "@tanstack/react-query";
 import { Formik } from "formik";
 
 import { ApiObjectType } from "@eshg/inspection-api";
@@ -21,11 +22,16 @@ import {
   NumberField,
   OptionalFieldValue,
   TextareaField,
+  formatUserName,
   validateIntegerAnd,
   validateRange,
 } from "@eshg/lib-portal";
 
+import { useUserApi } from "@/lib/baseModule/api/clients";
 import { useUpdateObjectType } from "@/lib/businessModules/inspection/api/mutations/objectTypes";
+import { useIsNewFeatureEnabled } from "@/lib/businessModules/inspection/api/queries/feature";
+import { getAllAssignableUsersQuery } from "@/lib/businessModules/inspection/api/queries/users";
+import { AssigneeAutocompleteField } from "@/lib/businessModules/inspection/components/inspection/assignee/AssigneeAutocompleteField";
 
 export interface EditableObjectType {
   id: string;
@@ -37,6 +43,7 @@ export interface EditableObjectType {
   legalBasis: OptionalFieldValue<string>;
   routineIntervalRadio: string;
   complaintIntervalRadio: string;
+  designatedAssigneeId: string | null | undefined;
 }
 
 interface EditObjectTypeSidebarProps extends SidebarWithFormRefProps {
@@ -56,6 +63,21 @@ function EditObjectTypeSidebarWithQueriesAndMutations({
 }: Readonly<EditObjectTypeSidebarProps>) {
   const { openConfirmationDialog } = useConfirmationDialog();
 
+  const featureToggleAssigneeEnabled = useIsNewFeatureEnabled(
+    "OBJECT_TYPE_ASSIGNEE",
+  );
+
+  const userApi = useUserApi();
+
+  const [{ data: allAssignableUsers }] = useSuspenseQueries({
+    queries: [getAllAssignableUsersQuery(userApi)],
+  });
+
+  const assignableUsersOptions = allAssignableUsers.map((option) => ({
+    value: option.userId,
+    label: formatUserName(option),
+  }));
+
   const initialValues: EditableObjectType = {
     ...objectType,
     routineInterval: objectType.routineInterval ?? 730,
@@ -65,6 +87,7 @@ function EditObjectTypeSidebarWithQueriesAndMutations({
     legalBasis: objectType.legalBasis ?? "",
     complaintIntervalRadio: "",
     routineIntervalRadio: "",
+    designatedAssigneeId: objectType.designatedAssigneeId ?? "",
   };
 
   const { mutateAsync: saveObjectType } = useUpdateObjectType();
@@ -106,6 +129,15 @@ function EditObjectTypeSidebarWithQueriesAndMutations({
         <SidebarForm ref={formRef} aria-label={`${objectType.name} bearbeiten`}>
           <SidebarContent title={`${objectType.name} bearbeiten`}>
             <Grid container columnSpacing={1} rowSpacing={3}>
+              {featureToggleAssigneeEnabled && (
+                <Grid xs={12}>
+                  <AssigneeAutocompleteField
+                    name="designatedAssigneeId"
+                    options={assignableUsersOptions}
+                    label="Zuständiger Mitarbeiter::in"
+                  />
+                </Grid>
+              )}
               <Grid xs={12}>
                 <NumberField
                   name="routineInterval"

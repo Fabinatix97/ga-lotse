@@ -9,6 +9,7 @@
     "DENTAL": "Zahnärztlicher Dienst",
     "OFFICIAL_MEDICAL_SERVICE": "Amtsärztlicher Dienst",
     "MEDS_ABROAD": "Reisen mit Betäubungsmitteln",
-    "PROSTITUTE_PROTECTION": "ProstSchG"
+    "PROSTITUTE_PROTECTION": "ProstSchG",
+    "INFECTION_BRIEFING": "Belehrung nach Infektionsschutzgesetz"
   }
 }

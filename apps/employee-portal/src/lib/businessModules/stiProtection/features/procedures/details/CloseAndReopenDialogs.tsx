@@ -34,8 +34,10 @@ interface CloseAndReopenConfirmationDialogProps {
   procedure: Procedure | undefined;
 }
 
-interface CloseWithOpenAppointmentsConfirmationDialogProps
-  extends Omit<CloseAndReopenConfirmationDialogProps, "procedure"> {
+interface CloseWithOpenAppointmentsConfirmationDialogProps extends Omit<
+  CloseAndReopenConfirmationDialogProps,
+  "procedure"
+> {
   openAppointment: ApiAppointmentHistoryEntry;
 }
 

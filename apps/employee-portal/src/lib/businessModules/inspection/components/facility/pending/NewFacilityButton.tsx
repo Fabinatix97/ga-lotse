@@ -29,7 +29,11 @@ import {
   FacilitySidebar,
   FacilitySidebarProps,
 } from "@/lib/shared/components/facilitySidebar/FacilitySidebar";
-import { DefaultFacilityFormValues } from "@/lib/shared/components/facilitySidebar/create/FacilityForm";
+import {
+  DefaultFacilityFormValues,
+  getInitialFacilityFormValues,
+} from "@/lib/shared/components/facilitySidebar/create/FacilityForm";
+import { FacilitySearchFormValues } from "@/lib/shared/components/facilitySidebar/search/FacilitySearchForm";
 
 export function NewFacilityButton() {
   const facilitySidebar = useSidebarWithFormRef({
@@ -98,14 +102,17 @@ function ConfiguredFacilitySidebar(props: SidebarWithFormRefProps) {
     );
   }
 
-  const facilitySidebarProps: FacilitySidebarProps<DefaultFacilityFormValues> =
-    {
-      title: "Neue Erstbesichtigung anlegen",
-      submitLabel: "Anlegen",
-      onCreateNew: (values) => handleSubmit(values.createInputs),
-      onSelect: (values) => handleSelectFacility(values.facility),
-      ...props,
-    };
+  const facilitySidebarProps: FacilitySidebarProps<
+    FacilitySearchFormValues,
+    DefaultFacilityFormValues
+  > = {
+    title: "Neue Erstbesichtigung anlegen",
+    submitLabel: "Anlegen",
+    getInitialCreateFormValues: getInitialFacilityFormValues,
+    onCreateNew: (values) => handleSubmit(values.createInputs),
+    onSelect: (values) => handleSelectFacility(values.facility),
+    ...props,
+  };
 
   return <FacilitySidebar {...facilitySidebarProps} />;
 }

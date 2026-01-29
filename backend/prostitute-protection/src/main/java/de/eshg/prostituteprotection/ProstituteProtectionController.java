@@ -6,10 +6,10 @@
 package de.eshg.prostituteprotection;
 
 import de.eshg.api.commons.InlineParameterObject;
+import de.eshg.lib.appointmentblock.api.AppointmentDto;
+import de.eshg.lib.appointmentblock.api.GetFreeAppointmentsResponse;
 import de.eshg.lib.procedure.domain.model.TaskType;
 import de.eshg.lib.procedure.util.ProcedureValidator;
-import de.eshg.prostituteprotection.api.AbortProcedureRequest;
-import de.eshg.prostituteprotection.api.CloseProcedureRequest;
 import de.eshg.prostituteprotection.api.ConsultationDto;
 import de.eshg.prostituteprotection.api.CreateCertificateRequest;
 import de.eshg.prostituteprotection.api.CreateProstituteProtectionProcedureRequest;
@@ -45,6 +45,7 @@ import de.eshg.prostituteprotection.mapper.WaitingRoomMapper;
 import de.eshg.prostituteprotection.pdf.ConsultationCertificateGenerator;
 import de.eshg.prostituteprotection.pdf.PrintDocumentType;
 import de.eshg.prostituteprotection.pdf.RegistrationConsultationCertificateGenerator;
+import de.eshg.prostituteprotection.rate.limit.ProstituteProtectionGuard;
 import de.eshg.prostituteprotection.util.ProgressEntryUtil;
 import de.eshg.prostituteprotection.util.ProstituteProtectionProgressEntryType;
 import de.eshg.prostituteprotection.util.TaskUtil;
@@ -52,18 +53,24 @@ import de.eshg.rest.service.security.config.BaseUrls;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import java.nio.charset.StandardCharsets;
 import java.time.Clock;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.EnumSet;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.UUID;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.data.domain.Page;
+import org.springframework.http.ContentDisposition;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
@@ -94,6 +101,7 @@ public class ProstituteProtectionController {
   private final ConsultationCertificateGenerator consultationCertificateGenerator;
   private final RegistrationConsultationCertificateGenerator
       registrationConsultationCertificateGenerator;
+  private final ProstituteProtectionGuard prostituteProtectionGuard;
   private final Clock clock;
 
   public ProstituteProtectionController(
@@ -102,6 +110,7 @@ public class ProstituteProtectionController {
       ProgressEntryUtil progressEntryUtil,
       ConsultationCertificateGenerator consultationCertificateGenerator,
       RegistrationConsultationCertificateGenerator registrationConsultationCertificateGenerator,
+      ProstituteProtectionGuard prostituteProtectionGuard,
       Clock clock) {
     this.prostituteProtectionService = prostituteProtectionService;
     this.prostituteProtectionAppointmentService = prostituteProtectionAppointmentService;
@@ -109,6 +118,7 @@ public class ProstituteProtectionController {
     this.consultationCertificateGenerator = consultationCertificateGenerator;
     this.registrationConsultationCertificateGenerator =
         registrationConsultationCertificateGenerator;
+    this.prostituteProtectionGuard = prostituteProtectionGuard;
     this.clock = clock;
   }
 
@@ -118,6 +128,9 @@ public class ProstituteProtectionController {
   public CreateProstituteProtectionProcedureResponse createProcedure(
       @Valid @RequestBody CreateProstituteProtectionProcedureRequest request) {
     ProstituteProtectionValidator.validateAlias(request.alias(), request.appointmentBookingType());
+    prostituteProtectionService.validateConsultant(request.consultantId());
+    ProstituteProtectionValidator.validateAppointmentData(
+        request.appointmentBookingType(), request.consultantId());
     return prostituteProtectionService.createProcedure(request);
   }
 
@@ -167,11 +180,15 @@ public class ProstituteProtectionController {
   public ProcedureDetailsDto updateProcedure(
       @PathVariable("procedureId") UUID procedureId,
       @Valid @RequestBody UpdateProstituteProtectionProcedureRequest request) {
+    prostituteProtectionService.validateConsultant(request.consultantId());
+    ProstituteProtectionValidator.validateAppointmentData(
+        request.appointmentBookingType(), request.consultantId());
+
     ProstituteProtectionProcedure procedure =
         prostituteProtectionService.findByExternalIdForUpdate(procedureId, request.version());
     prostituteProtectionService.updateProcedure(procedure, request);
     prostituteProtectionAppointmentService.bookAppointment(
-        procedure, AppointmentMapper.toDataType(request), request.consultantId());
+        procedure, AppointmentMapper.toDataType(request));
 
     progressEntryUtil.addSystemProgressEntry(
         procedure, ProstituteProtectionProgressEntryType.PROCEDURE_DETAILS_MODIFIED);
@@ -332,7 +349,7 @@ public class ProstituteProtectionController {
   }
 
   @PostMapping("/{procedureId}/certificate")
-  @Transactional(readOnly = true)
+  @Transactional
   @Operation(summary = "Decrypt and download a previously generated consultation certificate")
   public ResponseEntity<ByteArrayResource> downloadCertificate(
       @PathVariable("procedureId") UUID procedureId,
@@ -341,6 +358,16 @@ public class ProstituteProtectionController {
     EncryptedFile encryptedFile =
         prostituteProtectionService.findEncryptedFileOrThrow(procedureId, request.id());
 
+    PrintDocumentType printDocumentType =
+        (encryptedFile.getCertificateType() == CertificateType.SECTION_7)
+            ? PrintDocumentType.REGISTRATION_CONSULTATION_CERTIFICATE
+            : PrintDocumentType.CONSULTATION_CERTIFICATE;
+
+    prostituteProtectionService.addSystemProgressEntry(
+        encryptedFile.getProcedure(),
+        ProstituteProtectionProgressEntryType.CERTIFICATE_DOWNLOADED,
+        printDocumentType.getDescription());
+
     byte[] decryptedFile = prostituteProtectionService.decryptFile(encryptedFile, request);
 
     ByteArrayResource resource = new ByteArrayResource(decryptedFile);
@@ -348,15 +375,16 @@ public class ProstituteProtectionController {
     String filename =
         String.format(
             "%s_%s.pdf",
-            (encryptedFile.getCertificateType() == CertificateType.SECTION_7)
-                ? PrintDocumentType.REGISTRATION_CONSULTATION_CERTIFICATE.getFileNamePrefix()
-                : PrintDocumentType.CONSULTATION_CERTIFICATE.getFileNamePrefix(),
+            printDocumentType.getFileNamePrefix(),
             ZonedDateTime.ofInstant(encryptedFile.getCreatedAt(), ZoneId.systemDefault())
                 .format(DateTimeFormatter.ofPattern("yyyy-MM-dd-HH-mm-ss", Locale.GERMANY)));
 
+    ContentDisposition contentDisposition =
+        ContentDisposition.attachment().filename(filename, StandardCharsets.UTF_8).build();
+
     return ResponseEntity.ok()
         .contentType(MediaType.APPLICATION_PDF)
-        .header("Content-Disposition", "attachment; filename=\"" + filename + "\"")
+        .header(HttpHeaders.CONTENT_DISPOSITION, contentDisposition.toString())
         .body(resource);
   }
 
@@ -364,17 +392,16 @@ public class ProstituteProtectionController {
   @Transactional(readOnly = true)
   @Operation(summary = "Get a list of certificates for a procedure.")
   public GetCertificatesResponse getCertificates(@PathVariable("procedureId") UUID procedureId) {
+    prostituteProtectionGuard.guard();
     return new GetCertificatesResponse(
         prostituteProtectionService.getEncryptedFilesForProcedure(procedureId));
   }
 
   @PostMapping("/{procedureId}/close-procedure")
   @Transactional
-  public ProcedureDetailsDto closeProcedure(
-      @PathVariable("procedureId") UUID procedureId,
-      @Valid @RequestBody CloseProcedureRequest request) {
+  public ProcedureDetailsDto closeProcedure(@PathVariable("procedureId") UUID procedureId) {
     ProstituteProtectionProcedure procedure =
-        prostituteProtectionService.findByExternalIdForUpdate(procedureId, request.version());
+        prostituteProtectionService.findByExternalIdOrThrow(procedureId);
     ProstituteProtectionValidator.validateConsultationCertificateCreated(procedure);
     prostituteProtectionService.closeProcedure(procedure);
     TaskUtil.closeSingleTaskOfType(procedure, TaskType.PROSTITUTE_PROTECTION);
@@ -384,14 +411,37 @@ public class ProstituteProtectionController {
 
   @PostMapping("/{procedureId}/abort-procedure")
   @Transactional
-  public ProcedureDetailsDto abortProcedure(
-      @PathVariable("procedureId") UUID procedureId,
-      @Valid @RequestBody AbortProcedureRequest request) {
+  public ProcedureDetailsDto abortProcedure(@PathVariable("procedureId") UUID procedureId) {
     ProstituteProtectionProcedure procedure =
-        prostituteProtectionService.findByExternalIdForUpdate(procedureId, request.version());
+        prostituteProtectionService.findByExternalIdOrThrow(procedureId);
     prostituteProtectionService.abortProcedureAndFlush(procedure);
     TaskUtil.closeSingleTaskOfType(procedure, TaskType.PROSTITUTE_PROTECTION);
     return ProstituteProtectionMapper.mapToDetailsDto(
         prostituteProtectionService.augmentWithDetails(procedure));
+  }
+
+  @GetMapping("/{procedureId}/free-appointments")
+  @Transactional(readOnly = true)
+  @Operation(summary = "Get free appointments for a procedure.")
+  public GetFreeAppointmentsResponse getFreeAppointmentsForProcedure(
+      @PathVariable("procedureId") UUID procedureId) {
+    List<AppointmentDto> freeAppointments =
+        prostituteProtectionAppointmentService.getFreeAppointments();
+    List<AppointmentDto> freeAppointmentsForProcedure = new ArrayList<>(freeAppointments);
+
+    ProstituteProtectionProcedure procedure =
+        prostituteProtectionService.findByExternalIdOrThrow(procedureId);
+    if (procedure.getAppointment() != null) {
+      freeAppointmentsForProcedure.add(
+          new AppointmentDto(
+              procedure.getAppointment().getAppointmentStart(),
+              procedure.getAppointment().getAppointmentEnd()));
+    }
+    List<AppointmentDto> sortedAppointments =
+        freeAppointmentsForProcedure.stream()
+            .sorted(Comparator.comparing(AppointmentDto::start))
+            .toList();
+
+    return new GetFreeAppointmentsResponse(sortedAppointments);
   }
 }

@@ -221,6 +221,8 @@ public class ExaminationService {
           existingResult.setGingivitisTreatment(newResult.gingivitisTreatment());
           existingResult.setOrthodonticTreatment(newResult.orthodonticTreatment());
           existingResult.setPlaqueTreatment(newResult.plaqueTreatment());
+          existingResult.setPrimaryDentitionObstructsSecondary(
+              newResult.primaryDentitionObstructsSecondary());
           existingResult.setInspectionAppointment(newResult.inspectionAppointment());
         });
   }

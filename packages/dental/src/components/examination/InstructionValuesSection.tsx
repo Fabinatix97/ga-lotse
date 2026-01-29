@@ -34,7 +34,8 @@ export function InstructionValuesSection() {
       +values.gingivitisTreatment +
       +values.orthodonticTreatment +
       +values.plaqueTreatment +
-      +values.inspectionAppointment
+      +values.inspectionAppointment +
+      +values.primaryDentitionObstructsSecondary
     );
   }
 
@@ -67,6 +68,10 @@ export function InstructionValuesSection() {
         <CheckboxField
           name="gingivitisTreatment"
           label="Zahnfleischentzündung"
+        />
+        <CheckboxField
+          name="primaryDentitionObstructsSecondary"
+          label="Milchzahn macht dem neuen Zahn keinen Platz"
         />
         <CheckboxField name="inspectionAppointment" label="Kontrolltermin" />
       </Stack>

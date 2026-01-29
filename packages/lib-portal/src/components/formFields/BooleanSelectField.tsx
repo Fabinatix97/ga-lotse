@@ -18,7 +18,8 @@ import { BaseField, FieldComponentProps, useBaseField } from "./BaseField";
 import { FieldVariantProps } from "./types";
 
 export interface BooleanSelectFieldProps
-  extends FieldProps<OptionalFieldValue<boolean>>,
+  extends
+    FieldProps<OptionalFieldValue<boolean>>,
     FieldComponentProps,
     FieldVariantProps {
   labelTrue?: string;

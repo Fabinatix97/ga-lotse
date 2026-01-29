@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Divider } from "@mui/joy";
+
 import {
   SidebarWithFormRefProps,
   UseSidebarWithFormRefResult,
@@ -16,11 +18,23 @@ import {
   FacilitySidebar,
   FacilitySidebarProps,
 } from "@/lib/shared/components/facilitySidebar/FacilitySidebar";
-import { DefaultFacilityFormValues } from "@/lib/shared/components/facilitySidebar/create/FacilityForm";
+import {
+  DefaultFacilityFormValues,
+  getInitialFacilityFormValues,
+} from "@/lib/shared/components/facilitySidebar/create/FacilityForm";
 import { FacilitySearchFormValues } from "@/lib/shared/components/facilitySidebar/search/FacilitySearchForm";
+
+import {
+  MeaslesFacilityTypeSelect,
+  MeaslesFacilityTypeSelectFormValues,
+} from "./MeaslesFacilityTypeSelect";
 
 export function useNewFacilitySidebar(): UseSidebarWithFormRefResult<NewFacilitySidebarProps> {
   return useSidebarWithFormRef({ component: NewFacilitySidebar });
+}
+
+export interface MeaslesProtectionFacilityFormValues extends DefaultFacilityFormValues {
+  measlesFacilityType?: MeaslesFacilityTypeSelectFormValues;
 }
 
 interface NewFacilitySidebarProps extends SidebarWithFormRefProps {
@@ -44,16 +58,38 @@ function NewFacilitySidebar(props: Readonly<NewFacilitySidebarProps>) {
     });
   }
 
-  const facilitySidebarProps: FacilitySidebarProps<FacilitySearchFormValues> = {
+  const facilitySidebarProps: FacilitySidebarProps<
+    FacilitySearchFormValues,
+    MeaslesProtectionFacilityFormValues
+  > = {
     title: "Einrichtung hinzufügen",
     submitLabel: "Speichern",
+    getInitialCreateFormValues: getInitialMeaslesProtectionCreateFormValues,
     onCreateNew: (values) => handleSubmit(values.createInputs),
     onSelect: (values) => handleSelectFacility(values.facility),
     formRef: props.formRef,
     onClose: props.onClose,
     requiresContactPerson: true,
-    showMeaslesFacilityType: true,
+    additionalFormFields: (
+      <>
+        <MeaslesFacilityTypeSelect />
+        <Divider />
+      </>
+    ),
+    additionalDetailsFields: <MeaslesFacilityTypeSelect />,
   };
 
   return <FacilitySidebar {...facilitySidebarProps} />;
+}
+
+function getInitialMeaslesProtectionCreateFormValues(
+  searchInputs: FacilitySearchFormValues,
+): MeaslesProtectionFacilityFormValues {
+  return {
+    ...getInitialFacilityFormValues(searchInputs),
+    measlesFacilityType: {
+      type: "",
+      otherFacilityTypeInformation: "",
+    },
+  };
 }

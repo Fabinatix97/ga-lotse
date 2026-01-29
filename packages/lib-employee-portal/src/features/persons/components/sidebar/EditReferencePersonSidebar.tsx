@@ -25,7 +25,8 @@ interface EditReferencePersonFormValues extends DefaultPersonFormValues {
 }
 
 interface EditReferencePersonSidebarProps
-  extends SidebarWithFormRefProps,
+  extends
+    SidebarWithFormRefProps,
     Omit<
       PersonSidebarFormProps<EditReferencePersonFormValues>,
       | "onSubmit"

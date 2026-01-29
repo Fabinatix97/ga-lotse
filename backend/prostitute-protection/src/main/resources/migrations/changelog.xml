@@ -37,4 +37,12 @@
   <include file="migrations/0028_add_consultant_and_calendar_event_id.xml"/>
   <include file="migrations/0029_add_waiting_room.xml"/>
   <include file="migrations/0030_remove_nationality.xml"/>
+  <include file="migrations/0031_add_text_templates.xml"/>
+  <include file="migrations/0032_add_config.xml"/>
+  <include file="migrations/0033_add_phone_number.xml"/>
+  <include file="migrations/0034_add_valid_until.xml"/>
+  <include file="migrations/0035_remove_text_templates.xml"/>
+  <include file="migrations/0036_drop_consultation_remark_and_supervised.xml"/>
+  <include file="migrations/0037_add_infection_briefing_appointment_types.xml"/>
+  <include file="migrations/0038_add_online_portal_config.xml"/>
 </databaseChangeLog>

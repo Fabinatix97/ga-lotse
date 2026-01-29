@@ -19,8 +19,7 @@ import { isCategorical } from "@/lib/businessModules/statistics/components/share
 import { AutocompleteSelectOption } from "@/lib/shared/components/AutocompleteSelectOptions";
 import { SidebarStepContentProps } from "@/lib/shared/components/SidebarStepper/sidebarStep";
 
-interface ConfigurePieChartStepProps
-  extends SidebarStepContentProps<ConfigureChartFormModel> {
+interface ConfigurePieChartStepProps extends SidebarStepContentProps<ConfigureChartFormModel> {
   attributes: FlatAttribute[];
 }
 

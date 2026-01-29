@@ -114,7 +114,7 @@ export function MedicalHistoryForm({
       onSubmit={onSubmit}
     >
       {({ values }) => (
-        <FormPlus aria-labelledby="anamnesis-title">
+        <FormPlus autoFocus aria-labelledby="anamnesis-title">
           <ConfirmLeaveDirtyFormEffect
             onSaveMutation={{
               mutationOptions: upsertMedicalHistoryOptions,

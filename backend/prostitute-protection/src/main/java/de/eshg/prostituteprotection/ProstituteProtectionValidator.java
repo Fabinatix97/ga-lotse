@@ -5,6 +5,8 @@
 
 package de.eshg.prostituteprotection;
 
+import de.eshg.base.user.api.UserDto;
+import de.eshg.lib.keycloak.TechnicalGroup;
 import de.eshg.lib.procedure.util.ProcedureValidator;
 import de.eshg.prostituteprotection.api.AppointmentBookingTypeDto;
 import de.eshg.prostituteprotection.api.ProcedureProperty;
@@ -16,9 +18,12 @@ import de.eshg.prostituteprotection.domain.model.EncryptedPersonalData;
 import de.eshg.prostituteprotection.domain.model.ProstituteProtectionProcedure;
 import de.eshg.rest.service.error.BadRequestException;
 import io.micrometer.common.util.StringUtils;
+import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 public class ProstituteProtectionValidator {
   private ProstituteProtectionValidator() {}
@@ -32,6 +37,17 @@ public class ProstituteProtectionValidator {
             || StringUtils.isNotEmpty(consultation.getInterpreterLastName()))) {
       throw new BadRequestException(
           "Interpreters name cannot be set when interpreterConsulted is false.");
+    }
+  }
+
+  public static void validateConsultantIsOfCorrectGroup(
+      List<UserDto> consultantUsers, UUID requestedConsultant) {
+    if (!consultantUsers.stream().map(UserDto::userId).toList().contains(requestedConsultant)) {
+      throw new BadRequestException(
+          "User with id %s does not belong to technical group %s"
+              .formatted(
+                  requestedConsultant,
+                  TechnicalGroup.PROSTITUTE_PROTECTION_CONSULTANT.getKeycloakName()));
     }
   }
 
@@ -63,11 +79,6 @@ public class ProstituteProtectionValidator {
           validateConsultationParagraph7(consultation),
           RequiredProcedureArea.CONSULTATION_PARAGRAPH_7);
     }
-    putIfNotEmpty(
-        errors,
-        validateConsultationParagraph10(consultation),
-        RequiredProcedureArea.CONSULTATION_PARAGRAPH_10);
-
     return errors;
   }
 
@@ -112,19 +123,6 @@ public class ProstituteProtectionValidator {
     addPropertyIfNull(
         properties, ProcedureProperty.DOCUMENT_TYPE, procedure.getPersonalData().getDocumentType());
 
-    return properties;
-  }
-
-  private static EnumSet<ProcedureProperty> validateConsultationParagraph10(
-      Consultation consultation) {
-    EnumSet<ProcedureProperty> properties = EnumSet.noneOf(ProcedureProperty.class);
-
-    addPropertyIfFalse(
-        properties, ProcedureProperty.DISEASE_PREVENTION, consultation.isDiseasePrevention());
-    addPropertyIfFalse(properties, ProcedureProperty.BIRTH_CONTROL, consultation.isBirthControl());
-    addPropertyIfFalse(properties, ProcedureProperty.PREGNANCY, consultation.isPregnancy());
-    addPropertyIfFalse(
-        properties, ProcedureProperty.ALCOHOL_AND_DRUG_USAGE, consultation.isAlcoholAndDrugUsage());
     return properties;
   }
 
@@ -200,10 +198,27 @@ public class ProstituteProtectionValidator {
     }
 
     if (procedure.getConsultationCertificateCreatedAt() != null
-        && persistedEncryptedPersonalData.getHashedPersonIdentifier()
-            != requestedEncryptedData.hashedPersonIdentifier()) {
+        && !Arrays.equals(
+            persistedEncryptedPersonalData.getHashedPersonIdentifier(),
+            requestedEncryptedData.hashedPersonIdentifier())) {
       throw new BadRequestException(
           "Personal data cannot be updated after a certificate was created.");
+    }
+  }
+
+  public static void validateAppointmentData(
+      AppointmentBookingTypeDto appointmentBookingTypeDto, UUID consultantId) {
+    if (appointmentBookingTypeDto == AppointmentBookingTypeDto.APPOINTMENT_BLOCK
+        && consultantId != null) {
+      throw new BadRequestException(
+          "A consultant cannot be assigned to the procedure if the appointment is from an appointment block.");
+    }
+
+    if ((appointmentBookingTypeDto == AppointmentBookingTypeDto.USER_DEFINED
+            || appointmentBookingTypeDto == AppointmentBookingTypeDto.SPONTANEOUS)
+        && consultantId == null) {
+      throw new BadRequestException(
+          "A consultant must be assigned to the procedure if the appointment is user defined.");
     }
   }
 }

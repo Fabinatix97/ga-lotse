@@ -6,6 +6,7 @@
 package de.eshg.inspection.facility;
 
 import de.eshg.api.commons.InlineParameterObject;
+import de.eshg.base.user.api.UserDto;
 import de.eshg.file.common.CustomMediaTypes;
 import de.eshg.inspection.facility.api.GetPendingFacilitiesFilterOptionsDto;
 import de.eshg.inspection.facility.api.GetPendingFacilitiesPaginationOptionsDto;
@@ -15,6 +16,7 @@ import de.eshg.inspection.facility.api.InspFacilityAndFileNumberCollisionsDto;
 import de.eshg.inspection.facility.api.InspLinkBaseFacilityRequest;
 import de.eshg.inspection.facility.api.InspLinkBaseFacilityResponse;
 import de.eshg.inspection.facility.api.InspPendingFacilitiesOverviewResponse;
+import de.eshg.inspection.facility.api.InspSetAssigneeRequest;
 import de.eshg.inspection.facility.api.InspUpdateFacilityRequest;
 import de.eshg.inspection.facility.export.FacilityExportService;
 import de.eshg.lib.auditlog.AuditLogger;
@@ -26,6 +28,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.core.io.Resource;
@@ -103,6 +106,22 @@ associated reference facility
       @InlineParameterObject @ParameterObject @Valid
           GetPendingFacilitiesPaginationOptionsDto pagination) {
     return facilityService.getPendingFacilities(filters, pagination);
+  }
+
+  @GetMapping(path = "/{externalId}/assignee")
+  @Operation(summary = "get user assigned to this facility")
+  @Transactional(readOnly = true)
+  public Optional<UserDto> getAssignee(@PathVariable("externalId") UUID externalId) {
+    return facilityService.getAssignee(externalId);
+  }
+
+  @PutMapping(path = "/{externalId}/assignee")
+  @Operation(summary = "set user id assigned to this facility")
+  @Transactional
+  public void setAssignee(
+      @PathVariable("externalId") UUID externalId,
+      @Valid @RequestBody InspSetAssigneeRequest assigneeReq) {
+    facilityService.setAssignee(externalId, assigneeReq.assigneeId());
   }
 
   @GetMapping(path = "/export-banned")

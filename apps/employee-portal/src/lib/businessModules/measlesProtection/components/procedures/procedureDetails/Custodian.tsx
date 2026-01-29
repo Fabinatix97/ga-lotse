@@ -14,6 +14,7 @@ import {
 import {
   ApiCustodian,
   ApiCustodianSync,
+  ApiCustodianWithoutDateOfBirth,
   ApiDraftMeaslesProcedure,
   ApiMeaslesProtectionProcedure,
   ApiProcedureStatus,
@@ -28,11 +29,35 @@ const COLUMN_STYLE: SxProps = {
   maxWidth: (theme) => ({ md: `calc(100%/3 - 2 * ${theme.spacing(2)})` }),
 };
 
+function InfoTileWithSyncBarrier({
+  custodianSync,
+  syncRoute,
+  openEditCustodianSidebar,
+}: Readonly<{
+  custodianSync: ApiCustodianSync;
+  syncRoute: string;
+  openEditCustodianSidebar: () => void;
+}>) {
+  const { syncBarrier } = useSyncBarrier(syncRoute, custodianSync);
+
+  return (
+    <SyncBarrier
+      outdated={custodianSync?.outdated ?? false}
+      syncHref={syncRoute}
+    >
+      <EditButton
+        aria-label="PSB bearbeiten"
+        onClick={syncBarrier(openEditCustodianSidebar)}
+      />
+    </SyncBarrier>
+  );
+}
+
 export function Custodian({
   custodian,
   procedure,
 }: Readonly<{
-  custodian: ApiCustodian;
+  custodian: ApiCustodian | ApiCustodianWithoutDateOfBirth;
   procedure: ApiMeaslesProtectionProcedure | ApiDraftMeaslesProcedure;
 }>) {
   const editCustodianSidebar = useEditCustodianSidebar();
@@ -53,45 +78,68 @@ export function Custodian({
     );
   }
 
-  const syncRoute =
-    procedure.procedureStatus === ApiProcedureStatus.Draft
-      ? routes.procedures
-          .draft(procedure.id)
-          .syncCustodian(
-            custodian.custodianId,
-            custodian.custodianSync?.fileStateId ?? "",
-            custodian.custodianSync?.version ?? 0,
-          )
-      : routes.procedures
-          .details(procedure.id)
-          .syncCustodian(
-            custodian.custodianId,
-            custodian.custodianSync?.fileStateId ?? "",
-            custodian.custodianSync?.version ?? 0,
-          );
-  const custodianSync: ApiCustodianSync = {
-    fileStateId: custodian.custodianSync?.fileStateId ?? "",
-    version: custodian.custodianSync?.version ?? 0,
-    outdated: custodian.custodianSync?.outdated ?? false,
-  };
-  const { syncBarrier } = useSyncBarrier(syncRoute, custodianSync);
+  function getSyncRoute(
+    procedure: ApiMeaslesProtectionProcedure | ApiDraftMeaslesProcedure,
+    custodian: ApiCustodian | ApiCustodianWithoutDateOfBirth,
+  ) {
+    if ("dateOfBirth" in custodian) {
+      return procedure.procedureStatus === ApiProcedureStatus.Draft
+        ? routes.procedures
+            .draft(procedure.id)
+            .syncCustodian(
+              custodian.custodianId,
+              custodian.custodianSync?.fileStateId ?? "",
+              custodian.custodianSync?.version ?? 0,
+            )
+        : routes.procedures
+            .details(procedure.id)
+            .syncCustodian(
+              custodian.custodianId,
+              custodian.custodianSync?.fileStateId ?? "",
+              custodian.custodianSync?.version ?? 0,
+            );
+    } else {
+      return undefined;
+    }
+  }
+
+  function getCustodianSync(
+    custodian: ApiCustodian | ApiCustodianWithoutDateOfBirth,
+  ) {
+    if ("dateOfBirth" in custodian) {
+      return {
+        fileStateId: custodian.custodianSync?.fileStateId ?? "",
+        version: custodian.custodianSync?.version ?? 0,
+        outdated: custodian.custodianSync?.outdated ?? false,
+      };
+    } else {
+      return undefined;
+    }
+  }
+
+  const syncRoute: string | undefined = getSyncRoute(procedure, custodian);
+
+  const custodianSync: ApiCustodianSync | undefined =
+    getCustodianSync(custodian);
 
   return (
     <InfoTile
       title="PSB - Personensorgeberechtigte:r"
       name="custodian"
       controls={
-        procedureOpen() && (
-          <SyncBarrier
-            outdated={custodianSync?.outdated ?? false}
-            syncHref={syncRoute}
-          >
-            <EditButton
-              aria-label="PSB bearbeiten"
-              onClick={syncBarrier(openEditCustodianSidebar)}
-            />
-          </SyncBarrier>
-        )
+        procedureOpen() &&
+        (syncRoute === undefined || custodianSync === undefined ? (
+          <EditButton
+            aria-label="PSB bearbeiten"
+            onClick={openEditCustodianSidebar}
+          />
+        ) : (
+          <InfoTileWithSyncBarrier
+            custodianSync={custodianSync}
+            syncRoute={syncRoute}
+            openEditCustodianSidebar={openEditCustodianSidebar}
+          />
+        ))
       }
     >
       <CentralFilePersonDetails

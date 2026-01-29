@@ -5,12 +5,15 @@
 
 package de.eshg.base.street;
 
+import static de.eshg.base.util.MappingUtil.singleElementOrEmpty;
+import static de.eshg.base.util.MappingUtil.singleElementOrNull;
+
 import de.cronn.commons.lang.StreamUtil;
 import de.eshg.lib.common.CountryCode;
 import jakarta.annotation.Nullable;
 import java.util.Set;
-import java.util.function.Function;
 import java.util.stream.Collectors;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -25,21 +28,26 @@ public class StreetService {
     this.municipalityDirectory = municipalityDirectory;
   }
 
-  public Set<AdministrativeData> getData(
+  public Set<DistrictDto> getDistricts(
       String streetName, HouseNumber houseNumber, String postalCode, CountryCode country) {
-    if (country != CountryCode.DE) {
+    if (country != CountryCode.DE || StringUtils.isBlank(postalCode)) {
       return Set.of();
     }
+    String municipalityKey =
+        singleElementOrEmpty(municipalityDirectory.getAdministrativeDataBy(postalCode))
+            .map(MunicipalityDirectory.AdministrativeData::municipalityKey)
+            .orElse(null);
 
-    Set<StreetDirectory.AdministrativeData> streetDirectoryData =
-        streetDirectory.getAdministrativeDataBy(streetName, houseNumber, postalCode);
-
-    MunicipalityDirectory.AdministrativeData municipalityDirectoryData =
-        municipalityDirectory.getAdministrativeDataBy(postalCode);
-
-    return streetDirectoryData.stream()
-        .map(newAdministrativeData(municipalityDirectoryData))
-        .collect(StreamUtil.toLinkedHashSet());
+    return (municipalityKey != null)
+        ? streetDirectory.getAdministrativeDataBy(streetName, houseNumber, postalCode).stream()
+            .map(
+                administrativeData ->
+                    new DistrictDto(
+                        administrativeData.cityDistrict(),
+                        administrativeData.districtName(),
+                        municipalityKey))
+            .collect(StreamUtil.toLinkedHashSet())
+        : Set.of();
   }
 
   public PostalCodeAndCityResponse getPostalCodeAndCityForStreet(
@@ -72,19 +80,12 @@ public class StreetService {
   }
 
   private PostalCodeAndCityResponse mapToPostalCodeAndCityResponse(String postalCode) {
-    MunicipalityDirectory.AdministrativeData municipalityData =
-        municipalityDirectory.getAdministrativeDataBy(postalCode);
-    return new PostalCodeAndCityResponse(postalCode, municipalityData.municipality());
-  }
-
-  private static Function<StreetDirectory.AdministrativeData, AdministrativeData>
-      newAdministrativeData(MunicipalityDirectory.AdministrativeData municipalityDirectoryData) {
-    return data ->
-        new AdministrativeData(
-            data.streetNumber(),
-            data.districtName(),
-            data.cityDistrict(),
-            municipalityDirectoryData.municipalityKey());
+    return new PostalCodeAndCityResponse(
+        postalCode,
+        singleElementOrNull(
+            municipalityDirectory.getAdministrativeDataBy(postalCode).stream()
+                .map(MunicipalityDirectory.AdministrativeData::municipality)
+                .collect(Collectors.toSet())));
   }
 
   public Set<String> getStreetsByPrefix(String streetName) {

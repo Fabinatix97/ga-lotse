@@ -17,8 +17,7 @@ import { SidebarStepContentProps } from "@/lib/shared/components/SidebarStepper/
 
 import { UploadTemplateFormModel } from "./uploadTemplateFormModel";
 
-interface UploadTemplateStepProps
-  extends SidebarStepContentProps<UploadTemplateFormModel> {
+interface UploadTemplateStepProps extends SidebarStepContentProps<UploadTemplateFormModel> {
   evaluationTemplateDetails: EvaluationTemplateDetails;
 }
 

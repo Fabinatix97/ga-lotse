@@ -26,8 +26,7 @@ import { SidebarStepContentProps } from "@/lib/shared/components/SidebarStepper/
 
 import { ConfigureLineChartMetaOptions } from "./ConfigureLineChartMetaOptions";
 
-interface ConfigureLineChartStepProps
-  extends SidebarStepContentProps<ConfigureChartFormModel> {
+interface ConfigureLineChartStepProps extends SidebarStepContentProps<ConfigureChartFormModel> {
   attributes: FlatAttribute[];
 }
 

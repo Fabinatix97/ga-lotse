@@ -14,6 +14,7 @@ export function MultiSelectFilter(props: {
   options: readonly SelectOption[];
   placeholder: string;
   tableControl: UseTableControlResult;
+  autoFocus?: boolean;
 }) {
   const selectProps = props.tableControl.getMultiSelectProps(
     props.searchParamName,
@@ -21,6 +22,7 @@ export function MultiSelectFilter(props: {
 
   return (
     <Select
+      autoFocus={props.autoFocus}
       size="sm"
       sx={{
         width: "10rem",

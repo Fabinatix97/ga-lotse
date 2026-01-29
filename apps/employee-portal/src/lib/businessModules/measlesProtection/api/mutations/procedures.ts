@@ -21,6 +21,7 @@ import {
   ApiAccessRestriction,
   ApiAccessRestrictionLetter,
   ApiAddCustodianRequest,
+  ApiAddCustodianWithoutDateOfBirthRequest,
   ApiAddFacilityRequest,
   ApiAddFacilityResponse,
   ApiAffectedPersonDetails,
@@ -31,6 +32,7 @@ import {
   ApiCreatePersonRequest,
   ApiCreateProofRequestLetter,
   ApiCustodianDetails,
+  ApiCustodianWithoutDateOfBirthDetails,
   ApiDataOrigin,
   ApiGetProcedure200Response,
   ApiMPFacilityType,
@@ -56,6 +58,7 @@ import {
   useProtectionProcedureApi,
 } from "@/lib/businessModules/measlesProtection/api/clients";
 import { measlesProtectionApiQueryKey } from "@/lib/businessModules/measlesProtection/api/queries/apiQueryKeys";
+import { MeaslesProtectionFacilityFormValues } from "@/lib/businessModules/measlesProtection/components/procedures/procedureDetails/NewFacilitySidebar";
 import {
   ValidUpdateProcedureForm,
   mapDefaultFacilityFormValuesToApiPutFacilityRequest,
@@ -128,12 +131,29 @@ interface AddCustodianParams {
   data: ApiAddCustodianRequest;
 }
 
+interface AddCustodianWithoutDateOfBirthParams {
+  procedureId: string;
+  data: ApiAddCustodianWithoutDateOfBirthRequest;
+}
+
 export function useAddCustodian() {
   const api = useDraftProcedureApi();
   const snackbar = useSnackbar();
   return useHandledMutation({
     mutationFn: ({ procedureId, data }: AddCustodianParams) =>
       api.addCustodian(procedureId, data),
+    onSuccess: () => {
+      snackbar.confirmation("Personensorgeberechtigte:r erfolgreich angelegt.");
+    },
+  });
+}
+export function useAddCustodianWithoutDateOfBirth() {
+  const api = useDraftProcedureApi();
+  const snackbar = useSnackbar();
+
+  return useHandledMutation({
+    mutationFn: ({ procedureId, data }: AddCustodianWithoutDateOfBirthParams) =>
+      api.addCustodianWithoutDateOfBirth(procedureId, data),
     onSuccess: () => {
       snackbar.confirmation("Personensorgeberechtigte:r erfolgreich angelegt.");
     },
@@ -146,6 +166,12 @@ interface PatchCustodianParams {
   custodian: ApiCustodianDetails;
 }
 
+interface PatchCustodianWithoutDateOfBirthParams {
+  procedureId: string;
+  custodianId: string;
+  custodian: ApiCustodianWithoutDateOfBirthDetails;
+}
+
 export function useEditCustodian() {
   const api = useProtectionProcedureApi();
   const snackbar = useSnackbar();
@@ -156,6 +182,25 @@ export function useEditCustodian() {
       custodian,
     }: PatchCustodianParams) => {
       return api.editCustodian(procedureId, custodianId, {
+        custodianDetails: custodian,
+      });
+    },
+    onSuccess: () => {
+      snackbar.confirmation("Änderungen an PSB erfolgreich gespeichert.");
+    },
+  });
+}
+
+export function useEditCustodianWithoutDateOfBirth() {
+  const api = useProtectionProcedureApi();
+  const snackbar = useSnackbar();
+  return useHandledMutation({
+    mutationFn: ({
+      procedureId,
+      custodianId,
+      custodian,
+    }: PatchCustodianWithoutDateOfBirthParams) => {
+      return api.editCustodianWithoutDateOfBirth(procedureId, custodianId, {
         custodianDetails: custodian,
       });
     },
@@ -365,7 +410,7 @@ export function useUpdateAccessRestrictionMutation({
 }
 
 // Replace with generated API type from backend
-export type MeaslesFacility = DefaultFacilityFormValues &
+export type MeaslesFacility = MeaslesProtectionFacilityFormValues &
   Partial<{
     type: ApiMPFacilityType;
     otherFacilityTypeInformation?: string;
@@ -400,7 +445,7 @@ function mapMeaslesFacilityToApiAddFacilityRequest(
 
 interface AddFacilityParams {
   procedureId: string;
-  facility: DefaultFacilityFormValues;
+  facility: MeaslesProtectionFacilityFormValues;
 }
 
 export function useAddFacility() {

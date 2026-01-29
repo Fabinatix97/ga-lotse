@@ -24,7 +24,6 @@ import {
 import {
   DefaultFacilityFormValues,
   FacilityForm,
-  getInitialFacilityFormValues,
 } from "@/lib/shared/components/facilitySidebar/create/FacilityForm";
 import { DefaultFacilitySearchForm } from "@/lib/shared/components/facilitySidebar/search/DefaultFacilitySearchForm";
 import {
@@ -44,31 +43,31 @@ type OptionalSearchFormComponent<TSearchValues> =
       searchFormComponent?: never;
     };
 
-export type FacilitySidebarProps<TSearchValues> = {
+export type FacilitySidebarProps<TSearchValues, TFormValues> = {
   title: string;
   submitLabel?: string;
   searchResultHeaderComponent?: ReactNode;
   mode?: "import" | "default";
-  getInitialCreateInputs?: (
-    searchInputs: TSearchValues,
-  ) => Partial<DefaultFacilityFormValues>;
+  getInitialCreateFormValues: (searchInputs: TSearchValues) => TFormValues;
   onCreateNew: (props: {
-    searchInputs: FacilitySearchFormValues;
-    createInputs: DefaultFacilityFormValues;
+    searchInputs: TSearchValues;
+    createInputs: TFormValues;
   }) => Promise<void>;
   onSelect: (props: {
-    searchInputs: FacilitySearchFormValues;
+    searchInputs: TSearchValues;
     facility: ReferenceFacilityWithOptionalMeaslesFacilityType;
   }) => Promise<void>;
   allowMainContactPerson?: boolean;
   requiresContactPerson?: boolean;
-  showMeaslesFacilityType?: boolean;
+  additionalFormFields?: ReactNode;
+  additionalDetailsFields?: ReactNode;
 } & SidebarWithFormRefProps &
   OptionalSearchFormComponent<TSearchValues>;
 
 export function FacilitySidebar<
   TSearchValues extends FacilitySearchFormValues = FacilitySearchFormValues,
->(props: FacilitySidebarProps<TSearchValues>) {
+  TFormValues extends DefaultFacilityFormValues = DefaultFacilityFormValues,
+>(props: FacilitySidebarProps<TSearchValues, TFormValues>) {
   return (
     <EmbeddedFacilitySidebar
       {...props}
@@ -86,11 +85,15 @@ export function FacilitySidebar<
 
 function EmbeddedFacilitySidebar<
   TSearchValues extends FacilitySearchFormValues,
->(props: FacilitySidebarProps<TSearchValues>) {
+  TFormValues extends DefaultFacilityFormValues = DefaultFacilityFormValues,
+>(props: FacilitySidebarProps<TSearchValues, TFormValues>) {
   const SearchFormComponent = (props.searchFormComponent ??
     DefaultFacilitySearchForm) as ComponentType<FormikProps<TSearchValues>>;
 
-  const { state, dispatch } = useFacilitySidebarState(props);
+  const { state, dispatch } = useFacilitySidebarState<
+    TSearchValues,
+    TFormValues
+  >(props);
 
   useResetAlertContextOnChange(state.stage);
 
@@ -148,24 +151,18 @@ function EmbeddedFacilitySidebar<
         />
       )}
       {(state.stage === "create" || state.stage === "edit") && (
-        <FacilityForm
+        <FacilityForm<TFormValues>
           title={props.title}
           submitLabel={props.submitLabel ?? "Vorgang anlegen"}
-          searchInputs={state.searchState}
           sidebarFormRef={props.formRef}
           initialValues={
-            (state.createState ?? isDefined(props.getInitialCreateInputs))
-              ? getInitialFacilityFormValues(
-                  state.searchState,
-                  false,
-                  props.getInitialCreateInputs!(state.searchState),
-                )
-              : undefined
+            state.createState ??
+            props.getInitialCreateFormValues(state.searchState)
           }
           mode={state.stage}
           requiresContactPerson={props.requiresContactPerson}
           allowMainContactPerson={props.allowMainContactPerson}
-          showMeaslesFacilityType={props.showMeaslesFacilityType}
+          additionalFields={props.additionalFormFields}
           onCancel={() => props.onClose(false)}
           onBack={
             state.backEnabled
@@ -190,7 +187,7 @@ function EmbeddedFacilitySidebar<
           title={props.title}
           submitLabel={props.submitLabel ?? "Vorgang anlegen"}
           facility={state.selectedFacility}
-          showMeaslesFacilityType={props.showMeaslesFacilityType}
+          additionalFields={props.additionalDetailsFields}
           onSubmit={(facility) =>
             props
               .onSelect({
@@ -226,9 +223,9 @@ function LoadingStage(props: { title: string; onCancel: () => void }) {
   );
 }
 
-function normalizeValues(
-  values: DefaultFacilityFormValues,
-): DefaultFacilityFormValues {
+function normalizeValues<TFormValues extends DefaultFacilityFormValues>(
+  values: TFormValues,
+): TFormValues {
   return {
     ...values,
     emailAddresses: values.emailAddresses.filter((s) => s.length > 0),

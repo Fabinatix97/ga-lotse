@@ -1,10 +1,12 @@
 {
-  "pageTitle": "Gesundheitsberatung nach dem Prostituiertenschutzgesetz",
+  "appointmentsSection": {
+    "create_appointment": "Zur Terminvereinbarung",
+    "description_enabled": "Termine für die Beratung können online oder telefonisch vereinbart werden.",
+    "description_not_enabled": "Termine für die Beratung können telefonisch vereinbart werden.",
+    "title": "Möchten Sie einen Termin vereinbaren?"
+  },
   "generalInformation": {
     "title": "Allgemeine Informationen"
   },
-  "appointmentsSection": {
-    "title": "Möchten Sie einen Termin vereinbaren?",
-    "description": "Termine für die Beratung können telefonisch vereinbart werden."
-  }
+  "pageTitle": "Gesundheitsberatung nach dem Prostituiertenschutzgesetz"
 }

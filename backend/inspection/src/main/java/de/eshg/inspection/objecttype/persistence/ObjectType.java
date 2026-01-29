@@ -16,6 +16,7 @@ import jakarta.persistence.Entity;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
 import java.util.Comparator;
+import java.util.UUID;
 
 @Entity
 public class ObjectType extends GloballyUniqueEntityBase {
@@ -55,6 +56,9 @@ public class ObjectType extends GloballyUniqueEntityBase {
   @Column
   @DataSensitivity(SensitivityLevel.PUBLIC)
   private Integer originalIndex;
+
+  @DataSensitivity(SensitivityLevel.PUBLIC)
+  private UUID designatedAssigneeId;
 
   public String getName() {
     return name;
@@ -118,6 +122,14 @@ public class ObjectType extends GloballyUniqueEntityBase {
 
   public void setOriginalIndex(Integer originalIndex) {
     this.originalIndex = originalIndex;
+  }
+
+  public UUID getDesignatedAssigneeId() {
+    return designatedAssigneeId;
+  }
+
+  public void setDesignatedAssigneeId(UUID designatedAssigneeId) {
+    this.designatedAssigneeId = designatedAssigneeId;
   }
 
   /**

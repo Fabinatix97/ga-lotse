@@ -14,7 +14,6 @@ import {
   ScreeningExaminationResult,
   ScreeningExaminationResultWithDate,
 } from "../../../api/models/ExaminationResult";
-import { ExaminationFormLayout } from "../../../components/examination/ExaminationFormLayout";
 import { useDentalApi } from "../../../contexts/dental";
 import { ExaminationStoreProvider } from "../../../stores/examination/ExaminationStoreProvider";
 import { ChildExamination } from "../api/models/ChildExamination";
@@ -22,7 +21,7 @@ import {
   getChildDetailsQuery,
   getExaminationQuery,
 } from "../api/queries/details";
-import { ChildExaminationForm } from "../components/childExamination/ChildExaminationForm";
+import { ChildExaminationFormLayout } from "../components/childExamination/ChildExaminationFormLayout";
 import { DentalChildExaminationRouteParams } from "../schemas/DentalChildExaminationRouteParams";
 
 export function DentalChildExaminationPage(
@@ -36,9 +35,6 @@ export function DentalChildExaminationPage(
       getChildDetailsQuery(childApi, childId),
     ],
   });
-  const institutionAtExaminationDate = child.institutions.find(
-    (institution) => institution.year === examination.dateAndTime.getFullYear(),
-  );
 
   const allScreeningExaminations = mapPreviousScreeningExaminations(
     child.examinations,
@@ -58,18 +54,10 @@ export function DentalChildExaminationPage(
           : undefined
       }
     >
-      <ChildExaminationForm examination={examination}>
-        <ExaminationFormLayout
-          isScreening={examination.screening}
-          isFluoridation={examination.fluoridation}
-          isFluoridationConsentGiven={examination.fluoridationConsentGiven}
-          dateAndTime={examination.dateAndTime}
-          institution={institutionAtExaminationDate?.institution}
-          groupName={institutionAtExaminationDate?.groupName}
-          child={child}
-          previousExaminations={allScreeningExaminations}
-        />
-      </ChildExaminationForm>
+      <ChildExaminationFormLayout
+        childId={childId}
+        examinationId={examinationId}
+      />
     </ExaminationStoreProvider>
   );
 }

@@ -48,6 +48,8 @@ export function resolveProcedureDetailsRoute({
       return "";
     case "PROSTITUTE_PROTECTION":
       return prostituteProtectionRoutes.procedures.byId(procedureId).details;
+    case "INFECTION_BRIEFING":
+      return "";
   }
 }
 
@@ -79,5 +81,7 @@ export function resolveProcedureProgressEntriesRoute(
     case "PROSTITUTE_PROTECTION":
       return prostituteProtectionRoutes.procedures.byId(procedureId)
         .progressEntries;
+    case "INFECTION_BRIEFING":
+      return "";
   }
 }

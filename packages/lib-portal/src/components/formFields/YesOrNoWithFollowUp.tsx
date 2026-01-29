@@ -13,10 +13,9 @@ import { useTranslation } from "../../i18n/useTranslation";
 import { FieldSetControl } from "./FieldSetControl";
 import { RadioButtonsField, RadioButtonsFieldProps } from "./RadioButtonsField";
 
-interface YesOrNoWithFollowUpProps
-  extends PropsWithChildren<
-    Omit<RadioButtonsFieldProps, "options" | "additionalField">
-  > {
+interface YesOrNoWithFollowUpProps extends PropsWithChildren<
+  Omit<RadioButtonsFieldProps, "options" | "additionalField">
+> {
   sx?: SxProps;
   ariaLabel?: string;
   positiveLabel?: string;

@@ -25,6 +25,7 @@ export default function AppointmentBlockGroupsPage() {
             <ButtonBar
               right={
                 <InternalLinkButton
+                  autoFocus
                   href={routes.appointmentBlockGroups.new}
                   size="sm"
                   startDecorator={<Schedule />}

@@ -5,6 +5,6 @@
 
 package de.eshg.prostituteprotection.api;
 
-import jakarta.validation.constraints.NotNull;
+import java.util.UUID;
 
-public record CloseProcedureRequest(@NotNull long version) {}
+public record GetFreeAppointmentsRequest(UUID procedureId) {}

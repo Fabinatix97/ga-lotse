@@ -15,6 +15,7 @@ import { isDefined } from "remeda";
 import {
   ApiChecklistDefinitionVersion,
   ApiObjectType,
+  ApiObjectTypeHierarchyTreeNode,
 } from "@eshg/inspection-api";
 import {
   ButtonBar,
@@ -40,7 +41,7 @@ import { routes } from "@/lib/businessModules/inspection/shared/routes";
 interface EditChecklistDefinitionProps {
   headerRow?: ReactNode;
   cldVersion?: ApiChecklistDefinitionVersion; // unset when this is a completely new cld
-  objectTypes: ApiObjectType[];
+  objectTypes: ApiObjectType[] | ApiObjectTypeHierarchyTreeNode[];
 }
 
 export function EditChecklistDefinition({
@@ -116,7 +117,7 @@ export function EditChecklistDefinition({
         onSubmit={sendToBackend}
       >
         {({ isSubmitting }) => (
-          <FormPlus>
+          <FormPlus autoFocus>
             <ConfirmLeaveDirtyFormEffect />
             <Stack spacing={2}>
               {headerRow ?? (

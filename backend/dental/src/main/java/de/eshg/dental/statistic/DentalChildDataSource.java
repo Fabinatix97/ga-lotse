@@ -65,7 +65,7 @@ public class DentalChildDataSource extends ProcedureDataSource<Child, DentalChil
           latestScreeningExamination.map(this::calculateDmftPrimaryTeethValue).orElse(null);
       case DMFT_BLEIBEND ->
           latestScreeningExamination.map(this::calculateDmftSecondaryTeethValue).orElse(null);
-      case KARIES_RISIKO -> latestScreeningExamination.map(this::getDecayRisk).orElse(null);
+      case KARIES_HOCH_RISIKO -> latestScreeningExamination.map(this::getDecayRisk).orElse(null);
       case KARIES_STATUS -> latestScreeningExamination.map(this::getDecayStatus).orElse(null);
       case SANIERUNGSGRAD_MILCH ->
           getDegreeOfRestoration(latestScreeningExamination, Tooth::isPrimaryTooth);

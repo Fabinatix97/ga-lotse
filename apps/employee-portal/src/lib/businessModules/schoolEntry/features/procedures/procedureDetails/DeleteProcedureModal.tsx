@@ -12,8 +12,10 @@ import { ProcedureDetails } from "@/lib/businessModules/schoolEntry/api/models/P
 import { useDeleteProcedure } from "@/lib/businessModules/schoolEntry/api/mutations/schoolEntryApi";
 import { routes } from "@/lib/businessModules/schoolEntry/shared/routes";
 
-interface DeleteProcedureModalProps
-  extends Omit<BaseModalPropsRequiredClose, "children" | "modalTitle"> {
+interface DeleteProcedureModalProps extends Omit<
+  BaseModalPropsRequiredClose,
+  "children" | "modalTitle"
+> {
   procedure: ProcedureDetails;
 }
 

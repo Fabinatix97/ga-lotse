@@ -9,7 +9,6 @@ import { ApiGetReferenceFacilityResponse } from "@eshg/base-api";
 import { useSearchReferenceFacilitiesQuery } from "@eshg/lib-employee-portal";
 
 import { FacilitySidebarProps } from "@/lib/shared/components/facilitySidebar/FacilitySidebar";
-import { DefaultFacilityFormValues } from "@/lib/shared/components/facilitySidebar/create/FacilityForm";
 import { FacilitySearchFormValues } from "@/lib/shared/components/facilitySidebar/search/FacilitySearchForm";
 
 type FacilitySidebarStage =
@@ -20,9 +19,9 @@ type FacilitySidebarStage =
   | "search"
   | "search_results";
 
-interface FacilitySidebarState<TSearchValues> {
+interface FacilitySidebarState<TSearchValues, TFormValues> {
   stage: FacilitySidebarStage;
-  createState?: DefaultFacilityFormValues;
+  createState?: TFormValues;
   searchState: TSearchValues;
   searchResult: ApiGetReferenceFacilityResponse[];
   selectedFacility: ApiGetReferenceFacilityResponse | undefined;
@@ -32,7 +31,7 @@ interface FacilitySidebarState<TSearchValues> {
   backEnabled: boolean;
 }
 
-type FacilitySidebarStateAction<TSearchValues> =
+type FacilitySidebarStateAction<TSearchValues, TFormValues> =
   | {
       type: "SEARCH_SUCCESS";
       results: ApiGetReferenceFacilityResponse[];
@@ -53,13 +52,13 @@ type FacilitySidebarStateAction<TSearchValues> =
     }
   | {
       type: "BACK";
-      createState?: DefaultFacilityFormValues;
+      createState?: TFormValues;
     };
 
-function defaultModeTransitions<TSearchValues extends FacilitySearchFormValues>(
+function defaultModeTransitions<TSearchValues, TFormValues>(
   initialSearchValues: TSearchValues,
 ) {
-  function getInitialState(): FacilitySidebarState<TSearchValues> {
+  function getInitialState(): FacilitySidebarState<TSearchValues, TFormValues> {
     return {
       stage: "search",
       createState: undefined,
@@ -73,9 +72,9 @@ function defaultModeTransitions<TSearchValues extends FacilitySearchFormValues>(
   }
 
   function transition(
-    previous: FacilitySidebarState<TSearchValues>,
-    action: FacilitySidebarStateAction<TSearchValues>,
-  ): FacilitySidebarState<TSearchValues> {
+    previous: FacilitySidebarState<TSearchValues, TFormValues>,
+    action: FacilitySidebarStateAction<TSearchValues, TFormValues>,
+  ): FacilitySidebarState<TSearchValues, TFormValues> {
     switch (action.type) {
       case "RESET":
         return getInitialState();
@@ -138,15 +137,15 @@ function defaultModeTransitions<TSearchValues extends FacilitySearchFormValues>(
   };
 }
 
-function importModeTransitions<TSearchValues extends FacilitySearchFormValues>(
+function importModeTransitions<TSearchValues, TFormValues>(
   initialSearchValues: TSearchValues,
 ) {
   const {
     transition: defaultTransitions,
     getInitialState: defaultGetInitialState,
-  } = defaultModeTransitions(initialSearchValues);
+  } = defaultModeTransitions<TSearchValues, TFormValues>(initialSearchValues);
 
-  function getInitialState(): FacilitySidebarState<TSearchValues> {
+  function getInitialState(): FacilitySidebarState<TSearchValues, TFormValues> {
     return {
       ...defaultGetInitialState(),
       stage: "loading",
@@ -156,9 +155,9 @@ function importModeTransitions<TSearchValues extends FacilitySearchFormValues>(
   }
 
   function transition(
-    previous: FacilitySidebarState<TSearchValues>,
-    action: FacilitySidebarStateAction<TSearchValues>,
-  ): FacilitySidebarState<TSearchValues> {
+    previous: FacilitySidebarState<TSearchValues, TFormValues>,
+    action: FacilitySidebarStateAction<TSearchValues, TFormValues>,
+  ): FacilitySidebarState<TSearchValues, TFormValues> {
     switch (action.type) {
       case "RESET":
         return getInitialState();
@@ -212,15 +211,16 @@ function importModeTransitions<TSearchValues extends FacilitySearchFormValues>(
 
 export function useFacilitySidebarState<
   TSearchValues extends FacilitySearchFormValues,
->(props: FacilitySidebarProps<TSearchValues>) {
+  TFormValues,
+>(props: FacilitySidebarProps<TSearchValues, TFormValues>) {
   const initialSearchValues = (props.initialSearchInputs ?? {
     name: "",
   }) as TSearchValues;
 
   const { transition, getInitialState } =
     props.mode === "import"
-      ? importModeTransitions(initialSearchValues)
-      : defaultModeTransitions(initialSearchValues);
+      ? importModeTransitions<TSearchValues, TFormValues>(initialSearchValues)
+      : defaultModeTransitions<TSearchValues, TFormValues>(initialSearchValues);
 
   const [state, dispatch] = useReducer(transition, getInitialState());
 

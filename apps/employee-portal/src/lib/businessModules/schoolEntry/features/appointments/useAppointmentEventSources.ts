@@ -27,8 +27,7 @@ import {
 } from "@/lib/businessModules/schoolEntry/features/appointments/helper";
 
 export interface AppointmentEvent
-  extends Omit<EventInput, "extendedProps" | "start" | "end">,
-    TimeSlot {
+  extends Omit<EventInput, "extendedProps" | "start" | "end">, TimeSlot {
   extendedProps:
     | {
         type: "slot";

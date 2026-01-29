@@ -44,8 +44,9 @@ function resolveOptions<TValue extends string>(options: Option<TValue>[]) {
 
 type Option<TValue extends string> = TValue | SelectOption<TValue>;
 
-interface TestValuesButtonGroupFieldProps<TValue extends string>
-  extends FieldProps<OptionalFieldValue<TValue>> {
+interface TestValuesButtonGroupFieldProps<
+  TValue extends string,
+> extends FieldProps<OptionalFieldValue<TValue>> {
   options: Option<TValue>[];
   buttonWidth: number;
 }

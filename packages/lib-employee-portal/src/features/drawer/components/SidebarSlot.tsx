@@ -3,8 +3,9 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { Box } from "@mui/joy";
 import { useQueryErrorResetBoundary } from "@tanstack/react-query";
-import { ReactNode, Suspense } from "react";
+import { ReactNode, Suspense, useEffect, useState } from "react";
 import { ErrorBoundary, FallbackProps } from "react-error-boundary";
 
 import {
@@ -12,9 +13,11 @@ import {
   LoadingOverlayHiddenBackdrop,
   QueryBoundary,
   RequiresChildren,
+  findFirstInteractableChild,
 } from "@eshg/lib-portal";
 
 import {
+  DrawerCloseOptions,
   DrawerFallbackOptions,
   DrawerInstance,
   useDrawerContext,
@@ -33,21 +36,45 @@ export function SidebarSlot() {
       ? openDrawer
       : null;
 
-  function renderComponentWithBoundary(
-    sidebarInstance: DrawerInstance,
-  ): ReactNode {
-    const SidebarComponent = sidebarInstance.component;
-    return (
-      <SidebarBoundary fallbackTitle={sidebarInstance.fallbackTitle}>
-        <SidebarComponent onClose={(force) => tryClose({ force })} />
-      </SidebarBoundary>
-    );
-  }
-
   return (
     <Sidebar open={sidebar !== null} onClose={() => tryClose()}>
-      {sidebar !== null ? renderComponentWithBoundary(sidebar) : null}
+      {sidebar !== null && (
+        <SidebarInstanceWithBoundary
+          sidebarInstance={sidebar}
+          tryClose={tryClose}
+        />
+      )}
     </Sidebar>
+  );
+}
+
+function SidebarInstanceWithBoundary({
+  sidebarInstance,
+  tryClose,
+}: {
+  sidebarInstance: DrawerInstance;
+  tryClose: (options: DrawerCloseOptions) => void;
+}): ReactNode {
+  const [contentElement, setContentElement] = useState<HTMLElement | null>(
+    null,
+  );
+  useEffect(() => {
+    if (contentElement) {
+      findFirstInteractableChild(contentElement)?.focus();
+    }
+  }, [contentElement]);
+  const SidebarComponent = sidebarInstance.component;
+  return (
+    <SidebarBoundary fallbackTitle={sidebarInstance.fallbackTitle}>
+      <Box
+        ref={(el: HTMLElement) => {
+          setContentElement(el);
+        }}
+        display="contents"
+      >
+        <SidebarComponent onClose={(force) => tryClose({ force })} />
+      </Box>
+    </SidebarBoundary>
   );
 }
 

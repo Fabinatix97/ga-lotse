@@ -39,7 +39,10 @@ data:
 ---
 
 {{ include "ingress" (list "lsd" .Values.ingress.type .Values.domains.hosts.lsd "spatz-incoming" "lsd" .Release.Namespace)}}
-{{ include "lib.certificate" (list .Values.lsd.certificate.secret .Values.domains.hosts.lsd .Values.domains.clusterIssuer .Release.Namespace .Values.development.injectSelfSignedCA) }}
+{{ include "lib.certificate" (list .Values.lsd.certificate.secret .Values.domains.hosts.lsd .Values.domains.clusterIssuers.public .Release.Namespace .Values.development.injectSelfSignedCA) }}
+{{- if .Values.createSplitCertificates }}
+{{ include "lib.splitCertificates" (list .Values.lsd.certificate.secret .Values.domains.hosts.lsd .Values.domains.clusterIssuers.publicClient .Values.domains.clusterIssuers.publicServer .Release.Namespace .Values.development.injectSelfSignedCA) }}
+{{- end }}
 
 ---
 

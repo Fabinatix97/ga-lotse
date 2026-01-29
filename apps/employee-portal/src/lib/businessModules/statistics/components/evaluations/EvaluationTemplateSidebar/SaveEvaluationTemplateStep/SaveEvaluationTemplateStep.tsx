@@ -21,8 +21,7 @@ import {
 } from "@/lib/businessModules/statistics/components/evaluations/SidebarSummary";
 import { SidebarStepContentProps } from "@/lib/shared/components/SidebarStepper/sidebarStep";
 
-interface SaveEvaluationTemplateStepProps
-  extends SidebarStepContentProps<SaveEvaluationTemplateStepFormModel> {
+interface SaveEvaluationTemplateStepProps extends SidebarStepContentProps<SaveEvaluationTemplateStepFormModel> {
   evaluationDetails: EvaluationDetails;
 }
 

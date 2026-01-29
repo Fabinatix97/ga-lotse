@@ -32,7 +32,11 @@ export function CreateProcedure() {
   });
 
   return (
-    <Button startDecorator={<Add />} onClick={() => personSidebar.open()}>
+    <Button
+      autoFocus
+      startDecorator={<Add />}
+      onClick={() => personSidebar.open()}
+    >
       Neuen Vorgang anlegen
     </Button>
   );

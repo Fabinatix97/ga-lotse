@@ -19,8 +19,7 @@ import { useGetTextBlocks } from "@/lib/businessModules/inspection/api/queries/t
 import { TextBlocksTable } from "@/lib/businessModules/inspection/components/textBlock/TextBlocksTable";
 
 export default function TextBlocksOverviewPage(props: PageProps) {
-  const searchParams = use(props.searchParams);
-  const request: GetTextBlocksRequest = searchParams;
+  const request: GetTextBlocksRequest = use(props.searchParams);
   const {
     data: { elements, totalNumberOfElements },
     isFetching,

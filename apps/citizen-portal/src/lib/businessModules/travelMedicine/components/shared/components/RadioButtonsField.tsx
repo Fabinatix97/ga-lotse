@@ -14,8 +14,9 @@ import {
   useBaseField,
 } from "@eshg/lib-portal";
 
-interface RadioButtonsFieldProps<T extends SelectOption>
-  extends ValidationRules<T["value"]> {
+interface RadioButtonsFieldProps<
+  T extends SelectOption,
+> extends ValidationRules<T["value"]> {
   options: T[];
   name: string;
   label?: string | ReactNode;

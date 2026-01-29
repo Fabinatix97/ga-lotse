@@ -25,8 +25,10 @@ import {
 
 import { useCloseOpenProcedure } from "@/lib/businessModules/officialMedicalService/api/mutations/employeeOmsProcedureApi";
 
-interface CloseProcedureModalProps
-  extends Omit<BaseModalProps, "children" | "modalTitle" | "color"> {
+interface CloseProcedureModalProps extends Omit<
+  BaseModalProps,
+  "children" | "modalTitle" | "color"
+> {
   onClose: () => void;
   procedure: ApiEmployeeOmsProcedureDetails;
   allDocuments: ApiDocument[];
@@ -114,8 +116,7 @@ type ButtonBarProps = Pick<
 >;
 
 interface BaseModalWithProps
-  extends Omit<ButtonBarProps, "onConfirm">,
-    CloseProcedureModalProps {
+  extends Omit<ButtonBarProps, "onConfirm">, CloseProcedureModalProps {
   modalTitle: string;
   description: string;
   children?: ReactNode;

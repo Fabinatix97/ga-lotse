@@ -2,6 +2,34 @@ GA-Lotse ist ein Kooperationsprojekt des Gesundheitsamts Frankfurt am Main mit d
 
 Finanziert von der Europäischen Union – NextGenerationEU
 
+## GA-Lotse 2.18
+_28.01.2026_
+
+Einunddreißigster Release der Anwendung GA-Lotse
+
+### Zahnärztlicher Dienst:
+
+* Automatische Bestimmung des Gebisstyps anhand der Befundwerte
+  * Milchzähne / bleibende Zähne werden automatisch durch Befunde in Klein- oder Großbuchstaben gesetzt
+  * Der Gebisstyp wird automatisch je Untersuchung bestimmt (Milch-, Wechsel- oder bleibendes Gebiss)
+
+## GA-Lotse 2.17
+_21.01.2026_
+
+Dreißigster Release der Anwendung GA-Lotse
+
+### Masernschutz:
+
+* Anlegen von Personensorgeberechtigten auch ohne Geburtstag möglich
+
+### Statistikmodul:
+
+* Farben in Diagrammen bleiben konsistent zur ursprünglichen Analyse
+
+### Zahnärztlicher Dienst:
+
+* Anweisungspunkte bei Untersuchungen erweitert
+
 ## GA-Lotse 2.16
 _14.01.2026_
 

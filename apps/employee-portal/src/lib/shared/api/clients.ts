@@ -35,6 +35,7 @@ import {
 import { OpenDataConfigApi } from "@eshg/opendata-api";
 import {
   ProstituteProtectionAppointmentStandardDurationConfigApi,
+  ProstituteProtectionConfigApi,
   Configuration as ProstituteProtectionConfiguration,
 } from "@eshg/prostitute-protection-api";
 import {
@@ -84,6 +85,8 @@ const businessModuleBackendUrls = {
   [ApiBusinessModule.MedsAbroad]: "PUBLIC_MEDS_ABROAD_BACKEND_URL",
   [ApiBusinessModule.ProstituteProtection]:
     "PUBLIC_PROSTITUTE_PROTECTION_BACKEND_URL",
+  [ApiBusinessModule.InfectionBriefing]:
+    "PUBLIC_INFECTION_BRIEFING_BACKEND_URL",
 } as const satisfies Record<ApiBusinessModule, keyof ApiConfiguration>;
 
 function useConfigurationByBusinessModule<TConfiguration>(
@@ -197,6 +200,14 @@ export function useConfiguratorSchoolEntryApi() {
 export function useConfiguratorOmsApi() {
   const configuration = useOmsConfiguration();
   return new OmsConfigApi(configuration);
+}
+
+export function useConfiguratorProstituteProtectionApi() {
+  const configuration = useConfigurationByBusinessModule(
+    ApiBusinessModule.ProstituteProtection,
+    ProstituteProtectionConfiguration,
+  );
+  return new ProstituteProtectionConfigApi(configuration);
 }
 
 export function useNotificationConfigApi() {

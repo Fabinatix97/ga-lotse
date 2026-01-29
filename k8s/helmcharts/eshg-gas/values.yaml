@@ -82,8 +82,11 @@ domains:
     maildev: mail.frankfurt.my-ga-lotse.de
     keycloak: keycloak.frankfurt.my-ga-lotse.de
     keycloakInternal: keycloak-internal.frankfurt.my-ga-lotse.de
-  clusterIssuer: letsencrypt-production
-  internalClusterIssuer: letsencrypt-production-internal
+  clusterIssuers:
+    public: letsencrypt-production
+    publicClient: letsencrypt-production-client-certs
+    publicServer: letsencrypt-production-server-certs
+    internal: letsencrypt-production-internal
 
 keycloak:
   enabled: false
@@ -402,6 +405,12 @@ businessmodules:
       - lsd
       - base
     imageName: prostitute-protection
+  infectionbriefing:
+    enabled: false
+    waitFor:
+      - lsd
+      - base
+    imageName: infection-briefing
   centralrepository:
     enabled: false
 

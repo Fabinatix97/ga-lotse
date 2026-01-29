@@ -48,8 +48,7 @@ enum FormNames {
   EXTRA_DURATION = "extraDuration",
 }
 
-interface SchoolEntryAppointmentStandardDurationFormValues
-  extends FormikValues {
+interface SchoolEntryAppointmentStandardDurationFormValues extends FormikValues {
   [FormNames.REGULAR_EXAMINATION]: OptionalFieldValue<number>;
   [FormNames.ENTRY_LEVEL]: OptionalFieldValue<number>;
   [FormNames.CAN_CHILD]: OptionalFieldValue<number>;

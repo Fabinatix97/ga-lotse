@@ -69,6 +69,10 @@ public enum ModuleMemberGroup implements KeycloakGroup {
       "Prostituiertenschutzgesetz",
       getStandardRoles(),
       List.of(EmployeePermissionRole.PROSTITUTE_PROTECTION_ADMIN)),
+  INFECTION_BRIEFING(
+      "Belehrung nach Infektionsschutzgesetz",
+      getStandardRoles(),
+      List.of(EmployeePermissionRole.INFECTION_BRIEFING_ADMIN)),
   ;
 
   private final String keycloakNameWithoutPrefix;

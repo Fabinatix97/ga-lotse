@@ -4,7 +4,7 @@
  */
 
 import { Stack } from "@mui/joy";
-import { useSuspenseQuery } from "@tanstack/react-query";
+import { useSuspenseQueries } from "@tanstack/react-query";
 
 import {
   SidebarWithFormRefProps,
@@ -17,7 +17,6 @@ import {
   OptionalFieldValue,
   SelectField,
   buildEnumOptions,
-  formatPersonName,
   mapOptionalValue,
   mapRequiredValue,
   parseOptionalValue,
@@ -31,6 +30,7 @@ import {
 } from "@eshg/prostitute-protection-api";
 
 import { useUpdateProcedureMutation } from "../../../../api/mutations/procedures";
+import { useGetFreeAppointments } from "../../../../api/queries/procedures";
 import {
   ADDITIONAL_DATA_FIELD_NAME,
   CONSULTATION_TYPE_VALUES,
@@ -54,10 +54,7 @@ export interface EditProcedureDetailsDataForm extends AppointmentFieldsData {
   customAppointmentDate: string;
   appointmentBookingType: ApiAppointmentBookingType;
   consultationType: OptionalFieldValue<ApiConsultationType>;
-  consultant: {
-    value: OptionalFieldValue<string>;
-    label: OptionalFieldValue<string>;
-  } | null;
+  consultantId: OptionalFieldValue<string>;
   version: number;
 }
 
@@ -73,9 +70,14 @@ function EditAdditionalDataSidebar({
   const updateProcedure = useUpdateProcedureMutation(procedure.id);
 
   const { data: selfUser } = useGetSelfUser();
-  const { data: allAssignableUsers } = useSuspenseQuery(
-    useGetUsersByGroupQuery(PROSTITUTE_PROTECTION_GROUP_NAME),
-  );
+
+  const [{ data: allAssignableUsers }, { data: freeAppointments }] =
+    useSuspenseQueries({
+      queries: [
+        useGetUsersByGroupQuery(PROSTITUTE_PROTECTION_GROUP_NAME),
+        useGetFreeAppointments(procedure.id),
+      ],
+    });
 
   async function handleSubmit(values: EditProcedureDetailsDataForm) {
     const procedureData = mapFormToApi(values);
@@ -105,29 +107,41 @@ function EditAdditionalDataSidebar({
           options={buildEnumOptions(CONSULTATION_TYPE_VALUES)}
         />
         <ConsultantSelectField
-          name="consultant"
+          name="consultantId"
           selfUser={selfUser}
           options={allAssignableUsers}
         />
-        <AppointmentFields />
+        <AppointmentFields freeAppointments={freeAppointments} />
       </Stack>
     </SidebarFormProvider>
   );
+}
+
+function getAppointmentBookingType(procedure: ApiProcedureDetails) {
+  return procedure.appointmentFromAppointmentBlock
+    ? ApiAppointmentBookingType.AppointmentBlock
+    : ApiAppointmentBookingType.UserDefined;
 }
 
 function mapApiToForm(
   procedure: ApiProcedureDetails,
 ): EditProcedureDetailsDataForm {
   const { start, end } = procedure.appointment ?? {};
+  const appointmentBookingType = getAppointmentBookingType(procedure);
+
   return {
-    appointmentBookingType: ApiAppointmentBookingType.UserDefined, // TODO: This needs to be fixed – value should come from BE
-    customAppointmentDate: start ? toDateTimeString(start) : "",
+    appointmentBookingType,
+    blockAppointment:
+      appointmentBookingType === "APPOINTMENT_BLOCK" && start && end
+        ? { start, end }
+        : undefined,
+    customAppointmentDate:
+      appointmentBookingType === "USER_DEFINED" && start
+        ? toDateTimeString(start)
+        : "",
     duration: getDurationMinutes(start, end),
     consultationType: parseOptionalValue(procedure.consultationType),
-    consultant: {
-      value: parseOptionalValue(procedure.consultant?.userId),
-      label: parseOptionalValue(formatPersonName(procedure.consultant)),
-    },
+    consultantId: parseOptionalValue(procedure.consultant?.userId),
     version: procedure.version,
   };
 }
@@ -153,7 +167,7 @@ function mapFormToApi(
     appointmentBookingType: values.appointmentBookingType,
     appointmentStart,
     durationInMinutes,
-    consultantId: mapOptionalValue(values.consultant?.value),
+    consultantId: mapOptionalValue(values.consultantId),
     consultationType: mapRequiredValue(values.consultationType),
     version: values.version,
   };

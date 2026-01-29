@@ -16,7 +16,8 @@ import {
 } from "@eshg/lib-portal";
 
 interface RadioButtonsWithFollowUpProps<T extends SelectOption = SelectOption>
-  extends Omit<RadioButtonsFieldProps, "label" | "additionalField">,
+  extends
+    Omit<RadioButtonsFieldProps, "label" | "additionalField">,
     RequiresChildren {
   label: string;
   followUpOn: T["value"];
@@ -32,8 +33,9 @@ export function RadioButtonsWithFollowUp<T extends SelectOption>(
   return <MemoizedRadioButtonsWithFollowUp value={value} {...props} />;
 }
 
-interface InnerRadioButtonsWithFollowUpProps<T extends SelectOption>
-  extends RadioButtonsWithFollowUpProps<T> {
+interface InnerRadioButtonsWithFollowUpProps<
+  T extends SelectOption,
+> extends RadioButtonsWithFollowUpProps<T> {
   value: T["value"];
 }
 

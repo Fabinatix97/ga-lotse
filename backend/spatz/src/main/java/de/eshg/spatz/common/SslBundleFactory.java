@@ -5,6 +5,9 @@
 
 package de.eshg.spatz.common;
 
+import static de.eshg.spatz.config.SpatzConfigurationProperties.*;
+
+import jakarta.annotation.Nonnull;
 import java.io.IOException;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.KeyPair;
@@ -24,6 +27,8 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.boot.autoconfigure.ssl.PropertiesSslBundle;
+import org.springframework.boot.autoconfigure.ssl.SslBundleProperties;
 import org.springframework.boot.ssl.SslBundle;
 import org.springframework.boot.ssl.SslBundleKey;
 import org.springframework.boot.ssl.SslManagerBundle;
@@ -34,36 +39,36 @@ public class SslBundleFactory {
   private static final Logger logger = LoggerFactory.getLogger(SslBundleFactory.class);
 
   private final Lock lock = new ReentrantLock();
-  private final Collection<X509Certificate> fixedCertificates;
-  private final SslOptions sslOptions;
+  private final SslConfiguration serverConfiguration;
+  private final SslConfiguration clientConfiguration;
   private KeyStore serverKeyStore;
-  private Collection<X509Certificate> dynamicRemoteCertificates;
+  private final KeyStore clientKeyStore;
+  private Collection<X509Certificate> dynamicRemoteCertificates = List.of();
 
-  public SslBundleFactory(
-      KeyStore trustStore,
-      SslOptions sslOptions,
-      KeyStore serverKeyStore,
-      List<X509Certificate> dynamicRemoteCertificates) {
-    try {
-      this.fixedCertificates =
-          trustStore == null
-              ? Collections.emptyList()
-              : new PKIXParameters(trustStore)
-                  .getTrustAnchors().stream().map(TrustAnchor::getTrustedCert).toList();
-      this.sslOptions = sslOptions;
-      this.serverKeyStore = serverKeyStore;
-      this.dynamicRemoteCertificates = dynamicRemoteCertificates;
-    } catch (KeyStoreException | InvalidAlgorithmParameterException e) {
-      throw new UnsupportedOperationException(e);
-    }
+  private SslBundleFactory(
+      SslConfiguration serverConfiguration, SslConfiguration clientConfiguration) {
+    this.serverConfiguration = serverConfiguration;
+    serverKeyStore = extractKeyStore(serverConfiguration);
+
+    this.clientConfiguration = clientConfiguration;
+    clientKeyStore = extractKeyStore(clientConfiguration);
+  }
+
+  public static SslBundleFactory forDualUseCertificate(SslConfiguration configuration) {
+    return new SslBundleFactory(configuration, null);
+  }
+
+  public static SslBundleFactory forSingleUseCertificates(
+      SslConfiguration serverConfiguration, SslConfiguration clientConfiguration) {
+    return new SslBundleFactory(serverConfiguration, clientConfiguration);
   }
 
   public SslBundle buildWithNewDynamicRemoteCertificates(
       List<X509Certificate> dynamicCertificates) {
     lock.lock();
     try {
-      this.dynamicRemoteCertificates = dynamicCertificates;
-      return buildInternal();
+      dynamicRemoteCertificates = dynamicCertificates;
+      return buildInternal(serverConfiguration, serverKeyStore, "server");
     } catch (CertificateException | IOException | NoSuchAlgorithmException | KeyStoreException e) {
       throw new UnsupportedOperationException(e);
     } finally {
@@ -75,8 +80,8 @@ public class SslBundleFactory {
       KeyPair serverKeys, X509Certificate serverCertificate) {
     lock.lock();
     try {
-      this.serverKeyStore = createKeyStore(serverKeys, serverCertificate);
-      return buildInternal();
+      serverKeyStore = createKeyStore(serverKeys, serverCertificate);
+      return buildInternal(serverConfiguration, serverKeyStore, "server");
     } catch (CertificateException | IOException | NoSuchAlgorithmException | KeyStoreException e) {
       throw new UnsupportedOperationException(e);
     } finally {
@@ -87,7 +92,7 @@ public class SslBundleFactory {
   public SslBundle build() {
     lock.lock();
     try {
-      return buildInternal();
+      return buildInternal(serverConfiguration, serverKeyStore, "server");
     } catch (CertificateException | IOException | NoSuchAlgorithmException | KeyStoreException e) {
       throw new UnsupportedOperationException(e);
     } finally {
@@ -95,10 +100,28 @@ public class SslBundleFactory {
     }
   }
 
-  private SslBundle buildInternal()
+  public SslBundle buildClientBundle() {
+    if (clientConfiguration == null) {
+      return null;
+    }
+    lock.lock();
+    try {
+      return buildInternal(clientConfiguration, clientKeyStore, "client");
+    } catch (CertificateException | IOException | NoSuchAlgorithmException | KeyStoreException e) {
+      throw new UnsupportedOperationException(e);
+    } finally {
+      lock.unlock();
+    }
+  }
+
+  private SslBundle buildInternal(
+      SslConfiguration sslConfiguration, KeyStore keyStore, String certificateType)
       throws CertificateException, IOException, NoSuchAlgorithmException, KeyStoreException {
 
-    SslBundleKey key = serverKeyStore == null ? SslBundleKey.NONE : SslBundleKey.of(null, "ssl");
+    SslBundle sslBundle = PropertiesSslBundle.get(sslConfiguration);
+    SslOptions sslOptions = extractSslOptions(sslConfiguration);
+    Collection<X509Certificate> fixedCertificates = getTrustedCertificates(sslBundle);
+    SslBundleKey key = keyStore == null ? SslBundleKey.NONE : SslBundleKey.of(null, "ssl");
 
     // create truststore
     KeyStore trustStore = KeyStore.getInstance(KeyStore.getDefaultType());
@@ -113,15 +136,16 @@ public class SslBundleFactory {
     }
 
     logger.debug(
-        "creating new SslBundle with {} server certificate, {} fixed trust entries, {} dynamic trust entries",
-        serverKeyStore == null ? "empty" : "fixed",
+        "creating new SslBundle with {} {} certificate, {} fixed trust entries, {} dynamic trust entries",
+        keyStore == null ? "empty" : "fixed",
+        certificateType,
         fixedCertificates.size(),
         dynamicRemoteCertificates.size());
 
     return new SslBundle() {
       @Override
       public SslStoreBundle getStores() {
-        return SslStoreBundle.of(serverKeyStore, null, trustStore);
+        return SslStoreBundle.of(keyStore, null, trustStore);
       }
 
       @Override
@@ -146,7 +170,35 @@ public class SslBundleFactory {
     };
   }
 
-  private KeyStore createKeyStore(KeyPair serverKeys, X509Certificate serverCertificate)
+  @Nonnull
+  private static Collection<X509Certificate> getTrustedCertificates(SslBundle sslBundle) {
+    KeyStore trustStoreFromBundle = sslBundle.getStores().getTrustStore();
+    try {
+      return trustStoreFromBundle == null
+          ? Collections.emptyList()
+          : new PKIXParameters(trustStoreFromBundle)
+              .getTrustAnchors().stream().map(TrustAnchor::getTrustedCert).toList();
+    } catch (KeyStoreException | InvalidAlgorithmParameterException e) {
+      throw new UnsupportedOperationException(e);
+    }
+  }
+
+  private static KeyStore extractKeyStore(SslConfiguration sslConfiguration) {
+    if (sslConfiguration == null) {
+      return null;
+    }
+    SslBundle sslBundle = PropertiesSslBundle.get(sslConfiguration);
+    return sslBundle.getStores().getKeyStore();
+  }
+
+  private static SslOptions extractSslOptions(SslConfiguration sslConfiguration) {
+    SslBundleProperties.Options options = sslConfiguration.getOptions();
+    return options != null
+        ? SslOptions.of(options.getCiphers(), options.getEnabledProtocols())
+        : SslOptions.NONE;
+  }
+
+  private static KeyStore createKeyStore(KeyPair serverKeys, X509Certificate serverCertificate)
       throws KeyStoreException, IOException, NoSuchAlgorithmException, CertificateException {
     if (serverKeys == null) {
       return null;

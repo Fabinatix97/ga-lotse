@@ -18,6 +18,7 @@ import de.eshg.measlesprotection.api.GetMeaslesProtectionProceduresSortOptions;
 import de.eshg.measlesprotection.api.GetProceduresForPersonResponse;
 import de.eshg.measlesprotection.api.PatchAffectedPersonRequest;
 import de.eshg.measlesprotection.api.PatchCustodianRequest;
+import de.eshg.measlesprotection.api.PatchCustodianWithoutDateOfBirthRequest;
 import de.eshg.measlesprotection.api.ProtectionProcedureDto;
 import de.eshg.measlesprotection.api.SyncAffectedPersonRequest;
 import de.eshg.measlesprotection.api.SyncCustodianRequest;
@@ -25,6 +26,7 @@ import de.eshg.measlesprotection.api.SyncFacilityRequest;
 import de.eshg.measlesprotection.api.UpdateProcedureRequest;
 import de.eshg.measlesprotection.api.draft.AffectedPersonDetailsDto;
 import de.eshg.measlesprotection.api.draft.CustodianDetailsDto;
+import de.eshg.measlesprotection.api.draft.CustodianWithoutDateOfBirthDetailsDto;
 import de.eshg.measlesprotection.api.draft.EditFacilityResponse;
 import de.eshg.measlesprotection.mapper.GetProceduresForPersonMapper;
 import de.eshg.measlesprotection.mapper.ToDtoMappers;
@@ -196,6 +198,17 @@ public class ProtectionProcedureController {
       @PathVariable("custodianId") UUID custodianId,
       @Valid @RequestBody PatchCustodianRequest request) {
     return measlesProtectionService.editCustodian(procedureId, custodianId, request);
+  }
+
+  @PostMapping("{procedureId}/custodian-without-dob/{custodianId}/edit")
+  @Operation(
+      summary = "Updates custodian without date of birth from a measles protection procedure.")
+  public CustodianWithoutDateOfBirthDetailsDto editCustodianWithoutDateOfBirth(
+      @PathVariable("procedureId") UUID procedureId,
+      @PathVariable("custodianId") UUID custodianId,
+      @Valid @RequestBody PatchCustodianWithoutDateOfBirthRequest request) {
+    return measlesProtectionService.editCustodianWithoutDateOfBirth(
+        procedureId, custodianId, request);
   }
 
   @PostMapping("{procedureId}/custodian/{custodianId}/sync")

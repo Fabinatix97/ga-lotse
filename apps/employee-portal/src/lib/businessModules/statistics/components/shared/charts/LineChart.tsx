@@ -20,6 +20,7 @@ import { NumericAxesConfiguration } from "./types";
 interface LineChartDiagramProps {
   diagramData: AnalysisDiagramLineChart["data"];
   configuration: NumericAxesConfiguration;
+  getColor?: (identifier: string) => string;
   eChartApi?: (eChartApi: ChartApi) => void;
 }
 
@@ -45,6 +46,9 @@ export function LineChart(props: LineChartDiagramProps) {
     data: group.dataPoints.sort(compareAttribute).map((it) => [it.x, it.y]),
     name: group.label,
     type: "line",
+    itemStyle: {
+      color: props.getColor?.(group.label),
+    },
   }));
 
   const [xMin, xMax, yMin, yMax] = calculateXYMinMax(props.diagramData);

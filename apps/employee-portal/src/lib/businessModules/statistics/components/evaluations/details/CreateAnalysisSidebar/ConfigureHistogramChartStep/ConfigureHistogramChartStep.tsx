@@ -32,8 +32,7 @@ import { ToggleButtonGroupField } from "@/lib/shared/components/formFields/Toggl
 
 import { ConfigureHistogramChartMetaOptions } from "./ConfigureHistogramChartMetaOptions";
 
-interface ConfigureHistogramChartStepProps
-  extends SidebarStepContentProps<ConfigureChartFormModel> {
+interface ConfigureHistogramChartStepProps extends SidebarStepContentProps<ConfigureChartFormModel> {
   attributes: FlatAttribute[];
 }
 

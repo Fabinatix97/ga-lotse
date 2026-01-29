@@ -33,6 +33,8 @@ public sealed interface ProtectionProcedureDto
 
   List<CustodianDto> custodians();
 
+  List<CustodianWithoutDateOfBirthDto> custodiansWithoutDoB();
+
   FacilityDto facility();
 
   ReportDataDto reportData();

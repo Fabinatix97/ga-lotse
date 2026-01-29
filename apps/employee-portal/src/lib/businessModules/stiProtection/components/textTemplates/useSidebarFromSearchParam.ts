@@ -32,8 +32,10 @@ interface UseSidebarFromSearchParamOptionsCustomProps<
   props: CustomProps<TSidebarProps>;
 }
 
-interface UseSidebarFromSearchParamResult
-  extends Omit<UseSidebarResult<DrawerProps>, "open"> {
+interface UseSidebarFromSearchParamResult extends Omit<
+  UseSidebarResult<DrawerProps>,
+  "open"
+> {
   open: () => void;
 }
 

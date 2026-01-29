@@ -11,11 +11,10 @@ import {
 
 import { ToggleSelectColumnProps } from "../components/columns/ToggleSelectColumn";
 
-export interface RowSelectionProps<TData>
-  extends Pick<
-    Required<RowSelectionOptions<TData>>,
-    SupportedRowSelectionOptions
-  > {
+export interface RowSelectionProps<TData> extends Pick<
+  Required<RowSelectionOptions<TData>>,
+  SupportedRowSelectionOptions
+> {
   state: RowSelectionTableState;
   getRowId: (originalRow: TData, index: number, parent?: Row<TData>) => string;
   toggleSelectProps: ToggleSelectColumnProps;

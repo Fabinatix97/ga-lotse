@@ -10,9 +10,14 @@ import { RefetchQueryFilters, useQueryClient } from "@tanstack/react-query";
 interface RefreshButtonProps {
   queryKey: RefetchQueryFilters["queryKey"];
   loading: boolean;
+  autoFocus?: boolean;
 }
 
-export function RefreshButton({ queryKey, loading }: RefreshButtonProps) {
+export function RefreshButton({
+  queryKey,
+  loading,
+  autoFocus,
+}: RefreshButtonProps) {
   const queryClient = useQueryClient();
 
   async function refresh() {
@@ -23,6 +28,7 @@ export function RefreshButton({ queryKey, loading }: RefreshButtonProps) {
 
   return (
     <Button
+      autoFocus={autoFocus}
       startDecorator={<Cached />}
       variant="outlined"
       loading={loading}

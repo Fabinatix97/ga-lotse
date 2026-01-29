@@ -8,8 +8,10 @@ import { forwardRef, useId } from "react";
 
 const DEFAULT_TEXT = "Wird geladen…";
 
-export interface LoadingIndicatorProps
-  extends Omit<StackProps, "gap" | "alignItems" | "justifyContent"> {
+export interface LoadingIndicatorProps extends Omit<
+  StackProps,
+  "gap" | "alignItems" | "justifyContent"
+> {
   text?: string;
   fullHeight?: boolean;
 }

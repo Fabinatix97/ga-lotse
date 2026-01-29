@@ -7,4 +7,5 @@ package de.eshg.prostituteprotection.api;
 
 import jakarta.validation.constraints.NotNull;
 
-public record AbortProcedureRequest(@NotNull long version) {}
+public record UpdateProstituteProtectionConfigRequest(
+    @NotNull boolean onlinePortalBookingEnabled) {}

@@ -44,7 +44,7 @@ export function SchoolInfoLetter({ procedureId }: { procedureId: string }) {
       >
         {(formikProps) => {
           return (
-            <FormPlus data-testid="school-info-letter-form">
+            <FormPlus data-testid="school-info-letter-form" autoFocus>
               <ConfirmLeaveDirtyFormEffect
                 confirmationDialogProps={LeaveDirtyConfirmationDialogProps(
                   formikProps.submitForm,

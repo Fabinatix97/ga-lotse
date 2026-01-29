@@ -17,6 +17,7 @@ interface TextInputClientFilterProps {
   type: HTMLInputTypeAttribute;
   setInputField: Dispatch<SetStateAction<string>>;
   sx?: SxProps;
+  autoFocus?: boolean;
 }
 
 export function TextInputClientFilter(
@@ -26,6 +27,7 @@ export function TextInputClientFilter(
 
   return (
     <Input
+      autoFocus={props.autoFocus}
       variant="outlined"
       placeholder={props.placeholder}
       aria-label={props.placeholder}

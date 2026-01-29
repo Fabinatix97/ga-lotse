@@ -21,21 +21,27 @@ import { NumericAxesConfiguration } from "./types";
 interface ScatterChartDiagramProps {
   diagramData: AnalysisDiagramScatterChart["data"];
   configuration: NumericAxesConfiguration;
+  getColor?: (identifier: string) => string;
   eChartApi?: (eChartApi: ChartApi) => void;
 }
 
 export function ScatterChart({
   diagramData,
   configuration,
+  getColor,
   eChartApi,
 }: ScatterChartDiagramProps) {
   const series: SeriesOption[] = diagramData.map((group) => ({
     data: group.dataPoints.map((it) => [it.x, it.y]),
     name: group.label,
     type: "scatter",
+    itemStyle: {
+      color: getColor?.(group.label),
+    },
   }));
 
-  for (const group of diagramData.filter((it) => it.trendline)) {
+  diagramData.forEach((group) => {
+    if (!group.trendline) return;
     series.push({
       type: "line",
       name: group.label,
@@ -43,8 +49,11 @@ export function ScatterChart({
         it,
         group.trendline!.offset + group.trendline!.slope * it,
       ]),
+      itemStyle: {
+        color: getColor?.(group.label),
+      },
     });
-  }
+  });
 
   const [xMin, xMax, yMin, yMax] = calculateXYMinMax(diagramData);
   const option: EChartsOption = {

@@ -27,6 +27,7 @@ export function FacilitiesWebSearchPageContent() {
           right={
             <>
               <RefreshButton
+                autoFocus
                 loading={isFetching}
                 queryKey={webSearchApiQueryKey(["getWebSearchOverview"])}
               />

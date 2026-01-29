@@ -5,6 +5,7 @@
 
 package de.eshg.inspection.objecttype;
 
+import de.eshg.inspection.client.UserClient;
 import de.eshg.inspection.facility.persistence.Facility;
 import de.eshg.inspection.facility.persistence.FacilityRepository;
 import de.eshg.inspection.feature.InspectionFeature;
@@ -22,6 +23,7 @@ import de.eshg.inspection.objecttype.api.ObjectTypeDto;
 import de.eshg.inspection.objecttype.api.SingleObjectTypeResponse;
 import de.eshg.inspection.objecttype.api.UpdateObjectTypeRequest;
 import de.eshg.inspection.objecttype.persistence.ObjectType;
+import de.eshg.inspection.objecttype.persistence.ObjectTypeHierarchyTreeNode;
 import de.eshg.inspection.objecttype.persistence.ObjectTypeHierarchyTreeNodeRepository;
 import de.eshg.inspection.objecttype.persistence.ObjectTypeRepository;
 import de.eshg.rest.service.error.BadRequestException;
@@ -38,7 +40,9 @@ import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -68,6 +72,7 @@ public class ObjectTypeController {
   private final InspectionRepository inspectionRepository;
   private final InspectionFinalizer inspectionFinalizer;
   private final Clock clock;
+  private final UserClient userClient;
 
   public ObjectTypeController(
       ObjectTypeRepository objectTypeRepository,
@@ -77,7 +82,8 @@ public class ObjectTypeController {
       InspectionFeatureToggle inspectionFeatureToggle,
       InspectionRepository inspectionRepository,
       InspectionFinalizer inspectionFinalizer,
-      Clock clock) {
+      Clock clock,
+      UserClient userClient) {
     this.objectTypeRepository = objectTypeRepository;
     this.objectTypeHierarchyTreeNodeRepository = objectTypeHierarchyTreeNodeRepository;
     this.inspectionService = inspectionService;
@@ -86,6 +92,7 @@ public class ObjectTypeController {
     this.inspectionRepository = inspectionRepository;
     this.inspectionFinalizer = inspectionFinalizer;
     this.clock = clock;
+    this.userClient = userClient;
   }
 
   @GetMapping
@@ -103,11 +110,31 @@ public class ObjectTypeController {
   @Operation(summary = "Get the tree of all objecttypes")
   @Transactional(readOnly = true)
   public GetObjectTypesHierarchyResponse getObjectTypesHierarchy() {
-    return new GetObjectTypesHierarchyResponse(
-        objectTypeHierarchyTreeNodeRepository
-            .findByRootNode(true)
-            .map(ObjectTypeMapper::toDto)
-            .orElseThrow());
+    if (inspectionFeatureToggle.isNewFeatureEnabled(InspectionFeature.OBJECT_TYPE_ASSIGNEE)) {
+      var root = objectTypeHierarchyTreeNodeRepository.findByRootNode(true).orElseThrow();
+      Set<UUID> assigneeIds = new HashSet<>();
+      collectAssigneeIds(root, assigneeIds);
+      var userMap = userClient.getUsersAsMap(assigneeIds);
+      return new GetObjectTypesHierarchyResponse(ObjectTypeMapper.toDto(root, userMap));
+    } else {
+      return new GetObjectTypesHierarchyResponse(
+          objectTypeHierarchyTreeNodeRepository
+              .findByRootNode(true)
+              .map(ObjectTypeMapper::toDto)
+              .orElseThrow());
+    }
+  }
+
+  private static void collectAssigneeIds(ObjectTypeHierarchyTreeNode node, Set<UUID> ids) {
+    for (ObjectType ot : node.getObjectTypes()) {
+      UUID assigneeId = ot.getDesignatedAssigneeId();
+      if (assigneeId != null) {
+        ids.add(assigneeId);
+      }
+    }
+    for (ObjectTypeHierarchyTreeNode sub : node.getSubNodes()) {
+      collectAssigneeIds(sub, ids);
+    }
   }
 
   @GetMapping(path = "/{id}")
@@ -117,7 +144,16 @@ public class ObjectTypeController {
     ObjectType objectType =
         objectTypeRepository.findById(id).orElseThrow(() -> new NotFoundException("ObjectType"));
     ObjectType savedObjectType = objectTypeRepository.save(objectType);
-    ObjectTypeDto dto = ObjectTypeMapper.toDto(savedObjectType);
+    ObjectTypeDto dto;
+    if (inspectionFeatureToggle.isNewFeatureEnabled(InspectionFeature.OBJECT_TYPE_ASSIGNEE)) {
+      var assignee =
+          savedObjectType.getDesignatedAssigneeId() == null
+              ? null
+              : userClient.getUserById(savedObjectType.getDesignatedAssigneeId());
+      dto = ObjectTypeMapper.toDto(savedObjectType, assignee);
+    } else {
+      dto = ObjectTypeMapper.toDto(savedObjectType);
+    }
     return new SingleObjectTypeResponse(dto);
   }
 
@@ -130,6 +166,18 @@ public class ObjectTypeController {
         objectTypeRepository.findById(id).orElseThrow(() -> new NotFoundException("ObjectType"));
     Integer oldRoutineInterval = currentObjectType.getRoutineInterval();
     Integer oldComplaintInterval = currentObjectType.getComplaintInterval();
+
+    if (inspectionFeatureToggle.isNewFeatureDisabled(InspectionFeature.OBJECT_TYPE_ASSIGNEE)) {
+      request =
+          new UpdateObjectTypeRequest(
+              request.routineInterval(),
+              request.complaintInterval(),
+              request.standardDuration(),
+              request.standardBufferTime(),
+              request.emailAnnouncement(),
+              request.legalBasis(),
+              null);
+    }
 
     ObjectType changedObjectType = ObjectTypeMapper.mapUpdateRequest(request, currentObjectType);
     ObjectType savedObjectType = objectTypeRepository.save(changedObjectType);
@@ -177,8 +225,16 @@ public class ObjectTypeController {
             savedObjectType, complaintIntervalDifference, InspectionType.REGULAR_AFTER_INCIDENTS);
       }
     }
-
-    ObjectTypeDto dto = ObjectTypeMapper.toDto(savedObjectType);
+    ObjectTypeDto dto;
+    if (inspectionFeatureToggle.isNewFeatureEnabled(InspectionFeature.OBJECT_TYPE_ASSIGNEE)) {
+      var assignee =
+          savedObjectType.getDesignatedAssigneeId() == null
+              ? null
+              : userClient.getUserById(savedObjectType.getDesignatedAssigneeId());
+      dto = ObjectTypeMapper.toDto(savedObjectType, assignee);
+    } else {
+      dto = ObjectTypeMapper.toDto(savedObjectType);
+    }
     return new SingleObjectTypeResponse(dto);
   }
 

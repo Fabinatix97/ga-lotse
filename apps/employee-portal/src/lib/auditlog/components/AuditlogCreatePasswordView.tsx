@@ -24,7 +24,7 @@ export function AuditlogCreatePasswordView() {
     <>
       <ButtonBar
         left={<ToggleFilterButton disabled />}
-        right={<CreatePasswordButton setOpen={setOpen} />}
+        right={<CreatePasswordButton autoFocus setOpen={setOpen} />}
       />
       <Sheet
         data-testid="auditlogSheet"
@@ -60,13 +60,19 @@ export function AuditlogCreatePasswordView() {
 
 interface CreatePasswordButtonProps {
   setOpen: Dispatch<SetStateAction<boolean>>;
+  autoFocus?: boolean;
 }
 
 function CreatePasswordButton({
   setOpen,
+  autoFocus,
 }: Readonly<CreatePasswordButtonProps>) {
   return (
-    <Button startDecorator={<KeyOutlined />} onClick={() => setOpen(true)}>
+    <Button
+      autoFocus={autoFocus}
+      startDecorator={<KeyOutlined />}
+      onClick={() => setOpen(true)}
+    >
       Passwort erstellen
     </Button>
   );

@@ -62,8 +62,10 @@ type SnackbarPropsKeyOptional = Optional<SnackbarValues, "key">;
 
 type SnackbarProps = Omit<SnackbarPropsKeyOptional, "text" | "variant">;
 
-export interface SnackbarComponentProps
-  extends Omit<JoySnackbarProps, "color"> {
+export interface SnackbarComponentProps extends Omit<
+  JoySnackbarProps,
+  "color"
+> {
   position: number;
   color: "primary" | "success" | "danger";
 }

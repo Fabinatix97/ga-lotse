@@ -124,5 +124,6 @@
   <include file="migrations/0114_add_invitation_config.xml"/>
   <include file="migrations/0115_add_appointment_extraduration.xml"/>
   <include file="migrations/0116_add_sopass_to_appointment_blocks.xml"/>
+  <include file="migrations/0117_add_infection_briefing_appointment_types.xml"/>
 
 </databaseChangeLog>

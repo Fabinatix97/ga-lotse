@@ -45,8 +45,7 @@ enum FormNames {
   CONSULTATION = "consultation",
 }
 
-interface ProstituteProtectionAppointmentStandardDurationFormValues
-  extends FormikValues {
+interface ProstituteProtectionAppointmentStandardDurationFormValues extends FormikValues {
   [FormNames.CONSULTATION]: OptionalFieldValue<number>;
 }
 

@@ -41,6 +41,7 @@ export function InformationStatementTemplateOverviewTable() {
         <ButtonBar
           right={
             <Button
+              autoFocus
               startDecorator={<AddOutlinedIcon />}
               onClick={() =>
                 router.push(routes.informationStatementTemplates.new)

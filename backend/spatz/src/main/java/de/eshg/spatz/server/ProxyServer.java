@@ -5,7 +5,8 @@
 
 package de.eshg.spatz.server;
 
-import static de.eshg.servicedirectory.util.X509Utils.ESHGACTOR_BUNDLE_NAME;
+import static de.eshg.spatz.config.SelfSignedSecurityConfiguration.ESHGACTOR_BUNDLE_NAME;
+import static de.eshg.spatz.config.SelfSignedSecurityConfiguration.ESHGACTOR_CLIENT_BUNDLE_NAME;
 
 import de.eshg.spatz.LifecyclePhases;
 import io.netty.channel.group.DefaultChannelGroup;
@@ -65,6 +66,7 @@ public abstract class ProxyServer implements HealthIndicator, SmartLifecycle {
   private final SslBundles sslBundles;
   private final Duration shutdownTimeout;
   private final SSLFactory dynamicSSLFactory;
+  private final SSLFactory dynamicClientSSLFactory;
 
   private final SslContext serverContext;
   private final SslContext clientContext;
@@ -98,9 +100,18 @@ public abstract class ProxyServer implements HealthIndicator, SmartLifecycle {
             .withSwappableTrustMaterial()
             .build();
 
+    dynamicClientSSLFactory =
+        SSLFactory.builder()
+            .withNeedClientAuthentication(clientAuth)
+            .withDummyIdentityMaterial()
+            .withSystemTrustMaterial()
+            .withSwappableIdentityMaterial()
+            .withSwappableTrustMaterial()
+            .build();
+
     try {
       serverContext = NettySslUtils.forServer(dynamicSSLFactory).build();
-      clientContext = NettySslUtils.forClient(dynamicSSLFactory).build();
+      clientContext = NettySslUtils.forClient(dynamicClientSSLFactory).build();
     } catch (SSLException e) {
       throw new SslContextException("failed to build SSL context", e);
     }
@@ -140,6 +151,22 @@ public abstract class ProxyServer implements HealthIndicator, SmartLifecycle {
     SSLFactoryUtils.reload(dynamicSSLFactory, updated);
   }
 
+  void onClientSslBundleUpdate(SslBundle clientBundle) {
+    logger.info("client ssl configuration changed, applying for outbound mTLS connections");
+
+    SSLFactory clientFactory =
+        SSLFactory.builder()
+            .withNeedClientAuthentication(false)
+            .withTrustMaterial(clientBundle.getManagers().getTrustManagerFactory())
+            .withSystemTrustMaterial()
+            .withIdentityMaterial(clientBundle.getManagers().getKeyManagerFactory())
+            .withProtocols(ALLOWED_PROTOCOL)
+            .withCiphers(ALLOWED_CIPHERS)
+            .build();
+
+    SSLFactoryUtils.reload(dynamicClientSSLFactory, clientFactory);
+  }
+
   /**
    * A handler function which contains the real proxy-logic. Depending on the situation, we have
    * different handlerFunctions for traffic from inside the pod (outbound to the world) and for
@@ -157,6 +184,14 @@ public abstract class ProxyServer implements HealthIndicator, SmartLifecycle {
 
     onSslBundleUpdate(sslBundles.getBundle(ESHGACTOR_BUNDLE_NAME));
     sslBundles.addBundleUpdateHandler(ESHGACTOR_BUNDLE_NAME, this::onSslBundleUpdate);
+
+    String clientBundleName = ESHGACTOR_BUNDLE_NAME;
+    if (sslBundles.getBundleNames().contains(ESHGACTOR_CLIENT_BUNDLE_NAME)) {
+      clientBundleName = ESHGACTOR_CLIENT_BUNDLE_NAME;
+    }
+
+    onClientSslBundleUpdate(sslBundles.getBundle(clientBundleName));
+    sslBundles.addBundleUpdateHandler(clientBundleName, this::onClientSslBundleUpdate);
 
     channelGroup = new DefaultChannelGroup(GlobalEventExecutor.INSTANCE);
     HttpServer bindServer =

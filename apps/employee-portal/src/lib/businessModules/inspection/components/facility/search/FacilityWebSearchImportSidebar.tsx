@@ -25,7 +25,10 @@ import {
 } from "@/lib/businessModules/inspection/api/mutations/facility";
 import { routes } from "@/lib/businessModules/inspection/shared/routes";
 import { FacilitySidebar } from "@/lib/shared/components/facilitySidebar/FacilitySidebar";
-import { DefaultFacilityFormValues } from "@/lib/shared/components/facilitySidebar/create/FacilityForm";
+import {
+  DefaultFacilityFormValues,
+  getInitialFacilityFormValues,
+} from "@/lib/shared/components/facilitySidebar/create/FacilityForm";
 import { BaseFacility } from "@/lib/shared/components/facilitySidebar/types";
 import { fullAddress } from "@/lib/shared/helpers/facilityUtils";
 
@@ -115,9 +118,13 @@ function FacilityWebSearchImportSidebar(
         name: webSearchEntry.name,
       }}
       formRef={props.formRef}
-      getInitialCreateInputs={() => ({
-        ...createBaseFacilityFromWebSearchEntry(webSearchEntry),
-      })}
+      getInitialCreateFormValues={(searchInputs) =>
+        getInitialFacilityFormValues(
+          searchInputs,
+          false,
+          createBaseFacilityFromWebSearchEntry(webSearchEntry),
+        )
+      }
       onCreateNew={async (values) => {
         await handleSaveFacility(values.createInputs, webSearchEntry.id);
       }}

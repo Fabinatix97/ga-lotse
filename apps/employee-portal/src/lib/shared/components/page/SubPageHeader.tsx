@@ -5,10 +5,9 @@
 
 import ChevronLeft from "@mui/icons-material/ChevronLeft";
 import { Divider, Sheet, Stack, Typography } from "@mui/joy";
-import { useEffect, useRef } from "react";
 
 import { useHeaderHeights } from "@eshg/lib-employee-portal";
-import { InternalLinkIconButton } from "@eshg/lib-portal";
+import { InternalLinkIconButton, useAutoTitleFocus } from "@eshg/lib-portal";
 
 export function SubPageHeader({
   routeBack,
@@ -16,12 +15,7 @@ export function SubPageHeader({
 }: Readonly<{ routeBack: string; header: string }>) {
   const { headerHeightMobile } = useHeaderHeights();
   const iconSize = headerHeightMobile;
-  const titleRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    // Focus the title when the page is loaded
-    titleRef.current?.focus();
-  }, []);
+  const titleRef = useAutoTitleFocus();
 
   return (
     <Sheet sx={{ padding: 0, borderRadius: 0 }} data-testid="subPageHeader">

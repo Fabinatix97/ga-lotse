@@ -94,6 +94,7 @@ data:
   opendata-module-client-secret: Zml4ZWQtc2VjcmV0LWZvci1zbmFwc2hvdA==
   meds-abroad-module-client-secret: Zml4ZWQtc2VjcmV0LWZvci1zbmFwc2hvdA==
   prostitute-protection-module-client-secret: Zml4ZWQtc2VjcmV0LWZvci1zbmFwc2hvdA==
+  infection-briefing-module-client-secret: Zml4ZWQtc2VjcmV0LWZvci1zbmFwc2hvdA==
   synapse-admin-password: Zml4ZWQtc2VjcmV0LWZvci1zbmFwc2hvdA==
   synapse-registration-shared-secret: Zml4ZWQtc2VjcmV0LWZvci1zbmFwc2hvdA==
   synapse-macaroon-secret: Zml4ZWQtc2VjcmV0LWZvci1zbmFwc2hvdA==
@@ -2516,6 +2517,8 @@ spec:
           value: https://pcp.central.svc.cluster.local
         - name: PUBLIC_PROSTITUTE_PROTECTION_BACKEND_URL
           value: "https://cp.frankfurt.svc.cluster.local/api/prostitute-protection"
+        - name: PUBLIC_INFECTION_BRIEFING_BACKEND_URL
+          value: "https://cp.frankfurt.svc.cluster.local/api/infection-briefing"
         imagePullPolicy: Always
       - name: spatz
         securityContext:
@@ -3359,6 +3362,8 @@ spec:
           value: https://ep.frankfurt.svc.cluster.local/api/meds-abroad
         - name: PUBLIC_PROSTITUTE_PROTECTION_BACKEND_URL
           value: https://ep.frankfurt.svc.cluster.local/api/prostitute-protection
+        - name: PUBLIC_INFECTION_BRIEFING_BACKEND_URL
+          value: https://ep.frankfurt.svc.cluster.local/api/infection-briefing
         - name: PUBLIC_CHAT_MANAGEMENT_BACKEND_URL
           value: https://ep.frankfurt.svc.cluster.local/api/chat-management
         - name: PUBLIC_PDF_CONVERTER_URL
@@ -4439,6 +4444,11 @@ spec:
             secretKeyRef:
               name: keycloak-client-secrets
               key: prostitute-protection-module-client-secret
+        - name: eshg.keycloak.employee-realm.module-client-secrets.infection-briefing
+          valueFrom:
+            secretKeyRef:
+              name: keycloak-client-secrets
+              key: infection-briefing-module-client-secret
         - name: spring.security.oauth2.client.registration.module-client.client-id
           value: system-base
         - name: spring.security.oauth2.client.registration.module-client.client-secret
@@ -6219,6 +6229,51 @@ spec:
   usages:
   - server auth
   - client auth
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: "lsd-public-client"
+  namespace: snapshot-ns
+spec:
+  commonName: "lsd.frankfurt.svc.cluster.local"
+  dnsNames:
+  - "lsd.frankfurt.svc.cluster.local"
+  issuerRef:
+    kind: ClusterIssuer
+    name: local-ca
+  privateKey:
+    algorithm: ECDSA
+    encoding: PKCS1
+    size: 256
+    rotationPolicy: Always
+  secretName: "lsd-public-tls-client"
+  subject: {}
+  usages:
+  - client auth
+---
+# Source: ga-lotse-gas/templates/lsd.yaml
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: "lsd-public-server"
+  namespace: snapshot-ns
+spec:
+  commonName: "lsd.frankfurt.svc.cluster.local"
+  dnsNames:
+  - "lsd.frankfurt.svc.cluster.local"
+  issuerRef:
+    kind: ClusterIssuer
+    name: local-ca
+  privateKey:
+    algorithm: ECDSA
+    encoding: PKCS1
+    size: 256
+    rotationPolicy: Always
+  secretName: "lsd-public-tls-server"
+  subject: {}
+  usages:
+  - server auth
 ---
 apiVersion: cert-manager.io/v1
 kind: Certificate

@@ -36,8 +36,7 @@ interface CommonTextareaFieldProps {
 }
 
 export interface TextareaFieldProps
-  extends CommonTextareaFieldProps,
-    ValidationRules<string> {}
+  extends CommonTextareaFieldProps, ValidationRules<string> {}
 
 export function TextareaField(props: TextareaFieldProps) {
   const control = useFieldControl<string>(props);

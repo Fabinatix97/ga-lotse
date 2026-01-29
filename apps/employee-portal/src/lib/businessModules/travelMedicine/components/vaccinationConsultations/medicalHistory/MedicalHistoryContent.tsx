@@ -53,6 +53,7 @@ export function MedicalHistoriesContent({
     return (
       !editMode && (
         <IconButton
+          autoFocus
           color="primary"
           variant="outlined"
           aria-label="Anamnese herunterladen"

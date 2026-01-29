@@ -80,7 +80,11 @@ export function DiagnosisForm({
       onSubmit={onSubmit}
     >
       {({ values }) => (
-        <FormPlus sx={{ height: "100%" }} aria-labelledby="diagnosis-title">
+        <FormPlus
+          autoFocus
+          sx={{ height: "100%" }}
+          aria-labelledby="diagnosis-title"
+        >
           <ConfirmLeaveDirtyFormEffect
             onSaveMutation={{
               mutationOptions: upsertDiagnosisOptions,

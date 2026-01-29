@@ -2694,6 +2694,44 @@
         "tags" : [ "DraftProtectionProcedure" ]
       }
     },
+    "/protection-procedures/draft/{id}/custodians-without-dob" : {
+      "post" : {
+        "operationId" : "addCustodianWithoutDateOfBirth",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/AddCustodianWithoutDateOfBirthRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/AddCustodianWithoutDateOfBirthResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Add custodian without date of birth to a draft measles protection procedure.",
+        "tags" : [ "DraftProtectionProcedure" ]
+      }
+    },
     "/protection-procedures/draft/{id}/facilities" : {
       "post" : {
         "operationId" : "addFacility",
@@ -3629,6 +3667,52 @@
         "tags" : [ "StatusTransition" ]
       }
     },
+    "/protection-procedures/{procedureId}/custodian-without-dob/{custodianId}/edit" : {
+      "post" : {
+        "operationId" : "editCustodianWithoutDateOfBirth",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "procedureId",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }, {
+          "in" : "path",
+          "name" : "custodianId",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/PatchCustodianWithoutDateOfBirthRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/CustodianWithoutDateOfBirthDetails"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Updates custodian without date of birth from a measles protection procedure.",
+        "tags" : [ "ProtectionProcedure" ]
+      }
+    },
     "/protection-procedures/{procedureId}/custodian/{custodianId}/edit" : {
       "post" : {
         "operationId" : "editCustodian",
@@ -4511,6 +4595,28 @@
           }
         }
       },
+      "AddCustodianWithoutDateOfBirthRequest" : {
+        "required" : [ "custodian" ],
+        "type" : "object",
+        "properties" : {
+          "custodian" : {
+            "$ref" : "#/components/schemas/CustodianWithoutDateOfBirthDetails"
+          }
+        }
+      },
+      "AddCustodianWithoutDateOfBirthResponse" : {
+        "required" : [ "custodian", "id" ],
+        "type" : "object",
+        "properties" : {
+          "custodian" : {
+            "$ref" : "#/components/schemas/CustodianWithoutDateOfBirthDetails"
+          },
+          "id" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }
+      },
       "AddFacilityFileStateRequest" : {
         "required" : [ "dataOrigin", "name" ],
         "type" : "object",
@@ -5019,7 +5125,7 @@
       },
       "AppointmentType" : {
         "type" : "string",
-        "enum" : [ "CONSULTATION", "VACCINATION", "REGULAR_EXAMINATION", "CAN_CHILD", "ENTRY_LEVEL", "SPECIAL_NEEDS", "PROOF_SUBMISSION", "HIV_STI_CONSULTATION", "SEX_WORK", "RESULTS_REVIEW", "OFFICIAL_MEDICAL_SERVICE_SHORT", "OFFICIAL_MEDICAL_SERVICE_LONG", "MEDS_ABROAD_CERTIFICATION", "PROSTITUTE_PROTECTION_CONSULTATION" ]
+        "enum" : [ "CONSULTATION", "VACCINATION", "REGULAR_EXAMINATION", "CAN_CHILD", "ENTRY_LEVEL", "SPECIAL_NEEDS", "PROOF_SUBMISSION", "HIV_STI_CONSULTATION", "SEX_WORK", "RESULTS_REVIEW", "OFFICIAL_MEDICAL_SERVICE_SHORT", "OFFICIAL_MEDICAL_SERVICE_LONG", "MEDS_ABROAD_CERTIFICATION", "PROSTITUTE_PROTECTION_CONSULTATION", "INFECTION_BRIEFING_NEW", "INFECTION_BRIEFING_REPLACEMENT" ]
       },
       "ApprovalRequest" : {
         "required" : [ "approvalRequestId", "createdAt", "createdBy", "operation", "reason", "status" ],
@@ -5193,7 +5299,7 @@
       },
       "BusinessModule" : {
         "type" : "string",
-        "enum" : [ "INSPECTION", "SCHOOL_ENTRY", "TRAVEL_MEDICINE", "MEASLES_PROTECTION", "STI_PROTECTION", "MEDICAL_REGISTRY", "DENTAL", "OFFICIAL_MEDICAL_SERVICE", "MEDS_ABROAD", "PROSTITUTE_PROTECTION" ]
+        "enum" : [ "INSPECTION", "SCHOOL_ENTRY", "TRAVEL_MEDICINE", "MEASLES_PROTECTION", "STI_PROTECTION", "MEDICAL_REGISTRY", "DENTAL", "OFFICIAL_MEDICAL_SERVICE", "MEDS_ABROAD", "PROSTITUTE_PROTECTION", "INFECTION_BRIEFING" ]
       },
       "BusinessProcedureInclusionStatus" : {
         "type" : "string",
@@ -5724,6 +5830,108 @@
           }
         }
       },
+      "CustodianWithoutDateOfBirth" : {
+        "required" : [ "custodianId", "firstName", "lastName" ],
+        "type" : "object",
+        "properties" : {
+          "address" : {
+            "oneOf" : [ {
+              "$ref" : "#/components/schemas/DomesticAddress"
+            }, {
+              "$ref" : "#/components/schemas/PostboxAddress"
+            } ]
+          },
+          "custodianId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "emailAddresses" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "format" : "email"
+            }
+          },
+          "firstName" : {
+            "minLength" : 1,
+            "type" : "string",
+            "description" : "First name of the custodian.",
+            "example" : "Mike"
+          },
+          "gender" : {
+            "$ref" : "#/components/schemas/Gender"
+          },
+          "lastName" : {
+            "minLength" : 1,
+            "type" : "string",
+            "description" : "Last name of the custodian.",
+            "example" : "Himmel"
+          },
+          "phoneNumbers" : {
+            "type" : "array",
+            "items" : {
+              "minLength" : 1,
+              "type" : "string"
+            }
+          },
+          "salutation" : {
+            "$ref" : "#/components/schemas/Salutation"
+          },
+          "title" : {
+            "type" : "string"
+          }
+        },
+        "description" : "Related to the affected person and required if the affected person is a minor and no date of birth is known."
+      },
+      "CustodianWithoutDateOfBirthDetails" : {
+        "required" : [ "firstName", "lastName" ],
+        "type" : "object",
+        "properties" : {
+          "address" : {
+            "oneOf" : [ {
+              "$ref" : "#/components/schemas/DomesticAddress"
+            }, {
+              "$ref" : "#/components/schemas/PostboxAddress"
+            } ]
+          },
+          "emailAddresses" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "format" : "email"
+            }
+          },
+          "firstName" : {
+            "minLength" : 1,
+            "type" : "string",
+            "description" : "First name of the custodian.",
+            "example" : "Mike"
+          },
+          "gender" : {
+            "$ref" : "#/components/schemas/Gender"
+          },
+          "lastName" : {
+            "minLength" : 1,
+            "type" : "string",
+            "description" : "Last name of the custodian.",
+            "example" : "Himmel"
+          },
+          "phoneNumbers" : {
+            "type" : "array",
+            "items" : {
+              "minLength" : 1,
+              "type" : "string"
+            }
+          },
+          "salutation" : {
+            "$ref" : "#/components/schemas/Salutation"
+          },
+          "title" : {
+            "type" : "string"
+          }
+        },
+        "description" : "Related to the affected person and required if the affected person is a minor and no date of birth is known."
+      },
       "DataOrigin" : {
         "type" : "string",
         "description" : "A list of possible origins of Persons and Facility in the Central Files. EDIT will only be set automatically on changes. EXTERNAL is for entries that come, e.g., from the citizen portal. IMPORT is reserved for automatic imports. MANUAL shall be set for every creation or connection done by an employee.",
@@ -5946,6 +6154,12 @@
               "type" : "array",
               "items" : {
                 "$ref" : "#/components/schemas/Custodian"
+              }
+            },
+            "custodiansWithoutDoB" : {
+              "type" : "array",
+              "items" : {
+                "$ref" : "#/components/schemas/CustodianWithoutDateOfBirth"
               }
             },
             "facility" : {
@@ -7770,6 +7984,12 @@
                 "$ref" : "#/components/schemas/Custodian"
               }
             },
+            "custodiansWithoutDoB" : {
+              "type" : "array",
+              "items" : {
+                "$ref" : "#/components/schemas/CustodianWithoutDateOfBirth"
+              }
+            },
             "facility" : {
               "$ref" : "#/components/schemas/Facility"
             },
@@ -7970,6 +8190,15 @@
         "properties" : {
           "custodianDetails" : {
             "$ref" : "#/components/schemas/CustodianDetails"
+          }
+        }
+      },
+      "PatchCustodianWithoutDateOfBirthRequest" : {
+        "required" : [ "custodianDetails" ],
+        "type" : "object",
+        "properties" : {
+          "custodianDetails" : {
+            "$ref" : "#/components/schemas/CustodianWithoutDateOfBirthDetails"
           }
         }
       },

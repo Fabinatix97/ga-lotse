@@ -63,6 +63,7 @@ export function UserTable() {
           </Sheet>
           {isLeader && (
             <Button
+              autoFocus
               startDecorator={<AddIcon />}
               sx={{
                 minWidth: "fit-content",

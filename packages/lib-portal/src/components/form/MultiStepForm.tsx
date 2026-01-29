@@ -7,16 +7,12 @@ import { FormikProps, FormikValues } from "formik";
 import {
   FunctionComponent,
   ReactNode,
-  RefObject,
   createContext,
   useCallback,
   useContext,
-  useEffect,
   useMemo,
-  useRef,
   useState,
 } from "react";
-import { isDefined } from "remeda";
 
 interface MultiStepFormContextProps {
   currentStep: number;
@@ -24,14 +20,6 @@ interface MultiStepFormContextProps {
   goForward: () => void;
   goBack: () => void;
   setStep: (step: number) => void;
-  /**
-   * Use `titleRef` to set focus on `PageTitle` when
-   *  - goForward
-   *  - goBack
-   *  - the form is initialized
-   * To set focus on other components, `tabindex="-1"` is also needed
-   */
-  titleRef?: RefObject<HTMLDivElement | null>;
 }
 
 const MultiStepFormContext = createContext<MultiStepFormContextProps>({
@@ -69,7 +57,6 @@ export function MultiStepForm<TValues extends FormikValues = FormikValues>({
   steps,
   children,
 }: MultiStepFormProps<TValues>) {
-  const titleRef = useRef<HTMLDivElement>(null);
   const [currentStep, setStep] = useState(1);
   const totalSteps = steps.length;
   const currentNode = steps[currentStep - 1];
@@ -79,18 +66,10 @@ export function MultiStepForm<TValues extends FormikValues = FormikValues>({
     );
   }
 
-  // Focus the title once the form is loaded
-  useEffect(() => {
-    if (currentStep === 1) {
-      focusTitle();
-    }
-  }, [currentStep]);
-
   const goForward = useCallback(
     function () {
       if (currentStep < steps.length) {
         setStep((prev) => prev + 1);
-        focusTitle();
       }
     },
     [currentStep, steps, setStep],
@@ -100,7 +79,6 @@ export function MultiStepForm<TValues extends FormikValues = FormikValues>({
     function () {
       if (currentStep > 1) {
         setStep((prev) => prev - 1);
-        focusTitle();
       }
     },
     [currentStep, setStep],
@@ -109,16 +87,9 @@ export function MultiStepForm<TValues extends FormikValues = FormikValues>({
   const setStepClamped = useCallback(
     function (step: number) {
       setStep(Math.max(1, Math.min(step, totalSteps)));
-      focusTitle();
     },
     [setStep, totalSteps],
   );
-
-  function focusTitle() {
-    if (isDefined(titleRef.current)) {
-      titleRef.current?.focus();
-    }
-  }
 
   const contextValue = useMemo(
     () => ({
@@ -127,7 +98,6 @@ export function MultiStepForm<TValues extends FormikValues = FormikValues>({
       currentStep,
       totalSteps,
       setStep: setStepClamped,
-      titleRef,
     }),
     [goForward, goBack, currentStep, totalSteps, setStepClamped],
   );

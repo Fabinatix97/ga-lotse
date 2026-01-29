@@ -49,8 +49,7 @@ function useConfirmLeaveDirtyFormEffect({
   }, [saveMutation, setOnBeforeNavigateProps]);
 }
 
-export interface ConfirmLeaveDirtyFormEffectProps
-  extends SettableConfirmationDialogOptions {
+export interface ConfirmLeaveDirtyFormEffectProps extends SettableConfirmationDialogOptions {
   saveMutation?: MutationBundle;
   // Allow overriding using formik's dirty state
   isDirty?: boolean;

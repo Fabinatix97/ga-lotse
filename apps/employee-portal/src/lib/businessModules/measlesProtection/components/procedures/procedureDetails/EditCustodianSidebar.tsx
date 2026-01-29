@@ -5,8 +5,9 @@
 
 "use client";
 
+import { isEmptyish } from "remeda";
+
 import {
-  DefaultPersonForm,
   DefaultPersonFormValues,
   PersonSidebarForm,
   SidebarWithFormRefProps,
@@ -18,9 +19,17 @@ import {
   useSidebarWithFormRef,
 } from "@eshg/lib-employee-portal";
 import { toDateString } from "@eshg/lib-portal";
-import { ApiCustodian } from "@eshg/measles-protection-api";
+import {
+  ApiCustodian,
+  ApiCustodianWithoutDateOfBirth,
+} from "@eshg/measles-protection-api";
 
-import { useEditCustodian } from "@/lib/businessModules/measlesProtection/api/mutations/procedures";
+import {
+  useEditCustodian,
+  useEditCustodianWithoutDateOfBirth,
+} from "@/lib/businessModules/measlesProtection/api/mutations/procedures";
+import { CustodianForm } from "@/lib/businessModules/measlesProtection/components/procedures/procedureDetails/CustodianForm";
+import { mapToAddCustodianWithoutDateOfBirthRequest } from "@/lib/businessModules/measlesProtection/shared/helpers";
 
 export function useEditCustodianSidebar(): UseSidebarWithFormRefResult<EditCustodianSidebarProps> {
   return useSidebarWithFormRef({ component: EditCustodianSidebar });
@@ -29,7 +38,7 @@ export function useEditCustodianSidebar(): UseSidebarWithFormRefResult<EditCusto
 interface EditCustodianSidebarProps extends SidebarWithFormRefProps {
   procedureId: string;
   custodianId: string;
-  custodian: ApiCustodian;
+  custodian: ApiCustodian | ApiCustodianWithoutDateOfBirth;
 }
 
 function EditCustodianSidebar({
@@ -40,50 +49,67 @@ function EditCustodianSidebar({
   onClose,
 }: Readonly<EditCustodianSidebarProps>) {
   const editCustodian = useEditCustodian();
+  const editCustodianWithoutDateOfBirth = useEditCustodianWithoutDateOfBirth();
 
   async function handleSubmit(values: DefaultPersonFormValues) {
-    const request = mapToPersonAddRequest(values);
-    await editCustodian.mutateAsync(
-      {
-        procedureId: procedureId,
-        custodianId: custodianId,
-        custodian: { ...request, address: request.contactAddress },
-      },
-      {
-        onSuccess: () => {
-          onClose(true);
+    if (isEmptyish(values.dateOfBirth)) {
+      const request = mapToAddCustodianWithoutDateOfBirthRequest(values);
+      await editCustodianWithoutDateOfBirth.mutateAsync(
+        {
+          procedureId: procedureId,
+          custodianId: custodianId,
+          custodian: { ...request.custodian },
         },
-      },
-    );
+        {
+          onSuccess: () => {
+            onClose(true);
+          },
+        },
+      );
+    } else {
+      const request = mapToPersonAddRequest(values);
+      await editCustodian.mutateAsync(
+        {
+          procedureId: procedureId,
+          custodianId: custodianId,
+          custodian: { ...request, address: request.contactAddress },
+        },
+        {
+          onSuccess: () => {
+            onClose(true);
+          },
+        },
+      );
+    }
   }
 
   return (
     <PersonSidebarForm
       mode="edit"
       title="PSB bearbeiten"
-      sidebarFormRef={formRef}
       initialValues={mapCustodianDetailsToForm(custodian)}
-      component={DefaultPersonForm}
-      addressRequired
-      onCancel={onClose}
+      component={CustodianForm}
+      sidebarFormRef={formRef}
+      onCancel={() => onClose(false)}
       onSubmit={handleSubmit}
     />
   );
 }
 
 function mapCustodianDetailsToForm(
-  person: ApiCustodian,
+  person: ApiCustodian | ApiCustodianWithoutDateOfBirth,
 ): DefaultPersonFormValues {
+  const hasDoB = "dateOfBirth" in person;
   return {
     salutation: person.salutation ?? "",
     title: person.title ?? "",
     firstName: person.firstName,
     lastName: person.lastName,
-    dateOfBirth: toDateString(person.dateOfBirth),
+    dateOfBirth: hasDoB ? toDateString(person.dateOfBirth) : "",
     gender: person.gender ?? "",
-    countryOfBirth: person.countryOfBirth ?? "",
-    nameAtBirth: person.nameAtBirth ?? "",
-    placeOfBirth: person.placeOfBirth ?? "",
+    countryOfBirth: hasDoB ? (person.countryOfBirth ?? "") : "",
+    nameAtBirth: hasDoB ? (person.nameAtBirth ?? "") : "",
+    placeOfBirth: hasDoB ? (person.placeOfBirth ?? "") : "",
     emailAddresses: normalizeListInputs(person.emailAddresses),
     phoneNumbers: normalizeListInputs(person.phoneNumbers),
     contactAddress: mapOptional(person.address, mapApiAddressToForm),

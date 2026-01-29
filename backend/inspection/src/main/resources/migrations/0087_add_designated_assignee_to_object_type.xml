@@ -1,0 +1,18 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<!--
+ Copyright 2026 SCOOP Software GmbH, cronn GmbH
+ SPDX-License-Identifier: AGPL-3.0-only
+-->
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="0087-01-add-designated-assignee-to-object-type" author="junie">
+        <comment>Add optional designated assignee (vorzuweisbar) to object_type</comment>
+                <addColumn tableName="object_type">
+            <column name="designated_assignee_id" type="UUID"/>
+        </addColumn>
+    </changeSet>
+
+</databaseChangeLog>

@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { differenceInMinutes, isPast } from "date-fns";
+import { differenceInMinutes } from "date-fns";
 
 import { formatDate, formatTime, isNonEmptyString } from "@eshg/lib-portal";
 import {
@@ -17,26 +17,6 @@ import { AddNewProcedureForm } from "../components/procedures/addNewProcedure/us
 import { EditProcedureDetailsDataForm } from "../components/procedures/details/sidebar/EditAdditionalDataSidebar";
 
 import { LANGUAGE_VALUE } from "./constants";
-
-export function validateDateTimeIsTodayOrFuture(value?: string) {
-  if (value && isPast(value)) {
-    return "Das Datum liegt in der Vergangenheit.";
-  }
-
-  return undefined;
-}
-
-export function isProcedureOpen(procedure: ApiProcedureDetails) {
-  return procedure.procedureStatus !== ApiProcedureStatus.Closed;
-}
-
-export function isProcedureClosed(procedure: ApiProcedureDetails) {
-  return !isProcedureOpen(procedure);
-}
-
-export function isProcedureAborted(procedure: ApiProcedureDetails) {
-  return procedure.procedureStatus === ApiProcedureStatus.Aborted;
-}
 
 export function isProcedureFinalized(procedure: ApiProcedureDetails) {
   return (

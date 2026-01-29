@@ -13,10 +13,13 @@ import static de.eshg.measlesprotection.persistence.Assertions.assertProcedureSt
 import de.cronn.commons.lang.StreamUtil;
 import de.eshg.base.centralfile.FacilityApi;
 import de.eshg.base.centralfile.PersonApi;
+import de.eshg.base.centralfile.PersonWithoutDateOfBirthApi;
 import de.eshg.base.centralfile.api.facility.AddFacilityFileStateResponse;
 import de.eshg.base.centralfile.api.person.AddPersonFileStateRequest;
 import de.eshg.base.centralfile.api.person.AddPersonFileStateResponse;
+import de.eshg.base.centralfile.api.person.AddPersonWithoutDateOfBirthRequest;
 import de.eshg.base.centralfile.api.person.GetPersonFileStateResponse;
+import de.eshg.base.centralfile.api.person.GetPersonWithoutDateOfBirthResponse;
 import de.eshg.lib.auditlog.AuditLogger;
 import de.eshg.lib.procedure.domain.model.FacilityType;
 import de.eshg.lib.procedure.domain.model.PersonType;
@@ -57,6 +60,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class DraftMeaslesProtectionService {
 
   private final PersonApi personApi;
+  private final PersonWithoutDateOfBirthApi personWithoutDateOfBirthApi;
   private final FacilityApi facilityApi;
   private final MeaslesProtectionProcedureRepository repository;
   private final Clock clock;
@@ -64,11 +68,13 @@ public class DraftMeaslesProtectionService {
 
   public DraftMeaslesProtectionService(
       PersonApi personApi,
+      PersonWithoutDateOfBirthApi personWithoutDateOfBirthApi,
       FacilityApi facilityApi,
       MeaslesProtectionProcedureRepository procedures,
       Clock clock,
       AuditLogger auditLogger) {
     this.personApi = personApi;
+    this.personWithoutDateOfBirthApi = personWithoutDateOfBirthApi;
     this.facilityApi = facilityApi;
     this.repository = procedures;
     this.clock = clock;
@@ -78,15 +84,15 @@ public class DraftMeaslesProtectionService {
   @Transactional
   public MeaslesProtectionProcedure addPerson(AddPersonFileStateRequest addPerson) {
     AddPersonFileStateResponse personFileStateResponse = personApi.addPersonFileState(addPerson);
-    Person person = createPerson(personFileStateResponse);
+    Person person = createPerson(personFileStateResponse.id(), PersonType.PATIENT);
     return saveProcedure(person);
   }
 
-  private static Person createPerson(AddPersonFileStateResponse personFileStateResponse) {
-    Person person = new Person();
-    person.setCentralFileStateId(personFileStateResponse.id());
-    person.setPersonType(PersonType.PATIENT);
-    return person;
+  private static Person createPerson(UUID centralFileStateId, PersonType personType) {
+    Person patient = new Person();
+    patient.setCentralFileStateId(centralFileStateId);
+    patient.setPersonType(personType);
+    return patient;
   }
 
   private MeaslesProtectionProcedure saveProcedure(Person person) {
@@ -114,10 +120,19 @@ public class DraftMeaslesProtectionService {
   public MeaslesProtectionProcedure addCustodian(UUID id, AddPersonFileStateRequest addCustodian) {
     MeaslesProtectionProcedure procedure = findDraftByExternalId(id);
     AddPersonFileStateResponse personFileStateResponse = personApi.addPersonFileState(addCustodian);
-    Person custodian = new Person();
-    custodian.setCentralFileStateId(personFileStateResponse.id());
-    custodian.setPersonType(PersonType.PARENT);
+    Person custodian = createPerson(personFileStateResponse.id(), PersonType.PARENT);
     procedure.addRelatedPerson(custodian);
+    return procedure;
+  }
+
+  @Transactional
+  public MeaslesProtectionProcedure addCustodianWithoutDateOfBirth(
+      UUID id, AddPersonWithoutDateOfBirthRequest addCustodian) {
+    MeaslesProtectionProcedure procedure = findDraftByExternalId(id);
+    GetPersonWithoutDateOfBirthResponse personFileStateResponse =
+        personWithoutDateOfBirthApi.addPersonWithoutDateOfBirth(addCustodian);
+    Person custodian = createPerson(personFileStateResponse.id(), PersonType.PARENT);
+    procedure.getCustodiansWithoutDob().add(custodian.getCentralFileStateId());
     return procedure;
   }
 
@@ -196,7 +211,9 @@ public class DraftMeaslesProtectionService {
     LocalDate dateOfBirth = personFileState.dateOfBirth();
     boolean adult =
         Period.between(dateOfBirth, LocalDate.now(clock)).getYears() >= AGE_OF_MATURITY_IN_YEARS;
-    if (!adult && procedure.getCustodianIdsFromCentralFile().isEmpty()) {
+    boolean hasNoCustodianWithDoB = procedure.getCustodianIdsFromCentralFile().isEmpty();
+    boolean hasNoCustodianWithoutDoB = procedure.getCustodiansWithoutDob().isEmpty();
+    if (!adult && hasNoCustodianWithDoB && hasNoCustodianWithoutDoB) {
       throw new BadRequestException(
           "%s: invalid procedure: an underage patient needs at least one custodian"
               .formatted(procedure.getExternalId()));

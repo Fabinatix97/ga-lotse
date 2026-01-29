@@ -15,7 +15,7 @@ import {
   SidebarContent,
   SidebarForm,
 } from "@eshg/lib-employee-portal";
-import { DetailsList } from "@eshg/lib-portal";
+import { DetailsList, formatPersonName } from "@eshg/lib-portal";
 import { ApiPersonLanguage } from "@eshg/prostitute-protection-api";
 
 import {
@@ -59,8 +59,19 @@ export function SummaryFormStep(props: FieldProps) {
 function SummaryForm({
   jumpToAppointmentSelection,
   jumpToPersonalData,
+  allAssignableUsers,
 }: FieldProps) {
   const { values } = useFormikContext<AddNewProcedureForm>();
+
+  const optionsByUserId = Object.fromEntries(
+    allAssignableUsers.map((o) => [o.userId, o]),
+  );
+
+  const consultantFullName = formatPersonName(
+    optionsByUserId[values.consultantId],
+    "-",
+  );
+
   const dateAndTime = formatAppointmentDate(values);
   const filteredLanguages = [...values.languages].filter(
     (lang) => lang !== ApiPersonLanguage.German,
@@ -93,6 +104,7 @@ function SummaryForm({
               : "-"
           }
         />
+        <DetailsItem label="Berater:in" value={consultantFullName} />
         <DetailsItem
           label="Datum und Zeit"
           value={`${dateAndTime}, ${values.duration} Min.`}

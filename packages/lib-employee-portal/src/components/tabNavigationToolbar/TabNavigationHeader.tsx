@@ -4,9 +4,13 @@
  */
 
 import { Stack, Typography, TypographyProps } from "@mui/joy";
-import { Children, useEffect, useRef } from "react";
+import { Children } from "react";
 
-import { RequiresChildren, useIsMobile } from "@eshg/lib-portal";
+import {
+  RequiresChildren,
+  useAutoTitleFocus,
+  useIsMobile,
+} from "@eshg/lib-portal";
 
 interface TabNavigationHeaderProps extends RequiresChildren {
   titleAsH1?: boolean;
@@ -14,17 +18,8 @@ interface TabNavigationHeaderProps extends RequiresChildren {
 
 export function TabNavigationHeader(props: TabNavigationHeaderProps) {
   const isMobile = useIsMobile();
-
   const firstChild = Children.toArray(props.children)[0];
-
-  const titleRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (props.titleAsH1) {
-      // Focus the title when the page is loaded
-      titleRef.current?.focus();
-    }
-  }, [props.titleAsH1]);
+  const titleRef = useAutoTitleFocus();
 
   return (
     <Stack

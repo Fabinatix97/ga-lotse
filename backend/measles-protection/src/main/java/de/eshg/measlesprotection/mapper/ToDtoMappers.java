@@ -8,12 +8,14 @@ package de.eshg.measlesprotection.mapper;
 import de.eshg.base.centralfile.api.facility.FacilityDetails;
 import de.eshg.base.centralfile.api.facility.GetFacilityFileStateResponse;
 import de.eshg.base.centralfile.api.person.GetPersonFileStateResponse;
+import de.eshg.base.centralfile.api.person.GetPersonWithoutDateOfBirthResponse;
 import de.eshg.lib.procedure.domain.model.ProcedureStatus;
 import de.eshg.lib.procedure.mapping.ProcedureMapper;
 import de.eshg.measlesprotection.api.AffectedPersonDto;
 import de.eshg.measlesprotection.api.AffectedPersonSyncDto;
 import de.eshg.measlesprotection.api.CustodianDto;
 import de.eshg.measlesprotection.api.CustodianSyncDto;
+import de.eshg.measlesprotection.api.CustodianWithoutDateOfBirthDto;
 import de.eshg.measlesprotection.api.DraftMeaslesProcedureDto;
 import de.eshg.measlesprotection.api.FacilityContactPersonDto;
 import de.eshg.measlesprotection.api.FacilityDto;
@@ -84,6 +86,21 @@ public final class ToDtoMappers {
             person.outdated() != null && person.outdated()));
   }
 
+  public static CustodianWithoutDateOfBirthDto toCustodianWithoutDoBDto(
+      GetPersonWithoutDateOfBirthResponse person) {
+
+    return new CustodianWithoutDateOfBirthDto(
+        person.id(),
+        person.firstName(),
+        person.lastName(),
+        person.phoneNumbers(),
+        person.emailAddresses(),
+        person.gender(),
+        person.salutation(),
+        person.title(),
+        person.contactAddress());
+  }
+
   private static FacilityDto toFacilityDtoNullable(FacilityData facilityData) {
     if (facilityData == null) {
       return null;
@@ -146,6 +163,9 @@ public final class ToDtoMappers {
           procedureDetailsData.createdAt(),
           toAffectedPersonDto(procedureDetailsData),
           procedureDetailsData.custodians().stream().map(ToDtoMappers::toCustodianDto).toList(),
+          procedureDetailsData.custodiansWithoutDob().stream()
+              .map(ToDtoMappers::toCustodianWithoutDoBDto)
+              .toList(),
           toFacilityDtoNullable(procedureDetailsData.facilityData()),
           procedureDetailsData.reportDataDto(),
           ProcedureMapper.toInterfaceType(procedureStatus),
@@ -165,6 +185,9 @@ public final class ToDtoMappers {
         detailsData.createdAt(),
         toAffectedPersonDto(detailsData),
         detailsData.custodians().stream().map(ToDtoMappers::toCustodianDto).toList(),
+        detailsData.custodiansWithoutDob().stream()
+            .map(ToDtoMappers::toCustodianWithoutDoBDto)
+            .toList(),
         toFacilityDto(detailsData.facilityData()),
         detailsData.reportDataDto(),
         detailsData.proofSubmissions(),

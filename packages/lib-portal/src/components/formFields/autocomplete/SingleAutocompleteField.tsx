@@ -14,8 +14,7 @@ import {
   useAutocompleteFieldContext,
 } from "./useAutocompleteFieldContext";
 
-export interface SingleAutocompleteFieldProps
-  extends CommonAutocompleteFieldProps<string> {
+export interface SingleAutocompleteFieldProps extends CommonAutocompleteFieldProps<string> {
   freeSolo?: boolean;
   popupIcon?: ReactNode;
   disabled?: boolean;

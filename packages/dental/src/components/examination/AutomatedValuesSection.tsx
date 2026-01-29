@@ -88,7 +88,7 @@ export function AutomatedValuesSection(props: AutomatedValuesSectionProps) {
       <DetailsList>
         <DetailsRow>
           <DetailsItem
-            label="Kariesrisiko"
+            label="Karieshochrisiko"
             value={formatOptional(hasDecayRisk, formatBoolean)}
             slotProps={{
               value: markAsWarningIf(hasDecayRisk === true),

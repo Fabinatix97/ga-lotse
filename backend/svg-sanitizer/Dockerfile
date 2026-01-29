@@ -1,7 +1,7 @@
 # Copyright 2026 cronn GmbH
 # SPDX-License-Identifier: Apache-2.0
 
-FROM node:22.21.0-alpine@sha256:bd26af08779f746650d95a2e4d653b0fd3c8030c44284b6b98d701c9b5eb66b9
+FROM node:22.22.0-alpine@sha256:a9cd9bac76cf2396abf14ff0d1c3671a8175fe577ce350e62ab0fc1678050176
 
 WORKDIR /app
 

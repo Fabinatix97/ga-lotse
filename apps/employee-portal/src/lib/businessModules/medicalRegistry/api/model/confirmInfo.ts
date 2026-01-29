@@ -29,8 +29,10 @@ export interface PersonCandidate extends ApiPersonCandidate {
   isNoMatchChoice: boolean;
 }
 
-export interface EmployeeChoice
-  extends Omit<ApiEmployeeChoice, "personCandidates"> {
+export interface EmployeeChoice extends Omit<
+  ApiEmployeeChoice,
+  "personCandidates"
+> {
   personCandidates: PersonCandidate[];
 }
 

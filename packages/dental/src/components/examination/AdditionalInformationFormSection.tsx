@@ -4,7 +4,9 @@
  */
 
 import { Divider, Grid, Stack } from "@mui/joy";
-import { useId } from "react";
+import { useFormikContext } from "formik";
+import { useEffect, useId } from "react";
+import { useShallow } from "zustand/react/shallow";
 
 import {
   ApiDentitionType,
@@ -27,6 +29,7 @@ import {
   ORAL_HYGIENE_STATUS,
   ORTHODONTIC_STATUS,
 } from "../../translations/examination";
+import { ExaminationFormValues } from "../../types/examination";
 
 import {
   ExaminationSection,
@@ -61,6 +64,17 @@ export function AdditionalInformationFormSection(
   const { isScreening, isFluoridation, isFluoridationConsentGiven } = props;
   const hasResult = useExaminationStore((store) => store.hasResult);
   const toggleDentition = useExaminationStore((state) => state.toggleDentition);
+  const dentitionType = useExaminationStore(
+    useShallow((state) => state.dentitionType),
+  );
+
+  const { values, setFieldValue } = useFormikContext<ExaminationFormValues>();
+
+  useEffect(() => {
+    if (isScreening && values.dentitionType !== dentitionType) {
+      void setFieldValue("dentitionType", dentitionType);
+    }
+  }, [isScreening, values, setFieldValue, dentitionType]);
 
   if (!(isFluoridation || isScreening)) {
     throw new Error("Either screening or fluoridation must be active");

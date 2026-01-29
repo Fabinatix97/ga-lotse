@@ -12,11 +12,10 @@ import {
 import { useTranslation } from "@/lib/i18n/client";
 import { useTranslateCountry } from "@/lib/i18n/useTranslateCountry";
 
-interface CountryFieldProps
-  extends Omit<
-    SingleAutocompleteFieldProps,
-    "options" | "validate" | "required"
-  > {
+interface CountryFieldProps extends Omit<
+  SingleAutocompleteFieldProps,
+  "options" | "validate" | "required"
+> {
   label: string;
   required?: string | undefined | true;
 }

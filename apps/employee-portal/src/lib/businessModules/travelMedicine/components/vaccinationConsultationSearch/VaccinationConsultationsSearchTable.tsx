@@ -71,6 +71,7 @@ export function VaccinationConsultationsSearchTable() {
         <ButtonBar
           left={
             <ToggleFilterButton
+              autoFocus
               isFilterVisible={filterVisible}
               activeFilters={activeFilters.length}
               onClick={toggleFilterVisible}

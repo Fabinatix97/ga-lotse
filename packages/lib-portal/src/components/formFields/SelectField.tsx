@@ -55,7 +55,9 @@ export interface GroupedOption {
 export interface SelectFieldProps<
   TMultiple extends boolean,
   TOptionLabel extends string | ReactNode = string,
-> extends FieldProps<SelectFieldValue<TMultiple>>,
+>
+  extends
+    FieldProps<SelectFieldValue<TMultiple>>,
     FieldComponentProps,
     FieldVariantProps {
   options?: SelectOption<string, TOptionLabel>[];

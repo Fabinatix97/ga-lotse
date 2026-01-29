@@ -15,6 +15,7 @@ interface SearchFilterProps {
   searchParamName: string;
   label: string;
   relevanceSortFieldName?: string;
+  autoFocus?: boolean;
 }
 
 export function SearchFilter({
@@ -22,6 +23,7 @@ export function SearchFilter({
   searchParamName,
   label,
   relevanceSortFieldName,
+  autoFocus,
 }: SearchFilterProps) {
   const searchParams = useSearchParams();
 
@@ -41,6 +43,7 @@ export function SearchFilter({
 
   return (
     <Input
+      autoFocus={autoFocus}
       variant="outlined"
       placeholder={label}
       aria-label={label}

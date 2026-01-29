@@ -9,7 +9,6 @@ import de.eshg.lib.common.CountryCode;
 import de.eshg.rest.service.error.BadRequestException;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.Set;
-import java.util.stream.Collectors;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -24,8 +23,8 @@ public class StreetController implements StreetApi {
   @Override
   public SearchStreetResponse searchStreet(
       String streetName, String houseNumber, String postalCode, CountryCode country) {
-    return StreetMapper.mapToSearchStreetResponse(
-        streetService.getData(
+    return new SearchStreetResponse(
+        streetService.getDistricts(
             streetName, StreetMapper.mapToHouseNumber(houseNumber), postalCode, country));
   }
 
@@ -53,17 +52,6 @@ public class StreetController implements StreetApi {
       } catch (IllegalArgumentException e) {
         throw new BadRequestException("Invalid house number format: %s".formatted(houseNumber));
       }
-    }
-
-    public static SearchStreetResponse mapToSearchStreetResponse(
-        Set<AdministrativeData> cityDistricts) {
-      return new SearchStreetResponse(
-          cityDistricts.stream().map(StreetMapper::mapToDistrictDto).collect(Collectors.toSet()));
-    }
-
-    public static DistrictDto mapToDistrictDto(AdministrativeData cityDistrict) {
-      return new DistrictDto(
-          cityDistrict.cityDistrict(), cityDistrict.districtName(), cityDistrict.municipalityKey());
     }
   }
 }

@@ -13,6 +13,7 @@ import {
   DefaultPersonFormValues,
   DetailsSection,
   PersonSidebar,
+  SearchCustodianForm,
   SidebarWithFormRefProps,
   defaultPersonFormValues,
   defaultSearchPersonValues,
@@ -32,7 +33,6 @@ import {
   useAddPersonWithoutDateOfBirthAsCustodian,
 } from "@/lib/businessModules/schoolEntry/api/mutations/schoolEntryApi";
 import { CustodianForm } from "@/lib/businessModules/schoolEntry/features/procedures/procedureDetails/CustodianForm";
-import { SearchCustodianForm } from "@/lib/businessModules/schoolEntry/features/procedures/procedureDetails/SearchCustodianForm";
 
 export function AddCustodianPanel(props: { procedure: ProcedureDetails }) {
   const personSidebar = useSidebarWithFormRef({

@@ -28,8 +28,10 @@ export type FieldArrayRenderExtendedProps = FieldArrayRenderProps & {
   setFallbackElementRef: (element: HTMLElement | null) => void;
 };
 
-interface FieldArrayWithFocusProps
-  extends Omit<FieldArrayConfig, "children" | "render"> {
+interface FieldArrayWithFocusProps extends Omit<
+  FieldArrayConfig,
+  "children" | "render"
+> {
   valueLength: number;
   children?: (props: FieldArrayRenderExtendedProps) => ReactNode;
   render?: (props: FieldArrayRenderExtendedProps) => ReactNode;

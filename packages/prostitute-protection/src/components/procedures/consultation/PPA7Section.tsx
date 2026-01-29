@@ -5,10 +5,7 @@
 
 import { CheckboxField, FieldSetControl } from "@eshg/lib-portal";
 
-import {
-  CONSULTATION_FIELD_NAME,
-  OPTIONAL_TAG,
-} from "../../../shared/constants";
+import { CONSULTATION_FIELD_NAME } from "../../../shared/constants";
 
 import { Section, SectionColumn, SectionGridContainer } from "./Section";
 
@@ -20,35 +17,35 @@ export function PPA7Section() {
           <SectionColumn>
             <CheckboxField
               name="legalAdvices"
-              label={CONSULTATION_FIELD_NAME.legalAdvices}
+              label={`${CONSULTATION_FIELD_NAME.legalAdvices} *`}
             />
             <CheckboxField
               name="healthAndSocialInsurance"
-              label={CONSULTATION_FIELD_NAME.healthAndSocialInsurance}
+              label={`${CONSULTATION_FIELD_NAME.healthAndSocialInsurance} *`}
             />
             <CheckboxField
               name="consultingServices"
-              label={CONSULTATION_FIELD_NAME.consultingServices}
+              label={`${CONSULTATION_FIELD_NAME.consultingServices} *`}
             />
           </SectionColumn>
           <SectionColumn>
             <CheckboxField
               name="emergencyHelp"
-              label={CONSULTATION_FIELD_NAME.emergencyHelp}
+              label={`${CONSULTATION_FIELD_NAME.emergencyHelp} *`}
             />
             <CheckboxField
               name="taxLiability"
-              label={CONSULTATION_FIELD_NAME.taxLiability}
+              label={`${CONSULTATION_FIELD_NAME.taxLiability} *`}
             />
           </SectionColumn>
           <SectionColumn>
             <CheckboxField
               name="informationMaterial"
-              label={`${CONSULTATION_FIELD_NAME.informationMaterial} ${OPTIONAL_TAG}`}
+              label={CONSULTATION_FIELD_NAME.informationMaterial}
             />
             <CheckboxField
               name="predicament"
-              label={`${CONSULTATION_FIELD_NAME.predicament} ${OPTIONAL_TAG}`}
+              label={CONSULTATION_FIELD_NAME.predicament}
             />
           </SectionColumn>
         </SectionGridContainer>

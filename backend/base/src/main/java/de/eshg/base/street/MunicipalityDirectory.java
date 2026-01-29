@@ -5,6 +5,7 @@
 
 package de.eshg.base.street;
 
+import de.cronn.commons.lang.StreamUtil;
 import de.eshg.base.config.DepartmentConfigurationService;
 import de.eshg.base.street.csv.CsvMapper;
 import de.eshg.base.street.csv.MunicipalityDirectoryCsvEntry;
@@ -12,6 +13,7 @@ import de.eshg.persistence.TransactionHelper;
 import jakarta.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import org.apache.commons.lang3.Range;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
@@ -61,15 +63,14 @@ public class MunicipalityDirectory {
     return entries.stream().map(DirectoryEntry::from).toList();
   }
 
-  public AdministrativeData getAdministrativeDataBy(String postalCode) {
+  public Set<AdministrativeData> getAdministrativeDataBy(String postalCode) {
     Assert.notNull(postalCode, "postalCode must not be null");
     return entries.stream()
         .filter(directoryEntry -> directoryEntry.range.contains(postalCode))
-        .findFirst()
         .map(
             directoryEntry ->
                 new AdministrativeData(directoryEntry.key, directoryEntry.municipality))
-        .orElse(new AdministrativeData(null, null));
+        .collect(StreamUtil.toLinkedHashSet());
   }
 
   public record AdministrativeData(String municipalityKey, String municipality) {}

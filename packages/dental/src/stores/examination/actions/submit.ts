@@ -112,11 +112,12 @@ function collectInvalidFields(
 function resolveMainResult(
   toothResult: ToothResult,
 ): ApiMainResult | undefined {
-  if (!isValidMainResult(toothResult.value)) {
+  const result = toothResult.value.toUpperCase();
+  if (!isValidMainResult(result)) {
     return undefined;
   }
 
-  return toothResult.value;
+  return result;
 }
 
 function resolveSecondaryResult(

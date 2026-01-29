@@ -15,29 +15,38 @@ import de.eshg.prostituteprotection.domain.data.AppointmentData;
 import de.eshg.prostituteprotection.domain.model.AppointmentBookingType;
 import de.eshg.prostituteprotection.domain.model.UserDefinedAppointment;
 import java.time.Instant;
+import java.util.UUID;
 
 public class AppointmentMapper {
   private AppointmentMapper() {}
 
   public static AppointmentData toDataType(CreateProstituteProtectionProcedureRequest request) {
     return toDataType(
-        request.appointmentBookingType(), request.appointmentStart(), request.durationInMinutes());
+        request.appointmentBookingType(),
+        request.appointmentStart(),
+        request.durationInMinutes(),
+        request.consultantId());
   }
 
   public static AppointmentData toDataType(UpdateProstituteProtectionProcedureRequest request) {
     return toDataType(
-        request.appointmentBookingType(), request.appointmentStart(), request.durationInMinutes());
+        request.appointmentBookingType(),
+        request.appointmentStart(),
+        request.durationInMinutes(),
+        request.consultantId());
   }
 
   private static AppointmentData toDataType(
       AppointmentBookingTypeDto appointmentBookingTypeDto,
       Instant appointmentStart,
-      Integer appointmentDurationInMinutes) {
+      Integer appointmentDurationInMinutes,
+      UUID consultantId) {
     return new AppointmentData(
         mapToDomain(appointmentBookingTypeDto),
         AppointmentType.PROSTITUTE_PROTECTION_CONSULTATION,
         appointmentStart,
-        appointmentDurationInMinutes);
+        appointmentDurationInMinutes,
+        consultantId);
   }
 
   public static AppointmentDto toInterfaceType(

@@ -85,8 +85,10 @@ export function TextTemplatesSidebar({
     </>
   );
 }
-interface TextTemplatesSidebarContentProps
-  extends Pick<TextTemplatesSidebarProps, "context"> {
+interface TextTemplatesSidebarContentProps extends Pick<
+  TextTemplatesSidebarProps,
+  "context"
+> {
   appendText: AppendText;
   accordionsRef: MutableRefObject<HTMLDivElement | null>;
 }

@@ -59,6 +59,10 @@ public class ConsultationCertificateGenerator extends AbstractGenerator {
         getFormattedDate(consultationDate),
         getFormattedDate(validToDate),
         procedure.getPersonalData().getDocumentType().getDescription(),
+        procedure.getConsultation().isDiseasePrevention(),
+        procedure.getConsultation().isBirthControl(),
+        procedure.getConsultation().isPregnancy(),
+        procedure.getConsultation().isAlcoholAndDrugUsage(),
         procedure.getConsultation().isReferral(),
         procedure.getConsultation().isClearing(),
         getDepartmentData());

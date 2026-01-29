@@ -38,9 +38,6 @@ public class Consultation extends GenericEntity<Long> {
   private boolean alcoholAndDrugUsage;
   private boolean referral;
 
-  private boolean supervisedConsultation;
-  private String remark;
-
   @JdbcType(PostgreSQLEnumJdbcType.class)
   private Language languageOfConsultation;
 
@@ -167,22 +164,6 @@ public class Consultation extends GenericEntity<Long> {
 
   public void setProcedure(ProstituteProtectionProcedure procedure) {
     this.procedure = procedure;
-  }
-
-  public boolean isSupervisedConsultation() {
-    return supervisedConsultation;
-  }
-
-  public void setSupervisedConsultation(boolean supervisedConsultation) {
-    this.supervisedConsultation = supervisedConsultation;
-  }
-
-  public String getRemark() {
-    return remark;
-  }
-
-  public void setRemark(String remark) {
-    this.remark = remark;
   }
 
   public Language getLanguageOfConsultation() {

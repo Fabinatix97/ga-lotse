@@ -160,7 +160,9 @@ function JawRow(props: ReversableContainerProps) {
       }
       gap={3}
       flexWrap="wrap"
-      alignItems="center"
+      alignItems={
+        isMobile ? "center" : props.reverse ? "flex-start" : "flex-end"
+      }
       justifyContent="center"
       divider={
         <QuadrantDivider

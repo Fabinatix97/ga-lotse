@@ -6,8 +6,7 @@
 "use client";
 
 import { Formik } from "formik";
-import { useEffect, useId, useRef, useState } from "react";
-import { isDefined } from "remeda";
+import { useId, useState } from "react";
 
 import { FormPlus } from "@eshg/lib-portal";
 import {
@@ -41,25 +40,9 @@ export default function CitizenOmsEntryPage() {
 
   const { mutateAsync: submitAnamnesis } = usePostAnamnesisCitizen();
 
-  const titleRef = useRef<HTMLDivElement>(null);
-
-  function focusTitle() {
-    if (isDefined(titleRef.current)) {
-      titleRef.current?.focus();
-    }
-  }
-
-  // Focus the title once the form is loaded
-  useEffect(() => {
-    if (stepIndex === 0) {
-      focusTitle();
-    }
-  }, [stepIndex]);
-
   async function handleSubmit(anamnesis: AnamnesisFormValues) {
     if (stepIndex < totalSteps - 1) {
       setStepIndex(stepIndex + 1);
-      focusTitle();
       return;
     }
     await submitAnamnesis({
@@ -73,7 +56,6 @@ export default function CitizenOmsEntryPage() {
   return (
     <PageContent>
       <PageTitle
-        titleRef={titleRef}
         titleId={titleId}
         toolbar={
           <StepCounter
@@ -88,12 +70,12 @@ export default function CitizenOmsEntryPage() {
         {t("common.title")}
       </PageTitle>
       <Formik initialValues={INITIAL_VALUES} onSubmit={handleSubmit}>
-        <FormPlus aria-labelledby={titleId} aria-describedby={stepperTitleId}>
-          <AnamnesisWrapper
-            stepIndex={stepIndex}
-            setStepIndex={setStepIndex}
-            focusTitle={focusTitle}
-          />
+        <FormPlus
+          autoFocus
+          aria-labelledby={titleId}
+          aria-describedby={stepperTitleId}
+        >
+          <AnamnesisWrapper stepIndex={stepIndex} setStepIndex={setStepIndex} />
         </FormPlus>
       </Formik>
     </PageContent>

@@ -28,7 +28,7 @@ export default async (workspaceDir) => {
       "package.json": (manifest) => {
         return {
           ...manifest,
-          packageManager: "pnpm@10.23.0",
+          packageManager: "pnpm@10.28.0",
           devEngines: {
             runtime: {
               name: "node",
@@ -37,7 +37,7 @@ export default async (workspaceDir) => {
             },
             packageManager: {
               name: "pnpm",
-              version: ">=10.21 <11",
+              version: ">=10.26 <11",
               onFail: "error",
             },
           },

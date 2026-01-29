@@ -24,8 +24,7 @@ import { Procedure } from "@/lib/businessModules/schoolEntry/api/models/Procedur
 import { useUpdateProcedureInvitationIsSentInBulk } from "@/lib/businessModules/schoolEntry/api/mutations/schoolEntryApi";
 import { ProcedureIdVersion } from "@/lib/businessModules/schoolEntry/shared/types";
 
-interface UpdateProceduresInvitationSentSidebarProps
-  extends SidebarWithFormRefProps {
+interface UpdateProceduresInvitationSentSidebarProps extends SidebarWithFormRefProps {
   procedures: Procedure[];
 }
 
@@ -68,8 +67,7 @@ function UpdateProceduresInvitationSentSidebar(
   );
 }
 
-interface EmbeddedSidebarFormProps
-  extends UpdateProceduresInvitationSentSidebarProps {
+interface EmbeddedSidebarFormProps extends UpdateProceduresInvitationSentSidebarProps {
   isSuccess: boolean;
   data: ApiUpdateProceduresBulkResponse | undefined;
   proceduresWithAppointment: Procedure[];

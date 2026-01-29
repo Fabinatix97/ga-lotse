@@ -93,7 +93,12 @@ export function EvaluationDetailsTable(props: EvaluationDetailsTableProps) {
       fullHeight
       controls={
         <ButtonBar
-          left={<ToggleFilterButton {...filterSettings.filterButtonProps} />}
+          left={
+            <ToggleFilterButton
+              autoFocus
+              {...filterSettings.filterButtonProps}
+            />
+          }
         />
       }
       filterSettings={

@@ -44,7 +44,7 @@ export function DecayHistorySidebar(props: DecayHistorySidebarProps) {
       <SidebarContent title="Historie automatisierter Werte">
         <Stack gap={3}>
           <DecayHistoryTable
-            title="Kariesrisiko"
+            title="Karieshochrisiko"
             valueColumnName="Risiko"
             rows={decayRiskRows}
           />

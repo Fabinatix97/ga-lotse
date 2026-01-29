@@ -7,7 +7,9 @@
 
 import { Typography } from "@mui/joy";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { useEffect, useId, useRef } from "react";
+import { useId } from "react";
+
+import { useAutoTitleFocus } from "@eshg/lib-portal";
 
 import { useTranslation } from "@/lib/i18n/client";
 import { usePublicDepartmentApi } from "@/lib/shared/api/clients";
@@ -27,13 +29,7 @@ export default function CitizenHomePage() {
     getDepartmentInfoQuery(departmentApi),
   );
   const titleId = useId();
-
-  const titleRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    // Focus the title when the page is loaded
-    titleRef.current?.focus();
-  }, []);
+  const titleRef = useAutoTitleFocus();
 
   return (
     <PageLayout banner="private">

@@ -1,0 +1,77 @@
+{
+  "common": {
+    "appointment_booking_title": "Termin buchen",
+    "required_title": "* Pflichtfeld",
+    "current_step": "Schritt {{currentStep}} von {{totalSteps}}",
+    "overview_title": "Terminübersicht",
+    "overview_header": "Prostituiertenschutzgesetz Beratung",
+    "yes": "Ja",
+    "no": "Nein",
+    "cancel": "Abbrechen",
+    "continue": "Weiter",
+    "back": "Zurück",
+    "submit": "Termin buchen",
+    "create_appointment": "Zur Terminvereinbarung"
+  },
+  "personal_data": {
+    "fields": {
+      "alias": "Alias",
+      "alias_required": "Bitte geben Sie einen Alias ein.",
+      "application_type": "Beratungstyp",
+      "application_type_required": "Bitte wählen Sie einen Beratungstyp aus.",
+      "other_known_languages": "Weitere Sprachen",
+      "other_known_languages_required": "Bitte geben Sie Ihre weiteren Sprachkenntnisse an.",
+      "sufficient_german_skills": "Reichen Ihre Kenntnisse der deutschen Sprache aus?",
+      "sufficient_german_skills_required": "Bitte geben Sie an, ob Ihre Deutschkenntnisse ausreichend sind."
+    },
+    "title": "Angaben",
+    "translator_required_text": "Sollten Ihre Deutschkenntnisse nicht ausreichen, bringen Sie bitte einen Dolmetscher zu dem Beratungsgespräch mit.",
+    "no_translator_text": "Falls Ihnen kein Dolmetscher zur Verfügung steht, vereinbaren Sie bitte telefonisch einen Termin."
+  },
+  "time_slot": {
+    "title": "Verfügbare Termine"
+  },
+  "submit_success": "Termin erfolgreich gebucht",
+  "submit_error": "Terminbuchung fehlgeschlagen",
+  "appointment_calendar": {
+    "required_appointment": "Bitte einen Termin auswählen",
+    "required_day": "Bitte einen Tag auswählen",
+    "month_selection": "Termin Kalendermonat",
+    "next_month": "zum nächsten Monat",
+    "prev_month": "zum vorherigen Monat",
+    "list_label": "Verfügbare Uhrzeiten *",
+    "calendar_label": "Datum *",
+    "available": "verfügbar",
+    "no_appointments_available": "Derzeit sind keine Termine verfügbar",
+    "try_later": "Wir schalten in Kürze Termine frei. Bitte versuchen Sie es zu einem späteren Zeitpunkt erneut",
+    "back_to_overview": "Zurück zur Übersicht"
+  },
+  "options": {
+    "language": {
+      "BULGARIAN": "Bulgarisch",
+      "CHINESE": "Chinesisch",
+      "GERMAN": "Deutsch",
+      "ENGLISH": "Englisch",
+      "FRENCH": "Französisch",
+      "GREEK": "Griechisch",
+      "ITALIAN": "Italienisch",
+      "POLISH": "Polnisch",
+      "PORTUGUESE": "Portugiesisch",
+      "ROMANIAN": "Rumänisch",
+      "RUSSIAN": "Russisch",
+      "SERBO_CROATIAN": "Serbokroatisch",
+      "SLOVAKIAN": "Slowakisch",
+      "SPANISH": "Spanisch",
+      "THAI": "Thai",
+      "CZECH": "Tschechisch",
+      "TURKISH": "Türkisch",
+      "UKRAINIAN": "Ukrainisch",
+      "HUNGARIAN": "Ungarisch",
+      "UNKNOWN": "Unbekannt"
+    },
+    "consultation_type": {
+      "INITIAL": "Erstberatung",
+      "FOLLOW_UP": "Folgeberatung"
+    }
+  }
+}

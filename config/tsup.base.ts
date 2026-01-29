@@ -3,11 +3,15 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import * as fs from "node:fs";
+import * as path from "node:path";
 import { type Options, defineConfig } from "tsup";
+
+const outDir = "./build/lib";
 
 function defineBaseOptions(watch: boolean, isLegacyPackage = false): Options {
   return {
-    outDir: "./build/lib",
+    outDir: outDir,
     format: ["esm"],
     platform: "neutral",
     clean: !watch, // cleaning in watch mode breaks HMR
@@ -41,6 +45,25 @@ interface LibConfigOptions {
 
 type ConfigFn = (options: Options) => Options;
 
+const USE_CLIENT_DIRECTIVE = '"use client";';
+
+function addUseClientDirective(dir: string) {
+  const files = fs.readdirSync(dir, {
+    recursive: true,
+    withFileTypes: true,
+  });
+
+  files.forEach((file) => {
+    if (file.isFile() && file.name.endsWith(".js")) {
+      const fullPath = path.join(file.parentPath, file.name);
+      const content = fs.readFileSync(fullPath, "utf-8");
+      if (!content.startsWith(USE_CLIENT_DIRECTIVE)) {
+        fs.writeFileSync(fullPath, `${USE_CLIENT_DIRECTIVE}\n${content}`);
+      }
+    }
+  });
+}
+
 export function defineLibConfig(libOptions: LibConfigOptions): ConfigFn {
   return (options: Options) => ({
     ...defineBaseOptions(isWatch(options)),
@@ -49,7 +72,14 @@ export function defineLibConfig(libOptions: LibConfigOptions): ConfigFn {
       excludeUnitTestsPattern,
     ],
     platform: libOptions.platform,
-    banner: libOptions.isClientLib ? { js: '"use client";' } : undefined,
+    onSuccess:
+      libOptions.isClientLib && isWatch(options)
+        ? async () => addUseClientDirective(options.outDir ?? outDir)
+        : undefined,
+    banner:
+      libOptions.isClientLib && !isWatch(options)
+        ? { js: USE_CLIENT_DIRECTIVE }
+        : undefined,
     ...options,
   });
 }

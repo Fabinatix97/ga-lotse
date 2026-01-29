@@ -21,11 +21,13 @@ import de.eshg.measlesprotection.api.ReportDataDto;
 import de.eshg.measlesprotection.api.ReportingReasonDto;
 import de.eshg.measlesprotection.api.RoleStatusDto;
 import de.eshg.measlesprotection.api.draft.AddCustodianRequest;
+import de.eshg.measlesprotection.api.draft.AddCustodianWithoutDateOfBirthRequest;
 import de.eshg.measlesprotection.api.draft.AddFacilityRequest;
 import de.eshg.measlesprotection.api.draft.AffectedPersonDetailsDto;
 import de.eshg.measlesprotection.api.draft.CreatePersonRequest;
 import de.eshg.measlesprotection.api.draft.CreatePersonResponse;
 import de.eshg.measlesprotection.api.draft.CustodianDetailsDto;
+import de.eshg.measlesprotection.api.draft.CustodianWithoutDateOfBirthDetailsDto;
 import de.eshg.measlesprotection.api.draft.OpenProcedureRequest;
 import de.eshg.measlesprotection.api.draft.OpenProcedureResponse;
 import de.eshg.measlesprotection.persistence.db.MeaslesProtectionProcedure;
@@ -84,7 +86,11 @@ public class ProtectionProcedurePopulator extends BasePopulator<OpenProcedureRes
     CreatePersonResponse createPersonResponse = createPerson(faker, address);
     UUID procedureId = createPersonResponse.id();
 
-    addCustodian(faker, procedureId, domesticAddress(address));
+    if (faker.random().nextDouble() < 0.8) {
+      addCustodian(faker, procedureId, domesticAddress(address));
+    } else {
+      addCustodianWithoutDateOfBirth(faker, procedureId, domesticAddress(address));
+    }
     addFacility(faker, procedureId);
     return openProcedure(procedureId);
   }
@@ -133,6 +139,24 @@ public class ProtectionProcedurePopulator extends BasePopulator<OpenProcedureRes
             address);
     draftProtectionProcedureController.addCustodian(
         procedureId, new AddCustodianRequest(custodian));
+  }
+
+  private void addCustodianWithoutDateOfBirth(Faker faker, UUID procedureId, AddressDto address) {
+    Name name = faker.name();
+    String firstName = name.firstName();
+    String lastName = name.lastName();
+    CustodianWithoutDateOfBirthDetailsDto custodian =
+        new CustodianWithoutDateOfBirthDetailsDto(
+            firstName,
+            lastName,
+            List.of(phoneNumber(faker)),
+            List.of(faker.internet().emailAddress()),
+            GenderDto.NOT_SPECIFIED,
+            SalutationDto.NOT_SPECIFIED,
+            null,
+            address);
+    draftProtectionProcedureController.addCustodianWithoutDateOfBirth(
+        procedureId, new AddCustodianWithoutDateOfBirthRequest(custodian));
   }
 
   private void addFacility(Faker faker, UUID procedureId) {

@@ -10,8 +10,10 @@ import {
   isEmptyString,
 } from "@eshg/lib-portal";
 
-interface CountryFieldProps
-  extends Omit<SingleAutocompleteFieldProps, "options" | "validate"> {
+interface CountryFieldProps extends Omit<
+  SingleAutocompleteFieldProps,
+  "options" | "validate"
+> {
   label: string;
 }
 

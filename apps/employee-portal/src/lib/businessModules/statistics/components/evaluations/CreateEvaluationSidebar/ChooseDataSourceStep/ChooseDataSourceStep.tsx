@@ -27,8 +27,7 @@ export interface DataSource {
   attributes: CategorizedFlatAttribute[];
 }
 
-interface ChooseDataSourceStepProps
-  extends SidebarStepContentProps<ChooseDataSourceStepFormModel> {
+interface ChooseDataSourceStepProps extends SidebarStepContentProps<ChooseDataSourceStepFormModel> {
   dataSources: DataSource[];
 }
 

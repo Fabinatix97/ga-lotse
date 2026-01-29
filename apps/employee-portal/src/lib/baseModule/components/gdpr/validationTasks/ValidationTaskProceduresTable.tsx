@@ -14,6 +14,7 @@ import {
   ActionsMenu,
   ButtonBar,
   DataTable,
+  PROCEDURE_STATUS_NAMES,
   PROCEDURE_TYPE_NAMES,
   TablePage,
   TableSheet,
@@ -32,7 +33,6 @@ import {
 
 import { useCloseValidationTaskDialog } from "@/lib/baseModule/components/gdpr/validationTasks/UseCloseValidationTaskDialog";
 import { resolveProcedureDetailsRoute } from "@/lib/baseModule/moduleRegister/routeResolver";
-import { PROCEDURE_STATUS } from "@/lib/businessModules/schoolEntry/features/procedures/translations";
 import {
   useAddDownloadPackage,
   useDeleteBusinessProcedure,
@@ -146,7 +146,7 @@ const procedureStatusColor = {
 function ProcedureStatus({ status }: { status: ApiProcedureStatus }) {
   return (
     <Chip variant="soft" size="md" color={procedureStatusColor[status]}>
-      {PROCEDURE_STATUS[status]}
+      {PROCEDURE_STATUS_NAMES[status]}
     </Chip>
   );
 }

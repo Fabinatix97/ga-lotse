@@ -106,6 +106,7 @@ export function InformationStatementsTable({
           <ButtonBar
             right={
               <Button
+                autoFocus
                 sx={{ py: 1 / 2 }}
                 startDecorator={<AddOutlined />}
                 data-testid="add-information-statement"

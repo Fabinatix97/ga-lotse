@@ -27,8 +27,7 @@ export function useUpdateEvaluationDataBasisSidebar(): UseSidebarWithFormRefResu
   });
 }
 
-interface UpdateEvaluationDataBasisSidebarProps
-  extends SidebarWithFormRefProps {
+interface UpdateEvaluationDataBasisSidebarProps extends SidebarWithFormRefProps {
   initialValues: UpdateEvaluationDataBasisFormModel;
   evaluationId: string;
 }

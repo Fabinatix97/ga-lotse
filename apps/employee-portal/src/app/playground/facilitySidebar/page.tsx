@@ -22,7 +22,10 @@ import {
   FacilitySidebar,
   FacilitySidebarProps,
 } from "@/lib/shared/components/facilitySidebar/FacilitySidebar";
-import { DefaultFacilityFormValues } from "@/lib/shared/components/facilitySidebar/create/FacilityForm";
+import {
+  DefaultFacilityFormValues,
+  getInitialFacilityFormValues,
+} from "@/lib/shared/components/facilitySidebar/create/FacilityForm";
 import { DefaultFacilitySearchForm } from "@/lib/shared/components/facilitySidebar/search/DefaultFacilitySearchForm";
 import { FacilitySearchFormValues } from "@/lib/shared/components/facilitySidebar/search/FacilitySearchForm";
 
@@ -68,21 +71,24 @@ export default function FacilitySidebarPlaygroundPage() {
 }
 
 function ConfiguredDefaultFacilitySidebar(props: SidebarWithFormRefProps) {
-  const facilitySidebarProps: FacilitySidebarProps<DefaultFacilityFormValues> =
-    {
-      title: "Neuen Vorgang anlegen",
-      onCreateNew: (values) => {
-        // eslint-disable-next-line no-console
-        console.log(values);
-        return Promise.resolve();
-      },
-      onSelect: (values) => {
-        // eslint-disable-next-line no-console
-        console.log(values);
-        return Promise.resolve();
-      },
-      ...props,
-    };
+  const facilitySidebarProps: FacilitySidebarProps<
+    FacilitySearchFormValues,
+    DefaultFacilityFormValues
+  > = {
+    title: "Neuen Vorgang anlegen",
+    onCreateNew: (values) => {
+      // eslint-disable-next-line no-console
+      console.log(values);
+      return Promise.resolve();
+    },
+    onSelect: (values) => {
+      // eslint-disable-next-line no-console
+      console.log(values);
+      return Promise.resolve();
+    },
+    getInitialCreateFormValues: getInitialFacilityFormValues,
+    ...props,
+  };
 
   return <FacilitySidebar {...facilitySidebarProps} />;
 }
@@ -90,7 +96,10 @@ function ConfiguredDefaultFacilitySidebar(props: SidebarWithFormRefProps) {
 function ConfiguredExtraSearchInputsFacilitySidebar(
   props: SidebarWithFormRefProps,
 ) {
-  const facilitySidebarProps: FacilitySidebarProps<ExtendedSearchFormValues> = {
+  const facilitySidebarProps: FacilitySidebarProps<
+    ExtendedSearchFormValues,
+    DefaultFacilityFormValues
+  > = {
     title: "Erweiterten Vorgang anlegen",
     onCreateNew: (values) => {
       // eslint-disable-next-line no-console
@@ -106,6 +115,7 @@ function ConfiguredExtraSearchInputsFacilitySidebar(
       name: "",
       objectType: "",
     },
+    getInitialCreateFormValues: getInitialFacilityFormValues,
     searchFormComponent: ExtendedSearchForm,
     ...props,
   };
@@ -116,24 +126,26 @@ function ConfiguredExtraSearchInputsFacilitySidebar(
 function ConfiguredImportFromOsmFacilitySidebar(
   props: SidebarWithFormRefProps,
 ) {
-  const facilitySidebarProps: FacilitySidebarProps<DefaultFacilityFormValues> =
-    {
-      title: "OSM Einrichtung Importieren",
-      onCreateNew: (values) => {
-        // eslint-disable-next-line no-console
-        console.log(values);
-        return Promise.resolve();
-      },
-      onSelect: (values) => {
-        // eslint-disable-next-line no-console
-        console.log(values);
-        return Promise.resolve();
-      },
-      initialSearchInputs: {
-        name: "Name der importierten Einrichtung",
-      },
-      getInitialCreateInputs: (inputs) => ({
-        ...inputs,
+  const facilitySidebarProps: FacilitySidebarProps<
+    FacilitySearchFormValues,
+    DefaultFacilityFormValues
+  > = {
+    title: "OSM Einrichtung Importieren",
+    onCreateNew: (values) => {
+      // eslint-disable-next-line no-console
+      console.log(values);
+      return Promise.resolve();
+    },
+    onSelect: (values) => {
+      // eslint-disable-next-line no-console
+      console.log(values);
+      return Promise.resolve();
+    },
+    initialSearchInputs: {
+      name: "Name der importierten Einrichtung",
+    },
+    getInitialCreateFormValues: (searchValues) =>
+      getInitialFacilityFormValues(searchValues, false, {
         contactAddress: {
           ...createEmptyAddress(),
           street: "Portlandweg",
@@ -142,24 +154,24 @@ function ConfiguredImportFromOsmFacilitySidebar(
           city: "Bonn",
         },
       }),
-      searchResultHeaderComponent: (
-        <>
-          <Card
-            variant="soft"
-            color="success"
-            sx={{ border: "1px solid #A1E8A1" }}
-          >
-            <Typography level="title-md">
-              Name der Importierten Einrichtung
-            </Typography>
-            <Typography>Portlandweg 4, 53227 Bonn</Typography>
-          </Card>
-          Ergebnisse:
-        </>
-      ),
-      mode: "import",
-      ...props,
-    };
+    searchResultHeaderComponent: (
+      <>
+        <Card
+          variant="soft"
+          color="success"
+          sx={{ border: "1px solid #A1E8A1" }}
+        >
+          <Typography level="title-md">
+            Name der Importierten Einrichtung
+          </Typography>
+          <Typography>Portlandweg 4, 53227 Bonn</Typography>
+        </Card>
+        Ergebnisse:
+      </>
+    ),
+    mode: "import",
+    ...props,
+  };
 
   return <FacilitySidebar {...facilitySidebarProps} />;
 }

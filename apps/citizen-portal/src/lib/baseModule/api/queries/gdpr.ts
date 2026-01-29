@@ -28,7 +28,8 @@ const businessModules = Object.freeze(
   Object.values(ApiBusinessModule).filter(
     (businessModule) =>
       businessModule !== ApiBusinessModule.MedsAbroad &&
-      businessModule !== ApiBusinessModule.ProstituteProtection,
+      businessModule !== ApiBusinessModule.ProstituteProtection &&
+      businessModule !== ApiBusinessModule.InfectionBriefing,
   ),
 );
 

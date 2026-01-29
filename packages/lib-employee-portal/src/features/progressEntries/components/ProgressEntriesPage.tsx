@@ -147,6 +147,7 @@ function ProgressEntriesPageComponent(props: { ariaRole?: string }) {
             !isReadOnly &&
             !isOffline && (
               <Button
+                autoFocus
                 startDecorator={<Add />}
                 onClick={createProgressEntrySidebar.open}
               >

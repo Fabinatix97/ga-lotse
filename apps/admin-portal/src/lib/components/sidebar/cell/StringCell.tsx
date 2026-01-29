@@ -17,8 +17,9 @@ import {
 } from "@/lib/hooks/useEntities";
 import { useUpdateEntity } from "@/lib/hooks/useUpdateEntity";
 
-interface StringCellProps<EData extends OrgUnitData | ActorData | RuleData>
-  extends CommonCellProps<EData> {
+interface StringCellProps<
+  EData extends OrgUnitData | ActorData | RuleData,
+> extends CommonCellProps<EData> {
   optional?: boolean;
 }
 

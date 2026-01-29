@@ -13,8 +13,7 @@ import {
 import { OptionalFieldValue } from "@eshg/lib-portal";
 
 export interface ExaminationFormValues
-  extends AdditionalInformationFormValues,
-    NoteFormValues {}
+  extends AdditionalInformationFormValues, NoteFormValues {}
 
 export interface AdditionalInformationFormValues {
   dentitionType: OptionalFieldValue<ApiDentitionType>;
@@ -34,6 +33,7 @@ export interface AdditionalInformationFormValues {
   gingivitisTreatment: boolean;
   orthodonticTreatment: boolean;
   plaqueTreatment: boolean;
+  primaryDentitionObstructsSecondary: boolean;
   inspectionAppointment: boolean;
 }
 

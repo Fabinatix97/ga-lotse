@@ -5,42 +5,32 @@
 
 import { Stack } from "@mui/joy";
 import { useFormikContext } from "formik";
-import { useMemo } from "react";
 import { isDefined } from "remeda";
 
 import { ApiUserRole } from "@eshg/base-api";
-import { ApiObjectType } from "@eshg/inspection-api";
+import {
+  ApiObjectType,
+  ApiObjectTypeHierarchyTreeNode,
+} from "@eshg/inspection-api";
 import {
   InformationSheet,
   useHasUserRoleCheck,
 } from "@eshg/lib-employee-portal";
-import {
-  CheckboxField,
-  InputField,
-  SelectField,
-  TextareaField,
-} from "@eshg/lib-portal";
+import { CheckboxField, InputField, TextareaField } from "@eshg/lib-portal";
 
 import { FormChecklistDefinitionVersion } from "@/lib/businessModules/inspection/api/mutations/checklistDefinition";
 
+import { ObjectTypesSelectField } from "./ObjectTypesSelectField";
+
 interface ChecklistDefinitionHeaderCardProps {
   version: number | undefined;
-  objectTypes: ApiObjectType[];
+  objectTypes: ApiObjectType[] | ApiObjectTypeHierarchyTreeNode[];
 }
 
 export function ChecklistDefinitionHeaderCard({
   version,
   objectTypes,
 }: Readonly<ChecklistDefinitionHeaderCardProps>) {
-  const objectTypeOptions = useMemo(
-    () =>
-      objectTypes.map((item) => ({
-        value: item.id,
-        label: item.name,
-      })),
-    [objectTypes],
-  );
-
   const canEditCoreChecklists = useHasUserRoleCheck(
     ApiUserRole.InspectionCorechecklistdefinitionsEdit,
   );
@@ -77,16 +67,11 @@ export function ChecklistDefinitionHeaderCard({
           />
         )}
       </Stack>
-
-      <SelectField
+      <ObjectTypesSelectField
         name="objectTypeId"
-        label="Objekttyp"
-        required="Bitte wählen Sie einen Objekttyp aus."
-        placeholder="Objekttyp auswählen"
         disabled={isUpdate}
-        options={objectTypeOptions}
+        objectTypes={objectTypes}
       />
-
       <TextareaField name="context.description" label="Beschreibung" />
     </InformationSheet>
   );

@@ -19,8 +19,9 @@ export interface DynamicPageProps<
 
 export type LayoutProps = RequiresChildren;
 
-export interface DynamicLayoutProps<TRouteParams extends PageParams = never>
-  extends LayoutProps {
+export interface DynamicLayoutProps<
+  TRouteParams extends PageParams = never,
+> extends LayoutProps {
   readonly params: Promise<RouteParams<TRouteParams>>;
 }
 

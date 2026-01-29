@@ -36,8 +36,7 @@ export interface CategorizedFlatAttribute {
   dataPrivacyCategory?: ApiDataPrivacyCategory;
 }
 
-interface ChooseAttributesStepProps
-  extends SidebarStepContentProps<ChooseAttributeStepOrConfigureDataSourceStepFormModel> {
+interface ChooseAttributesStepProps extends SidebarStepContentProps<ChooseAttributeStepOrConfigureDataSourceStepFormModel> {
   attributes: CategorizedFlatAttribute[];
   dataSourceName: string;
   anonymized: AnonymizedFieldValue;

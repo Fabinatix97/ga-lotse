@@ -68,6 +68,7 @@ services:
       - de.eshg.business-modules.clients[OFFICIAL_MEDICAL_SERVICE].url=http://official-medical-service:8080
       - de.eshg.business-modules.clients[MEDS_ABROAD].url=http://meds-abroad:8080
       - de.eshg.business-modules.clients[PROSTITUTE_PROTECTION].url=http://prostitute-protection:8080
+      - de.eshg.business-modules.clients[INFECTION_BRIEFING].url=http://infection-briefing:8080
       - de.eshg.auditlog.service-url=http://auditlog:8080
       - de.eshg.base.svg-sanitizer-base-url=http://svg-sanitizer:8080
     depends_on:
@@ -641,5 +642,32 @@ services:
       - 5451:5432
     environment:
       POSTGRES_DB: prostitute_protection
+      POSTGRES_USER: testuser
+      POSTGRES_PASSWORD: testpassword
+
+  infection-briefing:
+    image: ga-lotse/infection-briefing
+    extends:
+      file: docker-compose-common.yaml
+      service: eshg-service-base
+    environment:
+      - spring.datasource.url=jdbc:postgresql://infection-briefing-db/infection_briefing
+      - de.eshg.base.service-url=http://base:8080
+      - eshg.keycloak.internal.url=http://keycloak:8080
+      - de.eshg.auditlog.service-url=http://auditlog:8080
+    depends_on:
+      infection-briefing-db:
+        condition: service_healthy
+    ports:
+      - 8103:8080
+
+  infection-briefing-db:
+    extends:
+      file: docker-compose-common.yaml
+      service: eshg-postgres-base
+    ports:
+      - 5452:5432
+    environment:
+      POSTGRES_DB: infection_briefing
       POSTGRES_USER: testuser
       POSTGRES_PASSWORD: testpassword

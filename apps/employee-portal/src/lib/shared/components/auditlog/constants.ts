@@ -32,4 +32,6 @@ export const auditLogSourceNames = {
   [ApiAuditLogSource.Opendata]: "Open Data",
   [ApiAuditLogSource.ProstituteProtection]:
     businessModuleNames[ApiBusinessModule.ProstituteProtection],
+  [ApiAuditLogSource.InfectionBriefing]:
+    businessModuleNames[ApiBusinessModule.InfectionBriefing],
 } satisfies Record<ApiAuditLogSource, string>;

@@ -749,6 +749,25 @@
         "tags" : [ "Archiving" ]
       }
     },
+    "/citizen/public/configuration" : {
+      "get" : {
+        "operationId" : "getPublicConfiguration",
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/GetPublicCitizenConfigurationResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Get the configured properties.",
+        "tags" : [ "ProstituteProtectionPublicCitizen" ]
+      }
+    },
     "/citizen/public/department-info" : {
       "get" : {
         "operationId" : "getDepartmentInfo",
@@ -784,6 +803,26 @@
           }
         },
         "summary" : "Get free appointments.",
+        "tags" : [ "ProstituteProtectionPublicCitizen" ]
+      }
+    },
+    "/citizen/public/landing" : {
+      "get" : {
+        "operationId" : "getLandingPageContent",
+        "responses" : {
+          "200" : {
+            "content" : {
+              "text/markdown" : {
+                "schema" : {
+                  "type" : "string",
+                  "format" : "byte"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Get the landing page markdowns from the config.",
         "tags" : [ "ProstituteProtectionPublicCitizen" ]
       }
     },
@@ -1110,6 +1149,91 @@
           }
         },
         "tags" : [ "PrivacyDocument" ]
+      }
+    },
+    "/configuration/prostitute-protection" : {
+      "get" : {
+        "operationId" : "getConfig",
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/GetProstituteProtectionConfigResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "ProstituteProtectionConfig" ]
+      },
+      "put" : {
+        "operationId" : "updateConfig",
+        "requestBody" : {
+          "content" : {
+            "multipart/form-data" : {
+              "schema" : {
+                "type" : "object",
+                "properties" : {
+                  "config-request" : {
+                    "$ref" : "#/components/schemas/UpdateProstituteProtectionConfigRequest"
+                  },
+                  "landingContent_de" : {
+                    "type" : "string",
+                    "format" : "binary"
+                  },
+                  "landingContent_en" : {
+                    "type" : "string",
+                    "format" : "binary"
+                  }
+                },
+                "required" : [ "config-request" ]
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/GetProstituteProtectionConfigResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "ProstituteProtectionConfig" ]
+      }
+    },
+    "/configuration/prostitute-protection/{lang}" : {
+      "get" : {
+        "operationId" : "downloadLandingPage",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "lang",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/components/schemas/Language"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "type" : "string",
+                  "format" : "binary"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Download the current content of the citizen portal landing page (markdown file, one language)",
+        "tags" : [ "ProstituteProtectionConfig" ]
       }
     },
     "/files/{fileId}" : {
@@ -2790,16 +2914,6 @@
             "format" : "uuid"
           }
         } ],
-        "requestBody" : {
-          "content" : {
-            "application/json" : {
-              "schema" : {
-                "$ref" : "#/components/schemas/AbortProcedureRequest"
-              }
-            }
-          },
-          "required" : true
-        },
         "responses" : {
           "200" : {
             "content" : {
@@ -2894,16 +3008,6 @@
             "format" : "uuid"
           }
         } ],
-        "requestBody" : {
-          "content" : {
-            "application/json" : {
-              "schema" : {
-                "$ref" : "#/components/schemas/CloseProcedureRequest"
-              }
-            }
-          },
-          "required" : true
-        },
         "responses" : {
           "200" : {
             "content" : {
@@ -3017,6 +3121,34 @@
             "description" : "OK"
           }
         },
+        "tags" : [ "ProstituteProtection" ]
+      }
+    },
+    "/prostitute-protection-procedures/{procedureId}/free-appointments" : {
+      "get" : {
+        "operationId" : "getFreeAppointmentsForProcedure",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "procedureId",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/GetFreeAppointmentsResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Get free appointments for a procedure.",
         "tags" : [ "ProstituteProtection" ]
       }
     },
@@ -3634,16 +3766,6 @@
   },
   "components" : {
     "schemas" : {
-      "AbortProcedureRequest" : {
-        "required" : [ "version" ],
-        "type" : "object",
-        "properties" : {
-          "version" : {
-            "type" : "integer",
-            "format" : "int64"
-          }
-        }
-      },
       "AbstractFile" : {
         "required" : [ "@type", "createdAt", "deletable", "deleted", "fileId", "fileName", "fileSizeBytes", "fileType", "locked", "modifiedAt" ],
         "type" : "object",
@@ -3957,7 +4079,7 @@
       },
       "AppointmentType" : {
         "type" : "string",
-        "enum" : [ "CONSULTATION", "VACCINATION", "REGULAR_EXAMINATION", "CAN_CHILD", "ENTRY_LEVEL", "SPECIAL_NEEDS", "PROOF_SUBMISSION", "HIV_STI_CONSULTATION", "SEX_WORK", "RESULTS_REVIEW", "OFFICIAL_MEDICAL_SERVICE_SHORT", "OFFICIAL_MEDICAL_SERVICE_LONG", "MEDS_ABROAD_CERTIFICATION", "PROSTITUTE_PROTECTION_CONSULTATION" ]
+        "enum" : [ "CONSULTATION", "VACCINATION", "REGULAR_EXAMINATION", "CAN_CHILD", "ENTRY_LEVEL", "SPECIAL_NEEDS", "PROOF_SUBMISSION", "HIV_STI_CONSULTATION", "SEX_WORK", "RESULTS_REVIEW", "OFFICIAL_MEDICAL_SERVICE_SHORT", "OFFICIAL_MEDICAL_SERVICE_LONG", "MEDS_ABROAD_CERTIFICATION", "PROSTITUTE_PROTECTION_CONSULTATION", "INFECTION_BRIEFING_NEW", "INFECTION_BRIEFING_REPLACEMENT" ]
       },
       "ApprovalRequest" : {
         "required" : [ "approvalRequestId", "createdAt", "createdBy", "operation", "reason", "status" ],
@@ -4117,7 +4239,7 @@
       },
       "BusinessModule" : {
         "type" : "string",
-        "enum" : [ "INSPECTION", "SCHOOL_ENTRY", "TRAVEL_MEDICINE", "MEASLES_PROTECTION", "STI_PROTECTION", "MEDICAL_REGISTRY", "DENTAL", "OFFICIAL_MEDICAL_SERVICE", "MEDS_ABROAD", "PROSTITUTE_PROTECTION" ]
+        "enum" : [ "INSPECTION", "SCHOOL_ENTRY", "TRAVEL_MEDICINE", "MEASLES_PROTECTION", "STI_PROTECTION", "MEDICAL_REGISTRY", "DENTAL", "OFFICIAL_MEDICAL_SERVICE", "MEDS_ABROAD", "PROSTITUTE_PROTECTION", "INFECTION_BRIEFING" ]
       },
       "BusinessProcedureInclusionStatus" : {
         "type" : "string",
@@ -4167,22 +4289,12 @@
           }
         }
       },
-      "CloseProcedureRequest" : {
-        "required" : [ "version" ],
-        "type" : "object",
-        "properties" : {
-          "version" : {
-            "type" : "integer",
-            "format" : "int64"
-          }
-        }
-      },
       "ConfigurationStatus" : {
         "type" : "string",
         "enum" : [ "COMPLETE", "PARTIALLY_COMPLETE", "INCOMPLETE" ]
       },
       "Consultation" : {
-        "required" : [ "alcoholAndDrugUsage", "birthControl", "clearing", "consultingServices", "diseasePrevention", "emergencyHelp", "healthAndSocialInsurance", "informationMaterial", "interpreterConsulted", "legalAdvices", "predicament", "pregnancy", "referral", "supervisedConsultation", "taxLiability", "version" ],
+        "required" : [ "alcoholAndDrugUsage", "birthControl", "clearing", "consultingServices", "diseasePrevention", "emergencyHelp", "healthAndSocialInsurance", "informationMaterial", "interpreterConsulted", "legalAdvices", "predicament", "pregnancy", "referral", "taxLiability", "version" ],
         "type" : "object",
         "properties" : {
           "alcoholAndDrugUsage" : {
@@ -4231,12 +4343,6 @@
             "type" : "boolean"
           },
           "referral" : {
-            "type" : "boolean"
-          },
-          "remark" : {
-            "type" : "string"
-          },
-          "supervisedConsultation" : {
             "type" : "boolean"
           },
           "taxLiability" : {
@@ -4534,6 +4640,10 @@
             "description" : "The start date and time of the appointment.",
             "format" : "date-time"
           },
+          "consultantId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
           "consultationType" : {
             "$ref" : "#/components/schemas/ConsultationType"
           },
@@ -4548,6 +4658,11 @@
             "items" : {
               "$ref" : "#/components/schemas/PersonLanguage"
             }
+          },
+          "phoneNumber" : {
+            "maxLength" : 23,
+            "minLength" : 1,
+            "type" : "string"
           }
         }
       },
@@ -4791,7 +4906,7 @@
         }
       },
       "EncryptedFile" : {
-        "required" : [ "certificateType", "createdAt", "encryptedFileId", "withAlias" ],
+        "required" : [ "certificateType", "createdAt", "encryptedFileId", "validUntil", "withAlias" ],
         "type" : "object",
         "properties" : {
           "certificateType" : {
@@ -4804,6 +4919,10 @@
           "encryptedFileId" : {
             "type" : "string",
             "format" : "uuid"
+          },
+          "validUntil" : {
+            "type" : "string",
+            "format" : "date"
           },
           "withAlias" : {
             "type" : "boolean"
@@ -5959,6 +6078,14 @@
           }
         }
       },
+      "GetProstituteProtectionConfigResponse" : {
+        "type" : "object",
+        "properties" : {
+          "protectionConfig" : {
+            "$ref" : "#/components/schemas/ProstituteProtectionConfig"
+          }
+        }
+      },
       "GetProstituteProtectionPersonSearchResponse" : {
         "required" : [ "elements", "totalNumberOfElements" ],
         "type" : "object",
@@ -5988,6 +6115,15 @@
           "totalNumberOfElements" : {
             "type" : "integer",
             "format" : "int64"
+          }
+        }
+      },
+      "GetPublicCitizenConfigurationResponse" : {
+        "required" : [ "onlinePortalBookingEnabled" ],
+        "type" : "object",
+        "properties" : {
+          "onlinePortalBookingEnabled" : {
+            "type" : "boolean"
           }
         }
       },
@@ -6775,6 +6911,9 @@
               "$ref" : "#/components/schemas/PersonLanguage"
             }
           },
+          "phoneNumber" : {
+            "type" : "string"
+          },
           "procedureStatus" : {
             "$ref" : "#/components/schemas/ProcedureStatus"
           },
@@ -6958,6 +7097,18 @@
           }
         },
         "description" : "A request containing the standard duration."
+      },
+      "ProstituteProtectionConfig" : {
+        "required" : [ "landingPageContent", "onlinePortalBookingEnabled" ],
+        "type" : "object",
+        "properties" : {
+          "landingPageContent" : {
+            "$ref" : "#/components/schemas/MultiLangDocument"
+          },
+          "onlinePortalBookingEnabled" : {
+            "type" : "boolean"
+          }
+        }
       },
       "ProstituteProtectionProcedureOverview" : {
         "required" : [ "createdAt", "id", "languages", "modifiedAt", "status", "version" ],
@@ -7414,6 +7565,15 @@
         "properties" : {
           "departmentInfo" : {
             "$ref" : "#/components/schemas/DepartmentInfo"
+          }
+        }
+      },
+      "UpdateProstituteProtectionConfigRequest" : {
+        "required" : [ "onlinePortalBookingEnabled" ],
+        "type" : "object",
+        "properties" : {
+          "onlinePortalBookingEnabled" : {
+            "type" : "boolean"
           }
         }
       },

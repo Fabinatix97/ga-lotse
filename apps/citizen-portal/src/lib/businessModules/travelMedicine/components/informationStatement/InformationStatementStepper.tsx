@@ -121,7 +121,7 @@ export function InformationStatementStepper() {
   const stepperTitleId = useId();
   return (
     <MultiStepForm<InformationStatementFormValues> steps={STEPS}>
-      {({ Outlet, currentStep, totalSteps, titleRef }) => (
+      {({ Outlet, currentStep, totalSteps }) => (
         <Formik
           initialValues={initialFormikValues}
           validate={validateForm}
@@ -130,7 +130,6 @@ export function InformationStatementStepper() {
           {(formikProps) => (
             <Stack gap={2}>
               <MultiStepFormTitle
-                titleRef={titleRef}
                 title={t("header.title")}
                 titleId={titleId}
                 stepperTitleId={stepperTitleId}
@@ -141,6 +140,7 @@ export function InformationStatementStepper() {
                 withLogoutButton
               />
               <FormPlus
+                autoFocus
                 aria-labelledby={titleId}
                 aria-describedby={stepperTitleId}
               >

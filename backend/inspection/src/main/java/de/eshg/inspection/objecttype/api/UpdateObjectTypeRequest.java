@@ -6,6 +6,7 @@
 package de.eshg.inspection.objecttype.api;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import java.util.UUID;
 
 public record UpdateObjectTypeRequest(
     @Schema(nullable = true) Integer routineInterval,
@@ -13,4 +14,23 @@ public record UpdateObjectTypeRequest(
     Integer standardDuration,
     Integer standardBufferTime,
     Boolean emailAnnouncement,
-    String legalBasis) {}
+    String legalBasis,
+    @Schema(nullable = true) UUID designatedAssigneeId) {
+
+  public UpdateObjectTypeRequest(
+      Integer routineInterval,
+      Integer complaintInterval,
+      Integer standardDuration,
+      Integer standardBufferTime,
+      Boolean emailAnnouncement,
+      String legalBasis) {
+    this(
+        routineInterval,
+        complaintInterval,
+        standardDuration,
+        standardBufferTime,
+        emailAnnouncement,
+        legalBasis,
+        null);
+  }
+}

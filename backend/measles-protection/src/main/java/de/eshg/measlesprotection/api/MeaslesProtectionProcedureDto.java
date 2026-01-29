@@ -20,6 +20,7 @@ public record MeaslesProtectionProcedureDto(
     @NotNull Instant createdAt,
     @NotNull @Valid AffectedPersonDto affectedPerson,
     @Valid List<CustodianDto> custodians,
+    @Valid List<CustodianWithoutDateOfBirthDto> custodiansWithoutDoB,
     @NotNull @Valid FacilityDto facility,
     @NotNull @Valid ReportDataDto reportData,
     @Valid List<ProofSubmissionDto> proofSubmissions,

@@ -47,9 +47,11 @@ export function MedicalRegistryEntryOverviewControls(
               direction: "row",
               gap: 2,
             }}
+            autoFocus
           >
             {isEntrySearch && (
               <InputField
+                autoFocus
                 label={null}
                 placeholder="Suche"
                 aria-label="Suche"
@@ -61,6 +63,7 @@ export function MedicalRegistryEntryOverviewControls(
             {!isEntrySearch && (
               <ToggleFilterButton
                 {...props.filterSettings.filterButtonProps}
+                autoFocus
                 isFilterVisible={props.activePanel === "filters"}
                 activeFilters={
                   props.filterSettings.filterButtonProps.activeFilters

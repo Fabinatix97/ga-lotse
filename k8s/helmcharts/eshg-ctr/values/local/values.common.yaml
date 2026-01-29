@@ -119,3 +119,5 @@ podSecurityContext:
 
 development:
   alwaysCreateDebugLogMount: false
+
+createSplitCertificates: true

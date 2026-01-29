@@ -29,8 +29,10 @@ export interface MinimalAutocompleteAddressInputs {
   city: string;
 }
 
-export interface AddressAutoFillFieldProps
-  extends Omit<InputFieldProps, "options" | "loading" | "freeSolo" | "name"> {
+export interface AddressAutoFillFieldProps extends Omit<
+  InputFieldProps,
+  "options" | "loading" | "freeSolo" | "name"
+> {
   name: "postalCode" | "city";
   fieldName: (key: keyof MinimalAutocompleteAddressInputs) => string;
   api: AnyStreetApi;

@@ -45,8 +45,7 @@ enum FormNames {
   PROOF_SUBMISSION = "proofSubmission",
 }
 
-interface MeaslesProtectionAppointmentStandardDurationFormValues
-  extends FormikValues {
+interface MeaslesProtectionAppointmentStandardDurationFormValues extends FormikValues {
   [FormNames.PROOF_SUBMISSION]: OptionalFieldValue<number>;
 }
 

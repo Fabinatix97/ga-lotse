@@ -4,7 +4,7 @@
  */
 
 import { Box, Stack } from "@mui/joy";
-import { addMinutes, startOfHour } from "date-fns";
+import { addMinutes } from "date-fns";
 import { useFormikContext } from "formik";
 import { useState } from "react";
 
@@ -27,10 +27,8 @@ import {
 import {
   ApiAppointment,
   ApiAppointmentBookingType,
-  ApiAppointmentType,
 } from "@eshg/prostitute-protection-api";
 
-import { useGetFreeAppointments } from "../../api/queries/appointmentBlockApi";
 import { APPOINTMENT_FORM_LABELS } from "../../shared/constants";
 
 export interface AppointmentFieldsData {
@@ -78,17 +76,11 @@ function ConnectedAppointmentPicker({
 
 interface AppointmentFieldsProps {
   isCreation?: boolean;
+  freeAppointments: ApiAppointment[];
 }
 
 export function AppointmentFields(props: AppointmentFieldsProps) {
   const formikContext = useFormikContext<AppointmentFieldsData>();
-
-  const now = new Date();
-  const appointmentsFromBlock = useGetFreeAppointments({
-    appointmentType: ApiAppointmentType.ProstituteProtectionConsultation,
-    earliestDate: startOfHour(now),
-  });
-  const freeAppointments = appointmentsFromBlock.data ?? [];
 
   return (
     <RadioSheets
@@ -96,7 +88,7 @@ export function AppointmentFields(props: AppointmentFieldsProps) {
       aria-label="Buchungsart"
       required="Bitte eine Buchungsart auswählen"
     >
-      {freeAppointments.length === 0 && (
+      {props.freeAppointments.length === 0 && (
         <Alert
           color="warning"
           message="Es sind keine freien Terminblöcke verfügbar."
@@ -106,11 +98,11 @@ export function AppointmentFields(props: AppointmentFieldsProps) {
         name="appointmentBookingType"
         value={ApiAppointmentBookingType.AppointmentBlock}
         label="Aus Terminblock"
-        disabled={freeAppointments.length === 0}
+        disabled={props.freeAppointments.length === 0}
       >
         <ConnectedAppointmentPicker
           name="blockAppointment"
-          freeAppointments={freeAppointments}
+          freeAppointments={props.freeAppointments}
         />
       </RadioSheetOption>
       <RadioSheetOption

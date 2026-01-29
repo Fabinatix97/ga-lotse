@@ -53,6 +53,10 @@ export function ChecklistTile({
   const featureToggleChecklistRequirementRemovalEnabled =
     useIsNewFeatureEnabled(ApiInspectionFeature.ChecklistRequirementRemoval);
 
+  const featureToggleCheckListsAlwaysRemovableEnabled = useIsNewFeatureEnabled(
+    ApiInspectionFeature.ChecklistsAlwaysRemovable,
+  );
+
   const listIsEmpty =
     inspection.selectedChecklistDefinitionVersions.length === 0;
 
@@ -85,7 +89,8 @@ export function ChecklistTile({
         await handleDelete(idx);
       },
       title: "Checkliste löschen",
-      description: "Möchten Sie diese Checkliste wirklich löschen?",
+      description:
+        "Möchten Sie diese Checkliste wirklich löschen? Eingetragene Daten werden permanent gelöscht und können nicht wiederhergestellt werden.",
       confirmLabel: "Löschen",
     });
   }
@@ -177,7 +182,8 @@ export function ChecklistTile({
                   <Chip color="primary">Kern - Checkliste</Chip>
                 )}
               </Stack>
-              {showDeleteButton(version) && (
+              {(featureToggleCheckListsAlwaysRemovableEnabled ||
+                showDeleteButton(version)) && (
                 <IconButton
                   aria-label="Löschen"
                   variant="plain"

@@ -63,8 +63,7 @@ const INITIAL_VALUES: AddChildToProphylaxisSessionSidebarFormFields = {
   selected: "",
 };
 
-interface AddChildToProphylaxisSessionSidebarProps
-  extends SidebarWithFormRefProps {
+interface AddChildToProphylaxisSessionSidebarProps extends SidebarWithFormRefProps {
   prophylaxisSessionId: string;
   prophylaxisSessionVersion: number;
   institutionId: string;

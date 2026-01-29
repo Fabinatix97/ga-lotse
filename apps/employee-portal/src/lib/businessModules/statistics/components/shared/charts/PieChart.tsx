@@ -13,10 +13,11 @@ import {
 
 interface PieChartProps {
   diagramData: AnalysisDiagramPieChart["data"];
+  getColor?: (identifier: string) => string;
   eChartApi?: (eChartApi: ChartApi) => void;
 }
 
-export function PieChart({ diagramData, eChartApi }: PieChartProps) {
+export function PieChart({ diagramData, getColor, eChartApi }: PieChartProps) {
   const portions = diagramData.map((it) => ({
     name: it.label,
     value: it.value,
@@ -29,8 +30,15 @@ export function PieChart({ diagramData, eChartApi }: PieChartProps) {
         top: 50,
         data: portions.map((portion) =>
           portion.value === 0
-            ? { ...portion, label: { show: false } }
-            : portion,
+            ? {
+                ...portion,
+                label: { show: false },
+                itemStyle: { color: getColor?.(portion.name) },
+              }
+            : {
+                ...portion,
+                itemStyle: { color: getColor?.(portion.name) },
+              },
         ),
         label: {
           color: "#171A1C", // text.primary

@@ -32,13 +32,15 @@ export function ProstituteProtectionProceduresTableControls({
           tableControl={tableControl}
           searchParamName="alias"
           label="Alias Suche"
+          aria-label="Alias"
         />
       }
       right={
-        <Button startDecorator={<Add />} onClick={open}>
+        <Button autoFocus startDecorator={<Add />} onClick={open}>
           Neuen Vorgang anlegen
         </Button>
       }
+      invertDomOrder
     />
   );
 }

@@ -7,9 +7,10 @@ import { Box, formControlClasses } from "@mui/joy";
 import { SxProps } from "@mui/joy/styles/types";
 // eslint-disable-next-line no-restricted-imports
 import { Form, FormikFormProps, useFormikContext } from "formik";
-import { RefObject, useEffect, useRef } from "react";
+import { RefObject, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 
+import { findFirstInteractableChild } from "../../helpers/findFirstInteractableChild";
 import { usePrevious } from "../../hooks/usePrevious";
 
 const inputsSelector =
@@ -111,6 +112,7 @@ export function FormPlus({
   children,
   scrollToError = true,
   revalidateOnLanguageChange = true,
+  autoFocus = false,
   isSearchForm,
   ...props
 }: Omit<FormikFormProps, "autoComplete" | "noValidate" | "ref" | "style"> &
@@ -118,13 +120,23 @@ export function FormPlus({
   const formRef = useRef<HTMLFormElement | null>(null);
   useScrollToError({ enabled: scrollToError, formRef });
   useRevalidateOnLanguageChange(revalidateOnLanguageChange);
+  const [formContent, setFormContent] = useState<HTMLElement | null>(null);
+
+  useEffect(() => {
+    if (formContent && autoFocus) {
+      findFirstInteractableChild(formContent)?.focus();
+    }
+  }, [formContent, autoFocus]);
 
   return (
     <Box
       component={Form}
       autoComplete="off"
       {...props}
-      ref={formRef}
+      ref={(el: HTMLFormElement) => {
+        formRef.current = el;
+        setFormContent(el);
+      }}
       noValidate
       role={isSearchForm ? "search" : "form"}
       aria-label={props["aria-label"]}

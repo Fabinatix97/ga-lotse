@@ -246,6 +246,7 @@ public class ProphylaxisSessionsPopulator
           faker.bool().bool(),
           faker.bool().bool(),
           faker.bool().bool(),
+          faker.bool().bool(),
           faker.bool().bool());
     } else if (hasFluoridationVarnish) {
       return new FluoridationExaminationResultDto(

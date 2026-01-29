@@ -5,9 +5,10 @@
 
 import { DialogTitle, Modal, ModalClose, ModalDialog } from "@mui/joy";
 import { DefaultColorPalette, SxProps } from "@mui/joy/styles/types";
-import { ReactNode } from "react";
+import { ReactNode, useEffect } from "react";
 
 import { AlertSlot, useResetAlertContext } from "../errorHandling/AlertContext";
+import { useFocus } from "../hooks/useFocus";
 
 export interface BaseModalProps {
   children: ReactNode;
@@ -30,6 +31,7 @@ export function BaseModal({
   sx,
 }: BaseModalProps) {
   const resetAlertContext = useResetAlertContext();
+  const { ref, focus } = useFocus();
 
   function handleClose() {
     if (onClose !== undefined) {
@@ -38,6 +40,12 @@ export function BaseModal({
     resetAlertContext();
   }
 
+  useEffect(() => {
+    if (open && onClose) {
+      focus();
+    }
+  }, [focus, open, onClose]);
+
   return (
     <Modal open={open} color={color} onClose={handleClose}>
       <ModalDialog sx={{ width: { xxs: 328, sm: 688 }, gap: 2, ...sx }}>
@@ -45,6 +53,9 @@ export function BaseModal({
         <AlertSlot />
         {onClose ? (
           <ModalClose
+            ref={(el) => {
+              ref.current = el;
+            }}
             variant="outlined"
             aria-label="Schließen"
             color="primary"

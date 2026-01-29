@@ -132,6 +132,7 @@ export { CountryField } from "./components/formFields/CountryField";
 export { DateTimeField } from "./components/formFields/DateTimeField";
 export { TimeField } from "./components/formFields/TimeField";
 export { type NamedUser, UserField } from "./components/formFields/UserField";
+export { SingleUserField } from "./components/formFields/SingleUserField";
 export { DeletableFileField } from "./components/formFields/file/DeletableFileField";
 export {
   FileField,
@@ -146,6 +147,7 @@ export { StickyToolbarLayout } from "./components/layout/StickyToolbarLayout";
 export { OfflineIndicator } from "./components/OfflineIndicator";
 export { PageGrid } from "./components/page/PageGrid";
 export { RestrictedPage } from "./components/page/RestrictedPage";
+export { PersonalFormSectionWithoutDateOfBirthDetails } from "./components/personSearch/PersonalFormSectionWithoutDateOfBirthDetails";
 export {
   PersonSearchForm,
   type PersonSearchFormValues,
@@ -153,6 +155,7 @@ export {
   usePersonSearch,
   usePersonSearchFromURL,
 } from "./components/personSearch/PersonSearchForm";
+export { SearchCustodianForm } from "./components/personSearch/SearchCustodianForm";
 export { TogglePersonSearchButton } from "./components/personSearch/TogglePersonSearchButton";
 export {
   type SearchableGroup,

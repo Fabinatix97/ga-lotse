@@ -12,6 +12,10 @@ public record ConsultationCertificateData(
     @NotNull String dateOfConsultation,
     @NotNull String dateValidTo,
     @NotNull String idDocument,
+    @NotNull boolean diseasePrevention,
+    @NotNull boolean birthControl,
+    @NotNull boolean pregnancy,
+    @NotNull boolean alcoholAndDrugUsage,
     @NotNull boolean referral,
     @NotNull boolean clearing,
     @NotNull DepartmentData department) {}

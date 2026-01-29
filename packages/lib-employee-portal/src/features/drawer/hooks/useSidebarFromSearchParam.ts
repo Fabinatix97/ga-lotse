@@ -13,8 +13,7 @@ import {
   useSidebarWithFormRef,
 } from "./useSidebarWithFormRef";
 
-interface UseSidebarFromSearchParamOptions
-  extends UseSidebarWithFormRefOptions<SidebarWithFormRefProps> {
+interface UseSidebarFromSearchParamOptions extends UseSidebarWithFormRefOptions<SidebarWithFormRefProps> {
   searchParam: string;
 }
 export function useSidebarFromSearchParam({

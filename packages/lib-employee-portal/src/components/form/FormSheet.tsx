@@ -24,6 +24,7 @@ interface FormSheetProps extends RequiresChildren {
   gap?: number;
   "aria-label"?: string;
   isSearchForm?: boolean;
+  autoFocus?: boolean;
 }
 
 export function FormSheet(props: FormSheetProps) {

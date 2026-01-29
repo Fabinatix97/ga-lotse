@@ -15,17 +15,32 @@ export function Custodians({
 }: {
   procedure: ApiMeaslesProtectionProcedure | ApiDraftMeaslesProcedure;
 }) {
-  const length = procedure?.custodians?.length ?? 0;
-  if (procedure?.custodians === undefined || length === 0) {
+  const length =
+    (procedure?.custodians?.length ?? 0) +
+    (procedure?.custodiansWithoutDoB?.length ?? 0);
+  if (length === 0) {
     return;
   }
   const custodians = procedure.custodians ?? [];
+  const custodiansWithoutDateOfBirth = procedure.custodiansWithoutDoB ?? [];
 
-  return custodians.map((person, index) => (
+  const custodiansWithDoB = custodians.map((person, index) => (
     <Custodian
       key={`custodian-${index}`}
       custodian={person}
       procedure={procedure}
     />
   ));
+
+  const custodianWithoutDoB = custodiansWithoutDateOfBirth.map(
+    (person, index) => (
+      <Custodian
+        key={`custodian-without-dob' + ${index}`}
+        custodian={person}
+        procedure={procedure}
+      />
+    ),
+  );
+
+  return [...custodiansWithDoB, ...custodianWithoutDoB];
 }

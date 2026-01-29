@@ -19,8 +19,11 @@ domains:
     maildev: mail.frankfurt.svc.cluster.local
     keycloak: keycloak.frankfurt.svc.cluster.local
     keycloakInternal: keycloak.frankfurt.svc.cluster.local
-  clusterIssuer: local-ca
-  internalClusterIssuer: local-ca
+  clusterIssuers:
+    public: local-ca
+    publicClient: local-ca
+    publicServer: local-ca
+    internal: local-ca
 
 spatz:
   javaToolOptions: "-Xmx128M -Xss256k -Dreactor.schedulers.reactor.schedulers.defaultBoundedElasticQueueSize=5000"
@@ -62,6 +65,8 @@ businessmodules:
   medsabroad:
     enabled: false
   prostituteprotection:
+    enabled: false
+  infectionbriefing:
     enabled: false
 
 development:

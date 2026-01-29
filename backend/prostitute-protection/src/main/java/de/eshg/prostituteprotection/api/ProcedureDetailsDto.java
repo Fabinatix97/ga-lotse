@@ -19,6 +19,7 @@ public record ProcedureDetailsDto(
     @NotNull UUID id,
     @NotNull long version,
     String alias,
+    String phoneNumber,
     @Valid AppointmentDto appointment,
     @NotNull boolean appointmentFromAppointmentBlock,
     @NotNull List<LanguageDto> languages,

@@ -60,8 +60,9 @@ export interface AppointmentPickerFieldLabels {
   availableLegend?: string;
 }
 
-export interface AppointmentPickerFieldProps<T extends Appointment>
-  extends Omit<MonthSelectionPassThroughProps, "locale"> {
+export interface AppointmentPickerFieldProps<
+  T extends Appointment,
+> extends Omit<MonthSelectionPassThroughProps, "locale"> {
   name: string;
   sx?: SxProps;
   required?: boolean;

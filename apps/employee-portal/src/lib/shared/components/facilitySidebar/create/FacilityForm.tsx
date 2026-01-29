@@ -5,7 +5,7 @@
 
 import { Box, Divider, Grid, Stack } from "@mui/joy";
 import { Formik } from "formik";
-import { Ref } from "react";
+import { ReactNode, Ref } from "react";
 import { isDefined } from "remeda";
 
 import {
@@ -29,10 +29,6 @@ import {
   useValidateLength,
 } from "@eshg/lib-portal";
 
-import {
-  MeaslesFacilityTypeSelect,
-  MeaslesFacilityTypeSelectFormValues,
-} from "@/lib/businessModules/measlesProtection/components/procedures/procedureDetails/MeaslesFacilityTypeSelect";
 import { FacilityContactPersonArrayForm } from "@/lib/shared/components/facilitySidebar/create/FacilityContactPersonArrayForm";
 import { FacilitySearchFormValues } from "@/lib/shared/components/facilitySidebar/search/FacilitySearchForm";
 import { BaseFacilityContactPerson } from "@/lib/shared/components/facilitySidebar/types";
@@ -45,60 +41,52 @@ export interface DefaultFacilityFormValues {
   contactAddress?: BaseAddressFormInputs;
   differentBillingAddress?: BaseAddressFormInputs;
   contactPersons: BaseFacilityContactPerson[];
-  measlesFacilityType?: MeaslesFacilityTypeSelectFormValues;
 }
 
 // TODO: Make this accept an object instead
 export function getInitialFacilityFormValues(
   searchInputs?: FacilitySearchFormValues,
-  requiresContactPerson?: boolean,
-  defaultValues?: Partial<DefaultFacilityFormValues>,
+  requiresContactPerson = false,
+  defaultValues: Partial<DefaultFacilityFormValues> = {},
 ): DefaultFacilityFormValues {
   return {
-    name: defaultValues?.name ?? searchInputs?.name ?? "",
-    emailAddresses: defaultValues?.emailAddresses ?? [""],
-    phoneNumbers: defaultValues?.phoneNumbers ?? [""],
-    contactAddress: defaultValues?.contactAddress ?? createEmptyAddress(),
+    name: defaultValues.name ?? searchInputs?.name ?? "",
+    emailAddresses: defaultValues.emailAddresses ?? [""],
+    phoneNumbers: defaultValues.phoneNumbers ?? [""],
+    contactAddress: defaultValues.contactAddress ?? createEmptyAddress(),
     contactPersons:
-      defaultValues?.contactPersons ??
+      defaultValues.contactPersons ??
       (requiresContactPerson ? [createEmptyContactPerson()] : []),
-    measlesFacilityType: {
-      type: defaultValues?.measlesFacilityType?.type ?? "",
-      otherFacilityTypeInformation:
-        defaultValues?.measlesFacilityType?.otherFacilityTypeInformation ?? "",
-    },
   };
 }
 
-interface FacilityFormProps {
+interface FacilityFormProps<TFormValues> {
   title: string;
   submitLabel?: string;
-  searchInputs?: FacilitySearchFormValues;
-  initialValues?: DefaultFacilityFormValues;
+  initialValues: TFormValues;
   requiresContactPerson?: boolean;
   mode?: "create" | "edit";
   addressOptional?: boolean;
 
   sidebarFormRef?: Ref<SidebarFormHandle>;
-  onSubmit: (values: DefaultFacilityFormValues) => Promise<void>;
+  onSubmit: (values: TFormValues) => Promise<void>;
   onCancel: () => void;
-  onBack?: (values: DefaultFacilityFormValues) => void;
+  onBack?: (values: TFormValues) => void;
 
   allowMainContactPerson?: boolean;
-  showMeaslesFacilityType?: boolean;
+  additionalFields?: ReactNode;
   submitting?: boolean;
 }
 
-export function FacilityForm(props: FacilityFormProps) {
+export function FacilityForm<TFormValues extends DefaultFacilityFormValues>(
+  props: FacilityFormProps<TFormValues>,
+) {
   const validateLength = useValidateLength();
-  const initialValues: DefaultFacilityFormValues =
-    props.initialValues ?? getInitialFacilityFormValues(props.searchInputs);
-
   const fieldName = createFieldNameMapper<DefaultFacilityFormValues>();
 
   return (
     <Formik
-      initialValues={initialValues}
+      initialValues={props.initialValues}
       enableReinitialize
       onSubmit={props.onSubmit}
     >
@@ -125,12 +113,7 @@ export function FacilityForm(props: FacilityFormProps) {
               />
 
               <Divider />
-              {props.showMeaslesFacilityType && (
-                <>
-                  <MeaslesFacilityTypeSelect />
-                  <Divider />
-                </>
-              )}
+              {props.additionalFields}
 
               <Grid container spacing={2}>
                 <OptionalContactAddressForm

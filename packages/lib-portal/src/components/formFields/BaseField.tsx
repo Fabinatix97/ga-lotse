@@ -75,8 +75,7 @@ type SupportedFormControlProps = Pick<
 >;
 
 export interface BaseFieldProps
-  extends SupportedFormControlProps,
-    RequiresChildren {
+  extends SupportedFormControlProps, RequiresChildren {
   label?: string | ReactNode;
   labelId?: string;
   helperText?: string;

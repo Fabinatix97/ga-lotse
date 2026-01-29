@@ -110,8 +110,10 @@ function FileSection({ fileReference, ...props }: FileSectionProps) {
   );
 }
 
-interface UndeletedFileSectionProps
-  extends Omit<FileSectionProps, "fileReference"> {
+interface UndeletedFileSectionProps extends Omit<
+  FileSectionProps,
+  "fileReference"
+> {
   file: ApiGetFile200Response;
 }
 

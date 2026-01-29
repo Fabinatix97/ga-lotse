@@ -54,6 +54,7 @@ const businessItemResolvers: Record<
   [ApiBusinessModule.MedsAbroad]: () => [],
   [ApiBusinessModule.ProstituteProtection]:
     resolveProstituteProtectionSideNavigationItems,
+  [ApiBusinessModule.InfectionBriefing]: (_) => [],
 };
 
 function useBusinessItems(): SideNavigationItem[] {

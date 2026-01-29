@@ -85,7 +85,12 @@ export function ReportsOverview() {
       fullHeight
       controls={
         <ButtonBar
-          left={<ToggleFilterButton {...filterSettings.filterButtonProps} />}
+          left={
+            <ToggleFilterButton
+              autoFocus
+              {...filterSettings.filterButtonProps}
+            />
+          }
         />
       }
       filterSettings={

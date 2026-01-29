@@ -8,7 +8,6 @@ plugins {
 
 dependencies {
     implementation project(':lib-base-client')
-    implementation project(':lib-config')
     implementation project(':lib-appointmentblock')
     implementation project(':business-module-commons')
     implementation project(':business-module-persistence-commons')
@@ -17,8 +16,10 @@ dependencies {
     implementation project(':lib-calendar')
     implementation project(':lib-statistics')
     implementation project(':lib-scheduling')
+    implementation project(':file-commons')
 
     implementation 'org.bouncycastle:bcprov-jdk18on:latest.release'
+    implementation 'com.bucket4j:bucket4j-core:latest.release'
 
     testImplementation testFixtures(project(':business-module-persistence-commons'))
     testImplementation testFixtures(project(':lib-appointmentblock'))

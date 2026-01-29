@@ -1,0 +1,73 @@
+# Copyright 2026 SCOOP Software GmbH, cronn GmbH
+# SPDX-License-Identifier: AGPL-3.0-only
+
+{{- define "lib.splitCertificates" }}
+
+{{- $secretName := index . 0 }}
+{{- $dnsName := index . 1 }}
+{{- $clientCertIssuer := index . 2 }}
+{{- $serverCertIssuer := index . 3 }}
+{{- $namespace := index . 4 }}
+{{- $selfSigned := index . 5 }}
+
+---
+
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: "{{ trimSuffix "-tls" $secretName }}-client"
+  namespace: {{ $namespace }}
+spec:
+  {{- if $selfSigned }}
+  {{/* spatz infrastructure needs CN to work */}}
+  {{/* Let's encrypt certificates set the CN automatically */}}
+  {{/* for self-signed certificates we need to set it explicitly */}}
+  commonName: "{{ $dnsName }}"
+  {{- end }}
+  dnsNames:
+    - "{{ $dnsName }}"
+  issuerRef:
+    kind: ClusterIssuer
+    name: {{ $clientCertIssuer }}
+  privateKey:
+    algorithm: ECDSA
+    encoding: PKCS1
+    size: 256
+    rotationPolicy: Always
+  secretName: "{{ $secretName }}-client"
+  subject: {}
+  usages:
+    - client auth
+
+---
+
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: "{{ trimSuffix "-tls" $secretName }}-server"
+  namespace: {{ $namespace }}
+spec:
+  {{- if $selfSigned }}
+  {{/* spatz infrastructure needs CN to work */}}
+  {{/* Let's encrypt certificates set the CN automatically */}}
+  {{/* for self-signed certificates we need to set it explicitly */}}
+  commonName: "{{ $dnsName }}"
+  {{- end }}
+  dnsNames:
+    - "{{ $dnsName }}"
+  issuerRef:
+    kind: ClusterIssuer
+    name: {{ $serverCertIssuer }}
+  privateKey:
+    algorithm: ECDSA
+    encoding: PKCS1
+    size: 256
+    rotationPolicy: Always
+  secretName: "{{ $secretName }}-server"
+  subject: {}
+  usages:
+    - server auth
+
+---
+
+{{- end }}

@@ -1,21 +1,22 @@
 /**
  * Copyright 2026 cronn GmbH
- * SPDX-License-Identifier: AGPL-3.0-only
+ * SPDX-License-Identifier: Apache-2.0
  */
 
 import { Stack } from "@mui/joy";
 import { useFormikContext } from "formik";
 import { PropsWithChildren } from "react";
 
+import { ButtonLink } from "@eshg/lib-portal";
+
+import { SidebarActions } from "../../features/drawer/components/SidebarActions";
+import { SidebarContent } from "../../features/drawer/components/SidebarContent";
+import { DefaultSearchPersonFormFields } from "../../features/persons/components/search/DefaultSearchPersonFormFields";
 import {
-  DefaultSearchPersonFormFields,
-  MultiFormButtonBar,
   SearchPersonFormProps,
   SearchPersonFormValues,
-  SidebarActions,
-  SidebarContent,
-} from "@eshg/lib-employee-portal";
-import { ButtonLink } from "@eshg/lib-portal";
+} from "../../features/persons/components/search/SearchPersonSidebar";
+import { MultiFormButtonBar } from "../form/MultiFormButtonBar";
 
 export function SearchCustodianForm(
   props: PropsWithChildren<SearchPersonFormProps<SearchPersonFormValues>>,

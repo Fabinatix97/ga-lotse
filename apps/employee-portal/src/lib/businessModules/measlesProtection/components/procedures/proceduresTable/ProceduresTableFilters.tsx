@@ -235,6 +235,7 @@ export function ProceduresTableFilterButton() {
 
   return (
     <ToggleFilterButton
+      autoFocus
       isFilterVisible={filterSettingsVisible}
       activeFilters={activeFilterCount}
       onClick={() => setFilterSettingsVisible((prev) => !prev)}

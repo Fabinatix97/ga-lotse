@@ -38,8 +38,10 @@ const anonymizedFieldValueNames = {
   [ENUM_FALSE_VALUE]: "Nein",
 } satisfies Record<AnonymizedFieldValue, string>;
 
-interface AnonymizationConfigurationProps
-  extends Pick<ToggleButtonGroupFieldProps, "name"> {
+interface AnonymizationConfigurationProps extends Pick<
+  ToggleButtonGroupFieldProps,
+  "name"
+> {
   anonymizationOptions: AnonymizationOptions;
   sensitivity: DataSourceSensitivity | undefined;
 }

@@ -10,6 +10,7 @@ import de.eshg.base.user.UserApi;
 import de.eshg.base.user.api.GetUsersRequest;
 import de.eshg.base.user.api.UserDto;
 import de.eshg.lib.auditlog.AuditLogger;
+import de.eshg.lib.keycloak.TechnicalGroup;
 import de.eshg.lib.procedure.domain.model.BasicSystemProgressEntryType;
 import de.eshg.lib.procedure.domain.model.ProcedureStatus;
 import de.eshg.lib.procedure.domain.model.ProcedureType;
@@ -52,6 +53,8 @@ import de.eshg.prostituteprotection.mapper.AppointmentMapper;
 import de.eshg.prostituteprotection.mapper.ProstituteProtectionMapper;
 import de.eshg.prostituteprotection.mapper.WaitingRoomMapper;
 import de.eshg.prostituteprotection.util.ExceptionUtil;
+import de.eshg.prostituteprotection.util.ProgressEntryUtil;
+import de.eshg.prostituteprotection.util.ProstituteProtectionProgressEntryType;
 import de.eshg.rest.service.error.BadRequestException;
 import de.eshg.rest.service.error.NotFoundException;
 import de.eshg.rest.service.security.CurrentUserHelper;
@@ -79,6 +82,9 @@ import org.springframework.stereotype.Service;
 @Service
 public class ProstituteProtectionService {
 
+  public static final int VALIDITY_AGE_THRESHHOLD = 21;
+  public static final int VALIDITY_PERIOD_SHORT = 6;
+  public static final int VALIDITY_PERIOD_REGULAR = 12;
   private final ProstituteProtectionProcedureRepository procedureRepository;
   private final ConsultationRepository consultationRepository;
   private final EncryptedFileRepository encryptedFileRepository;
@@ -88,6 +94,7 @@ public class ProstituteProtectionService {
   private final AuditLogger auditLogger;
   private final PersonalDataEncryptionService personalDataEncryptionService;
   private final UserApi userApi;
+  private final ProgressEntryUtil progressEntryUtil;
 
   public ProstituteProtectionService(
       ProstituteProtectionProcedureRepository procedureRepository,
@@ -98,7 +105,8 @@ public class ProstituteProtectionService {
       Clock clock,
       AuditLogger auditLogger,
       PersonalDataEncryptionService personalDataEncryptionService,
-      UserApi userApi) {
+      UserApi userApi,
+      ProgressEntryUtil progressEntryUtil) {
     this.procedureRepository = procedureRepository;
     this.consultationRepository = consultationRepository;
     this.encryptedFileRepository = encryptedFileRepository;
@@ -108,6 +116,7 @@ public class ProstituteProtectionService {
     this.auditLogger = auditLogger;
     this.personalDataEncryptionService = personalDataEncryptionService;
     this.userApi = userApi;
+    this.progressEntryUtil = progressEntryUtil;
   }
 
   CreateProstituteProtectionProcedureResponse createProcedure(
@@ -118,13 +127,21 @@ public class ProstituteProtectionService {
     prostituteProtectionProcedure.addTask(createTask());
 
     appointmentService.bookAppointment(
-        prostituteProtectionProcedure,
-        AppointmentMapper.toDataType(request),
-        CurrentUserHelper.getCurrentUserId());
+        prostituteProtectionProcedure, AppointmentMapper.toDataType(request));
     procedureRepository.save(prostituteProtectionProcedure);
 
     return new CreateProstituteProtectionProcedureResponse(
         prostituteProtectionProcedure.getExternalId());
+  }
+
+  void validateConsultant(UUID consultantId) {
+    if (consultantId != null) {
+      ProstituteProtectionValidator.validateConsultantIsOfCorrectGroup(
+          userApi
+              .getUsersByGroup(TechnicalGroup.PROSTITUTE_PROTECTION_CONSULTANT.getKeycloakName())
+              .users(),
+          consultantId);
+    }
   }
 
   public void initialiseProcedure(ProstituteProtectionProcedure prostituteProtectionProcedure) {
@@ -202,6 +219,14 @@ public class ProstituteProtectionService {
     encryptedFile.setCertificateType(
         isRegistration ? CertificateType.SECTION_7 : CertificateType.SECTION_10);
 
+    LocalDate appointmentDay =
+        procedure.getAppointmentStart().atZone(clock.getZone()).toLocalDate();
+    if (ChronoUnit.YEARS.between(request.dateOfBirth(), appointmentDay) < VALIDITY_AGE_THRESHHOLD) {
+      encryptedFile.setValidUntil(appointmentDay.plusMonths(VALIDITY_PERIOD_SHORT));
+    } else {
+      encryptedFile.setValidUntil(appointmentDay.plusMonths(VALIDITY_PERIOD_REGULAR));
+    }
+
     procedure.addEncryptedFile(encryptedFile);
     procedureRepository.flush();
   }
@@ -210,11 +235,9 @@ public class ProstituteProtectionService {
     byte[] encryptionKey =
         personalDataEncryptionService.generateEncryptionKey(
             request.firstName(), request.lastName(), request.dateOfBirth());
-    byte[] decryptedData =
-        personalDataEncryptionService.decryptFile(
-            new EncryptedFileDataDto(encryptedFile.getEncryptedData(), encryptedFile.getNonce()),
-            encryptionKey);
-    return decryptedData;
+    return personalDataEncryptionService.decryptFile(
+        new EncryptedFileDataDto(encryptedFile.getEncryptedData(), encryptedFile.getNonce()),
+        encryptionKey);
   }
 
   private ProstituteProtectionTask createTask() {
@@ -410,8 +433,6 @@ public class ProstituteProtectionService {
     persistedConsultation.setPregnancy(newConsultation.isPregnancy());
     persistedConsultation.setAlcoholAndDrugUsage(newConsultation.isAlcoholAndDrugUsage());
     persistedConsultation.setReferral(newConsultation.isReferral());
-    persistedConsultation.setSupervisedConsultation(newConsultation.isSupervisedConsultation());
-    persistedConsultation.setRemark(newConsultation.getRemark());
     persistedConsultation.setLanguageOfConsultation(newConsultation.getLanguageOfConsultation());
     persistedConsultation.setInterpreterConsulted(newConsultation.isInterpreterConsulted());
     persistedConsultation.setInterpreterFirstName(newConsultation.getInterpreterFirstName());
@@ -493,5 +514,41 @@ public class ProstituteProtectionService {
                   waitingRoom,
                   waitingRoom.getModifiedAt());
             });
+  }
+
+  /**
+   * Adds a system progress entry to a given procedure. If the procedure is in a closed state, it
+   * updates the procedure status to "in progress" before adding the entry and restores the previous
+   * status afterward.
+   *
+   * <p>There is a requirement to download a certificate for a closed procedure for renewal.
+   * However, the progress entry service validates the procedure is not closed to permit adding a
+   * progress entry. For the use case above we decided to flip the procedure state to permit adding
+   * a progress entry for downloaded cert. This will also add audit log entries regarding procedure
+   * status change. Temporary status changes that are immediately reverted create "ghost" states in
+   * audit trails that can compromise the legal or protective integrity of the record.
+   *
+   * <p>Instead of toggling the state, the addSystemProgressEntry method should likely be modified
+   * to accept a procedure regardless of its current state, or there should be a concept to
+   * customise the validation logic depending on the use case.
+   *
+   * @param procedure the {@code ProstituteProtectionProcedure} to which the progress entry will be
+   *     added
+   * @param progressEntryType the type of progress entry being added, represented by {@code
+   *     ProstituteProtectionProgressEntryType}
+   * @param description the textual description of the progress entry
+   */
+  public void addSystemProgressEntry(
+      ProstituteProtectionProcedure procedure,
+      ProstituteProtectionProgressEntryType progressEntryType,
+      String description) {
+    ProcedureStatus procedureStatus = procedure.getProcedureStatus();
+    if (!procedureStatus.isOpen()) {
+      // The call of `progressEntryUtil.addSystemProgressEntry` requires the procedure
+      // to be in a not-closed state. Otherwise, adding a progress entry will fail.
+      procedure.updateProcedureStatus(ProcedureStatus.IN_PROGRESS, clock, auditLogger);
+    }
+    progressEntryUtil.addSystemProgressEntry(procedure, progressEntryType, description);
+    procedure.updateProcedureStatus(procedureStatus, clock, auditLogger);
   }
 }

@@ -29,6 +29,11 @@ public class Facility extends BaseEntityWithExternalId {
   @DataSensitivity(SensitivityLevel.PSEUDONYMIZED)
   private UUID originalCentralFileStateId;
 
+  /** Responsible person for this facility, e.g. facility manager, null if unassigned */
+  @DataSensitivity(SensitivityLevel.SENSITIVE)
+  @Column
+  private UUID assigneeId;
+
   /** Last Inspection Date, null if never inspected */
   @DataSensitivity(SensitivityLevel.SENSITIVE)
   @Column
@@ -58,6 +63,14 @@ public class Facility extends BaseEntityWithExternalId {
 
   public void setOriginalCentralFileStateId(UUID centralFileStateId) {
     this.originalCentralFileStateId = centralFileStateId;
+  }
+
+  public UUID getAssigneeId() {
+    return assigneeId;
+  }
+
+  public void setAssigneeId(UUID assigneeId) {
+    this.assigneeId = assigneeId;
   }
 
   public boolean isBanned() {

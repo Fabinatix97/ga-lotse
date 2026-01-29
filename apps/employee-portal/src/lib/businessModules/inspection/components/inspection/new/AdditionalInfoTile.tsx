@@ -32,7 +32,7 @@ import {
 } from "@eshg/lib-portal";
 
 import { useStartInspection } from "@/lib/businessModules/inspection/api/mutations/inspection";
-import { useIsNewFeatureEnabled } from "@/lib/businessModules/inspection/api/queries/feature";
+import { ObjectTypesSelectField } from "@/lib/businessModules/inspection/components/checklistDefinition/editor/header/ObjectTypesSelectField";
 import { InspectionAssigneeSelection } from "@/lib/businessModules/inspection/components/inspection/assignee/InspectionAssigneeSelection";
 import { useEditFileNumberSidebar } from "@/lib/businessModules/inspection/components/inspection/basedata/EditFileNumberSidebar";
 import { inspectionTypeNames } from "@/lib/businessModules/inspection/shared/enums";
@@ -55,11 +55,6 @@ interface AdditionalInfoTileProps {
   allAssignableUsers: ApiUser[];
 }
 
-export interface GroupedOption {
-  id: string;
-  name: string;
-}
-
 export function AdditionalInfoTile({
   procedureId,
   objectTypes,
@@ -73,7 +68,6 @@ export function AdditionalInfoTile({
   const onlySelfAssignable = !useHasUserRoleCheck(
     ApiUserRole.InspectionProcedureAssign,
   );
-  const featureToggleEnabled = useIsNewFeatureEnabled("OBJECT_TYPE_HIERARCHY");
 
   const router = useRouter();
 
@@ -86,19 +80,6 @@ export function AdditionalInfoTile({
     assigneeId: onlySelfAssignable ? selfUser.userId : null,
     assigneeName: onlySelfAssignable ? formatUserName(selfUser) : null,
   };
-
-  function isApiObjectType(
-    row: ApiObjectTypeHierarchyTreeNode | ApiObjectType,
-  ): row is ApiObjectType {
-    return !("subNodes" in row);
-  }
-
-  const objectTypeOptions = featureToggleEnabled
-    ? []
-    : objectTypes.filter(isApiObjectType).map((o) => ({
-        value: o.id,
-        label: o.name,
-      }));
 
   function handleSuccess() {
     router.push(routes.procedures.basedata(procedureId));
@@ -160,14 +141,9 @@ export function AdditionalInfoTile({
                 message="bereits vorhanden"
               />
             ) : (
-              <SelectField
+              <ObjectTypesSelectField
                 name="objectTypeId"
-                label="Objekttyp"
-                required="Bitte einen Objekttyp auswählen."
-                options={objectTypeOptions}
-                groupedOptions={
-                  featureToggleEnabled ? transformData(objectTypes) : undefined
-                }
+                objectTypes={objectTypes}
               />
             )}
             <SelectField
@@ -217,41 +193,4 @@ function ButtonBar({ isSubmitting }: Readonly<{ isSubmitting: boolean }>) {
       </SubmitButton>
     </Stack>
   );
-}
-
-interface ObjectType {
-  id: string;
-  name: string;
-}
-
-interface DataNode {
-  name: string;
-  objectTypes?: ObjectType[];
-  subNodes?: DataNode[];
-}
-
-export function transformData(
-  data: DataNode | DataNode[],
-): Record<string, GroupedOption[]> {
-  const groups: Record<string, GroupedOption[]> = {};
-
-  function traverse(node: DataNode): void {
-    if (!node) return;
-
-    if (node.name) {
-      groups[node.name] = node.objectTypes ?? [];
-    }
-
-    if (node.subNodes && node.subNodes.length > 0) {
-      node.subNodes.forEach((subNode) => traverse(subNode));
-    }
-  }
-
-  if (Array.isArray(data)) {
-    data.forEach((item) => traverse(item));
-  } else {
-    traverse(data);
-  }
-
-  return groups;
 }

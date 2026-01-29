@@ -157,6 +157,8 @@ function mapScreeningResult(
     gingivitisTreatment: screeningResult.gingivitisTreatment,
     orthodonticTreatment: screeningResult.orthodonticTreatment,
     plaqueTreatment: screeningResult.plaqueTreatment,
+    primaryDentitionObstructsSecondary:
+      screeningResult.primaryDentitionObstructsSecondary,
     inspectionAppointment: screeningResult.inspectionAppointment,
   };
 }

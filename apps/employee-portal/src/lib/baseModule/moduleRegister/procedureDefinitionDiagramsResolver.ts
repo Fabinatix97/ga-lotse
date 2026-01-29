@@ -39,5 +39,7 @@ export function resolveProcedureDefinitionDiagram(
       return undefined;
     case "PROSTITUTE_PROTECTION":
       return prostituteProtectionProcedureDefinitionDiagram;
+    case "INFECTION_BRIEFING":
+      return undefined;
   }
 }

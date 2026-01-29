@@ -22,6 +22,7 @@ interface HistogramProps {
   isDataGrouped: boolean;
   grouping?: DiagramGrouping;
   scaling?: DiagramScaling;
+  getColor?: (identifier: string) => string;
   eChartApi?: (eChartApi: ChartApi) => void;
 }
 
@@ -99,6 +100,9 @@ export function Histogram(props: HistogramProps) {
       barWidth: barWidth,
       barGap: 0,
       xAxisIndex: 0,
+      itemStyle: {
+        color: props.getColor?.(serie),
+      },
     };
   }) satisfies SeriesOption[];
 

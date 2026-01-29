@@ -52,6 +52,7 @@ public class ProstituteProtectionMapper {
       CreateProstituteProtectionProcedureRequest request) {
     PersonalData personalData = new PersonalData();
     personalData.setAlias(request.alias());
+    personalData.setPhoneNumber(request.phoneNumber());
     personalData.setLanguages(mapLanguages(request.languages()));
 
     prostituteProtectionProcedure.setPersonalData(personalData);
@@ -63,6 +64,7 @@ public class ProstituteProtectionMapper {
       UpdateEncryptedPersonalDataRequest request,
       EncryptedPersonalDataDto encryptedPersonalDataDto) {
     procedure.getPersonalData().setAlias(request.alias());
+    procedure.getPersonalData().setPhoneNumber(null);
     procedure.getPersonalData().setLanguages(mapLanguages(request.languages()));
     procedure.getPersonalData().setDocumentType(mapDocumentType(request.documentType()));
 
@@ -82,6 +84,7 @@ public class ProstituteProtectionMapper {
         procedure.getExternalId(),
         procedure.getVersion(),
         procedure.getPersonalData().getAlias(),
+        procedure.getPersonalData().getPhoneNumber(),
         AppointmentMapper.toInterfaceType(
             procedure.getAppointment(), procedure.getUserDefinedAppointment()),
         procedure.getAppointment() != null,
@@ -112,8 +115,6 @@ public class ProstituteProtectionMapper {
         consultation.isPregnancy(),
         consultation.isAlcoholAndDrugUsage(),
         consultation.isReferral(),
-        consultation.isSupervisedConsultation(),
-        consultation.getRemark(),
         mapToLanguageDto(consultation.getLanguageOfConsultation()),
         consultation.isInterpreterConsulted(),
         consultation.getInterpreterFirstName(),
@@ -135,8 +136,6 @@ public class ProstituteProtectionMapper {
     consultation.setPregnancy(dto.pregnancy());
     consultation.setAlcoholAndDrugUsage(dto.alcoholAndDrugUsage());
     consultation.setReferral(dto.referral());
-    consultation.setSupervisedConsultation(dto.supervisedConsultation());
-    consultation.setRemark(dto.remark());
     consultation.setLanguageOfConsultation(mapLanguage(dto.languageOfConsultation()));
     consultation.setInterpreterConsulted(dto.interpreterConsulted());
     consultation.setInterpreterFirstName(dto.interpreterFirstName());
@@ -292,6 +291,7 @@ public class ProstituteProtectionMapper {
     return new EncryptedFileOverviewDto(
         encryptedFile.getExternalId(),
         encryptedFile.getCreatedAt(),
+        encryptedFile.getValidUntil(),
         encryptedFile.getWithAlias(),
         encryptedFile.getCertificateType());
   }

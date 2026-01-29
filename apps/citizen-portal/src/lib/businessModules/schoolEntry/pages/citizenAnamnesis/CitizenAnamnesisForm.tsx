@@ -301,10 +301,9 @@ export function CitizenAnamnesisForm(props: CitizenAnamnesisFormProps) {
   const stepperTitleId = useId();
   return (
     <MultiStepForm<CitizenAnamnesisFormValues> steps={STEPS}>
-      {({ Outlet, currentStep, totalSteps, titleRef }) => (
+      {({ Outlet, currentStep, totalSteps }) => (
         <>
           <PageTitle
-            titleRef={titleRef}
             titleId={titleId}
             toolbar={
               <StepIndicator
@@ -319,6 +318,7 @@ export function CitizenAnamnesisForm(props: CitizenAnamnesisFormProps) {
           <Formik initialValues={INITIAL_VALUES} onSubmit={handleSubmit}>
             {(formikProps) => (
               <FormPlus
+                autoFocus
                 aria-labelledby={titleId}
                 aria-describedby={stepperTitleId}
               >

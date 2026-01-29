@@ -22,10 +22,10 @@ import {
 import { formatUserName } from "@eshg/lib-portal";
 import { ApiBusinessModule, ApiTask, ApiUser } from "@eshg/lib-procedures-api";
 
-import { teamviewColumns } from "@/lib/baseModule/components/task/teamviewColumns";
 import { useTeamviewFilterSettings } from "@/lib/baseModule/components/task/useTeamviewFilterSettings";
 import { resolveProcedureDetailsRoute } from "@/lib/baseModule/moduleRegister/routeResolver";
 import { useFetchTasksForTeamViewOptions } from "@/lib/businessModules/inspection/api/queries/useFetchTasksForTeamViewOptions";
+import { teamviewColumns } from "@/lib/businessModules/inspection/components/teamview/teamviewColumns";
 import { TeamviewFilters } from "@/lib/shared/api/queries/tasks";
 
 interface TaskCounts {

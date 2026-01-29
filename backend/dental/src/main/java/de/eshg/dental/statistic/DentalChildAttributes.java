@@ -105,9 +105,13 @@ public enum DentalChildAttributes implements AttributeInfo {
           null,
           new SensitiveParameters(null, 0.2))),
 
-  KARIES_RISIKO(
+  KARIES_HOCH_RISIKO(
       BooleanAttribute.createSensitive(
-          "Kariesrisiko", "KARIES_RISIKO", DentalChildAttributes.CATEGORY_PROPHYLAXIS, false, 0.2)),
+          "Karieshochrisiko",
+          "KARIES_HOCH_RISIKO",
+          DentalChildAttributes.CATEGORY_PROPHYLAXIS,
+          false,
+          0.2)),
 
   KARIES_STATUS(
       ValueWithOptionsAttribute.createSensitive(

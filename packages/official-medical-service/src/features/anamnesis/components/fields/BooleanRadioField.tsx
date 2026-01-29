@@ -55,8 +55,10 @@ export function BooleanRadioField({
   );
 }
 
-interface BooleanRadioButtonsProps
-  extends Omit<BooleanRadioFieldProps, "required"> {
+interface BooleanRadioButtonsProps extends Omit<
+  BooleanRadioFieldProps,
+  "required"
+> {
   disabled?: boolean;
   required?: boolean;
   onReset?: () => void;

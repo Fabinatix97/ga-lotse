@@ -141,6 +141,7 @@ export function ProstituteProtectionPersonSearchTable() {
       controls={
         <PersonSearchForm
           {...personSearch.formProps}
+          autoFocus
           onChange={async (v) => {
             personSearch.setValues(v);
             await getPersons();

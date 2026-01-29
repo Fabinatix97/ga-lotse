@@ -1,0 +1,36 @@
+{
+  "page_title": "Mein Termin",
+  "details": {
+    "title": "Informationen",
+    "appointment_type": "Leistungsart",
+    "consultation_name": "Prostituiertenschutzgesetz Beratung",
+    "date": "Termin Datum",
+    "location": "Ort",
+    "alias": "Alias",
+    "time": {
+      "title": "Zeit",
+      "start": "{{ time }} Uhr",
+      "duration": "Dauer: {{ duration }} Minuten"
+    },
+    "links": {
+      "title": "Internet",
+      "publicHealth_department": "Gesundheitsamt"
+    }
+  },
+  "preparations": {
+    "title": "Vorbereitung zum Termin",
+    "subtitle": "Wichtige Informationen ",
+    "alias_info": "Zum Termin wird zusätzlich der angegebene Alias benötigt.",
+    "documents_info": "Bitte bringen Sie zu Ihrem Termin ein gültiges Ausweisdokument mit (z. B. Personalausweis, Reisepass, Aufenthaltstitel, Duldung oder ein anderes gültiges Dokument)."
+  },
+  "contact_section": {
+    "title": "Kontakt",
+    "phone_number": "Telefon: {{ phoneNumber }}",
+    "eMail": "E-Mail:"
+  },
+  "important_notice": {
+    "title": "Wichtiger Hinweis",
+    "description": "Sie werden diese Termindetails nicht erneut aufrufen können.",
+    "reschedule": "Wenn Sie Ihren Termin verschieben oder absagen müssen, wenden Sie sich bitte telefonisch an das Gesundheitsamt."
+  }
+}

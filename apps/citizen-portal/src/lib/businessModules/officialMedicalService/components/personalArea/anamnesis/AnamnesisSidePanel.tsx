@@ -18,13 +18,11 @@ import { useAccessCodeParam } from "@/lib/shared/helpers/accessCode";
 interface AnamnesisSidePanelProps {
   stepIndex: number;
   setStepIndex: Dispatch<SetStateAction<number>>;
-  focusTitle: () => void;
 }
 
 export function AnamnesisSidePanel({
   stepIndex,
   setStepIndex,
-  focusTitle,
 }: AnamnesisSidePanelProps) {
   const { t } = useTranslation(["officialMedicalService/anamnesis"]);
   const { handleSubmit } = useFormikContext<BookAppointmentFormValues>();
@@ -45,7 +43,6 @@ export function AnamnesisSidePanel({
             variant="outlined"
             onClick={() => {
               setStepIndex((i) => i - 1);
-              focusTitle();
             }}
           >
             {t("sidePanel.back")}

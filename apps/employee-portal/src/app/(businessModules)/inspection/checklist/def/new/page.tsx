@@ -12,12 +12,18 @@ import {
   ToolbarBackButton,
 } from "@eshg/lib-employee-portal";
 
-import { useGetObjectTypes } from "@/lib/businessModules/inspection/api/queries/objectTypes";
+import { useIsNewFeatureEnabled } from "@/lib/businessModules/inspection/api/queries/feature";
+import {
+  useGetObjectTypeHierarchyTree,
+  useGetObjectTypes,
+} from "@/lib/businessModules/inspection/api/queries/objectTypes";
 import { EditChecklistDefinition } from "@/lib/businessModules/inspection/components/checklistDefinition/editor/EditChecklistDefinition";
 import { routes } from "@/lib/businessModules/inspection/shared/routes";
 
 export default function NewChecklist() {
   const { data: objectTypes } = useGetObjectTypes();
+  const { data: objectTypeHierarchyTree } = useGetObjectTypeHierarchyTree();
+  const featureToggleEnabled = useIsNewFeatureEnabled("OBJECT_TYPE_HIERARCHY");
 
   return (
     <StickyToolbarLayout
@@ -31,7 +37,11 @@ export default function NewChecklist() {
       }
     >
       <MainContentLayout fullViewportHeight>
-        <EditChecklistDefinition objectTypes={objectTypes} />
+        <EditChecklistDefinition
+          objectTypes={
+            featureToggleEnabled ? objectTypeHierarchyTree : objectTypes
+          }
+        />
       </MainContentLayout>
     </StickyToolbarLayout>
   );

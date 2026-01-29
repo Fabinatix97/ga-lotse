@@ -3,25 +3,33 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { useSuspenseQueries } from "@tanstack/react-query";
+import { startOfHour } from "date-fns";
 import { Formik } from "formik";
 import { useRouter } from "next/navigation";
 import { ReactNode } from "react";
 
+import { ApiUser } from "@eshg/base-api";
 import {
+  ApiAppointmentType,
   SidebarWithFormRefProps,
   UseSidebarWithFormRefResult,
+  useGetUsersByGroupQuery,
   useSidebarWithFormRef,
   useStepper,
 } from "@eshg/lib-employee-portal";
-import { mapOptionalValue } from "@eshg/lib-portal";
+import { OptionalFieldValue, mapOptionalValue } from "@eshg/lib-portal";
 import {
+  ApiAppointment,
   ApiConsultationType,
   ApiCreateProstituteProtectionProcedureRequest,
 } from "@eshg/prostitute-protection-api";
 
 import { useCreateProcedureMutation } from "../../../api/mutations/procedures";
+import { useGetFreeAppointmentsOptions } from "../../../api/queries/appointmentBlockApi";
 import { useGetAppointmentStandardDuration } from "../../../api/queries/appointmentStandardDuration";
 import { routes } from "../../../config/routes";
+import { PROSTITUTE_PROTECTION_GROUP_NAME } from "../../../shared/constants";
 import { getAppointmentDate, getDuration } from "../../../shared/helpers";
 import { AppointmentFieldsData } from "../../form/AppointmentFields";
 import { LanguageFieldsData } from "../../form/LanguageFields";
@@ -50,6 +58,8 @@ export interface FieldProps extends SidebarWithFormRefProps {
   subTitle?: string;
   jumpToAppointmentSelection: () => void;
   jumpToPersonalData: () => void;
+  allAssignableUsers: ApiUser[];
+  freeAppointments: ApiAppointment[];
 }
 const steps = [
   {
@@ -70,10 +80,11 @@ const steps = [
 ];
 
 export interface AddNewProcedureForm
-  extends LanguageFieldsData,
-    AppointmentFieldsData {
+  extends LanguageFieldsData, AppointmentFieldsData {
   alias: string;
-  consultationType: ApiConsultationType | "";
+  phoneNumber: string;
+  consultationType: OptionalFieldValue<ApiConsultationType>;
+  consultantId: OptionalFieldValue<string>;
 }
 
 export function useAddNewProcedureSidebar(): UseSidebarWithFormRefResult {
@@ -87,12 +98,25 @@ function SidebarWrapper(props: SidebarWithFormRefProps) {
   const { data } = useGetAppointmentStandardDuration();
   const router = useRouter();
 
+  const [{ data: allAssignableUsers }, { data: freeAppointments }] =
+    useSuspenseQueries({
+      queries: [
+        useGetUsersByGroupQuery(PROSTITUTE_PROTECTION_GROUP_NAME),
+        useGetFreeAppointmentsOptions({
+          appointmentType: ApiAppointmentType.ProstituteProtectionConsultation,
+          earliestDate: startOfHour(new Date()),
+        }),
+      ],
+    });
+
   const initialValues: AddNewProcedureForm = {
     alias: "",
+    phoneNumber: "",
     languages: [],
     hasSufficientGermanLanguageSkills: false,
     customAppointmentDate: "",
     consultationType: "",
+    consultantId: "",
     duration: data.standardDurations.PROSTITUTE_PROTECTION_CONSULTATION ?? 0,
     appointmentBookingType: "",
   };
@@ -138,6 +162,8 @@ function SidebarWrapper(props: SidebarWithFormRefProps) {
           changeToStep={changeToStep}
           jumpToAppointmentSelection={jumpToAppointmentSelection}
           jumpToPersonalData={jumpToPersonalData}
+          allAssignableUsers={allAssignableUsers}
+          freeAppointments={freeAppointments ?? []}
           onClose={props.onClose}
         />
       )}
@@ -164,8 +190,10 @@ function mapProcedureFormToApi(
     appointmentStart,
     durationInMinutes,
     alias: mapOptionalValue(form.alias),
+    phoneNumber: mapOptionalValue(form.phoneNumber),
     languages: form.languages ?? [],
     appointmentBookingType: form.appointmentBookingType,
     consultationType: mapOptionalValue(form.consultationType),
+    consultantId: mapOptionalValue(form.consultantId),
   };
 }

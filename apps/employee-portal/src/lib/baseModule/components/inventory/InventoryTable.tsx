@@ -10,6 +10,7 @@ import { Button, Stack } from "@mui/joy";
 
 import { ApiUserRole, GetInventoryItemsRequest } from "@eshg/base-api";
 import {
+  ButtonBar,
   DataTable,
   FilterSettingsContent,
   FilterSettingsSheet,
@@ -74,32 +75,33 @@ export function InventoryTable({ params }: InventoryTableProps) {
         )
       }
       controls={
-        <Stack
-          direction="row"
-          flexWrap="wrap-reverse"
-          justifyContent="space-between"
-          gap={2}
-        >
-          <Stack direction="row" flexWrap="wrap" gap="inherit">
-            <ToggleFilterButton {...filterSettings.filterButtonProps} />
-            <SearchFilter
-              tableControl={tableControl}
-              searchParamName="name"
-              label="Suche"
-            />
-          </Stack>
-          {isAdmin && (
-            <Button
-              startDecorator={<AddIcon />}
-              sx={{
-                justifySelf: "flex-end",
-              }}
-              onClick={() => addInventorySidebar.open({ labels })}
-            >
-              Inventar hinzufügen
-            </Button>
-          )}
-        </Stack>
+        <ButtonBar
+          left={
+            <Stack direction="row" flexWrap="wrap" gap="inherit">
+              <ToggleFilterButton {...filterSettings.filterButtonProps} />
+              <SearchFilter
+                tableControl={tableControl}
+                searchParamName="name"
+                label="Suche"
+              />
+            </Stack>
+          }
+          right={
+            isAdmin && (
+              <Button
+                autoFocus
+                startDecorator={<AddIcon />}
+                sx={{
+                  justifySelf: "flex-end",
+                }}
+                onClick={() => addInventorySidebar.open({ labels })}
+              >
+                Inventar hinzufügen
+              </Button>
+            )
+          }
+          invertDomOrder
+        />
       }
     >
       <TableSheet

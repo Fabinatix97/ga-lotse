@@ -19,8 +19,9 @@ type ReducedItemProps<TLabelProps> = Omit<
   "value"
 >;
 
-interface ExternalLinkDetailsItemProps<TLabelProps>
-  extends ReducedItemProps<TLabelProps> {
+interface ExternalLinkDetailsItemProps<
+  TLabelProps,
+> extends ReducedItemProps<TLabelProps> {
   value: string | undefined;
   href: (value: string) => string;
 }

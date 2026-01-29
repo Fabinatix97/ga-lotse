@@ -21,8 +21,9 @@ import {
 } from "@/lib/hooks/useEntities";
 import { useUpdateEntity } from "@/lib/hooks/useUpdateEntity";
 
-interface EnumCellProps<EData extends OrgUnitData | ActorData | RuleData>
-  extends CommonCellProps<EData> {
+interface EnumCellProps<
+  EData extends OrgUnitData | ActorData | RuleData,
+> extends CommonCellProps<EData> {
   options?: string[];
 }
 

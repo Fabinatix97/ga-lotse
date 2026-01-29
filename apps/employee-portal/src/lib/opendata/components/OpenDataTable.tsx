@@ -10,6 +10,7 @@ import { Button, Stack } from "@mui/joy";
 import { useSearchParams } from "next/navigation";
 
 import {
+  ButtonBar,
   DataTable,
   FilterSettings,
   FilterSettingsSheet,
@@ -82,24 +83,28 @@ export function OpenDataTable() {
       aria-label="Einträge"
       fullHeight
       controls={
-        <Stack
-          direction="row"
-          flexWrap="wrap-reverse"
-          justifyContent="space-between"
-          gap={2}
-        >
-          <Stack direction="row" flexWrap="wrap" gap="inherit">
-            <ToggleFilterButton {...filterSettings.filterButtonProps} />
-            <SearchFilter
-              tableControl={tableControl}
-              searchParamName="searchQuery"
-              label="Suche"
-            />
-          </Stack>
-          <Button startDecorator={<Add />} onClick={handleAddNewEntry}>
-            Datensatz anlegen
-          </Button>
-        </Stack>
+        <ButtonBar
+          left={
+            <Stack direction="row" flexWrap="wrap" gap="inherit">
+              <ToggleFilterButton {...filterSettings.filterButtonProps} />
+              <SearchFilter
+                tableControl={tableControl}
+                searchParamName="searchQuery"
+                label="Suche"
+              />
+            </Stack>
+          }
+          right={
+            <Button
+              autoFocus
+              startDecorator={<Add />}
+              onClick={handleAddNewEntry}
+            >
+              Datensatz anlegen
+            </Button>
+          }
+          invertDomOrder
+        />
       }
       filterSettings={
         filterSettings.filterSettingsVisible && (

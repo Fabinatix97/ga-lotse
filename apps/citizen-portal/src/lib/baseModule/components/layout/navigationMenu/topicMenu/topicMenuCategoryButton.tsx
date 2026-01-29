@@ -18,8 +18,7 @@ type TopicMenuCategoryButtonComponent = (
   props: TopicMenuCategoryButtonComponentProps,
 ) => ReactNode;
 
-export interface TopicMenuCategoryButtonComponentProps
-  extends RequiresChildren {
+export interface TopicMenuCategoryButtonComponentProps extends RequiresChildren {
   onClick: () => void;
 }
 

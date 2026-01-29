@@ -191,6 +191,11 @@
     secretKeyRef:
       name: keycloak-client-secrets
       key: prostitute-protection-module-client-secret
+- name: eshg.keycloak.employee-realm.module-client-secrets.infection-briefing
+  valueFrom:
+    secretKeyRef:
+      name: keycloak-client-secrets
+      key: infection-briefing-module-client-secret
 {{- range $k, $v := .Values.keycloak.additionalModuleClientSecrets }}
 - name: eshg.keycloak.employee-realm.module-client-secrets.{{ $k }}
   valueFrom:
@@ -292,6 +297,10 @@
 {{- if .Values.businessmodules.prostituteprotection.enabled }}
 - name: de.eshg.business-modules.clients.PROSTITUTE_PROTECTION.url
   value: "http://prostituteprotection{{ .Values.domains.clusterLocalSuffix }}"
+{{- end }}
+{{- if .Values.businessmodules.infectionbriefing.enabled }}
+- name: de.eshg.business-modules.clients.INFECTION_BRIEFING.url
+  value: "http://infectionbriefing{{ .Values.domains.clusterLocalSuffix }}"
 {{- end }}
 {{- if .Values.svgsanitizer.enabled }}
 - name: de.eshg.base.svg-sanitizer-base-url

@@ -35,7 +35,7 @@ interface DrawerState {
   pending: DrawerInstance | null;
 }
 
-interface DrawerCloseOptions {
+export interface DrawerCloseOptions {
   drawerId?: string;
   force?: boolean;
 }

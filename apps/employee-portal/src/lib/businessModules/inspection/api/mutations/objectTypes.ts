@@ -45,5 +45,6 @@ function mapEditableObjectTypeToUpdateObjectTypeRequest(
     standardBufferTime: mapOptionalValue(objectType.standardBufferTime),
     emailAnnouncement: objectType.emailAnnouncement,
     legalBasis: mapOptionalValue(objectType.legalBasis),
+    designatedAssigneeId: mapOptionalValue(objectType.designatedAssigneeId),
   };
 }

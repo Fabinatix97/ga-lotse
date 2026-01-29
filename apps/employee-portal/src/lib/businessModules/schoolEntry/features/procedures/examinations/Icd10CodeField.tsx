@@ -29,8 +29,10 @@ const FIXED_WIDTH_STYLE: SxProps = {
   ".MuiInput-root": { width: "140px" },
 };
 
-interface Icd10CodeFieldProps
-  extends Omit<FieldProps<ApiIcd10CodeWithOriginalCode[]>, "label"> {
+interface Icd10CodeFieldProps extends Omit<
+  FieldProps<ApiIcd10CodeWithOriginalCode[]>,
+  "label"
+> {
   values: ApiIcd10CodeWithOriginalCode[];
   disabled?: boolean;
   setFieldValue: SetFieldValueHelper;

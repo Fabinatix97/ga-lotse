@@ -86,6 +86,7 @@ export function TextTemplatesOverviewTable() {
     <TablePage
       controls={
         <Button
+          autoFocus
           sx={{ alignSelf: "end" }}
           startDecorator={<Add />}
           onClick={() => setNewSidebarOpen(true)}

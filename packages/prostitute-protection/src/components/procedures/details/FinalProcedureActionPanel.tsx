@@ -33,13 +33,11 @@ export function FinalProcedureActionPanel({
   );
 
   async function handleCloseProcedure() {
-    await closeProcedure.mutateAsync({ version: procedure.version });
+    await closeProcedure.mutateAsync();
   }
 
   async function handleAbortProcedure() {
-    await abortProcedure.mutateAsync({
-      version: procedure.version,
-    });
+    await abortProcedure.mutateAsync();
   }
 
   return (

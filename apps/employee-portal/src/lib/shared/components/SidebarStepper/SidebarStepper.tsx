@@ -30,8 +30,9 @@ import {
 
 import { SidebarStep, SidebarStepContentProps } from "./sidebarStep";
 
-interface SidebarStepperProps<TStepperFormModel extends FormikValues[]>
-  extends SidebarWithFormRefProps {
+interface SidebarStepperProps<
+  TStepperFormModel extends FormikValues[],
+> extends SidebarWithFormRefProps {
   steps: {
     [K in keyof TStepperFormModel]: SidebarStep<
       TStepperFormModel[K],

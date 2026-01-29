@@ -24,8 +24,10 @@ const DescriptionText = styled("div")({
   marginLeft: "1.875rem", // checkbox width + gap between checkbox and label
 });
 
-interface ConfirmationCheckboxFieldProps
-  extends Omit<FieldProps<boolean>, "label"> {
+interface ConfirmationCheckboxFieldProps extends Omit<
+  FieldProps<boolean>,
+  "label"
+> {
   label: string;
   descriptionText?: ReactNode;
 }

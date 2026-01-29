@@ -20,11 +20,10 @@ import {
   ApiSalutation,
 } from "@eshg/measles-protection-api";
 
-export interface AffectedPersonFormInputs
-  extends Omit<
-    ApiAffectedPerson,
-    "roleStatus" | "gender" | "dateOfBirth" | "salutation" | "address"
-  > {
+export interface AffectedPersonFormInputs extends Omit<
+  ApiAffectedPerson,
+  "roleStatus" | "gender" | "dateOfBirth" | "salutation" | "address"
+> {
   gender: OptionalFieldValue<ApiGender>;
   dateOfBirth: string;
   salutation: OptionalFieldValue<ApiSalutation>;
@@ -38,11 +37,10 @@ export interface AffectedPersonFormInputs
   } & { reportingDate: string };
 }
 
-export interface CustodianFormInputs
-  extends Omit<
-    ApiCustodianDetails,
-    "gender" | "dateOfBirth" | "salutation" | "address"
-  > {
+export interface CustodianFormInputs extends Omit<
+  ApiCustodianDetails,
+  "gender" | "dateOfBirth" | "salutation" | "address"
+> {
   gender: OptionalFieldValue<ApiGender>;
   dateOfBirth: string;
   salutation: OptionalFieldValue<ApiSalutation>;
@@ -64,11 +62,10 @@ export interface FacilityFormInputs extends ApiAddFacilityFileStateRequest {
   contactPersons: FacilityContactPersonFormInputs[];
 }
 
-export interface ReportMeaslesCase
-  extends Omit<
-    ApiReportCaseRequest,
-    "affectedPersons" | "type" | "roleReportData"
-  > {
+export interface ReportMeaslesCase extends Omit<
+  ApiReportCaseRequest,
+  "affectedPersons" | "type" | "roleReportData"
+> {
   affectedPersons: AffectedPersonFormInputs[];
   facility: FacilityFormInputs;
   otherFacilityTypeInformation?: string;

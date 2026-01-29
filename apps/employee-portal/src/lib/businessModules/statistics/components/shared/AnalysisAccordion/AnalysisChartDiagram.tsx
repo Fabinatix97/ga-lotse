@@ -10,7 +10,7 @@ import {
   OpenInFullOutlined,
 } from "@mui/icons-material";
 import { Box, IconButton, Stack, Tooltip, Typography } from "@mui/joy";
-import { useId, useState } from "react";
+import { useCallback, useId, useState } from "react";
 import { isNonNullish, isObjectType } from "remeda";
 
 import { ActionsMenu, useConfirmationDialog } from "@eshg/lib-employee-portal";
@@ -50,6 +50,7 @@ export function AnalysisChartDiagram(props: {
   evaluatedDataAmountTotal: number;
   isReport: boolean;
   dataSourceSensitivity: DataSourceSensitivity;
+  getColor: (identifier: string) => string;
 }) {
   const [eChartApi, setEChartApi] = useState<ChartApi | null>(null);
   const updateDiagramSidebar = useUpdateDiagramSidebar();
@@ -75,7 +76,7 @@ export function AnalysisChartDiagram(props: {
     });
   }
 
-  function getChart() {
+  const getChart = useCallback(() => {
     switch (props.configuration.type) {
       case DiagramType.PIE_CHART:
         return (
@@ -83,6 +84,7 @@ export function AnalysisChartDiagram(props: {
             diagramData={
               props.analysisDiagram.data as AnalysisDiagramPieChart["data"]
             }
+            getColor={props.getColor}
             eChartApi={setEChartApi}
           />
         );
@@ -93,6 +95,7 @@ export function AnalysisChartDiagram(props: {
               (props.analysisDiagram as AnalysisDiagramLineChart).data
             }
             configuration={props.configuration}
+            getColor={props.getColor}
             eChartApi={setEChartApi}
           />
         );
@@ -103,6 +106,7 @@ export function AnalysisChartDiagram(props: {
               (props.analysisDiagram as AnalysisDiagramScatterChart).data
             }
             configuration={props.configuration}
+            getColor={props.getColor}
             eChartApi={setEChartApi}
           />
         );
@@ -116,6 +120,7 @@ export function AnalysisChartDiagram(props: {
             grouping={props.configuration.grouping}
             scaling={props.configuration.scaling}
             orientation={props.configuration.orientation}
+            getColor={props.getColor}
             eChartApi={setEChartApi}
           />
         );
@@ -128,6 +133,7 @@ export function AnalysisChartDiagram(props: {
             isDataGrouped={isNonNullish(props.configuration.secondaryAttribute)}
             grouping={props.configuration.grouping}
             scaling={props.configuration.scaling}
+            getColor={props.getColor}
             eChartApi={setEChartApi}
           />
         );
@@ -148,7 +154,7 @@ export function AnalysisChartDiagram(props: {
           />
         );
     }
-  }
+  }, [props.analysisDiagram, props.configuration, props.getColor]);
 
   const [openFullScreenChart, setOpenFullScreenChart] = useState(false);
   const canExportData = canExportDataPermission(props.dataSourceSensitivity);

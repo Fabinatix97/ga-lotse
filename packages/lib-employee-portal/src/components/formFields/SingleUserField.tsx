@@ -18,6 +18,7 @@ interface SingleStaffUserFieldProps extends FieldProps<string> {
   required?: string;
   placeholder?: string;
   label: string;
+  disabled?: boolean;
 }
 
 export function SingleUserField(props: Readonly<SingleStaffUserFieldProps>) {
@@ -53,6 +54,7 @@ export function SingleUserField(props: Readonly<SingleStaffUserFieldProps>) {
         name={props.name}
         value={mapValue(field.input.value)}
         disableClearable={field.required}
+        disabled={props.disabled}
         filterOptions={(options, params) => {
           const { inputValue } = params;
           return options.filter((opt) => {
@@ -68,13 +70,14 @@ export function SingleUserField(props: Readonly<SingleStaffUserFieldProps>) {
         options={props.options}
         getOptionLabel={(value) => formatUserName(value)}
         getOptionKey={(value) => value.userId}
+        isOptionEqualToValue={(option, value) => option.userId === value.userId}
         slotProps={{
           listbox: {
             disablePortal: true,
           },
         }}
         onChange={(_, newValue) => {
-          void field.helpers.setValue(newValue !== null ? newValue.userId : "");
+          void field.helpers.setValue(newValue === null ? "" : newValue.userId);
         }}
         onBlur={field.input.onBlur}
       />

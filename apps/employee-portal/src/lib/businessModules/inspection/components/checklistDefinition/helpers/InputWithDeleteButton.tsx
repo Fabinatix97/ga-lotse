@@ -12,8 +12,7 @@ import {
 } from "@/lib/businessModules/inspection/components/checklistDefinition/helpers/FlexInputField";
 
 interface InputWithDeleteButtonProps
-  extends FlexInputFieldProps,
-    DeleteButtonProps {
+  extends FlexInputFieldProps, DeleteButtonProps {
   hideDeleteButton?: boolean;
 }
 

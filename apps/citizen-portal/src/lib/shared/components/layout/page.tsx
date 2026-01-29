@@ -6,10 +6,14 @@
 "use client";
 
 import { Sheet, Stack, Typography, styled } from "@mui/joy";
-import { ReactNode, RefObject, useEffect, useRef } from "react";
-import { isDefined, isNullish } from "remeda";
+import { ReactNode } from "react";
+import { isDefined } from "remeda";
 
-import { AlertSlot, RequiresChildren } from "@eshg/lib-portal";
+import {
+  AlertSlot,
+  RequiresChildren,
+  useAutoTitleFocus,
+} from "@eshg/lib-portal";
 
 import { theme } from "@/lib/baseModule/theme/theme";
 import { MobileBreakpoint } from "@/lib/shared/breakpoints";
@@ -44,19 +48,11 @@ export function PageLayout(props: PageLayoutProps) {
 
 interface PageTitleProps extends RequiresChildren {
   toolbar?: ReactNode;
-  titleRef?: RefObject<HTMLDivElement | null>;
   titleId?: string;
 }
 
 export function PageTitle(props: PageTitleProps) {
-  const titleRef = useRef<HTMLDivElement>(null);
-  useEffect(() => {
-    // Focus the title when the page is loaded
-    // In case props.titleRef is defined, it is handled in other components
-    if (isNullish(props.titleRef)) {
-      titleRef.current?.focus();
-    }
-  }, [props.titleRef]);
+  const titleRef = useAutoTitleFocus();
 
   return (
     <Sheet
@@ -72,7 +68,7 @@ export function PageTitle(props: PageTitleProps) {
       }}
     >
       <Typography
-        ref={props.titleRef ?? titleRef}
+        ref={titleRef}
         level="h1"
         flexGrow={1}
         sx={{ hyphens: "auto", overflowWrap: "break-word" }}

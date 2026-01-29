@@ -38,8 +38,7 @@ enum FormNames {
   CITIZEN_MAX_LEAD_TIME = "citizenFreeAppointmentsMaxLeadTime",
 }
 
-export interface SchoolEntryAppointmentBlockAvailabilityFormModel
-  extends FormikValues {
+export interface SchoolEntryAppointmentBlockAvailabilityFormModel extends FormikValues {
   [FormNames.AVAILABLE_FOR_CITIZEN]: boolean;
   [FormNames.AVAILABLE_FOR_BULK_BOOKING]: boolean;
   [FormNames.BULK_CREATE_MIN_LEAD_TIME]: OptionalFieldValue<number>;

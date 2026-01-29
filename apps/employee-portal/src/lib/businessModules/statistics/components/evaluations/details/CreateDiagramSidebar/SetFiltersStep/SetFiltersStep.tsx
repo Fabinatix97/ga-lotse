@@ -12,8 +12,7 @@ import { SidebarStepContentProps } from "@/lib/shared/components/SidebarStepper/
 import { UseFilterTemplateProps } from "@/lib/shared/components/filterSettings/useFilterTemplate";
 import { FilterSettingsField } from "@/lib/shared/components/formFields/FilterSettingsField";
 
-interface SetFiltersStepProps
-  extends SidebarStepContentProps<SetFiltersStepFormModel> {
+interface SetFiltersStepProps extends SidebarStepContentProps<SetFiltersStepFormModel> {
   attributes: FlatAttribute[];
   getUseFilterTemplateProps: (
     filterSettings: UseFilterSettings,

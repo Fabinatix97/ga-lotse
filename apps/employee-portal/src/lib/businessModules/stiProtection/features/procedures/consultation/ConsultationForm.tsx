@@ -60,7 +60,7 @@ export function ConsultationForm({
       onSubmit={onSubmit}
     >
       {({ values }) => (
-        <FormPlus aria-labelledby="consultation-title">
+        <FormPlus autoFocus aria-labelledby="consultation-title">
           <ConfirmLeaveDirtyFormEffect
             onSaveMutation={{
               mutationOptions: upsertConsultationOptions,

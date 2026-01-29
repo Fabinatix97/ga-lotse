@@ -16,8 +16,10 @@ import { ProcedureDetails } from "@/lib/businessModules/schoolEntry/api/models/P
 import { useReopenProcedure } from "@/lib/businessModules/schoolEntry/api/mutations/schoolEntryApi";
 import { DataField } from "@/lib/shared/components/modal/DataField";
 
-interface ReopenProcedureModalProps
-  extends Omit<BaseModalPropsRequiredClose, "children" | "modalTitle"> {
+interface ReopenProcedureModalProps extends Omit<
+  BaseModalPropsRequiredClose,
+  "children" | "modalTitle"
+> {
   procedure: ProcedureDetails;
 }
 

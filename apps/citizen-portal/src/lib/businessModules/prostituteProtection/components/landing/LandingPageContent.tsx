@@ -6,13 +6,14 @@
 "use client";
 
 import { Typography } from "@mui/joy";
-import { useSuspenseQueries } from "@tanstack/react-query";
 
-import { useProstituteProtectionCitizenPublicApi } from "@/lib/businessModules/prostituteProtection/api/clients";
 import {
-  getDepartmentInfoQuery,
-  getOpeningHoursQuery,
-} from "@/lib/businessModules/prostituteProtection/api/queries/publicCitizenApi";
+  ApiGetDepartmentInfoResponse,
+  ApiGetOpeningHoursResponse,
+} from "@eshg/prostitute-protection-api";
+
+import { MarkdownSheet } from "@/lib/baseModule/components/MarkdownSheet";
+import { useCitizenRoutes } from "@/lib/businessModules/prostituteProtection/shared/routes";
 import { useTranslation } from "@/lib/i18n/client";
 import { ContactAndAvailabilitySheet } from "@/lib/shared/components/ContactAndAvailabilitySheet";
 import {
@@ -20,57 +21,66 @@ import {
   ContentSheetTitle,
 } from "@/lib/shared/components/layout/contentSheet";
 import { GridColumnStack } from "@/lib/shared/components/layout/grid";
+import { ScopedInternalLinkButton } from "@/lib/shared/components/scopedLinks";
 
-export function LandingPageContent() {
+interface LandingPageContentProps {
+  landingContent: string;
+  openingHours: ApiGetOpeningHoursResponse;
+  departmentInfo: ApiGetDepartmentInfoResponse;
+}
+
+export function LandingPageContent({
+  landingContent,
+  openingHours,
+  departmentInfo,
+}: LandingPageContentProps) {
   const { t } = useTranslation(["prostituteProtection/overview"]);
 
   return (
     <GridColumnStack>
+      <MarkdownSheet
+        title={t("generalInformation.title")}
+        source={landingContent}
+      />
       <ContentSheet>
-        <ContentSheetTitle>{t("generalInformation.title")}</ContentSheetTitle>
+        <ContactAndAvailabilitySheet
+          openingHoursSectionProps={{
+            openingHourTranslations: openingHours,
+          }}
+          departmentInfo={departmentInfo}
+        />
       </ContentSheet>
-      <ContactSection />
     </GridColumnStack>
   );
 }
 
-export function AppointmentSection() {
+interface AppointmentSectionProps {
+  enabled: boolean;
+}
+
+export function AppointmentSection({ enabled }: AppointmentSectionProps) {
   const { t } = useTranslation(["prostituteProtection/overview"]);
+  const prostituteProtectionRoutes = useCitizenRoutes();
 
   return (
     <ContentSheet>
       <ContentSheetTitle>{t("appointmentsSection.title")}</ContentSheetTitle>
-      <Typography>{t("appointmentsSection.description")}</Typography>
+      {enabled ? (
+        <>
+          <Typography>
+            {t("appointmentsSection.description_enabled")}
+          </Typography>
+          <ScopedInternalLinkButton
+            href={prostituteProtectionRoutes.bookAppointment}
+          >
+            {t("appointmentsSection.create_appointment")}
+          </ScopedInternalLinkButton>
+        </>
+      ) : (
+        <Typography>
+          {t("appointmentsSection.description_not_enabled")}
+        </Typography>
+      )}
     </ContentSheet>
-  );
-}
-
-function ContactSection() {
-  const publicCitizenApi = useProstituteProtectionCitizenPublicApi();
-  const [{ data: departmentInfo }, { data: openingHours }] = useSuspenseQueries(
-    {
-      queries: [
-        getDepartmentInfoQuery(publicCitizenApi),
-        getOpeningHoursQuery(publicCitizenApi),
-      ],
-    },
-  );
-  return (
-    <ContentSheet>
-      <ContactAndAvailabilitySheet
-        openingHoursSectionProps={{
-          openingHourTranslations: openingHours,
-        }}
-        departmentInfo={departmentInfo}
-      />
-    </ContentSheet>
-  );
-}
-
-export function LandingPageSidePanel() {
-  return (
-    <GridColumnStack>
-      <AppointmentSection />
-    </GridColumnStack>
   );
 }

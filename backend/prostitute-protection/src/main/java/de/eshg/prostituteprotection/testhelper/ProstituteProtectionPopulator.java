@@ -16,6 +16,7 @@ import de.eshg.prostituteprotection.api.CreateProstituteProtectionProcedureRespo
 import de.eshg.prostituteprotection.api.LanguageDto;
 import de.eshg.prostituteprotection.domain.model.ProstituteProtectionProcedure;
 import de.eshg.prostituteprotection.domain.repository.ProstituteProtectionProcedureRepository;
+import de.eshg.rest.service.security.CurrentUserHelper;
 import de.eshg.testhelper.environment.EnvironmentConfig;
 import de.eshg.testhelper.population.BasePopulator;
 import de.eshg.testhelper.population.ListWithTotalNumber;
@@ -65,8 +66,10 @@ public class ProstituteProtectionPopulator
     CreateProstituteProtectionProcedureRequest request =
         new CreateProstituteProtectionProcedureRequest(
             faker.artist().name(),
+            faker.phoneNumber().phoneNumber(),
             List.of(randomElement(faker, LanguageDto.values())),
             ConsultationTypeDto.INITIAL,
+            CurrentUserHelper.getCurrentUserId(),
             AppointmentBookingTypeDto.USER_DEFINED,
             clock.instant().plus(start),
             randomElement(faker, List.of(15, 30, 45, 60)));
@@ -98,8 +101,6 @@ public class ProstituteProtectionPopulator
             faker.bool().bool(),
             faker.bool().bool(),
             faker.bool().bool(),
-            faker.bool().bool(),
-            faker.lorem().sentence(),
             randomElement(faker, LanguageDto.values()),
             true,
             faker.name().firstName(),

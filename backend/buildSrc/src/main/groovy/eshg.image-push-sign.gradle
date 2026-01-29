@@ -19,8 +19,7 @@ def getImageName() {
     return "${getImageBaseName()}/${project.name}"
 }
 
-static def getRepoDigest(String imageNameWithTag) {
-  def commandLine = ['docker', 'inspect', '--format={{index .RepoDigests 0}}', imageNameWithTag]
+static def execSuccessfullyAndGetResult(List<String> commandLine) {
   def stdout = new StringBuilder()
   def stderr = new StringBuilder()
 
@@ -28,9 +27,21 @@ static def getRepoDigest(String imageNameWithTag) {
   process.consumeProcessOutput(stdout, stderr)
   process.waitFor()
 
-  assert stderr.toString().isEmpty(): "Could not get repo digest! Docker returned:\n${stderr.toString()}"
+  assert stderr.toString().isEmpty(): "execution failed.\n${stderr.toString()}"
 
-  def digest = stdout.toString().trim()
+  return stdout.toString().trim()
+}
+
+static def getRepoDigest(String imageNameWithTag) {
+  def commandLine = ['docker', 'inspect', '--format={{index .RepoDigests 0}}', imageNameWithTag]
+
+  def digest = execSuccessfullyAndGetResult(commandLine)
+  def i = 0;
+  while (digest.isEmpty() && i < 3) {
+    digest = execSuccessfullyAndGetResult(commandLine)
+    i++
+  }
+
   assert !digest.isEmpty(): "Unexpected empty output from command!"
 
   return digest
@@ -96,7 +107,7 @@ tasks.register("signDockerImage", Exec) {
 
   def argProv = {
     [
-      'sign', getRepoDigest(getImageNameWithTag()),
+      'sign', '--new-bundle-format=false', '--use-signing-config=false', getRepoDigest(getImageNameWithTag()),
       '--annotations', "com.gitlab.ci.pipeline.id=${System.getenv("CI_PIPELINE_ID")}".toString(),
       '--annotations', "com.gitlab.ci.pipeline.url=${System.getenv("CI_PIPELINE_URL")}".toString(),
       '--annotations', "com.gitlab.ci.job.id=${System.getenv("CI_JOB_ID")}".toString(),

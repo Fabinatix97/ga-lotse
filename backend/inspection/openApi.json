@@ -1960,6 +1960,63 @@
         "tags" : [ "WebSearch" ]
       }
     },
+    "/facilities/{externalId}/assignee" : {
+      "get" : {
+        "operationId" : "getAssignee",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "externalId",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/User"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "get user assigned to this facility",
+        "tags" : [ "Facility" ]
+      },
+      "put" : {
+        "operationId" : "setAssignee",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "externalId",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/InspSetAssigneeRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          }
+        },
+        "summary" : "set user id assigned to this facility",
+        "tags" : [ "Facility" ]
+      }
+    },
     "/facilities/{id}" : {
       "put" : {
         "operationId" : "updateFacility",
@@ -6198,7 +6255,7 @@
       },
       "BusinessModule" : {
         "type" : "string",
-        "enum" : [ "INSPECTION", "SCHOOL_ENTRY", "TRAVEL_MEDICINE", "MEASLES_PROTECTION", "STI_PROTECTION", "MEDICAL_REGISTRY", "DENTAL", "OFFICIAL_MEDICAL_SERVICE", "MEDS_ABROAD", "PROSTITUTE_PROTECTION" ]
+        "enum" : [ "INSPECTION", "SCHOOL_ENTRY", "TRAVEL_MEDICINE", "MEASLES_PROTECTION", "STI_PROTECTION", "MEDICAL_REGISTRY", "DENTAL", "OFFICIAL_MEDICAL_SERVICE", "MEDS_ABROAD", "PROSTITUTE_PROTECTION", "INFECTION_BRIEFING" ]
       },
       "BusinessProcedureInclusionStatus" : {
         "type" : "string",
@@ -9700,6 +9757,15 @@
         "type" : "string",
         "enum" : [ "NEW", "PENDING", "OVERDUE" ]
       },
+      "InspSetAssigneeRequest" : {
+        "type" : "object",
+        "properties" : {
+          "assigneeId" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }
+      },
       "InspUpdateFacilityRequest" : {
         "required" : [ "baseFacility", "procedureId" ],
         "type" : "object",
@@ -9940,7 +10006,7 @@
       },
       "InspectionFeature" : {
         "type" : "string",
-        "enum" : [ "SAMPLES", "OBJECT_TYPE_HIERARCHY", "TEIS_DATA", "CHECKLIST_REQUIREMENT_REMOVAL" ]
+        "enum" : [ "SAMPLES", "OBJECT_TYPE_HIERARCHY", "TEIS_DATA", "CHECKLIST_REQUIREMENT_REMOVAL", "OBJECT_TYPE_ASSIGNEE", "CHECKLISTS_ALWAYS_REMOVABLE" ]
       },
       "InspectionFollowupInfo" : {
         "type" : "object",
@@ -10711,6 +10777,15 @@
             "minimum" : 1,
             "type" : "integer",
             "format" : "int32",
+            "nullable" : true
+          },
+          "designatedAssigneeId" : {
+            "type" : "string",
+            "format" : "uuid",
+            "nullable" : true
+          },
+          "designatedAssigneeName" : {
+            "type" : "string",
             "nullable" : true
           },
           "emailAnnouncement" : {
@@ -12150,6 +12225,11 @@
           "complaintInterval" : {
             "type" : "integer",
             "format" : "int32",
+            "nullable" : true
+          },
+          "designatedAssigneeId" : {
+            "type" : "string",
+            "format" : "uuid",
             "nullable" : true
           },
           "emailAnnouncement" : {

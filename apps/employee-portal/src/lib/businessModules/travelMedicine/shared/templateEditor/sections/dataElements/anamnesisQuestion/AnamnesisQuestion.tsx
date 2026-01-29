@@ -70,7 +70,7 @@ export function AnamnesisQuestion({
   }, [addSubElementHandler]);
 
   useEffect(() => {
-    if (subElementRef.current) {
+    if (subElementRef.current && subElementAdded) {
       subElementRef.current.focus();
       setSubElementAdded(false);
     }

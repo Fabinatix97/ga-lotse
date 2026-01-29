@@ -38,7 +38,7 @@ export function OfflineExistingPasswordDialog({
     >
       <Formik initialValues={{ password: "" }} onSubmit={handleSubmit}>
         {({ isSubmitting }) => (
-          <FormPlus>
+          <FormPlus autoFocus>
             <Stack gap={3}>
               {retry && (
                 <Alert

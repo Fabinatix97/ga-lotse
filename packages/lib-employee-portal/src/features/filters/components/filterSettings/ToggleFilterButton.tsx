@@ -12,10 +12,13 @@ import {
   ToggleExpandButtonProps,
 } from "../../../../components/buttons/ToggleExpandButton";
 
-export interface ToggleFilterButtonProps
-  extends Omit<ToggleExpandButtonProps, "expanded"> {
+export interface ToggleFilterButtonProps extends Omit<
+  ToggleExpandButtonProps,
+  "expanded"
+> {
   isFilterVisible?: boolean;
   activeFilters?: number;
+  autoFocus?: boolean;
 }
 
 export function ToggleFilterButton(props: ToggleFilterButtonProps) {

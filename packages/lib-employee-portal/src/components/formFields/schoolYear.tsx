@@ -17,11 +17,10 @@ import {
 
 import { formatSchoolYear } from "../../utils/formatters";
 
-interface SchoolYearAutocompleteProps
-  extends Omit<
-    AutocompleteProps<number, false, false, false>,
-    "options" | "getOptionLabel"
-  > {
+interface SchoolYearAutocompleteProps extends Omit<
+  AutocompleteProps<number, false, false, false>,
+  "options" | "getOptionLabel"
+> {
   range?: YearRange;
 }
 

@@ -9,8 +9,7 @@ import { Button, ButtonProps } from "@mui/joy";
 import { RequiresChildren } from "@eshg/lib-portal";
 
 interface FileDownloadButtonProps
-  extends Pick<ButtonProps, "color" | "variant">,
-    RequiresChildren {
+  extends Pick<ButtonProps, "color" | "variant">, RequiresChildren {
   file: File;
 }
 

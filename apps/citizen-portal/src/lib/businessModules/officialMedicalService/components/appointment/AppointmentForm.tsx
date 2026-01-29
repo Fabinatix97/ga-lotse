@@ -129,10 +129,9 @@ export function AppointmentForm() {
   return (
     <DepartmentContextProvider>
       <MultiStepForm<AppointmentFormValues> steps={AppointmentStepFactory}>
-        {({ Outlet, titleRef, currentStep, totalSteps }) => (
+        {({ Outlet, currentStep, totalSteps }) => (
           <>
             <MultiStepFormTitle
-              titleRef={titleRef}
               title={t("common.title")}
               stepperTitle={t("common.stepTitle", {
                 currentStepIndex: currentStep,
@@ -198,7 +197,7 @@ function StepperInner({
   return (
     <Formik initialValues={INITIAL_VALUES} onSubmit={handleSubmit}>
       {(formikProps) => (
-        <FormPlus aria-label={t("common.title")}>
+        <FormPlus autoFocus aria-label={t("common.title")}>
           <FormInner>
             <Outlet {...formikProps} />
           </FormInner>

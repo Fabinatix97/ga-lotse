@@ -24,8 +24,9 @@ interface AccessibleSelectOption extends SelectOption {
   ariaLabel?: string;
 }
 
-interface CheckboxGroupFieldProps<T extends SelectOption>
-  extends ValidationRules<T["value"][]> {
+interface CheckboxGroupFieldProps<
+  T extends SelectOption,
+> extends ValidationRules<T["value"][]> {
   options: T[];
   name: string;
   label?: string | ReactNode;

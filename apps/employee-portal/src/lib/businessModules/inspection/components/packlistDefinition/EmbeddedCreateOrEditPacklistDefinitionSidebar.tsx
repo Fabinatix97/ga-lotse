@@ -33,8 +33,7 @@ import { PacklistDefinitionElementsList } from "@/lib/businessModules/inspection
 import { PacklistDefinitionHeaderCard } from "@/lib/businessModules/inspection/components/packlistDefinition/header/PacklistDefinitionHeaderCard";
 import { PacklistDefinitionHeaderRow } from "@/lib/businessModules/inspection/components/packlistDefinition/header/PacklistDefinitionHeaderRow";
 
-interface CreateOrEditPacklistDefinitionSidebarProps
-  extends SidebarWithFormRefProps {
+interface CreateOrEditPacklistDefinitionSidebarProps extends SidebarWithFormRefProps {
   pldRevision?: ApiPacklistDefinitionRevision; // unset when this is a completely new pld
   version?: number;
   readonly?: boolean;

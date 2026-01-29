@@ -10,6 +10,8 @@ import { AutocompleteSelectOption } from "@/lib/shared/components/AutocompleteSe
 interface AssigneeAutocompleteFieldProps {
   name: string;
   options: AutocompleteSelectOption[];
+  label?: string;
+  required?: string;
 }
 
 export function AssigneeAutocompleteField(
@@ -18,10 +20,10 @@ export function AssigneeAutocompleteField(
   return (
     <SingleAutocompleteField
       name={props.name}
-      label="Bearbeiter:in zuweisen"
+      label={props.label ?? "Bearbeiter:in zuweisen"}
       placeholder="auswählen"
       options={props.options}
-      required="Bitte einen Bearbeiter auswählen"
+      required={props.required}
     />
   );
 }

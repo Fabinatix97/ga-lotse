@@ -16,8 +16,9 @@ import { useIsFormDisabled } from "../form/DisabledFormContext";
 import { RadioGroupField } from "./RadioGroupField";
 import { SelectOption } from "./SelectOptions";
 
-export interface RadioButtonsFieldProps<T extends SelectOption = SelectOption>
-  extends ValidationRules<T["value"] | null> {
+export interface RadioButtonsFieldProps<
+  T extends SelectOption = SelectOption,
+> extends ValidationRules<T["value"] | null> {
   options: T[];
   name: string;
   label?: string | ReactNode;
@@ -104,8 +105,9 @@ function RadioButtons<T extends SelectOption>(props: RadioButtonsProps<T>) {
 
 const MemoizedRadioButtons = memo(InnerRadioButtons);
 
-interface InnerRadioButtonsProps<T extends SelectOption>
-  extends RadioButtonsProps<T> {
+interface InnerRadioButtonsProps<
+  T extends SelectOption,
+> extends RadioButtonsProps<T> {
   value: T;
   setFieldValue: FormikContextType<T>["setFieldValue"];
   sx?: SxProps;

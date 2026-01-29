@@ -23,8 +23,7 @@ export type MonthSelectionPassThroughProps = Omit<
   MonthSelectionProps,
   "label" | "nextMonthLabel" | "prevMonthLabel" | "slotProps"
 >;
-export interface AppointmentCalendarProps
-  extends MonthSelectionPassThroughProps {
+export interface AppointmentCalendarProps extends MonthSelectionPassThroughProps {
   selectedDay: Date | undefined;
   onDateSelected: (d: Date) => unknown;
   appointments: Date[];

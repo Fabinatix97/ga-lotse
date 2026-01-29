@@ -33,6 +33,7 @@ export interface ExaminationState {
   previousToothDiagnoses: ToothDiagnoses;
   dirty: boolean;
   hasResult: boolean;
+  dentitionType: ApiDentitionType;
 }
 
 interface ExaminationActions {
@@ -63,6 +64,7 @@ export type SetToothResultAction = (
 export type ExaminationStore = ExaminationState & ExaminationActions;
 
 export type DmftValuesState = Pick<ExaminationState, "dmftValues">;
+export type DentitionTypeValuesState = Pick<ExaminationState, "dentitionType">;
 export type DirtyState = Pick<ExaminationState, "dirty">;
 export type HasResultState = Pick<ExaminationState, "hasResult">;
 export type PreviousDiagnosesState = Pick<
@@ -105,6 +107,7 @@ export function initExaminationStore(
     previousToothDiagnoses,
     dirty: false,
     hasResult: hasAnyResult(dentition),
+    dentitionType,
   };
 }
 
@@ -131,7 +134,9 @@ export function createExaminationStore(initialState: ExaminationState) {
       set(setFocus(newFocus));
     },
     setMainResult: (toothContext: ToothContext, newValue: string) =>
-      set((state) => setMainResult(toothContext, newValue, state)),
+      set((state) => {
+        return setMainResult(toothContext, newValue, state);
+      }),
     setSecondaryResult: (toothContext: ToothContext, newValue: string) =>
       set((state) => setSecondaryResult(toothContext, newValue, state)),
     submit: () => submit(get(), set),
@@ -143,6 +148,7 @@ export function createExaminationStore(initialState: ExaminationState) {
           {},
           state.previousToothDiagnoses,
         ),
+        dentitionType,
       })),
   }));
 }

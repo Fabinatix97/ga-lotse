@@ -12,8 +12,10 @@ import de.eshg.base.centralfile.api.DataOriginDto;
 import de.eshg.base.centralfile.persistence.entity.DataOrigin;
 import de.eshg.mapper.RestMappingUtil;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Function;
 import org.springframework.data.domain.Sort;
 
@@ -94,5 +96,13 @@ public class MappingUtil {
       }
     }
     return extractedValues;
+  }
+
+  public static <T> T singleElementOrNull(Collection<T> elements) {
+    return elements.size() == 1 ? elements.iterator().next() : null;
+  }
+
+  public static <T> Optional<T> singleElementOrEmpty(Collection<T> elements) {
+    return Optional.ofNullable(singleElementOrNull(elements));
   }
 }

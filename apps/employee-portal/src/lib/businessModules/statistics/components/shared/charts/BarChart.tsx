@@ -27,6 +27,7 @@ interface BarChartProps {
   grouping?: DiagramGrouping;
   scaling?: DiagramScaling;
   orientation?: DiagramOrientation;
+  getColor?: (identifier: string) => string;
   eChartApi?: (eChartApi: ChartApi) => void;
 }
 
@@ -168,6 +169,9 @@ export function BarChart(props: BarChartProps) {
             type: "bar",
             data: (series.data as DataGroups)[serie]!.map((it) => it.value),
             stack: grouping,
+            itemStyle: {
+              color: props.getColor?.(serie),
+            },
           };
         })
       : [

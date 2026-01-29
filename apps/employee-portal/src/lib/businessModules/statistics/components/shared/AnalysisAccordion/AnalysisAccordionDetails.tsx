@@ -5,6 +5,7 @@
 
 import { Add } from "@mui/icons-material";
 import { Button, Divider, Stack, Typography } from "@mui/joy";
+import { useMemo } from "react";
 import { isNonNullish } from "remeda";
 
 import { formatDate } from "@eshg/lib-portal";
@@ -22,6 +23,7 @@ import {
 import { FlatAttribute } from "@/lib/businessModules/statistics/api/models/flatAttribute";
 import { useGetAnalysis } from "@/lib/businessModules/statistics/api/queries/useGetAnalysis";
 import { AnalysisChartDiagram } from "@/lib/businessModules/statistics/components/shared/AnalysisAccordion/AnalysisChartDiagram";
+import { colorPalette as globalPalette } from "@/lib/businessModules/statistics/components/shared/charts/EChart";
 import {
   axisRangeValueNames,
   colorSchemeNames,
@@ -47,6 +49,27 @@ export function AnalysisAccordionDetails(props: AnalysisAccordionDetailsProps) {
   const analysisDiagrams = useGetAnalysis(props.analysis.id, props.attributes);
   const canWrite = useStatisticsRoleChecks().canWrite();
   const canCreateDiagram = isNonNullish(props.onDiagramCreateClicked);
+
+  /* A callback that returns the same color per identifier.
+   * Used so multiple diagrams in one analysis have consistent colors.
+   * Colors are selected from our global color palette.
+   */
+  const getColor = useMemo(() => {
+    const map: Record<string, string> = {};
+    let nextIndex = 0;
+
+    return (identifier: string): string => {
+      if (map[identifier]) {
+        return map[identifier];
+      }
+      const color = globalPalette[nextIndex++]!;
+      if (nextIndex >= globalPalette.length) {
+        nextIndex = 0;
+      }
+      map[identifier] = color;
+      return color;
+    };
+  }, []);
 
   function handleDiagramCreateClick() {
     if (isNonNullish(props.onDiagramCreateClicked)) {
@@ -105,6 +128,7 @@ export function AnalysisAccordionDetails(props: AnalysisAccordionDetailsProps) {
               evaluatedDataAmountTotal={props.evaluatedDataAmountTotal}
               isReport={props.isReport}
               dataSourceSensitivity={props.dataSourceSensitivity}
+              getColor={getColor}
             />
           </Stack>
         ))}

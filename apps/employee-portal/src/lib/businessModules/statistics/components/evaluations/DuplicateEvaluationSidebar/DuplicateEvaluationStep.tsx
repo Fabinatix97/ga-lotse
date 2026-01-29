@@ -14,8 +14,7 @@ import { formatDateRangeNumeric } from "@/lib/shared/helpers/dateTime";
 import { OriginalEvaluation } from "./DuplicateEvaluationSidebar";
 import { DuplicateEvaluationFormModel } from "./duplicateEvaluationFormModel";
 
-interface DuplicateEvaluationStepProps
-  extends SidebarStepContentProps<DuplicateEvaluationFormModel> {
+interface DuplicateEvaluationStepProps extends SidebarStepContentProps<DuplicateEvaluationFormModel> {
   originalEvaluation: OriginalEvaluation;
   defaultNewEvaluationName: string;
 }

@@ -15,8 +15,10 @@ import {
   useIsFormDisabled,
 } from "@eshg/lib-portal";
 
-export interface BooleanRadioGroupFieldProps
-  extends Omit<RadioGroupFieldProps, "validate"> {
+export interface BooleanRadioGroupFieldProps extends Omit<
+  RadioGroupFieldProps,
+  "validate"
+> {
   validate?: Validator<boolean>;
 }
 

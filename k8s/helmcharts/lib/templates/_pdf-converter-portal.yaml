@@ -22,7 +22,7 @@ spec:
 ---
 
   {{ include "ingress" (list "pdfaconverterportal" .Values.ingress.type .Values.domains.centralservices.pdfaconverterportal "incoming" "pdf-converter-portal" .Release.Namespace)}}
-  {{ include "lib.certificate" (list .Values.pdfaconverterportal.certificate.secret .Values.domains.centralservices.pdfaconverterportal .Values.domains.clusterIssuer .Release.Namespace .Values.development.injectSelfSignedCA) }}
+  {{ include "lib.certificate" (list .Values.pdfaconverterportal.certificate.secret .Values.domains.centralservices.pdfaconverterportal .Values.domains.clusterIssuers.public .Release.Namespace .Values.development.injectSelfSignedCA) }}
 
 ---
 

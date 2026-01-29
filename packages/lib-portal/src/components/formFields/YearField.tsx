@@ -16,7 +16,8 @@ import { BaseField, FieldComponentProps, useBaseField } from "./BaseField";
 import { FieldVariantProps } from "./types";
 
 interface YearFieldProps
-  extends Omit<FieldProps<number>, "label">,
+  extends
+    Omit<FieldProps<number>, "label">,
     FieldComponentProps,
     FieldVariantProps {
   label?: string;

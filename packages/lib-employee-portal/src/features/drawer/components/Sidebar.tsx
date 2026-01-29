@@ -3,10 +3,13 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { Drawer, DrawerProps, ModalClose, Stack, ZIndex } from "@mui/joy";
-import { PropsWithChildren } from "react";
+import { Box, Drawer, DrawerProps, ModalClose, Stack, ZIndex } from "@mui/joy";
+import { PropsWithChildren, useEffect, useState } from "react";
 
-import { useResetAlertContext } from "@eshg/lib-portal";
+import {
+  findFirstInteractableChild,
+  useResetAlertContext,
+} from "@eshg/lib-portal";
 
 import { useHeaderHeights } from "../../../hooks/useHeaderHeights";
 import { SIDEBAR_PADDING } from "../config/sidebar";
@@ -33,6 +36,15 @@ export function Sidebar({
     }
     resetAlertContext();
   }
+
+  const [contentElement, setContentElement] = useState<HTMLElement | null>(
+    null,
+  );
+  useEffect(() => {
+    if (contentElement && open) {
+      findFirstInteractableChild(contentElement)?.focus();
+    }
+  }, [contentElement, open]);
 
   return (
     <Drawer
@@ -69,7 +81,14 @@ export function Sidebar({
           variant="outlined"
           sx={{ position: "static", alignSelf: "flex-end" }}
         />
-        {children}
+        <Box
+          ref={(el: HTMLElement) => {
+            setContentElement(el);
+          }}
+          display="contents"
+        >
+          {children}
+        </Box>
       </Stack>
     </Drawer>
   );

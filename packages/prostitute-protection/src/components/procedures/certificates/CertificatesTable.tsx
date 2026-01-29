@@ -17,7 +17,7 @@ import {
   TablePage,
   formatBoolean,
 } from "@eshg/lib-employee-portal";
-import { Row, formatDateTime, useSnackbar } from "@eshg/lib-portal";
+import { Row, formatDate, formatDateTime, useSnackbar } from "@eshg/lib-portal";
 import { ApiEncryptedFile } from "@eshg/prostitute-protection-api";
 
 import { useDownloadCertificateMutation } from "../../../api/mutations/certificate";
@@ -40,6 +40,12 @@ function getCertificatesColumns(
       cell: ({ getValue }) => formatDateTime(getValue()),
       enableSorting: true,
       meta: { width: 200 },
+    }),
+    columnHelper.accessor("validUntil", {
+      header: "Gültig bis",
+      cell: ({ getValue }) => formatDate(getValue()),
+      enableSorting: true,
+      meta: { width: 100 },
     }),
     columnHelper.accessor("certificateType", {
       header: "Typ",

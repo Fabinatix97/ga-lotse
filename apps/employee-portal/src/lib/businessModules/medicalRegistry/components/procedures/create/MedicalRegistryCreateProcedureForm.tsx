@@ -58,7 +58,11 @@ export function MedicalRegistryCreateProcedureForm() {
       }}
     >
       {({ values, isSubmitting, handleSubmit }) => (
-        <FormSheet aria-label="Neuen Eintrag erstellen" onSubmit={handleSubmit}>
+        <FormSheet
+          aria-label="Neuen Eintrag erstellen"
+          autoFocus
+          onSubmit={handleSubmit}
+        >
           <FormGroupGrid columns={{ xxs: 6, xxl: 12 }}>
             <GeneralInformationForm name="generalInformationForm" />
           </FormGroupGrid>

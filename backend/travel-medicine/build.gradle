@@ -11,7 +11,6 @@ dependencies {
     implementation project(':lib-procedures')
     implementation project(':lib-calendar')
     implementation project(':lib-appointmentblock')
-    implementation project(':lib-config')
     implementation project(':business-module-persistence-commons')
     implementation project(':lib-document-generator')
     implementation project(':rest-oauth-client-commons')

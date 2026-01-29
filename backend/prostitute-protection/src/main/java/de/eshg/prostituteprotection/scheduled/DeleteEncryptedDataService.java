@@ -8,7 +8,6 @@ package de.eshg.prostituteprotection.scheduled;
 import de.eshg.prostituteprotection.domain.model.ProstituteProtectionProcedure;
 import de.eshg.prostituteprotection.domain.repository.ProstituteProtectionProcedureRepository;
 import java.time.Clock;
-import java.time.Instant;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.List;
@@ -23,7 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Component
 public class DeleteEncryptedDataService {
 
-  private static final Period RETENTION_PERIOD = Period.ofMonths(15);
+  private static final Period RETENTION_PERIOD = Period.ofMonths(3);
   private static final Logger log = LoggerFactory.getLogger(DeleteEncryptedDataService.class);
   private final ProstituteProtectionProcedureRepository procedureRepository;
   private final Clock clock;
@@ -39,17 +38,18 @@ public class DeleteEncryptedDataService {
   @Transactional
   public void deleteEncryptedData() {
     LockAssert.assertLocked();
-    Instant retentionThreshold =
-        LocalDate.now(clock).minus(RETENTION_PERIOD).atStartOfDay(clock.getZone()).toInstant();
+    LocalDate retentionThreshold = LocalDate.now(clock).minus(RETENTION_PERIOD);
+
     log.info(
-        "Starting deletion encrypted data - attempting to delete encrypted data of procedures without emergency situation and with appointment start before {}",
+        "Starting deletion encrypted data - attempting to delete encrypted data of procedures without emergency situation and with expired certificates after {}",
         retentionThreshold);
 
     List<ProstituteProtectionProcedure> procedures =
-        procedureRepository.findByNoEmergencySituationAndAppointmentStartBefore(retentionThreshold);
+        procedureRepository.findByNoEmergencySituationAndCertificateExpired(retentionThreshold);
 
+    procedureRepository.deleteEncryptedFiles(
+        procedures.stream().map(ProstituteProtectionProcedure::getExternalId).toList());
     for (ProstituteProtectionProcedure procedure : procedures) {
-      procedure.deleteEncryptedFiles();
       procedure.setEncryptedPersonalData(null);
     }
 

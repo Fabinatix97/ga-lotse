@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { isDefined } from "remeda";
+
 import {
   SidebarWithFormRefProps,
   UseSidebarWithFormRefResult,
@@ -53,6 +55,11 @@ function EditPersonDetailsSidebar({
   const { addDecryptedPerson, getDecryptedPerson } = useDecryptedPersons();
   const personData = getDecryptedPerson(procedure.id);
 
+  const hasEncryptedData = procedure.hasEncryptedData;
+  const isCertificateCreated = isDefined(
+    procedure.consultationCertificateCreatedAt,
+  );
+
   async function handleSubmit(values: EditPersonalDataForm) {
     const personalData = mapFormToApi(values);
     await updateProcedurePersonalData.mutateAsync(personalData, {
@@ -78,7 +85,9 @@ function EditPersonDetailsSidebar({
       onClose={onClose}
       onSubmit={handleSubmit}
     >
-      <EditPersonDetailsForm />
+      <EditPersonDetailsForm
+        disablePersonFields={hasEncryptedData && isCertificateCreated}
+      />
     </SidebarFormProvider>
   );
 }

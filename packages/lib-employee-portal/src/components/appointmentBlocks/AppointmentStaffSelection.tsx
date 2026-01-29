@@ -47,8 +47,7 @@ interface BaseAppointmentStaffSelectionProps {
   singleSelection?: boolean;
 }
 
-interface MultiAppointmentStaffSelectionProps
-  extends BaseAppointmentStaffSelectionProps {
+interface MultiAppointmentStaffSelectionProps extends BaseAppointmentStaffSelectionProps {
   singleSelection?: false;
   validateAppointmentBlocks: () => void;
   getCheckAvailabilityQuery: () => UndefinedInitialDataOptions<
@@ -59,8 +58,7 @@ interface MultiAppointmentStaffSelectionProps
   >;
 }
 
-interface SingleAppointmentStaffSelectionProps
-  extends BaseAppointmentStaffSelectionProps {
+interface SingleAppointmentStaffSelectionProps extends BaseAppointmentStaffSelectionProps {
   singleSelection: true;
 }
 

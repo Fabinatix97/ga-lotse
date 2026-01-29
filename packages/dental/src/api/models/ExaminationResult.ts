@@ -56,6 +56,7 @@ export interface ScreeningExaminationResult {
   readonly gingivitisTreatment: boolean;
   readonly orthodonticTreatment: boolean;
   readonly plaqueTreatment: boolean;
+  readonly primaryDentitionObstructsSecondary: boolean;
   readonly inspectionAppointment: boolean;
 }
 
@@ -117,6 +118,8 @@ export function mapScreeningExaminationResult(
     gingivitisTreatment: response.gingivitisTreatment,
     orthodonticTreatment: response.orthodonticTreatment,
     plaqueTreatment: response.plaqueTreatment,
+    primaryDentitionObstructsSecondary:
+      response.primaryDentitionObstructsSecondary,
     inspectionAppointment: response.inspectionAppointment,
   };
 }

@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "type": "module",
   "private": true,
-  "packageManager": "pnpm@10.23.0",
+  "packageManager": "pnpm@10.28.0",
   "devEngines": {
     "runtime": {
       "name": "node",
@@ -12,7 +12,7 @@
     },
     "packageManager": {
       "name": "pnpm",
-      "version": ">=10.21 <11",
+      "version": ">=10.26 <11",
       "onFail": "error"
     }
   },
@@ -27,12 +27,12 @@
     "@mui/material": "catalog:joy",
     "@tanstack/react-query": "catalog:common",
     "@tanstack/react-table": "catalog:common",
-    "asn1js": "3.0.6",
+    "asn1js": "3.0.7",
     "formik": "catalog:common",
     "i18next": "catalog:i18next",
     "i18next-resources-to-backend": "catalog:i18next",
     "next": "catalog:next",
-    "pkijs": "3.3.2",
+    "pkijs": "3.3.3",
     "react": "catalog:react",
     "react-dom": "catalog:react",
     "react-i18next": "catalog:i18next",
