@@ -22,8 +22,8 @@ dependencyResolutionManagement {
             version('swagger-core-jakarta', '2.2.38') // see ISSUE-9929
             library('swagger-core-jakarta', 'io.swagger.core.v3','swagger-core-jakarta').versionRef('swagger-core-jakarta')
 
-            version('keycloak-client', '26.0.7')
-            version('keycloak-server', '26.4.2')
+            version('keycloak-client', '26.0.8')
+            version('keycloak-server', '26.5.2')
 
             library('keycloak-client-admin-client', 'org.keycloak', 'keycloak-admin-client').versionRef('keycloak-client')
 

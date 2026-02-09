@@ -35,7 +35,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 @RestController
-@RequestMapping(value = ProtectionProcedureController.BASE_URL)
+@RequestMapping(value = MeaslesProtectionProcedureController.BASE_URL)
 @Tag(name = "AccessRestriction")
 public class AccessRestrictionController {
 

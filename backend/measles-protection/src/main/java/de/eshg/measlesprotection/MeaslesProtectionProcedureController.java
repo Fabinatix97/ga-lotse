@@ -57,9 +57,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping(value = ProtectionProcedureController.BASE_URL)
-@Tag(name = "ProtectionProcedure")
-public class ProtectionProcedureController {
+@RequestMapping(value = MeaslesProtectionProcedureController.BASE_URL)
+@Tag(name = "MeaslesProtectionProcedure")
+public class MeaslesProtectionProcedureController {
 
   public static final String BASE_URL = BaseUrls.MeaslesProtection.PROCEDURE_CONTROLLER;
 
@@ -69,7 +69,7 @@ public class ProtectionProcedureController {
   private final BaseFeatureTogglesApi baseFeatureTogglesApi;
   private final MeaslesProtectionProperties properties;
 
-  public ProtectionProcedureController(
+  public MeaslesProtectionProcedureController(
       MeaslesProtectionService measlesProtectionService,
       GetProceduresForPersonMapper getProceduresForPersonMapper,
       AuditLogger auditLogger,

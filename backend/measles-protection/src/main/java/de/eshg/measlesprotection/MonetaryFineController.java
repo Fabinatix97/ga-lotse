@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping(value = ProtectionProcedureController.BASE_URL)
+@RequestMapping(value = MeaslesProtectionProcedureController.BASE_URL)
 @Tag(name = "MonetaryFine")
 public class MonetaryFineController {
   private final MonetaryFineService monetaryFineService;

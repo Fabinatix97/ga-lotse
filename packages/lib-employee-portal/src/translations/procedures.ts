@@ -32,4 +32,7 @@ export const PROCEDURE_TYPE_NAMES = {
   [ApiProcedureType.OfficialMedicalService]: "Amtsärztlicher Dienst",
   [ApiProcedureType.MedsAbroad]: "Reisen mit Betäubungsmitteln",
   [ApiProcedureType.ProstituteProtection]: "Prostituiertenschutzgesetz",
+  [ApiProcedureType.InfectionBriefingNew]: "Neuer Lebensmittelausweis",
+  [ApiProcedureType.InfectionBriefingReplacement]:
+    "Lebensmittelausweis Duplikat",
 } satisfies Record<ApiProcedureType, string>;

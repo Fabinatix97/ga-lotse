@@ -38,7 +38,7 @@ dependencies {
     implementation(project(':keycloak-api')) {
         transitive = false
     }
-    keycloakProviders('de.arbeitsagentur.opdt:keycloak-extension-bundid:2.4.3-26.2') {
+    keycloakProviders('de.arbeitsagentur.opdt:keycloak-extension-bundid:2.4.4') {
         transitive = false
     }
 }
@@ -71,7 +71,7 @@ tasks.register('buildDockerImage', DockerBuildImage) {
     inputDir.set(dockerBuildContext)
     dockerFile.set(inputDir.file("Dockerfile"))
     // WARNING: The version from gradle's catalog is ignored since the sha digest is used without regard to the tag value
-    buildArgs["keycloakVersion"] = libs.versions.keycloak.server.get() + "@sha256:3617b09bb4b7510a8d8d9b9fc5707399e2d70688dbcc2f8fb013a144829be1b9"
+    buildArgs["keycloakVersion"] = libs.versions.keycloak.server.get() + "@sha256:fb31a59deb46f746f2aaa25adc5da39ceccac4fd22d36a519562b0bf02e8df20"
 
     if (project.hasProperty("tagName")) {
         images.add(getImageNameWithTag())

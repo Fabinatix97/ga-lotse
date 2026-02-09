@@ -13,6 +13,7 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.List;
+import java.util.UUID;
 import net.javacrumbs.shedlock.core.LockAssert;
 import net.javacrumbs.shedlock.spring.annotation.SchedulerLock;
 import org.slf4j.Logger;
@@ -52,11 +53,14 @@ public class AbortOutdatedProceduresService {
     List<ProstituteProtectionProcedure> proceduresToAbort =
         procedureRepository.findAllOpenByAppointmentStartBefore(retentionThreshold);
 
-    procedureRepository.deleteEncryptedFiles(
-        proceduresToAbort.stream().map(ProstituteProtectionProcedure::getExternalId).toList());
+    List<UUID> procedureIds =
+        proceduresToAbort.stream().map(ProstituteProtectionProcedure::getExternalId).toList();
+
+    procedureRepository.deleteEncryptedFiles(procedureIds);
+    procedureRepository.clearEncryptedPersonalData(procedureIds);
+    procedureRepository.clearSensitivePersonalDataFields(procedureIds);
+
     for (ProstituteProtectionProcedure procedure : proceduresToAbort) {
-      procedure.getPersonalData().setPhoneNumber(null);
-      procedure.setEncryptedPersonalData(null);
       prostituteProtectionService.abortProcedure(procedure);
     }
     procedureRepository.flush();

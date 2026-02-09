@@ -97,8 +97,8 @@ public class UserService {
     return employeeKeycloakClient.getSelfActiveSessions();
   }
 
-  public void invalidateSessions(List<UUID> sessionIds) {
-    Set<String> sessionSet = sessionIds.stream().map(UUID::toString).collect(Collectors.toSet());
+  public void invalidateSessions(List<String> sessionIds) {
+    Set<String> sessionSet = new HashSet<>(sessionIds);
 
     RealmResource realm = employeeKeycloakClient.getRealm();
     employeeKeycloakClient.getSelfUser().getUserSessions().stream()

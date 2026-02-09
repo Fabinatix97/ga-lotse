@@ -14,7 +14,12 @@ import {
 import { ChangeEvent, ReactNode, useId, useRef } from "react";
 import { isDefined } from "remeda";
 
-import { FieldProps, useBaseField, validatePipe } from "@eshg/lib-portal";
+import {
+  FieldProps,
+  normalizeFileName,
+  useBaseField,
+  validatePipe,
+} from "@eshg/lib-portal";
 
 import { useValidateFileType } from "@/lib/helpers/validators";
 import { useDragAndDrop } from "@/lib/hooks/useDragAndDrop";
@@ -76,14 +81,16 @@ export function FileField(props: Readonly<FileFieldProps>) {
   const fileInputId = useId();
 
   async function handleChange(event: ChangeEvent<HTMLInputElement>) {
-    await field.helpers.setValue(event.target.files?.[0] ?? null);
+    const rawFile = event.target.files?.[0] ?? null;
+    const normalizedFile = normalizeFileName(rawFile);
+    await field.helpers.setValue(normalizedFile);
     await field.helpers.setTouched(true);
   }
 
   const { dropState, handleFileDrag, handleFileDrop, handleFileDragLeave } =
     useDragAndDrop({
       validateType: fileTypeErrorVal,
-      onChange: field.helpers.setValue,
+      onChange: (f) => field.helpers.setValue(normalizeFileName(f)),
     });
 
   return (

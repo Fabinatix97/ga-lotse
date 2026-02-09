@@ -55,7 +55,7 @@ interface CreateProphylaxisSessionFormValues {
   dateAndTime: string;
   institution: NullableFieldValue<Institution>;
   groupName: OptionalFieldValue<string>;
-  schoolYear: number;
+  schoolYear: OptionalFieldValue<number>;
   type: OptionalFieldValue<ApiProphylaxisType>;
   isScreening: boolean;
   dentitionType: OptionalFieldValue<ApiDentitionType>;
@@ -118,7 +118,7 @@ function CreateProphylaxisSessionSidebar(props: SidebarWithFormRefProps) {
 
   const openChildrenInInstitution = useValidateOpenChildrenExistInInstitution(
     form.values.institution?.id ?? "",
-    form.values.schoolYear,
+    form.values.schoolYear || 0,
   ).data;
 
   return (
@@ -160,7 +160,7 @@ function CreateProphylaxisSessionSidebar(props: SidebarWithFormRefProps) {
             <SearchGroupField
               name="groupName"
               label="Gruppe"
-              schoolYear={form.values.schoolYear}
+              schoolYear={form.values.schoolYear || undefined}
               institution={form.values.institution}
               openGroupsOnly
             />
@@ -218,7 +218,7 @@ function mapProphylaxisSessionFormValuesToRequest(
   return {
     dateAndTime: new Date(values.dateAndTime),
     institutionId: mapRequiredValue(values.institution)?.id,
-    schoolYear: values.schoolYear,
+    schoolYear: mapRequiredValue(values.schoolYear),
     groupName: mapOptionalValue(values.groupName) ?? undefined,
     type: mapOptionalValue(values.type),
     isScreening: values.isScreening,

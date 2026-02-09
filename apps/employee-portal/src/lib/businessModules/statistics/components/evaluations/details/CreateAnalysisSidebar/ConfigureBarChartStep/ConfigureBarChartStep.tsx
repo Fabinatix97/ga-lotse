@@ -83,6 +83,7 @@ export function ConfigureBarChartStep({
               diagramData={barChartSimpleSampleData}
               isDataGrouped={false}
               orientation={values.orientation}
+              scaling={values.scaling}
             />
           )
         }

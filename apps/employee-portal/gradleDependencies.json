@@ -5,6 +5,8 @@
     ":chat-management-api",
     ":dental",
     ":dental-api",
+    ":infection-briefing",
+    ":infection-briefing-api",
     ":inspection-api",
     ":lib-config-api",
     ":lib-editor-api",

@@ -5,6 +5,7 @@
 
 package de.eshg.infectionbriefing;
 
+import de.eshg.infectionbriefing.config.InfectionBriefingProperties;
 import de.eshg.lib.common.BusinessModule;
 import de.eshg.rest.service.security.config.InfectionBriefingPublicSecurityConfig;
 import org.springframework.boot.SpringApplication;
@@ -13,7 +14,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 
 @SpringBootApplication
-@Import(InfectionBriefingPublicSecurityConfig.class)
+@Import({InfectionBriefingPublicSecurityConfig.class, InfectionBriefingProperties.class})
 public class InfectionBriefingApplication {
   @Bean
   BusinessModule businessModule() {

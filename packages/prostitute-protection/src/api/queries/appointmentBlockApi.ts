@@ -15,7 +15,6 @@ import {
   GetAppointmentBlockGroupsRequest,
 } from "@eshg/prostitute-protection-api";
 
-import { useProstituteProtectionApiClients } from "../../contexts/ProstituteProtectionApi";
 import { mapAppointmentBlockGroup } from "../models/AppointmentBlockGroup";
 
 import { appointmentBlockApiQueryKey } from "./apiQueryKeys";
@@ -44,8 +43,8 @@ interface GetFreeAppointmentsArgs {
 
 export function useGetFreeAppointmentsOptions(
   request: GetFreeAppointmentsArgs,
+  appointmentBlockApi: AppointmentBlockApi,
 ) {
-  const { appointmentBlockApi } = useProstituteProtectionApiClients();
   return queryOptions({
     queryKey: appointmentBlockApiQueryKey(["freeAppointments", request]),
     queryFn: () => {

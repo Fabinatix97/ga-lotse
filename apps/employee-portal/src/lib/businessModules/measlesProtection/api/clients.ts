@@ -16,12 +16,12 @@ import {
   InboxProcedureApi,
   MeaslesProtectionAppointmentStandardDurationApi,
   MeaslesProtectionFeatureTogglesApi,
+  MeaslesProtectionProcedureApi,
   MonetaryFineApi,
   ProcedureApi,
   ProgressEntryApi,
   ProofRequestLetterApi,
   ProofSubmissionApi,
-  ProtectionProcedureApi,
   StatusTransitionApi,
 } from "@eshg/measles-protection-api";
 
@@ -46,7 +46,7 @@ export function useProcedureApi() {
 
 export function useProtectionProcedureApi() {
   const config = useConfiguration();
-  return new ProtectionProcedureApi(config);
+  return new MeaslesProtectionProcedureApi(config);
 }
 
 export function useAccessRestrictionApi() {

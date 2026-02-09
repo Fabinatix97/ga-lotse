@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Typography } from "@mui/joy";
 import Button from "@mui/joy/Button";
 
 import {
@@ -42,7 +43,8 @@ function SchoolLeavingSidebar({
     await closeGroupsInBulk.mutateAsync(
       {
         institutionId: institutionId,
-        groupNames: leavingGroupNames,
+        groupNames: leavingGroupNames.filter((groupName) => groupName !== ""),
+        includeChildrenWithoutGroup: leavingGroupNames.includes(""),
       },
       {
         onSuccess: () => onClose(),
@@ -57,6 +59,9 @@ function SchoolLeavingSidebar({
           info="Folgende Gruppen verlassen die Schule und wechseln in den Status abgeschlossen"
           infoColor="success"
           rows={leavingGroupNames}
+          targetGroupComponent={() => (
+            <Typography fontWeight={600}>Schulabgang</Typography>
+          )}
         />
       </SidebarContent>
       <SidebarActions>

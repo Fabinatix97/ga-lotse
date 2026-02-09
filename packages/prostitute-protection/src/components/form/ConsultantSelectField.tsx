@@ -17,14 +17,12 @@ import { EditProcedureDetailsDataForm } from "../procedures/details/sidebar/Edit
 
 interface ConsultantSelectFieldProps {
   name: string;
-  required?: string;
   selfUser?: ApiUser;
   options: ApiUser[];
 }
 
 export function ConsultantSelectField({
   name,
-  required,
   selfUser,
   options,
 }: Readonly<ConsultantSelectFieldProps>) {
@@ -47,7 +45,7 @@ export function ConsultantSelectField({
 
   useEffect(() => {
     if (isAppointmentBlockSelected) {
-      void setFieldValue("consultantId", null);
+      void setFieldValue("consultantId", "");
     }
   }, [isAppointmentBlockSelected, setFieldValue]);
 
@@ -62,7 +60,11 @@ export function ConsultantSelectField({
             ? "Berater:in bei Terminblöcken nicht wählbar"
             : "auswählen"
         }
-        required={required}
+        required={
+          isAppointmentBlockSelected
+            ? undefined
+            : "Bitte eine:n Berater:in auswählen."
+        }
         disabled={isAppointmentBlockSelected}
       />
       {isSelfAssignButtonVisible && (

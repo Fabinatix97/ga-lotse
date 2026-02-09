@@ -19,7 +19,7 @@ import {
   validateAppointmentBlock,
   validateFieldArray,
 } from "@eshg/lib-employee-portal";
-import { OptionalFieldValue } from "@eshg/lib-portal";
+import { CheckboxField, OptionalFieldValue } from "@eshg/lib-portal";
 import { ApiAppointmentType } from "@eshg/prostitute-protection-api";
 
 import { mapAppointmentBlockApi } from "../../api/mapAppointmentBlockApi";
@@ -36,6 +36,7 @@ export interface ProstituteProtectionAppointmentValues {
   room: OptionalFieldValue<string>;
   appointmentBlocks: AppointmentBlockGroupValuesWithDays[];
   consultants: string[];
+  availableForCitizen: boolean;
 }
 
 function validateForm(
@@ -97,6 +98,15 @@ export function AppointmentBlockGroupForm({
               appointmentBlocksWithDays={values.appointmentBlocks}
               options={APPOINTMENT_TYPE_OPTIONS}
             />
+          </Stack>
+          <Stack
+            gap={3}
+            direction="row"
+            role="group"
+            aria-label="Terminblockverfügbarkeit"
+          >
+            Verfügbar für
+            <CheckboxField name="availableForCitizen" label="Online-Portal" />
           </Stack>
           <Stack>
             <AppointmentStaffSelection

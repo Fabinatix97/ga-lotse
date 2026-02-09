@@ -10,6 +10,7 @@ import { MapSeriesOption } from "echarts";
 import { ReactNode, useState } from "react";
 
 import { MainContentLayout } from "@eshg/lib-employee-portal";
+import { ApiScaling } from "@eshg/statistics-api";
 
 import {
   DiagramAxisRange,
@@ -809,6 +810,7 @@ export default function PlaygroundChartsPage() {
               diagramData={barChartSimple}
               isDataGrouped={false}
               orientation={orientation}
+              scaling={ApiScaling.Absolute}
             />
           }
           switches={[orientationSwitch]}
@@ -820,6 +822,7 @@ export default function PlaygroundChartsPage() {
               diagramData={barChartSimpleWithNegativeValues}
               isDataGrouped={false}
               orientation={orientation}
+              scaling={ApiScaling.Absolute}
             />
           }
           switches={[orientationSwitch]}
@@ -883,6 +886,7 @@ export default function PlaygroundChartsPage() {
               diagramData={barChartLongLabels}
               isDataGrouped={false}
               orientation={orientation}
+              scaling={ApiScaling.Absolute}
             />
           }
           switches={[orientationSwitch]}
@@ -919,7 +923,11 @@ export default function PlaygroundChartsPage() {
         <PlaygroundChartBox
           title="Histogramm simpel"
           chart={
-            <Histogram diagramData={histogramSimple} isDataGrouped={false} />
+            <Histogram
+              diagramData={histogramSimple}
+              isDataGrouped={false}
+              scaling={ApiScaling.Absolute}
+            />
           }
         />
         <PlaygroundChartBox
@@ -964,6 +972,7 @@ export default function PlaygroundChartsPage() {
             <Histogram
               isDataGrouped={false}
               diagramData={histogramWithManyValues}
+              scaling={ApiScaling.Absolute}
             />
           }
         />

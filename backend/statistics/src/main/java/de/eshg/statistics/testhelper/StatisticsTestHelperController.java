@@ -8,10 +8,12 @@ package de.eshg.statistics.testhelper;
 import de.eshg.auditlog.AuditLogClientTestHelperApi;
 import de.eshg.lib.auditlog.AuditLogTestHelperService;
 import de.eshg.rest.service.error.BadRequestException;
+import de.eshg.statistics.aggregation.EvaluationService;
 import de.eshg.statistics.aggregation.ReportExecution;
 import de.eshg.statistics.aggregation.StatisticsExecutorService;
 import de.eshg.statistics.config.StatisticsFeature;
 import de.eshg.statistics.config.StatisticsFeatureToggle;
+import de.eshg.statistics.persistence.entity.AggregationResultState;
 import de.eshg.testhelper.ConditionalOnTestHelperEnabled;
 import de.eshg.testhelper.DefaultTestHelperService;
 import de.eshg.testhelper.TestHelperController;
@@ -31,6 +33,7 @@ public class StatisticsTestHelperController extends TestHelperController
   private final StatisticsExecutorService statisticsExecutorService;
   private final ReportExecution reportExecution;
   private final StatisticsPopulator statisticsPopulator;
+  private final EvaluationService evaluationService;
 
   public StatisticsTestHelperController(
       StatisticsFeatureToggle statisticsFeatureToggle,
@@ -39,13 +42,15 @@ public class StatisticsTestHelperController extends TestHelperController
       ReportExecution reportExecution,
       EnvironmentConfig environmentConfig,
       StatisticsExecutorService statisticsExecutorService,
-      StatisticsPopulator statisticsPopulator) {
+      StatisticsPopulator statisticsPopulator,
+      EvaluationService evaluationService) {
     super(testHelperService, environmentConfig);
     this.statisticsFeatureToggle = statisticsFeatureToggle;
     this.auditLogTestHelperService = auditLogTestHelperService;
     this.reportExecution = reportExecution;
     this.statisticsExecutorService = statisticsExecutorService;
     this.statisticsPopulator = statisticsPopulator;
+    this.evaluationService = evaluationService;
   }
 
   @PostExchange("/enabled-new-features/{featureToEnable}")
@@ -64,6 +69,7 @@ public class StatisticsTestHelperController extends TestHelperController
       @PathVariable("anonymized") boolean anonymized) {
     return switch (businessModuleName) {
       case "SCHOOL_ENTRY" -> statisticsPopulator.addEvaluationSchoolEntry(anonymized);
+      case "DENTAL" -> statisticsPopulator.addEvaluationDental(anonymized);
       case "INSPECTION" -> statisticsPopulator.addEvaluationInspection(anonymized);
       default -> throw new BadRequestException("Unknown business module: " + businessModuleName);
     };
@@ -72,6 +78,13 @@ public class StatisticsTestHelperController extends TestHelperController
   @PostExchange("/populate-based-on-evaluation/{evaluationId}")
   public void createOtherEntities(@PathVariable("evaluationId") UUID evaluationId) {
     statisticsPopulator.createEntitiesForEvaluation(evaluationId);
+  }
+
+  @PostExchange("/set-evaluation-state/{evaluationId}/{state}")
+  public void setEvaluationState(
+      @PathVariable("evaluationId") UUID evaluationId,
+      @PathVariable("state") AggregationResultState state) {
+    evaluationService.setEvaluationState(evaluationId, state);
   }
 
   @Override

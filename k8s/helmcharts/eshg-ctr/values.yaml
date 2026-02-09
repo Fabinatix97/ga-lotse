@@ -212,6 +212,9 @@ spatz:
       memory: 64Mi
     limits:
       memory: 512Mi
+  certificate:
+    ca:
+      type: 'dual'
 
 businessmoduleDefaults:
   resources:

@@ -87,10 +87,7 @@ spec:
           configMap:
             name: ca
         {{- end }}
-        - name: certs
-          secret:
-            secretName: "{{ .Values.lsd.certificate.secret }}"
-            defaultMode: 420
+        {{ include "genCertificateVolumes" (list .Values.spatz.certificate.ca.type .Values.lsd.certificate.secret) | nindent 8 }}
         {{- if eq "true" $createDebugLogMount }}
         - name: debuglog
           persistentVolumeClaim:
@@ -131,12 +128,21 @@ spec:
               value: 127.0.0.1
             - name: spring.profiles.active
               value: "{{ include "removeTestHelper" ($.Values.spring.profiles.active) }}"
+            {{- if eq "dual" .Values.spatz.certificate.ca.type }}
             - name: SPRING_SSL_BUNDLE_PEM_LSD_TRUSTSTORE_LOCATION
               value: /var/run/certs/tls.crt
             - name: SPRING_SSL_BUNDLE_PEM_LSD_KEYSTORE_CERTIFICATE
               value: /var/run/certs/tls.crt
             - name: SPRING_SSL_BUNDLE_PEM_LSD_KEYSTORE_PRIVATEKEY
               value: /var/run/certs/tls.key
+            {{- else }}
+            - name: SPRING_SSL_BUNDLE_PEM_LSD_TRUSTSTORE_LOCATION
+              value: /var/run/server-certs/tls.crt
+            - name: SPRING_SSL_BUNDLE_PEM_LSD_KEYSTORE_CERTIFICATE
+              value: /var/run/server-certs/tls.crt
+            - name: SPRING_SSL_BUNDLE_PEM_LSD_KEYSTORE_PRIVATEKEY
+              value: /var/run/server-certs/tls.key
+            {{- end }}
             - name: spring.security.oauth2.resourceserver.jwt.issuer-uri
               value: "https://{{ .Values.domains.hosts.keycloakInternal }}/realms/eshg-lsd"
             - name: ESHG_LSD_MAXCERTIFICATESPERACTOR
@@ -186,9 +192,7 @@ spec:
               mountPath: /etc/ssl/certs/localca.pem
               subPath: ca.crt
             {{- end }}
-            - name: certs
-              mountPath: /var/run/certs
-              readOnly: true
+            {{- include "genCertificateVolumeMounts" (list .Values.spatz.certificate.ca.type ) | nindent 12 }}
             {{- if eq "true" $createDebugLogMount }}
             - name: debuglog
               mountPath: /var/log/eshg-debug
@@ -210,18 +214,20 @@ spec:
           env:
             - name: spring.profiles.active
               value: "{{ include "removeTestHelper" (.Values.spring.profiles.active) }}"
+            {{- if eq "dual" .Values.spatz.certificate.ca.type }}
             - name: spring.ssl.bundle.pem.certificatevalidation.truststore.certificate
               value: /var/run/certs/tls.crt
+            {{- else }}
+            - name: spring.ssl.bundle.pem.certificatevalidation.truststore.certificate
+              value: /var/run/server-certs/tls.crt
+            {{- end }}
             - name: eshg.spatz.inbound.force-client-auth
               value: 'false'
             - name: ESHG_SPATZ_SELFSIGNED_ENABLED
               value: 'false'
             - name: ESHG_SPATZ_RELAY_ENABLED
               value: 'false'
-            - name: ESHG_SPATZ_SSL_KEYSTORE_CERTIFICATE
-              value: /var/run/certs/tls.crt
-            - name: ESHG_SPATZ_SSL_KEYSTORE_PRIVATEKEY
-              value: /var/run/certs/tls.key
+            {{- include "genKeystoreParameters" (list .Values.spatz.certificate.ca.type ) | nindent 12 }}
             - name: ESHG_SERVICEDIRECTORY_BASEURL
               value: "http://{{ .Values.domains.centralservices.servicedirectory }}"
             - name: ESHG_SPATZ_INBOUND_HANDLERPORT
@@ -257,9 +263,7 @@ spec:
               mountPath: /etc/ssl/certs/localca.pem
               subPath: ca.crt
             {{- end }}
-            - name: certs
-              mountPath: /var/run/certs
-              readOnly: true
+            {{- include "genCertificateVolumeMounts" (list .Values.spatz.certificate.ca.type ) | nindent 12 }}
             {{- if eq "true" $createDebugLogMount }}
             - name: spatzdebuglog
               mountPath: /var/log/eshg-debug

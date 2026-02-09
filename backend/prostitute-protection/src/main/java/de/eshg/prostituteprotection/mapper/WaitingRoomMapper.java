@@ -55,6 +55,7 @@ public class WaitingRoomMapper {
     return new WaitingRoomProcedureDto(
         waitingRoomProcedureData.externalId(),
         waitingRoomProcedureData.alias(),
+        waitingRoomProcedureData.consultant(),
         mapWaitingRoomToDto(waitingRoomProcedureData.waitingRoom()),
         waitingRoomProcedureData.modifiedAt());
   }

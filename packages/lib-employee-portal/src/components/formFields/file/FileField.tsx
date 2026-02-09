@@ -22,6 +22,7 @@ import {
   FieldProps,
   FileLike,
   FileType,
+  normalizeFileName,
   useApiConfigurationUrl,
   useBaseField,
   useDragAndDrop,
@@ -109,7 +110,9 @@ export function FileField(props: Readonly<FileFieldProps>) {
   const placeholder = props.placeholder ?? DEFAULT_PLACEHOLDER;
 
   async function handleChange(event: ChangeEvent<HTMLInputElement>) {
-    const file = supplimentFileType(event.target.files?.[0] ?? null);
+    const rawFile = event.target.files?.[0] ?? null;
+    const normalizedFile = normalizeFileName(rawFile);
+    const file = supplimentFileType(normalizedFile);
     await field.helpers.setValue(file);
     await field.helpers.setTouched(true);
     if (isFunction(props.onChange)) {
@@ -127,7 +130,8 @@ export function FileField(props: Readonly<FileFieldProps>) {
   const { dropState, handleFileDrag, handleFileDrop, handleFileDragLeave } =
     useDragAndDrop({
       validateType: fileTypeErrorVal,
-      onChange: field.helpers.setValue,
+      onChange: (f) =>
+        field.helpers.setValue(supplimentFileType(normalizeFileName(f))),
     });
 
   return (

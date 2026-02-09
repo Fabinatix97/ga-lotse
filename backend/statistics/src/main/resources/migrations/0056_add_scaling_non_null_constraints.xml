@@ -1,0 +1,22 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<!--
+ Copyright 2026 cronn GmbH
+ SPDX-License-Identifier: AGPL-3.0-only
+-->
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+  <changeSet author="GA-Lotse" id="1769083601318-bar">
+    <update tableName="bar_chart_configuration">
+      <column name="scaling" value="ABSOLUTE"/>
+      <where>scaling IS NULL</where>
+    </update>
+    <addNotNullConstraint columnDataType="scaling" columnName="scaling" tableName="bar_chart_configuration" validate="true"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1769083601318-histogram">
+  <update tableName="histogram_chart_configuration">
+    <column name="scaling" value="ABSOLUTE"/>
+    <where>scaling IS NULL</where>
+  </update>
+  <addNotNullConstraint columnDataType="scaling" columnName="scaling" tableName="histogram_chart_configuration" validate="true"/>
+</changeSet>
+</databaseChangeLog>

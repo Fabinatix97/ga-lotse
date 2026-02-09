@@ -4,8 +4,9 @@
  */
 
 import { EChartsOption, MapSeriesOption, registerMap } from "echarts";
+import { CallbackDataParams } from "echarts/types/dist/shared";
 import { useState } from "react";
-import { isNonNullish, randomString } from "remeda";
+import { isDefined, isNonNullish, isNumber, randomString, sum } from "remeda";
 
 import {
   AnalysisDiagramChoroplethMap,
@@ -17,6 +18,8 @@ import {
   EChart,
 } from "@/lib/businessModules/statistics/components/shared/charts/EChart";
 import { getChoroplethAggregationMethod } from "@/lib/businessModules/statistics/components/shared/charts/chartHelper";
+
+type OptionDataValue = undefined | null | string | number | Date;
 
 interface ChoroplethMapProps {
   diagramData: AnalysisDiagramChoroplethMap["data"];
@@ -59,6 +62,10 @@ export function getPrecision(min: number, max: number) {
   return log10 < 1 ? Math.round(Math.abs(log10)) + 1 : 0;
 }
 
+function roundAndOmitTrailingZeroes(value: number) {
+  return Number(value.toFixed(2)).toString();
+}
+
 export function ChoroplethMap(props: ChoroplethMapProps) {
   const [mapId] = useState<string>(randomString(10));
   registerMap(mapId, props.geoJson);
@@ -66,6 +73,32 @@ export function ChoroplethMap(props: ChoroplethMapProps) {
   const values = getDefinedDiagramValues(props.diagramData);
   const min = getMinimum(values);
   const max = getMaximum(values);
+  const total = sum(values);
+
+  const showPercentage = props.characteristicParameter !== "MEAN";
+
+  function formatValue(value: CallbackDataParams["value"]) {
+    if (!showPercentage) {
+      return isNumber(value) ? value.toString() : "-";
+    }
+    if (!isNumber(value)) return "-";
+    if (total === 0) return `${value} (0%)`;
+    return `${value} (${roundAndOmitTrailingZeroes((value / total) * 100)}%)`;
+  }
+
+  function labelFormatter(min: OptionDataValue, max: OptionDataValue) {
+    if (!isDefined(max)) return `${formatValue(min)}`;
+    return `${formatValue(min)} - ${formatValue(max)}`;
+  }
+
+  function tooltipFormatter(params: CallbackDataParams) {
+    const seriesName = isNumber(params.value)
+      ? `<div style="margin-bottom: 10px; line-height: 1">${params.seriesName}</div>`
+      : "";
+    const name = `<span>${params.name}</span>`;
+    const value = `<span style="float: right; margin-left: 20px; font-weight: 900">${formatValue(params.value)}</span>`;
+    return `${seriesName}<div style="line-height: 1">${name}${value}</div>`;
+  }
 
   const option: EChartsOption = {
     visualMap: {
@@ -76,9 +109,10 @@ export function ChoroplethMap(props: ChoroplethMapProps) {
         color: getColor(props.colorScheme),
       },
       text: [
-        `${getChoroplethAggregationMethod(props.characteristicParameter)}\n\n${max}`,
-        min.toString(),
+        `${getChoroplethAggregationMethod(props.characteristicParameter)}\n\n${formatValue(max)}`,
+        formatValue(min),
       ],
+      formatter: showPercentage ? labelFormatter : undefined,
       textGap: 5,
       precision: getPrecision(min, max),
     },
@@ -92,6 +126,9 @@ export function ChoroplethMap(props: ChoroplethMapProps) {
         roam: true,
         select: { disabled: true },
         emphasis: { label: { show: false } },
+        tooltip: {
+          formatter: showPercentage ? tooltipFormatter : undefined,
+        },
         ...(props.additionalEchartsSeriesOptions ?? {}),
       },
     ],

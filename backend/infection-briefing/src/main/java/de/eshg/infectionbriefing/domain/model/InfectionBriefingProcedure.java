@@ -13,10 +13,13 @@ import de.eshg.lib.procedure.domain.model.Procedure;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
+import jakarta.persistence.Inheritance;
+import jakarta.persistence.InheritanceType;
 import jakarta.persistence.OneToOne;
 
 @Entity
-public class InfectionBriefingProcedure
+@Inheritance(strategy = InheritanceType.JOINED)
+public abstract class InfectionBriefingProcedure
     extends Procedure<
         InfectionBriefingProcedure,
         InfectionBriefingTask,

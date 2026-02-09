@@ -626,6 +626,12 @@ importers:
       '@eshg/dental-api':
         specifier: workspace:*
         version: link:../../packages/dental-api
+      '@eshg/infection-briefing':
+        specifier: workspace:*
+        version: link:../../packages/infection-briefing
+      '@eshg/infection-briefing-api':
+        specifier: workspace:*
+        version: link:../../packages/infection-briefing-api
       '@eshg/inspection-api':
         specifier: workspace:*
         version: link:../../packages/inspection-api
@@ -937,6 +943,9 @@ importers:
       '@eshg/dental-api':
         specifier: workspace:*
         version: link:../packages/dental-api
+      '@eshg/infection-briefing-api':
+        specifier: workspace:*
+        version: link:../packages/infection-briefing-api
       '@eshg/inspection-api':
         specifier: workspace:*
         version: link:../packages/inspection-api
@@ -1176,6 +1185,123 @@ importers:
         version: 4.0.16(@types/node@22.19.3)(terser@5.40.0)(tsx@4.21.0)(yaml@2.8.2)
 
   packages/dental-api: {}
+
+  packages/infection-briefing:
+    dependencies:
+      '@eshg/base-api':
+        specifier: workspace:*
+        version: link:../base-api
+      '@eshg/infection-briefing-api':
+        specifier: workspace:*
+        version: link:../infection-briefing-api
+      '@eshg/lib-employee-portal':
+        specifier: workspace:*
+        version: link:../lib-employee-portal
+      '@eshg/lib-portal':
+        specifier: workspace:*
+        version: link:../lib-portal
+      '@mui/icons-material':
+        specifier: catalog:joy
+        version: 5.18.0(@mui/material@5.16.14(@emotion/react@11.14.0(@types/react@19.2.7)(react@19.2.3))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@19.2.7)(react@19.2.3))(@types/react@19.2.7)(react@19.2.3))(@types/react@19.2.7)(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(@types/react@19.2.7)(react@19.2.3)
+      '@mui/joy':
+        specifier: catalog:joy
+        version: 5.0.0-beta.52(@emotion/react@11.14.0(@types/react@19.2.7)(react@19.2.3))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@19.2.7)(react@19.2.3))(@types/react@19.2.7)(react@19.2.3))(@types/react@19.2.7)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
+      '@tanstack/react-query':
+        specifier: catalog:common
+        version: 5.90.16(react@19.2.3)
+      '@tanstack/react-table':
+        specifier: catalog:common
+        version: 8.21.3(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
+      date-fns:
+        specifier: catalog:common
+        version: 4.1.0
+      formik:
+        specifier: catalog:common
+        version: 2.4.9(react@19.2.3)
+      next:
+        specifier: catalog:next
+        version: 15.4.10(@babel/core@7.28.5)(@playwright/test@1.57.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
+      react:
+        specifier: catalog:react
+        version: 19.2.3
+      remeda:
+        specifier: catalog:common
+        version: 2.33.1
+      valibot:
+        specifier: catalog:common
+        version: 1.2.0(typescript@5.9.3)
+    devDependencies:
+      '@cronn/vitest-file-snapshots':
+        specifier: catalog:vitest
+        version: 0.17.0(vitest@4.0.16(@types/node@22.19.3)(terser@5.40.0)(tsx@4.21.0)(yaml@2.8.2))
+      '@eshg/lib-vitest':
+        specifier: workspace:*
+        version: link:../lib-vitest
+      '@eslint/compat':
+        specifier: catalog:eslint
+        version: 2.0.0(eslint@9.39.2)
+      '@eslint/eslintrc':
+        specifier: catalog:eslint
+        version: 3.3.3
+      '@tanstack/eslint-plugin-query':
+        specifier: catalog:common
+        version: 5.91.2(eslint@9.39.2)(typescript@5.9.3)
+      '@trivago/prettier-plugin-sort-imports':
+        specifier: catalog:prettier
+        version: 6.0.2(prettier@3.7.4)
+      '@types/node':
+        specifier: catalog:common
+        version: 22.19.3
+      '@types/react':
+        specifier: catalog:react
+        version: 19.2.7
+      '@types/react-dom':
+        specifier: catalog:react
+        version: 19.2.3(@types/react@19.2.7)
+      '@vitejs/plugin-react':
+        specifier: catalog:vitest
+        version: 5.1.2(vite@7.3.1(@types/node@22.19.3)(terser@5.40.0)(tsx@4.21.0)(yaml@2.8.2))
+      '@vitest/coverage-istanbul':
+        specifier: catalog:vitest
+        version: 4.0.16(vitest@4.0.16(@types/node@22.19.3)(terser@5.40.0)(tsx@4.21.0)(yaml@2.8.2))
+      eslint:
+        specifier: catalog:eslint
+        version: 9.39.2
+      eslint-config-next:
+        specifier: catalog:next
+        version: 15.4.10(eslint@9.39.2)(typescript@5.9.3)
+      eslint-config-prettier:
+        specifier: catalog:eslint
+        version: 10.1.8(eslint@9.39.2)
+      eslint-plugin-import:
+        specifier: catalog:eslint
+        version: 2.32.0(@typescript-eslint/parser@8.52.0(eslint@9.39.2)(typescript@5.9.3))(eslint-import-resolver-typescript@3.10.1)(eslint@9.39.2)
+      eslint-plugin-promise:
+        specifier: catalog:eslint
+        version: 7.2.1(eslint@9.39.2)
+      eslint-plugin-unused-imports:
+        specifier: catalog:eslint
+        version: 4.3.0(@typescript-eslint/eslint-plugin@8.52.0(@typescript-eslint/parser@8.52.0(eslint@9.39.2)(typescript@5.9.3))(eslint@9.39.2)(typescript@5.9.3))(eslint@9.39.2)
+      prettier:
+        specifier: catalog:prettier
+        version: 3.7.4
+      tsup:
+        specifier: catalog:common
+        version: 8.5.1(postcss@8.5.6)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2)
+      typescript:
+        specifier: catalog:common
+        version: 5.9.3
+      typescript-eslint:
+        specifier: catalog:eslint
+        version: 8.52.0(eslint@9.39.2)(typescript@5.9.3)
+      vite-tsconfig-paths:
+        specifier: catalog:vitest
+        version: 6.0.3(typescript@5.9.3)(vite@7.3.1(@types/node@22.19.3)(terser@5.40.0)(tsx@4.21.0)(yaml@2.8.2))
+      vitest:
+        specifier: catalog:vitest
+        version: 4.0.16(@types/node@22.19.3)(terser@5.40.0)(tsx@4.21.0)(yaml@2.8.2)
+
+  packages/infection-briefing-api: {}
 
   packages/inspection-api: {}
 

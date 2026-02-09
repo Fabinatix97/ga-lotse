@@ -5,7 +5,7 @@
 
 import { DragEvent, useCallback, useState } from "react";
 
-import { FileLike } from "@eshg/lib-portal";
+import { FileLike, normalizeFileName } from "@eshg/lib-portal";
 
 export function useDragAndDropMultiple({
   onChange,
@@ -26,11 +26,18 @@ export function useDragAndDropMultiple({
           // If dropped items aren't files, reject them
           if (item.kind === "file") {
             const file = item.getAsFile();
+            if (!file) {
+              return;
+            }
             const error = validateType(file);
             if (error) {
               return;
             } else {
-              return files.push(file!);
+              const normalized = normalizeFileName(file);
+              if (normalized) {
+                files.push(normalized);
+              }
+              return;
             }
           }
         });

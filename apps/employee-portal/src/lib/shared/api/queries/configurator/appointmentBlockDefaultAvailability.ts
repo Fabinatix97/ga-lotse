@@ -4,38 +4,31 @@
  */
 
 import { useSuspenseQuery } from "@tanstack/react-query";
+import { FormikValues } from "formik";
 
-import { ApiGetAppointmentBlockAvailabilityResponse } from "@eshg/school-entry-api";
-
-import { SchoolEntryAppointmentBlockAvailabilityFormModel } from "@/lib/configurator/components/shared/ConfiguratorDetails/SchoolEntryAppointmentBlockAvailability";
-import { useSchoolEntryAppointmentBlockAvailabilityApi } from "@/lib/shared/api/clients";
+import { ConfiguratorModuleName } from "@/lib/configurator/shared/types";
 import { configuratorApiQueryKey } from "@/lib/shared/api/queries/configurator/apiQueryKey";
 
-export function useGetAppointmentBlockAvailability() {
-  const appointmentBlockAvailabilityApi =
-    useSchoolEntryAppointmentBlockAvailabilityApi();
-  return useSuspenseQuery({
-    queryKey: configuratorApiQueryKey([
-      "getConfiguredAvailability",
-      appointmentBlockAvailabilityApi,
-    ]),
-    queryFn: () => appointmentBlockAvailabilityApi.getConfiguredAvailability(),
-    select: mapResponse,
-  });
-}
+export function useGetAppointmentDefaultAvailability<
+  TResponse,
+  TFormModel extends FormikValues,
+>(
+  module: ConfiguratorModuleName,
+  apiHook: () => {
+    getConfiguredAvailability: () => Promise<TResponse>;
+  },
+  responseMapper: (response: TResponse) => TFormModel,
+) {
+  const api = apiHook();
 
-function mapResponse(
-  response: ApiGetAppointmentBlockAvailabilityResponse,
-): SchoolEntryAppointmentBlockAvailabilityFormModel {
-  return {
-    availableForCitizen: response.defaultFlags?.availableForCitizen ?? false,
-    availableForBulkBooking:
-      response.defaultFlags?.availableForBulkBooking ?? false,
-    bulkCreateAppointmentsMinLeadTime:
-      response.leadTimes?.bulkCreateAppointmentsMinLeadTime ?? "",
-    citizenFreeAppointmentsMinLeadTime:
-      response.leadTimes?.citizenFreeAppointmentsMinLeadTime ?? "",
-    citizenFreeAppointmentsMaxLeadTime:
-      response.leadTimes?.citizenFreeAppointmentsMaxLeadTime ?? "",
-  };
+  const result = useSuspenseQuery({
+    queryKey: configuratorApiQueryKey([
+      module,
+      api,
+      "getConfiguredAvailability",
+    ]),
+    queryFn: () => api.getConfiguredAvailability(),
+    select: responseMapper,
+  });
+  return result.data;
 }

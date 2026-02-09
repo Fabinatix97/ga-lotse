@@ -101,4 +101,6 @@
   <include file="migrations/0086_make_object_type_intervals_nullable.xml"/>
   <include file="migrations/0087_add_designated_assignee_to_object_type.xml"/>
   <include file="migrations/0088_add_column_assignee_to_facility.xml"/>
+  <include file="migrations/0089_add_infection_briefing_procedure_types.xml"/>
+
 </databaseChangeLog>

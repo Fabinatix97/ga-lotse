@@ -97,6 +97,23 @@ public class StatisticsPopulator {
     this.optionalTestHelperClock = optionalTestHelperClock;
   }
 
+  public UUID addEvaluationDental(boolean anonymized) {
+    AddEvaluationWithDataSourcesRequest request =
+        new AddEvaluationWithDataSourcesRequest(
+            "2023 Auswertung DENTAL",
+            Instant.parse("2022-12-31T23:00:00.000Z"),
+            Instant.parse("2023-12-31T23:00:00.000Z"),
+            List.of(
+                new DataSourceDto(
+                    "DENTAL",
+                    UUID.fromString("b5369dfc-d9d4-42e9-abc7-428c6ad348ca"),
+                    List.of(
+                        new BusinessDataAttribute("PROCEDURE_REFERENCE", null),
+                        new BusinessDataAttribute("KARIES_RISIKO", null)))),
+            anonymized);
+    return evaluationController.addEvaluation(request);
+  }
+
   public UUID addEvaluationSchoolEntry(boolean anonymized) {
     AddEvaluationWithDataSourcesRequest request =
         new AddEvaluationWithDataSourcesRequest(

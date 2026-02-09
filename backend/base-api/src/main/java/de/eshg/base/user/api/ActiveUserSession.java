@@ -8,10 +8,9 @@ package de.eshg.base.user.api;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import java.time.Instant;
-import java.util.UUID;
 
 public record ActiveUserSession(
-    @NotNull UUID sessionId,
+    @NotNull String sessionId,
     @NotNull String ip,
     @NotNull Instant startTime,
     @NotNull Instant lastActiveTime,

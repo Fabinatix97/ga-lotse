@@ -15,5 +15,6 @@ import java.util.UUID;
 public record WaitingRoomProcedureDto(
     @NotNull UUID id,
     String alias,
+    @Valid UserNameDto consultant,
     @NotNull @Valid WaitingRoomDto waitingRoom,
     @NotNull Instant modifiedAt) {}

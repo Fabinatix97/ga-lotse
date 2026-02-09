@@ -37,6 +37,7 @@ import {
   FormHelperTextWithIcon,
   isNonEmptyArray,
   isNonEmptyString,
+  normalizeFileName,
   useApiConfigurationUrl,
   useValidateFileType,
 } from "@eshg/lib-portal";
@@ -419,7 +420,10 @@ function FileInput({
 
   function handleInputChange(event: ChangeEvent<HTMLInputElement>) {
     if (event.target.files?.length) {
-      onChange([...event.target.files]);
+      const normalizedFiles = Array.from(event.target.files)
+        .map(normalizeFileName)
+        .filter((file): file is File => file !== null);
+      onChange(normalizedFiles);
       // work-around for Chrome not allowing selecting the same file twice in a row:
       event.target.value = "";
     }

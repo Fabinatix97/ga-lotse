@@ -12,4 +12,4 @@ import java.util.List;
 
 @Schema(name = "GroupForTransition")
 public record GroupForTransitionDto(
-    @NotNull String groupName, @Valid @NotNull List<ChildNameDto> children) {}
+    String groupName, @Valid @NotNull List<ChildNameDto> children) {}

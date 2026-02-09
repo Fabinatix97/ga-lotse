@@ -211,6 +211,38 @@
         "tags" : [ "ServiceDirectoryAdmin" ]
       }
     },
+    "/adminapi/import/rules" : {
+      "post" : {
+        "operationId" : "postRuleImport",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "type" : "array",
+                "items" : {
+                  "$ref" : "#/components/schemas/AdminRuleImport"
+                }
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/AdminRuleImportResponse"
+                }
+              }
+            },
+            "description" : "Import rules to an existing org unit"
+          }
+        },
+        "summary" : "Import rules to an existing org unit",
+        "tags" : [ "ServiceDirectoryAdmin" ]
+      }
+    },
     "/adminapi/orgUnits" : {
       "post" : {
         "operationId" : "createOrgUnit",
@@ -1507,6 +1539,62 @@
           },
           "server" : {
             "$ref" : "#/components/schemas/AdminActorSelector"
+          }
+        }
+      },
+      "AdminRuleImport" : {
+        "required" : [ "active", "client", "server" ],
+        "type" : "object",
+        "properties" : {
+          "active" : {
+            "type" : "boolean"
+          },
+          "client" : {
+            "$ref" : "#/components/schemas/AdminActorSelector"
+          },
+          "description" : {
+            "type" : "string"
+          },
+          "id" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "server" : {
+            "$ref" : "#/components/schemas/AdminActorSelector"
+          }
+        }
+      },
+      "AdminRuleImportError" : {
+        "required" : [ "index" ],
+        "type" : "object",
+        "properties" : {
+          "client" : {
+            "$ref" : "#/components/schemas/AdminActorSelector"
+          },
+          "id" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "index" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "message" : {
+            "type" : "string"
+          },
+          "server" : {
+            "$ref" : "#/components/schemas/AdminActorSelector"
+          }
+        }
+      },
+      "AdminRuleImportResponse" : {
+        "type" : "object",
+        "properties" : {
+          "errors" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/AdminRuleImportError"
+            }
           }
         }
       },

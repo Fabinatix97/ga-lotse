@@ -22,8 +22,10 @@ import {
 } from "@eshg/prostitute-protection-api";
 
 import { useCreateDailyAppointmentBlocksForGroup } from "../../api/mutations/appointmentBlockApi";
+import { useGetAppointmentBlockDefaultAvailabilityOptions } from "../../api/queries/appointmentBlockDefaultAvailability";
 import { useGetAppointmentStandardDurationOptions } from "../../api/queries/appointmentStandardDuration";
 import { routes } from "../../config/routes";
+import { useProstituteProtectionApiClients } from "../../contexts/ProstituteProtectionApi";
 
 import {
   AppointmentBlockGroupForm,
@@ -33,13 +35,6 @@ import {
 const APPOINTMENT_TYPES: ApiAppointmentType[] = [
   ApiAppointmentType.ProstituteProtectionConsultation,
 ];
-
-const INITIAL_VALUES: ProstituteProtectionAppointmentValues = {
-  types: APPOINTMENT_TYPES,
-  appointmentBlocks: [emptyAppointmentBlockGroup()],
-  room: "",
-  consultants: [],
-};
 
 function mapAppointmentBlock(
   values: AppointmentBlockGroupValuesWithDays,
@@ -60,6 +55,7 @@ export function mapFormValues(
     appointmentBlocks: values.appointmentBlocks.map(mapAppointmentBlock),
     room: mapOptionalValue(values.room),
     consultants: values.consultants,
+    availableForCitizen: values.availableForCitizen,
   };
 }
 
@@ -67,14 +63,22 @@ export function CreateAppointmentBlockGroupForm() {
   const router = useRouter();
   const createDailyAppointmentBlocksForGroup =
     useCreateDailyAppointmentBlocksForGroup();
+  const { appointmentStandardDurationApi, appointmentBlockAvailabilityApi } =
+    useProstituteProtectionApiClients();
 
-  const [{ data: standardDurations }, { data: allConsultants }] =
-    useSuspenseQueries({
-      queries: [
-        useGetAppointmentStandardDurationOptions(),
-        useGetUsersByGroupQuery("[System] ProstSchG-Berater"),
-      ],
-    });
+  const [
+    { data: standardDurations },
+    { data: defaultAvailability },
+    { data: allConsultants },
+  ] = useSuspenseQueries({
+    queries: [
+      useGetAppointmentStandardDurationOptions(appointmentStandardDurationApi),
+      useGetAppointmentBlockDefaultAvailabilityOptions(
+        appointmentBlockAvailabilityApi,
+      ),
+      useGetUsersByGroupQuery("[System] ProstSchG-Berater"),
+    ],
+  });
 
   async function handleSubmit(values: ProstituteProtectionAppointmentValues) {
     const appointmentBlockGroupValues = mapFormValues(values);
@@ -87,6 +91,14 @@ export function CreateAppointmentBlockGroupForm() {
       },
     );
   }
+
+  const INITIAL_VALUES: ProstituteProtectionAppointmentValues = {
+    types: APPOINTMENT_TYPES,
+    appointmentBlocks: [emptyAppointmentBlockGroup()],
+    room: "",
+    consultants: [],
+    availableForCitizen: defaultAvailability.availableForCitizen,
+  };
 
   return (
     <AppointmentBlockGroupForm

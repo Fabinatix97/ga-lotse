@@ -1,0 +1,12 @@
+// Copyright 2026 cronn GmbH
+// SPDX-License-Identifier: AGPL-3.0-only
+
+plugins {
+  id 'api-package'
+}
+
+def backendDir = rootProject.layout.projectDirectory.dir('backend')
+
+apiPackage {
+  inputSpec = backendDir.file('infection-briefing/openApi.json')
+}

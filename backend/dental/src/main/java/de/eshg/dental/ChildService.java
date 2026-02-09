@@ -10,7 +10,9 @@ import static de.eshg.dental.mapper.BooleanWithUnknownMapper.mapToBooleanWithUnk
 import static de.eshg.dental.util.ChildSystemProgressEntryType.DATA_EXPORTED;
 import static de.eshg.dental.util.ChildSystemProgressEntryType.LABELS_MODIFIED;
 
+import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Iterables;
+import com.google.common.collect.Multimap;
 import de.cronn.commons.lang.StreamUtil;
 import de.eshg.api.commons.SortDirection;
 import de.eshg.base.centralfile.api.DataOriginDto;
@@ -106,7 +108,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.text.similarity.FuzzyScore;
@@ -803,11 +804,15 @@ public class ChildService {
     closeChildren(childrenToClose);
   }
 
-  public void closeGroupsInBulk(UUID institutionId, List<String> groupNames) {
+  public void closeGroupsInBulk(
+      UUID institutionId, List<String> groupNames, boolean includeChildrenWithoutGroup) {
     Year currentSchoolYear = Year.now(clock).minusYears(1);
     List<Child> childrenToClose =
-        childRepository.findByInstitutionIdAndGroupNameAndYearForUpdate(
-            institutionId, groupNames, currentSchoolYear);
+        includeChildrenWithoutGroup
+            ? childRepository.findByInstitutionIdAndGroupNameOrNullAndYearForUpdate(
+                institutionId, groupNames, currentSchoolYear)
+            : childRepository.findByInstitutionIdAndGroupNameAndYearForUpdate(
+                institutionId, groupNames, currentSchoolYear);
     closeChildren(childrenToClose);
   }
 
@@ -890,10 +895,22 @@ public class ChildService {
                     GroupPromotionDto::originGroupName, GroupPromotionDto::targetGroupName));
 
     List<Child> childrenToPromote =
-        childRepository.findByInstitutionIdAndGroupNameAndYearForUpdate(
-            institutionId, groupTransitionsMap.keySet().stream().toList(), currentSchoolYear);
+        findChildrenByInstitutionIdAndGroupNameAndYearForUpdate(
+            institutionId, groupTransitionsMap.keySet(), currentSchoolYear);
 
     return promoteSchoolChildren(childrenToPromote, groupTransitionsMap::get);
+  }
+
+  private List<Child> findChildrenByInstitutionIdAndGroupNameAndYearForUpdate(
+      UUID institutionId, Collection<String> groupTransitionsMap, Year currentSchoolYear) {
+    if (groupTransitionsMap.contains(null)) {
+      return childRepository.findByInstitutionIdAndGroupNameOrNullAndYearForUpdate(
+          institutionId,
+          groupTransitionsMap.stream().filter(Objects::nonNull).toList(),
+          currentSchoolYear);
+    }
+    return childRepository.findByInstitutionIdAndGroupNameAndYearForUpdate(
+        institutionId, groupTransitionsMap, currentSchoolYear);
   }
 
   private List<UUID> promoteSchoolChildren(
@@ -1027,19 +1044,17 @@ public class ChildService {
 
     List<ChildWithPersonData> augmentedChildren = augmentWithChildData(openChildren);
 
-    return augmentedChildren.stream()
-        .collect(
-            Collectors.groupingBy(
-                childData -> childData.child().getGroupName(),
-                Collectors.mapping(
-                    childData ->
-                        new ChildNameDto(
-                            childData.person().firstName(), childData.person().lastName()),
-                    Collectors.toList())))
-        .entrySet()
-        .stream()
-        .map(entry -> new GroupForTransitionDto(entry.getKey(), entry.getValue()))
-        .sorted((a, b) -> GroupNameComparator.compareGroupNames(a.groupName(), b.groupName()))
+    Multimap<String, ChildNameDto> groupedChildren = ArrayListMultimap.create();
+    augmentedChildren.forEach(
+        childData ->
+            groupedChildren.put(
+                childData.child().getGroupName(),
+                new ChildNameDto(childData.person().firstName(), childData.person().lastName())));
+
+    return groupedChildren.keySet().stream()
+        .sorted(GroupNameComparator::compareGroupNames)
+        .map(
+            group -> new GroupForTransitionDto(group, groupedChildren.get(group).stream().toList()))
         .toList();
   }
 

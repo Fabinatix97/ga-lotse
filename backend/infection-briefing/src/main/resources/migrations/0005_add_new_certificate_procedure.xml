@@ -1,0 +1,27 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<!--
+ Copyright 2026 cronn GmbH
+ SPDX-License-Identifier: Apache-2.0
+-->
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+  <changeSet author="GA-Lotse" id="1768843968854-1">
+    <ext:createPostgresEnumType name="applicantcategory" values="REGULAR, VOLUNTEER, INTERN"/>
+    <ext:createPostgresEnumType name="instructiontype" values="ONLINE, ON_SITE"/>
+    <createTable tableName="new_certificate_procedure">
+      <column name="applicant_category" type="APPLICANTCATEGORY">
+        <constraints nullable="false"/>
+      </column>
+      <column name="instruction_date" type="date"/>
+      <column name="instruction_type" type="INSTRUCTIONTYPE">
+        <constraints nullable="false"/>
+      </column>
+      <column name="id" type="BIGINT">
+        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_new_certificate_procedure"/>
+      </column>
+    </createTable>
+    <addForeignKeyConstraint baseColumnNames="id" baseTableName="new_certificate_procedure" constraintName="fk_new_certificate_procedure_infection_briefing_procedure" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="infection_briefing_procedure" validate="true"/>
+  </changeSet>
+</databaseChangeLog>

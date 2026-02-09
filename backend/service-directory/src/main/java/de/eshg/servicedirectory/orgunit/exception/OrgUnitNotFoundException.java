@@ -18,6 +18,11 @@ public class OrgUnitNotFoundException extends RuntimeException {
     this.id = id;
   }
 
+  public OrgUnitNotFoundException(String readableName) {
+    super("Could not find orgUnit with readableName " + readableName);
+    this.id = null;
+  }
+
   public UUID getId() {
     return id;
   }

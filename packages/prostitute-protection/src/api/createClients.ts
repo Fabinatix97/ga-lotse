@@ -6,6 +6,7 @@
 import { apiMiddlewares } from "@eshg/lib-portal";
 import {
   AppointmentBlockApi,
+  AppointmentBlockDefaultAvailabilityApi,
   ApprovalRequestApi,
   ArchivingApi,
   Configuration,
@@ -28,6 +29,9 @@ export function createClients(baseUrl: string) {
     appointmentBlockApi: new AppointmentBlockApi(config),
     appointmentStandardDurationApi:
       new ProstituteProtectionAppointmentStandardDurationApi(config),
+    appointmentBlockAvailabilityApi: new AppointmentBlockDefaultAvailabilityApi(
+      config,
+    ),
     archivingApi: new ArchivingApi(config),
     procedureApi: new ProcedureApi(config),
     testHelperApi: new TestHelperApi(config),

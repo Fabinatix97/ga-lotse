@@ -9,6 +9,15 @@ public class GroupNameComparator {
   private GroupNameComparator() {}
 
   public static int compareGroupNames(String a, String b) {
+    if (a == null && b == null) {
+      return 0;
+    }
+    if (a == null) {
+      return 1;
+    }
+    if (b == null) {
+      return -1;
+    }
     String numberStringA = getNumberStringAtBeginning(a);
     String numberStringB = getNumberStringAtBeginning(b);
     boolean aStartsWithMultipleNumbers = numberStringA.length() > 1;

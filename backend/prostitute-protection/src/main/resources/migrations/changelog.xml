@@ -45,4 +45,6 @@
   <include file="migrations/0036_drop_consultation_remark_and_supervised.xml"/>
   <include file="migrations/0037_add_infection_briefing_appointment_types.xml"/>
   <include file="migrations/0038_add_online_portal_config.xml"/>
+  <include file="migrations/0039_add_infection_briefing_procedure_types.xml"/>
+  <include file="migrations/0040_add_extended_personal_data.xml"/>
 </databaseChangeLog>

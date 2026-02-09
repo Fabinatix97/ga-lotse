@@ -77,10 +77,7 @@ spec:
           persistentVolumeClaim:
             claimName: service-directory-spatz-debuglogs
         {{- end }}
-        - name: certs
-          secret:
-            secretName: "{{ .Values.servicedirectory.certificate.secret }}"
-            defaultMode: 420
+        {{ include "genCertificateVolumes" (list .Values.spatz.certificate.ca.type .Values.servicedirectory.certificate.secret) | nindent 8 }}
         {{- if .Values.actors.import.enabled }}
         - name: import-data
           configMap:
@@ -212,10 +209,7 @@ spec:
               value: 'false'
             - name: ESHG_SPATZ_RELAY_ENABLED
               value: 'false'
-            - name: ESHG_SPATZ_SSL_KEYSTORE_CERTIFICATE
-              value: /var/run/certs/tls.crt
-            - name: ESHG_SPATZ_SSL_KEYSTORE_PRIVATEKEY
-              value: /var/run/certs/tls.key
+            {{- include "genKeystoreParameters" (list .Values.spatz.certificate.ca.type ) | nindent 12 }}
             - name: ESHG_SPATZ_INBOUND_HANDLERPORT
               value: "443"
             - name: ESHG_SPATZ_OUTBOUND_TARGETPORT
@@ -272,9 +266,7 @@ spec:
             - name: spatzdebuglog
               mountPath: /var/log/eshg-debug
             {{- end }}
-            - name: certs
-              mountPath: /var/run/certs
-              readOnly: true
+            {{- include "genCertificateVolumeMounts" (list .Values.spatz.certificate.ca.type ) | nindent 12 }}
           image: '{{ .Values.image.registry }}/{{ .Values.image.repository }}/spatz:{{ .Values.image.tag }}'
           securityContext: {{- .Values.containerSecurityContext | toYaml | nindent 12 }}
           {{- if .Values.spatzLivenessProbe.enabled }}

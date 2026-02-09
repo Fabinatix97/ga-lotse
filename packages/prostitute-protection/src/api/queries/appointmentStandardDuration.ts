@@ -3,22 +3,21 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
+import { queryOptions } from "@tanstack/react-query";
 
 import { AppointmentStandardDurations } from "@eshg/lib-employee-portal";
 import { durationToMinutes } from "@eshg/lib-portal";
 import {
   ApiAppointmentType,
   ApiProstituteProtectionAppointmentStandardDurations,
+  ProstituteProtectionAppointmentStandardDurationApi,
 } from "@eshg/prostitute-protection-api";
-
-import { useProstituteProtectionApiClients } from "../../contexts/ProstituteProtectionApi";
 
 import { appointmentStandardDurationApiQueryKey } from "./apiQueryKeys";
 
-export function useGetAppointmentStandardDurationOptions() {
-  const { appointmentStandardDurationApi } =
-    useProstituteProtectionApiClients();
+export function useGetAppointmentStandardDurationOptions(
+  appointmentStandardDurationApi: ProstituteProtectionAppointmentStandardDurationApi,
+) {
   return queryOptions({
     queryKey: appointmentStandardDurationApiQueryKey(["getStandardDurations"]),
     queryFn: () => appointmentStandardDurationApi.getStandardDurations(),
@@ -37,9 +36,4 @@ function mapStandardDurations(
     },
     extraDuration: 0,
   };
-}
-
-export function useGetAppointmentStandardDuration() {
-  const options = useGetAppointmentStandardDurationOptions();
-  return useSuspenseQuery(options);
 }

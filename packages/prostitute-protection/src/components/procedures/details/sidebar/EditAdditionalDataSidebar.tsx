@@ -17,7 +17,6 @@ import {
   OptionalFieldValue,
   SelectField,
   buildEnumOptions,
-  mapOptionalValue,
   mapRequiredValue,
   parseOptionalValue,
   toDateTimeString,
@@ -167,7 +166,10 @@ function mapFormToApi(
     appointmentBookingType: values.appointmentBookingType,
     appointmentStart,
     durationInMinutes,
-    consultantId: mapOptionalValue(values.consultantId),
+    consultantId:
+      values.appointmentBookingType === "APPOINTMENT_BLOCK"
+        ? undefined
+        : mapRequiredValue(values.consultantId),
     consultationType: mapRequiredValue(values.consultationType),
     version: values.version,
   };

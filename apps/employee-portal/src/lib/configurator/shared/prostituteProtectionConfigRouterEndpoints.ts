@@ -10,5 +10,6 @@ export const prostituteProtectionConfigRouterEndpoints: ConfiguratorEndpointName
     "DEPARTMENT_INFO",
     "OPENING_HOURS",
     "APPOINTMENT_STANDARD_DURATION",
+    "APPOINTMENT_BLOCK_AVAILABILITY",
     "PROSTITUTE_PROTECTION",
   ];

@@ -8,6 +8,7 @@ package de.eshg.spatz.security;
 import org.bouncycastle.asn1.x509.KeyPurposeId;
 
 public enum ExtendedKeyUsageType {
+  NONE(),
   SERVER_ONLY(KeyPurposeId.id_kp_serverAuth),
   CLIENT_ONLY(KeyPurposeId.id_kp_clientAuth),
   SERVER_AND_CLIENT(KeyPurposeId.id_kp_serverAuth, KeyPurposeId.id_kp_clientAuth);

@@ -32,6 +32,12 @@ spatz:
       memory: 256Mi
     limits:
       memory: 384Mi
+  certificate:
+    ca:
+      # Types of CA-signed certificates:
+      #   - dual: One certificate with client+server EKU per spatz
+      #   - split: Two certificates per spatz, one with client and one with server EKU
+      type: 'split'
 
 spring:
   profiles:

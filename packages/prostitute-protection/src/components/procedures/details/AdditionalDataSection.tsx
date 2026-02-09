@@ -73,7 +73,11 @@ export function AdditionalDataSection({
                 )}
               />
               <DetailsItem
-                label={ADDITIONAL_DATA_FIELD_NAME.consultant}
+                label={
+                  procedure.appointmentFromAppointmentBlock
+                    ? ADDITIONAL_DATA_FIELD_NAME.consultantOfAppointmentBlock
+                    : ADDITIONAL_DATA_FIELD_NAME.consultant
+                }
                 value={formatPersonName(
                   procedure.consultant,
                   OPTIONAL_FALLBACK_VALUE,

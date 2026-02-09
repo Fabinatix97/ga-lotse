@@ -7,15 +7,17 @@ import { ApiChildName, ApiGroupForTransition } from "@eshg/dental-api";
 
 export interface GroupsForTransition {
   readonly id: string;
-  readonly groupName: string;
+  readonly groupName?: string;
   readonly children: ApiChildName[];
 }
+
+export const NO_GROUP = "no-group-8eb01zwp";
 
 export function mapGroupResult(
   response: ApiGroupForTransition,
 ): GroupsForTransition {
   return {
-    id: response.groupName,
+    id: response.groupName ?? NO_GROUP,
     groupName: response.groupName,
     children: response.children,
   };

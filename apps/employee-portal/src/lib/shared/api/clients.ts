@@ -34,12 +34,13 @@ import {
 } from "@eshg/official-medical-service-api";
 import { OpenDataConfigApi } from "@eshg/opendata-api";
 import {
+  AppointmentBlockAvailabilityConfigApi as ProstituteProtectionAppointmentBlockAvailabilityConfigApi,
   ProstituteProtectionAppointmentStandardDurationConfigApi,
   ProstituteProtectionConfigApi,
   Configuration as ProstituteProtectionConfiguration,
 } from "@eshg/prostitute-protection-api";
 import {
-  AppointmentBlockAvailabilityConfigApi,
+  AppointmentBlockAvailabilityConfigApi as SchoolEntryAppointmentBlockAvailabilityConfigApi,
   SchoolEntryAppointmentStandardDurationConfigApi,
   SchoolEntryLibConfigApi,
 } from "@eshg/school-entry-api";
@@ -245,7 +246,7 @@ export function useSchoolEntryAppointmentStandardDurationConfigApi() {
 
 export function useSchoolEntryAppointmentBlockAvailabilityApi() {
   const configuration = useSchoolEntryConfiguration();
-  return new AppointmentBlockAvailabilityConfigApi(configuration);
+  return new SchoolEntryAppointmentBlockAvailabilityConfigApi(configuration);
 }
 
 export function useTravelMedicineAppointmentStandardDurationConfigApi() {
@@ -281,6 +282,16 @@ export function useProstituteProtectionAppointmentStandardDurationConfigApi() {
     ProstituteProtectionConfiguration,
   );
   return new ProstituteProtectionAppointmentStandardDurationConfigApi(
+    configuration,
+  );
+}
+
+export function useProstituteProtectionAppointmentBlockAvailabilityApi() {
+  const configuration = useConfigurationByBusinessModule(
+    ApiBusinessModule.ProstituteProtection,
+    ProstituteProtectionConfiguration,
+  );
+  return new ProstituteProtectionAppointmentBlockAvailabilityConfigApi(
     configuration,
   );
 }

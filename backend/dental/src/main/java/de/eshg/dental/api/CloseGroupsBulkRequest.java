@@ -11,4 +11,6 @@ import java.util.List;
 import java.util.UUID;
 
 public record CloseGroupsBulkRequest(
-    @NotNull UUID institutionId, @NotEmpty List<String> groupNames) {}
+    @NotNull UUID institutionId,
+    @NotEmpty List<String> groupNames,
+    @NotNull boolean includeChildrenWithoutGroup) {}

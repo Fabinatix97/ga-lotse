@@ -125,7 +125,7 @@ export function ConfigureHistogramChartStep({
             )}
             isDataGrouped={showGroupedConfigurations}
             grouping={showGroupedConfigurations ? values.grouping : undefined}
-            scaling={showGroupedConfigurations ? values.scaling : undefined}
+            scaling={values.scaling}
           />
         }
       />

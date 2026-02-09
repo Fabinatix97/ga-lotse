@@ -359,3 +359,58 @@ FM
 {{- end }}
 ]
 {{- end }}
+
+{{- define "genCertificateVolumes" }}
+{{- $caCertificateType := index . 0 }}
+{{- $secretName := index . 1 }}
+{{- if eq "dual" $caCertificateType }}
+- name: certs
+  secret:
+    secretName: {{ $secretName }}
+    defaultMode: 420
+{{- else if eq "split" $caCertificateType }}
+- name: server-certs
+  secret:
+    secretName: {{ $secretName }}-server
+    defaultMode: 420
+- name: client-certs
+  secret:
+    secretName: {{ $secretName }}-client
+    defaultMode: 420
+{{- end }}
+{{- end }}
+
+{{- define "genCertificateVolumeMounts" }}
+{{- $caCertificateType := index . 0 }}
+{{- if eq "dual" $caCertificateType }}
+- name: certs
+  mountPath: /var/run/certs
+  readOnly: true
+{{- else if eq "split" $caCertificateType }}
+- name: server-certs
+  mountPath: /var/run/server-certs
+  readOnly: true
+- name: client-certs
+  mountPath: /var/run/client-certs
+  readOnly: true
+{{- end }}
+{{- end }}
+
+{{- define "genKeystoreParameters" }}
+{{- $caCertificateType := index . 0 }}
+{{- if eq "dual" $caCertificateType }}
+- name: ESHG_SPATZ_SSL_KEYSTORE_CERTIFICATE
+  value: /var/run/certs/tls.crt
+- name: ESHG_SPATZ_SSL_KEYSTORE_PRIVATEKEY
+  value: /var/run/certs/tls.key
+{{- else if eq "split" $caCertificateType }}
+- name: ESHG_SPATZ_CLIENTSSL_KEYSTORE_CERTIFICATE
+  value: /var/run/client-certs/tls.crt
+- name: ESHG_SPATZ_CLIENTSSL_KEYSTORE_PRIVATEKEY
+  value: /var/run/client-certs/tls.key
+- name: ESHG_SPATZ_SERVERSSL_KEYSTORE_CERTIFICATE
+  value: /var/run/server-certs/tls.crt
+- name: ESHG_SPATZ_SERVERSSL_KEYSTORE_PRIVATEKEY
+  value: /var/run/server-certs/tls.key
+{{- end }}
+{{- end }}

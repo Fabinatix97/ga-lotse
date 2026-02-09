@@ -25,6 +25,8 @@
     "@eshg/chat-management-api": "workspace:*",
     "@eshg/dental": "workspace:*",
     "@eshg/dental-api": "workspace:*",
+    "@eshg/infection-briefing": "workspace:*",
+    "@eshg/infection-briefing-api": "workspace:*",
     "@eshg/inspection-api": "workspace:*",
     "@eshg/lib-config-api": "workspace:*",
     "@eshg/lib-editor-api": "workspace:*",

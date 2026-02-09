@@ -46,7 +46,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
-import org.apache.commons.lang3.StringUtils;
+import java.util.stream.Collectors;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -94,15 +94,7 @@ public class Validator {
             institutionId,
             EnumSet.of(
                 InstitutionContactCategoryDto.SCHOOL, InstitutionContactCategoryDto.DAYCARE));
-    InstitutionContactCategoryDto contactCategory = institutionContactDto.category();
-    if (contactCategory == InstitutionContactCategoryDto.SCHOOL
-        && (groupName == null || groupName.isBlank())) {
-      throw new BadRequestException(
-          ("Contact with id %s does not have a valid group name."
-                  + " Group name is only optional for category daycare.")
-              .formatted(institutionId));
-    } else if (contactCategory == InstitutionContactCategoryDto.DAYCARE
-        && (groupName != null && groupName.isBlank())) {
+    if (groupName != null && groupName.isBlank()) {
       throw new BadRequestException("Group name must not be blank.");
     }
 
@@ -368,7 +360,9 @@ public class Validator {
     if (!duplicatedGroups.isEmpty()) {
       throw new BadRequestException(
           "Duplicate origin group names are not allowed: "
-              + StringUtils.join(duplicatedGroups, ", "));
+              + duplicatedGroups.stream()
+                  .map(x -> x == null ? "<null>" : x)
+                  .collect(Collectors.joining(", ")));
     }
   }
 

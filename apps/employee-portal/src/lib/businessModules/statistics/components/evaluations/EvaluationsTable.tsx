@@ -12,6 +12,7 @@ import {
   Info,
   Menu,
   Share,
+  Sync,
 } from "@mui/icons-material";
 import { Box, Button } from "@mui/joy";
 import { createColumnHelper } from "@tanstack/react-table";
@@ -51,6 +52,7 @@ import {
   EvaluationOverview,
   EvaluationOverviewTableItem,
 } from "@/lib/businessModules/statistics/api/models/evaluationOverview";
+import { useUpdateDataBasis } from "@/lib/businessModules/statistics/api/mutations/useUpdateDataBasis";
 import { getEvaluationsQueryKey } from "@/lib/businessModules/statistics/api/queries/apiQueryKeys";
 import { useAnonymizationFailedSidebar } from "@/lib/businessModules/statistics/components/evaluations/AnonymizationFailedSidebar";
 import { useDuplicateEvaluationSidebar } from "@/lib/businessModules/statistics/components/evaluations/DuplicateEvaluationSidebar/DuplicateEvaluationSidebar";
@@ -88,6 +90,7 @@ function columns(functions: {
   canWrite: (creatorUserId: string) => boolean;
   canUpdateEvaluation: (creatorUserId: string) => boolean;
   onDuplicate: (item: EvaluationOverviewTableItem) => void;
+  onRetry: (item: EvaluationOverviewTableItem) => Promise<void>;
   onNameChange: (id: string, name: string) => void;
   onSaveAsTemplate: (item: EvaluationOverviewTableItem) => void;
   onExportData: (item: EvaluationOverviewTableItem) => Promise<void>;
@@ -180,9 +183,17 @@ function columns(functions: {
       cell: (props) => {
         const anonymizationFailed =
           props.row.original.state === ApiEvaluationState.AnonymizationFailed;
+        const allowRetry =
+          anonymizationFailed ||
+          props.row.original.state === ApiEvaluationState.Failed;
         return (
           <ActionsMenu
             actionItems={[
+              allowRetry && {
+                label: "Erneut versuchen",
+                onClick: async () => functions.onRetry(props.row.original),
+                startDecorator: <Sync />,
+              },
               anonymizationFailed && {
                 label: "Informationen",
                 onClick: () =>
@@ -309,10 +320,21 @@ export function EvaluationsTable({
     showSearch: false,
   });
 
+  const updateDataBasis = useUpdateDataBasis({
+    redirectRoute: routes.evaluations.index,
+  });
+
   const copy = useCopy();
 
   function openDuplicateEvaluationSidebar(item: EvaluationOverviewTableItem) {
     duplicateEvaluationSidebar.open({ originalEvaluation: item });
+  }
+
+  async function retryEvaluation(item: EvaluationOverviewTableItem) {
+    await updateDataBasis(item.id, {
+      start: item.timeRangeStart.toISOString(),
+      end: item.timeRangeEnd.toISOString(),
+    });
   }
 
   function openSaveAsEvaluationTemplateSidebar(evaluationId: string) {
@@ -371,6 +393,7 @@ export function EvaluationsTable({
               canWrite: userPermissions.canWrite,
               canUpdateEvaluation: userPermissions.canUpdateEvaluation,
               onDuplicate: openDuplicateEvaluationSidebar,
+              onRetry: retryEvaluation,
               onShareClicked: copy,
               onNameChange: (id, name) => setNameChangeAction({ id, name }),
               onSaveAsTemplate: (item) =>

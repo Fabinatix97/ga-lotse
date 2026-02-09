@@ -2,6 +2,19 @@ GA-Lotse ist ein Kooperationsprojekt des Gesundheitsamts Frankfurt am Main mit d
 
 Finanziert von der Europäischen Union – NextGenerationEU
 
+## GA-Lotse 2.19
+_04.02.2026_
+
+Zweiunddreißigster Release der Anwendung GA-Lotse
+
+### Zahnärztlicher Dienst:
+
+Schulklassen sind nun eine optionale Angabe und nicht mehr verpflichtend
+
+### Statistikmodul:
+
+Prozentuale Angaben sind nun auch in weiteren Darstellungsarten verfügbar (Kreisdiagramm, Histogramm und Choroplethenkarte)
+
 ## GA-Lotse 2.18
 _28.01.2026_
 

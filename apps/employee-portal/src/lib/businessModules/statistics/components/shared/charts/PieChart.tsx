@@ -4,6 +4,8 @@
  */
 
 import { EChartsOption } from "echarts";
+import { CallbackDataParams } from "echarts/types/dist/shared";
+import { isNumber, isString } from "remeda";
 
 import { AnalysisDiagramPieChart } from "@/lib/businessModules/statistics/api/models/evaluationDetailsViewTypes";
 import {
@@ -15,6 +17,20 @@ interface PieChartProps {
   diagramData: AnalysisDiagramPieChart["data"];
   getColor?: (identifier: string) => string;
   eChartApi?: (eChartApi: ChartApi) => void;
+}
+
+function formatValue(params: CallbackDataParams) {
+  const value = isNumber(params.value) ? params.value.toString() : "-";
+  if (params.percent) return `${value} (${params.percent}%)`;
+  return value;
+}
+
+function tooltipFormatter(params: CallbackDataParams) {
+  const marker = isString(params.marker) ? params.marker : "";
+  const name = `<span style="margin-left: 2px">${params.name}</span>`;
+  const formattedValue = formatValue(params);
+  const value = `<span style="float: right; margin-left: 20px; font-weight: 900">${formattedValue}</span>`;
+  return `${marker}${name}${value}`;
 }
 
 export function PieChart({ diagramData, getColor, eChartApi }: PieChartProps) {
@@ -46,6 +62,9 @@ export function PieChart({ diagramData, getColor, eChartApi }: PieChartProps) {
         itemStyle: {
           borderColor: "#ffffff",
           borderWidth: 2,
+        },
+        tooltip: {
+          formatter: tooltipFormatter,
         },
         center: ["50%", "50%"],
       },

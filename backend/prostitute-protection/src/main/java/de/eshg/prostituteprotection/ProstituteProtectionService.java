@@ -9,6 +9,7 @@ import de.eshg.api.commons.SortDirection;
 import de.eshg.base.user.UserApi;
 import de.eshg.base.user.api.GetUsersRequest;
 import de.eshg.base.user.api.UserDto;
+import de.eshg.lib.appointmentblock.persistence.entity.Appointment;
 import de.eshg.lib.auditlog.AuditLogger;
 import de.eshg.lib.keycloak.TechnicalGroup;
 import de.eshg.lib.procedure.domain.model.BasicSystemProgressEntryType;
@@ -52,6 +53,7 @@ import de.eshg.prostituteprotection.domain.repository.WaitingRoomRepository;
 import de.eshg.prostituteprotection.mapper.AppointmentMapper;
 import de.eshg.prostituteprotection.mapper.ProstituteProtectionMapper;
 import de.eshg.prostituteprotection.mapper.WaitingRoomMapper;
+import de.eshg.prostituteprotection.pdf.ConsultationCertificateGenerator;
 import de.eshg.prostituteprotection.util.ExceptionUtil;
 import de.eshg.prostituteprotection.util.ProgressEntryUtil;
 import de.eshg.prostituteprotection.util.ProstituteProtectionProgressEntryType;
@@ -82,9 +84,6 @@ import org.springframework.stereotype.Service;
 @Service
 public class ProstituteProtectionService {
 
-  public static final int VALIDITY_AGE_THRESHHOLD = 21;
-  public static final int VALIDITY_PERIOD_SHORT = 6;
-  public static final int VALIDITY_PERIOD_REGULAR = 12;
   private final ProstituteProtectionProcedureRepository procedureRepository;
   private final ConsultationRepository consultationRepository;
   private final EncryptedFileRepository encryptedFileRepository;
@@ -117,6 +116,16 @@ public class ProstituteProtectionService {
     this.personalDataEncryptionService = personalDataEncryptionService;
     this.userApi = userApi;
     this.progressEntryUtil = progressEntryUtil;
+  }
+
+  private UUID computeConsultantIdIfUnique(ProstituteProtectionProcedure procedure) {
+    Appointment appointmentFromBlock = procedure.getAppointment();
+    if (appointmentFromBlock != null
+        && appointmentFromBlock.getAppointmentBlock().getConsultants().size() == 1) {
+      return appointmentFromBlock.getAppointmentBlock().getConsultants().getFirst();
+    } else {
+      return procedure.getConsultantId();
+    }
   }
 
   CreateProstituteProtectionProcedureResponse createProcedure(
@@ -221,11 +230,10 @@ public class ProstituteProtectionService {
 
     LocalDate appointmentDay =
         procedure.getAppointmentStart().atZone(clock.getZone()).toLocalDate();
-    if (ChronoUnit.YEARS.between(request.dateOfBirth(), appointmentDay) < VALIDITY_AGE_THRESHHOLD) {
-      encryptedFile.setValidUntil(appointmentDay.plusMonths(VALIDITY_PERIOD_SHORT));
-    } else {
-      encryptedFile.setValidUntil(appointmentDay.plusMonths(VALIDITY_PERIOD_REGULAR));
-    }
+    LocalDate validUntil =
+        ConsultationCertificateGenerator.calculateValidToDate(
+            appointmentDay, request.dateOfBirth(), procedure.getPersonalData());
+    encryptedFile.setValidUntil(validUntil);
 
     procedure.addEncryptedFile(encryptedFile);
     procedureRepository.flush();
@@ -326,11 +334,24 @@ public class ProstituteProtectionService {
     return resolveUsers(userIds);
   }
 
+  private Map<UUID, UserNameDto> getConsultantUsers(
+      List<ProstituteProtectionProcedure> procedures) {
+    Set<UUID> consultantIds =
+        procedures.stream()
+            .map(this::computeConsultantIdIfUnique)
+            .filter(Objects::nonNull)
+            .collect(Collectors.toSet());
+    if (consultantIds.isEmpty()) {
+      return Collections.emptyMap();
+    }
+    return resolveUsers(consultantIds);
+  }
+
   private Set<UUID> getConsultantsAndCreatorsIds(List<ProstituteProtectionProcedure> procedures) {
     Set<UUID> userIds = new HashSet<>();
     for (ProstituteProtectionProcedure procedure : procedures) {
       userIds.add(creatorId(procedure));
-      userIds.add(procedure.getConsultantId());
+      userIds.add(computeConsultantIdIfUnique(procedure));
     }
     return userIds.stream().filter(Objects::nonNull).collect(Collectors.toSet());
   }
@@ -369,7 +390,7 @@ public class ProstituteProtectionService {
     Map<UUID, UserNameDto> userDtos =
         resolveUsers(getConsultantsAndCreatorsIds(List.of(procedure)));
     return new ProstituteProtectionProcedureWithAugmentedData(
-        procedure, userDtos.get(procedure.getConsultantId()), userDtos.get(creatorId));
+        procedure, userDtos.get(computeConsultantIdIfUnique(procedure)), userDtos.get(creatorId));
   }
 
   public Map<UUID, UserNameDto> resolveUsers(Set<UUID> userIds) {
@@ -474,6 +495,11 @@ public class ProstituteProtectionService {
   }
 
   public void abortProcedureAndFlush(ProstituteProtectionProcedure procedure) {
+    if (procedure.getAppointment() != null) {
+      appointmentService.removeAppointmentFromAppointmentBlock(procedure);
+    } else if (procedure.getUserDefinedAppointment() != null) {
+      appointmentService.removeUserDefinedAppointment(procedure);
+    }
     abortProcedure(procedure);
     procedureRepository.flush();
   }
@@ -497,20 +523,26 @@ public class ProstituteProtectionService {
     Page<ProstituteProtectionProcedure> procedures =
         procedureRepository.findAll(
             waitingRoomSpecification, PageRequest.of(pageSpec.pageNumber(), pageSpec.pageSize()));
+    List<ProstituteProtectionProcedure> procedureList = procedures.getContent();
+    Map<UUID, UserNameDto> consultantUsers = getConsultantUsers(procedureList);
+
     List<WaitingRoomProcedureData> procedureData =
-        augmentWithWaitingRoomData(procedures.getContent()).toList();
+        augmentWithWaitingRoomData(procedureList, consultantUsers).toList();
+
     return new PagedWaitingRoomProcedures(procedureData, procedures.getTotalElements());
   }
 
   private Stream<WaitingRoomProcedureData> augmentWithWaitingRoomData(
-      List<ProstituteProtectionProcedure> procedures) {
+      List<ProstituteProtectionProcedure> procedures, Map<UUID, UserNameDto> consultantUsers) {
     return procedures.stream()
         .map(
             procedure -> {
               WaitingRoom waitingRoom = procedure.getWaitingRoom();
+              UserNameDto consultant = consultantUsers.get(computeConsultantIdIfUnique(procedure));
               return new WaitingRoomProcedureData(
                   procedure.getExternalId(),
                   procedure.getPersonalData().getAlias(),
+                  consultant,
                   waitingRoom,
                   waitingRoom.getModifiedAt());
             });

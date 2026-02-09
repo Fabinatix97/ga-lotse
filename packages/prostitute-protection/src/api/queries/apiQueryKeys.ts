@@ -24,3 +24,7 @@ export const appointmentBlockApiQueryKey = queryKeyFactory(
 export const appointmentStandardDurationApiQueryKey = queryKeyFactory(
   prostituteProtectionApiQueryKey(["appointmentStandardDurationApi"]),
 );
+
+export const appointmentBlockDefaultAvailabilityApiQueryKey = queryKeyFactory(
+  prostituteProtectionApiQueryKey(["appointmentDefaultAvailability"]),
+);

@@ -59,7 +59,7 @@ public enum ModuleClient {
       "official-medical-service", List.of(BASE_MAIL_SEND, BASE_ACCESS_CODE_USER_ADMIN)),
   MEDS_ABROAD("meds-abroad", List.of(EmployeePermissionRole.BASE_MAIL_SEND)),
   PROSTITUTE_PROTECTION("prostitute-protection"),
-  INFECTION_BRIEFING("infection-briefing"),
+  INFECTION_BRIEFING("infection-briefing", List.of(BASE_MAIL_SEND)),
   OPENDATA("opendata");
 
   private final String clientIdWithoutPrefix;

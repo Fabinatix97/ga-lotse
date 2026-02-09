@@ -20,6 +20,8 @@ import de.eshg.libservicedirectoryadminapi.api.orgunit.OrgUnitDto;
 import de.eshg.libservicedirectoryadminapi.api.orgunit.PartialOrgUnitDto;
 import de.eshg.libservicedirectoryadminapi.api.rule.PartialRuleDto;
 import de.eshg.libservicedirectoryadminapi.api.rule.RuleDto;
+import de.eshg.libservicedirectoryadminapi.api.ruleimport.RuleImportDto;
+import de.eshg.libservicedirectoryadminapi.api.ruleimport.RuleImportResponse;
 import de.eshg.libservicedirectoryadminapi.api.staging.CommitResponseDto;
 import de.eshg.rest.service.error.BadRequestException;
 import de.eshg.servicedirectory.ServiceDirectoryCommitService.UniqueConstraint;
@@ -244,6 +246,11 @@ public class ServiceDirectoryAdminController implements ServiceDirectoryAdminApi
   @Override
   public void postImport(ImportRequest toBeImported) {
     serviceDirectoryAdminService.importIntoEmptyDatabase(toBeImported);
+  }
+
+  @Override
+  public RuleImportResponse postRuleImport(List<RuleImportDto> rules) {
+    return serviceDirectoryAdminService.requestImportRulesToOrgUnit(rules);
   }
 
   @Override

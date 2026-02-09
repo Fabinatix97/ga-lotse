@@ -18,7 +18,11 @@ import {
   getSortKey,
   usePersistentTableControl,
 } from "@eshg/lib-employee-portal";
-import { formatOptionalKey } from "@eshg/lib-portal";
+import {
+  OPTIONAL_FALLBACK_VALUE,
+  formatOptionalKey,
+  formatPersonName,
+} from "@eshg/lib-portal";
 import {
   ApiWaitingRoomProcedure,
   ApiWaitingRoomSortKey,
@@ -89,6 +93,18 @@ const COLUMNS = [
         parentRow: true,
       },
       width: 180,
+    },
+  }),
+  columnHelper.accessor("consultant", {
+    header: "Berater:in",
+    cell: (props) =>
+      formatPersonName(props.getValue(), OPTIONAL_FALLBACK_VALUE),
+    enableSorting: false,
+    meta: {
+      canNavigate: {
+        parentRow: true,
+      },
+      width: 220,
     },
   }),
   columnHelper.accessor("waitingRoom.description", {

@@ -4411,7 +4411,7 @@
         }
       },
       "CloseGroupsBulkRequest" : {
-        "required" : [ "groupNames", "institutionId" ],
+        "required" : [ "groupNames", "includeChildrenWithoutGroup", "institutionId" ],
         "type" : "object",
         "properties" : {
           "groupNames" : {
@@ -4420,6 +4420,9 @@
             "items" : {
               "type" : "string"
             }
+          },
+          "includeChildrenWithoutGroup" : {
+            "type" : "boolean"
           },
           "institutionId" : {
             "type" : "string",
@@ -6122,7 +6125,7 @@
         "enum" : [ "ASC", "DESC" ]
       },
       "GroupForTransition" : {
-        "required" : [ "children", "groupName" ],
+        "required" : [ "children" ],
         "type" : "object",
         "properties" : {
           "children" : {
@@ -6137,15 +6140,12 @@
         }
       },
       "GroupPromotion" : {
-        "required" : [ "originGroupName", "targetGroupName" ],
         "type" : "object",
         "properties" : {
           "originGroupName" : {
-            "minLength" : 1,
             "type" : "string"
           },
           "targetGroupName" : {
-            "minLength" : 1,
             "type" : "string"
           }
         }
@@ -6845,7 +6845,7 @@
       },
       "ProcedureType" : {
         "type" : "string",
-        "enum" : [ "REGULAR_EXAMINATION", "CAN_CHILD", "ENTRY_LEVEL", "DRAFT_CITIZEN_OFFICE_IMPORT", "DRAFT_SCHOOL_IMPORT", "INSPECTION", "TM_VACCINATION_CONSULTATION", "MEASLES_PROTECTION", "STI_PROTECTION", "MEDICAL_REGISTRY_ENTRY", "MEDICAL_REGISTRY_CITIZEN_DRAFT", "MEDICAL_REGISTRY_EMPLOYEE_DRAFT", "DENTAL_CHILD", "OFFICIAL_MEDICAL_SERVICE", "MEDS_ABROAD", "PROSTITUTE_PROTECTION" ]
+        "enum" : [ "REGULAR_EXAMINATION", "CAN_CHILD", "ENTRY_LEVEL", "DRAFT_CITIZEN_OFFICE_IMPORT", "DRAFT_SCHOOL_IMPORT", "INSPECTION", "TM_VACCINATION_CONSULTATION", "MEASLES_PROTECTION", "STI_PROTECTION", "MEDICAL_REGISTRY_ENTRY", "MEDICAL_REGISTRY_CITIZEN_DRAFT", "MEDICAL_REGISTRY_EMPLOYEE_DRAFT", "DENTAL_CHILD", "OFFICIAL_MEDICAL_SERVICE", "MEDS_ABROAD", "PROSTITUTE_PROTECTION", "INFECTION_BRIEFING_NEW", "INFECTION_BRIEFING_REPLACEMENT" ]
       },
       "ProcedureWithDuration" : {
         "required" : [ "createdAt", "id" ],

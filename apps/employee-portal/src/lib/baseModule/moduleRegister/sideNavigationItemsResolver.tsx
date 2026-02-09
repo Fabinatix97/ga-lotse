@@ -7,6 +7,7 @@ import { entries } from "remeda";
 
 import { ApiBusinessModule } from "@eshg/base-api";
 import { resolveSideNavigationItems as resolveDentalSideNavigationItems } from "@eshg/dental";
+import { resolveSideNavigationItems as resolveInfectionBriefingSideNavigationItems } from "@eshg/infection-briefing";
 import {
   SideNavigationItem,
   SideNavigationItemsProps,
@@ -54,7 +55,8 @@ const businessItemResolvers: Record<
   [ApiBusinessModule.MedsAbroad]: () => [],
   [ApiBusinessModule.ProstituteProtection]:
     resolveProstituteProtectionSideNavigationItems,
-  [ApiBusinessModule.InfectionBriefing]: (_) => [],
+  [ApiBusinessModule.InfectionBriefing]:
+    resolveInfectionBriefingSideNavigationItems,
 };
 
 function useBusinessItems(): SideNavigationItem[] {

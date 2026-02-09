@@ -267,7 +267,7 @@ public class EvaluationService extends AbstractAggregationResultService {
       UUID evaluationId, AbstractUpdateEvaluationRequest updateEvaluationRequest) {
     Evaluation evaluation = getEvaluationInternal(evaluationId);
     validateBelongsToCurrentUserOrIsAdmin(evaluation);
-    validateEvaluationCompleted(evaluation);
+    validateEvaluationInFinalState(evaluation);
 
     switch (updateEvaluationRequest) {
       case UpdateEvaluationNameRequest updateEvaluationNameRequest ->
@@ -275,6 +275,12 @@ public class EvaluationService extends AbstractAggregationResultService {
       case UpdateEvaluationTimeRangeRequest updateEvaluationTimeRangeRequest ->
           updateTimeRange(evaluation, updateEvaluationTimeRangeRequest);
     }
+  }
+
+  @Transactional
+  public void setEvaluationState(UUID evaluationId, AggregationResultState state) {
+    Evaluation evaluation = getEvaluationInternal(evaluationId);
+    evaluation.setState(state);
   }
 
   private void updateName(
@@ -512,6 +518,19 @@ public class EvaluationService extends AbstractAggregationResultService {
     if (!evaluation.getState().equals(AggregationResultState.COMPLETED)) {
       throw new BadRequestException(
           "Evaluation %s is not in state COMPLETED".formatted(evaluation.getExternalId()));
+    }
+  }
+
+  public static void validateEvaluationInFinalState(Evaluation evaluation) {
+    Set<AggregationResultState> finalStates =
+        Set.of(
+            AggregationResultState.COMPLETED,
+            AggregationResultState.ANONYMIZATION_FAILED,
+            AggregationResultState.FAILED);
+    if (!finalStates.contains(evaluation.getState())) {
+      throw new BadRequestException(
+          "Evaluation %s is not in a final state! Current state: %s"
+              .formatted(evaluation.getExternalId(), evaluation.getState().toString()));
     }
   }
 

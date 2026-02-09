@@ -63,16 +63,19 @@ public class ProstituteProtectionMapper {
       ProstituteProtectionProcedure procedure,
       UpdateEncryptedPersonalDataRequest request,
       EncryptedPersonalDataDto encryptedPersonalDataDto) {
-    procedure.getPersonalData().setAlias(request.alias());
-    procedure.getPersonalData().setPhoneNumber(null);
-    procedure.getPersonalData().setLanguages(mapLanguages(request.languages()));
-    procedure.getPersonalData().setDocumentType(mapDocumentType(request.documentType()));
+    PersonalData personalData = procedure.getPersonalData();
+    personalData.setAlias(request.alias());
+    personalData.setPhoneNumber(null);
+    personalData.setLanguages(mapLanguages(request.languages()));
+    personalData.setDocumentType(mapDocumentType(request.documentType()));
+    personalData.setResidencePermitValidityDate(request.residencePermitValidityDate());
+    personalData.setCustomDocumentType(request.customDocumentType());
 
-    procedure.getEncryptedPersonalData().setEncryptedData(encryptedPersonalDataDto.data());
-    procedure
-        .getEncryptedPersonalData()
-        .setHashedPersonIdentifier(encryptedPersonalDataDto.hashedPersonIdentifier());
-    procedure.getEncryptedPersonalData().setNonce(encryptedPersonalDataDto.nonce());
+    EncryptedPersonalData encryptedPersonalData = procedure.getEncryptedPersonalData();
+    encryptedPersonalData.setEncryptedData(encryptedPersonalDataDto.data());
+    encryptedPersonalData.setHashedPersonIdentifier(
+        encryptedPersonalDataDto.hashedPersonIdentifier());
+    encryptedPersonalData.setNonce(encryptedPersonalDataDto.nonce());
     return procedure;
   }
 
@@ -80,23 +83,26 @@ public class ProstituteProtectionMapper {
       ProstituteProtectionProcedureWithAugmentedData procedureWithAugmentedData) {
     ProstituteProtectionProcedure procedure = procedureWithAugmentedData.procedure();
     EncryptedPersonalData encryptedPersonalData = procedure.getEncryptedPersonalData();
+    PersonalData personalData = procedure.getPersonalData();
     return new ProcedureDetailsDto(
         procedure.getExternalId(),
         procedure.getVersion(),
-        procedure.getPersonalData().getAlias(),
-        procedure.getPersonalData().getPhoneNumber(),
+        personalData.getAlias(),
+        personalData.getPhoneNumber(),
         AppointmentMapper.toInterfaceType(
             procedure.getAppointment(), procedure.getUserDefinedAppointment()),
         procedure.getAppointment() != null,
-        mapToLanguagesDto(procedure.getPersonalData().getLanguages()),
+        mapToLanguagesDto(personalData.getLanguages()),
         mapToConsultationTypeDto(procedure.getConsultationType()),
         ProcedureMapper.toInterfaceType(procedure.getProcedureStatus()),
-        mapToDocumentTypeDto(procedure.getPersonalData().getDocumentType()),
+        mapToDocumentTypeDto(personalData.getDocumentType()),
         procedure.getConsultationCertificateCreatedAt(),
         encryptedPersonalData != null && encryptedPersonalData.getHashedPersonIdentifier() != null,
         procedureWithAugmentedData.consultant(),
         procedureWithAugmentedData.creator(),
-        mapWaitingRoomToDto(procedure.getWaitingRoom()));
+        mapWaitingRoomToDto(procedure.getWaitingRoom()),
+        personalData.getResidencePermitValidityDate(),
+        personalData.getCustomDocumentType());
   }
 
   public static ConsultationDto mapConsultationToDto(Consultation consultation) {

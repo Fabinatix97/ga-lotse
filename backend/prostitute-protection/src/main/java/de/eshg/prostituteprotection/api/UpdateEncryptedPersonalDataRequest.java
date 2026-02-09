@@ -7,6 +7,7 @@ package de.eshg.prostituteprotection.api;
 
 import de.eshg.validation.constraints.DateOfBirth;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import java.time.LocalDate;
@@ -23,4 +24,7 @@ public record UpdateEncryptedPersonalDataRequest(
     @NotNull @DateOfBirth(minAgeInclusive = 18) LocalDate dateOfBirth,
     String alias,
     DocumentTypeDto documentType,
-    List<LanguageDto> languages) {}
+    List<LanguageDto> languages,
+    @FutureOrPresent LocalDate residencePermitValidityDate,
+    @Size(max = 255) String customDocumentType)
+    implements ValidDocumentType {}

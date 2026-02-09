@@ -48,6 +48,8 @@ export const PERSON_FIELD_NAME = {
   countryOfBirth: "Geburtsland",
   documentType: "Ausweisdokument",
   hasSufficientGermanLanguageSkills: "Ausreichende Deutschkenntnisse",
+  customDocumentType: "Art des Ausweisdokuments",
+  residencePermitValidityDate: "Gültigkeit des Aufenthaltstitels",
 } as const;
 
 export const ADDITIONAL_DATA_FIELD_NAME = {
@@ -55,6 +57,7 @@ export const ADDITIONAL_DATA_FIELD_NAME = {
   consultationType: "Beratungstyp",
   procedureStatus: "Status",
   consultant: "Berater:in",
+  consultantOfAppointmentBlock: "Berater:in von zugewiesenem Terminblock",
   createdBy: "Angelegt von",
 } as const;
 
@@ -159,6 +162,8 @@ export const REQUIRED_PROCEDURE_PROPERTIES: EnumMap<ApiProcedureProperty> = {
   LAST_NAME: PERSON_FIELD_NAME.lastName,
   DATE_OF_BIRTH: PERSON_FIELD_NAME.dateOfBirth,
   DOCUMENT_TYPE: PERSON_FIELD_NAME.documentType,
+  CUSTOM_DOCUMENT_TYPE: PERSON_FIELD_NAME.customDocumentType,
+  RESIDENCE_PERMIT_VALIDITY_DATE: PERSON_FIELD_NAME.residencePermitValidityDate,
   LEGAL_ADVICES: CONSULTATION_FIELD_NAME.legalAdvices,
   HEALTH_AND_SOCIAL_INSURANCE: CONSULTATION_FIELD_NAME.healthAndSocialInsurance,
   CONSULTING_SERVICES: CONSULTATION_FIELD_NAME.consultingServices,

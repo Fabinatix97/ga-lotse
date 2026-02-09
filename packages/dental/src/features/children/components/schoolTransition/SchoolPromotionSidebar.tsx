@@ -3,7 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Formik } from "formik";
+import { Stack } from "@mui/joy";
+import { Formik, FormikHelpers } from "formik";
+import { useState } from "react";
 
 import { ApiPromoteGroupsBulkRequest } from "@eshg/dental-api";
 import {
@@ -15,11 +17,13 @@ import {
   UseSidebarWithFormRefResult,
   useSidebarWithFormRef,
 } from "@eshg/lib-employee-portal";
+import { Alert, TextareaField, mapOptionalValue } from "@eshg/lib-portal";
 
 import { calculateGroupNameForNextSchoolYear } from "../../../schoolYearTransition/calculateGroupNameForNextSchoolYear";
 import { usePromoteGroupsInBulk } from "../../api/mutations/schoolYearTransition";
 
 import { SchoolYearTransitionGroupList } from "./SchoolYearTransitionGroupList";
+import { TargetGroupView } from "./TargetGroupView";
 
 export function useSchoolPromotionSidebar(): UseSidebarWithFormRefResult<SchoolPromotionSidebarProps> {
   return useSidebarWithFormRef({
@@ -32,7 +36,7 @@ export interface OriginAndTargetGroupNames {
   targetGroupName: string;
 }
 
-interface SchoolPromotionFormValues {
+export interface SchoolPromotionFormValues {
   groupNames: OriginAndTargetGroupNames[];
 }
 
@@ -50,6 +54,7 @@ function SchoolPromotionSidebar({
   formRef,
 }: SchoolPromotionSidebarProps) {
   const promoteGroupsInBulk = usePromoteGroupsInBulk();
+  const [confirmDataEntry, setConfirmDataEntry] = useState(false);
   const INITIAL_VALUES: SchoolPromotionFormValues = {
     groupNames: groupNames.map((groupName) => ({
       originGroupName: groupName,
@@ -63,31 +68,94 @@ function SchoolPromotionSidebar({
     });
   }
 
+  function handleSchoolPromotionMaybe(
+    values: SchoolPromotionFormValues,
+    { setSubmitting }: FormikHelpers<SchoolPromotionFormValues>,
+  ) {
+    const deleteNamedGroup = values.groupNames.some(
+      ({ originGroupName, targetGroupName }) =>
+        originGroupName && !targetGroupName,
+    );
+    if (!deleteNamedGroup || confirmDataEntry) {
+      return handleSchoolPromotion(values);
+    }
+    setConfirmDataEntry(true);
+    setSubmitting(false);
+  }
+
   return (
-    <Formik initialValues={INITIAL_VALUES} onSubmit={handleSchoolPromotion}>
-      {({ isSubmitting, isValid }) => (
+    <Formik
+      initialValues={INITIAL_VALUES}
+      onSubmit={handleSchoolPromotionMaybe}
+    >
+      {({ isSubmitting, values }) => (
         <SidebarForm ref={formRef}>
-          <SidebarContent title="Schuljahreswechsel">
-            <SchoolYearTransitionGroupList
-              institutionName={institutionName}
-              info="Folgende Gruppen werden hochgestuft"
-              infoColor="primary"
-              rows={groupNames}
-              nextYearAction
-              warning={
-                isValid
-                  ? undefined
-                  : "Bitte alle Felder für das nächste Schuljahr ausfüllen"
-              }
-            />
-          </SidebarContent>
-          <SidebarActions>
-            <FormButtonBar
-              submitLabel="Hochstufen durchführen"
-              submitting={isSubmitting}
-              onCancel={onClose}
-            />
-          </SidebarActions>
+          {confirmDataEntry ? (
+            <>
+              <SidebarContent title="Schuljahreswechsel">
+                <Stack gap={2}>
+                  <Alert
+                    color="primary"
+                    title="Angaben überprüfen"
+                    message='Nicht alle Klassen enthalten einen Wert für das kommende Schuljahr. Sollten die Angaben so korrekt sein, drücken Sie bitte erneut "Hochstufen durchführen".'
+                  />
+                  <SchoolYearTransitionGroupList
+                    institutionName={institutionName}
+                    info="Folgende Gruppen werden hochgestuft aber enthalten keine Klasse"
+                    infoColor="warning"
+                    rows={groupNames.filter(
+                      (_, i) => !values.groupNames[i]?.targetGroupName,
+                    )}
+                    targetGroupComponent={TargetGroupView}
+                  />
+                  <SchoolYearTransitionGroupList
+                    info="Folgende Gruppen werden hochgestuft"
+                    infoColor="primary"
+                    rows={groupNames.filter(
+                      (_, i) => !!values.groupNames[i]?.targetGroupName,
+                    )}
+                    targetGroupComponent={TargetGroupView}
+                  />
+                </Stack>
+              </SidebarContent>
+              <SidebarActions>
+                <FormButtonBar
+                  submitLabel="Hochstufen durchführen"
+                  submitting={isSubmitting}
+                  cancelLabel="Angaben korrigieren"
+                  cancelVariant="plain"
+                  cancelColor="primary"
+                  onCancel={() => setConfirmDataEntry(false)}
+                />
+              </SidebarActions>
+            </>
+          ) : (
+            <>
+              <SidebarContent title="Schuljahreswechsel">
+                <SchoolYearTransitionGroupList
+                  institutionName={institutionName}
+                  info="Folgende Gruppen werden hochgestuft"
+                  infoColor="primary"
+                  rows={groupNames}
+                  targetGroupComponent={({ rowIndex }) => (
+                    <TextareaField
+                      name={`groupNames.${rowIndex}.targetGroupName`}
+                      label="Nächstes Schuljahr"
+                      minRows={1}
+                      sxTextarea={{ width: 150 }}
+                    />
+                  )}
+                />
+              </SidebarContent>
+              <SidebarActions>
+                <FormButtonBar
+                  submitLabel="Hochstufen durchführen"
+                  submitting={isSubmitting}
+                  onCancel={onClose}
+                />
+              </SidebarActions>
+            </>
+          )}
         </SidebarForm>
       )}
     </Formik>
@@ -100,6 +168,11 @@ function mapToRequest(
 ): ApiPromoteGroupsBulkRequest {
   return {
     institutionId,
-    groupPromotions: values.groupNames,
+    groupPromotions: values.groupNames.map(
+      ({ originGroupName, targetGroupName }) => ({
+        originGroupName: mapOptionalValue(originGroupName),
+        targetGroupName: mapOptionalValue(targetGroupName),
+      }),
+    ),
   };
 }

@@ -16,7 +16,7 @@ import jakarta.validation.constraints.NotNull;
 public record BarChartConfigurationDto(
     @NotNull @Valid AttributeSelectionDto primaryAttribute,
     @Valid AttributeSelectionDto secondaryAttribute,
-    ScalingDto scaling,
+    @NotNull ScalingDto scaling,
     GroupingDto grouping,
     @NotNull OrientationDto orientation)
     implements AddChartConfigurationDto, ChartConfigurationDto {

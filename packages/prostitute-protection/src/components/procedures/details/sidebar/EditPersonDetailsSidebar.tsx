@@ -13,6 +13,7 @@ import {
 import {
   OptionalFieldValue,
   mapOptionalValue,
+  mapRequiredValue,
   parseOptionalDate,
   parseOptionalValue,
 } from "@eshg/lib-portal";
@@ -37,6 +38,8 @@ export interface EditPersonalDataForm extends LanguageFieldsData {
   alias: OptionalFieldValue<string>;
   dateOfBirth: OptionalFieldValue<string>;
   documentType: OptionalFieldValue<ApiDocumentType>;
+  customDocumentType: OptionalFieldValue<string>;
+  residencePermitValidityDate: OptionalFieldValue<string>;
   version: number;
 }
 
@@ -106,6 +109,10 @@ function mapApiToForm(
     languages: procedure.languages,
     hasSufficientGermanLanguageSkills: hasGerman,
     documentType: parseOptionalValue(procedure.documentTypeDto),
+    customDocumentType: parseOptionalValue(procedure.customDocumentType),
+    residencePermitValidityDate: parseOptionalDate(
+      procedure.residencePermitValidityDate,
+    ),
     version: procedure.version,
   };
 }
@@ -120,6 +127,14 @@ function mapFormToApi(
     dateOfBirth: new Date(values.dateOfBirth),
     languages: values.languages,
     documentType: mapOptionalValue(values.documentType),
+    customDocumentType:
+      values.documentType === ApiDocumentType.Other
+        ? mapRequiredValue(values.customDocumentType)
+        : undefined,
+    residencePermitValidityDate:
+      values.documentType === ApiDocumentType.ResidencePermit
+        ? new Date(values.residencePermitValidityDate)
+        : undefined,
     version: values.version,
   };
 }

@@ -63,4 +63,6 @@
     <include file="migrations/0053_add_t_closeness_hierarchy.xml"/>
     <include file="migrations/0054_add_data_information_to_diagram.xml"/>
     <include file="migrations/0055_add_status_anonymization_failed.xml"/>
+    <include file="/migrations/0056_add_scaling_non_null_constraints.xml"/>
+    <include file="migrations/0057_migrate_karies_risiko_attribute.xml"/>
 </databaseChangeLog>

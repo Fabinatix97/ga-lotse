@@ -7,6 +7,5 @@ package de.eshg.base.user.api;
 
 import jakarta.validation.constraints.NotNull;
 import java.util.List;
-import java.util.UUID;
 
-public record InvalidateSessionsRequest(@NotNull List<UUID> sessions) {}
+public record InvalidateSessionsRequest(@NotNull List<String> sessions) {}

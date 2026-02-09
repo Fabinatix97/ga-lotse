@@ -9,6 +9,7 @@ import de.eshg.base.department.GetDepartmentInfoResponse;
 import de.eshg.config.departmentinfo.DepartmentInfoConfigService;
 import de.eshg.config.departmentinfo.OpeningHoursService;
 import de.eshg.config.domain.OpeningHours;
+import de.eshg.lib.appointmentblock.AppointmentBlockAvailabilityService;
 import de.eshg.lib.appointmentblock.AppointmentBlockService;
 import de.eshg.lib.appointmentblock.api.AppointmentDto;
 import de.eshg.lib.appointmentblock.api.GetFreeAppointmentsResponse;
@@ -22,6 +23,9 @@ import de.eshg.rest.service.security.config.BaseUrls;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import java.time.Clock;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.Collections;
 import java.util.List;
 import org.springframework.http.HttpHeaders;
@@ -42,17 +46,23 @@ public class ProstituteProtectionPublicCitizenController {
   private final OpeningHoursService openingHoursService;
   private final DepartmentInfoConfigService departmentInfoService;
   private final AppointmentBlockService appointmentBlockService;
+  private final AppointmentBlockAvailabilityService appointmentBlockAvailabilityService;
   private final ProstituteProtectionPublicCitizenService citizenService;
+  private final Clock clock;
 
   public ProstituteProtectionPublicCitizenController(
       OpeningHoursService openingHoursService,
       DepartmentInfoConfigService departmentInfoService,
       AppointmentBlockService appointmentBlockService,
-      ProstituteProtectionPublicCitizenService citizenService) {
+      AppointmentBlockAvailabilityService appointmentBlockAvailabilityService,
+      ProstituteProtectionPublicCitizenService citizenService,
+      Clock clock) {
     this.openingHoursService = openingHoursService;
     this.departmentInfoService = departmentInfoService;
     this.appointmentBlockService = appointmentBlockService;
+    this.appointmentBlockAvailabilityService = appointmentBlockAvailabilityService;
     this.citizenService = citizenService;
+    this.clock = clock;
   }
 
   @GetMapping(path = "/department-info")
@@ -94,9 +104,32 @@ public class ProstituteProtectionPublicCitizenController {
   @GetMapping(path = "/free-appointments")
   @Transactional(readOnly = true)
   public GetFreeAppointmentsResponse getFreeAppointmentsForCitizen() {
+    Instant now = Instant.now(clock);
+    Instant earliestStart =
+        now.plus(
+            Duration.ofDays(
+                appointmentBlockAvailabilityService
+                    .getDefaultLeadTimes()
+                    .citizenFreeAppointmentsMinLeadTime()));
+    Instant latestStart =
+        now.plus(
+            Duration.ofDays(
+                appointmentBlockAvailabilityService
+                    .getDefaultLeadTimes()
+                    .citizenFreeAppointmentsMaxLeadTime()));
+
     List<AppointmentDto> appointments =
-        appointmentBlockService.getFreeAppointments(
-            null, null, AppointmentType.PROSTITUTE_PROTECTION_CONSULTATION, null, null);
+        appointmentBlockService.getFreeAppointmentsWithAvailability(
+            earliestStart,
+            latestStart,
+            AppointmentType.PROSTITUTE_PROTECTION_CONSULTATION,
+            null,
+            true,
+            null,
+            null,
+            null,
+            null,
+            null);
 
     return new GetFreeAppointmentsResponse(appointments);
   }

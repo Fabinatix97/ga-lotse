@@ -6,7 +6,12 @@
 package de.eshg.infectionbriefing.domain.repository;
 
 import de.eshg.infectionbriefing.domain.model.InfectionBriefingProcedure;
+import de.eshg.lib.appointmentblock.persistence.entity.Appointment;
 import de.eshg.lib.procedure.domain.repository.ProcedureRepository;
+import java.util.List;
 
 public interface InfectionBriefingProcedureRepository
-    extends ProcedureRepository<InfectionBriefingProcedure> {}
+    extends ProcedureRepository<InfectionBriefingProcedure> {
+
+  List<InfectionBriefingProcedure> findByAppointmentIn(List<Appointment> appointments);
+}

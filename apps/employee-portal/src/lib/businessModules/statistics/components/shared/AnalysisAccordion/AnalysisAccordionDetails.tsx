@@ -173,11 +173,7 @@ function barAndHistogramConfigurationValues(
       diagramConfiguration.grouping &&
         groupingValueNames[diagramConfiguration.grouping],
     ],
-    [
-      "Verhältnisse",
-      diagramConfiguration.scaling &&
-        scalingValueNames[diagramConfiguration.scaling],
-    ],
+    ["Verhältnisse", scalingValueNames[diagramConfiguration.scaling]],
   ];
 }
 

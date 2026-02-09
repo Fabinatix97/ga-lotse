@@ -13,6 +13,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.OrderColumn;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import org.hibernate.annotations.JdbcType;
@@ -33,6 +34,26 @@ public class PersonalData extends BaseEntity {
   private List<Language> languages = new ArrayList<>();
 
   private String phoneNumber;
+
+  private LocalDate residencePermitValidityDate;
+
+  private String customDocumentType;
+
+  public LocalDate getResidencePermitValidityDate() {
+    return residencePermitValidityDate;
+  }
+
+  public void setResidencePermitValidityDate(LocalDate residencePermitValidityDate) {
+    this.residencePermitValidityDate = residencePermitValidityDate;
+  }
+
+  public String getCustomDocumentType() {
+    return customDocumentType;
+  }
+
+  public void setCustomDocumentType(String customDocumentType) {
+    this.customDocumentType = customDocumentType;
+  }
 
   public String getAlias() {
     return alias;

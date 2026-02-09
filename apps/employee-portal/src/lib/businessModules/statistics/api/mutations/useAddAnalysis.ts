@@ -44,9 +44,7 @@ export function mapModelToChartConfiguration({
         grouping: hasSecondaryAttribute
           ? chartConfigurationModel.grouping
           : undefined,
-        scaling: hasSecondaryAttribute
-          ? chartConfigurationModel.scaling
-          : undefined,
+        scaling: chartConfigurationModel.scaling,
         primaryAttribute: mapKeyToAttributeSelection(
           chartConfigurationModel.primaryAttribute!,
         ),
@@ -79,9 +77,7 @@ export function mapModelToChartConfiguration({
               chartConfigurationModel.secondaryAttribute!,
             )
           : undefined,
-        scaling: hasSecondaryAttribute
-          ? chartConfigurationModel.scaling
-          : undefined,
+        scaling: chartConfigurationModel.scaling,
         grouping: hasSecondaryAttribute
           ? chartConfigurationModel.grouping
           : undefined,

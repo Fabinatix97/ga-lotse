@@ -34,7 +34,7 @@ public class BarChartConfiguration extends ChartConfiguration
   @OneToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY, orphanRemoval = true)
   private AttributeSelection secondaryAttributeSelection;
 
-  @Column
+  @Column(nullable = false)
   @JdbcType(PostgreSQLEnumJdbcType.class)
   private Scaling scaling;
 

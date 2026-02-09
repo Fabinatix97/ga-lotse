@@ -158,7 +158,9 @@ public class CertificateBuilder {
 
       certBuilder.addExtension(Extension.basicConstraints, true, new BasicConstraints(ca));
       certBuilder.addExtension(Extension.keyUsage, true, getKeyUsage());
-      certBuilder.addExtension(Extension.extendedKeyUsage, false, getExtendedKeyUsage());
+      if (extendedKeyUsageType != ExtendedKeyUsageType.NONE) {
+        certBuilder.addExtension(Extension.extendedKeyUsage, false, getExtendedKeyUsage());
+      }
       certBuilder.addExtension(Extension.subjectAlternativeName, false, getGeneralNames());
       certBuilder.addExtension(
           Extension.subjectKeyIdentifier,
@@ -205,7 +207,9 @@ public class CertificateBuilder {
 
       certBuilder.addExtension(Extension.basicConstraints, true, new BasicConstraints(ca));
       certBuilder.addExtension(Extension.keyUsage, true, getKeyUsage());
-      certBuilder.addExtension(Extension.extendedKeyUsage, false, getExtendedKeyUsage());
+      if (extendedKeyUsageType != ExtendedKeyUsageType.NONE) {
+        certBuilder.addExtension(Extension.extendedKeyUsage, false, getExtendedKeyUsage());
+      }
       certBuilder.addExtension(Extension.subjectAlternativeName, false, getGeneralNames());
       certBuilder.addExtension(
           Extension.subjectKeyIdentifier,

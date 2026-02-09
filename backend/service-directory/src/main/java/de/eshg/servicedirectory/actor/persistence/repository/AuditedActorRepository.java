@@ -27,4 +27,6 @@ public interface AuditedActorRepository extends JpaRepository<AuditedActor, UUID
           ORDER BY a.id
           """)
   List<AuditedActor> findAllActive();
+
+  boolean existsByCommonName(String commonName);
 }

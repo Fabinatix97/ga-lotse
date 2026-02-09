@@ -141,7 +141,7 @@ export interface AnalysisBarDiagramConfiguration {
   type: DiagramType.BAR_CHART;
   primaryAttribute: FlatAttribute;
   secondaryAttribute?: FlatAttribute;
-  scaling?: DiagramScaling;
+  scaling: DiagramScaling;
   grouping?: DiagramGrouping;
   orientation: DiagramOrientation;
 }
@@ -150,7 +150,7 @@ export interface AnalysisHistogramDiagramConfiguration {
   type: DiagramType.HISTOGRAM_CHART;
   primaryAttribute: FlatAttribute;
   secondaryAttribute?: FlatAttribute;
-  scaling?: DiagramScaling;
+  scaling: DiagramScaling;
   grouping?: DiagramGrouping;
   binning: DiagramBinning;
   bins?: number;

@@ -42,7 +42,8 @@ export function ProstituteProtectionAppointmentBlockGroupsTable(
     initialSorting: INITIAL_SORTING_APPOINTMENT_BLOCK_GROUPS,
   });
 
-  const { appointmentBlockApi } = useProstituteProtectionApiClients();
+  const { appointmentBlockApi, appointmentStandardDurationApi } =
+    useProstituteProtectionApiClients();
 
   const [
     appointmentBlockGroups,
@@ -58,7 +59,7 @@ export function ProstituteProtectionAppointmentBlockGroupsTable(
         ),
         sortDirection: getSortDirection(tableControl.tableSorting),
       }),
-      useGetAppointmentStandardDurationOptions(),
+      useGetAppointmentStandardDurationOptions(appointmentStandardDurationApi),
       useGetUsersByGroupQuery("[System] ProstSchG-Berater"),
     ],
   });

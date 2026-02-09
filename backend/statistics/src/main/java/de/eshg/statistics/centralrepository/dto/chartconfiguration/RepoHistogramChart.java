@@ -16,7 +16,7 @@ import java.math.BigDecimal;
 public record RepoHistogramChart(
     @NotNull @Valid RepoAttributeSelection primaryAttribute,
     @Valid RepoAttributeSelection secondaryAttribute,
-    String scaling,
+    @NotNull String scaling,
     String grouping,
     @NotBlank String binningMode,
     @Min(2) @Max(50) Integer numberOfBins,

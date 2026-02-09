@@ -20,7 +20,7 @@ import {
   ApiGetMeaslesProtectionProceduresSortBy,
   ApiGetProcedure200Response,
   GetProceduresRequest,
-  ProtectionProcedureApi,
+  MeaslesProtectionProcedureApi,
 } from "@eshg/measles-protection-api";
 
 import {
@@ -59,7 +59,7 @@ const SortByMap: Record<string, ApiGetMeaslesProtectionProceduresSortBy> = {
 >;
 
 export function getProcedureQuery(
-  protectionProcedureApi: ProtectionProcedureApi,
+  protectionProcedureApi: MeaslesProtectionProcedureApi,
   procedureId: string,
 ) {
   return queryOptions({
@@ -123,7 +123,7 @@ export function useGetProceduresQuery(
 }
 
 export function getProceduresByPersonQuery(
-  protectionProcedureApi: ProtectionProcedureApi,
+  protectionProcedureApi: MeaslesProtectionProcedureApi,
   id: string | undefined,
 ) {
   return queryOptions({

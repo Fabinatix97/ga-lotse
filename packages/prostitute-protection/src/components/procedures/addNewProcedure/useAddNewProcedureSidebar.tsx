@@ -27,8 +27,9 @@ import {
 
 import { useCreateProcedureMutation } from "../../../api/mutations/procedures";
 import { useGetFreeAppointmentsOptions } from "../../../api/queries/appointmentBlockApi";
-import { useGetAppointmentStandardDuration } from "../../../api/queries/appointmentStandardDuration";
+import { useGetAppointmentStandardDurationOptions } from "../../../api/queries/appointmentStandardDuration";
 import { routes } from "../../../config/routes";
+import { useProstituteProtectionApiClients } from "../../../contexts/ProstituteProtectionApi";
 import { PROSTITUTE_PROTECTION_GROUP_NAME } from "../../../shared/constants";
 import { getAppointmentDate, getDuration } from "../../../shared/helpers";
 import { AppointmentFieldsData } from "../../form/AppointmentFields";
@@ -95,19 +96,27 @@ export function useAddNewProcedureSidebar(): UseSidebarWithFormRefResult {
 
 function SidebarWrapper(props: SidebarWithFormRefProps) {
   const addNewProcedure = useCreateProcedureMutation();
-  const { data } = useGetAppointmentStandardDuration();
   const router = useRouter();
+  const { appointmentStandardDurationApi, appointmentBlockApi } =
+    useProstituteProtectionApiClients();
 
-  const [{ data: allAssignableUsers }, { data: freeAppointments }] =
-    useSuspenseQueries({
-      queries: [
-        useGetUsersByGroupQuery(PROSTITUTE_PROTECTION_GROUP_NAME),
-        useGetFreeAppointmentsOptions({
+  const [
+    { data: allAssignableUsers },
+    { data: standardDuration },
+    { data: freeAppointments },
+  ] = useSuspenseQueries({
+    queries: [
+      useGetUsersByGroupQuery(PROSTITUTE_PROTECTION_GROUP_NAME),
+      useGetAppointmentStandardDurationOptions(appointmentStandardDurationApi),
+      useGetFreeAppointmentsOptions(
+        {
           appointmentType: ApiAppointmentType.ProstituteProtectionConsultation,
           earliestDate: startOfHour(new Date()),
-        }),
-      ],
-    });
+        },
+        appointmentBlockApi,
+      ),
+    ],
+  });
 
   const initialValues: AddNewProcedureForm = {
     alias: "",
@@ -117,7 +126,9 @@ function SidebarWrapper(props: SidebarWithFormRefProps) {
     customAppointmentDate: "",
     consultationType: "",
     consultantId: "",
-    duration: data.standardDurations.PROSTITUTE_PROTECTION_CONSULTATION ?? 0,
+    duration:
+      standardDuration.standardDurations.PROSTITUTE_PROTECTION_CONSULTATION ??
+      0,
     appointmentBookingType: "",
   };
 

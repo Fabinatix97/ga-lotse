@@ -14,6 +14,7 @@ import de.eshg.prostituteprotection.api.RequiredProcedureArea;
 import de.eshg.prostituteprotection.crypto.DecryptedPersonalDataDto;
 import de.eshg.prostituteprotection.crypto.EncryptedPersonalDataDto;
 import de.eshg.prostituteprotection.domain.model.Consultation;
+import de.eshg.prostituteprotection.domain.model.DocumentType;
 import de.eshg.prostituteprotection.domain.model.EncryptedPersonalData;
 import de.eshg.prostituteprotection.domain.model.ProstituteProtectionProcedure;
 import de.eshg.rest.service.error.BadRequestException;
@@ -120,8 +121,20 @@ public class ProstituteProtectionValidator {
       addPropertyIfNull(
           properties, ProcedureProperty.ALIAS, procedure.getPersonalData().getAlias());
     }
-    addPropertyIfNull(
-        properties, ProcedureProperty.DOCUMENT_TYPE, procedure.getPersonalData().getDocumentType());
+    DocumentType documentType = procedure.getPersonalData().getDocumentType();
+    addPropertyIfNull(properties, ProcedureProperty.DOCUMENT_TYPE, documentType);
+    if (documentType == DocumentType.RESIDENCE_PERMIT) {
+      addPropertyIfNull(
+          properties,
+          ProcedureProperty.RESIDENCE_PERMIT_VALIDITY_DATE,
+          procedure.getPersonalData().getResidencePermitValidityDate());
+    }
+    if (documentType == DocumentType.OTHER) {
+      addPropertyIfNull(
+          properties,
+          ProcedureProperty.CUSTOM_DOCUMENT_TYPE,
+          procedure.getPersonalData().getCustomDocumentType());
+    }
 
     return properties;
   }

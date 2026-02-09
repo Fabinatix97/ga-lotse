@@ -3847,9 +3847,13 @@ spec:
       - name: ca
         configMap:
           name: ca
-      - name: certs
+      - name: server-certs
         secret:
-          secretName: "lsd-public-tls"
+          secretName: lsd-public-tls-server
+          defaultMode: 420
+      - name: client-certs
+        secret:
+          secretName: lsd-public-tls-client
           defaultMode: 420
       - name: import-data
         secret:
@@ -3931,11 +3935,11 @@ spec:
         - name: spring.profiles.active
           value: "dev, preview-features, health-department-frankfurt"
         - name: SPRING_SSL_BUNDLE_PEM_LSD_TRUSTSTORE_LOCATION
-          value: /var/run/certs/tls.crt
+          value: /var/run/server-certs/tls.crt
         - name: SPRING_SSL_BUNDLE_PEM_LSD_KEYSTORE_CERTIFICATE
-          value: /var/run/certs/tls.crt
+          value: /var/run/server-certs/tls.crt
         - name: SPRING_SSL_BUNDLE_PEM_LSD_KEYSTORE_PRIVATEKEY
-          value: /var/run/certs/tls.key
+          value: /var/run/server-certs/tls.key
         - name: spring.security.oauth2.resourceserver.jwt.issuer-uri
           value: "https://keycloak.frankfurt.svc.cluster.local/realms/eshg-lsd"
         - name: ESHG_LSD_MAXCERTIFICATESPERACTOR
@@ -3977,8 +3981,11 @@ spec:
         - name: ca
           mountPath: /etc/ssl/certs/localca.pem
           subPath: ca.crt
-        - name: certs
-          mountPath: /var/run/certs
+        - name: server-certs
+          mountPath: /var/run/server-certs
+          readOnly: true
+        - name: client-certs
+          mountPath: /var/run/client-certs
           readOnly: true
         - name: import-data
           mountPath: /var/run/import-data
@@ -4006,17 +4013,21 @@ spec:
         - name: spring.profiles.active
           value: "dev, preview-features, health-department-frankfurt"
         - name: spring.ssl.bundle.pem.certificatevalidation.truststore.certificate
-          value: /var/run/certs/tls.crt
+          value: /var/run/server-certs/tls.crt
         - name: eshg.spatz.inbound.force-client-auth
           value: 'false'
         - name: ESHG_SPATZ_SELFSIGNED_ENABLED
           value: 'false'
         - name: ESHG_SPATZ_RELAY_ENABLED
           value: 'false'
-        - name: ESHG_SPATZ_SSL_KEYSTORE_CERTIFICATE
-          value: /var/run/certs/tls.crt
-        - name: ESHG_SPATZ_SSL_KEYSTORE_PRIVATEKEY
-          value: /var/run/certs/tls.key
+        - name: ESHG_SPATZ_CLIENTSSL_KEYSTORE_CERTIFICATE
+          value: /var/run/client-certs/tls.crt
+        - name: ESHG_SPATZ_CLIENTSSL_KEYSTORE_PRIVATEKEY
+          value: /var/run/client-certs/tls.key
+        - name: ESHG_SPATZ_SERVERSSL_KEYSTORE_CERTIFICATE
+          value: /var/run/server-certs/tls.crt
+        - name: ESHG_SPATZ_SERVERSSL_KEYSTORE_PRIVATEKEY
+          value: /var/run/server-certs/tls.key
         - name: ESHG_SERVICEDIRECTORY_BASEURL
           value: "http://service-directory.central.svc.cluster.local"
         - name: ESHG_SPATZ_INBOUND_HANDLERPORT
@@ -4044,8 +4055,11 @@ spec:
         - name: ca
           mountPath: /etc/ssl/certs/localca.pem
           subPath: ca.crt
-        - name: certs
-          mountPath: /var/run/certs
+        - name: server-certs
+          mountPath: /var/run/server-certs
+          readOnly: true
+        - name: client-certs
+          mountPath: /var/run/client-certs
           readOnly: true
         image: 'k3d-ga-lotse-registry:5050/ga-lotse/spatz:latest'
         livenessProbe:

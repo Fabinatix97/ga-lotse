@@ -36,19 +36,17 @@ export function ConfigureBarChartMetaOptions({
         label="Ausrichtung"
       />
       {showGroupedConfigurations && (
-        <>
-          <ToggleButtonGroupField
-            options={grouping}
-            name={fieldName("grouping")}
-            label="Anordnung"
-          />
-          <ToggleButtonGroupField
-            options={scaling}
-            name={fieldName("scaling")}
-            label="Verhältnisse"
-          />
-        </>
+        <ToggleButtonGroupField
+          options={grouping}
+          name={fieldName("grouping")}
+          label="Anordnung"
+        />
       )}
+      <ToggleButtonGroupField
+        options={scaling}
+        name={fieldName("scaling")}
+        label="Verhältnisse"
+      />
     </Stack>
   );
 }

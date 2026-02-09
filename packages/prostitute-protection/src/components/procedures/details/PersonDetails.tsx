@@ -106,6 +106,14 @@ export function PersonDetails({
                   DOCUMENT_TYPE_VALUES,
                 )}
               />
+              <DetailsItem
+                label={PERSON_FIELD_NAME.customDocumentType}
+                value={procedure.customDocumentType}
+              />
+              <DetailsItem
+                label={PERSON_FIELD_NAME.residencePermitValidityDate}
+                value={formatDate(procedure.residencePermitValidityDate)}
+              />
             </DetailsColumn>
           </Stack>
         </DetailsList>

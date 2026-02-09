@@ -3,8 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ArrowForward, ErrorOutlineOutlined } from "@mui/icons-material";
+import { ArrowForward } from "@mui/icons-material";
 import {
+  Box,
   ColorPaletteProp,
   List,
   ListDivider,
@@ -13,29 +14,33 @@ import {
   Stack,
   Typography,
   styled,
-  useTheme,
 } from "@mui/joy";
+import { FC } from "react";
 
-import { TextareaField } from "@eshg/lib-portal";
+import { NO_GROUP } from "../../api/models/SchoolYearTransitionGroupResult";
+
+import { GroupView } from "./GroupView";
 
 interface SchoolYearTransitionGroupListProps {
-  institutionName: string;
+  institutionName?: string;
   info: string;
   infoColor: ColorPaletteProp;
-  rows: string[];
+  rows: (string | undefined)[];
   nextYearAction?: boolean;
-  warning?: string;
+  targetGroupComponent: FC<{ row?: string; rowIndex: number }>;
 }
 
 export function SchoolYearTransitionGroupList(
   props: SchoolYearTransitionGroupListProps,
 ) {
-  const theme = useTheme();
+  const TargetGroupComponent = props.targetGroupComponent;
   return (
     <Stack gap={2}>
-      <Typography component="h2" level="h3">
-        {props.institutionName}
-      </Typography>
+      {props.institutionName && (
+        <Typography component="h2" level="h3">
+          {props.institutionName}
+        </Typography>
+      )}
       <Sheet
         sx={{
           padding: 0,
@@ -44,40 +49,18 @@ export function SchoolYearTransitionGroupList(
         <InfoTypography color={props.infoColor} fontWeight={600}>
           {props.info}
         </InfoTypography>
-        {props.warning && (
-          <WarningTypography
-            startDecorator={<ErrorOutlineOutlined color="danger" />}
-          >
-            {props.warning}
-          </WarningTypography>
-        )}
         <GroupList>
           {props.rows.map((row, rowIndex) => (
-            <>
+            <Box key={row ?? NO_GROUP} sx={{ display: "contents" }}>
               <GroupListItem key={row}>
-                <Stack>
-                  <Typography textColor={theme.palette.text.secondary}>
-                    Gruppe
-                  </Typography>
-                  <Typography fontWeight={600}>{row}</Typography>
-                </Stack>
+                <GroupView row={row} />
                 <ArrowForward />
-                {props.nextYearAction ? (
-                  <TextareaField
-                    name={`groupNames.${rowIndex}.targetGroupName`}
-                    label="Nächstes Schuljahr"
-                    minRows={1}
-                    sxTextarea={{ width: 150 }}
-                    required="Bitte ausfüllen"
-                  />
-                ) : (
-                  <Typography fontWeight={600}>Schulabgang</Typography>
-                )}
+                <TargetGroupComponent row={row} rowIndex={rowIndex} />
               </GroupListItem>
               {rowIndex < props.rows.length - 1 && (
                 <ListDivider inset="gutter" />
               )}
-            </>
+            </Box>
           ))}
         </GroupList>
       </Sheet>
@@ -98,16 +81,14 @@ const GroupListItem = styled(ListItem)({
   alignItems: "center",
 });
 
-const InfoTypography = styled(Typography)(({ theme }) => ({
+const InfoTypography = styled(Typography)(({ theme, color }) => ({
   padding: theme.spacing(3),
-  backgroundColor: theme.palette.background.level1,
+  backgroundColor:
+    color === "warning"
+      ? theme.palette.warning[100]
+      : theme.palette.background.level1,
+  color: color === "warning" ? theme.palette.text.primary : undefined,
   borderRadius: theme.radius.lg,
   borderBottomLeftRadius: 0,
   borderBottomRightRadius: 0,
-}));
-
-const WarningTypography = styled(Typography)(({ theme }) => ({
-  padding: theme.spacing(3),
-  color: theme.palette.danger.plainColor,
-  alignItems: "flex-start",
 }));

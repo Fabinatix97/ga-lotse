@@ -294,7 +294,8 @@ public class ChildController {
   @PostMapping("/school-year-transition/close-groups")
   @Transactional
   public void closeGroupsInBulk(@Valid @RequestBody CloseGroupsBulkRequest request) {
-    childService.closeGroupsInBulk(request.institutionId(), request.groupNames());
+    childService.closeGroupsInBulk(
+        request.institutionId(), request.groupNames(), request.includeChildrenWithoutGroup());
   }
 
   @PostMapping("/school-year-transition/close-children")

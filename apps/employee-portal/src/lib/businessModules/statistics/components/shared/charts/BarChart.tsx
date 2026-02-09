@@ -4,6 +4,7 @@
  */
 
 import { EChartsOption } from "echarts";
+import { isArray, sum } from "remeda";
 
 import {
   AnalysisDiagramBarChart,
@@ -25,7 +26,7 @@ interface BarChartProps {
   diagramData: AnalysisDiagramBarChart["data"];
   isDataGrouped: boolean;
   grouping?: DiagramGrouping;
-  scaling?: DiagramScaling;
+  scaling: DiagramScaling;
   orientation?: DiagramOrientation;
   getColor?: (identifier: string) => string;
   eChartApi?: (eChartApi: ChartApi) => void;
@@ -80,8 +81,12 @@ export function transformToRelativeData(data: DataGroups | number[]) {
     return value / total;
   }
 
-  const dataGroups = data as DataGroups;
-  const totals = Object.values(dataGroups).reduce(
+  if (isArray(data)) {
+    const total = sum(data);
+    return data.map((it) => mapToRelative(it, total));
+  }
+
+  const totals = Object.values(data).reduce(
     (acc, it) => {
       it.forEach(
         ({ groupLabel, value }) =>
@@ -92,7 +97,7 @@ export function transformToRelativeData(data: DataGroups | number[]) {
     {} as Record<string, number>,
   );
 
-  return Object.entries(dataGroups).reduce(
+  return Object.entries(data).reduce(
     (acc, [key, val]) => ({
       ...acc,
       [key]: val.map(({ groupLabel, value }) => ({

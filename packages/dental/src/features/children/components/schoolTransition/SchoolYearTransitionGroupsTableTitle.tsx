@@ -13,6 +13,7 @@ import {
   mapRowSelectionToRowIds,
 } from "@eshg/lib-employee-portal";
 
+import { NO_GROUP } from "../../api/models/SchoolYearTransitionGroupResult";
 import { useCloseGroupsInBulk } from "../../api/mutations/schoolYearTransition";
 
 import { useSchoolLeavingSidebar } from "./SchoolLeavingSidebar";
@@ -27,7 +28,9 @@ interface SchoolYearTransitionGroupsTableTitleProps {
 export function SchoolYearTransitionGroupsTableTitle(
   props: SchoolYearTransitionGroupsTableTitleProps,
 ) {
-  const selectedGroups = mapRowSelectionToRowIds(props.rowSelection);
+  const selectedGroups = mapRowSelectionToRowIds(props.rowSelection).map(
+    (rowId) => (rowId === NO_GROUP ? "" : rowId),
+  );
   const closeGroupsInBulk = useCloseGroupsInBulk();
   const schoolLeavingSidebar = useSchoolLeavingSidebar();
   const schoolPromotionSidebar = useSchoolPromotionSidebar();

@@ -4,6 +4,7 @@
  */
 
 import { Divider, Stack } from "@mui/joy";
+import { useFormikContext } from "formik";
 
 import {
   Alert,
@@ -13,13 +14,17 @@ import {
   buildEnumOptions,
   useValidateLength,
   validateDateOfBirthOfLegaLAge,
+  validateTodayOrFutureDate,
 } from "@eshg/lib-portal";
+import { ApiDocumentType } from "@eshg/prostitute-protection-api";
 
 import {
   DOCUMENT_TYPE_VALUES,
   PERSON_FIELD_NAME,
 } from "../../../../shared/constants";
 import { LanguageFields } from "../../../form/LanguageFields";
+
+import { EditPersonalDataForm } from "./EditPersonDetailsSidebar";
 
 interface EditPersonDetailsFormProps {
   disablePersonFields: boolean;
@@ -29,7 +34,7 @@ export function EditPersonDetailsForm({
   disablePersonFields,
 }: EditPersonDetailsFormProps) {
   const validateLength = useValidateLength();
-
+  const { values } = useFormikContext<EditPersonalDataForm>();
   return (
     <Stack gap={2}>
       {disablePersonFields && (
@@ -69,6 +74,24 @@ export function EditPersonDetailsForm({
         label={PERSON_FIELD_NAME.documentType}
         options={buildEnumOptions(DOCUMENT_TYPE_VALUES)}
       />
+      {values.documentType === ApiDocumentType.Other && (
+        <InputField
+          name="customDocumentType"
+          label={PERSON_FIELD_NAME.customDocumentType}
+          required="Bitte einen Dokumententyp angeben."
+          validate={validateLength(1, 255)}
+        />
+      )}
+      {values.documentType === ApiDocumentType.ResidencePermit && (
+        <DateField
+          name="residencePermitValidityDate"
+          label={PERSON_FIELD_NAME.residencePermitValidityDate}
+          required="Bitte ein Gültigkeitsdatum angeben."
+          validate={validateTodayOrFutureDate(
+            "Das Datum darf nicht in der Vergangenheit liegen.",
+          )}
+        />
+      )}
     </Stack>
   );
 }

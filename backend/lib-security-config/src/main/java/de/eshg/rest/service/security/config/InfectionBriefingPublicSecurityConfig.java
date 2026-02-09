@@ -25,7 +25,7 @@ public final class InfectionBriefingPublicSecurityConfig
     requestMatchers(
             BaseUrls.InfectionBriefing.PROCEDURE_CONTROLLER + "/**",
             BaseUrls.EVENT_METADATA_API + "/**")
-        .hasAnyRole(EmployeePermissionRole.INFECTION_BRIEFING_ADMIN);
+        .hasRole(EmployeePermissionRole.INFECTION_BRIEFING_ADMIN);
 
     requestMatchers(BaseUrls.InfectionBriefing.PUBLIC_CITIZEN_CONTROLLER + "/**").permitAll();
   }

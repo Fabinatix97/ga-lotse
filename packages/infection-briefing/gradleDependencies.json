@@ -1,0 +1,9 @@
+{
+  "dependencies": [
+    ":base-api",
+    ":infection-briefing-api",
+    ":lib-employee-portal",
+    ":lib-portal",
+    ":lib-vitest"
+  ]
+}

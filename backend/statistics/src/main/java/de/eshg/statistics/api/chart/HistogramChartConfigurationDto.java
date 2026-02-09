@@ -19,7 +19,7 @@ import java.math.BigDecimal;
 public record HistogramChartConfigurationDto(
     @NotNull @Valid AttributeSelectionDto primaryAttribute,
     @Valid AttributeSelectionDto secondaryAttribute,
-    ScalingDto scaling,
+    @NotNull ScalingDto scaling,
     GroupingDto grouping,
     @NotNull BinningModeDto binningMode,
     @Min(2) @Max(50) Integer numberOfBins,

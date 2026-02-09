@@ -9,4 +9,6 @@ import de.eshg.servicedirectory.orgunit.persistence.entity.AuditedOrgUnit;
 import java.util.UUID;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface AuditedOrgUnitRepository extends JpaRepository<AuditedOrgUnit, UUID> {}
+public interface AuditedOrgUnitRepository extends JpaRepository<AuditedOrgUnit, UUID> {
+  boolean existsByReadableName(String readableName);
+}

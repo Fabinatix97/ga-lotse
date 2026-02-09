@@ -9,6 +9,25 @@
     "url" : "http://localhost:8102"
   } ],
   "paths" : {
+    "/appointment-block-availability" : {
+      "get" : {
+        "operationId" : "getDefaultFlags",
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/AppointmentBlockDefaultAvailabilityFlags"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Gets the default availability flags",
+        "tags" : [ "AppointmentBlockDefaultAvailability" ]
+      }
+    },
     "/appointment-blocks/appointment-block-groups" : {
       "get" : {
         "operationId" : "getAppointmentBlockGroups",
@@ -890,6 +909,45 @@
           }
         },
         "tags" : [ "ConfigStatus" ]
+      }
+    },
+    "/configuration/appointment-block-availability" : {
+      "get" : {
+        "operationId" : "getConfiguredAvailability",
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/GetAppointmentBlockAvailabilityResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Gets the default availability",
+        "tags" : [ "AppointmentBlockAvailabilityConfig" ]
+      },
+      "put" : {
+        "operationId" : "updateAvailability",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/UpdateAppointmentBlockAvailabilityRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          }
+        },
+        "summary" : "Modifies the default availability",
+        "tags" : [ "AppointmentBlockAvailabilityConfig" ]
       }
     },
     "/configuration/appointment-standard-duration" : {
@@ -4000,6 +4058,19 @@
         },
         "description" : "A bin represents a single sequence of slots in an appointment block, meaning there are no parallel slots within a bin. Multiple bins can occur within a block."
       },
+      "AppointmentBlockDefaultAvailabilityFlags" : {
+        "required" : [ "availableForBulkBooking", "availableForCitizen" ],
+        "type" : "object",
+        "properties" : {
+          "availableForBulkBooking" : {
+            "type" : "boolean"
+          },
+          "availableForCitizen" : {
+            "type" : "boolean"
+          }
+        },
+        "description" : "Default availability flags for the appointment block creation UI"
+      },
       "AppointmentBlockSlot" : {
         "required" : [ "booked", "end", "start" ],
         "type" : "object",
@@ -4691,6 +4762,25 @@
         "type" : "string",
         "enum" : [ "GRANTED", "DENIED" ]
       },
+      "DefaultLeadTimeForAppointmentCreation" : {
+        "required" : [ "bulkCreateAppointmentsMinLeadTime", "citizenFreeAppointmentsMaxLeadTime", "citizenFreeAppointmentsMinLeadTime" ],
+        "type" : "object",
+        "properties" : {
+          "bulkCreateAppointmentsMinLeadTime" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "citizenFreeAppointmentsMaxLeadTime" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "citizenFreeAppointmentsMinLeadTime" : {
+            "type" : "integer",
+            "format" : "int32"
+          }
+        },
+        "description" : "Default lead time in days for the appointment creation UI"
+      },
       "DefaultPopulationResponse" : {
         "type" : "object",
         "properties" : {
@@ -5268,6 +5358,17 @@
           }
         },
         "description" : "A planned appointment block. Appointment blocks offer a set of bookable appointments at different times within the timeframe of the appointment block."
+      },
+      "GetAppointmentBlockAvailabilityResponse" : {
+        "type" : "object",
+        "properties" : {
+          "defaultFlags" : {
+            "$ref" : "#/components/schemas/AppointmentBlockDefaultAvailabilityFlags"
+          },
+          "leadTimes" : {
+            "$ref" : "#/components/schemas/DefaultLeadTimeForAppointmentCreation"
+          }
+        }
       },
       "GetAppointmentBlockGroup" : {
         "required" : [ "appointmentBlocks", "id", "types" ],
@@ -6895,6 +6996,11 @@
           "creator" : {
             "$ref" : "#/components/schemas/UserName"
           },
+          "customDocumentType" : {
+            "maxLength" : 255,
+            "minLength" : 0,
+            "type" : "string"
+          },
           "documentTypeDto" : {
             "$ref" : "#/components/schemas/DocumentType"
           },
@@ -6916,6 +7022,10 @@
           },
           "procedureStatus" : {
             "$ref" : "#/components/schemas/ProcedureStatus"
+          },
+          "residencePermitValidityDate" : {
+            "type" : "string",
+            "format" : "date"
           },
           "version" : {
             "type" : "integer",
@@ -6964,7 +7074,7 @@
       },
       "ProcedureProperty" : {
         "type" : "string",
-        "enum" : [ "ALIAS", "FIRST_NAME", "LAST_NAME", "DATE_OF_BIRTH", "DOCUMENT_TYPE", "LEGAL_ADVICES", "HEALTH_AND_SOCIAL_INSURANCE", "CONSULTING_SERVICES", "EMERGENCY_HELP", "TAX_LIABILITY", "DISEASE_PREVENTION", "BIRTH_CONTROL", "PREGNANCY", "ALCOHOL_AND_DRUG_USAGE" ]
+        "enum" : [ "ALIAS", "FIRST_NAME", "LAST_NAME", "DATE_OF_BIRTH", "DOCUMENT_TYPE", "RESIDENCE_PERMIT_VALIDITY_DATE", "CUSTOM_DOCUMENT_TYPE", "LEGAL_ADVICES", "HEALTH_AND_SOCIAL_INSURANCE", "CONSULTING_SERVICES", "EMERGENCY_HELP", "TAX_LIABILITY", "DISEASE_PREVENTION", "BIRTH_CONTROL", "PREGNANCY", "ALCOHOL_AND_DRUG_USAGE" ]
       },
       "ProcedureStatus" : {
         "type" : "string",
@@ -6972,7 +7082,7 @@
       },
       "ProcedureType" : {
         "type" : "string",
-        "enum" : [ "REGULAR_EXAMINATION", "CAN_CHILD", "ENTRY_LEVEL", "DRAFT_CITIZEN_OFFICE_IMPORT", "DRAFT_SCHOOL_IMPORT", "INSPECTION", "TM_VACCINATION_CONSULTATION", "MEASLES_PROTECTION", "STI_PROTECTION", "MEDICAL_REGISTRY_ENTRY", "MEDICAL_REGISTRY_CITIZEN_DRAFT", "MEDICAL_REGISTRY_EMPLOYEE_DRAFT", "DENTAL_CHILD", "OFFICIAL_MEDICAL_SERVICE", "MEDS_ABROAD", "PROSTITUTE_PROTECTION" ]
+        "enum" : [ "REGULAR_EXAMINATION", "CAN_CHILD", "ENTRY_LEVEL", "DRAFT_CITIZEN_OFFICE_IMPORT", "DRAFT_SCHOOL_IMPORT", "INSPECTION", "TM_VACCINATION_CONSULTATION", "MEASLES_PROTECTION", "STI_PROTECTION", "MEDICAL_REGISTRY_ENTRY", "MEDICAL_REGISTRY_CITIZEN_DRAFT", "MEDICAL_REGISTRY_EMPLOYEE_DRAFT", "DENTAL_CHILD", "OFFICIAL_MEDICAL_SERVICE", "MEDS_ABROAD", "PROSTITUTE_PROTECTION", "INFECTION_BRIEFING_NEW", "INFECTION_BRIEFING_REPLACEMENT" ]
       },
       "ProcedureWithDuration" : {
         "required" : [ "createdAt", "id" ],
@@ -7468,6 +7578,18 @@
         "type" : "string",
         "enum" : [ "SYSTEM_AUTOMATIC", "EMPLOYEE", "CITIZEN" ]
       },
+      "UpdateAppointmentBlockAvailabilityRequest" : {
+        "type" : "object",
+        "properties" : {
+          "defaultFlags" : {
+            "$ref" : "#/components/schemas/AppointmentBlockDefaultAvailabilityFlags"
+          },
+          "leadTimes" : {
+            "$ref" : "#/components/schemas/DefaultLeadTimeForAppointmentCreation"
+          }
+        },
+        "description" : "A request containing the availability flags and lead times."
+      },
       "UpdateAppointmentBlockRequest" : {
         "required" : [ "consultants", "end", "mfas", "parallelExaminations", "physicians", "sopasss", "start" ],
         "type" : "object",
@@ -7530,6 +7652,11 @@
           "alias" : {
             "type" : "string"
           },
+          "customDocumentType" : {
+            "maxLength" : 255,
+            "minLength" : 0,
+            "type" : "string"
+          },
           "dateOfBirth" : {
             "type" : "string",
             "format" : "date"
@@ -7552,6 +7679,10 @@
             "maxLength" : 120,
             "minLength" : 1,
             "type" : "string"
+          },
+          "residencePermitValidityDate" : {
+            "type" : "string",
+            "format" : "date"
           },
           "version" : {
             "type" : "integer",
@@ -7734,6 +7865,9 @@
         "properties" : {
           "alias" : {
             "type" : "string"
+          },
+          "consultant" : {
+            "$ref" : "#/components/schemas/UserName"
           },
           "id" : {
             "type" : "string",

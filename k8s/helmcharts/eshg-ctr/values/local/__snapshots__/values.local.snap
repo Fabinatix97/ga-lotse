@@ -1905,7 +1905,7 @@ spec:
           name: ca
       - name: certs
         secret:
-          secretName: "lsd-public-tls"
+          secretName: lsd-public-tls
           defaultMode: 420
       - name: import-data
         secret:
@@ -2575,7 +2575,7 @@ spec:
           name: ca
       - name: certs
         secret:
-          secretName: "relay-server-public-tls"
+          secretName: relay-server-public-tls
           defaultMode: 420
       dnsPolicy: None
       containers:
@@ -2780,7 +2780,7 @@ spec:
         emptyDir: {}
       - name: certs
         secret:
-          secretName: "service-directory-public-tls"
+          secretName: service-directory-public-tls
           defaultMode: 420
       - name: import-data
         configMap:

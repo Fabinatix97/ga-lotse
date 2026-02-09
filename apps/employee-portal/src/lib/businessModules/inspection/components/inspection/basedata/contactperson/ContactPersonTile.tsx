@@ -57,7 +57,7 @@ export function ContactPersonTile({
                 )}
               </Grid>
               {isNonNullish(contactPerson?.role) && (
-                <DetailsItem label="Role" value={contactPerson.role} />
+                <DetailsItem label="Rolle" value={contactPerson.role} />
               )}
               {isNonNullish(contactPerson?.firstName) && (
                 <DetailsItem label="Vorname" value={contactPerson.firstName} />

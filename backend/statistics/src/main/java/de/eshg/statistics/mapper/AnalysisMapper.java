@@ -406,7 +406,7 @@ public class AnalysisMapper {
   }
 
   private static ScalingDto mapToScalingDto(Scaling scaling) {
-    return Optional.ofNullable(scaling).map(s -> ScalingDto.valueOf(s.name())).orElse(null);
+    return ScalingDto.valueOf(scaling.name());
   }
 
   private static GroupingDto mapToGroupingDto(GroupingType grouping) {

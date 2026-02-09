@@ -11,6 +11,7 @@ import java.time.Clock;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.List;
+import java.util.UUID;
 import net.javacrumbs.shedlock.core.LockAssert;
 import net.javacrumbs.shedlock.spring.annotation.SchedulerLock;
 import org.slf4j.Logger;
@@ -47,11 +48,12 @@ public class DeleteEncryptedDataService {
     List<ProstituteProtectionProcedure> procedures =
         procedureRepository.findByNoEmergencySituationAndCertificateExpired(retentionThreshold);
 
-    procedureRepository.deleteEncryptedFiles(
-        procedures.stream().map(ProstituteProtectionProcedure::getExternalId).toList());
-    for (ProstituteProtectionProcedure procedure : procedures) {
-      procedure.setEncryptedPersonalData(null);
-    }
+    List<UUID> procedureIds =
+        procedures.stream().map(ProstituteProtectionProcedure::getExternalId).toList();
+
+    procedureRepository.deleteEncryptedFiles(procedureIds);
+    procedureRepository.clearEncryptedPersonalData(procedureIds);
+    procedureRepository.clearSensitivePersonalDataFields(procedureIds);
 
     procedureRepository.flush();
     log.info("{} encrypted data deleted", procedures.size());

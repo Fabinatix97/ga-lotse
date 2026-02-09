@@ -226,7 +226,10 @@ export {
   TITLE_VALUES,
   getOptionalTitle,
 } from "./components/formFields/constants";
-export { formatFileSize } from "./components/formFields/file/helpers";
+export {
+  formatFileSize,
+  normalizeFileName,
+} from "./components/formFields/file/helpers";
 export { type FileLike, FileType } from "./components/formFields/file/types";
 export { validateFileName } from "./components/formFields/file/validators";
 export { useDragAndDrop } from "./components/formFields/file/useDragAndDrop";

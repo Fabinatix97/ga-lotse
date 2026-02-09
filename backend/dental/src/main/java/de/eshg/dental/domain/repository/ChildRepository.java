@@ -11,6 +11,7 @@ import de.eshg.lib.procedure.domain.model.ProcedureStatus;
 import de.eshg.lib.procedure.domain.repository.ProcedureRepository;
 import jakarta.persistence.LockModeType;
 import java.time.Year;
+import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 import org.springframework.data.jpa.repository.Lock;
@@ -61,7 +62,19 @@ public interface ChildRepository extends ProcedureRepository<Child> {
   @Query(
       "select c from Child c where c.institutionId = :institutionId and c.groupName in :groupNames and c.procedureStatus='OPEN' and c.year = :year")
   List<Child> findByInstitutionIdAndGroupNameAndYearForUpdate(
-      UUID institutionId, List<String> groupNames, Year year);
+      UUID institutionId, Collection<String> groupNames, Year year);
+
+  @Lock(LockModeType.PESSIMISTIC_WRITE)
+  @Query(
+      """
+    select c from Child c
+    where c.institutionId = :institutionId
+    and (c.groupName IS NULL OR c.groupName in :groupNames)
+    and c.procedureStatus = 'OPEN'
+    and c.year = :year
+    """)
+  List<Child> findByInstitutionIdAndGroupNameOrNullAndYearForUpdate(
+      UUID institutionId, Collection<String> groupNames, Year year);
 
   List<Child> findByInstitutionIdAndYearAndProcedureStatus(
       UUID institutionId, Year year, ProcedureStatus procedureStatus);

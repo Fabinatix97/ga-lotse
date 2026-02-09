@@ -24,7 +24,8 @@ public enum TechnicalGroup implements KeycloakGroup {
       "AÄD-Arzt", EmployeePermissionRole.OFFICIAL_MEDICAL_SERVICE_ADMIN),
   MEDS_ABROAD_MFA("BTM-MFA", EmployeePermissionRole.MEDS_ABROAD_ADMIN),
   PROSTITUTE_PROTECTION_CONSULTANT(
-      "ProstSchG-Berater", EmployeePermissionRole.PROSTITUTE_PROTECTION_ADMIN);
+      "ProstSchG-Berater", EmployeePermissionRole.PROSTITUTE_PROTECTION_ADMIN),
+  INFECTION_BRIEFING_CONSULTANT("InfB-Berater", EmployeePermissionRole.INFECTION_BRIEFING_ADMIN);
 
   private final List<KeycloakRole> roles;
   private final String name;

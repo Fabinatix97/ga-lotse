@@ -271,10 +271,9 @@ public class AnalysisService {
         ERROR_MESSAGE_ATTRIBUTE_TYPE.formatted(name, configName, PRIMARY_ATTRIBUTE));
 
     if (barChartConfiguration.secondaryAttribute() == null) {
-      if (barChartConfiguration.grouping() != null || barChartConfiguration.scaling() != null) {
+      if (barChartConfiguration.grouping() != null) {
         throw new BadRequestException(
-            "'%s': Grouping and scaling not allowed without secondary attribute given"
-                .formatted(name));
+            "'%s': Grouping not allowed without secondary attribute given".formatted(name));
       }
     } else {
       TableColumn tableColumnSecondary =
@@ -285,9 +284,9 @@ public class AnalysisService {
           ERROR_MESSAGE_ATTRIBUTE_TYPE.formatted(name, configName, SECONDARY_ATTRIBUTE));
       validateThatTableColumnsAreDifferent(tableColumnPrimary, tableColumnSecondary, name);
 
-      if (barChartConfiguration.grouping() == null || barChartConfiguration.scaling() == null) {
+      if (barChartConfiguration.grouping() == null) {
         throw new BadRequestException(
-            "'%s': Grouping and scaling are required for a secondary attribute".formatted(name));
+            "'%s': Grouping is required for a secondary attribute".formatted(name));
       }
     }
   }
@@ -335,11 +334,9 @@ public class AnalysisService {
             .formatted(name, configName, PRIMARY_ATTRIBUTE));
 
     if (histogramChartConfiguration.secondaryAttribute() == null) {
-      if (histogramChartConfiguration.grouping() != null
-          || histogramChartConfiguration.scaling() != null) {
+      if (histogramChartConfiguration.grouping() != null) {
         throw new BadRequestException(
-            "'%s': Grouping and scaling not allowed without secondary attribute given"
-                .formatted(name));
+            "'%s': Grouping not allowed without secondary attribute given".formatted(name));
       }
     } else {
       TableColumn tableColumnSecondary =
@@ -349,10 +346,9 @@ public class AnalysisService {
           tableColumnSecondary,
           ERROR_MESSAGE_ATTRIBUTE_TYPE.formatted(name, configName, SECONDARY_ATTRIBUTE));
 
-      if (histogramChartConfiguration.grouping() == null
-          || histogramChartConfiguration.scaling() == null) {
+      if (histogramChartConfiguration.grouping() == null) {
         throw new BadRequestException(
-            "'%s': Grouping and scaling are required for a secondary attribute".formatted(name));
+            "'%s': Grouping is required for a secondary attribute".formatted(name));
       }
     }
 
@@ -638,16 +634,11 @@ public class AnalysisService {
             GroupingDto grouping,
             OrientationDto orientation)) {
       if (barChartConfiguration.getSecondaryAttributeSelection() == null) {
-        if (scaling != null || grouping != null) {
+        if (grouping != null) {
           throw new BadRequestException(
-              "BarChartConfiguration has no secondary attribute, scaling and grouping cannot be updated");
+              "BarChartConfiguration has no secondary attribute, grouping cannot be updated");
         }
       } else {
-        setValueInChartConfigurationIfNotNull(
-            barChartConfiguration,
-            scaling,
-            AnalysisMapper::mapToScaling,
-            BarChartConfiguration::setScaling);
         setValueInChartConfigurationIfNotNull(
             barChartConfiguration,
             grouping,
@@ -659,6 +650,11 @@ public class AnalysisService {
           orientation,
           AnalysisMapper::mapToOrientation,
           BarChartConfiguration::setOrientation);
+      setValueInChartConfigurationIfNotNull(
+          barChartConfiguration,
+          scaling,
+          AnalysisMapper::mapToScaling,
+          BarChartConfiguration::setScaling);
     } else {
       throw new BadRequestException("Analysis configuration is of type BarChartConfiguration");
     }
@@ -681,22 +677,22 @@ public class AnalysisService {
     if (updateChartConfiguration
         instanceof UpdateHistogramChartConfigurationDto(ScalingDto scaling, GroupingDto grouping)) {
       if (histogramChartConfiguration.getSecondaryAttributeSelection() == null) {
-        if (scaling != null || grouping != null) {
+        if (grouping != null) {
           throw new BadRequestException(
-              "HistogramChartConfiguration has no secondary attribute, scaling and grouping cannot be updated");
+              "HistogramChartConfiguration has no secondary attribute, grouping cannot be updated");
         }
       } else {
-        setValueInChartConfigurationIfNotNull(
-            histogramChartConfiguration,
-            scaling,
-            AnalysisMapper::mapToScaling,
-            HistogramChartConfiguration::setScaling);
         setValueInChartConfigurationIfNotNull(
             histogramChartConfiguration,
             grouping,
             AnalysisMapper::mapToGrouping,
             HistogramChartConfiguration::setGrouping);
       }
+      setValueInChartConfigurationIfNotNull(
+          histogramChartConfiguration,
+          scaling,
+          AnalysisMapper::mapToScaling,
+          HistogramChartConfiguration::setScaling);
     } else {
       throw new BadRequestException(
           "Analysis configuration is of type HistogramChartConfiguration");

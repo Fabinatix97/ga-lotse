@@ -45,6 +45,6 @@ export function useValidateOpenChildrenExistInInstitution(
         institutionId,
         schoolYear,
       ),
-    enabled: institutionId !== "",
+    enabled: institutionId !== "" && schoolYear !== 0,
   });
 }

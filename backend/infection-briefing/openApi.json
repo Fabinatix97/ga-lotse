@@ -730,6 +730,61 @@
         "tags" : [ "Archiving" ]
       }
     },
+    "/citizen/public/appointment/new-certificate" : {
+      "post" : {
+        "operationId" : "bookNewCertificateAppointment",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/BookNewCertificateAppointmentRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/BookNewCertificateAppointmentResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "PublicCitizen" ]
+      }
+    },
+    "/citizen/public/free-appointments" : {
+      "get" : {
+        "operationId" : "getFreeAppointmentsForCitizen",
+        "parameters" : [ {
+          "in" : "query",
+          "name" : "appointmentType",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/components/schemas/InfectionBriefingAppointType"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/GetFreeAppointmentsResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Get free appointments for an appointment type.",
+        "tags" : [ "PublicCitizen" ]
+      }
+    },
     "/configuration" : {
       "get" : {
         "operationId" : "getConfiguration",
@@ -1643,6 +1698,49 @@
         },
         "summary" : "Update status of inbox procedure",
         "tags" : [ "InboxProcedure" ]
+      }
+    },
+    "/infection-briefing-procedures" : {
+      "get" : {
+        "operationId" : "getInfectionBriefingProcedures",
+        "parameters" : [ {
+          "in" : "query",
+          "name" : "appointmentDay",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "format" : "date"
+          }
+        }, {
+          "in" : "query",
+          "name" : "pageNumber",
+          "required" : false,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int32"
+          }
+        }, {
+          "in" : "query",
+          "name" : "pageSize",
+          "required" : false,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int32"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/GetProceduresResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "InfectionBriefingProcedure" ]
       }
     },
     "/procedure-metrics" : {
@@ -2868,6 +2966,10 @@
           "propertyName" : "@type"
         }
       },
+      "ApplicantCategory" : {
+        "type" : "string",
+        "enum" : [ "REGULAR", "VOLUNTEER", "INTERN" ]
+      },
       "Appointment" : {
         "required" : [ "end", "start" ],
         "type" : "object",
@@ -3181,6 +3283,34 @@
           "taskVersion" : {
             "type" : "integer",
             "format" : "int64"
+          }
+        }
+      },
+      "BookNewCertificateAppointmentRequest" : {
+        "required" : [ "applicant", "applicantCategoryDto", "startTime" ],
+        "type" : "object",
+        "properties" : {
+          "applicant" : {
+            "$ref" : "#/components/schemas/Person"
+          },
+          "applicantCategoryDto" : {
+            "$ref" : "#/components/schemas/ApplicantCategory"
+          },
+          "startTime" : {
+            "type" : "string",
+            "format" : "date-time"
+          }
+        }
+      },
+      "BookNewCertificateAppointmentResponse" : {
+        "required" : [ "appointment", "emailSent" ],
+        "type" : "object",
+        "properties" : {
+          "appointment" : {
+            "$ref" : "#/components/schemas/Appointment"
+          },
+          "emailSent" : {
+            "type" : "boolean"
           }
         }
       },
@@ -4972,6 +5102,10 @@
         "type" : "string",
         "enum" : [ "LETTER", "PHONE_CALL", "EMAIL" ]
       },
+      "InfectionBriefingAppointType" : {
+        "type" : "string",
+        "enum" : [ "INFECTION_BRIEFING_NEW", "INFECTION_BRIEFING_REPLACEMENT" ]
+      },
       "InsertRequestInterceptionTestHelperRequest" : {
         "required" : [ "type" ],
         "type" : "object",
@@ -5235,6 +5369,46 @@
           }
         } ]
       },
+      "Person" : {
+        "required" : [ "dateOfBirth", "email", "firstName", "lastName" ],
+        "type" : "object",
+        "properties" : {
+          "dateOfBirth" : {
+            "type" : "string",
+            "description" : "Date of birth of the applicant.",
+            "format" : "date",
+            "example" : "2018-07-26"
+          },
+          "email" : {
+            "type" : "string",
+            "format" : "email",
+            "maxLength" : 254,
+            "minLength" : 6
+          },
+          "firstName" : {
+            "maxLength" : 80,
+            "minLength" : 1,
+            "type" : "string",
+            "description" : "First name of the applicant.",
+            "example" : "Susanne"
+          },
+          "lastName" : {
+            "maxLength" : 120,
+            "minLength" : 1,
+            "type" : "string",
+            "description" : "Last name of the applicant.",
+            "example" : "Gerber"
+          },
+          "phone" : {
+            "maxLength" : 23,
+            "minLength" : 1,
+            "type" : "string"
+          },
+          "salutation" : {
+            "$ref" : "#/components/schemas/Salutation"
+          }
+        }
+      },
       "PersonType" : {
         "type" : "string",
         "enum" : [ "PATIENT", "PARENT", "PROFESSIONAL", "EMPLOYEE" ]
@@ -5385,7 +5559,7 @@
       },
       "ProcedureType" : {
         "type" : "string",
-        "enum" : [ "REGULAR_EXAMINATION", "CAN_CHILD", "ENTRY_LEVEL", "DRAFT_CITIZEN_OFFICE_IMPORT", "DRAFT_SCHOOL_IMPORT", "INSPECTION", "TM_VACCINATION_CONSULTATION", "MEASLES_PROTECTION", "STI_PROTECTION", "MEDICAL_REGISTRY_ENTRY", "MEDICAL_REGISTRY_CITIZEN_DRAFT", "MEDICAL_REGISTRY_EMPLOYEE_DRAFT", "DENTAL_CHILD", "OFFICIAL_MEDICAL_SERVICE", "MEDS_ABROAD", "PROSTITUTE_PROTECTION" ]
+        "enum" : [ "REGULAR_EXAMINATION", "CAN_CHILD", "ENTRY_LEVEL", "DRAFT_CITIZEN_OFFICE_IMPORT", "DRAFT_SCHOOL_IMPORT", "INSPECTION", "TM_VACCINATION_CONSULTATION", "MEASLES_PROTECTION", "STI_PROTECTION", "MEDICAL_REGISTRY_ENTRY", "MEDICAL_REGISTRY_CITIZEN_DRAFT", "MEDICAL_REGISTRY_EMPLOYEE_DRAFT", "DENTAL_CHILD", "OFFICIAL_MEDICAL_SERVICE", "MEDS_ABROAD", "PROSTITUTE_PROTECTION", "INFECTION_BRIEFING_NEW", "INFECTION_BRIEFING_REPLACEMENT" ]
       },
       "ProcedureWithDuration" : {
         "required" : [ "createdAt", "id" ],

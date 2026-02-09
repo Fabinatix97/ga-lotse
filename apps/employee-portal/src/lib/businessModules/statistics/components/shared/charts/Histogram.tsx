@@ -4,6 +4,7 @@
  */
 
 import { EChartsOption, SeriesOption } from "echarts";
+import { sumBy } from "remeda";
 
 import {
   AnalysisDiagramHistogram,
@@ -21,7 +22,7 @@ interface HistogramProps {
   diagramData: AnalysisDiagramHistogram["data"];
   isDataGrouped: boolean;
   grouping?: DiagramGrouping;
-  scaling?: DiagramScaling;
+  scaling: DiagramScaling;
   getColor?: (identifier: string) => string;
   eChartApi?: (eChartApi: ChartApi) => void;
 }
@@ -55,7 +56,17 @@ function transformToRelativeData(dataGroups: DataGroups) {
     return value / total;
   }
 
-  const totals = Object.keys(dataGroups).reduce(
+  const keys = Object.keys(dataGroups);
+  if (keys.length === 1) {
+    const key = keys[0]!;
+    const data = dataGroups[key]!;
+    const total = sumBy(data, ([, y]) => y);
+    return {
+      [key]: data.map(([x, y]) => [x, mapToRelative(y, total)]),
+    };
+  }
+
+  const totals = keys.reduce(
     (acc, it) => {
       dataGroups[it]!.forEach(([x, y]) => {
         acc[x] = (acc[x] ?? 0) + y;
@@ -65,7 +76,7 @@ function transformToRelativeData(dataGroups: DataGroups) {
     {} as Record<string, number>,
   );
 
-  return Object.keys(dataGroups).reduce(
+  return keys.reduce(
     (acc, it) => ({
       ...acc,
       [it]: dataGroups[it]!.map(([x, y]) => [x, mapToRelative(y, totals[x]!)]),

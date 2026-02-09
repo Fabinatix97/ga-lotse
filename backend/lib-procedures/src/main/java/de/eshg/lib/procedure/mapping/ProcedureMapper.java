@@ -69,6 +69,8 @@ public final class ProcedureMapper {
       case OFFICIAL_MEDICAL_SERVICE -> ProcedureTypeDto.OFFICIAL_MEDICAL_SERVICE;
       case MEDS_ABROAD -> ProcedureTypeDto.MEDS_ABROAD;
       case PROSTITUTE_PROTECTION -> ProcedureTypeDto.PROSTITUTE_PROTECTION;
+      case INFECTION_BRIEFING_NEW -> ProcedureTypeDto.INFECTION_BRIEFING_NEW;
+      case INFECTION_BRIEFING_REPLACEMENT -> ProcedureTypeDto.INFECTION_BRIEFING_REPLACEMENT;
     };
   }
 
@@ -99,6 +101,8 @@ public final class ProcedureMapper {
       case OFFICIAL_MEDICAL_SERVICE -> ProcedureType.OFFICIAL_MEDICAL_SERVICE;
       case MEDS_ABROAD -> ProcedureType.MEDS_ABROAD;
       case PROSTITUTE_PROTECTION -> ProcedureType.PROSTITUTE_PROTECTION;
+      case INFECTION_BRIEFING_NEW -> ProcedureType.INFECTION_BRIEFING_NEW;
+      case INFECTION_BRIEFING_REPLACEMENT -> ProcedureType.INFECTION_BRIEFING_REPLACEMENT;
     };
   }
 

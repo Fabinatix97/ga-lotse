@@ -33,6 +33,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 
 @Service
 public class ProstituteProtectionAppointmentService
@@ -80,6 +81,7 @@ public class ProstituteProtectionAppointmentService
 
   private void bookUserDefinedAppointment(
       ProstituteProtectionProcedure procedure, Instant start, Instant end, UUID consultantId) {
+    Assert.notNull(consultantId, "Consultant ID must not be null for user-defined appointments");
     procedure.setAppointment(null);
     boolean appointmentHasChanged = appointmentHasChanged(procedure, start, end);
     boolean consultantHasChanged = consultantHasChanged(procedure, consultantId);
@@ -106,21 +108,29 @@ public class ProstituteProtectionAppointmentService
 
   private boolean appointmentHasChanged(
       ProstituteProtectionProcedure procedure, Instant start, Instant end) {
-    if (procedure.getUserDefinedAppointment() == null) {
+    UserDefinedAppointment userDefinedAppointment = procedure.getUserDefinedAppointment();
+    if (userDefinedAppointment == null) {
       return true;
     }
-    return !(Objects.equals(procedure.getUserDefinedAppointment().getAppointmentStart(), start)
-        && Objects.equals(procedure.getUserDefinedAppointment().getAppointmentEnd(), end));
+    return !(Objects.equals(userDefinedAppointment.getAppointmentStart(), start)
+        && Objects.equals(userDefinedAppointment.getAppointmentEnd(), end));
   }
 
   public void bookAppointmentFromAppointmentBlock(
       ProstituteProtectionProcedure procedure, AppointmentType type, Instant start, Instant end) {
     procedure.setUserDefinedAppointment(null);
     procedure.setConsultantId(null);
-    if (procedure.getCalendarEventId() != null) {
-      deleteAppointmentCalendarEvent(procedure);
-    }
+    deleteAppointmentCalendarEvent(procedure);
     appointmentBlockSlotUtil.updateAppointment(type, null, null, procedure, start, end);
+  }
+
+  public void removeAppointmentFromAppointmentBlock(ProstituteProtectionProcedure procedure) {
+    appointmentBlockSlotUtil.removeAppointment(procedure);
+  }
+
+  public void removeUserDefinedAppointment(ProstituteProtectionProcedure procedure) {
+    procedure.setUserDefinedAppointment(null);
+    deleteAppointmentCalendarEvent(procedure);
   }
 
   @Override
@@ -148,24 +158,17 @@ public class ProstituteProtectionAppointmentService
 
   private void createAppointmentCalendarEvent(
       ProstituteProtectionProcedure procedure, Instant start, Instant end) {
-    if (procedure.getConsultantId() == null) {
-      deleteAppointmentCalendarEvent(procedure);
-    } else {
-      GetUserCalendarsResponse userCalendarsResponse =
-          calendarApi.getUserCalendars(
-              new GetUserCalendarsRequest(List.of(procedure.getConsultantId())));
-      List<UUID> calendarIds =
-          userCalendarsResponse.userCalendars().stream().map(UserCalendar::calendarId).toList();
-      if (calendarIds.isEmpty()) {
-        deleteAppointmentCalendarEvent(procedure);
-      } else {
-        DetailedEvent appointmentEventData =
-            calendarEventApi.addBusinessCaseEvent(
-                new BusinessCaseEventRequest(calendarIds, new EventTimeData(start, end, false)));
-        deleteAppointmentCalendarEvent(procedure);
-        procedure.setCalendarEventId(appointmentEventData.id());
-      }
-    }
+    GetUserCalendarsResponse userCalendarsResponse =
+        calendarApi.getUserCalendars(
+            new GetUserCalendarsRequest(List.of(procedure.getConsultantId())));
+    List<UUID> calendarIds =
+        userCalendarsResponse.userCalendars().stream().map(UserCalendar::calendarId).toList();
+    Assert.notEmpty(
+        calendarIds, "No calendar(s) found for consultant with ID " + procedure.getConsultantId());
+    DetailedEvent appointmentEventData =
+        calendarEventApi.addBusinessCaseEvent(
+            new BusinessCaseEventRequest(calendarIds, new EventTimeData(start, end, false)));
+    procedure.setCalendarEventId(appointmentEventData.id());
   }
 
   private void deleteAppointmentCalendarEvent(ProstituteProtectionProcedure procedure) {

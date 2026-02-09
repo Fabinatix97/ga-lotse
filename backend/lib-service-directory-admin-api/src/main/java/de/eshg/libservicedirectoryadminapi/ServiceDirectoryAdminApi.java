@@ -16,6 +16,8 @@ import de.eshg.libservicedirectoryadminapi.api.orgunit.OrgUnitDto;
 import de.eshg.libservicedirectoryadminapi.api.orgunit.PartialOrgUnitDto;
 import de.eshg.libservicedirectoryadminapi.api.rule.PartialRuleDto;
 import de.eshg.libservicedirectoryadminapi.api.rule.RuleDto;
+import de.eshg.libservicedirectoryadminapi.api.ruleimport.RuleImportDto;
+import de.eshg.libservicedirectoryadminapi.api.ruleimport.RuleImportResponse;
 import de.eshg.libservicedirectoryadminapi.api.staging.CommitResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -48,6 +50,7 @@ public interface ServiceDirectoryAdminApi {
 
   String EXPORT_PATH = "/export";
   String IMPORT_PATH = "/import";
+  String RULE_IMPORT_PATH = IMPORT_PATH + RULES_PREFIX;
 
   @Operation(summary = "Create an actor")
   @PostExchange(value = ACTORS_PREFIX, accept = "application/json")
@@ -158,6 +161,11 @@ public interface ServiceDirectoryAdminApi {
       responseCode = "200",
       description = "Import from exported data into an empty database")
   void postImport(@Valid @RequestBody ImportRequest toBeImported);
+
+  @Operation(summary = "Import rules to an existing org unit")
+  @PostExchange(value = RULE_IMPORT_PATH, accept = "application/json")
+  @ApiResponse(responseCode = "200", description = "Import rules to an existing org unit")
+  RuleImportResponse postRuleImport(@Valid @RequestBody List<RuleImportDto> rules);
 
   @Operation(summary = "Get revisions")
   @GetExchange("/revisions")

@@ -42,12 +42,6 @@ export function AppointmentStep(props: AppointmentStepProps) {
         <ConsultantSelectField
           name="consultantId"
           options={props.allAssignableUsers}
-          required={
-            props.appointmentBookingType !==
-            ApiAppointmentBookingType.AppointmentBlock
-              ? "Bitte einen Berater auswählen."
-              : undefined
-          }
         />
         <Divider sx={{ marginBlock: 1 }} />
         <AppointmentFields

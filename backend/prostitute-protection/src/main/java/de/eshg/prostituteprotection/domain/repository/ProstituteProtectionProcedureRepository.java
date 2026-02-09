@@ -71,6 +71,29 @@ public interface ProstituteProtectionProcedureRepository
   @Query("delete from EncryptedFile f where f.procedure.externalId in :procedureIds")
   void deleteEncryptedFiles(List<UUID> procedureIds);
 
+  @Transactional
+  @Modifying
+  @Query(
+      "update ProstituteProtectionProcedure p set p.encryptedPersonalData = null where p.externalId in :procedureIds")
+  int clearEncryptedPersonalData(List<UUID> procedureIds);
+
+  @Transactional
+  @Modifying
+  @Query(
+      """
+      update PersonalData pd
+      set pd.phoneNumber = null,
+          pd.residencePermitValidityDate = null,
+          pd.customDocumentType = null
+      where pd.id in (
+          select p.personalData.id
+          from ProstituteProtectionProcedure p
+          where p.externalId in :procedureIds
+          and p.personalData is not null
+      )
+      """)
+  int clearSensitivePersonalDataFields(List<UUID> procedureIds);
+
   List<ProstituteProtectionProcedure> findAllByCalendarEventIdInOrderByCalendarEventId(
       Collection<UUID> calendarEventIds);
 }

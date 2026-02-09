@@ -36,6 +36,8 @@ interface FormButtonBarProps {
   submitLabel: string;
   submitAriaLabel?: string;
   cancelLabel?: string;
+  cancelVariant?: ButtonProps["variant"];
+  cancelColor?: ButtonProps["color"];
   submitting: boolean;
   submitDisabled?: boolean;
   onCancel?: RouteOrHandler;
@@ -54,8 +56,8 @@ export function FormButtonBar({
   if (isDefined(props.onCancel)) {
     rightButtons.push(
       createLinkOrButton(cancelLabel, props.onCancel, {
-        color: "neutral",
-        variant: "soft",
+        color: props.cancelColor ?? "neutral",
+        variant: props.cancelVariant ?? "soft",
         size: props.size,
       }),
     );

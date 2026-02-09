@@ -7,6 +7,7 @@ package de.eshg.servicedirectory;
 
 import static de.eshg.servicedirectory.actor.mapper.ActorMapperAdminApi.toPersistence;
 
+import de.eshg.lib.common.FederalState;
 import de.eshg.libservicedirectoryadminapi.api.actor.ActorDto;
 import de.eshg.libservicedirectoryadminapi.api.actor.CertificateDto;
 import de.eshg.libservicedirectoryadminapi.api.actor.PartialActorDto;
@@ -14,8 +15,12 @@ import de.eshg.libservicedirectoryadminapi.api.impex.ExportResponse;
 import de.eshg.libservicedirectoryadminapi.api.impex.ImportRequest;
 import de.eshg.libservicedirectoryadminapi.api.orgunit.OrgUnitDto;
 import de.eshg.libservicedirectoryadminapi.api.orgunit.PartialOrgUnitDto;
+import de.eshg.libservicedirectoryadminapi.api.rule.ActorSelectorDto;
 import de.eshg.libservicedirectoryadminapi.api.rule.PartialRuleDto;
 import de.eshg.libservicedirectoryadminapi.api.rule.RuleDto;
+import de.eshg.libservicedirectoryadminapi.api.ruleimport.RuleImportDto;
+import de.eshg.libservicedirectoryadminapi.api.ruleimport.RuleImportError;
+import de.eshg.libservicedirectoryadminapi.api.ruleimport.RuleImportResponse;
 import de.eshg.servicedirectory.actor.exception.ActorNotFoundException;
 import de.eshg.servicedirectory.actor.mapper.ActorMapperAdminApi;
 import de.eshg.servicedirectory.actor.persistence.entity.Actor.Certificate;
@@ -24,6 +29,7 @@ import de.eshg.servicedirectory.actor.persistence.entity.AuditedActor;
 import de.eshg.servicedirectory.actor.persistence.entity.StagedActor;
 import de.eshg.servicedirectory.actor.persistence.repository.AuditedActorRepository;
 import de.eshg.servicedirectory.actor.persistence.repository.StagedActorRepository;
+import de.eshg.servicedirectory.common.AdminNameHolder;
 import de.eshg.servicedirectory.common.exception.ServiceDirectoryBadRequestException;
 import de.eshg.servicedirectory.orgunit.exception.OrgUnitNotFoundException;
 import de.eshg.servicedirectory.orgunit.mapper.OrgUnitMapper;
@@ -36,16 +42,24 @@ import de.eshg.servicedirectory.orgunit.persistence.repository.StagedOrgUnitRepo
 import de.eshg.servicedirectory.rule.exception.RuleNotFoundException;
 import de.eshg.servicedirectory.rule.mapper.RuleMapper;
 import de.eshg.servicedirectory.rule.persistence.entity.AuditedRule;
+import de.eshg.servicedirectory.rule.persistence.entity.Rule;
 import de.eshg.servicedirectory.rule.persistence.entity.StagedRule;
 import de.eshg.servicedirectory.rule.persistence.repository.AuditedRuleRepository;
 import de.eshg.servicedirectory.rule.persistence.repository.StagedRuleRepository;
 import de.eshg.servicedirectory.staging.persistence.entity.StagedEntityType;
 import de.eshg.servicedirectory.staging.persistence.entity.StagingStatus;
 import de.eshg.servicedirectory.util.X509Utils;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.Path;
+import jakarta.persistence.criteria.Predicate;
 import java.security.cert.X509Certificate;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -411,5 +425,165 @@ public class ServiceDirectoryAdminService {
     if (!currentDatabaseContent.isEmpty()) {
       throw new ServiceDirectoryBadRequestException("Import into non-empty database not allowed");
     }
+  }
+
+  @Transactional
+  RuleImportResponse requestImportRulesToOrgUnit(List<RuleImportDto> rules) {
+    List<RuleImportError> errors = new ArrayList<>();
+
+    for (int i = 0; i < rules.size(); i++) {
+      RuleImportDto rule = rules.get(i);
+      try {
+        Optional<? extends Rule> optionalRuleToUpdate = findRuleToUpdate(rule);
+
+        validateActorSelectorPattern(rule.client());
+        validateActorSelectorPattern(rule.server());
+
+        if (optionalRuleToUpdate.isEmpty()) {
+          StagedRule stagedRule = createStagedRule(rule);
+          stagedRuleRepository.save(stagedRule);
+          continue;
+        }
+
+        Rule ruleToUpdate = optionalRuleToUpdate.get();
+
+        if (!isUpdateRequired(ruleToUpdate, rule)) {
+          continue;
+        }
+
+        applyUpdate(ruleToUpdate, rule);
+      } catch (Exception exception) {
+        errors.add(
+            new RuleImportError(
+                i, rule.id(), rule.client(), rule.server(), exception.getMessage()));
+      }
+    }
+
+    return new RuleImportResponse(errors);
+  }
+
+  private void validateActorSelectorPattern(ActorSelectorDto actorSelectorDto) {
+    if (actorSelectorDto == null) {
+      throw new IllegalArgumentException("Actor selector must not be null");
+    }
+
+    if (actorSelectorDto.federalState() != null
+        && !exists(FederalState.class, actorSelectorDto.federalState())) {
+      throw new IllegalArgumentException(
+          "Federal state %s does not exist".formatted(actorSelectorDto.federalState()));
+    }
+
+    if (actorSelectorDto.orgUnitType() != null
+        && !exists(OrgUnitType.class, actorSelectorDto.orgUnitType())) {
+      throw new IllegalArgumentException(
+          "Org unit type %s does not exist".formatted(actorSelectorDto.orgUnitType()));
+    }
+
+    if (actorSelectorDto.orgUnitName() != null
+        && !auditedOrgUnitRepository.existsByReadableName(actorSelectorDto.orgUnitName())) {
+      throw new OrgUnitNotFoundException(actorSelectorDto.orgUnitName());
+    }
+
+    if (actorSelectorDto.actorType() != null
+        && !exists(ActorType.class, actorSelectorDto.actorType())) {
+      throw new IllegalArgumentException(
+          "Actor type %s does not exist".formatted(actorSelectorDto.actorType()));
+    }
+
+    if (actorSelectorDto.actorName() != null
+        && !auditedActorRepository.existsByCommonName(actorSelectorDto.actorName())) {
+      throw new ActorNotFoundException(actorSelectorDto.actorName());
+    }
+  }
+
+  public static <E extends Enum<E>> boolean exists(Class<E> enumClass, String value) {
+    try {
+      Enum.valueOf(enumClass, value);
+      return true;
+    } catch (IllegalArgumentException | NullPointerException e) {
+      return false;
+    }
+  }
+
+  private Optional<? extends Rule> findRuleToUpdate(RuleImportDto dto) {
+    if (dto.id() != null) {
+      Optional<StagedRule> stagedRule = stagedRuleRepository.findById(dto.id());
+      if (stagedRule.isPresent()) {
+        return stagedRule;
+      }
+
+      Optional<AuditedRule> auditedRule = auditedRuleRepository.findById(dto.id());
+      if (auditedRule.isPresent()) {
+        return auditedRule;
+      }
+
+      throw new IllegalArgumentException("No rule with id %s found".formatted(dto.id()));
+    } else {
+      Optional<StagedRule> stagedRule =
+          stagedRuleRepository.findOne(hasMatchingClientServerPattern(dto.client(), dto.server()));
+      if (stagedRule.isPresent()) {
+        return stagedRule;
+      }
+
+      return auditedRuleRepository.findOne(
+          hasMatchingClientServerPattern(dto.client(), dto.server()));
+    }
+  }
+
+  private static StagedRule createStagedRule(RuleImportDto rule) {
+    StagedRule stagedRule = new StagedRule();
+    stagedRule.setStagedEntityType(StagedEntityType.ADD);
+    stagedRule.setCreatedBy(AdminNameHolder.getAdminName());
+    stagedRule.setDescription(rule.description());
+    stagedRule.setClient(RuleMapper.toPersistence(rule.client()));
+    stagedRule.setServer(RuleMapper.toPersistence(rule.server()));
+    stagedRule.setActive(rule.active());
+    stagedRule.setStagingStatus(StagingStatus.from(StagingStatus.READY_FOR_REVIEW));
+    return stagedRule;
+  }
+
+  private void applyUpdate(Rule ruleToUpdate, RuleImportDto dto) {
+    if (ruleToUpdate instanceof AuditedRule audited) {
+      StagedRule staged = RuleMapper.toStaged(audited);
+      staged.setActive(dto.active());
+      staged.setDescription(dto.description());
+      staged.setClient(RuleMapper.toPersistence(dto.client()));
+      staged.setServer(RuleMapper.toPersistence(dto.server()));
+      staged.setStagingStatus(StagingStatus.READY_FOR_REVIEW);
+      stagedRuleRepository.save(staged);
+    } else if (ruleToUpdate instanceof StagedRule staged) {
+      staged.setActive(dto.active());
+      staged.setDescription(dto.description());
+      staged.setClient(RuleMapper.toPersistence(dto.client()));
+      staged.setServer(RuleMapper.toPersistence(dto.server()));
+      staged.setStagingStatus(StagingStatus.READY_FOR_REVIEW);
+    }
+  }
+
+  private <T> Specification<T> hasMatchingClientServerPattern(
+      ActorSelectorDto client, ActorSelectorDto server) {
+    return (root, query, cb) ->
+        cb.and(
+            eqOrIsNull(cb, root.get("client").get("federalState"), client.federalState()),
+            eqOrIsNull(cb, root.get("client").get("orgUnitType"), client.orgUnitType()),
+            eqOrIsNull(cb, root.get("client").get("orgUnitName"), client.orgUnitName()),
+            eqOrIsNull(cb, root.get("client").get("actorType"), client.actorType()),
+            eqOrIsNull(cb, root.get("client").get("actorName"), client.actorName()),
+            eqOrIsNull(cb, root.get("server").get("federalState"), server.federalState()),
+            eqOrIsNull(cb, root.get("server").get("orgUnitType"), server.orgUnitType()),
+            eqOrIsNull(cb, root.get("server").get("orgUnitName"), server.orgUnitName()),
+            eqOrIsNull(cb, root.get("server").get("actorType"), server.actorType()),
+            eqOrIsNull(cb, root.get("server").get("actorName"), server.actorName()));
+  }
+
+  private static Predicate eqOrIsNull(CriteriaBuilder cb, Path<?> path, Object value) {
+    return value == null ? cb.isNull(path) : cb.equal(path, value);
+  }
+
+  private boolean isUpdateRequired(Rule rule, RuleImportDto dto) {
+    return !(Objects.equals(rule.isActive(), dto.active())
+        && Objects.equals(rule.getDescription(), dto.description())
+        && Objects.equals(rule.getClient(), RuleMapper.toPersistence(dto.client()))
+        && Objects.equals(rule.getServer(), RuleMapper.toPersistence(dto.server())));
   }
 }

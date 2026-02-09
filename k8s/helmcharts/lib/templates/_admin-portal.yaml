@@ -8,6 +8,8 @@
 
 {{- $createDebugLogMount := include "createDebugLogMount" .Values }}
 
+{{- $certNameVolumeName := ternary "server-certs" "certs" (eq .Values.spatz.certificate.ca.type "split") -}}
+
 kind: Service
 apiVersion: v1
 metadata:
@@ -148,11 +150,11 @@ spec:
             - mountPath: /var/run
               subPath: var-run
               name: nginx-runtime-data
-            - name: certs
+            - name: {{ $certNameVolumeName }}
               mountPath: /etc/nginx/ssl/tls.crt
               subPath: tls.crt
               readOnly: true
-            - name: certs
+            - name: {{ $certNameVolumeName }}
               mountPath: /etc/nginx/ssl/tls.key
               subPath: tls.key
               readOnly: true
@@ -176,10 +178,7 @@ spec:
               value: 'false'
             - name: ESHG_SPATZ_RELAY_ENABLED
               value: 'false'
-            - name: ESHG_SPATZ_SSL_KEYSTORE_CERTIFICATE
-              value: /var/run/certs/tls.crt
-            - name: ESHG_SPATZ_SSL_KEYSTORE_PRIVATEKEY
-              value: /var/run/certs/tls.key
+            {{- include "genKeystoreParameters" (list .Values.spatz.certificate.ca.type) | nindent 12 }}
             - name: ESHG_SPATZ_INBOUND_HANDLERPORT
               value: "443"
             - name: ESHG_SPATZ_OUTBOUND_TARGETPORT
@@ -205,9 +204,7 @@ spec:
               mountPath: /etc/ssl/certs/localca.pem
               subPath: ca.crt
             {{- end }}
-            - name: certs
-              mountPath: /var/run/certs
-              readOnly: true
+            {{- include "genCertificateVolumeMounts" (list .Values.spatz.certificate.ca.type ) | nindent 12 }}
             {{- if eq "true" $createDebugLogMount }}
             - name: spatzdebuglog
               mountPath: /var/log/eshg-debug
@@ -228,10 +225,7 @@ spec:
         - name: config
           configMap:
             name: admin-portal-reverse-proxy-config
-        - name: certs
-          secret:
-            secretName: {{ .Values.adminportal.certificate.secret }}
-            defaultMode: 420
+        {{ include "genCertificateVolumes" (list .Values.spatz.certificate.ca.type .Values.adminportal.certificate.secret) | nindent 8 }}
         - name: usercerts
           secret:
             secretName: admin-portal-users-tls

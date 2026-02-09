@@ -240,7 +240,7 @@ public class UserController implements UserApi {
             .map(
                 session ->
                     new ActiveUserSession(
-                        UUID.fromString(session.sessionId()),
+                        session.sessionId(),
                         session.ip(),
                         Instant.ofEpochSecond(session.startTime()),
                         Instant.ofEpochSecond(session.lastActiveTime()),

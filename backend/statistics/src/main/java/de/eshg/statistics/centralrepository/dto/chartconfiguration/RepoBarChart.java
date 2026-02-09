@@ -13,7 +13,7 @@ import jakarta.validation.constraints.NotNull;
 public record RepoBarChart(
     @NotNull @Valid RepoAttributeSelection primaryAttribute,
     @Valid RepoAttributeSelection secondaryAttribute,
-    String scaling,
+    @NotNull String scaling,
     String grouping,
     @NotBlank String orientation)
     implements RepoChartConfiguration {
