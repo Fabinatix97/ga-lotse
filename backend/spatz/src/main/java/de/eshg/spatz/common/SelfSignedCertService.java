@@ -15,7 +15,10 @@ import de.eshg.spatz.security.CertificateBuild;
 import de.eshg.spatz.security.CertificateBuilder;
 import java.time.Duration;
 import java.time.Instant;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.atomic.AtomicBoolean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -66,6 +69,7 @@ public class SelfSignedCertService implements SmartLifecycle {
   private final SslBundleFactory sslBundleFactory;
   private final SslBundleRegistry sslBundleRegistry;
   private final SelfSignedCertificatePublisher selfSignedCertificatePublisher;
+  private final Map<String, ScheduledFuture<?>> scheduledTasks;
   private CertificateBuild certificate;
 
   public SelfSignedCertService(
@@ -81,6 +85,7 @@ public class SelfSignedCertService implements SmartLifecycle {
     this.sslBundleFactory = sslBundleFactory;
     this.sslBundleRegistry = sslBundleRegistry;
     this.selfSignedCertificatePublisher = selfSignedCertificatePublisher;
+    scheduledTasks = new LinkedHashMap<>();
   }
 
   @Override
@@ -102,6 +107,16 @@ public class SelfSignedCertService implements SmartLifecycle {
   @Override
   public int getPhase() {
     return LifecyclePhases.SELF_SIGNED_CERT_SERVICE.phase;
+  }
+
+  public void reset() {
+    logger.info("Reset SelfSignedCertService");
+    for (ScheduledFuture<?> scheduledTask : scheduledTasks.values()) {
+      scheduledTask.cancel(true);
+    }
+    scheduledTasks.clear();
+    certificate = null;
+    taskScheduler.schedule(this::renew, Instant.now());
   }
 
   private void renew() {
@@ -126,7 +141,7 @@ public class SelfSignedCertService implements SmartLifecycle {
   private void schedule(String name, Runnable callable, Fraction certLifeFraction) {
     Instant time = certLifeFraction.cert(certificate);
     logger.info("Scheduling certificate {} for {}", name, time);
-    taskScheduler.schedule(callable, time);
+    scheduledTasks.put(name, taskScheduler.schedule(callable, time));
   }
 
   private CertificateBuild createCertificate() {

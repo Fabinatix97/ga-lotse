@@ -113,6 +113,14 @@ public class ServiceDirectoryTopologyService implements SmartLifecycle {
     return LifecyclePhases.SERVICE_DIRECTORY_TOPOLOGY_SERVICE.phase;
   }
 
+  public void reset() {
+    logger.info("Reset ServiceDirectoryTopologyService");
+    lastEtag = null;
+    lastSuccessfulPollTime = Instant.now();
+    firstSuccessfulPollTime = null;
+    trustedActors = new TrustedActors(List.of(), List.of());
+  }
+
   public Instant getCertificateDistributedTime() {
     // If we were able to poll from the SD, the SD's Spatz already fetched our certificate.
     // Wait one more serviceDirectoryPollInterval so all other Spatzs had time to fetch our

@@ -25,6 +25,7 @@ import {
   Tooth,
   ToothDiagnosisResult,
   ToothResult,
+  ToothType,
   ToothWithDiagnosis,
 } from "./types";
 
@@ -161,14 +162,24 @@ export function createToothWithDiagnosis(
     previousToothDiagnoses,
   );
 
+  const previousToothType =
+    TOOTH_TYPES[resolvePreviousTooth(tooth, previousToothDiagnoses) ?? "T11"];
+
   return {
     type: "ToothWithDiagnosis",
     toothNumber,
     toothType: TOOTH_TYPES[toothNumber],
     isRemovable: OPTIONAL_TEETH.has(toothNumber),
-    mainResult: createToothResult(diagnosis?.mainResult),
-    secondaryResult: createToothResult(diagnosis?.secondaryResult),
+    mainResult: createToothResultForToothType(
+      TOOTH_TYPES[toothNumber],
+      diagnosis?.mainResult,
+    ),
+    secondaryResult: createToothResultForToothType(
+      TOOTH_TYPES[toothNumber],
+      diagnosis?.secondaryResult,
+    ),
     previousResults,
+    previousToothType,
   };
 }
 
@@ -198,6 +209,22 @@ export function resolveToothDiagnosisResult(
   );
 }
 
+export function resolvePreviousTooth(
+  toothNumber: ApiTooth,
+  toothDiagnoses: ToothDiagnoses,
+): ApiTooth | undefined {
+  if (isDefined(toothDiagnoses[toothNumber])) {
+    return toothDiagnoses[toothNumber]?.tooth;
+  }
+
+  const relatedTooth = RELATED_TEETH[toothNumber];
+  if (relatedTooth === undefined) {
+    return undefined;
+  }
+
+  return toothDiagnoses[relatedTooth]?.tooth;
+}
+
 export function createToothResult(value = "", isInvalid = false): ToothResult {
   return {
     value,
@@ -209,5 +236,17 @@ export function createAddableTooth(tooth: ApiTooth): AddableTooth {
   return {
     type: "AddableTooth",
     toothNumber: tooth,
+  };
+}
+
+function createToothResultForToothType(
+  toothType: ToothType,
+  value = "",
+  isInvalid = false,
+): ToothResult {
+  return {
+    value:
+      toothType === "PRIMARY_TOOTH" ? value.toLowerCase() : value.toUpperCase(),
+    isInvalid,
   };
 }

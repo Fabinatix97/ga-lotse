@@ -21,7 +21,6 @@ export function SidebarTableContent<TData extends OrgUnit | Actor | Rule>({
 }>) {
   return (
     <>
-      {" "}
       {isStagedEntity(entity) && (
         <SidebarRow title="columnHeader.author">{entity.author}</SidebarRow>
       )}

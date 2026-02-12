@@ -21,14 +21,25 @@ import org.springframework.validation.annotation.Validated;
 public class InfectionBriefingProperties {
 
   @NotNull @Valid private Mail newCertificateAppointmentConfirmationMail;
+  @NotNull @Valid private Mail replacementCertificateAppointmentConfirmationMail;
 
   public Mail getNewCertificateAppointmentConfirmationMail() {
     return newCertificateAppointmentConfirmationMail;
   }
 
+  public Mail getReplacementCertificateAppointmentConfirmationMail() {
+    return replacementCertificateAppointmentConfirmationMail;
+  }
+
   public void setNewCertificateAppointmentConfirmationMail(
       Mail newCertificateAppointmentConfirmationMail) {
     this.newCertificateAppointmentConfirmationMail = newCertificateAppointmentConfirmationMail;
+  }
+
+  public void setReplacementCertificateAppointmentConfirmationMail(
+      Mail replacementCertificateAppointmentConfirmationMail) {
+    this.replacementCertificateAppointmentConfirmationMail =
+        replacementCertificateAppointmentConfirmationMail;
   }
 
   public static class Mail {

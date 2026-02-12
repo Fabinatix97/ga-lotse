@@ -5,7 +5,7 @@
 
 import { Stack } from "@mui/joy";
 import { Formik } from "formik";
-import { Ref, useEffect } from "react";
+import { Ref } from "react";
 
 import {
   MultiFormButtonBar,
@@ -14,7 +14,7 @@ import {
   SidebarForm,
   SidebarFormHandle,
 } from "@eshg/lib-employee-portal";
-import { InputField, useFocus } from "@eshg/lib-portal";
+import { InputField } from "@eshg/lib-portal";
 
 import { DocumentFormValues } from "@/lib/businessModules/officialMedicalService/components/procedures/details/documents/DocumentForm";
 
@@ -30,11 +30,6 @@ interface EditDocumentNoteFormProps {
 export function EditDocumentNoteForm(
   props: Readonly<EditDocumentNoteFormProps>,
 ) {
-  const { ref, focus } = useFocus();
-  useEffect(() => {
-    focus();
-  }, [focus]);
-
   return (
     <Formik
       initialValues={props.initialValues}
@@ -45,11 +40,7 @@ export function EditDocumentNoteForm(
         <SidebarForm ref={props.formRef}>
           <SidebarContent title={props.title}>
             <Stack gap={2} rowGap={2}>
-              <InputField
-                ref={(el) => (ref.current = el)}
-                name="note"
-                label="Stichwörter"
-              />
+              <InputField name="note" label="Stichwörter" />
             </Stack>
           </SidebarContent>
           <SidebarActions>

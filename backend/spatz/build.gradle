@@ -6,6 +6,7 @@ plugins {
 }
 
 dependencies {
+    implementation project(':test-helper-commons-spring')
     implementation project(":util-commons")
     implementation project(":lib-relay")
     implementation project(':lib-lsd-api')

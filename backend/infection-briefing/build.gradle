@@ -13,9 +13,11 @@ dependencies {
     implementation project(':lib-procedures')
     implementation project(':lib-appointmentblock')
     implementation project(':rest-oauth-client-commons')
+    implementation project(':lib-document-generator')
 
     testImplementation testFixtures(project(':business-module-persistence-commons'))
     testImplementation testFixtures(project(':base-api'))
+    testImplementation testFixtures(project(':lib-document-generator'))
 
     implementation 'org.springdoc:springdoc-openapi-starter-common:latest.release'
     runtimeOnly 'org.postgresql:postgresql'

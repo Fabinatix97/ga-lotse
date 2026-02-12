@@ -15,6 +15,13 @@ services:
       - ./reverse-proxy/auth_request.conf:/etc/nginx/auth_request.conf:ro
       - ./reverse-proxy/auth_api_request.conf:/etc/nginx/auth_api_request.conf:ro
       - ./reverse-proxy/nginx.conf:/etc/nginx/nginx.conf:ro
+    healthcheck:
+      test: ["CMD", "curl", "-fSs", "http://localhost:8080/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+      start_interval: 1s
 
   employee-portal-reverse-proxy:
     extends:

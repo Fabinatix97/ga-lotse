@@ -5,18 +5,17 @@
 
 "use client";
 
-import {
-  TableOptions,
-  createColumnHelper,
-  filterFns,
-} from "@tanstack/react-table";
+import { TableOptions, createColumnHelper } from "@tanstack/react-table";
 
 import { ApiAdminActorType } from "@eshg/service-directory-api";
 
 import { ActorSidebarContent } from "@/lib/components/sidebar/SidebarContent";
 import { EditableTable } from "@/lib/components/table/EditableTable";
 import {
+  arrIncludesSomeFilterFn,
+  equalsFilterFn,
   getFilterFn,
+  includesStringFilterFn,
   matchingClientRulesFilterFn,
   matchingServerRulesFilterFn,
   orgUnitFilterFn,
@@ -59,12 +58,12 @@ const columns: TableOptions<Actor>["columns"] = [
     {
       id: "id",
       enableColumnFilter: true,
-      filterFn: filterFns.includesString,
+      filterFn: includesStringFilterFn,
     },
   ),
   accessor("entity.readableName", {
     enableColumnFilter: true,
-    filterFn: filterFns.includesString,
+    filterFn: includesStringFilterFn,
   }),
   accessor("entity._orgUnit", {
     enableColumnFilter: true,
@@ -73,7 +72,7 @@ const columns: TableOptions<Actor>["columns"] = [
   }),
   accessor("entity.type", {
     enableColumnFilter: true,
-    filterFn: filterFns.arrIncludesSome,
+    filterFn: arrIncludesSomeFilterFn,
     meta: {
       options: Object.values(ApiAdminActorType),
       multiFilter: true,
@@ -81,7 +80,7 @@ const columns: TableOptions<Actor>["columns"] = [
   }),
   accessor("entity.active", {
     enableColumnFilter: true,
-    filterFn: filterFns.equals,
+    filterFn: equalsFilterFn,
     cell: ActiveCell,
     meta: {
       options: [false, true],

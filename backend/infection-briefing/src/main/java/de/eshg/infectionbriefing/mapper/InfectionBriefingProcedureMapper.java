@@ -8,8 +8,8 @@ package de.eshg.infectionbriefing.mapper;
 import static de.eshg.lib.procedure.mapping.ProcedureMapper.toInterfaceType;
 
 import de.cronn.commons.lang.StreamUtil;
-import de.eshg.base.centralfile.PersonApi;
 import de.eshg.base.centralfile.api.person.GetPersonFileStateResponse;
+import de.eshg.infectionbriefing.PersonClient;
 import de.eshg.infectionbriefing.api.ProcedureDto;
 import de.eshg.infectionbriefing.domain.model.InfectionBriefingProcedure;
 import de.eshg.lib.appointmentblock.persistence.entity.Appointment;
@@ -21,15 +21,15 @@ import org.springframework.stereotype.Component;
 @Component
 public class InfectionBriefingProcedureMapper {
 
-  private final PersonApi personApi;
+  private final PersonClient personClient;
 
-  public InfectionBriefingProcedureMapper(PersonApi personApi) {
-    this.personApi = personApi;
+  public InfectionBriefingProcedureMapper(PersonClient personClient) {
+    this.personClient = personClient;
   }
 
   public ProcedureDto enrichAndMapToInterfaceType(InfectionBriefingProcedure procedure) {
     GetPersonFileStateResponse person =
-        personApi.getPersonFileState(
+        personClient.getPersonFileState(
             procedure.getRelatedPersons().stream()
                 .map(RelatedPerson::getCentralFileStateId)
                 .collect(StreamUtil.toSingleElement()));

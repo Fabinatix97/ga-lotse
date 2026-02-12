@@ -10,9 +10,10 @@ import com.openhtmltopdf.pdfboxout.PdfRendererBuilder.PdfAConformance;
 import com.openhtmltopdf.slf4j.Slf4jLogger;
 import com.openhtmltopdf.svgsupport.BatikSVGDrawer;
 import com.openhtmltopdf.util.XRLog;
+import de.eshg.file.common.PdfAConformanceValidator;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -58,9 +59,11 @@ public class PdfCreator {
     XRLog.setLoggerImpl(new Slf4jLogger());
   }
 
-  public void writePdf(String xhtml, OutputStream os, URI baseDocumentUri) throws IOException {
+  public void writePdf(String xhtml, ByteArrayOutputStream os, URI baseDocumentUri)
+      throws IOException {
     writeXhtmlToTempFile(xhtml); // just for development purposes
     createPdfRenderer().withHtmlContent(xhtml, baseDocumentUri.toString()).toStream(os).run();
+    PdfAConformanceValidator.validate(os.toByteArray());
   }
 
   private PdfRendererBuilder createPdfRenderer() throws IOException {

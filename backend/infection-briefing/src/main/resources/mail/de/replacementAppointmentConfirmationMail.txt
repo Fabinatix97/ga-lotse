@@ -1,0 +1,9 @@
+Guten Tag,
+
+Sie haben einen Termin zur Austellung einer Ersatzbescheinigung für eine bereits durchgeführte Infektionsschutzbelehrung am %s um %s Uhr gebucht.
+
+Beachten Sie bitte, dass es nicht möglich ist auf diese Email zu antworten.
+
+Mit freundlichen Grüßen,
+
+Ihr Gesundheitsamt

@@ -18,10 +18,13 @@ spec:
     - port: 443
       name: incoming
       targetPort: incoming
+    - port: 8080
+      name: health-check
+      targetPort: health-check
 
 ---
 
-  {{ include "ingress" (list "pdfaconverterportal" .Values.ingress.type .Values.domains.centralservices.pdfaconverterportal "incoming" "pdf-converter-portal" .Release.Namespace)}}
+  {{ include "ingress" (dict "name" "pdfaconverterportal" "type" .Values.ingress.type "host" .Values.domains.centralservices.pdfaconverterportal "port" "incoming" "service" "pdf-converter-portal" "namespace" .Release.Namespace) }}
   {{ include "lib.certificate" (list .Values.pdfaconverterportal.certificate.secret .Values.domains.centralservices.pdfaconverterportal .Values.domains.clusterIssuers.public .Release.Namespace .Values.development.injectSelfSignedCA) }}
 
 ---
@@ -71,15 +74,21 @@ spec:
           image: "{{ .Values.image.registry }}/{{ .Values.image.repository }}/pdf-converter-portal:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           securityContext: {{- .Values.containerSecurityContext | toYaml | nindent 12 }}
-          livenessProbe:
-            tcpSocket:
-              port: 443
+          {{- if .Values.nginxLivenessProbe.enabled }}
+          livenessProbe: {{- omit .Values.nginxLivenessProbe "enabled" | toYaml | nindent 12 }}
+          {{- end }}
+          {{- if .Values.nginxReadinessProbe.enabled }}
+          readinessProbe: {{- omit .Values.nginxReadinessProbe "enabled" | toYaml | nindent 12 }}
+          {{- end }}
           resources:
           {{- toYaml (default dict .Values.pdfaconverterportal.resources) | nindent 12 }}
           ports:
             - containerPort: 443
               protocol: TCP
               name: incoming
+            - containerPort: 8080
+              protocol: TCP
+              name: health-check
           volumeMounts:
             - mountPath: /etc/nginx/conf.d/default.conf
               name: config

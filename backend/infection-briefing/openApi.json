@@ -758,6 +758,34 @@
         "tags" : [ "PublicCitizen" ]
       }
     },
+    "/citizen/public/appointment/replacement-certificate" : {
+      "post" : {
+        "operationId" : "bookReplacementCertificateAppointment",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/BookReplacementCertificateAppointmentRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/BookReplacementCertificateAppointmentResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "PublicCitizen" ]
+      }
+    },
     "/citizen/public/free-appointments" : {
       "get" : {
         "operationId" : "getFreeAppointmentsForCitizen",
@@ -1734,6 +1762,189 @@
               "*/*" : {
                 "schema" : {
                   "$ref" : "#/components/schemas/GetProceduresResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "InfectionBriefingProcedure" ]
+      }
+    },
+    "/infection-briefing-procedures/{procedureId}/abort-procedure" : {
+      "post" : {
+        "operationId" : "abortDraft",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "procedureId",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "InfectionBriefingProcedure" ]
+      }
+    },
+    "/infection-briefing-procedures/{procedureId}/accept-draft" : {
+      "post" : {
+        "operationId" : "acceptDraft",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "procedureId",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/AcceptDraftRequest"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "InfectionBriefingProcedure" ]
+      }
+    },
+    "/infection-briefing-procedures/{procedureId}/briefing" : {
+      "post" : {
+        "operationId" : "confirmInfectionBriefing",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "procedureId",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "InfectionBriefingProcedure" ]
+      }
+    },
+    "/infection-briefing-procedures/{procedureId}/certificate" : {
+      "post" : {
+        "operationId" : "issueCertificate",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "procedureId",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/IssueCertificateResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "InfectionBriefingProcedure" ]
+      }
+    },
+    "/infection-briefing-procedures/{procedureId}/close-procedure" : {
+      "post" : {
+        "operationId" : "closeProcedure",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "procedureId",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "InfectionBriefingProcedure" ]
+      }
+    },
+    "/infection-briefing-procedures/{procedureId}/payment" : {
+      "post" : {
+        "operationId" : "confirmPayment",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "procedureId",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "InfectionBriefingProcedure" ]
+      }
+    },
+    "/infection-briefing-procedures/{procedureId}/reopen-procedure" : {
+      "post" : {
+        "operationId" : "reopenProcedure",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "procedureId",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "InfectionBriefingProcedure" ]
+      }
+    },
+    "/infection-briefing-procedures/{procedureId}/replacement-certificate" : {
+      "post" : {
+        "operationId" : "issueReplacementCertificate",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "procedureId",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/IssueCertificateResponse"
                 }
               }
             },
@@ -2926,6 +3137,16 @@
           "propertyName" : "@type"
         }
       },
+      "AcceptDraftRequest" : {
+        "required" : [ "referencePersonId" ],
+        "type" : "object",
+        "properties" : {
+          "referencePersonId" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }
+      },
       "AddBarrierTestHelperResponse" : {
         "required" : [ "barrierId" ],
         "type" : "object",
@@ -2964,6 +3185,28 @@
         },
         "discriminator" : {
           "propertyName" : "@type"
+        }
+      },
+      "ApplicantAddress" : {
+        "required" : [ "city", "houseNumber", "postalCode", "street" ],
+        "type" : "object",
+        "properties" : {
+          "city" : {
+            "minLength" : 1,
+            "type" : "string"
+          },
+          "houseNumber" : {
+            "minLength" : 1,
+            "type" : "string"
+          },
+          "postalCode" : {
+            "minLength" : 1,
+            "type" : "string"
+          },
+          "street" : {
+            "minLength" : 1,
+            "type" : "string"
+          }
         }
       },
       "ApplicantCategory" : {
@@ -3287,11 +3530,14 @@
         }
       },
       "BookNewCertificateAppointmentRequest" : {
-        "required" : [ "applicant", "applicantCategoryDto", "startTime" ],
+        "required" : [ "applicant", "applicantAddress", "applicantCategoryDto", "startTime" ],
         "type" : "object",
         "properties" : {
           "applicant" : {
             "$ref" : "#/components/schemas/Person"
+          },
+          "applicantAddress" : {
+            "$ref" : "#/components/schemas/ApplicantAddress"
           },
           "applicantCategoryDto" : {
             "$ref" : "#/components/schemas/ApplicantCategory"
@@ -3303,6 +3549,31 @@
         }
       },
       "BookNewCertificateAppointmentResponse" : {
+        "required" : [ "appointment", "emailSent" ],
+        "type" : "object",
+        "properties" : {
+          "appointment" : {
+            "$ref" : "#/components/schemas/Appointment"
+          },
+          "emailSent" : {
+            "type" : "boolean"
+          }
+        }
+      },
+      "BookReplacementCertificateAppointmentRequest" : {
+        "required" : [ "applicant", "startTime" ],
+        "type" : "object",
+        "properties" : {
+          "applicant" : {
+            "$ref" : "#/components/schemas/Person"
+          },
+          "startTime" : {
+            "type" : "string",
+            "format" : "date-time"
+          }
+        }
+      },
+      "BookReplacementCertificateAppointmentResponse" : {
         "required" : [ "appointment", "emailSent" ],
         "type" : "object",
         "properties" : {
@@ -5121,6 +5392,15 @@
       "InterceptionType" : {
         "type" : "string",
         "enum" : [ "BAD_REQUEST", "UNAUTHORIZED", "FORBIDDEN", "NOT_FOUND", "INTERNAL_SERVER_ERROR" ]
+      },
+      "IssueCertificateResponse" : {
+        "type" : "object",
+        "properties" : {
+          "certificateFile" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }
       },
       "KeyDocumentAwareProgressEntry" : {
         "required" : [ "@type" ],

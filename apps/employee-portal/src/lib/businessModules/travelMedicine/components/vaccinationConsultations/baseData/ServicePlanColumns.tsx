@@ -5,8 +5,8 @@
 
 import {
   Cancel,
+  ContentCopy,
   Delete,
-  EditOutlined,
   EventBusy,
   FormatListBulletedOutlined,
   TextSnippetOutlined,
@@ -94,6 +94,7 @@ interface ServicePlanColumnsProps {
   onOtherServiceApplied: (service: ApiServicePlanEntry) => void;
   onEditEarliestDate: (procedureStep: ApiServicePlanGroup) => void;
   onCancelAppointment: (procedureStepId: string) => void;
+  onDuplicateService: (service: ServicePlanEntry) => Promise<void>;
 }
 
 export function servicePlanColumns({
@@ -112,6 +113,7 @@ export function servicePlanColumns({
   onOtherServiceApplied,
   onEditEarliestDate,
   onCancelAppointment,
+  onDuplicateService,
 }: ServicePlanColumnsProps) {
   function renderGroupActionButtons(
     servicePlanGroup: ServicePlanEntry,
@@ -202,14 +204,6 @@ export function servicePlanColumns({
           startDecorator: <EditCalendarIcon />,
         },
       !isProcedureClosed &&
-        !serviceAssigned &&
-        !serviceExecuted && {
-          label: "Löschen",
-          onClick: () => onDeleteService(servicePlanEntry.serviceId),
-          color: "danger" as ColorPaletteProp,
-          startDecorator: <Delete color="danger" />,
-        },
-      !isProcedureClosed &&
         serviceAssigned &&
         !serviceExecuted && {
           label: "Durchführen",
@@ -233,18 +227,16 @@ export function servicePlanColumns({
         },
       !isProcedureClosed &&
         serviceExecuted && {
-          label: "Bearbeiten",
-          onClick: () =>
-            servicePlanEntry.serviceTypeDescription === "Grundimmunisierung" ||
-            servicePlanEntry.serviceTypeDescription === "Auffrischimpfung"
-              ? onServiceApplied(
-                  servicePlanEntry as unknown as ApiServicePlanEntry,
-                )
-              : onOtherServiceApplied(
-                  servicePlanEntry as unknown as ApiServicePlanEntry,
-                ),
-          startDecorator: <EditOutlined />,
+          label: "Duplizieren",
+          onClick: () => onDuplicateService(servicePlanEntry),
+          startDecorator: <ContentCopy />,
         },
+      !isProcedureClosed && {
+        label: "Löschen",
+        onClick: () => onDeleteService(servicePlanEntry.serviceId),
+        color: "danger" as ColorPaletteProp,
+        startDecorator: <Delete color="danger" />,
+      },
     ].filter(isPlainObject);
   }
 

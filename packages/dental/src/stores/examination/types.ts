@@ -25,6 +25,7 @@ export interface ToothWithDiagnosis {
   mainResult: ToothResult;
   secondaryResult: ToothResult;
   previousResults: ToothDiagnosisResult[];
+  previousToothType: ToothType;
 }
 
 export interface AddableTooth {

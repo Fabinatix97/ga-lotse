@@ -52,12 +52,26 @@ public class MailService {
     this.departmentInfoConfigService = departmentInfoConfigService;
   }
 
-  public void sendAppointmentConfirmationMail(Instant appointmentStart, String recipientEmail) {
+  public void sendNewCertificateAppointmentConfirmationMail(
+      Instant appointmentStart, String recipientEmail) {
     sendMail(
         recipientEmail,
         departmentInfoConfigService.getDepartmentInfo().email(),
         properties.getNewCertificateAppointmentConfirmationMail().getSubject(),
         getContentAsString(properties.getNewCertificateAppointmentConfirmationMail().getBody())
+            .formatted(
+                appointmentStart.atZone(clock.getZone()).toLocalDateTime().format(dateFormatter),
+                appointmentStart.atZone(clock.getZone()).toLocalTime().format(timeFormatter)));
+  }
+
+  public void sendReplacementCertificateAppointmentConfirmationMail(
+      Instant appointmentStart, String recipientEmail) {
+    sendMail(
+        recipientEmail,
+        departmentInfoConfigService.getDepartmentInfo().email(),
+        properties.getReplacementCertificateAppointmentConfirmationMail().getSubject(),
+        getContentAsString(
+                properties.getReplacementCertificateAppointmentConfirmationMail().getBody())
             .formatted(
                 appointmentStart.atZone(clock.getZone()).toLocalDateTime().format(dateFormatter),
                 appointmentStart.atZone(clock.getZone()).toLocalTime().format(timeFormatter)));

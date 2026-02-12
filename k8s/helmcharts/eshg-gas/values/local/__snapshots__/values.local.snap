@@ -219,7 +219,9 @@ data:
   citizen-portal.conf: |
     server {
       resolver 127.0.0.1 valid=15s ipv6=off; # force resolving cache to localhost
-      listen       443 ssl;
+      listen       443 ssl proxy_protocol;
+      real_ip_header proxy_protocol;
+      set_real_ip_from 10.42.0.0/16;
       http2        on;
       server_name  cp.frankfurt.svc.cluster.local;
 
@@ -445,6 +447,8 @@ data:
         proxy_set_header X-Original-Method  $request_method;
         proxy_set_header X-Correlation-ID   $request_id;
 
+        proxy_set_header x-eshg-host "";
+
         proxy_intercept_errors on;
         error_page 302 = @rewrite_302_to_401;
       }
@@ -496,6 +500,14 @@ data:
               ';
       }
     }
+
+    server {
+        listen 8080;
+        location /health {
+            access_log off;
+            return 200 "OK\n";
+        }
+    }
   dhparam: |
     -----BEGIN DH PARAMETERS-----
     MIICCAKCAgEA//////////+t+FRYortKmq/cViAnPTzx2LnFg84tNpWp4TZBFGQz
@@ -518,6 +530,7 @@ data:
     proxy_set_header X-Real-IP $remote_addr;
     # do not forward unverified header from client
     proxy_set_header Forwarded "";
+    proxy_set_header x-eshg-host "";
   nginx.conf: |
     worker_processes  auto;
 
@@ -594,7 +607,9 @@ data:
   employee-portal.conf: |
     server {
       resolver 127.0.0.1 valid=15s ipv6=off; # force resolving cache to localhost
-      listen       443 ssl;
+      listen       443 ssl proxy_protocol;
+      real_ip_header proxy_protocol;
+      set_real_ip_from 10.42.0.0/16;
       http2        on;
       server_name  ep.frankfurt.svc.cluster.local;
 
@@ -818,6 +833,14 @@ data:
               ';
       }
     }
+
+    server {
+        listen 8080;
+        location /health {
+            access_log off;
+            return 200 "OK\n";
+        }
+    }
   forward_headers.conf: |
     proxy_set_header X-Forwarded-For $remote_addr;
     proxy_set_header X-Forwarded-Proto $scheme;
@@ -827,6 +850,7 @@ data:
     proxy_set_header X-Forwarded-Matrix-Device-Id $http_x_forwarded_matrix_device_id;
     # do not forward unverified header from client
     proxy_set_header Forwarded "";
+    proxy_set_header x-eshg-host "";
   nginx.conf: |
     worker_processes  auto;
 
@@ -896,7 +920,9 @@ data:
   keycloak.conf: |
     server {
       resolver 127.0.0.1 valid=15s ipv6=off; # force resolving cache to localhost
-      listen       443 ssl;
+      listen       443 ssl proxy_protocol;
+      real_ip_header proxy_protocol;
+      set_real_ip_from 10.42.0.0/16;
       http2        on;
       server_name  keycloak.frankfurt.svc.cluster.local;
 
@@ -1012,6 +1038,14 @@ data:
                   </html>
               ';
       }
+    }
+
+    server {
+        listen 8080;
+        location /health {
+            access_log off;
+            return 200 "OK\n";
+        }
     }
   nginx.conf: |
     worker_processes  auto;
@@ -1219,6 +1253,9 @@ spec:
   - port: 443
     name: proxy-incoming
     targetPort: proxy-incoming
+  - port: 8080
+    name: health-check
+    targetPort: health-check
 ---
 # Source: ga-lotse-gas/templates/citizen-portal.yaml
 kind: Service
@@ -1272,6 +1309,9 @@ spec:
   - port: 443
     name: proxy-incoming
     targetPort: proxy-incoming
+  - port: 8080
+    name: health-check
+    targetPort: health-check
 ---
 # Source: ga-lotse-gas/templates/employee-portal.yaml
 kind: Service
@@ -1299,6 +1339,9 @@ spec:
   - port: 443
     name: proxy-incoming
     targetPort: proxy-incoming
+  - port: 8080
+    name: health-check
+    targetPort: health-check
 ---
 # Source: ga-lotse-gas/templates/keycloak.yaml
 kind: Service
@@ -2222,8 +2265,23 @@ spec:
           privileged: false
           readOnlyRootFilesystem: true
         livenessProbe:
-          tcpSocket:
-            port: 443
+          failureThreshold: 3
+          httpGet:
+            path: /health
+            port: 8080
+            scheme: HTTP
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 10
+        readinessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /health
+            port: 8080
+            scheme: HTTP
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 1
         resources:
           limits:
             memory: 256Mi
@@ -2234,6 +2292,9 @@ spec:
         - containerPort: 443
           protocol: TCP
           name: proxy-incoming
+        - containerPort: 8080
+          protocol: TCP
+          name: health-check
         volumeMounts:
         - mountPath: /etc/nginx/conf.d/default.conf
           name: config
@@ -3071,8 +3132,23 @@ spec:
           privileged: false
           readOnlyRootFilesystem: true
         livenessProbe:
-          tcpSocket:
-            port: 443
+          failureThreshold: 3
+          httpGet:
+            path: /health
+            port: 8080
+            scheme: HTTP
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 10
+        readinessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /health
+            port: 8080
+            scheme: HTTP
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 1
         resources:
           limits:
             memory: 256Mi
@@ -3083,6 +3159,9 @@ spec:
         - containerPort: 443
           protocol: TCP
           name: proxy-incoming
+        - containerPort: 8080
+          protocol: TCP
+          name: health-check
         volumeMounts:
         - mountPath: /etc/nginx/conf.d/default.conf
           name: config
@@ -3552,8 +3631,23 @@ spec:
           privileged: false
           readOnlyRootFilesystem: true
         livenessProbe:
-          tcpSocket:
-            port: 443
+          failureThreshold: 3
+          httpGet:
+            path: /health
+            port: 8080
+            scheme: HTTP
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 10
+        readinessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /health
+            port: 8080
+            scheme: HTTP
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 1
         resources:
           limits:
             memory: 256Mi
@@ -3564,6 +3658,9 @@ spec:
         - containerPort: 443
           protocol: TCP
           name: proxy-incoming
+        - containerPort: 8080
+          protocol: TCP
+          name: health-check
         volumeMounts:
         - mountPath: /etc/nginx/conf.d/default.conf
           name: config
@@ -6326,6 +6423,8 @@ spec:
     services:
     - name: citizen-portal-reverse-proxy
       port: proxy-incoming
+      proxyProtocol:
+        version: 2
   tls:
     passthrough: true
 ---
@@ -6343,6 +6442,8 @@ spec:
     services:
     - name: employee-portal-reverse-proxy
       port: proxy-incoming
+      proxyProtocol:
+        version: 2
   tls:
     passthrough: true
 ---
@@ -6360,6 +6461,8 @@ spec:
     services:
     - name: keycloak-reverse-proxy
       port: proxy-incoming
+      proxyProtocol:
+        version: 2
   tls:
     passthrough: true
 ---

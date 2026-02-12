@@ -10,11 +10,26 @@ def businessModulesFirstSet = [ "inspection", "school-entry", "travel-medicine"]
 
 def neededServices = neededBackendServices + neededBackendServicesWithDb + neededBackendServicesWithDb.collect { "${it}-db".toString() } as List<String>
 
+def selectedModule = rootProject.findProperty('module') ?: "school-entry"
+
+def businessModuleServices = ['keycloak', 'svg-sanitizer', 'base', selectedModule] as List<String>
+
 dockerCompose {
   localBackend {
     projectName = "backend"
     useComposeFiles = ["backend/docker-compose.yaml"]
     startedServices = neededServices + ["auth-employee-portal", "auth-citizen-portal"]
+    upAdditionalArgs = ["--quiet-pull"]
+
+    if (project.hasProperty("disablePopulation")) {
+      environment.put "POPULATION_ENABLED", "false"
+    }
+  }
+
+  singleBusinessModuleBackend {
+    projectName = "backend"
+    useComposeFiles = ["backend/docker-compose.yaml"]
+    startedServices = businessModuleServices + ["auth-employee-portal", "auth-citizen-portal", "base-db", "${selectedModule}-db"]
     upAdditionalArgs = ["--quiet-pull"]
 
     if (project.hasProperty("disablePopulation")) {
@@ -101,4 +116,11 @@ tasks.register("startLocalPdfaConverterPortal") {
 tasks.register("startLocalDocker") {
   dependsOn tasks.named("localBackendComposeUp")
   dependsOn tasks.named("localFrontendComposeUp")
+}
+
+tasks.register("startLocalDockerForBusinessModule") {
+  (businessModuleServices + ["auth"]).forEach { moduleName ->
+    dependsOn gradle.includedBuild("backend").task(":${moduleName}:buildDockerImage")
+  }
+  dependsOn tasks.named("singleBusinessModuleBackendComposeUp")
 }

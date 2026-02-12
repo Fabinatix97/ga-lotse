@@ -77,6 +77,7 @@ public class CreateTeisDataTask {
   private final ClassPathResource parameterXmlFileForTest;
   private final ClassPathResource untersuchungsparameterXmlFileForTest;
 
+  private final DocumentBuilderFactory documentBuilderFactory;
   private final TeisRepositories repositories;
   private final TransactionHelper transactionHelper;
   private final InspectionFeatureToggle inspectionFeatureToggle;
@@ -113,8 +114,10 @@ public class CreateTeisDataTask {
       TeisVerwaltungsbezirkRepository teisVerwaltungsbezirkRepository,
       TeisUntersuchungsparameterRepository teisUntersuchungsparameterRepository,
       TeisUntersuchungsumfangRepository teisUntersuchungsumfangRepository,
+      DocumentBuilderFactory documentBuilderFactory,
       TransactionHelper transactionHelper,
       InspectionFeatureToggle inspectionFeatureToggle) {
+    this.documentBuilderFactory = documentBuilderFactory;
     this.transactionHelper = transactionHelper;
     this.inspectionFeatureToggle = inspectionFeatureToggle;
     this.repositories =
@@ -215,8 +218,7 @@ public class CreateTeisDataTask {
   }
 
   private void parseFile(File file) throws ParserConfigurationException, IOException, SAXException {
-    DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-    DocumentBuilder db = dbf.newDocumentBuilder();
+    DocumentBuilder db = documentBuilderFactory.newDocumentBuilder();
     Document document = db.parse(file);
 
     List<TeisAnalyseverfahren> teisAnalyseverfahrenList = new ArrayList<>();

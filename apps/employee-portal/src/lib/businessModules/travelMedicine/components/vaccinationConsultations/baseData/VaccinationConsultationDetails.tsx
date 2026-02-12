@@ -11,6 +11,7 @@ import { ApiCountryCode, ApiUser } from "@eshg/base-api";
 import { Alert } from "@eshg/lib-portal";
 import {
   ApiCreatedByUserType,
+  ApiDisease,
   ApiGetVaccinationConsultationDetailsResponse,
   ApiPatient,
   ApiPersonSync,
@@ -18,6 +19,7 @@ import {
   ApiServicePlanGroup,
   ApiTravelTimeUnit,
   ApiTravelType,
+  ApiVaccine,
 } from "@eshg/travel-medicine-api";
 
 import { DetailsGrid } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/baseData/DetailsGrid";
@@ -48,6 +50,8 @@ interface VaccinationConsultationPageProps {
   procedure: ApiGetVaccinationConsultationDetailsResponse;
   allPhysicians: ApiUser[];
   allMedicalAssistants: ApiUser[];
+  allDiseases: ApiDisease[];
+  allVaccines: ApiVaccine[];
 }
 
 export function VaccinationConsultationDetails(
@@ -124,6 +128,8 @@ export function VaccinationConsultationDetails(
           createdByUserType={initialValues.createdByUserType}
           allPhysicians={props.allPhysicians}
           allMedicalAssistants={props.allMedicalAssistants}
+          allDiseases={props.allDiseases}
+          allVaccines={props.allVaccines}
         />
       </Grid>
     </DetailsGrid>

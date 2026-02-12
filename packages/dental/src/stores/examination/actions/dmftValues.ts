@@ -72,6 +72,6 @@ function calculateDmftValuesForTeeth(teeth: Tooth[], type: ToothType) {
 function hasResultIn(result: string[], tooth: ToothWithDiagnosis) {
   return (
     result.includes(tooth.mainResult.value.toUpperCase()) ||
-    result.includes(tooth.secondaryResult.value)
+    result.includes(tooth.secondaryResult.value.toUpperCase())
   );
 }

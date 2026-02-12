@@ -16,6 +16,7 @@ public enum LifecyclePhases {
   SELF_SIGNED_CERT_SERVICE(4),
   SERVICE_DIRECTORY_TOPOLOGY_SERVICE(5),
   INBOUND_SERVER(6),
+  SPATZ_TEST_HELPER_SERVER(7),
   ;
 
   LifecyclePhases(int phase) {

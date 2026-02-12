@@ -24,7 +24,7 @@ spec:
 
 ---
 
-{{ include "ingress" (list "relay-server" .Values.ingress.type .Values.domains.centralservices.relayserver "spatz-incoming" "relay-server" .Release.Namespace) }}
+{{ include "ingress" (dict "name" "relay-server" "type" .Values.ingress.type "host" .Values.domains.centralservices.relayserver "port" "spatz-incoming" "service" "relay-server" "namespace" .Release.Namespace) }}
 {{ include "lib.certificate" (list .Values.relayserver.certificate.secret .Values.domains.centralservices.relayserver .Values.domains.clusterIssuers.public .Release.Namespace .Values.development.injectSelfSignedCA) }}
 {{- if .Values.createSplitCertificates }}
 {{ include "lib.splitCertificates" (list .Values.relayserver.certificate.secret .Values.domains.centralservices.relayserver .Values.domains.clusterIssuers.publicClient .Values.domains.clusterIssuers.publicServer .Release.Namespace .Values.development.injectSelfSignedCA) }}

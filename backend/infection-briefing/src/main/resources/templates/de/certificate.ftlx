@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Bescheinigung nach § 43 Abs.1 Nr.1
+      Infektionsschutzgesetz</title>
+  </head>
+  <body>
+    <h1>Bescheinigung nach § 43 Abs.1 Nr.1
+      Infektionsschutzgesetz</h1>
+
+    <p><b>Name:</b> ${firstName} ${lastName}</p>
+    <p><b>Geburtsdatum: </b>${dateOfBirth}</p>
+    <p><b>Adresse: </b>${street} ${houseNumber}, ${postalCode} ${city}</p>
+    <p>Eine Belehrung wurde am ${instructionDate} durchgeführt</p>
+  </body>
+</html>

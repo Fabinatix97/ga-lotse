@@ -299,7 +299,9 @@ public final class BasePublicSecurityConfig extends AbstractPublicSecurityConfig
             EmployeePermissionRole.DENTAL_LEADER,
             EmployeePermissionRole.MEDICAL_REGISTRY_LEADER,
             EmployeePermissionRole.OFFICIAL_MEDICAL_SERVICE_LEADER,
-            EmployeePermissionRole.OPEN_DATA_LEADER);
+            EmployeePermissionRole.OPEN_DATA_LEADER,
+            EmployeePermissionRole.PROSTITUTE_PROTECTION_LEADER,
+            EmployeePermissionRole.INFECTION_BRIEFING_LEADER);
   }
 
   private void notifications() {

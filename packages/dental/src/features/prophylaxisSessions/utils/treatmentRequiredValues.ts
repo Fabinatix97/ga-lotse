@@ -70,6 +70,6 @@ function hasTreatmentRequiredResult(
 function hasResultIn(tooth: ToothWithDiagnosis, result: string[]) {
   return (
     result.includes(tooth.mainResult.value.toUpperCase()) ||
-    result.includes(tooth.secondaryResult.value)
+    result.includes(tooth.secondaryResult.value.toUpperCase())
   );
 }

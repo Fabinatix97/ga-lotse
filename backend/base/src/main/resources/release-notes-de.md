@@ -2,6 +2,23 @@ GA-Lotse ist ein Kooperationsprojekt des Gesundheitsamts Frankfurt am Main mit d
 
 Finanziert von der Europäischen Union – NextGenerationEU
 
+## GA-Lotse 2.20
+_11.02.2026_
+
+Dreiunddreißigster Release der Anwendung GA-Lotse
+
+### Zahnärztlicher Dienst:
+
+* Die Auswahl des Zahntyps bestimmt die Schreibweise der Befunde auch für Neben- und Vorbefunde
+
+### Reisemedizinische Impfberatung:
+
+* Abgeschlossene Leistungen sind nicht mehr bearbeitbar, können aber gelöscht oder dupliziert werden
+
+### Service Mesh Admin-Portal
+
+* JSON-basierter Regelimport für Organisationseinheiten über die Benutzeroberfläche
+
 ## GA-Lotse 2.19
 _04.02.2026_
 

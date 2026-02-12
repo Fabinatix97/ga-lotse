@@ -4,7 +4,7 @@
  */
 
 import { Stack, styled } from "@mui/joy";
-import { ReactNode } from "react";
+import { Fragment, ReactNode } from "react";
 
 import { SidebarCellInfo } from "@/lib/components/sidebar/SidebarDetails";
 import { SidebarData } from "@/lib/components/sidebar/SidebarTable";
@@ -30,7 +30,7 @@ export function SidebarHeader<TData extends OrgUnit | Actor | Rule>({
     <Stack paddingTop={2} justifyContent="space-between" alignItems="center">
       <Stack flexDirection="column" gap={0.4}>
         {headerCells.map((cell) => (
-          <>
+          <Fragment key={cell.id}>
             <InvisibleLabel id={cell.id}>
               {t(`columnHeader.${cell.id}`)}
             </InvisibleLabel>
@@ -40,7 +40,7 @@ export function SidebarHeader<TData extends OrgUnit | Actor | Rule>({
               cell={cell}
               editable={editable}
             />
-          </>
+          </Fragment>
         ))}
         {additionalContent}
       </Stack>

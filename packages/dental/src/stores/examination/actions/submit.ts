@@ -123,11 +123,12 @@ function resolveMainResult(
 function resolveSecondaryResult(
   toothResult: ToothResult,
 ): ApiSecondaryResult | undefined {
-  if (!isValidSecondaryResult(toothResult.value)) {
+  const result = toothResult.value.toUpperCase();
+  if (!isValidSecondaryResult(result)) {
     return undefined;
   }
 
-  return toothResult.value;
+  return result;
 }
 
 type ApplySubmitResultInputState = NavigateToInputState;

@@ -23,6 +23,7 @@ import {
   isNullish,
   isObjectType,
   isString,
+  prop,
   unique,
 } from "remeda";
 
@@ -225,9 +226,9 @@ function isEntity(e: unknown): e is EntityWrapper {
 export const actorsFilterFn: FilterFn<OrgUnit> = (
   row,
   _columnId,
-  filterValue,
+  filterValue: string,
 ) => {
-  const lowerFilterValue = (filterValue as string).toLowerCase();
+  const lowerFilterValue = filterValue.toLowerCase();
   return thisOrParentOrChildApplies(row, (orig) =>
     arrayFilter(orig.entity?._actors ?? [], lowerFilterValue),
   );
@@ -237,9 +238,9 @@ export const actorsFilterFn: FilterFn<OrgUnit> = (
 export const matchingClientActorsFilterFn: FilterFn<Rule> = (
   row,
   _columnId,
-  filterValue,
+  filterValue: string,
 ) => {
-  const lowerFilterValue = (filterValue as string).toLowerCase();
+  const lowerFilterValue = filterValue.toLowerCase();
   return thisOrParentOrChildApplies(row, (orig) =>
     arrayFilter(orig.entity?._matchingClientActors ?? [], lowerFilterValue),
   );
@@ -249,9 +250,9 @@ export const matchingClientActorsFilterFn: FilterFn<Rule> = (
 export const matchingServerActorsFilterFn: FilterFn<Rule> = (
   row,
   _columnId,
-  filterValue,
+  filterValue: string,
 ) => {
-  const lowerFilterValue = (filterValue as string).toLowerCase();
+  const lowerFilterValue = filterValue.toLowerCase();
   return thisOrParentOrChildApplies(row, (orig) =>
     arrayFilter(orig.entity?._matchingServerActors ?? [], lowerFilterValue),
   );
@@ -261,9 +262,9 @@ export const matchingServerActorsFilterFn: FilterFn<Rule> = (
 export const matchingClientRulesFilterFn: FilterFn<Actor> = (
   row,
   _columnId,
-  filterValue,
+  filterValue: string,
 ) => {
-  const lowerFilterValue = (filterValue as string).toLowerCase();
+  const lowerFilterValue = filterValue.toLowerCase();
   return thisOrParentOrChildApplies(row, (orig) =>
     arrayFilter(orig.entity?._matchingClientRules ?? [], lowerFilterValue),
   );
@@ -273,9 +274,9 @@ export const matchingClientRulesFilterFn: FilterFn<Actor> = (
 export const matchingServerRulesFilterFn: FilterFn<Actor> = (
   row,
   _columnId,
-  filterValue,
+  filterValue: string,
 ) => {
-  const lowerFilterValue = (filterValue as string).toLowerCase();
+  const lowerFilterValue = filterValue.toLowerCase();
   return thisOrParentOrChildApplies(row, (orig) =>
     arrayFilter(orig.entity?._matchingServerRules ?? [], lowerFilterValue),
   );
@@ -325,8 +326,8 @@ function thisOrParentOrChildApplies<T>(
 export function getActorSelectorFilterFn(
   columnId: "client" | "server",
 ): FilterFn<Rule> {
-  return (row: Row<Rule>, _columnId: string, filterValue): boolean => {
-    const lowerFilterValue = (filterValue as string).toLowerCase();
+  return (row: Row<Rule>, _columnId: string, filterValue: string): boolean => {
+    const lowerFilterValue = filterValue.toLowerCase();
 
     return thisOrParentOrChildApplies(
       row,
@@ -343,18 +344,70 @@ export function getActorSelectorFilterFn(
 export const orgUnitFilterFn: FilterFn<Actor> = (
   row,
   _columnId,
-  filterValue,
+  filterValue: string,
 ) => {
-  if (!row.original.entity?._orgUnit) {
-    return false;
-  }
-  const lowerFilterValue = (filterValue as string).toLowerCase();
+  const lowerFilterValue = filterValue.toLowerCase();
 
   return thisOrParentOrChildApplies(row, (orig) => {
     const ou = orig.entity?._orgUnit;
     return !!ou && entityToString(ou).toLowerCase().includes(lowerFilterValue);
   });
 };
+
+// eslint-disable-next-line func-style
+export const exactOrgUnitIdsFilterFn: FilterFn<Rule> = (
+  row,
+  _columnId,
+  filterValue: string,
+) => {
+  return thisOrParentOrChildApplies(row, (orig) => {
+    const orgUnitIds = orig.entity?._exactOrgUnitIds;
+    return !!orgUnitIds && orgUnitIds.includes(filterValue);
+  });
+};
+
+export function includesStringFilterFn<T>(
+  row: Row<EntityWrapper<T>>,
+  columnId: string,
+  filterValue: string,
+) {
+  const lowerFilterValue = filterValue.toLowerCase();
+
+  return thisOrParentOrChildApplies(row, (orig) => {
+    const value = unsafeProp(orig, columnId);
+    return (
+      typeof value === "string" &&
+      value.toLowerCase().includes(lowerFilterValue)
+    );
+  });
+}
+
+export function equalsFilterFn<T>(
+  row: Row<EntityWrapper<T>>,
+  columnId: string,
+  filterValue: unknown,
+) {
+  return thisOrParentOrChildApplies(row, (orig) => {
+    const value = unsafeProp(orig, columnId);
+    return value === filterValue;
+  });
+}
+
+export function arrIncludesSomeFilterFn<T>(
+  row: Row<EntityWrapper<T>>,
+  columnId: string,
+  filterValue: unknown[],
+) {
+  return thisOrParentOrChildApplies(row, (orig) => {
+    const value = unsafeProp(orig, columnId);
+    return filterValue.includes(value);
+  });
+}
+
+function unsafeProp<T>(object: EntityWrapper<T>, path: string): unknown {
+  // @ts-expect-error TS cannot know that path is valid
+  return prop(object, ...path.split("."));
+}
 
 export function getFilterFn<TData extends EntityWrapper>(
   fn: FilterFnOption<TData> | undefined,

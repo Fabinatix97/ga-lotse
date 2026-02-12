@@ -80,9 +80,12 @@ export function PreviousResultsList(props: PreviousResultsCellProps) {
     return null;
   }
 
+  const mappedResults =
+    tooth.previousToothType === "PRIMARY_TOOTH"
+      ? tooth.previousResults.map((result) => result.toLowerCase())
+      : tooth.previousResults.map((result) => result.toUpperCase());
+
   return (
-    <Typography color="warning">
-      {formatList(tooth.previousResults, ", ")}
-    </Typography>
+    <Typography color="warning">{formatList(mappedResults, ", ")}</Typography>
   );
 }

@@ -5,11 +5,7 @@
 
 "use client";
 
-import {
-  TableOptions,
-  createColumnHelper,
-  filterFns,
-} from "@tanstack/react-table";
+import { TableOptions, createColumnHelper } from "@tanstack/react-table";
 
 import {
   ApiAdminOrgUnitType,
@@ -18,7 +14,13 @@ import {
 
 import { OrgUnitSidebarContent } from "@/lib/components/sidebar/SidebarContent";
 import { EditableTable } from "@/lib/components/table/EditableTable";
-import { actorsFilterFn, getFilterFn } from "@/lib/components/table/Filter";
+import {
+  actorsFilterFn,
+  arrIncludesSomeFilterFn,
+  equalsFilterFn,
+  getFilterFn,
+  includesStringFilterFn,
+} from "@/lib/components/table/Filter";
 import { ActiveCell } from "@/lib/components/table/cell/ActiveCell";
 import { ActorsCell } from "@/lib/components/table/cell/ActorsCell";
 import { getEditButtonColumnDef } from "@/lib/components/table/cell/EditButtonCell";
@@ -57,12 +59,12 @@ const columns: TableOptions<OrgUnit>["columns"] = [
     {
       id: "id",
       enableColumnFilter: true,
-      filterFn: filterFns.includesString,
+      filterFn: includesStringFilterFn,
     },
   ),
   accessor("entity.federalState", {
     enableColumnFilter: true,
-    filterFn: filterFns.arrIncludesSome,
+    filterFn: arrIncludesSomeFilterFn,
     meta: {
       options: Object.values(ApiFederalState),
       multiFilter: true,
@@ -70,7 +72,7 @@ const columns: TableOptions<OrgUnit>["columns"] = [
   }),
   accessor("entity.type", {
     enableColumnFilter: true,
-    filterFn: filterFns.arrIncludesSome,
+    filterFn: arrIncludesSomeFilterFn,
     meta: {
       options: Object.values(ApiAdminOrgUnitType),
       multiFilter: true,
@@ -78,11 +80,11 @@ const columns: TableOptions<OrgUnit>["columns"] = [
   }),
   accessor("entity.readableName", {
     enableColumnFilter: true,
-    filterFn: filterFns.includesString,
+    filterFn: includesStringFilterFn,
   }),
   accessor("entity.active", {
     enableColumnFilter: true,
-    filterFn: filterFns.equals,
+    filterFn: equalsFilterFn,
     cell: ActiveCell,
     meta: {
       options: [false, true],

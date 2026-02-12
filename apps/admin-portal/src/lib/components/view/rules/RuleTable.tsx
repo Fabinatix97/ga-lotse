@@ -5,17 +5,16 @@
 
 "use client";
 
-import {
-  TableOptions,
-  createColumnHelper,
-  filterFns,
-} from "@tanstack/react-table";
+import { TableOptions, createColumnHelper } from "@tanstack/react-table";
 
 import { RuleSidebarContent } from "@/lib/components/sidebar/SidebarContent";
 import { EditableTable } from "@/lib/components/table/EditableTable";
 import {
+  equalsFilterFn,
+  exactOrgUnitIdsFilterFn,
   getActorSelectorFilterFn,
   getFilterFn,
+  includesStringFilterFn,
   matchingClientActorsFilterFn,
   matchingServerActorsFilterFn,
 } from "@/lib/components/table/Filter";
@@ -53,12 +52,12 @@ const columns: TableOptions<Rule>["columns"] = [
     {
       id: "id",
       enableColumnFilter: true,
-      filterFn: filterFns.includesString,
+      filterFn: includesStringFilterFn,
     },
   ),
   accessor("entity.description", {
     enableColumnFilter: true,
-    filterFn: filterFns.includesString,
+    filterFn: includesStringFilterFn,
   }),
   accessor("entity.client", {
     enableColumnFilter: true,
@@ -80,7 +79,7 @@ const columns: TableOptions<Rule>["columns"] = [
   }),
   accessor("entity.active", {
     enableColumnFilter: true,
-    filterFn: filterFns.equals,
+    filterFn: equalsFilterFn,
     cell: ActiveCell,
     meta: {
       options: [false, true],
@@ -89,7 +88,7 @@ const columns: TableOptions<Rule>["columns"] = [
   }),
   accessor("entity._exactOrgUnitIds", {
     enableColumnFilter: true,
-    filterFn: filterFns.includesString,
+    filterFn: exactOrgUnitIdsFilterFn,
   }),
   getEditButtonColumnDef(),
 ];

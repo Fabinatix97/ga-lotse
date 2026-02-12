@@ -14,7 +14,9 @@ import {
   useGetAllMedicalAssistantsQuery,
   useGetAllPhysiciansQuery,
 } from "@/lib/businessModules/travelMedicine/api/queries/appointmentStaff";
+import { useGetAllDiseasesQuery } from "@/lib/businessModules/travelMedicine/api/queries/diseaseApi";
 import { useGetVaccinationConsultationDetailsQuery } from "@/lib/businessModules/travelMedicine/api/queries/vaccinationConsultation";
+import { useGetAllVaccinesQuery } from "@/lib/businessModules/travelMedicine/api/queries/vaccines";
 import { VaccinationConsultationDetails } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/baseData/VaccinationConsultationDetails";
 
 export default function VaccinationConsultationDetailsPage(
@@ -25,11 +27,15 @@ export default function VaccinationConsultationDetailsPage(
     { data: detailsResponse },
     { data: allPhysicians },
     { data: allMedicalAssistants },
+    { data: allDiseases },
+    { data: allVaccines },
   ] = useSuspenseQueries({
     queries: [
       useGetVaccinationConsultationDetailsQuery(id),
       useGetAllPhysiciansQuery(),
       useGetAllMedicalAssistantsQuery(),
+      useGetAllDiseasesQuery(),
+      useGetAllVaccinesQuery(),
     ],
   });
 
@@ -38,6 +44,8 @@ export default function VaccinationConsultationDetailsPage(
       procedure={detailsResponse}
       allPhysicians={allPhysicians}
       allMedicalAssistants={allMedicalAssistants}
+      allDiseases={allDiseases}
+      allVaccines={allVaccines}
     />
   );
 }

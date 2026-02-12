@@ -277,7 +277,7 @@ spec:
           {{- end }}
 ---
 
-{{ include "ingress" (list "service-directory" .Values.ingress.type .Values.domains.centralservices.servicedirectory "spatz-incoming" "service-directory" .Release.Namespace)}}
+{{ include "ingress" (dict "name" "service-directory" "type" .Values.ingress.type "host" .Values.domains.centralservices.servicedirectory "port" "spatz-incoming" "service" "service-directory" "namespace" .Release.Namespace) }}
 
 ---
 

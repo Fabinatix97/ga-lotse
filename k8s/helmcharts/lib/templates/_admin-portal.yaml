@@ -22,6 +22,9 @@ spec:
     - port: 443
       name: proxy-incoming
       targetPort: proxy-incoming
+    - port: 8080
+      name: health-check
+      targetPort: health-check
 
 ---
 {{- if .Values.adminportal.selfmanagedUserCerts -}}
@@ -43,7 +46,7 @@ type: Opaque
 
 ---
 
-{{ include "ingress" (list "adminportal" .Values.ingress.type .Values.domains.hosts.adminportal "proxy-incoming" "adminportal" .Release.Namespace)}}
+{{ include "ingress" (dict "name" "adminportal" "type" .Values.ingress.type "host" .Values.domains.hosts.adminportal "port" "proxy-incoming" "service" "adminportal" "namespace" .Release.Namespace "proxyProtocol" true) }}
 {{ include "lib.certificate" (list .Values.adminportal.certificate.secret .Values.domains.hosts.adminportal .Values.domains.clusterIssuers.public .Release.Namespace .Values.development.injectSelfSignedCA) }}
 {{- if .Values.createSplitCertificates }}
 {{ include "lib.splitCertificates" (list .Values.adminportal.certificate.secret .Values.domains.hosts.adminportal .Values.domains.clusterIssuers.publicClient .Values.domains.clusterIssuers.publicServer .Release.Namespace .Values.development.injectSelfSignedCA) }}
@@ -126,15 +129,21 @@ spec:
           env:
             - name: PORT
               value: "8443"
-          livenessProbe:
-            tcpSocket:
-              port: 8443
+          {{- if .Values.nginxLivenessProbe.enabled }}
+          livenessProbe: {{- omit .Values.nginxLivenessProbe "enabled" | toYaml | nindent 12 }}
+          {{- end }}
+          {{- if .Values.nginxReadinessProbe.enabled }}
+          readinessProbe: {{- omit .Values.nginxReadinessProbe "enabled" | toYaml | nindent 12 }}
+          {{- end }}
           resources:
             {{- toYaml (default dict .Values.adminportal.nginxResources) | nindent 12 }}
           ports:
             - containerPort: 8443
               protocol: TCP
               name: proxy-incoming
+            - containerPort: 8080
+              protocol: TCP
+              name: health-check
           volumeMounts:
             - mountPath: /etc/nginx/conf.d/default.conf
               name: config
@@ -143,6 +152,10 @@ spec:
             - mountPath: /etc/nginx/nginx.conf
               name: config
               subPath: nginx.conf
+              readOnly: true
+            - mountPath: /etc/nginx/forward_headers.conf
+              name: config
+              subPath: forward_headers.conf
               readOnly: true
             - mountPath: /var/cache/nginx
               subPath: cache

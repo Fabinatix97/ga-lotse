@@ -53,7 +53,11 @@ export function ProphylaxisSessionExaminationLayout(
 
   const isExaminationDirty = useExaminationStore((state) => state.dirty);
   const isDirty = examinationForm.dirty || isExaminationDirty;
-  useConfirmLeaveDirtyFormEffect(isDirty);
+  // Does the prophylaxis session have accepted but unsaved examination data?
+  const hasChangedExaminations = useProphylaxisSessionStore(
+    (state) => state.changedExaminationsById.size > 0,
+  );
+  useConfirmLeaveDirtyFormEffect(isDirty || hasChangedExaminations);
 
   const participantsToBeExamined = useProphylaxisSessionStore(
     (state) => state.participantsToBeExamined,

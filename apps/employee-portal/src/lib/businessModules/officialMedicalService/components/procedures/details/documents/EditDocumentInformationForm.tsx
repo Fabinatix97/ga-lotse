@@ -5,7 +5,7 @@
 
 import { Stack } from "@mui/joy";
 import { Formik } from "formik";
-import { Ref, useEffect } from "react";
+import { Ref } from "react";
 
 import {
   MultiFormButtonBar,
@@ -14,7 +14,7 @@ import {
   SidebarForm,
   SidebarFormHandle,
 } from "@eshg/lib-employee-portal";
-import { InputField, useFocus } from "@eshg/lib-portal";
+import { InputField } from "@eshg/lib-portal";
 
 import { theme } from "@/lib/baseModule/theme/theme";
 import { DocumentFormValues } from "@/lib/businessModules/officialMedicalService/components/procedures/details/documents/DocumentForm";
@@ -33,11 +33,6 @@ interface EditDocumentInformationFormProps {
 export function EditDocumentInformationForm(
   props: Readonly<EditDocumentInformationFormProps>,
 ) {
-  const { ref, focus } = useFocus();
-  useEffect(() => {
-    focus();
-  }, [focus]);
-
   return (
     <Formik
       initialValues={props.initialValues}
@@ -49,7 +44,6 @@ export function EditDocumentInformationForm(
           <SidebarContent title={props.title}>
             <Stack gap={2} rowGap={2}>
               <SwitchField
-                ref={(el) => (ref.current = el)}
                 name="mandatoryDocument"
                 label="Pflichtdokument"
                 sx={{

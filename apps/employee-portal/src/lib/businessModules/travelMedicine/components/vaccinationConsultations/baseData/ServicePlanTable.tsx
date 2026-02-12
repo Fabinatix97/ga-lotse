@@ -8,6 +8,7 @@
 import { AddOutlined } from "@mui/icons-material";
 import { Box, Button, Grid } from "@mui/joy";
 import { useRouter } from "next/navigation";
+import { only } from "remeda";
 
 import { ApiUser } from "@eshg/base-api";
 import {
@@ -16,18 +17,26 @@ import {
   TableSheet,
   useConfirmationDialog,
 } from "@eshg/lib-employee-portal";
+import { useSnackbar } from "@eshg/lib-portal";
 import {
   ApiAppointmentBookingType,
   ApiAppointmentType,
   ApiCreatedByUserType,
+  ApiDisease,
+  type ApiPostOtherServiceRequest,
+  ApiPostServicesRequest,
+  type ApiPostVaccinationRequest,
   ApiServicePlanEntry,
   ApiServicePlanGroup,
   ApiServiceStatus,
+  ApiVaccine,
+  PostServicesRequest,
 } from "@eshg/travel-medicine-api";
 
 import { useDeleteAppointmentEp } from "@/lib/businessModules/travelMedicine/api/mutations/procedureSteps";
 import {
   useDeleteService,
+  usePostServices,
   useUnassignStepToService,
 } from "@/lib/businessModules/travelMedicine/api/mutations/vaccinationConsultation";
 import { servicePlanColumns } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/baseData/ServicePlanColumns";
@@ -78,6 +87,8 @@ export function ServicePlanTable({
   createdByUserType,
   allPhysicians,
   allMedicalAssistants,
+  allDiseases,
+  allVaccines,
 }: Readonly<{
   procedureId: string;
   isProcedureClosed: boolean;
@@ -86,6 +97,8 @@ export function ServicePlanTable({
   createdByUserType: ApiCreatedByUserType;
   allPhysicians: ApiUser[];
   allMedicalAssistants: ApiUser[];
+  allDiseases: ApiDisease[];
+  allVaccines: ApiVaccine[];
 }>) {
   const [currentUsers, setCurrentUsers] = useSessionStorage(
     { physician: "", medicalAssistant: "" },
@@ -106,6 +119,12 @@ export function ServicePlanTable({
   const serviceAppliedSidebar = useServiceAppliedSidebar();
   const otherServiceAppliedSidebar = useOtherServiceAppliedSidebar();
   const editEarliestDateSidebar = useEditEarliestDateSidebar();
+
+  const duplicateService = useDuplicateService(
+    allDiseases,
+    allVaccines,
+    procedureId,
+  );
 
   function deleteService(procedureId: string, serviceId: string) {
     return deleteServiceApi.mutate({ procedureId, serviceId });
@@ -284,6 +303,7 @@ export function ServicePlanTable({
                       procedureStepId: procedureStepId,
                     }),
                 }),
+              onDuplicateService: duplicateService,
             })}
             striped={false}
             initialExpanded
@@ -293,4 +313,67 @@ export function ServicePlanTable({
       </Box>
     </TablePage>
   );
+}
+
+function useDuplicateService(
+  allDiseases: ApiDisease[],
+  allVaccines: ApiVaccine[],
+  procedureId: string,
+) {
+  const snackbar = useSnackbar();
+  const postServicesApi = usePostServices();
+
+  return function (servicePlanEntry: ServicePlanEntry) {
+    const postVaccinationRequests: ApiPostVaccinationRequest[] = [];
+    const postOtherServiceRequests: ApiPostOtherServiceRequest[] = [];
+    if (
+      servicePlanEntry.serviceTypeDescription === "Grundimmunisierung" ||
+      servicePlanEntry.serviceTypeDescription === "Auffrischimpfung"
+    ) {
+      const vaccine = only(
+        allVaccines.filter((v) => v.name === servicePlanEntry.vaccineName),
+      );
+      const disease = only(
+        allDiseases.filter((d) => d.name === servicePlanEntry.diseaseName),
+      );
+      if (!disease) {
+        snackbar.error(
+          `Fehler beim duplizieren der Leistung: Krankheit ${servicePlanEntry.diseaseName} nicht gefunden`,
+        );
+        return Promise.resolve();
+      }
+      if (!vaccine) {
+        snackbar.error(
+          `Fehler beim duplizieren der Leistung: Impfstoff ${servicePlanEntry.vaccineName} nicht gefunden`,
+        );
+        return Promise.resolve();
+      }
+      postVaccinationRequests.push({
+        createSeries: false,
+        diseaseId: disease.id,
+        vaccinationNumber: servicePlanEntry.vaccinationNumber ?? 1,
+        vaccinationType:
+          servicePlanEntry.serviceTypeDescription === "Grundimmunisierung"
+            ? "BASIC"
+            : "BOOSTER",
+        vaccineId: vaccine.id,
+      });
+    } else {
+      postOtherServiceRequests.push({
+        description: servicePlanEntry.serviceTypeDescription,
+        fee: servicePlanEntry.fee,
+      });
+    }
+    const apiPostServicesRequest: ApiPostServicesRequest = {
+      procedureStepId: undefined,
+      postVaccinationRequests,
+      postOtherServiceRequests,
+    };
+
+    const request: PostServicesRequest = {
+      apiPostServicesRequest,
+      procedureId,
+    };
+    return postServicesApi.mutateAsync(request);
+  };
 }

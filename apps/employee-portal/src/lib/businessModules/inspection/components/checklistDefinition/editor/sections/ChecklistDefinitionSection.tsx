@@ -151,7 +151,10 @@ export function ChecklistDefinitionSection({
               }}
             >
               <Stack spacing={2} sx={{ marginLeft: "3rem" }}>
-                <ChecklistDefinitionElementsList sectionIndex={sectionIndex} />
+                <ChecklistDefinitionElementsList
+                  section={section}
+                  sectionIndex={sectionIndex}
+                />
                 <Stack spacing={2} direction="row">
                   <Button
                     color="neutral"

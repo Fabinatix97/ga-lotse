@@ -14,6 +14,8 @@ import {
   AddableTooth,
   Dentition,
   ToothContext,
+  ToothResult,
+  ToothType,
   ToothWithDiagnosis,
   isAddableTooth,
 } from "../types";
@@ -137,6 +139,19 @@ export function removeTooth(
   };
 }
 
+function adjustResultForToothType(
+  result: ToothResult,
+  toothType: ToothType,
+): ToothResult {
+  return {
+    value:
+      toothType === "PRIMARY_TOOTH"
+        ? result.value.toLowerCase()
+        : result.value.toUpperCase(),
+    isInvalid: result.isInvalid,
+  };
+}
+
 export function toggleToothType(
   toothContext: ToothContext,
   focusMainResult: boolean,
@@ -151,7 +166,7 @@ export function toggleToothType(
   const tooth = targetQuadrant.teeth[toothIndex];
 
   if (tooth === undefined) {
-    throw Error(
+    throw new Error(
       `Tooth with index ${toothIndex} does not exist in quadrant ${quadrantNumber}`,
     );
   }
@@ -163,17 +178,24 @@ export function toggleToothType(
   const relatedTooth = RELATED_TEETH[tooth.toothNumber];
 
   if (relatedTooth === undefined) {
-    throw Error(`${tooth.toothNumber} has no related tooth`);
+    throw new Error(`${tooth.toothNumber} has no related tooth`);
   }
+
+  const newToothType =
+    tooth.toothType === "PRIMARY_TOOTH" ? "SECONDARY_TOOTH" : "PRIMARY_TOOTH";
 
   const newTooth: ToothWithDiagnosis = {
     ...tooth,
     toothNumber: relatedTooth,
-    toothType:
-      tooth.toothType === "PRIMARY_TOOTH" ? "SECONDARY_TOOTH" : "PRIMARY_TOOTH",
+    toothType: newToothType,
     previousResults: resolveToothDiagnosisResult(
       relatedTooth,
       previousToothDiagnoses,
+    ),
+    mainResult: adjustResultForToothType(tooth.mainResult, newToothType),
+    secondaryResult: adjustResultForToothType(
+      tooth.secondaryResult,
+      newToothType,
     ),
   };
 

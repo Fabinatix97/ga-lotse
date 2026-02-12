@@ -18,10 +18,13 @@ spec:
     - port: 443
       name: proxy-incoming
       targetPort: proxy-incoming
+    - port: 8080
+      name: health-check
+      targetPort: health-check
 
 ---
 {{ include "lib.certificate" (list .Values.keycloak.certificate.publicSecret .Values.domains.hosts.keycloak .Values.domains.clusterIssuers.public .Release.Namespace .Values.development.injectSelfSignedCA) }}
-{{ include "ingress" (list "keycloak" .Values.ingress.type .Values.domains.hosts.keycloak "proxy-incoming" "keycloak-reverse-proxy" .Release.Namespace)}}
+{{ include "ingress" (dict "name" "keycloak" "type" .Values.ingress.type "host" .Values.domains.hosts.keycloak "port" "proxy-incoming" "service" "keycloak-reverse-proxy" "namespace" .Release.Namespace "proxyProtocol" true) }}
 
 ---
 
@@ -59,15 +62,21 @@ spec:
         - name: application
           {{- include "getThirdPartyImage" .Values.thirdPartyImages.nginx | indent 10 }}
           securityContext: {{- .Values.containerSecurityContext | toYaml | nindent 12 }}
-          livenessProbe:
-            tcpSocket:
-              port: 443
+          {{- if .Values.nginxLivenessProbe.enabled }}
+          livenessProbe: {{- omit .Values.nginxLivenessProbe "enabled" | toYaml | nindent 12 }}
+          {{- end }}
+          {{- if .Values.nginxReadinessProbe.enabled }}
+          readinessProbe: {{- omit .Values.nginxReadinessProbe "enabled" | toYaml | nindent 12 }}
+          {{- end }}
           resources:
           {{- toYaml (default dict .Values.keycloak.reverseProxyResources) | nindent 12 }}
           ports:
             - containerPort: 443
               protocol: TCP
               name: proxy-incoming
+            - containerPort: 8080
+              protocol: TCP
+              name: health-check
           volumeMounts:
             - mountPath: /etc/nginx/conf.d/default.conf
               name: config

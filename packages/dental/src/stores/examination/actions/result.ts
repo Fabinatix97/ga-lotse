@@ -45,9 +45,8 @@ export function setMainResult(
   DentitionTypeValuesState {
   const { dentition, currentFocus, previousToothDiagnoses } = state;
   const tooth = getToothFromToothContext(dentition, toothContext);
-  const newValueUpperCase = newValue.toUpperCase();
 
-  if (!tooth.isRemovable && newValueUpperCase === "B") {
+  if (!tooth.isRemovable && newValue === "B") {
     const toggledDentition = toggleToothType(
       toothContext,
       true,
@@ -63,39 +62,21 @@ export function setMainResult(
 
   const isInvalid = isEmptyString(newValue)
     ? !isEmptyString(tooth.secondaryResult.value)
-    : !isValidMainResult(newValueUpperCase);
+    : !isValidMainResult(newValue);
 
-  let toggledDentition = dentition;
-
-  if (!isInvalid) {
-    if (tooth.isRemovable) {
-      newValue = newValueUpperCase;
-    } else if (
-      !isEmptyString(newValue) &&
-      ((tooth.toothType === "PRIMARY_TOOTH" &&
-        newValue === newValueUpperCase) ||
-        (tooth.toothType === "SECONDARY_TOOTH" &&
-          newValue !== newValueUpperCase))
-    ) {
-      toggledDentition = toggleToothType(
-        toothContext,
-        false,
-        dentition,
-        previousToothDiagnoses,
-      ).dentition;
-    }
+  if (
+    !isInvalid &&
+    !(tooth.isRemovable || tooth.toothType === "SECONDARY_TOOTH")
+  ) {
+    newValue = newValue.toLowerCase();
   }
 
   const navigateDirection = isInUpperJaw(toothContext.quadrantNumber)
     ? "RIGHT"
     : "LEFT";
-  const newDentition = updateToothWithDiagnosis(
-    toothContext,
-    toggledDentition,
-    {
-      mainResult: createToothResult(newValue, isInvalid),
-    },
-  );
+  const newDentition = updateToothWithDiagnosis(toothContext, dentition, {
+    mainResult: createToothResult(newValue, isInvalid),
+  });
   const keepCurrentFocus = isInvalid || newValue === "";
 
   return {
@@ -123,9 +104,14 @@ export function setSecondaryResult(
 
   const mainResult = setMainResultInvalidIfEmpty(tooth.mainResult, newValue);
 
+  const result =
+    tooth.toothType === "PRIMARY_TOOTH"
+      ? newValue.toLowerCase()
+      : newValue.toUpperCase();
+
   const newDentition = updateToothWithDiagnosis(toothContext, dentition, {
     mainResult,
-    secondaryResult: createToothResult(newValue, isInvalid),
+    secondaryResult: createToothResult(result, isInvalid),
   });
 
   return {
@@ -167,12 +153,14 @@ export function isValidSecondaryResult(
   newValue: string,
 ): newValue is ApiSecondaryResult {
   return Object.values(ApiSecondaryResult).includes(
-    newValue as ApiSecondaryResult,
+    newValue.toUpperCase() as ApiSecondaryResult,
   );
 }
 
 export function isValidMainResult(newValue: string): newValue is ApiMainResult {
-  return Object.values(ApiMainResult).includes(newValue as ApiMainResult);
+  return Object.values(ApiMainResult).includes(
+    newValue.toUpperCase() as ApiMainResult,
+  );
 }
 
 function updateToothWithDiagnosis(

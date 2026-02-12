@@ -15,9 +15,15 @@ import {
 import { CreateNewFolder } from "@mui/icons-material";
 import { Box, Button, Stack } from "@mui/joy";
 import { useFormikContext } from "formik";
+import { memo } from "react";
 import { v4 as uuidv4 } from "uuid";
 
-import { FieldArrayWithFocus as FieldArray, useNonce } from "@eshg/lib-portal";
+import { ApiCLSectionContext } from "@eshg/inspection-api";
+import {
+  FieldArrayWithFocus as FieldArray,
+  FieldArrayRenderExtendedProps,
+  useNonce,
+} from "@eshg/lib-portal";
 
 import { FormChecklistDefinitionVersion } from "@/lib/businessModules/inspection/api/mutations/checklistDefinition";
 import { createChecklistElement } from "@/lib/businessModules/inspection/components/checklistDefinition/helpers/helpers";
@@ -25,7 +31,6 @@ import { createChecklistElement } from "@/lib/businessModules/inspection/compone
 import { ChecklistDefinitionSection } from "./ChecklistDefinitionSection";
 
 export function ChecklistDefinitionSectionsList() {
-  const nonce = useNonce();
   const { values } = useFormikContext<FormChecklistDefinitionVersion>();
 
   return (
@@ -33,74 +38,101 @@ export function ChecklistDefinitionSectionsList() {
       valueLength={values.context.sections.length}
       name="context.sections"
     >
-      {({ push, remove, replace, move, setInputElementRef }) => (
-        <>
-          <DragDropContext
-            nonce={nonce}
-            onDragEnd={(result) => {
-              if (result.reason !== "DROP") return;
-              if (result.destination === null) return;
-              if (result.destination.index === result.source.index) return;
-              move(result.source.index, result.destination.index);
-            }}
-          >
-            <Droppable droppableId="droppable">
-              {(provided, snapshot) => (
-                <Stack
-                  spacing={2}
-                  {...provided.droppableProps}
-                  ref={provided.innerRef}
-                  sx={getListStyle(snapshot.isDraggingOver)}
-                >
-                  {values.context.sections.map((section, sectionIndex) => (
-                    <Draggable
-                      key={section.id}
-                      draggableId={section.id}
-                      index={sectionIndex}
-                    >
-                      {(provided, snapshot) => (
-                        <Box
-                          ref={provided.innerRef}
-                          {...provided.draggableProps}
-                          sx={getItemStyle(
-                            snapshot.isDragging,
-                            provided.draggableProps.style,
-                          )}
-                        >
-                          <ChecklistDefinitionSection
-                            ref={(el) => setInputElementRef(el, sectionIndex)}
-                            dragHandleProps={provided.dragHandleProps}
-                            section={section}
-                            setSection={(section) =>
-                              replace(sectionIndex, section)
-                            }
-                            deleteSection={() => remove(sectionIndex)}
-                            addSection={(section) => push(section)}
-                            sectionIndex={sectionIndex}
-                          />
-                        </Box>
-                      )}
-                    </Draggable>
-                  ))}
-                  {provided.placeholder}
-                </Stack>
-              )}
-            </Droppable>
-          </DragDropContext>
-
-          <Button
-            variant="plain"
-            startDecorator={<CreateNewFolder />}
-            sx={{ alignSelf: "flex-start" }}
-            onClick={() => push(createNewSection())}
-          >
-            Neue Sektion erstellen
-          </Button>
-        </>
+      {(props) => (
+        <MemoizedChecklistDefinitionSectionsListElement
+          push={props.push}
+          remove={props.remove}
+          replace={props.replace}
+          move={props.move}
+          setInputElementRef={props.setInputElementRef}
+          sections={values.context.sections}
+        />
       )}
     </FieldArray>
   );
 }
+
+const MemoizedChecklistDefinitionSectionsListElement = memo(
+  function ChecklistDefinitionSectionsListElement({
+    push,
+    remove,
+    replace,
+    move,
+    setInputElementRef,
+    sections,
+  }: Pick<
+    FieldArrayRenderExtendedProps,
+    "push" | "remove" | "replace" | "move" | "setInputElementRef"
+  > & { sections: ApiCLSectionContext[] }) {
+    const nonce = useNonce();
+
+    return (
+      <>
+        <DragDropContext
+          nonce={nonce}
+          onDragEnd={(result) => {
+            if (result.reason !== "DROP") return;
+            if (result.destination === null) return;
+            if (result.destination.index === result.source.index) return;
+            move(result.source.index, result.destination.index);
+          }}
+        >
+          <Droppable droppableId="droppable">
+            {(provided, snapshot) => (
+              <Stack
+                spacing={2}
+                {...provided.droppableProps}
+                ref={provided.innerRef}
+                sx={getListStyle(snapshot.isDraggingOver)}
+              >
+                {sections.map((section, sectionIndex) => (
+                  <Draggable
+                    key={section.id}
+                    draggableId={section.id}
+                    index={sectionIndex}
+                  >
+                    {(provided, snapshot) => (
+                      <Box
+                        ref={provided.innerRef}
+                        {...provided.draggableProps}
+                        sx={getItemStyle(
+                          snapshot.isDragging,
+                          provided.draggableProps.style,
+                        )}
+                      >
+                        <ChecklistDefinitionSection
+                          ref={(el) => setInputElementRef(el, sectionIndex)}
+                          dragHandleProps={provided.dragHandleProps}
+                          section={section}
+                          setSection={(section) =>
+                            replace(sectionIndex, section)
+                          }
+                          deleteSection={() => remove(sectionIndex)}
+                          addSection={(section) => push(section)}
+                          sectionIndex={sectionIndex}
+                        />
+                      </Box>
+                    )}
+                  </Draggable>
+                ))}
+                {provided.placeholder}
+              </Stack>
+            )}
+          </Droppable>
+        </DragDropContext>
+
+        <Button
+          variant="plain"
+          startDecorator={<CreateNewFolder />}
+          sx={{ alignSelf: "flex-start" }}
+          onClick={() => push(createNewSection())}
+        >
+          Neue Sektion erstellen
+        </Button>
+      </>
+    );
+  },
+);
 
 function createNewSection() {
   return {

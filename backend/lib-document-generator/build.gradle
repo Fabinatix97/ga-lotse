@@ -8,6 +8,7 @@ plugins {
 
 dependencies {
     implementation project(':base-api')
+    implementation project(':file-commons')
     implementation 'org.freemarker:freemarker'
     implementation 'org.slf4j:slf4j-api'
     implementation 'org.springframework:spring-context'

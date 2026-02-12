@@ -116,13 +116,14 @@ function insertSorted<T extends UniqueEntity>(list: T[], element: T) {
 function insertStagedEntitiesIntoParent<T>(
   stagedOrgUnits: Record<string, StagedEntity<T>>,
   committedOrgUnits: Record<string, CommittedEntity<T>>,
+  type: "orgUnit" | "actor" | "rule",
   empty: () => T,
 ) {
   const newOrgUnitParent: CommittedEntity<T> = {
     id: NEW_ENTITY_PARENT_ID,
     _staged: [],
     entity: empty(),
-    _type: "orgUnit",
+    _type: type,
   };
   Object.values(stagedOrgUnits).forEach((sou) => {
     if (!sou._parent) {
@@ -300,11 +301,26 @@ export function useEntities(): {
       );
     });
 
-    insertStagedEntitiesIntoParent(stagedOrgUnits, committedOrgUnits, () => ({
-      _actors: [],
-    }));
-    insertStagedEntitiesIntoParent(stagedActors, committedActors, () => ({}));
-    insertStagedEntitiesIntoParent(stagedRules, committedRules, () => ({}));
+    insertStagedEntitiesIntoParent(
+      stagedOrgUnits,
+      committedOrgUnits,
+      "orgUnit",
+      () => ({
+        _actors: [],
+      }),
+    );
+    insertStagedEntitiesIntoParent(
+      stagedActors,
+      committedActors,
+      "actor",
+      () => ({}),
+    );
+    insertStagedEntitiesIntoParent(
+      stagedRules,
+      committedRules,
+      "rule",
+      () => ({}),
+    );
 
     return {
       committedOrgUnits: sortById(Object.values(committedOrgUnits)),

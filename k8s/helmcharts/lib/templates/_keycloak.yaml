@@ -51,7 +51,7 @@ spec:
 {{ end }}
 
 {{ if eq .Values.ingress.type "traefik" }}
-{{ include "ingress" (list "keycloak-internal" "traefik" .Values.domains.hosts.keycloakInternal "keycloak" "keycloak" .Release.Namespace) }}
+{{ include "ingress" (dict "name" "keycloak-internal" "type" "traefik" "host" .Values.domains.hosts.keycloakInternal "port" "keycloak" "service" "keycloak" "namespace" .Release.Namespace) }}
 
 ---
 {{ end }}

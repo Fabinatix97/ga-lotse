@@ -7,7 +7,6 @@
 
 import { Box, Sheet, Stack, Table } from "@mui/joy";
 import {
-  FilterFnOption,
   Row,
   TableOptions,
   Table as TanstackTable,
@@ -35,7 +34,6 @@ interface EditableTableProps<TData extends EntityWrapper> {
   columnVisibility?: VisibilityState;
   getSubRows?: (originalRow: TData, index: number) => TData[] | undefined;
   showColumnHeaders?: boolean;
-  globalFilterFn?: FilterFnOption<TData>;
   type?: "orgUnit" | "actor" | "rule";
   sidebarContent: FunctionComponent<{ row?: Row<TData> }>;
 }
@@ -68,7 +66,7 @@ export function EditableTable<TData extends EntityWrapper>(
     getSubRows: props.getSubRows,
     getFilteredRowModel: getFilteredRowModel(),
     enableFilters: enableColumnFilter || enableGlobalFilter,
-    globalFilterFn: props.globalFilterFn ?? "includesString",
+    globalFilterFn: "includesString",
     enableGlobalFilter,
     onColumnFiltersChange,
     onGlobalFilterChange,

@@ -150,13 +150,6 @@ public class VcServiceService {
   }
 
   public void deleteService(VcService service) {
-
-    if (service.isAccomplished()) {
-      throw new BadRequestException("Service is already applied and cannot be deleted");
-    }
-    if (service.isPlanned()) {
-      throw new BadRequestException("Service is already planned and cannot be deleted");
-    }
     serviceRepository.delete(service);
   }
 

@@ -38,7 +38,7 @@ import de.eshg.inspection.report.persistence.element.ReportElementType;
 import de.eshg.lib.document.generator.DocumentGenerator;
 import de.eshg.lib.document.generator.department.DepartmentLogo;
 import de.eshg.lib.document.generator.department.DepartmentLogoClient;
-import java.io.OutputStream;
+import java.io.ByteArrayOutputStream;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -89,7 +89,7 @@ public class InspectionReportBuilder {
   }
 
   public RepData createReport(
-      Inspection inspection, ZonedDateTime reportDate, OutputStream outputStream) {
+      Inspection inspection, ZonedDateTime reportDate, ByteArrayOutputStream outputStream) {
     RepData templateData = createReportData(inspection, reportDate);
     documentGenerator.createPdfFromTemplate(reportTemplate, templateData, outputStream);
     return templateData;

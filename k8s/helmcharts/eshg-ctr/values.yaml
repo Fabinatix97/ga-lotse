@@ -47,6 +47,7 @@ volumes:
 
 ingress:
   type: "traefik"
+  internalIpRange: "10.42.0.0/16"
 
 domains:
   clusterLocalSuffix: .central.svc.cluster.local
@@ -310,6 +311,28 @@ spatzReadinessProbe:
   httpGet:
     path: /actuator/health
     port: 8079
+    scheme: HTTP
+  periodSeconds: 10
+  successThreshold: 1
+  timeoutSeconds: 1
+
+nginxLivenessProbe:
+  enabled: true
+  failureThreshold: 3
+  httpGet:
+    path: /health
+    port: 8080
+    scheme: HTTP
+  periodSeconds: 10
+  successThreshold: 1
+  timeoutSeconds: 10
+
+nginxReadinessProbe:
+  enabled: true
+  failureThreshold: 3
+  httpGet:
+    path: /health
+    port: 8080
     scheme: HTTP
   periodSeconds: 10
   successThreshold: 1

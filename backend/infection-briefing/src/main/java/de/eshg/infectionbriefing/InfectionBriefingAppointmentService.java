@@ -6,11 +6,8 @@
 package de.eshg.infectionbriefing;
 
 import de.cronn.commons.lang.StreamUtil;
-import de.eshg.base.centralfile.PersonApi;
 import de.eshg.base.centralfile.api.person.GetPersonFileStateResponse;
-import de.eshg.base.centralfile.api.person.GetPersonFileStatesRequest;
 import de.eshg.infectionbriefing.domain.model.InfectionBriefingProcedure;
-import de.eshg.infectionbriefing.domain.model.NewCertificateProcedure;
 import de.eshg.infectionbriefing.domain.repository.InfectionBriefingProcedureRepository;
 import de.eshg.lib.appointmentblock.AbstractAppointmentService;
 import de.eshg.lib.appointmentblock.AppointmentBlockSlotUtil;
@@ -35,28 +32,24 @@ public class InfectionBriefingAppointmentService
   private final Clock clock;
   private final AppointmentBlockSlotUtil appointmentBlockSlotUtil;
   private final InfectionBriefingAppointmentStandardDurationService standardDurationService;
+  private final PersonClient personClient;
   private final InfectionBriefingProcedureRepository procedureRepository;
-  private final PersonApi personApi;
 
   public InfectionBriefingAppointmentService(
       Clock clock,
       AppointmentBlockSlotUtil appointmentBlockSlotUtil,
       InfectionBriefingAppointmentStandardDurationService standardDurationService,
-      InfectionBriefingProcedureRepository procedureRepository,
-      PersonApi personApi) {
+      PersonClient personClient,
+      InfectionBriefingProcedureRepository procedureRepository) {
     this.clock = clock;
     this.appointmentBlockSlotUtil = appointmentBlockSlotUtil;
     this.standardDurationService = standardDurationService;
+    this.personClient = personClient;
     this.procedureRepository = procedureRepository;
-    this.personApi = personApi;
   }
 
-  public AppointmentDto bookAppointment(NewCertificateProcedure procedure, Instant startTime) {
-    return bookAppointment(procedure, startTime, AppointmentType.INFECTION_BRIEFING_NEW);
-  }
-
-  private AppointmentDto bookAppointment(
-      InfectionBriefingProcedure procedure, Instant startTime, AppointmentType appointmentType) {
+  public AppointmentDto bookAppointment(
+      InfectionBriefingProcedure procedure, AppointmentType appointmentType, Instant startTime) {
     Instant endTime = startTime.plus(standardDurationService.getStandardDuration(appointmentType));
     appointmentBlockSlotUtil.updateAppointment(
         appointmentType, null, null, procedure, startTime, endTime);
@@ -84,10 +77,7 @@ public class InfectionBriefingAppointmentService
             .map(RelatedPerson::getCentralFileStateId)
             .toList();
     Map<UUID, String> personMap =
-        personApi
-            .getPersonFileStates(new GetPersonFileStatesRequest(centralFileStateIds))
-            .personFileStates()
-            .stream()
+        personClient.getPersonFileStates(centralFileStateIds).stream()
             .collect(
                 StreamUtil.toLinkedHashMap(
                     GetPersonFileStateResponse::id,

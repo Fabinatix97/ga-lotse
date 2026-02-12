@@ -38,7 +38,7 @@ data:
 
 ---
 
-{{ include "ingress" (list "lsd" .Values.ingress.type .Values.domains.hosts.lsd "spatz-incoming" "lsd" .Release.Namespace)}}
+{{ include "ingress" (dict "name" "lsd" "type" .Values.ingress.type "host" .Values.domains.hosts.lsd "port" "spatz-incoming" "service" "lsd" "namespace" .Release.Namespace) }}
 {{ include "lib.certificate" (list .Values.lsd.certificate.secret .Values.domains.hosts.lsd .Values.domains.clusterIssuers.public .Release.Namespace .Values.development.injectSelfSignedCA) }}
 {{- if .Values.createSplitCertificates }}
 {{ include "lib.splitCertificates" (list .Values.lsd.certificate.secret .Values.domains.hosts.lsd .Values.domains.clusterIssuers.publicClient .Values.domains.clusterIssuers.publicServer .Release.Namespace .Values.development.injectSelfSignedCA) }}

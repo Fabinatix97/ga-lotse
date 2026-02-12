@@ -10,6 +10,8 @@ import static de.eshg.infectionbriefing.mapper.InfectionBriefingAppointmentTypeM
 
 import de.eshg.infectionbriefing.api.BookNewCertificateAppointmentRequest;
 import de.eshg.infectionbriefing.api.BookNewCertificateAppointmentResponse;
+import de.eshg.infectionbriefing.api.BookReplacementCertificateAppointmentRequest;
+import de.eshg.infectionbriefing.api.BookReplacementCertificateAppointmentResponse;
 import de.eshg.infectionbriefing.api.InfectionBriefingAppointTypeDto;
 import de.eshg.lib.appointmentblock.AppointmentBlockService;
 import de.eshg.lib.appointmentblock.api.GetFreeAppointmentsResponse;
@@ -38,14 +40,19 @@ public class PublicCitizenController {
   public static final String BASE_URL = InfectionBriefing.PUBLIC_CITIZEN_CONTROLLER;
 
   private final CreateNewCertificateProcedureService createNewCertificateProcedureService;
+  private final CreateReplacementCertificateProcedureService
+      createReplacementCertificateProcedureService;
   private final MailService mailService;
   private final AppointmentBlockService appointmentBlockService;
 
   public PublicCitizenController(
       CreateNewCertificateProcedureService createNewCertificateProcedureService,
+      CreateReplacementCertificateProcedureService createReplacementCertificateProcedureService,
       MailService mailService,
       AppointmentBlockService appointmentBlockService) {
     this.createNewCertificateProcedureService = createNewCertificateProcedureService;
+    this.createReplacementCertificateProcedureService =
+        createReplacementCertificateProcedureService;
     this.mailService = mailService;
     this.appointmentBlockService = appointmentBlockService;
   }
@@ -56,12 +63,34 @@ public class PublicCitizenController {
       @Valid @RequestBody BookNewCertificateAppointmentRequest request) {
     return new BookNewCertificateAppointmentResponse(
         createNewCertificateProcedureService.createNewCertificateProcedure(request),
-        sendConfirmationMail(request));
+        sendNewCertificateConfirmationMail(request));
   }
 
-  private boolean sendConfirmationMail(BookNewCertificateAppointmentRequest request) {
+  @Transactional
+  @PostMapping("appointment/replacement-certificate")
+  public BookReplacementCertificateAppointmentResponse bookReplacementCertificateAppointment(
+      @Valid @RequestBody BookReplacementCertificateAppointmentRequest request) {
+    return new BookReplacementCertificateAppointmentResponse(
+        createReplacementCertificateProcedureService.createReplacementCertificateProcedure(request),
+        sendReplacementCertificateConfirmationMail(request));
+  }
+
+  private boolean sendNewCertificateConfirmationMail(BookNewCertificateAppointmentRequest request) {
     try {
-      mailService.sendAppointmentConfirmationMail(request.startTime(), request.applicant().email());
+      mailService.sendNewCertificateAppointmentConfirmationMail(
+          request.startTime(), request.applicant().email());
+      return true;
+    } catch (Exception e) {
+      log.warn("Cannot send confirmation e-mail", e);
+      return false;
+    }
+  }
+
+  private boolean sendReplacementCertificateConfirmationMail(
+      BookReplacementCertificateAppointmentRequest request) {
+    try {
+      mailService.sendReplacementCertificateAppointmentConfirmationMail(
+          request.startTime(), request.applicant().email());
       return true;
     } catch (Exception e) {
       log.warn("Cannot send confirmation e-mail", e);

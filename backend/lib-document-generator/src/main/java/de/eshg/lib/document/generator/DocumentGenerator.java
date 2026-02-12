@@ -6,8 +6,8 @@
 package de.eshg.lib.document.generator;
 
 import freemarker.template.TemplateException;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.net.URI;
 import java.nio.file.Path;
 import org.springframework.core.io.ClassPathResource;
@@ -46,7 +46,7 @@ public class DocumentGenerator {
   public void createPdfFromTemplate(
       ClassPathResource freemarkerTemplateClasspathResource,
       Object templateData,
-      OutputStream outputStream) {
+      ByteArrayOutputStream outputStream) {
     try {
       String xhtml =
           templateProcessor.processXhtmlTemplate(freemarkerTemplateClasspathResource, templateData);
@@ -61,9 +61,9 @@ public class DocumentGenerator {
    * <b>ONLY TO BE USED IN TESTS:</b> Creates a PDF file from a Freemarker XHTML template file in
    * memory and writes it to an outputStream.
    *
-   * <p>In opposite to {@link #createPdfFromTemplate(ClassPathResource, Object, OutputStream)} this
-   * method works with <i>files</i>, not with <i>classpath resources</i>. It should not be used in
-   * production.
+   * <p>In opposite to {@link #createPdfFromTemplate(ClassPathResource, Object,
+   * ByteArrayOutputStream)} this method works with <i>files</i>, not with <i>classpath
+   * resources</i>. It should not be used in production.
    *
    * @param freemarkerTemplateFile a Freemarker XHTML template source file
    * @param data the data object to be used inside the Freemarker template. This could be any Java
@@ -73,7 +73,7 @@ public class DocumentGenerator {
    * @param outputStream the output stream to write the PDF data to
    */
   public void createPdfFromFile(
-      Path freemarkerTemplateFile, Object data, OutputStream outputStream) {
+      Path freemarkerTemplateFile, Object data, ByteArrayOutputStream outputStream) {
     try {
       String xhtml = templateProcessor.processXhtmlTemplate(freemarkerTemplateFile, data);
       URI baseURI = freemarkerTemplateFile.toUri();
