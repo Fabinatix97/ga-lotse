@@ -9,5 +9,6 @@ public enum EventType {
   BUSINESS_CASE,
   HOLIDAY,
   SERVICE,
-  VACATION
+  VACATION,
+  INFORMATION
 }

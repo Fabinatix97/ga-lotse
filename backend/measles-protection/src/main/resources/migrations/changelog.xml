@@ -85,8 +85,11 @@
   <include file="migrations/0075_add_new_procedure_type_prostitute_protection.xml"/>
   <include file="migrations/0076_add_appointment_extraduration.xml"/>
   <include file="migrations/0077_add_sopass_to_appointment_blocks.xml"/>
-  <include file="/migrations/0078_add_custodians_without_date_of_birth.xml"/>
+  <include file="migrations/0078_add_custodians_without_date_of_birth.xml"/>
   <include file="migrations/0079_add_infection_briefing_appointment_types.xml"/>
   <include file="migrations/0080_add_infection_briefing_procedure_types.xml"/>
+  <include file="migrations/0081_add_statistics_inclusion_to_procedure.xml"/>
+  <include file="migrations/0082_move_availability_flags_to_appointment_block.xml"/>
+  <include file="migrations/0083_modify_ppr_procedure_type.xml"/>
 
 </databaseChangeLog>

@@ -7,14 +7,17 @@ package de.eshg.prostituteprotection.mapper;
 
 import static de.eshg.prostituteprotection.mapper.WaitingRoomMapper.mapWaitingRoomToDto;
 
+import de.eshg.lib.procedure.domain.model.ProcedureType;
 import de.eshg.lib.procedure.mapping.ProcedureMapper;
 import de.eshg.prostituteprotection.api.ConsultationDto;
-import de.eshg.prostituteprotection.api.ConsultationTypeDto;
+import de.eshg.prostituteprotection.api.ConsultationParagraph10Dto;
+import de.eshg.prostituteprotection.api.ConsultationParagraph7Dto;
 import de.eshg.prostituteprotection.api.CreateProstituteProtectionProcedureRequest;
 import de.eshg.prostituteprotection.api.DocumentTypeDto;
 import de.eshg.prostituteprotection.api.EncryptedFileOverviewDto;
 import de.eshg.prostituteprotection.api.LanguageDto;
 import de.eshg.prostituteprotection.api.ProcedureDetailsDto;
+import de.eshg.prostituteprotection.api.ProcedureTypeDto;
 import de.eshg.prostituteprotection.api.ProstituteProtectionProcedureOverviewDto;
 import de.eshg.prostituteprotection.api.ProstituteProtectionProcedureSearchOverviewDto;
 import de.eshg.prostituteprotection.api.UpdateEncryptedPersonalDataRequest;
@@ -22,7 +25,6 @@ import de.eshg.prostituteprotection.crypto.DecryptedPersonalDataDto;
 import de.eshg.prostituteprotection.crypto.EncryptedPersonalDataDto;
 import de.eshg.prostituteprotection.domain.data.ProstituteProtectionProcedureWithAugmentedData;
 import de.eshg.prostituteprotection.domain.model.Consultation;
-import de.eshg.prostituteprotection.domain.model.ConsultationType;
 import de.eshg.prostituteprotection.domain.model.DocumentType;
 import de.eshg.prostituteprotection.domain.model.EncryptedFile;
 import de.eshg.prostituteprotection.domain.model.EncryptedPersonalData;
@@ -41,10 +43,26 @@ public class ProstituteProtectionMapper {
     ProstituteProtectionProcedure prostituteProtectionProcedure =
         new ProstituteProtectionProcedure();
 
-    prostituteProtectionProcedure.setConsultationType(
-        mapConsultationType(request.consultationType()));
+    prostituteProtectionProcedure.setProcedureType(mapProcedureType(request.procedureType()));
 
     return mapPersonalData(prostituteProtectionProcedure, request);
+  }
+
+  public static ProcedureType mapProcedureType(ProcedureTypeDto procedureType) {
+    return switch (procedureType) {
+      case INITIAL -> ProcedureType.PROSTITUTE_PROTECTION_INITIAL;
+      case FOLLOW_UP -> ProcedureType.PROSTITUTE_PROTECTION_FOLLOW_UP;
+    };
+  }
+
+  public static ProcedureTypeDto mapProcedureTypeToDto(ProcedureType procedureType) {
+    return switch (procedureType) {
+      case PROSTITUTE_PROTECTION_INITIAL -> ProcedureTypeDto.INITIAL;
+      case PROSTITUTE_PROTECTION_FOLLOW_UP -> ProcedureTypeDto.FOLLOW_UP;
+      default ->
+          throw new IllegalStateException(
+              "Invalid procedure type for prostitute-protection: %s".formatted(procedureType));
+    };
   }
 
   private static ProstituteProtectionProcedure mapPersonalData(
@@ -93,7 +111,7 @@ public class ProstituteProtectionMapper {
             procedure.getAppointment(), procedure.getUserDefinedAppointment()),
         procedure.getAppointment() != null,
         mapToLanguagesDto(personalData.getLanguages()),
-        mapToConsultationTypeDto(procedure.getConsultationType()),
+        mapProcedureTypeToDto(procedure.getProcedureType()),
         ProcedureMapper.toInterfaceType(procedure.getProcedureStatus()),
         mapToDocumentTypeDto(personalData.getDocumentType()),
         procedure.getConsultationCertificateCreatedAt(),
@@ -108,19 +126,21 @@ public class ProstituteProtectionMapper {
   public static ConsultationDto mapConsultationToDto(Consultation consultation) {
     return new ConsultationDto(
         consultation.getVersion(),
-        consultation.isLegalAdvices(),
-        consultation.isHealthAndSocialInsurance(),
-        consultation.isConsultingServices(),
-        consultation.isEmergencyHelp(),
-        consultation.isTaxLiability(),
-        consultation.isClearing(),
-        consultation.isInformationMaterial(),
-        consultation.isPredicament(),
-        consultation.isDiseasePrevention(),
-        consultation.isBirthControl(),
-        consultation.isPregnancy(),
-        consultation.isAlcoholAndDrugUsage(),
-        consultation.isReferral(),
+        new ConsultationParagraph7Dto(
+            consultation.isLegalAdvices(),
+            consultation.isHealthAndSocialInsurance(),
+            consultation.isConsultingServices(),
+            consultation.isEmergencyHelp(),
+            consultation.isTaxLiability(),
+            consultation.isInformationMaterial(),
+            consultation.isPredicament()),
+        new ConsultationParagraph10Dto(
+            consultation.isDiseasePrevention(),
+            consultation.isBirthControl(),
+            consultation.isPregnancy(),
+            consultation.isAlcoholAndDrugUsage(),
+            consultation.isReferral(),
+            consultation.isClearing()),
         mapToLanguageDto(consultation.getLanguageOfConsultation()),
         consultation.isInterpreterConsulted(),
         consultation.getInterpreterFirstName(),
@@ -128,41 +148,27 @@ public class ProstituteProtectionMapper {
   }
 
   public static Consultation mapConsultationToDomain(ConsultationDto dto) {
+    ConsultationParagraph7Dto paragraph7 = dto.paragraph7();
+    ConsultationParagraph10Dto paragraph10 = dto.paragraph10();
     Consultation consultation = new Consultation();
-    consultation.setLegalAdvices(dto.legalAdvices());
-    consultation.setHealthAndSocialInsurance(dto.healthAndSocialInsurance());
-    consultation.setConsultingServices(dto.consultingServices());
-    consultation.setEmergencyHelp(dto.emergencyHelp());
-    consultation.setTaxLiability(dto.taxLiability());
-    consultation.setClearing(dto.clearing());
-    consultation.setInformationMaterial(dto.informationMaterial());
-    consultation.setPredicament(dto.predicament());
-    consultation.setDiseasePrevention(dto.diseasePrevention());
-    consultation.setBirthControl(dto.birthControl());
-    consultation.setPregnancy(dto.pregnancy());
-    consultation.setAlcoholAndDrugUsage(dto.alcoholAndDrugUsage());
-    consultation.setReferral(dto.referral());
+    consultation.setLegalAdvices(paragraph7.legalAdvices());
+    consultation.setHealthAndSocialInsurance(paragraph7.healthAndSocialInsurance());
+    consultation.setConsultingServices(paragraph7.consultingServices());
+    consultation.setEmergencyHelp(paragraph7.emergencyHelp());
+    consultation.setTaxLiability(paragraph7.taxLiability());
+    consultation.setInformationMaterial(paragraph7.informationMaterial());
+    consultation.setPredicament(paragraph7.predicament());
+    consultation.setDiseasePrevention(paragraph10.diseasePrevention());
+    consultation.setBirthControl(paragraph10.birthControl());
+    consultation.setPregnancy(paragraph10.pregnancy());
+    consultation.setAlcoholAndDrugUsage(paragraph10.alcoholAndDrugUsage());
+    consultation.setReferral(paragraph10.referral());
+    consultation.setClearing(paragraph10.clearing());
     consultation.setLanguageOfConsultation(mapLanguage(dto.languageOfConsultation()));
     consultation.setInterpreterConsulted(dto.interpreterConsulted());
     consultation.setInterpreterFirstName(dto.interpreterFirstName());
     consultation.setInterpreterLastName(dto.interpreterLastName());
     return consultation;
-  }
-
-  public static ConsultationType mapConsultationType(ConsultationTypeDto consultationTypeDto) {
-    return switch (consultationTypeDto) {
-      case null -> null;
-      case ConsultationTypeDto.INITIAL -> ConsultationType.INITIAL;
-      case ConsultationTypeDto.FOLLOW_UP -> ConsultationType.FOLLOW_UP;
-    };
-  }
-
-  private static ConsultationTypeDto mapToConsultationTypeDto(ConsultationType consultationType) {
-    return switch (consultationType) {
-      case null -> null;
-      case ConsultationType.INITIAL -> ConsultationTypeDto.INITIAL;
-      case ConsultationType.FOLLOW_UP -> ConsultationTypeDto.FOLLOW_UP;
-    };
   }
 
   private static DocumentTypeDto mapToDocumentTypeDto(DocumentType documentType) {
@@ -260,7 +266,7 @@ public class ProstituteProtectionMapper {
         procedure.getVersion(),
         procedure.getPersonalData().getAlias(),
         mapLanguagesToInterfaceType(procedure),
-        mapToConsultationTypeDto(procedure.getConsultationType()),
+        mapProcedureTypeToDto(procedure.getProcedureType()),
         procedure.getAppointmentStart(),
         ProcedureMapper.toInterfaceType(procedure.getProcedureStatus()),
         procedure.getCreatedAt(),
@@ -280,7 +286,7 @@ public class ProstituteProtectionMapper {
         decryptedPersonalData.dateOfBirth(),
         creatorName,
         consultantName,
-        mapToConsultationTypeDto(procedure.getConsultationType()),
+        mapProcedureTypeToDto(procedure.getProcedureType()),
         procedure.getAppointmentStart(),
         ProcedureMapper.toInterfaceType(procedure.getProcedureStatus()));
   }

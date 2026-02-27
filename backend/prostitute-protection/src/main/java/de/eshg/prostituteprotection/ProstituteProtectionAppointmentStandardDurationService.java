@@ -35,9 +35,13 @@ public class ProstituteProtectionAppointmentStandardDurationService
         appointmentBlockProperties,
         MapUtils.orderedMapOfEntries(
             mapEntryOf(
-                AppointmentType.PROSTITUTE_PROTECTION_CONSULTATION,
-                ProstituteProtectionAppointmentStandardDuration::getConsultation,
-                ProstituteProtectionAppointmentStandardDuration::setConsultation)),
+                AppointmentType.PROSTITUTE_PROTECTION_INITIAL,
+                ProstituteProtectionAppointmentStandardDuration::getInitialConsultation,
+                ProstituteProtectionAppointmentStandardDuration::setInitialConsultation),
+            mapEntryOf(
+                AppointmentType.PROSTITUTE_PROTECTION_FOLLOW_UP,
+                ProstituteProtectionAppointmentStandardDuration::getFollowUpConsultation,
+                ProstituteProtectionAppointmentStandardDuration::setFollowUpConsultation)),
         ProstituteProtectionAppointmentStandardDuration.class,
         ProstituteProtectionAppointmentStandardDuration::new,
         ConfigurationEndpoint.PROSTITUTE_PROTECTION_APPOINTMENT_STANDARD_DURATION);

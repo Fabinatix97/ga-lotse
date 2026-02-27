@@ -366,8 +366,8 @@ function columnDefs(
           ),
         ]
       : []),
-    columnHelper.accessor("firstName", {
-      header: "Vorname",
+    columnHelper.accessor("lastName", {
+      header: "Nachname",
       cell: (props) => props.getValue(),
       enableSorting: true,
       meta: {
@@ -375,8 +375,8 @@ function columnDefs(
         width: 250,
       },
     }),
-    columnHelper.accessor("lastName", {
-      header: "Nachname",
+    columnHelper.accessor("firstName", {
+      header: "Vorname",
       cell: (props) => props.getValue(),
       enableSorting: true,
       meta: {

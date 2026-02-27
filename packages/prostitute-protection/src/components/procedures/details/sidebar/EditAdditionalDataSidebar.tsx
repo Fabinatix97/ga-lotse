@@ -5,8 +5,13 @@
 
 import { Stack } from "@mui/joy";
 import { useSuspenseQueries } from "@tanstack/react-query";
+import { Formik } from "formik";
 
 import {
+  MultiFormButtonBar,
+  SidebarActions,
+  SidebarContent,
+  SidebarForm,
   SidebarWithFormRefProps,
   UseSidebarWithFormRefResult,
   useGetSelfUser,
@@ -23,16 +28,14 @@ import {
 } from "@eshg/lib-portal";
 import {
   ApiAppointmentBookingType,
-  ApiConsultationType,
   ApiProcedureDetails,
   ApiUpdateProstituteProtectionProcedureRequest,
 } from "@eshg/prostitute-protection-api";
 
 import { useUpdateProcedureMutation } from "../../../../api/mutations/procedures";
-import { useGetFreeAppointments } from "../../../../api/queries/procedures";
 import {
   ADDITIONAL_DATA_FIELD_NAME,
-  CONSULTATION_TYPE_VALUES,
+  PROCEDURE_TYPE_VALUES,
   PROSTITUTE_PROTECTION_GROUP_NAME,
 } from "../../../../shared/constants";
 import {
@@ -47,12 +50,10 @@ import {
 import { ConsultantSelectField } from "../../../form/ConsultantSelectField";
 
 import "./EditAdditionalDataSidebar";
-import { SidebarFormProvider } from "./SidebarFormProvider";
 
 export interface EditProcedureDetailsDataForm extends AppointmentFieldsData {
   customAppointmentDate: string;
   appointmentBookingType: ApiAppointmentBookingType;
-  consultationType: OptionalFieldValue<ApiConsultationType>;
   consultantId: OptionalFieldValue<string>;
   version: number;
 }
@@ -69,14 +70,9 @@ function EditAdditionalDataSidebar({
   const updateProcedure = useUpdateProcedureMutation(procedure.id);
 
   const { data: selfUser } = useGetSelfUser();
-
-  const [{ data: allAssignableUsers }, { data: freeAppointments }] =
-    useSuspenseQueries({
-      queries: [
-        useGetUsersByGroupQuery(PROSTITUTE_PROTECTION_GROUP_NAME),
-        useGetFreeAppointments(procedure.id),
-      ],
-    });
+  const [{ data: allAssignableUsers }] = useSuspenseQueries({
+    queries: [useGetUsersByGroupQuery(PROSTITUTE_PROTECTION_GROUP_NAME)],
+  });
 
   async function handleSubmit(values: EditProcedureDetailsDataForm) {
     const procedureData = mapFormToApi(values);
@@ -90,29 +86,45 @@ function EditAdditionalDataSidebar({
   const initialValues = mapApiToForm(procedure);
 
   return (
-    <SidebarFormProvider
-      formRef={formRef}
+    <Formik
       initialValues={initialValues}
-      title="Zusatzinfos"
+      enableReinitialize
       onClose={onClose}
       onSubmit={handleSubmit}
     >
-      <Stack gap={2}>
-        <SelectField
-          autoFocus
-          name="consultationType"
-          label={ADDITIONAL_DATA_FIELD_NAME.consultationType}
-          required="Bitte einen Beratungstyp auswählen."
-          options={buildEnumOptions(CONSULTATION_TYPE_VALUES)}
-        />
-        <ConsultantSelectField
-          name="consultantId"
-          selfUser={selfUser}
-          options={allAssignableUsers}
-        />
-        <AppointmentFields freeAppointments={freeAppointments} />
-      </Stack>
-    </SidebarFormProvider>
+      {({ isSubmitting, setFieldValue }) => (
+        <SidebarForm ref={formRef}>
+          <SidebarContent title="Zusatzinfos">
+            <Stack gap={2}>
+              <SelectField
+                autoFocus
+                name="procedureType"
+                label={ADDITIONAL_DATA_FIELD_NAME.procedureType}
+                required="Bitte einen Beratungstyp auswählen."
+                options={buildEnumOptions(PROCEDURE_TYPE_VALUES)}
+                onChange={() => {
+                  void setFieldValue("appointmentBookingType", "");
+                  void setFieldValue("blockAppointment", undefined);
+                }}
+              />
+              <ConsultantSelectField
+                name="consultantId"
+                selfUser={selfUser}
+                options={allAssignableUsers}
+              />
+              <AppointmentFields />
+            </Stack>
+          </SidebarContent>
+          <SidebarActions>
+            <MultiFormButtonBar
+              submitting={isSubmitting}
+              submitLabel="Speichern"
+              onCancel={onClose}
+            />
+          </SidebarActions>
+        </SidebarForm>
+      )}
+    </Formik>
   );
 }
 
@@ -139,7 +151,7 @@ function mapApiToForm(
         ? toDateTimeString(start)
         : "",
     duration: getDurationMinutes(start, end),
-    consultationType: parseOptionalValue(procedure.consultationType),
+    procedureType: procedure.procedureType,
     consultantId: parseOptionalValue(procedure.consultant?.userId),
     version: procedure.version,
   };
@@ -170,7 +182,7 @@ function mapFormToApi(
       values.appointmentBookingType === "APPOINTMENT_BLOCK"
         ? undefined
         : mapRequiredValue(values.consultantId),
-    consultationType: mapRequiredValue(values.consultationType),
+    procedureType: mapRequiredValue(values.procedureType),
     version: values.version,
   };
 }

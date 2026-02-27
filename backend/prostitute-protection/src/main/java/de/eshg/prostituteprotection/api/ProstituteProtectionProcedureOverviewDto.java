@@ -18,7 +18,7 @@ public record ProstituteProtectionProcedureOverviewDto(
     @NotNull long version,
     String alias,
     @NotNull List<LanguageDto> languages,
-    ConsultationTypeDto consultationType,
+    @NotNull ProcedureTypeDto procedureType,
     Instant appointmentStart,
     @NotNull ProcedureStatusDto status,
     @NotNull Instant createdAt,

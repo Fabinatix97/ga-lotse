@@ -9,6 +9,7 @@ import de.eshg.base.calendar.api.AddGlobalCalendarRequest;
 import de.eshg.base.calendar.api.CalendarDto;
 import de.eshg.base.calendar.api.CalendarTypeDto;
 import de.eshg.base.calendar.api.GlobalCalendar;
+import de.eshg.base.calendar.api.ModuleCalendar;
 import de.eshg.base.calendar.api.ResourceCalendar;
 import de.eshg.base.calendar.api.UserCalendar;
 import de.eshg.base.calendar.persistence.entity.Calendar;
@@ -38,6 +39,10 @@ public class CalendarMapper {
 
   public static ResourceCalendar mapToResourceCalendar(Calendar calendar) {
     return new ResourceCalendar(calendar.getExternalId(), calendar.getResourceId());
+  }
+
+  public static ModuleCalendar mapToModuleCalendar(Calendar calendar) {
+    return new ModuleCalendar(calendar.getExternalId(), calendar.getBusinessModule());
   }
 
   public static UserCalendar mapToUserCalendar(Calendar calendar) {

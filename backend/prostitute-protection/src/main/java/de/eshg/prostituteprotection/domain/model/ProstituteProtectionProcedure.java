@@ -30,8 +30,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Stream;
-import org.hibernate.annotations.JdbcType;
-import org.hibernate.dialect.PostgreSQLEnumJdbcType;
 import org.springframework.util.Assert;
 
 @Entity
@@ -55,9 +53,6 @@ public class ProstituteProtectionProcedure
       cascade = CascadeType.ALL,
       mappedBy = UserDefinedAppointment_.PROCEDURE)
   private UserDefinedAppointment userDefinedAppointment;
-
-  @JdbcType(PostgreSQLEnumJdbcType.class)
-  private ConsultationType consultationType;
 
   private Integer ageAtConsultation;
 
@@ -148,14 +143,6 @@ public class ProstituteProtectionProcedure
   @Override
   public void setAppointment(Appointment appointment) {
     this.appointment = appointment;
-  }
-
-  public ConsultationType getConsultationType() {
-    return consultationType;
-  }
-
-  public void setConsultationType(ConsultationType consultationType) {
-    this.consultationType = consultationType;
   }
 
   public UserDefinedAppointment getUserDefinedAppointment() {

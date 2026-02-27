@@ -11,5 +11,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 public enum BaseEventTypeDto {
   HOLIDAY,
   SERVICE,
-  VACATION
+  VACATION,
+  INFORMATION
 }

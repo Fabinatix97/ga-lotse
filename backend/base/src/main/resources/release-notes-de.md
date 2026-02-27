@@ -2,6 +2,23 @@ GA-Lotse ist ein Kooperationsprojekt des Gesundheitsamts Frankfurt am Main mit d
 
 Finanziert von der Europäischen Union – NextGenerationEU
 
+## GA-Lotse 2.21
+_18.02.2026_
+
+Vierunddreißigster Release der Anwendung GA-Lotse
+
+### Amtsärztliche Gutachten:
+
+* E-Mail-Versand erfolgt nur bei Änderungen und aktivierter Benachrichtigungsoption an die erste hinterlegte E-Mail-Adresse
+
+### Masernschutz:
+
+* Autovervollständigung im Straßenfeld des Masernschutz-Meldeformulars im Online-Portal ergänzt
+
+### Einschulungsuntersuchungen und Zahnärztlicher Dienst:
+
+* Berechtigte Nutzer:innen können geschlossene Vorgänge von der Statistik ausschließen
+
 ## GA-Lotse 2.20
 _11.02.2026_
 

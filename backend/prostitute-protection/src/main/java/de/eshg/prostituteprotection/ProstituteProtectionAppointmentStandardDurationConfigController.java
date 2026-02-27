@@ -37,8 +37,7 @@ public class ProstituteProtectionAppointmentStandardDurationConfigController {
     this.service = service;
   }
 
-  @Operation(
-      summary = "Get the standard duration for prostitute protection consultation appointments")
+  @Operation(summary = "Get the standard duration for prostitute protection appointments")
   @ApiResponse(
       responseCode = "200",
       description =
@@ -49,8 +48,7 @@ public class ProstituteProtectionAppointmentStandardDurationConfigController {
     return mapToDto(service.getConfig());
   }
 
-  @Operation(
-      summary = "Update the standard duration for prostitute protection consultation appointments")
+  @Operation(summary = "Update the standard duration for prostitute protection appointments")
   @PutMapping
   @Transactional
   public void updateStandardDurations(

@@ -102,6 +102,11 @@ public abstract class Procedure<
   @Column(nullable = false)
   private ArchivingRelevance archivingRelevance;
 
+  @DataSensitivity(SensitivityLevel.PUBLIC)
+  @JdbcType(PostgreSQLEnumJdbcType.class)
+  @Column(nullable = false)
+  private StatisticsInclusion statisticsInclusion;
+
   protected Procedure() {
     this(CREATED);
   }
@@ -122,6 +127,7 @@ public abstract class Procedure<
 
     this.progressEntries.add(createSystemProgressEntry(initializationDescription, triggerType));
     this.archivingRelevance = ArchivingRelevance.DEFAULT;
+    this.statisticsInclusion = StatisticsInclusion.INCLUDE;
   }
 
   public ProcedureStatus getProcedureStatus() {
@@ -276,5 +282,13 @@ public abstract class Procedure<
 
   public void setArchivingRelevance(ArchivingRelevance archivingRelevance) {
     this.archivingRelevance = archivingRelevance;
+  }
+
+  public StatisticsInclusion getStatisticsInclusion() {
+    return statisticsInclusion;
+  }
+
+  public void setStatisticsInclusion(StatisticsInclusion statisticsInclusion) {
+    this.statisticsInclusion = statisticsInclusion;
   }
 }

@@ -677,6 +677,10 @@
         "required" : [ "end", "start" ],
         "type" : "object",
         "properties" : {
+          "appointmentBlockId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
           "end" : {
             "type" : "string",
             "format" : "date-time"
@@ -888,7 +892,7 @@
       },
       "AppointmentType" : {
         "type" : "string",
-        "enum" : [ "CONSULTATION", "VACCINATION", "REGULAR_EXAMINATION", "CAN_CHILD", "ENTRY_LEVEL", "SPECIAL_NEEDS", "PROOF_SUBMISSION", "HIV_STI_CONSULTATION", "SEX_WORK", "RESULTS_REVIEW", "OFFICIAL_MEDICAL_SERVICE_SHORT", "OFFICIAL_MEDICAL_SERVICE_LONG", "MEDS_ABROAD_CERTIFICATION", "PROSTITUTE_PROTECTION_CONSULTATION", "INFECTION_BRIEFING_NEW", "INFECTION_BRIEFING_REPLACEMENT" ]
+        "enum" : [ "CONSULTATION", "VACCINATION", "REGULAR_EXAMINATION", "CAN_CHILD", "ENTRY_LEVEL", "SPECIAL_NEEDS", "PROOF_SUBMISSION", "HIV_STI_CONSULTATION", "SEX_WORK", "RESULTS_REVIEW", "OFFICIAL_MEDICAL_SERVICE_SHORT", "OFFICIAL_MEDICAL_SERVICE_LONG", "MEDS_ABROAD_CERTIFICATION", "PROSTITUTE_PROTECTION_INITIAL", "PROSTITUTE_PROTECTION_FOLLOW_UP", "INFECTION_BRIEFING_NEW", "INFECTION_BRIEFING_REPLACEMENT" ]
       },
       "ConfigurationStatus" : {
         "type" : "string",
@@ -1106,12 +1110,6 @@
             "items" : {
               "$ref" : "#/components/schemas/GetAppointmentBlock"
             }
-          },
-          "availableForBulkBooking" : {
-            "type" : "boolean"
-          },
-          "availableForCitizen" : {
-            "type" : "boolean"
           },
           "id" : {
             "type" : "string",
@@ -1339,6 +1337,12 @@
         "required" : [ "consultants", "end", "mfas", "parallelExaminations", "physicians", "sopasss", "start" ],
         "type" : "object",
         "properties" : {
+          "availableForBulkBooking" : {
+            "type" : "boolean"
+          },
+          "availableForCitizen" : {
+            "type" : "boolean"
+          },
           "consultants" : {
             "type" : "array",
             "items" : {

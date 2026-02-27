@@ -211,6 +211,9 @@ public abstract class AbstractPublicSecurityConfiguration {
     requestMatchers(GET, ProcedureLibrary.ARCHIVING_API + "/config")
         .hasRole(EmployeePermissionRole.PROCEDURE_ARCHIVE);
 
+    requestMatchers(POST, ProcedureLibrary.PROCEDURES_API_STATISTICS_INCLUSION)
+        .hasRole(moduleLeaderRole.getEmployeePermissionRole());
+
     gdpr(procedureAccessRole);
   }
 

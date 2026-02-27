@@ -31,7 +31,8 @@ export const PROCEDURE_TYPE_NAMES = {
   [ApiProcedureType.DentalChild]: "Kind",
   [ApiProcedureType.OfficialMedicalService]: "Amtsärztlicher Dienst",
   [ApiProcedureType.MedsAbroad]: "Reisen mit Betäubungsmitteln",
-  [ApiProcedureType.ProstituteProtection]: "Prostituiertenschutzgesetz",
+  [ApiProcedureType.ProstituteProtectionInitial]: "Erstberatung",
+  [ApiProcedureType.ProstituteProtectionFollowUp]: "Folgeberatung",
   [ApiProcedureType.InfectionBriefingNew]: "Neuer Lebensmittelausweis",
   [ApiProcedureType.InfectionBriefingReplacement]:
     "Lebensmittelausweis Duplikat",

@@ -37,6 +37,7 @@ import de.eshg.prostituteprotection.crypto.EncryptedFileDataDto;
 import de.eshg.prostituteprotection.crypto.EncryptedPersonalDataDto;
 import de.eshg.prostituteprotection.crypto.PersonalDataDecryptionException;
 import de.eshg.prostituteprotection.crypto.PersonalDataEncryptionService;
+import de.eshg.prostituteprotection.domain.data.ProcedureGdprExportData;
 import de.eshg.prostituteprotection.domain.data.ProstituteProtectionProcedureWithAugmentedData;
 import de.eshg.prostituteprotection.domain.data.WaitingRoomProcedureData;
 import de.eshg.prostituteprotection.domain.model.CertificateType;
@@ -69,6 +70,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -94,6 +96,10 @@ public class ProstituteProtectionService {
   private final PersonalDataEncryptionService personalDataEncryptionService;
   private final UserApi userApi;
   private final ProgressEntryUtil progressEntryUtil;
+
+  private static final String AUDITLOG_CATEGORY = "DSGVO";
+  private static final String AUDITLOG_FUNCTION_EXPORT =
+      "Prostituiertenschutz Datenexport herunterladen";
 
   public ProstituteProtectionService(
       ProstituteProtectionProcedureRepository procedureRepository,
@@ -154,7 +160,6 @@ public class ProstituteProtectionService {
   }
 
   public void initialiseProcedure(ProstituteProtectionProcedure prostituteProtectionProcedure) {
-    prostituteProtectionProcedure.setProcedureType(ProcedureType.PROSTITUTE_PROTECTION);
     prostituteProtectionProcedure.updateProcedureStatus(ProcedureStatus.OPEN, clock, auditLogger);
     prostituteProtectionProcedure.setConsultation(new Consultation());
     prostituteProtectionProcedure.setEncryptedPersonalData(new EncryptedPersonalData());
@@ -163,8 +168,8 @@ public class ProstituteProtectionService {
 
   void updateProcedure(
       ProstituteProtectionProcedure procedure, UpdateProstituteProtectionProcedureRequest request) {
-    procedure.setConsultationType(
-        ProstituteProtectionMapper.mapConsultationType(request.consultationType()));
+    procedure.setProcedureType(
+        ProstituteProtectionMapper.mapProcedureType(request.procedureType()));
     procedureRepository.flush();
   }
 
@@ -548,6 +553,51 @@ public class ProstituteProtectionService {
             });
   }
 
+  public List<ProcedureGdprExportData> getProcedureDataForExportByPersonSearch(
+      ProstituteProtectionProcedurePersonSearchParameters searchParameters) {
+    byte[] encryptionKey =
+        personalDataEncryptionService.generateEncryptionKey(
+            searchParameters.firstName(),
+            searchParameters.lastName(),
+            searchParameters.dateOfBirth());
+    byte[] hashedPersonIdentifier =
+        personalDataEncryptionService.generateHashedPersonIdentifier(encryptionKey);
+
+    List<ProstituteProtectionProcedure> procedures =
+        procedureRepository.findByEncryptedPersonalData_HashedPersonIdentifier(
+            hashedPersonIdentifier);
+
+    List<ProcedureGdprExportData> result = new ArrayList<>();
+
+    for (ProstituteProtectionProcedure procedure : procedures) {
+      ProstituteProtectionProcedureWithAugmentedData procedureWithAugmentedData =
+          augmentWithDetails(procedure);
+
+      EncryptedPersonalDataDto encryptedPersonalData =
+          new EncryptedPersonalDataDto(
+              procedure.getEncryptedPersonalData().getHashedPersonIdentifier(),
+              procedure.getEncryptedPersonalData().getEncryptedData(),
+              procedure.getEncryptedPersonalData().getNonce());
+
+      DecryptedPersonalDataDto decryptedPersonalData =
+          personalDataEncryptionService.decrypt(encryptedPersonalData, encryptionKey);
+
+      Consultation consultation = findConsultation(procedure.getExternalId());
+      List<EncryptedFileOverviewDto> encryptedFiles =
+          getEncryptedFilesForProcedure(procedure.getExternalId());
+
+      result.add(
+          new ProcedureGdprExportData(
+              procedureWithAugmentedData, decryptedPersonalData, consultation, encryptedFiles));
+    }
+
+    Map<String, String> attributes = new LinkedHashMap<>();
+    attributes.put("durch Benutzer", CurrentUserHelper.getCurrentUserId().toString());
+    auditLogger.log(AUDITLOG_CATEGORY, AUDITLOG_FUNCTION_EXPORT, attributes);
+
+    return result;
+  }
+
   /**
    * Adds a system progress entry to a given procedure. If the procedure is in a closed state, it
    * updates the procedure status to "in progress" before adding the entry and restores the previous
@@ -582,5 +632,15 @@ public class ProstituteProtectionService {
     }
     progressEntryUtil.addSystemProgressEntry(procedure, progressEntryType, description);
     procedure.updateProcedureStatus(procedureStatus, clock, auditLogger);
+  }
+
+  public static String formatProcedureType(ProcedureType type) {
+    return switch (type) {
+      case PROSTITUTE_PROTECTION_INITIAL -> "Erstberatung";
+      case PROSTITUTE_PROTECTION_FOLLOW_UP -> "Folgeberatung";
+      default ->
+          throw new IllegalStateException(
+              "Invalid procedure type for prostitute-protection: %s".formatted(type));
+    };
   }
 }

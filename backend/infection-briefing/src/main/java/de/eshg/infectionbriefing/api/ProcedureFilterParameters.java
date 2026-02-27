@@ -7,4 +7,5 @@ package de.eshg.infectionbriefing.api;
 
 import java.time.LocalDate;
 
-public record ProcedureFilterParameters(LocalDate appointmentDay) {}
+public record ProcedureFilterParameters(
+    LocalDate appointmentDay, InstructionTypeDto instructionType) {}

@@ -23,7 +23,6 @@ import de.eshg.base.calendar.api.UserCalendar;
 import de.eshg.lib.appointmentblock.AbstractAppointmentService;
 import de.eshg.lib.appointmentblock.AppointmentBlockSlotUtil;
 import de.eshg.lib.appointmentblock.api.AppointmentDto;
-import de.eshg.lib.appointmentblock.model.AppointmentBlockSlot;
 import de.eshg.lib.appointmentblock.persistence.AppointmentBlockRepository;
 import de.eshg.lib.appointmentblock.persistence.entity.Appointment;
 import de.eshg.lib.appointmentblock.persistence.entity.AppointmentBlock;
@@ -40,12 +39,14 @@ import java.time.Clock;
 import java.time.Instant;
 import java.time.Period;
 import java.time.ZonedDateTime;
+import java.util.AbstractMap;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.springframework.stereotype.Service;
@@ -105,13 +106,26 @@ public class AppointmentService extends AbstractAppointmentService<MeaslesProtec
 
     return appointmentBlockSlotUtil
         .calculateFreeAppointmentBlockSlotsForType(currentUserBlocks, PROOF_SUBMISSION)
+        .entrySet()
+        .stream()
+        .map(
+            entry ->
+                entry.getValue().stream()
+                    .map(
+                        slot ->
+                            new AppointmentDto(
+                                slot.start(), slot.end(), entry.getKey().getExternalId()))
+                    .toList())
+        .flatMap(Collection::stream)
+        .filter(appointment -> appointment.start().isAfter(start))
+        .collect(
+            Collectors.toMap(
+                apt -> new AbstractMap.SimpleEntry<>(apt.start(), apt.end()),
+                Function.identity(),
+                (existing, _) -> existing))
         .values()
         .stream()
-        .flatMap(Collection::stream)
-        .distinct()
-        .filter(slot -> slot.start().isAfter(start))
-        .sorted(Comparator.comparing(AppointmentBlockSlot::start))
-        .map(slot -> new AppointmentDto(slot.start(), slot.end()))
+        .sorted(Comparator.comparing(AppointmentDto::start))
         .toList();
   }
 

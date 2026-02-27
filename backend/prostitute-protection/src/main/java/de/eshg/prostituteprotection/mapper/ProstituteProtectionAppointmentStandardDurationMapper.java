@@ -25,13 +25,15 @@ public class ProstituteProtectionAppointmentStandardDurationMapper {
       ProstituteProtectionAppointmentStandardDurationsDto dto) {
     ProstituteProtectionAppointmentStandardDuration domain =
         new ProstituteProtectionAppointmentStandardDuration();
-    domain.setConsultation(dto.consultation());
+    domain.setInitialConsultation(dto.initialConsultation());
+    domain.setFollowUpConsultation(dto.followUpConsultation());
     return domain;
   }
 
   public static ProstituteProtectionAppointmentStandardDurationsDto
       mapToProstituteProtectionAppointmentStandardDurationsDto(
           ProstituteProtectionAppointmentStandardDuration domain) {
-    return new ProstituteProtectionAppointmentStandardDurationsDto(domain.getConsultation());
+    return new ProstituteProtectionAppointmentStandardDurationsDto(
+        domain.getInitialConsultation(), domain.getFollowUpConsultation());
   }
 }

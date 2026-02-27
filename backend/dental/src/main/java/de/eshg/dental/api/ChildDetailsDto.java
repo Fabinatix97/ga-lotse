@@ -11,6 +11,7 @@ import de.eshg.base.SalutationDto;
 import de.eshg.base.address.AddressDto;
 import de.eshg.lib.common.CountryCode;
 import de.eshg.lib.procedure.model.ProcedureStatusDto;
+import de.eshg.lib.procedure.model.StatisticsInclusionDto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
@@ -48,7 +49,8 @@ public record ChildDetailsDto(
     @NotNull @Valid List<ExaminationDto> examinations,
     @NotEmpty @Valid List<AnnualInstitutionDto> institutions,
     @NotNull @Valid List<FluoridationConsentDto> fluoridationConsents,
-    String note) {
+    String note,
+    @NotNull StatisticsInclusionDto statisticsInclusion) {
 
   @JsonIgnore
   public InstitutionDto getCurrentInstitution() {

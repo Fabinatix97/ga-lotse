@@ -31,5 +31,7 @@
   <include file="migrations/0021_add_gdpr_identification_hash_not_null_constraint.xml"/>
   <include file="migrations/0022_add_new_procedure_type_prostitute_protection.xml"/>
   <include file="migrations/0023_add_infection_briefing_procedure_types.xml"/>
+  <include file="migrations/0024_add_statistics_inclusion_to_procedure.xml"/>
+  <include file="migrations/0025_modify_ppr_procedure_type.xml"/>
 
 </databaseChangeLog>

@@ -60,9 +60,13 @@ public class ProstituteProtectionAppointmentService
     this.calendarEventApi = calendarEventApi;
   }
 
-  List<AppointmentDto> getFreeAppointments() {
-    return appointmentBlockService.getFreeAppointments(
-        null, null, AppointmentType.PROSTITUTE_PROTECTION_CONSULTATION, null, null);
+  List<AppointmentDto> getFreeAppointmentsForProcedure(
+      ProstituteProtectionProcedure procedure, AppointmentType appointmentType) {
+    List<AppointmentDto> freeAppointments =
+        appointmentBlockService.getFreeAppointments(null, null, appointmentType, null, null);
+
+    return AppointmentBlockService.filterFreeAppointmentsIncludeExisting(
+        freeAppointments, procedure.getAppointment());
   }
 
   void bookAppointment(ProstituteProtectionProcedure procedure, AppointmentData appointment) {

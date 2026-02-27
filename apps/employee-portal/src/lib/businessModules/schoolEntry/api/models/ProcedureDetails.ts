@@ -5,7 +5,10 @@
 
 import { mapOptional, mapProcedureLabels } from "@eshg/lib-employee-portal";
 import { mapOptionalValue } from "@eshg/lib-portal";
-import { ApiProcedureDetails } from "@eshg/school-entry-api";
+import {
+  ApiProcedureDetails,
+  ApiStatisticsInclusion,
+} from "@eshg/school-entry-api";
 
 import { Appointment, mapAppointment } from "./Appointment";
 import { CustodianDetails, mapCustodianDetails } from "./CustodianDetails";
@@ -29,6 +32,7 @@ export interface ProcedureDetails extends Procedure {
   readonly hasInformationBlock: boolean;
   readonly hasBeenClosed: boolean;
   readonly isPastProcedure: boolean;
+  readonly statisticsInclusion: ApiStatisticsInclusion;
 }
 
 export function mapProcedureDetails(
@@ -51,5 +55,6 @@ export function mapProcedureDetails(
     hasInformationBlock: response.hasInformationBlock,
     hasBeenClosed: response.hasBeenClosed,
     isPastProcedure: response.isPastProcedure,
+    statisticsInclusion: response.statisticsInclusion,
   };
 }

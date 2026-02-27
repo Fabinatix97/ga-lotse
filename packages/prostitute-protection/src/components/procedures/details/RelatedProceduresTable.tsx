@@ -22,8 +22,8 @@ import {
   useNavigation,
 } from "@eshg/lib-portal";
 import {
-  ApiConsultationType,
   ApiProcedureStatus,
+  ApiProstituteProtectionProcedureType,
 } from "@eshg/prostitute-protection-api";
 
 import { usePersonSearchOptions } from "../../../api/queries/person";
@@ -31,13 +31,13 @@ import { routes } from "../../../config/routes";
 import { useDecryptedPersons } from "../../../contexts/decryptedPersons/DecryptedPersonsStoreProvider";
 import {
   ADDITIONAL_DATA_FIELD_NAME,
-  CONSULTATION_TYPE_VALUES,
   PROCEDURE_STATUS_VALUES,
+  PROCEDURE_TYPE_VALUES,
 } from "../../../shared/constants";
 
 interface RelatedProceduresResult {
   id: string;
-  consultationType?: ApiConsultationType;
+  procedureType: ApiProstituteProtectionProcedureType;
   appointmentStart?: Date;
   creatorName?: string;
   consultantName?: string;
@@ -53,11 +53,11 @@ const columnHelper = createColumnHelper<RelatedProceduresResult>();
 
 function getRelatedProceduresColumns() {
   return [
-    columnHelper.accessor("consultationType", {
+    columnHelper.accessor("procedureType", {
       header: "Beratungstyp",
       cell: ({ getValue }) => {
         const key = getValue();
-        return key ? CONSULTATION_TYPE_VALUES[key] : OPTIONAL_FALLBACK_VALUE;
+        return key ? PROCEDURE_TYPE_VALUES[key] : OPTIONAL_FALLBACK_VALUE;
       },
       enableSorting: false,
       meta: { width: 160, canNavigate: { parentRow: true } },

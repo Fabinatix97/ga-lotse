@@ -15,5 +15,6 @@ import java.util.UUID;
 public record GetRelevantCalendarsResponse(
     @NotNull @Valid UserCalendar currentUserCalendar,
     @NotNull @Valid List<GlobalCalendar> globalCalendars,
+    @NotNull @Valid List<ModuleCalendar> moduleCalendars,
     @NotNull @Valid List<UserGroupCalendarInfo> userGroupCalendarInfos,
     @NotNull @Valid Map<UUID, UserDto> resolvedUsers) {}

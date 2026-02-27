@@ -30,7 +30,7 @@ import {
 import { useSimpleAbortProcedureMutation } from "../../../api/mutations/procedures";
 import { useProceduresQueryOptions } from "../../../api/queries/procedures";
 import { routes } from "../../../config/routes";
-import { CONSULTATION_TYPE_VALUES } from "../../../shared/constants";
+import { PROCEDURE_TYPE_VALUES } from "../../../shared/constants";
 
 import { LanguagesCell } from "./LanguagesCell";
 import { ProstituteProtectionProceduresTableControls } from "./ProstituteProtectionProceduresTableControls";
@@ -72,15 +72,9 @@ function getProceduresColumns({ onAbortProcedure }: RowActions) {
         },
       },
     }),
-    columnHelper.accessor("consultationType", {
+    columnHelper.accessor("procedureType", {
       header: "Beratungstyp",
-      cell: ({ getValue }) => {
-        const consultationKey = getValue();
-        if (!consultationKey) {
-          return null;
-        }
-        return CONSULTATION_TYPE_VALUES[consultationKey];
-      },
+      cell: ({ getValue }) => PROCEDURE_TYPE_VALUES[getValue()],
       enableSorting: false,
       meta: {
         width: 160,

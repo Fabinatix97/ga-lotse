@@ -11,6 +11,7 @@ import de.eshg.api.commons.InlineParameterObject;
 import de.eshg.infectionbriefing.api.AcceptDraftRequest;
 import de.eshg.infectionbriefing.api.GetProceduresResponse;
 import de.eshg.infectionbriefing.api.IssueCertificateResponse;
+import de.eshg.infectionbriefing.api.ProcedureDetailsDto;
 import de.eshg.infectionbriefing.api.ProcedureFilterParameters;
 import de.eshg.infectionbriefing.api.ProcedurePaginationParameters;
 import de.eshg.rest.service.security.config.BaseUrls.InfectionBriefing;
@@ -53,12 +54,19 @@ public class InfectionBriefingProcedureController {
     return infectionBriefingProcedureService.getProcedures(filterParameters, paginationParameters);
   }
 
+  @GetMapping("{procedureId}")
+  @Transactional(readOnly = true)
+  public ProcedureDetailsDto getInfectionBriefingProcedureDetails(
+      @PathVariable(name = "procedureId") UUID procedureId) {
+    return infectionBriefingProcedureService.getProcedureDetails(procedureId);
+  }
+
   @PostMapping("{procedureId}/accept-draft")
   @Transactional
   public void acceptDraft(
       @PathVariable(name = "procedureId") UUID procedureId,
       @Valid @RequestBody(required = false) AcceptDraftRequest request) {
-    infectionBriefingProcedureService.acceptDraft(procedureId, Optional.ofNullable(request));
+    newCertificateProcedureService.acceptDraft(procedureId, Optional.ofNullable(request));
   }
 
   @PostMapping("{procedureId}/abort-procedure")

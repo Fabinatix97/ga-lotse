@@ -70,34 +70,6 @@ export interface SchoolInfoLetter {
   measlesContraIndicationUntil: Date | "";
 }
 
-// TODO: clean up code when the fields in backend are no longer optional ISSUE-8917
-export const emptySchoolInfoLetter: SchoolInfoLetter = {
-  child: {
-    dateOfBirth: "",
-    name: "",
-  },
-  consultationWithCustodianRecommended: false,
-  customRecommendation: "",
-  date: "",
-  eyeExaminationInfoConspicuous: "no",
-  eyeExaminationInfoOther: [],
-  hearingExaminationInfoConspicuous: "no",
-  hearingExaminationInfoOther: [],
-  note: "",
-  parentsWishNote: "",
-  referredToFurtherConsultationFromSchool: false,
-  physiciansRecommendation: [],
-  postponed: false,
-  schoolAndPromotionHints: [],
-  schoolYear: "",
-  therapyAndPromotionInfo: [],
-  measlesProtectionComplete: "undefined",
-  vaccinationPassNotPresented: false,
-  measlesContraIndication: "NONE",
-  measlesContraIndicationUntil: "",
-  type: "REGULAR_EXAMINATION",
-};
-
 export function mapSchoolInfoLetter(
   response: ApiSchoolInfoLetterExamination,
 ): SchoolInfoLetter {

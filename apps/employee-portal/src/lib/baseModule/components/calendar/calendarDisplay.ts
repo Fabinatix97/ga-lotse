@@ -12,11 +12,13 @@ import {
 import { formatUserName } from "@eshg/lib-portal";
 
 import { theme } from "@/lib/baseModule/theme/theme";
+import { businessModuleNames } from "@/lib/shared/components/procedures/constants";
 import { translateUserGroup } from "@/lib/shared/helpers/users";
 
 const calendarColors = {
   currentUser: theme.palette.primary[300],
   global: theme.palette.warning[300],
+  module: theme.palette.primary[200],
   calendar3: theme.palette.neutral[300],
   calendar4: "#ffae9b",
   calendar5: "#F49CD2",
@@ -67,6 +69,7 @@ function getGroupNamesByCalenderId(
 export function mapApiCalendarsToCalendarInfo({
   currentUserCalendar,
   globalCalendars,
+  moduleCalendars,
   userGroupCalendarInfos,
   resolvedUsers,
 }: ApiGetRelevantCalendarsResponse) {
@@ -81,6 +84,14 @@ export function mapApiCalendarsToCalendarInfo({
       id: calendar.calendarId,
       name: calendar.globalCalendarName,
       color: calendarColors.global,
+    }),
+  );
+
+  const moduleCalendarInfos: CalendarInfo[] = moduleCalendars.map(
+    (calendar, index) => ({
+      id: calendar.calendarId,
+      name: businessModuleNames[calendar.businessModule],
+      color: getOrderedCalendarColor(index),
     }),
   );
 
@@ -104,6 +115,7 @@ export function mapApiCalendarsToCalendarInfo({
     calendars: [
       currentUserCalendarInfo,
       ...globalCalendarInfos,
+      ...moduleCalendarInfos,
       ...userCalendarInfos,
     ],
   };

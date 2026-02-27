@@ -14,6 +14,7 @@ import { travelMedicineConfigRouterEndpoints } from "@/lib/businessModules/trave
 import { prostituteProtectionConfigRouterEndpoints } from "@/lib/configurator/shared/prostituteProtectionConfigRouterEndpoints";
 import { opendataConfigRouterEndpoints } from "@/lib/opendata/configuratorConfig";
 
+import { infectionBriefingConfigRouterEndpoints } from "./infectionBriefingConfigRouterEndpoints";
 import { medsAbroadConfigRouterEndpoints } from "./medsAbroadConfigRouterEndpoints";
 import { ConfiguratorEndpointName, ConfiguratorModuleName } from "./types";
 
@@ -44,6 +45,8 @@ export function getEndpointNamesByModule(
       return inspectionConfigRouterEndpoints;
     case "PROSTITUTE_PROTECTION":
       return prostituteProtectionConfigRouterEndpoints;
+    case "INFECTION_BRIEFING":
+      return infectionBriefingConfigRouterEndpoints;
   }
 }
 

@@ -19,8 +19,8 @@ import { DetailsList, formatPersonName } from "@eshg/lib-portal";
 import { ApiPersonLanguage } from "@eshg/prostitute-protection-api";
 
 import {
-  CONSULTATION_TYPE_VALUES,
   LANGUAGE_VALUE,
+  PROCEDURE_TYPE_VALUES,
 } from "../../../shared/constants";
 import { getAppointmentDate } from "../../../shared/helpers";
 
@@ -99,8 +99,8 @@ function SummaryForm({
         <DetailsItem
           label="Terminart"
           value={
-            values.consultationType
-              ? `ProstSchG ${CONSULTATION_TYPE_VALUES[values.consultationType]}`
+            values.procedureType
+              ? `ProstSchG ${PROCEDURE_TYPE_VALUES[values.procedureType]}`
               : "-"
           }
         />

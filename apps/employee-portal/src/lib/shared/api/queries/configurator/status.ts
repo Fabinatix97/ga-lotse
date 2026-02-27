@@ -23,6 +23,7 @@ import {
   ConfiguratorStatusOverview,
   ConfiguratorStatusTab,
 } from "@/lib/configurator/api/models/configuratorStatusOverview";
+import { INFECTION_BRIEFING_APPOINTMENT_STANDARD_DURATION_ENDPOINT_NAME } from "@/lib/configurator/components/shared/ConfiguratorDetails/appointmentStandardDuration/InfectionBriefingAppointmentStandardDuration";
 import { MEASLES_PROTECTION_APPOINTMENT_STANDARD_DURATION_ENDPOINT_NAME } from "@/lib/configurator/components/shared/ConfiguratorDetails/appointmentStandardDuration/MeaslesProtectionAppointmentStandardDuration";
 import { OMS_APPOINTMENT_STANDARD_DURATION_ENDPOINT_NAME } from "@/lib/configurator/components/shared/ConfiguratorDetails/appointmentStandardDuration/OmsAppointmentStandardDuration";
 import { PROSTITUTE_PROTECTION_APPOINTMENT_STANDARD_DURATION_ENDPOINT_NAME } from "@/lib/configurator/components/shared/ConfiguratorDetails/appointmentStandardDuration/ProstituteProtectionAppointmentStandardDuration";
@@ -200,6 +201,8 @@ function mapStandardAppointmentDurationEndpoint(
       return SEX_WORK_APPOINTMENT_STANDARD_DURATION_ENDPOINT_NAME;
     case ConfiguratorModuleName.ProstituteProtection:
       return PROSTITUTE_PROTECTION_APPOINTMENT_STANDARD_DURATION_ENDPOINT_NAME;
+    case ConfiguratorModuleName.InfectionBriefing:
+      return INFECTION_BRIEFING_APPOINTMENT_STANDARD_DURATION_ENDPOINT_NAME;
     default:
       return "APPOINTMENT_STANDARD_DURATION";
   }

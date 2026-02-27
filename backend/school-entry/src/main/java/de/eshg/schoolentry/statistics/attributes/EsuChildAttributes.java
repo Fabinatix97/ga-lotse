@@ -6,9 +6,11 @@
 package de.eshg.schoolentry.statistics.attributes;
 
 import de.eshg.lib.statistics.api.DataPrivacyCategory;
+import de.eshg.lib.statistics.api.interval.IntegerMinMaxCountIntervalConfiguration;
 import de.eshg.lib.statistics.attributes.AttributeData;
 import de.eshg.lib.statistics.attributes.CentralFileIdPersonAttribute;
 import de.eshg.lib.statistics.attributes.ContactIdAttribute;
+import de.eshg.lib.statistics.attributes.IntegerAttribute;
 import de.eshg.lib.statistics.attributes.ProcedureAttribute;
 import de.eshg.lib.statistics.attributes.TextAttribute;
 import de.eshg.lib.statistics.attributes.ValueWithOptionsAttribute;
@@ -23,6 +25,16 @@ public enum EsuChildAttributes implements EsuAttributes {
           "Kind", "CHILD_CENTRAL_FILE_ID", EsuChildAttributes.CATEGORY_CHILD, true)),
 
   SCHULE(ContactIdAttribute.create("Schule", "SCHULE", EsuChildAttributes.CATEGORY_CHILD, false)),
+
+  CHILD_AGE(
+      IntegerAttribute.createQuasiIdentifying(
+          "Alter bei letzter Einschulungsuntersuchung",
+          "ALTER",
+          EsuChildAttributes.CATEGORY_CHILD,
+          true,
+          null,
+          null,
+          new IntegerMinMaxCountIntervalConfiguration(1, 18, 6))),
 
   SCHULJAHR(
       TextAttribute.create(

@@ -402,6 +402,25 @@
         "tags" : [ "AppointmentBlock" ]
       }
     },
+    "/appointment-standard-duration" : {
+      "get" : {
+        "operationId" : "getStandardDurations",
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/InfectionBriefingAppointmentStandardDurations"
+                }
+              }
+            },
+            "description" : "A response containing the standard duration if initialized."
+          }
+        },
+        "summary" : "Get the standard duration for infection briefing appointments",
+        "tags" : [ "InfectionBriefingAppointmentStandardDuration" ]
+      }
+    },
     "/approval-requests/{approvalRequestId}" : {
       "get" : {
         "operationId" : "getApprovalRequest",
@@ -831,6 +850,45 @@
         "tags" : [ "ConfigStatus" ]
       }
     },
+    "/configuration/appointment-standard-duration" : {
+      "get" : {
+        "operationId" : "getStandardDurationsConfig",
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/GetInfectionBriefingAppointmentStandardDurationsResponse"
+                }
+              }
+            },
+            "description" : "A response containing the standard duration if initialized, or an empty response body otherwise."
+          }
+        },
+        "summary" : "Get the standard duration for infection briefing consultation appointments",
+        "tags" : [ "InfectionBriefingAppointmentStandardDurationConfig" ]
+      },
+      "put" : {
+        "operationId" : "updateStandardDurations",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/InfectionBriefingAppointmentStandardDurations"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          }
+        },
+        "summary" : "Update the standard duration for infection briefing consultation appointments",
+        "tags" : [ "InfectionBriefingAppointmentStandardDurationConfig" ]
+      }
+    },
     "/configuration/department-info" : {
       "get" : {
         "operationId" : "getInternalConfigDepartmentInfo",
@@ -866,6 +924,43 @@
           }
         },
         "tags" : [ "DepartmentInfoConfig" ]
+      }
+    },
+    "/configuration/opening-hours" : {
+      "get" : {
+        "operationId" : "getConfigOpeningHours",
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/GetOpeningHoursConfigResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "OpeningHours" ]
+      },
+      "put" : {
+        "operationId" : "updateConfigOpeningHours",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/OpeningHours"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "OpeningHours" ]
       }
     },
     "/configuration/privacy-documents/privacy-notice" : {
@@ -1741,6 +1836,13 @@
           }
         }, {
           "in" : "query",
+          "name" : "instructionType",
+          "required" : false,
+          "schema" : {
+            "$ref" : "#/components/schemas/InstructionType"
+          }
+        }, {
+          "in" : "query",
           "name" : "pageNumber",
           "required" : false,
           "schema" : {
@@ -1762,6 +1864,33 @@
               "*/*" : {
                 "schema" : {
                   "$ref" : "#/components/schemas/GetProceduresResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "InfectionBriefingProcedure" ]
+      }
+    },
+    "/infection-briefing-procedures/{procedureId}" : {
+      "get" : {
+        "operationId" : "getInfectionBriefingProcedureDetails",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "procedureId",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ProcedureDetails"
                 }
               }
             },
@@ -2631,6 +2760,35 @@
         "tags" : [ "ProgressEntry" ]
       }
     },
+    "/statistics-inclusion" : {
+      "post" : {
+        "operationId" : "updateStatisticsInclusion",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/BulkUpdateProceduresStatisticsInclusionRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/BulkUpdateProceduresStatisticsInclusionResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Update the statistics inclusion of procedures in bulk",
+        "tags" : [ "Procedure" ]
+      }
+    },
     "/task-metrics" : {
       "get" : {
         "operationId" : "getTaskMetrics",
@@ -3138,9 +3296,11 @@
         }
       },
       "AcceptDraftRequest" : {
-        "required" : [ "referencePersonId" ],
         "type" : "object",
         "properties" : {
+          "custodianConsent" : {
+            "$ref" : "#/components/schemas/CustodionConsentInput"
+          },
           "referencePersonId" : {
             "type" : "string",
             "format" : "uuid"
@@ -3188,7 +3348,7 @@
         }
       },
       "ApplicantAddress" : {
-        "required" : [ "city", "houseNumber", "postalCode", "street" ],
+        "required" : [ "city", "postalCode", "street" ],
         "type" : "object",
         "properties" : {
           "city" : {
@@ -3196,7 +3356,6 @@
             "type" : "string"
           },
           "houseNumber" : {
-            "minLength" : 1,
             "type" : "string"
           },
           "postalCode" : {
@@ -3217,6 +3376,10 @@
         "required" : [ "end", "start" ],
         "type" : "object",
         "properties" : {
+          "appointmentBlockId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
           "end" : {
             "type" : "string",
             "format" : "date-time"
@@ -3415,7 +3578,7 @@
       },
       "AppointmentType" : {
         "type" : "string",
-        "enum" : [ "CONSULTATION", "VACCINATION", "REGULAR_EXAMINATION", "CAN_CHILD", "ENTRY_LEVEL", "SPECIAL_NEEDS", "PROOF_SUBMISSION", "HIV_STI_CONSULTATION", "SEX_WORK", "RESULTS_REVIEW", "OFFICIAL_MEDICAL_SERVICE_SHORT", "OFFICIAL_MEDICAL_SERVICE_LONG", "MEDS_ABROAD_CERTIFICATION", "PROSTITUTE_PROTECTION_CONSULTATION", "INFECTION_BRIEFING_NEW", "INFECTION_BRIEFING_REPLACEMENT" ]
+        "enum" : [ "CONSULTATION", "VACCINATION", "REGULAR_EXAMINATION", "CAN_CHILD", "ENTRY_LEVEL", "SPECIAL_NEEDS", "PROOF_SUBMISSION", "HIV_STI_CONSULTATION", "SEX_WORK", "RESULTS_REVIEW", "OFFICIAL_MEDICAL_SERVICE_SHORT", "OFFICIAL_MEDICAL_SERVICE_LONG", "MEDS_ABROAD_CERTIFICATION", "PROSTITUTE_PROTECTION_INITIAL", "PROSTITUTE_PROTECTION_FOLLOW_UP", "INFECTION_BRIEFING_NEW", "INFECTION_BRIEFING_REPLACEMENT" ]
       },
       "ApprovalRequest" : {
         "required" : [ "approvalRequestId", "createdAt", "createdBy", "operation", "reason", "status" ],
@@ -3530,7 +3693,7 @@
         }
       },
       "BookNewCertificateAppointmentRequest" : {
-        "required" : [ "applicant", "applicantAddress", "applicantCategoryDto", "startTime" ],
+        "required" : [ "applicant", "applicantCategoryDto", "startTime" ],
         "type" : "object",
         "properties" : {
           "applicant" : {
@@ -3618,6 +3781,50 @@
               "type" : "string",
               "format" : "uuid"
             }
+          },
+          "updatedProcedures" : {
+            "uniqueItems" : true,
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "format" : "uuid"
+            }
+          }
+        }
+      },
+      "BulkUpdateProceduresStatisticsInclusionRequest" : {
+        "required" : [ "procedures", "statisticsInclusion" ],
+        "type" : "object",
+        "properties" : {
+          "procedures" : {
+            "maxItems" : 200,
+            "minItems" : 1,
+            "uniqueItems" : true,
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "format" : "uuid"
+            }
+          },
+          "statisticsInclusion" : {
+            "$ref" : "#/components/schemas/StatisticsInclusion"
+          }
+        }
+      },
+      "BulkUpdateProceduresStatisticsInclusionResponse" : {
+        "required" : [ "failedProcedures", "statisticsInclusion", "updatedProcedures" ],
+        "type" : "object",
+        "properties" : {
+          "failedProcedures" : {
+            "uniqueItems" : true,
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "format" : "uuid"
+            }
+          },
+          "statisticsInclusion" : {
+            "$ref" : "#/components/schemas/StatisticsInclusion"
           },
           "updatedProcedures" : {
             "uniqueItems" : true,
@@ -3898,6 +4105,14 @@
             "type" : "string"
           }
         }
+      },
+      "CustodianConsent" : {
+        "type" : "string",
+        "enum" : [ "IN_PERSON", "WRITTEN", "MISSING", "NOT_REQUIRED" ]
+      },
+      "CustodionConsentInput" : {
+        "type" : "string",
+        "enum" : [ "IN_PERSON", "WRITTEN" ]
       },
       "DataOrigin" : {
         "type" : "string",
@@ -4449,12 +4664,6 @@
               "$ref" : "#/components/schemas/GetAppointmentBlock"
             }
           },
-          "availableForBulkBooking" : {
-            "type" : "boolean"
-          },
-          "availableForCitizen" : {
-            "type" : "boolean"
-          },
           "id" : {
             "type" : "string",
             "description" : "Id of the AppointmentBlockGroup.",
@@ -4804,6 +5013,14 @@
         "default" : "ASC",
         "enum" : [ "ASC", "DESC" ]
       },
+      "GetInfectionBriefingAppointmentStandardDurationsResponse" : {
+        "type" : "object",
+        "properties" : {
+          "standardDurations" : {
+            "$ref" : "#/components/schemas/InfectionBriefingAppointmentStandardDurations"
+          }
+        }
+      },
       "GetInternalConfigDepartmentInfoResponse" : {
         "type" : "object",
         "properties" : {
@@ -4837,6 +5054,14 @@
                 "$ref" : "#/components/schemas/PdfMetaDataHistory"
               } ]
             }
+          }
+        }
+      },
+      "GetOpeningHoursConfigResponse" : {
+        "type" : "object",
+        "properties" : {
+          "openingHoursDto" : {
+            "$ref" : "#/components/schemas/OpeningHours"
           }
         }
       },
@@ -5377,6 +5602,23 @@
         "type" : "string",
         "enum" : [ "INFECTION_BRIEFING_NEW", "INFECTION_BRIEFING_REPLACEMENT" ]
       },
+      "InfectionBriefingAppointmentStandardDurations" : {
+        "required" : [ "infectionBriefingNew", "infectionBriefingReplacement" ],
+        "type" : "object",
+        "properties" : {
+          "infectionBriefingNew" : {
+            "type" : "string"
+          },
+          "infectionBriefingReplacement" : {
+            "type" : "string"
+          }
+        },
+        "description" : "A request containing the standard duration."
+      },
+      "InfectionBriefingSalutation" : {
+        "type" : "string",
+        "enum" : [ "NEUTRAL", "FEMALE", "MALE", "NOT_SPECIFIED" ]
+      },
       "InsertRequestInterceptionTestHelperRequest" : {
         "required" : [ "type" ],
         "type" : "object",
@@ -5388,6 +5630,10 @@
             "$ref" : "#/components/schemas/InterceptionType"
           }
         }
+      },
+      "InstructionType" : {
+        "type" : "string",
+        "enum" : [ "ON_SITE", "ONLINE" ]
       },
       "InterceptionType" : {
         "type" : "string",
@@ -5585,6 +5831,26 @@
           }
         }
       },
+      "OpeningHours" : {
+        "required" : [ "de", "en" ],
+        "type" : "object",
+        "properties" : {
+          "de" : {
+            "minItems" : 1,
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          },
+          "en" : {
+            "minItems" : 1,
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          }
+        }
+      },
       "Operation" : {
         "type" : "string",
         "enum" : [ "DELETE" ]
@@ -5660,10 +5926,7 @@
             "example" : "2018-07-26"
           },
           "email" : {
-            "type" : "string",
-            "format" : "email",
-            "maxLength" : 254,
-            "minLength" : 6
+            "type" : "string"
           },
           "firstName" : {
             "maxLength" : 80,
@@ -5685,7 +5948,43 @@
             "type" : "string"
           },
           "salutation" : {
-            "$ref" : "#/components/schemas/Salutation"
+            "$ref" : "#/components/schemas/InfectionBriefingSalutation"
+          }
+        }
+      },
+      "PersonDetails" : {
+        "required" : [ "dateOfBirth", "firstName", "lastName" ],
+        "type" : "object",
+        "properties" : {
+          "address" : {
+            "$ref" : "#/components/schemas/ApplicantAddress"
+          },
+          "dateOfBirth" : {
+            "type" : "string",
+            "format" : "date"
+          },
+          "email" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          },
+          "firstName" : {
+            "type" : "string"
+          },
+          "lastName" : {
+            "type" : "string"
+          },
+          "phone" : {
+            "type" : "array",
+            "items" : {
+              "maxLength" : 23,
+              "minLength" : 1,
+              "type" : "string"
+            }
+          },
+          "salutation" : {
+            "$ref" : "#/components/schemas/InfectionBriefingSalutation"
           }
         }
       },
@@ -5754,7 +6053,7 @@
         } ]
       },
       "Procedure" : {
-        "required" : [ "archivingRelevanceSettings", "businessModule", "createdAt", "modifiedAt", "procedureId", "procedureStatus", "procedureType", "summary" ],
+        "required" : [ "archivingRelevanceSettings", "businessModule", "createdAt", "modifiedAt", "procedureId", "procedureStatus", "procedureType", "statisticsInclusion", "summary" ],
         "type" : "object",
         "properties" : {
           "archivingRelevanceSettings" : {
@@ -5789,11 +6088,53 @@
           "procedureType" : {
             "$ref" : "#/components/schemas/ProcedureType"
           },
+          "statisticsInclusion" : {
+            "$ref" : "#/components/schemas/StatisticsInclusion"
+          },
           "summary" : {
             "maxLength" : 128,
             "minLength" : 0,
             "pattern" : "[a-zA-Z0-9.].+",
             "type" : "string"
+          }
+        }
+      },
+      "ProcedureDetails" : {
+        "required" : [ "applicant", "custodianConsent", "procedureId", "procedureStatus", "procedureType" ],
+        "type" : "object",
+        "properties" : {
+          "applicant" : {
+            "$ref" : "#/components/schemas/PersonDetails"
+          },
+          "applicantCategory" : {
+            "$ref" : "#/components/schemas/ApplicantCategory"
+          },
+          "appointmentTime" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "custodianConsent" : {
+            "$ref" : "#/components/schemas/CustodianConsent"
+          },
+          "instructionDate" : {
+            "type" : "string",
+            "format" : "date"
+          },
+          "instructionType" : {
+            "$ref" : "#/components/schemas/InstructionType"
+          },
+          "procedureId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "procedureStatus" : {
+            "$ref" : "#/components/schemas/ProcedureStatus"
+          },
+          "procedureType" : {
+            "$ref" : "#/components/schemas/ProcedureType"
+          },
+          "sourceDto" : {
+            "$ref" : "#/components/schemas/ProcedureSource"
           }
         }
       },
@@ -5833,13 +6174,17 @@
           }
         }
       },
+      "ProcedureSource" : {
+        "type" : "string",
+        "enum" : [ "STAFF_PORTAL", "IMPORT" ]
+      },
       "ProcedureStatus" : {
         "type" : "string",
         "enum" : [ "DRAFT", "OPEN", "IN_PROGRESS", "CLOSED", "ABORTED" ]
       },
       "ProcedureType" : {
         "type" : "string",
-        "enum" : [ "REGULAR_EXAMINATION", "CAN_CHILD", "ENTRY_LEVEL", "DRAFT_CITIZEN_OFFICE_IMPORT", "DRAFT_SCHOOL_IMPORT", "INSPECTION", "TM_VACCINATION_CONSULTATION", "MEASLES_PROTECTION", "STI_PROTECTION", "MEDICAL_REGISTRY_ENTRY", "MEDICAL_REGISTRY_CITIZEN_DRAFT", "MEDICAL_REGISTRY_EMPLOYEE_DRAFT", "DENTAL_CHILD", "OFFICIAL_MEDICAL_SERVICE", "MEDS_ABROAD", "PROSTITUTE_PROTECTION", "INFECTION_BRIEFING_NEW", "INFECTION_BRIEFING_REPLACEMENT" ]
+        "enum" : [ "REGULAR_EXAMINATION", "CAN_CHILD", "ENTRY_LEVEL", "DRAFT_CITIZEN_OFFICE_IMPORT", "DRAFT_SCHOOL_IMPORT", "INSPECTION", "TM_VACCINATION_CONSULTATION", "MEASLES_PROTECTION", "STI_PROTECTION", "MEDICAL_REGISTRY_ENTRY", "MEDICAL_REGISTRY_CITIZEN_DRAFT", "MEDICAL_REGISTRY_EMPLOYEE_DRAFT", "DENTAL_CHILD", "OFFICIAL_MEDICAL_SERVICE", "MEDS_ABROAD", "PROSTITUTE_PROTECTION_INITIAL", "PROSTITUTE_PROTECTION_FOLLOW_UP", "INFECTION_BRIEFING_NEW", "INFECTION_BRIEFING_REPLACEMENT" ]
       },
       "ProcedureWithDuration" : {
         "required" : [ "createdAt", "id" ],
@@ -5976,6 +6321,10 @@
       "SortDirection" : {
         "type" : "string",
         "enum" : [ "ASC", "DESC" ]
+      },
+      "StatisticsInclusion" : {
+        "type" : "string",
+        "enum" : [ "INCLUDE", "CUSTOM", "EXCLUDE" ]
       },
       "SystemProgressEntry" : {
         "required" : [ "createdAt", "modifiedAt", "progressEntryId", "systemProgressEntryType", "triggerType" ],
@@ -6211,6 +6560,12 @@
         "required" : [ "consultants", "end", "mfas", "parallelExaminations", "physicians", "sopasss", "start" ],
         "type" : "object",
         "properties" : {
+          "availableForBulkBooking" : {
+            "type" : "boolean"
+          },
+          "availableForCitizen" : {
+            "type" : "boolean"
+          },
           "consultants" : {
             "type" : "array",
             "items" : {

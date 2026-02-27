@@ -11,6 +11,6 @@ import jakarta.validation.constraints.NotEmpty;
 @Schema(name = "ApplicantAddress")
 public record ApplicantAddressDto(
     @NotEmpty String street,
-    @NotEmpty String houseNumber,
+    String houseNumber,
     @NotEmpty String postalCode,
     @NotEmpty String city) {}

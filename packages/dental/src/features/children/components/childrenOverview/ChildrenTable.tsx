@@ -191,6 +191,7 @@ export function ChildrenTable() {
                 <PersonSearchForm
                   {...personSearch.formProps}
                   allowPartialSearch
+                  nameOrder="lastNameBeforeFirstName"
                   onChange={handleChangePersonSearch}
                 />
               </UnstyledTabPanel>
@@ -249,8 +250,8 @@ export function ChildrenTable() {
 
 const columnHelper = createColumnHelper<Child>();
 const COLUMNS = [
-  columnHelper.accessor("firstName", {
-    header: "Vorname",
+  columnHelper.accessor("lastName", {
+    header: "Nachname",
     cell: (props) => props.getValue(),
     enableSorting: true,
     meta: {
@@ -260,8 +261,8 @@ const COLUMNS = [
       },
     },
   }),
-  columnHelper.accessor("lastName", {
-    header: "Nachname",
+  columnHelper.accessor("firstName", {
+    header: "Vorname",
     cell: (props) => props.getValue(),
     enableSorting: true,
     meta: {

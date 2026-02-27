@@ -42,18 +42,24 @@ export function ProstituteProtectionAppointmentStandardDuration() {
 }
 
 enum FormNames {
-  CONSULTATION = "consultation",
+  INITIAL_CONSULTATION = "initialConsultation",
+  FOLLOW_UP_CONSULTATION = "followUpConsultation",
 }
 
 interface ProstituteProtectionAppointmentStandardDurationFormValues extends FormikValues {
-  [FormNames.CONSULTATION]: OptionalFieldValue<number>;
+  [FormNames.INITIAL_CONSULTATION]: OptionalFieldValue<number>;
+  [FormNames.FOLLOW_UP_CONSULTATION]: OptionalFieldValue<number>;
 }
 
 const fields: StandardDurationField<ProstituteProtectionAppointmentStandardDurationFormValues>[] =
   [
     {
-      name: FormNames.CONSULTATION,
-      label: "Termindauer Beratung in Minuten",
+      name: FormNames.INITIAL_CONSULTATION,
+      label: "Termindauer Erstberatung in Minuten",
+    },
+    {
+      name: FormNames.FOLLOW_UP_CONSULTATION,
+      label: "Termindauer Folgeberatung in Minuten",
     },
   ];
 
@@ -61,7 +67,12 @@ function mapValues(
   values: ProstituteProtectionAppointmentStandardDurationFormValues,
 ) {
   return {
-    consultation: mapDurationValue(values.consultation),
+    initialConsultation: mapDurationValue(
+      values[FormNames.INITIAL_CONSULTATION],
+    ),
+    followUpConsultation: mapDurationValue(
+      values[FormNames.FOLLOW_UP_CONSULTATION],
+    ),
   };
 }
 
@@ -77,7 +88,12 @@ function mapResponse(
 ): ProstituteProtectionAppointmentStandardDurationFormValues {
   const { standardDurations } = data;
   return {
-    consultation: mapOptionalISODuration(standardDurations?.consultation),
+    initialConsultation: mapOptionalISODuration(
+      standardDurations?.initialConsultation,
+    ),
+    followUpConsultation: mapOptionalISODuration(
+      standardDurations?.followUpConsultation,
+    ),
   };
 }
 

@@ -23,11 +23,18 @@ data:
     pid_file: /data/homeserver.pid
     listeners:
       - port: {{ .Values.synapse.port }}
+        bind_addresses:
+          - '127.0.0.1'
         tls: false
         type: http
         x_forwarded: true
         resources:
           - names: [ client, federation ]
+            compress: false
+      - port: 8081
+        type: http
+        resources:
+          - names: [health]
             compress: false
 
     database:

@@ -15,9 +15,9 @@ import de.eshg.prostituteprotection.domain.model.PersonalData;
 import de.eshg.prostituteprotection.domain.model.ProstituteProtectionProcedure;
 import de.eshg.prostituteprotection.domain.model.ProstituteProtectionProcedure_;
 import de.eshg.prostituteprotection.domain.repository.ProstituteProtectionProcedureRepository;
-import de.eshg.prostituteprotection.statistic.model.ConsultationType;
 import de.eshg.prostituteprotection.statistic.model.DocumentType;
 import de.eshg.prostituteprotection.statistic.model.Language;
+import de.eshg.prostituteprotection.statistic.model.ProcedureType;
 import jakarta.persistence.criteria.Predicate;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
@@ -73,11 +73,11 @@ public class ProstituteProtectionDataSource
 
     return switch (attribute) {
       case PROCEDURE_ID -> procedure.getExternalId();
+      case PROCEDURE_TYPE -> getProcedureType(procedure);
       case AGE -> procedure.getAgeAtConsultation();
       case ALIAS -> Boolean.TRUE.equals(procedure.getCertificateWithAliasCreated());
       case DOCUMENT_TYPE -> getDocumentType(personalData);
       case CONSULTATION_DATE -> getConsultationDate(procedure);
-      case CONSULTATION_TYPE -> getConsultationType(procedure);
       case CONSULTATION_LANGUAGE -> getLanguageOfConsultation(procedure.getConsultation());
       case INFORMATION_MATERIAL ->
           getConsultationAttribute(procedure, Consultation::isInformationMaterial);
@@ -97,8 +97,8 @@ public class ProstituteProtectionDataSource
         consultation.getLanguageOfConsultation());
   }
 
-  private String getConsultationType(ProstituteProtectionProcedure procedure) {
-    return ConsultationType.convertConsultationTypeToValue(procedure.getConsultationType());
+  private String getProcedureType(ProstituteProtectionProcedure procedure) {
+    return ProcedureType.convertProcedureTypeToValue(procedure.getProcedureType());
   }
 
   private String getLanguageOfConsultation(Consultation consultation) {

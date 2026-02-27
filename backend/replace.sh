@@ -26,3 +26,4 @@ ln -s data/test/validation/ConfigLibraryOpenApiTest/openApiSpec.json lib-config/
 ln -s data/test/validation/MedsAbroadOpenApiTest/openApiSpec.json meds-abroad/openApi.json
 ln -s data/test/validation/ProstituteProtectionOpenApiTest/openApiSpec.json prostitute-protection/openApi.json
 ln -s data/test/validation/InfectionBriefingOpenApiTest/openApiSpec.json infection-briefing/openApi.json
+ln -s data/test/validation/FileJockeyOpenApiTest/openApiSpec.json file-jockey/openApi.json

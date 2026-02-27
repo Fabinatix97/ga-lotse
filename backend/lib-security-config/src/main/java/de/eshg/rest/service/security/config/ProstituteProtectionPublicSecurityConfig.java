@@ -22,6 +22,9 @@ public final class ProstituteProtectionPublicSecurityConfig
     grantAccessToConfiguration();
     grantAccessToStatistics(EmployeePermissionRole.PROSTITUTE_PROTECTION_ADMIN);
 
+    requestMatchers(BaseUrls.ProstituteProtection.PROCEDURE_CONTROLLER + "/export")
+        .hasAnyRole(EmployeePermissionRole.PROSTITUTE_PROTECTION_LEADER);
+
     requestMatchers(
             BaseUrls.ProstituteProtection.PROCEDURE_CONTROLLER + "/**",
             BaseUrls.EVENT_METADATA_API + "/**")

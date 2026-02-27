@@ -11,15 +11,15 @@ import {
 import { Stack } from "@mui/joy";
 import { formatDate } from "date-fns";
 import { useFormikContext } from "formik";
-import { isNonNullish } from "remeda";
+import { isNonNullish, isNullish } from "remeda";
 
 import { Row } from "@eshg/lib-portal";
 
-import { AppointmentFormValues } from "@/lib/businessModules/officialMedicalService/components/appointment/AppointmentForm";
-import { MultiStepFormButtonBar } from "@/lib/businessModules/officialMedicalService/shared/MultiStepFormButtonBar";
+import { AppointmentFormData } from "@/lib/businessModules/prostituteProtection/components/appointment/AppointmentStepper";
 import { useCitizenRoutes } from "@/lib/businessModules/prostituteProtection/shared/routes";
 import { useTranslation } from "@/lib/i18n/client";
 import { useLocale } from "@/lib/i18n/useLocale";
+import { MultiStepFormButtonBar } from "@/lib/shared/components/form/MultiStepFormButtonBar";
 import {
   ContentSheet,
   ContentSheetTitle,
@@ -30,7 +30,7 @@ export function AppointmentOverview() {
   const locale = useLocale();
   const routes = useCitizenRoutes();
   const landingPageRoute = routes.overview;
-  const { values } = useFormikContext<AppointmentFormValues>();
+  const { values } = useFormikContext<AppointmentFormData>();
 
   const concernLabel = t("common.overview_header");
 
@@ -62,6 +62,7 @@ export function AppointmentOverview() {
         forwardLabel={t("common.continue")}
         backLabel={t("common.back")}
         submitLabel={t("common.submit")}
+        submitDisabled={isNullish(values.appointment)}
       />
     </ContentSheet>
   );

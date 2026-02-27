@@ -104,6 +104,7 @@ The set of all preview features is defined in the `application-preview-features.
 | auth-cache                  | 6379          | 6379          |
 | keycloak                    | 8080          | 9090          |
 | auditlog                    | 8080          | 8094          |
+| file-jockey                 | 8080          | 8104          |
 
 ## individual modules (dockerized)
 

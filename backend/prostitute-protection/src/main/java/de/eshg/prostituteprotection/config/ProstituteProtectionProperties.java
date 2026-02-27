@@ -21,6 +21,12 @@ public class ProstituteProtectionProperties implements ResettableProperties {
 
   @Positive private int rateLimitCapacity = 20;
 
+  @Positive
+  @DurationUnit(ChronoUnit.MINUTES)
+  private Duration gdprExportRateLimitIntervalMinutes = Duration.ofMinutes(10);
+
+  @Positive private int gdprExportRateLimitCapacity = 20;
+
   public @Positive Duration getRateLimitIntervalMinutes() {
     return rateLimitIntervalMinutes;
   }
@@ -36,5 +42,23 @@ public class ProstituteProtectionProperties implements ResettableProperties {
 
   public void setRateLimitCapacity(@Positive int rateLimitCapacity) {
     this.rateLimitCapacity = rateLimitCapacity;
+  }
+
+  public @Positive Duration getGdprExportRateLimitIntervalMinutes() {
+    return gdprExportRateLimitIntervalMinutes;
+  }
+
+  public void setGdprExportRateLimitIntervalMinutes(
+      @Positive Duration gdprExportRateLimitIntervalMinutes) {
+    this.gdprExportRateLimitIntervalMinutes = gdprExportRateLimitIntervalMinutes;
+  }
+
+  @Positive
+  public int getGdprExportRateLimitCapacity() {
+    return gdprExportRateLimitCapacity;
+  }
+
+  public void setGdprExportRateLimitCapacity(@Positive int gdprExportRateLimitCapacity) {
+    this.gdprExportRateLimitCapacity = gdprExportRateLimitCapacity;
   }
 }

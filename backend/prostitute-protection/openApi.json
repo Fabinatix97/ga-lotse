@@ -436,7 +436,7 @@
             "description" : "A response containing the standard duration if initialized."
           }
         },
-        "summary" : "Get the standard duration for prostitute protection consultation appointments",
+        "summary" : "Get the standard duration for prostitute protection appointments",
         "tags" : [ "ProstituteProtectionAppointmentStandardDuration" ]
       }
     },
@@ -809,6 +809,14 @@
     "/citizen/public/free-appointments" : {
       "get" : {
         "operationId" : "getFreeAppointmentsForCitizen",
+        "parameters" : [ {
+          "in" : "query",
+          "name" : "procedureType",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/components/schemas/ProstituteProtectionProcedureType"
+          }
+        } ],
         "responses" : {
           "200" : {
             "content" : {
@@ -965,7 +973,7 @@
             "description" : "A response containing the standard duration if initialized, or an empty response body otherwise."
           }
         },
-        "summary" : "Get the standard duration for prostitute protection consultation appointments",
+        "summary" : "Get the standard duration for prostitute protection appointments",
         "tags" : [ "ProstituteProtectionAppointmentStandardDurationConfig" ]
       },
       "put" : {
@@ -985,7 +993,7 @@
             "description" : "OK"
           }
         },
-        "summary" : "Update the standard duration for prostitute protection consultation appointments",
+        "summary" : "Update the standard duration for prostitute protection appointments",
         "tags" : [ "ProstituteProtectionAppointmentStandardDurationConfig" ]
       }
     },
@@ -2777,6 +2785,36 @@
         "tags" : [ "ProstituteProtection" ]
       }
     },
+    "/prostitute-protection-procedures/export" : {
+      "post" : {
+        "operationId" : "exportGdprDataToXlsx",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/ProstituteProtectionProcedurePersonSearchParameters"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "type" : "string",
+                  "format" : "binary"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Export GDPR data for all procedures matching person search parameters as XLSX file",
+        "tags" : [ "ProstituteProtection" ]
+      }
+    },
     "/prostitute-protection-procedures/person-search" : {
       "post" : {
         "operationId" : "personSearch",
@@ -3193,6 +3231,13 @@
             "type" : "string",
             "format" : "uuid"
           }
+        }, {
+          "in" : "query",
+          "name" : "procedureType",
+          "required" : false,
+          "schema" : {
+            "$ref" : "#/components/schemas/ProstituteProtectionProcedureType"
+          }
         } ],
         "responses" : {
           "200" : {
@@ -3325,6 +3370,35 @@
         },
         "summary" : "Update the waiting room for a procedure.",
         "tags" : [ "ProstituteProtection" ]
+      }
+    },
+    "/statistics-inclusion" : {
+      "post" : {
+        "operationId" : "updateStatisticsInclusion",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/BulkUpdateProceduresStatisticsInclusionRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/BulkUpdateProceduresStatisticsInclusionResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Update the statistics inclusion of procedures in bulk",
+        "tags" : [ "Procedure" ]
       }
     },
     "/statistics/procedure-ids" : {
@@ -3934,6 +4008,10 @@
         "required" : [ "end", "start" ],
         "type" : "object",
         "properties" : {
+          "appointmentBlockId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
           "end" : {
             "type" : "string",
             "format" : "date-time"
@@ -4150,7 +4228,7 @@
       },
       "AppointmentType" : {
         "type" : "string",
-        "enum" : [ "CONSULTATION", "VACCINATION", "REGULAR_EXAMINATION", "CAN_CHILD", "ENTRY_LEVEL", "SPECIAL_NEEDS", "PROOF_SUBMISSION", "HIV_STI_CONSULTATION", "SEX_WORK", "RESULTS_REVIEW", "OFFICIAL_MEDICAL_SERVICE_SHORT", "OFFICIAL_MEDICAL_SERVICE_LONG", "MEDS_ABROAD_CERTIFICATION", "PROSTITUTE_PROTECTION_CONSULTATION", "INFECTION_BRIEFING_NEW", "INFECTION_BRIEFING_REPLACEMENT" ]
+        "enum" : [ "CONSULTATION", "VACCINATION", "REGULAR_EXAMINATION", "CAN_CHILD", "ENTRY_LEVEL", "SPECIAL_NEEDS", "PROOF_SUBMISSION", "HIV_STI_CONSULTATION", "SEX_WORK", "RESULTS_REVIEW", "OFFICIAL_MEDICAL_SERVICE_SHORT", "OFFICIAL_MEDICAL_SERVICE_LONG", "MEDS_ABROAD_CERTIFICATION", "PROSTITUTE_PROTECTION_INITIAL", "PROSTITUTE_PROTECTION_FOLLOW_UP", "INFECTION_BRIEFING_NEW", "INFECTION_BRIEFING_REPLACEMENT" ]
       },
       "ApprovalRequest" : {
         "required" : [ "approvalRequestId", "createdAt", "createdBy", "operation", "reason", "status" ],
@@ -4308,6 +4386,50 @@
           }
         }
       },
+      "BulkUpdateProceduresStatisticsInclusionRequest" : {
+        "required" : [ "procedures", "statisticsInclusion" ],
+        "type" : "object",
+        "properties" : {
+          "procedures" : {
+            "maxItems" : 200,
+            "minItems" : 1,
+            "uniqueItems" : true,
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "format" : "uuid"
+            }
+          },
+          "statisticsInclusion" : {
+            "$ref" : "#/components/schemas/StatisticsInclusion"
+          }
+        }
+      },
+      "BulkUpdateProceduresStatisticsInclusionResponse" : {
+        "required" : [ "failedProcedures", "statisticsInclusion", "updatedProcedures" ],
+        "type" : "object",
+        "properties" : {
+          "failedProcedures" : {
+            "uniqueItems" : true,
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "format" : "uuid"
+            }
+          },
+          "statisticsInclusion" : {
+            "$ref" : "#/components/schemas/StatisticsInclusion"
+          },
+          "updatedProcedures" : {
+            "uniqueItems" : true,
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "format" : "uuid"
+            }
+          }
+        }
+      },
       "BusinessModule" : {
         "type" : "string",
         "enum" : [ "INSPECTION", "SCHOOL_ENTRY", "TRAVEL_MEDICINE", "MEASLES_PROTECTION", "STI_PROTECTION", "MEDICAL_REGISTRY", "DENTAL", "OFFICIAL_MEDICAL_SERVICE", "MEDS_ABROAD", "PROSTITUTE_PROTECTION", "INFECTION_BRIEFING" ]
@@ -4365,33 +4487,9 @@
         "enum" : [ "COMPLETE", "PARTIALLY_COMPLETE", "INCOMPLETE" ]
       },
       "Consultation" : {
-        "required" : [ "alcoholAndDrugUsage", "birthControl", "clearing", "consultingServices", "diseasePrevention", "emergencyHelp", "healthAndSocialInsurance", "informationMaterial", "interpreterConsulted", "legalAdvices", "predicament", "pregnancy", "referral", "taxLiability", "version" ],
+        "required" : [ "interpreterConsulted", "paragraph10", "paragraph7", "version" ],
         "type" : "object",
         "properties" : {
-          "alcoholAndDrugUsage" : {
-            "type" : "boolean"
-          },
-          "birthControl" : {
-            "type" : "boolean"
-          },
-          "clearing" : {
-            "type" : "boolean"
-          },
-          "consultingServices" : {
-            "type" : "boolean"
-          },
-          "diseasePrevention" : {
-            "type" : "boolean"
-          },
-          "emergencyHelp" : {
-            "type" : "boolean"
-          },
-          "healthAndSocialInsurance" : {
-            "type" : "boolean"
-          },
-          "informationMaterial" : {
-            "type" : "boolean"
-          },
           "interpreterConsulted" : {
             "type" : "boolean"
           },
@@ -4404,20 +4502,11 @@
           "languageOfConsultation" : {
             "$ref" : "#/components/schemas/PersonLanguage"
           },
-          "legalAdvices" : {
-            "type" : "boolean"
+          "paragraph10" : {
+            "$ref" : "#/components/schemas/ConsultationParagraph10"
           },
-          "predicament" : {
-            "type" : "boolean"
-          },
-          "pregnancy" : {
-            "type" : "boolean"
-          },
-          "referral" : {
-            "type" : "boolean"
-          },
-          "taxLiability" : {
-            "type" : "boolean"
+          "paragraph7" : {
+            "$ref" : "#/components/schemas/ConsultationParagraph7"
           },
           "version" : {
             "type" : "integer",
@@ -4426,9 +4515,56 @@
           }
         }
       },
-      "ConsultationType" : {
-        "type" : "string",
-        "enum" : [ "INITIAL", "FOLLOW_UP" ]
+      "ConsultationParagraph10" : {
+        "required" : [ "alcoholAndDrugUsage", "birthControl", "clearing", "diseasePrevention", "pregnancy", "referral" ],
+        "type" : "object",
+        "properties" : {
+          "alcoholAndDrugUsage" : {
+            "type" : "boolean"
+          },
+          "birthControl" : {
+            "type" : "boolean"
+          },
+          "clearing" : {
+            "type" : "boolean"
+          },
+          "diseasePrevention" : {
+            "type" : "boolean"
+          },
+          "pregnancy" : {
+            "type" : "boolean"
+          },
+          "referral" : {
+            "type" : "boolean"
+          }
+        }
+      },
+      "ConsultationParagraph7" : {
+        "required" : [ "consultingServices", "emergencyHelp", "healthAndSocialInsurance", "informationMaterial", "legalAdvices", "predicament", "taxLiability" ],
+        "type" : "object",
+        "properties" : {
+          "consultingServices" : {
+            "type" : "boolean"
+          },
+          "emergencyHelp" : {
+            "type" : "boolean"
+          },
+          "healthAndSocialInsurance" : {
+            "type" : "boolean"
+          },
+          "informationMaterial" : {
+            "type" : "boolean"
+          },
+          "legalAdvices" : {
+            "type" : "boolean"
+          },
+          "predicament" : {
+            "type" : "boolean"
+          },
+          "taxLiability" : {
+            "type" : "boolean"
+          }
+        }
       },
       "ContactDetails" : {
         "required" : [ "contactType", "salutation" ],
@@ -4532,7 +4668,7 @@
         }
       },
       "CreateCitizenProcedureRequest" : {
-        "required" : [ "alias", "appointment", "consultationType", "languages" ],
+        "required" : [ "alias", "appointment", "languages", "procedureType" ],
         "type" : "object",
         "properties" : {
           "alias" : {
@@ -4541,15 +4677,15 @@
           "appointment" : {
             "$ref" : "#/components/schemas/Appointment"
           },
-          "consultationType" : {
-            "$ref" : "#/components/schemas/ConsultationType"
-          },
           "languages" : {
             "minItems" : 1,
             "type" : "array",
             "items" : {
               "$ref" : "#/components/schemas/PersonLanguage"
             }
+          },
+          "procedureType" : {
+            "$ref" : "#/components/schemas/ProstituteProtectionProcedureType"
           }
         }
       },
@@ -4697,7 +4833,7 @@
         }
       },
       "CreateProstituteProtectionProcedureRequest" : {
-        "required" : [ "appointmentBookingType", "appointmentStart", "durationInMinutes", "languages" ],
+        "required" : [ "appointmentBookingType", "appointmentStart", "durationInMinutes", "languages", "procedureType" ],
         "type" : "object",
         "properties" : {
           "alias" : {
@@ -4715,9 +4851,6 @@
             "type" : "string",
             "format" : "uuid"
           },
-          "consultationType" : {
-            "$ref" : "#/components/schemas/ConsultationType"
-          },
           "durationInMinutes" : {
             "type" : "integer",
             "description" : "Duration of the appointment in minutes.",
@@ -4734,6 +4867,9 @@
             "maxLength" : 23,
             "minLength" : 1,
             "type" : "string"
+          },
+          "procedureType" : {
+            "$ref" : "#/components/schemas/ProstituteProtectionProcedureType"
           }
         }
       },
@@ -5380,12 +5516,6 @@
             "items" : {
               "$ref" : "#/components/schemas/GetAppointmentBlock"
             }
-          },
-          "availableForBulkBooking" : {
-            "type" : "boolean"
-          },
-          "availableForCitizen" : {
-            "type" : "boolean"
           },
           "id" : {
             "type" : "string",
@@ -6927,7 +7057,7 @@
         } ]
       },
       "Procedure" : {
-        "required" : [ "archivingRelevanceSettings", "businessModule", "createdAt", "modifiedAt", "procedureId", "procedureStatus", "procedureType", "summary" ],
+        "required" : [ "archivingRelevanceSettings", "businessModule", "createdAt", "modifiedAt", "procedureId", "procedureStatus", "procedureType", "statisticsInclusion", "summary" ],
         "type" : "object",
         "properties" : {
           "archivingRelevanceSettings" : {
@@ -6962,6 +7092,9 @@
           "procedureType" : {
             "$ref" : "#/components/schemas/ProcedureType"
           },
+          "statisticsInclusion" : {
+            "$ref" : "#/components/schemas/StatisticsInclusion"
+          },
           "summary" : {
             "maxLength" : 128,
             "minLength" : 0,
@@ -6971,7 +7104,7 @@
         }
       },
       "ProcedureDetails" : {
-        "required" : [ "appointmentFromAppointmentBlock", "hasEncryptedData", "id", "languages", "procedureStatus", "version", "waitingRoom" ],
+        "required" : [ "appointmentFromAppointmentBlock", "hasEncryptedData", "id", "languages", "procedureStatus", "procedureType", "version", "waitingRoom" ],
         "type" : "object",
         "properties" : {
           "alias" : {
@@ -6989,9 +7122,6 @@
           "consultationCertificateCreatedAt" : {
             "type" : "string",
             "format" : "date-time"
-          },
-          "consultationType" : {
-            "$ref" : "#/components/schemas/ConsultationType"
           },
           "creator" : {
             "$ref" : "#/components/schemas/UserName"
@@ -7022,6 +7152,9 @@
           },
           "procedureStatus" : {
             "$ref" : "#/components/schemas/ProcedureStatus"
+          },
+          "procedureType" : {
+            "$ref" : "#/components/schemas/ProstituteProtectionProcedureType"
           },
           "residencePermitValidityDate" : {
             "type" : "string",
@@ -7082,7 +7215,7 @@
       },
       "ProcedureType" : {
         "type" : "string",
-        "enum" : [ "REGULAR_EXAMINATION", "CAN_CHILD", "ENTRY_LEVEL", "DRAFT_CITIZEN_OFFICE_IMPORT", "DRAFT_SCHOOL_IMPORT", "INSPECTION", "TM_VACCINATION_CONSULTATION", "MEASLES_PROTECTION", "STI_PROTECTION", "MEDICAL_REGISTRY_ENTRY", "MEDICAL_REGISTRY_CITIZEN_DRAFT", "MEDICAL_REGISTRY_EMPLOYEE_DRAFT", "DENTAL_CHILD", "OFFICIAL_MEDICAL_SERVICE", "MEDS_ABROAD", "PROSTITUTE_PROTECTION", "INFECTION_BRIEFING_NEW", "INFECTION_BRIEFING_REPLACEMENT" ]
+        "enum" : [ "REGULAR_EXAMINATION", "CAN_CHILD", "ENTRY_LEVEL", "DRAFT_CITIZEN_OFFICE_IMPORT", "DRAFT_SCHOOL_IMPORT", "INSPECTION", "TM_VACCINATION_CONSULTATION", "MEASLES_PROTECTION", "STI_PROTECTION", "MEDICAL_REGISTRY_ENTRY", "MEDICAL_REGISTRY_CITIZEN_DRAFT", "MEDICAL_REGISTRY_EMPLOYEE_DRAFT", "DENTAL_CHILD", "OFFICIAL_MEDICAL_SERVICE", "MEDS_ABROAD", "PROSTITUTE_PROTECTION_INITIAL", "PROSTITUTE_PROTECTION_FOLLOW_UP", "INFECTION_BRIEFING_NEW", "INFECTION_BRIEFING_REPLACEMENT" ]
       },
       "ProcedureWithDuration" : {
         "required" : [ "createdAt", "id" ],
@@ -7199,10 +7332,13 @@
         "enum" : [ "ASC", "DESC" ]
       },
       "ProstituteProtectionAppointmentStandardDurations" : {
-        "required" : [ "consultation" ],
+        "required" : [ "followUpConsultation", "initialConsultation" ],
         "type" : "object",
         "properties" : {
-          "consultation" : {
+          "followUpConsultation" : {
+            "type" : "string"
+          },
+          "initialConsultation" : {
             "type" : "string"
           }
         },
@@ -7221,7 +7357,7 @@
         }
       },
       "ProstituteProtectionProcedureOverview" : {
-        "required" : [ "createdAt", "id", "languages", "modifiedAt", "status", "version" ],
+        "required" : [ "createdAt", "id", "languages", "modifiedAt", "procedureType", "status", "version" ],
         "type" : "object",
         "properties" : {
           "alias" : {
@@ -7230,9 +7366,6 @@
           "appointmentStart" : {
             "type" : "string",
             "format" : "date-time"
-          },
-          "consultationType" : {
-            "$ref" : "#/components/schemas/ConsultationType"
           },
           "createdAt" : {
             "type" : "string",
@@ -7251,6 +7384,9 @@
           "modifiedAt" : {
             "type" : "string",
             "format" : "date-time"
+          },
+          "procedureType" : {
+            "$ref" : "#/components/schemas/ProstituteProtectionProcedureType"
           },
           "status" : {
             "$ref" : "#/components/schemas/ProcedureStatus"
@@ -7278,7 +7414,7 @@
         }
       },
       "ProstituteProtectionProcedureSearchOverview" : {
-        "required" : [ "dateOfBirth", "firstName", "id", "lastName", "status" ],
+        "required" : [ "dateOfBirth", "firstName", "id", "lastName", "procedureType", "status" ],
         "type" : "object",
         "properties" : {
           "alias" : {
@@ -7290,9 +7426,6 @@
           },
           "consultantName" : {
             "type" : "string"
-          },
-          "consultationType" : {
-            "$ref" : "#/components/schemas/ConsultationType"
           },
           "creatorName" : {
             "type" : "string"
@@ -7315,10 +7448,19 @@
             "minLength" : 1,
             "type" : "string"
           },
+          "procedureType" : {
+            "$ref" : "#/components/schemas/ProstituteProtectionProcedureType"
+          },
           "status" : {
             "$ref" : "#/components/schemas/ProcedureStatus"
           }
         }
+      },
+      "ProstituteProtectionProcedureType" : {
+        "type" : "string",
+        "description" : "Type of consultation. It defines how long the consultation lasts.",
+        "example" : "INITIAL",
+        "enum" : [ "INITIAL", "FOLLOW_UP" ]
       },
       "ProstitutionProtectionProcedureSortKey" : {
         "type" : "string",
@@ -7347,6 +7489,10 @@
         "type" : "string",
         "default" : "ASC",
         "enum" : [ "ASC", "DESC" ]
+      },
+      "StatisticsInclusion" : {
+        "type" : "string",
+        "enum" : [ "INCLUDE", "CUSTOM", "EXCLUDE" ]
       },
       "SystemProgressEntry" : {
         "required" : [ "createdAt", "modifiedAt", "progressEntryId", "systemProgressEntryType", "triggerType" ],
@@ -7594,6 +7740,12 @@
         "required" : [ "consultants", "end", "mfas", "parallelExaminations", "physicians", "sopasss", "start" ],
         "type" : "object",
         "properties" : {
+          "availableForBulkBooking" : {
+            "type" : "boolean"
+          },
+          "availableForCitizen" : {
+            "type" : "boolean"
+          },
           "consultants" : {
             "type" : "array",
             "items" : {
@@ -7709,7 +7861,7 @@
         }
       },
       "UpdateProstituteProtectionProcedureRequest" : {
-        "required" : [ "appointmentBookingType", "appointmentStart", "consultationType", "durationInMinutes", "version" ],
+        "required" : [ "appointmentBookingType", "appointmentStart", "durationInMinutes", "procedureType", "version" ],
         "type" : "object",
         "properties" : {
           "appointmentBookingType" : {
@@ -7725,14 +7877,14 @@
             "description" : "User id of the appointments consultant.",
             "format" : "uuid"
           },
-          "consultationType" : {
-            "$ref" : "#/components/schemas/ConsultationType"
-          },
           "durationInMinutes" : {
             "type" : "integer",
             "description" : "Duration of the appointment in minutes.",
             "format" : "int32",
             "example" : 30
+          },
+          "procedureType" : {
+            "$ref" : "#/components/schemas/ProstituteProtectionProcedureType"
           },
           "version" : {
             "type" : "integer",

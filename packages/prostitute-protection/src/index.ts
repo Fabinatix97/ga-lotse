@@ -9,7 +9,7 @@
 export { routes } from "./config/routes";
 export { resolveSideNavigationItems } from "./config/sideNavigationItem";
 export { moduleUserGroup } from "./config/moduleUserGroup";
-export { taskTypes } from "./shared/constants";
+export { taskTypes, procedureTypes } from "./shared/constants";
 
 // Contexts
 export {
@@ -28,6 +28,7 @@ export { ProstituteProtectionConsultationPage } from "./pages/ProstituteProtecti
 export { ProstituteProtectionPersonSearchPage } from "./pages/ProstituteProtectionPersonSearchPage";
 export { ProstituteProtectionCertificatesPage } from "./pages/ProstituteProtectionCertificatesPage";
 export { ProstituteProtectionWaitingRoomOverviewPage } from "./pages/ProstituteProtectionWaitingRoomOverviewPage";
+export { ProstituteProtectionAppointmentsPage } from "./pages/ProstituteProtectionAppointmentsPage";
 
 // Layouts
 export { ProstituteProtectionProcedureLayout } from "./layouts/ProstituteProtectionProcedureLayout";

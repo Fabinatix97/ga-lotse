@@ -43,9 +43,9 @@ public interface AppointmentBlockRepository extends JpaRepository<AppointmentBlo
       left join fetch a.appointmentBlockGroup abg
       left join fetch abg.appointmentTypeHolders h
       where exists (select 1 from abg.appointmentTypeHolders ath where ath.type = :appointmentType)
-      and (:availableForCitizen is null or abg.availableForCitizen = :availableForCitizen)
-      and (:availableForBulkBooking is null or abg.availableForBulkBooking = :availableForBulkBooking)
       and (:locationId is null or abg.locationId = :locationId)
+      and (:availableForCitizen is null or a.availableForCitizen = :availableForCitizen)
+      and (:availableForBulkBooking is null or a.availableForBulkBooking = :availableForBulkBooking)
       and (:physicianId is null or :physicianId member of a.physicians)
       and (:mfaId is null or :mfaId member of a.mfas)
       and (:sopassId is null or :sopassId member of a.sopasss)

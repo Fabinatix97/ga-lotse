@@ -1,0 +1,19 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<!--
+ Copyright 2026 cronn GmbH
+ SPDX-License-Identifier: Apache-2.0
+-->
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+  <changeSet author="GA-Lotse" id="1770127725380-1">
+    <ext:addPostgresEnumValues enumTypeName="calendartype" valuesToAdd="MODULE"/>
+    <ext:addPostgresEnumValues enumTypeName="eventtype" valuesToAdd="INFORMATION"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1770130837986-1">
+    <ext:createPostgresEnumType name="businessmodule" values="DENTAL, INFECTION_BRIEFING, INSPECTION, MEASLES_PROTECTION, MEDICAL_REGISTRY, MEDS_ABROAD, OFFICIAL_MEDICAL_SERVICE, PROSTITUTE_PROTECTION, SCHOOL_ENTRY, STI_PROTECTION, TRAVEL_MEDICINE"/>
+    <addColumn tableName="calendar">
+      <column name="business_module" type="BUSINESSMODULE"/>
+    </addColumn>
+    <addUniqueConstraint columnNames="business_module" constraintName="calendar_business_module_key" tableName="calendar"/>
+  </changeSet>
+</databaseChangeLog>

@@ -9,11 +9,14 @@ import { EnumMap, buildEnumOptions } from "@eshg/lib-portal";
 import {
   ApiCertificateType,
   ApiConsultation,
-  ApiConsultationType,
+  ApiConsultationParagraph7,
+  ApiConsultationParagraph10,
   ApiDocumentType,
   ApiPersonLanguage,
   ApiProcedureProperty,
   ApiProcedureStatus,
+  ApiProcedureType,
+  ApiProstituteProtectionProcedureType,
   ApiTaskType,
   ApiWaitingStatus,
 } from "@eshg/prostitute-protection-api";
@@ -29,6 +32,11 @@ export const systemProgressEntryTypeTitles: Record<string, string> = {
   CONSULTATION_CERTIFICATE_GENERATED: "Beratungszertifikat erstellt",
   CERTIFICATE_DOWNLOADED: "Zertifikat heruntergeladen",
 } as const;
+
+export const procedureTypes = [
+  ApiProcedureType.ProstituteProtectionInitial,
+  ApiProcedureType.ProstituteProtectionFollowUp,
+];
 
 export const taskTypes = [ApiTaskType.ProstituteProtection];
 
@@ -54,7 +62,7 @@ export const PERSON_FIELD_NAME = {
 
 export const ADDITIONAL_DATA_FIELD_NAME = {
   appointment: "Termin",
-  consultationType: "Beratungstyp",
+  procedureType: "Beratungstyp",
   procedureStatus: "Status",
   consultant: "Berater:in",
   consultantOfAppointmentBlock: "Berater:in von zugewiesenem Terminblock",
@@ -67,7 +75,17 @@ export const APPOINTMENT_FORM_LABELS = {
 } as const;
 
 export const CONSULTATION_FIELD_NAME: Record<
-  keyof Omit<ApiConsultation, "version">,
+  keyof Omit<ApiConsultation, "version" | "paragraph7" | "paragraph10">,
+  string
+> = {
+  interpreterConsulted: "Dolmetscher hinzugezogen",
+  interpreterFirstName: PERSON_FIELD_NAME.firstName,
+  interpreterLastName: PERSON_FIELD_NAME.lastName,
+  languageOfConsultation: "Sprache der Beratung",
+} as const;
+
+export const CONSULTATION_PARAGRAPH7_FIELD_NAME: Record<
+  keyof ApiConsultationParagraph7,
   string
 > = {
   legalAdvices: "Rechtsberatung",
@@ -75,18 +93,20 @@ export const CONSULTATION_FIELD_NAME: Record<
   consultingServices: "Beratungsangebote",
   emergencyHelp: "Hilfe in Notsituationen",
   taxLiability: "Steuerpflicht",
-  clearing: "Beratungsbedarf / Clearing",
   informationMaterial: "Infomaterial",
   predicament: "Notlage / Zwangslage",
+} as const;
+
+export const CONSULTATION_PARAGRAPH10_FIELD_NAME: Record<
+  keyof ApiConsultationParagraph10,
+  string
+> = {
   diseasePrevention: "Krankheitsverhütung",
   birthControl: "Empfängnisregelung",
   pregnancy: "Schwangerschaft",
   alcoholAndDrugUsage: "Alkohol- / Drogengebrauch",
   referral: "Weitervermittlung § 19",
-  interpreterConsulted: "Dolmetscher hinzugezogen",
-  interpreterFirstName: PERSON_FIELD_NAME.firstName,
-  interpreterLastName: PERSON_FIELD_NAME.lastName,
-  languageOfConsultation: "Sprache der Beratung",
+  clearing: "Beratungsbedarf / Clearing",
 } as const;
 
 export const DOCUMENT_TYPE_VALUES: Record<ApiDocumentType, string> = {
@@ -97,9 +117,12 @@ export const DOCUMENT_TYPE_VALUES: Record<ApiDocumentType, string> = {
   [ApiDocumentType.Other]: "Sonstige",
 };
 
-export const CONSULTATION_TYPE_VALUES: Record<ApiConsultationType, string> = {
-  [ApiConsultationType.Initial]: "Erstberatung",
-  [ApiConsultationType.FollowUp]: "Folgeberatung",
+export const PROCEDURE_TYPE_VALUES: Record<
+  ApiProstituteProtectionProcedureType,
+  string
+> = {
+  [ApiProstituteProtectionProcedureType.Initial]: "Erstberatung",
+  [ApiProstituteProtectionProcedureType.FollowUp]: "Folgeberatung",
 } as const;
 
 export const LANGUAGE_VALUE: Record<ApiPersonLanguage, string> = {
@@ -164,15 +187,17 @@ export const REQUIRED_PROCEDURE_PROPERTIES: EnumMap<ApiProcedureProperty> = {
   DOCUMENT_TYPE: PERSON_FIELD_NAME.documentType,
   CUSTOM_DOCUMENT_TYPE: PERSON_FIELD_NAME.customDocumentType,
   RESIDENCE_PERMIT_VALIDITY_DATE: PERSON_FIELD_NAME.residencePermitValidityDate,
-  LEGAL_ADVICES: CONSULTATION_FIELD_NAME.legalAdvices,
-  HEALTH_AND_SOCIAL_INSURANCE: CONSULTATION_FIELD_NAME.healthAndSocialInsurance,
-  CONSULTING_SERVICES: CONSULTATION_FIELD_NAME.consultingServices,
-  EMERGENCY_HELP: CONSULTATION_FIELD_NAME.emergencyHelp,
-  TAX_LIABILITY: CONSULTATION_FIELD_NAME.taxLiability,
-  DISEASE_PREVENTION: CONSULTATION_FIELD_NAME.diseasePrevention,
-  BIRTH_CONTROL: CONSULTATION_FIELD_NAME.birthControl,
-  PREGNANCY: CONSULTATION_FIELD_NAME.pregnancy,
-  ALCOHOL_AND_DRUG_USAGE: CONSULTATION_FIELD_NAME.alcoholAndDrugUsage,
+  LEGAL_ADVICES: CONSULTATION_PARAGRAPH7_FIELD_NAME.legalAdvices,
+  HEALTH_AND_SOCIAL_INSURANCE:
+    CONSULTATION_PARAGRAPH7_FIELD_NAME.healthAndSocialInsurance,
+  CONSULTING_SERVICES: CONSULTATION_PARAGRAPH7_FIELD_NAME.consultingServices,
+  EMERGENCY_HELP: CONSULTATION_PARAGRAPH7_FIELD_NAME.emergencyHelp,
+  TAX_LIABILITY: CONSULTATION_PARAGRAPH7_FIELD_NAME.taxLiability,
+  DISEASE_PREVENTION: CONSULTATION_PARAGRAPH10_FIELD_NAME.diseasePrevention,
+  BIRTH_CONTROL: CONSULTATION_PARAGRAPH10_FIELD_NAME.birthControl,
+  PREGNANCY: CONSULTATION_PARAGRAPH10_FIELD_NAME.pregnancy,
+  ALCOHOL_AND_DRUG_USAGE:
+    CONSULTATION_PARAGRAPH10_FIELD_NAME.alcoholAndDrugUsage,
 };
 
 export const WAITING_STATUS_VALUES: EnumMap<ApiWaitingStatus> = {

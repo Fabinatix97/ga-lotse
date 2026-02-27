@@ -319,7 +319,7 @@ export function RuleImportContent() {
             >
               {tr(
                 "ruleImportDescription",
-                "Import rules from JSON. Imported/updated rules will end up in READY_FOR_REVIEW (4-eyes principle).\nImport continues even if some rules fail.",
+                "Import rules from JSON. Imported/updated rules will end up in WORK_IN_PROGRESS status.\nImport continues even if some rules fail.",
               )}
             </Typography>
           }

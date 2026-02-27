@@ -23,6 +23,6 @@ public record ProstituteProtectionProcedureSearchOverviewDto(
     @NotNull @DateOfBirth LocalDate dateOfBirth,
     String creatorName,
     String consultantName,
-    ConsultationTypeDto consultationType,
+    @NotNull ProcedureTypeDto procedureType,
     Instant appointmentStart,
     @NotNull ProcedureStatusDto status) {}

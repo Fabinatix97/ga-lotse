@@ -1,0 +1,18 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<!--
+ Copyright 2026 cronn GmbH
+ SPDX-License-Identifier: Apache-2.0
+-->
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+  <changeSet author="GA-Lotse" id="1770724343686-1">
+    <ext:createPostgresEnumType name="custodianconsent"
+      values="IN_PERSON, WRITTEN"/>
+    <addColumn tableName="new_certificate_procedure">
+      <column name="custodian_consent" type="CUSTODIANCONSENT"/>
+    </addColumn>
+  </changeSet>
+</databaseChangeLog>

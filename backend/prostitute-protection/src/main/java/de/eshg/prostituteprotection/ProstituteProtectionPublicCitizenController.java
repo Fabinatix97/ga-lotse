@@ -13,11 +13,12 @@ import de.eshg.lib.appointmentblock.AppointmentBlockAvailabilityService;
 import de.eshg.lib.appointmentblock.AppointmentBlockService;
 import de.eshg.lib.appointmentblock.api.AppointmentDto;
 import de.eshg.lib.appointmentblock.api.GetFreeAppointmentsResponse;
-import de.eshg.lib.appointmentblock.persistence.AppointmentType;
 import de.eshg.prostituteprotection.api.CreateProstituteProtectionProcedureResponse;
+import de.eshg.prostituteprotection.api.ProcedureTypeDto;
 import de.eshg.prostituteprotection.api.citizen.CreateCitizenProcedureRequest;
 import de.eshg.prostituteprotection.api.citizen.GetOpeningHoursResponse;
 import de.eshg.prostituteprotection.api.citizen.GetPublicCitizenConfigurationResponse;
+import de.eshg.prostituteprotection.mapper.AppointmentMapper;
 import de.eshg.rest.service.error.BadRequestException;
 import de.eshg.rest.service.security.config.BaseUrls;
 import io.swagger.v3.oas.annotations.Operation;
@@ -36,6 +37,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -103,7 +105,8 @@ public class ProstituteProtectionPublicCitizenController {
   @Operation(summary = "Get free appointments.")
   @GetMapping(path = "/free-appointments")
   @Transactional(readOnly = true)
-  public GetFreeAppointmentsResponse getFreeAppointmentsForCitizen() {
+  public GetFreeAppointmentsResponse getFreeAppointmentsForCitizen(
+      @RequestParam(name = "procedureType") ProcedureTypeDto procedureType) {
     Instant now = Instant.now(clock);
     Instant earliestStart =
         now.plus(
@@ -122,7 +125,7 @@ public class ProstituteProtectionPublicCitizenController {
         appointmentBlockService.getFreeAppointmentsWithAvailability(
             earliestStart,
             latestStart,
-            AppointmentType.PROSTITUTE_PROTECTION_CONSULTATION,
+            AppointmentMapper.mapToAppointmentType(procedureType),
             null,
             true,
             null,

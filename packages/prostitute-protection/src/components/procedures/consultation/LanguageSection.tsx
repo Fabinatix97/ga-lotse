@@ -10,7 +10,7 @@ import {
   CheckboxField,
   InputField,
   InputFieldProps,
-  SelectField,
+  SingleAutocompleteField,
   useValidateLength,
 } from "@eshg/lib-portal";
 
@@ -27,7 +27,7 @@ export function LanguageSection() {
     <Section title="Sprache">
       <SectionGridContainer>
         <SectionColumn>
-          <SelectField
+          <SingleAutocompleteField
             options={LANGUAGE_OPTIONS}
             name="languageOfConsultation"
             label={CONSULTATION_FIELD_NAME.languageOfConsultation}

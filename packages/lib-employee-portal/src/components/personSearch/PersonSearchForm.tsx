@@ -64,6 +64,8 @@ const SearchFormSheet = styled(FormSheet)(({ theme }) => ({
   },
 }));
 
+type NameOrder = "firstNameBeforeLastName" | "lastNameBeforeFirstName";
+
 interface PersonSearchFormProps {
   id: string;
   initialValues: PersonSearchFormValues;
@@ -74,6 +76,7 @@ interface PersonSearchFormProps {
   isHidden?: boolean;
   role?: AriaRole;
   autoFocus?: boolean;
+  nameOrder?: NameOrder;
 }
 
 export function PersonSearchForm(props: PersonSearchFormProps) {
@@ -139,29 +142,42 @@ export function PersonSearchForm(props: PersonSearchFormProps) {
 }
 
 function ThreeFactorsFields(props: PersonSearchFormProps) {
+  const isPartialSearchAllowed = props.allowPartialSearch;
+
+  const firstNameField = (
+    <InputField
+      name="firstName"
+      label="Vorname"
+      required={!isPartialSearchAllowed ? "Bitte Vornamen eingeben" : undefined}
+    />
+  );
+
+  const lastNameField = (
+    <InputField
+      name="lastName"
+      label="Nachname"
+      required={
+        !isPartialSearchAllowed ? "Bitte Nachnamen eingeben" : undefined
+      }
+    />
+  );
+
+  const nameFields =
+    props.nameOrder !== "lastNameBeforeFirstName"
+      ? [firstNameField, lastNameField]
+      : [lastNameField, firstNameField];
+
   return (
     <>
-      <InputField
-        name="firstName"
-        label="Vorname"
-        required={
-          !props.allowPartialSearch ? "Bitte Vornamen eingeben" : undefined
-        }
-      />
+      {nameFields[0]}
       {!props.allowPersonIdSearch && <InsertLinkOutlined />}
-      <InputField
-        name="lastName"
-        label="Nachname"
-        required={
-          !props.allowPartialSearch ? "Bitte Nachnamen eingeben" : undefined
-        }
-      />
-      {!props.allowPartialSearch && <InsertLinkOutlined />}
+      {nameFields[1]}
+      {isPartialSearchAllowed && <InsertLinkOutlined />}
       <DateField
         name="dateOfBirth"
         label="Geburtsdatum"
         required={
-          !props.allowPartialSearch ? "Bitte Geburtsdatum eingeben" : undefined
+          !isPartialSearchAllowed ? "Bitte Geburtsdatum eingeben" : undefined
         }
         validate={validateDateOfBirth}
       />

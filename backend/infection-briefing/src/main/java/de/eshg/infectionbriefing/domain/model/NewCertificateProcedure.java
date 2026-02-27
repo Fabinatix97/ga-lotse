@@ -29,6 +29,10 @@ public class NewCertificateProcedure extends InfectionBriefingProcedure {
   @JdbcType(PostgreSQLEnumJdbcType.class)
   private ApplicantCategory applicantCategory;
 
+  @DataSensitivity(SensitivityLevel.PSEUDONYMIZED)
+  @JdbcType(PostgreSQLEnumJdbcType.class)
+  private CustodianConsent custodianConsent;
+
   public LocalDate getInstructionDate() {
     return instructionDate;
   }
@@ -51,5 +55,13 @@ public class NewCertificateProcedure extends InfectionBriefingProcedure {
 
   public void setApplicantCategory(ApplicantCategory applicantCategory) {
     this.applicantCategory = applicantCategory;
+  }
+
+  public CustodianConsent getCustodianConsent() {
+    return custodianConsent;
+  }
+
+  public void setCustodianConsent(CustodianConsent custodianConsent) {
+    this.custodianConsent = custodianConsent;
   }
 }

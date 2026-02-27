@@ -10,4 +10,5 @@ import jakarta.validation.constraints.NotNull;
 import java.time.Duration;
 
 @Schema(name = "ProstituteProtectionAppointmentStandardDurations")
-public record ProstituteProtectionAppointmentStandardDurationsDto(@NotNull Duration consultation) {}
+public record ProstituteProtectionAppointmentStandardDurationsDto(
+    @NotNull Duration initialConsultation, @NotNull Duration followUpConsultation) {}

@@ -78,7 +78,8 @@ public final class ChildMapper {
         mapExaminationsToDto(examinations),
         institutions == null ? List.of() : institutions,
         mapFluoridationToDto(fluoridationConsents),
-        augmentedChild.child().getNote());
+        augmentedChild.child().getNote(),
+        ProcedureMapper.toInterfaceType(augmentedChild.child().getStatisticsInclusion()));
   }
 
   public static ChildDto mapChildToDto(ChildWithPersonAndContactData child) {

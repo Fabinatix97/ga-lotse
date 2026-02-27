@@ -5,7 +5,7 @@
 
 package de.eshg.infectionbriefing;
 
-import static de.eshg.config.ConfigurationEndpoint.INFECTION_BRIEFING;
+import static de.eshg.config.ConfigurationEndpoint.INFECTION_BRIEFING_APPOINTMENT_STANDARD_DURATION;
 import static de.eshg.lib.appointmentblock.AppointmentDurationInfo.mapEntryOf;
 
 import de.eshg.base.util.MapUtils;
@@ -44,6 +44,6 @@ public class InfectionBriefingAppointmentStandardDurationService
                 InfectionBriefingAppointmentStandardDuration::setInfectionBriefingReplacement)),
         InfectionBriefingAppointmentStandardDuration.class,
         InfectionBriefingAppointmentStandardDuration::new,
-        INFECTION_BRIEFING);
+        INFECTION_BRIEFING_APPOINTMENT_STANDARD_DURATION);
   }
 }

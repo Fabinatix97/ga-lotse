@@ -3651,6 +3651,35 @@
         "tags" : [ "ProgressEntry" ]
       }
     },
+    "/statistics-inclusion" : {
+      "post" : {
+        "operationId" : "updateStatisticsInclusion",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/BulkUpdateProceduresStatisticsInclusionRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/BulkUpdateProceduresStatisticsInclusionResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Update the statistics inclusion of procedures in bulk",
+        "tags" : [ "Procedure" ]
+      }
+    },
     "/statistics/procedure-ids" : {
       "post" : {
         "operationId" : "getProcedureIds",
@@ -5406,6 +5435,10 @@
         "required" : [ "end", "start" ],
         "type" : "object",
         "properties" : {
+          "appointmentBlockId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
           "end" : {
             "type" : "string",
             "format" : "date-time"
@@ -5686,7 +5719,7 @@
       },
       "AppointmentType" : {
         "type" : "string",
-        "enum" : [ "CONSULTATION", "VACCINATION", "REGULAR_EXAMINATION", "CAN_CHILD", "ENTRY_LEVEL", "SPECIAL_NEEDS", "PROOF_SUBMISSION", "HIV_STI_CONSULTATION", "SEX_WORK", "RESULTS_REVIEW", "OFFICIAL_MEDICAL_SERVICE_SHORT", "OFFICIAL_MEDICAL_SERVICE_LONG", "MEDS_ABROAD_CERTIFICATION", "PROSTITUTE_PROTECTION_CONSULTATION", "INFECTION_BRIEFING_NEW", "INFECTION_BRIEFING_REPLACEMENT" ]
+        "enum" : [ "CONSULTATION", "VACCINATION", "REGULAR_EXAMINATION", "CAN_CHILD", "ENTRY_LEVEL", "SPECIAL_NEEDS", "PROOF_SUBMISSION", "HIV_STI_CONSULTATION", "SEX_WORK", "RESULTS_REVIEW", "OFFICIAL_MEDICAL_SERVICE_SHORT", "OFFICIAL_MEDICAL_SERVICE_LONG", "MEDS_ABROAD_CERTIFICATION", "PROSTITUTE_PROTECTION_INITIAL", "PROSTITUTE_PROTECTION_FOLLOW_UP", "INFECTION_BRIEFING_NEW", "INFECTION_BRIEFING_REPLACEMENT" ]
       },
       "ApprovalRequest" : {
         "required" : [ "approvalRequestId", "createdAt", "createdBy", "operation", "reason", "status" ],
@@ -5858,6 +5891,50 @@
               "type" : "string",
               "format" : "uuid"
             }
+          },
+          "updatedProcedures" : {
+            "uniqueItems" : true,
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "format" : "uuid"
+            }
+          }
+        }
+      },
+      "BulkUpdateProceduresStatisticsInclusionRequest" : {
+        "required" : [ "procedures", "statisticsInclusion" ],
+        "type" : "object",
+        "properties" : {
+          "procedures" : {
+            "maxItems" : 200,
+            "minItems" : 1,
+            "uniqueItems" : true,
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "format" : "uuid"
+            }
+          },
+          "statisticsInclusion" : {
+            "$ref" : "#/components/schemas/StatisticsInclusion"
+          }
+        }
+      },
+      "BulkUpdateProceduresStatisticsInclusionResponse" : {
+        "required" : [ "failedProcedures", "statisticsInclusion", "updatedProcedures" ],
+        "type" : "object",
+        "properties" : {
+          "failedProcedures" : {
+            "uniqueItems" : true,
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "format" : "uuid"
+            }
+          },
+          "statisticsInclusion" : {
+            "$ref" : "#/components/schemas/StatisticsInclusion"
           },
           "updatedProcedures" : {
             "uniqueItems" : true,
@@ -6881,12 +6958,6 @@
             "items" : {
               "$ref" : "#/components/schemas/GetAppointmentBlock"
             }
-          },
-          "availableForBulkBooking" : {
-            "type" : "boolean"
-          },
-          "availableForCitizen" : {
-            "type" : "boolean"
           },
           "id" : {
             "type" : "string",
@@ -9615,7 +9686,7 @@
         } ]
       },
       "Procedure" : {
-        "required" : [ "archivingRelevanceSettings", "businessModule", "createdAt", "modifiedAt", "procedureId", "procedureStatus", "procedureType", "summary" ],
+        "required" : [ "archivingRelevanceSettings", "businessModule", "createdAt", "modifiedAt", "procedureId", "procedureStatus", "procedureType", "statisticsInclusion", "summary" ],
         "type" : "object",
         "properties" : {
           "archivingRelevanceSettings" : {
@@ -9649,6 +9720,9 @@
           },
           "procedureType" : {
             "$ref" : "#/components/schemas/ProcedureType"
+          },
+          "statisticsInclusion" : {
+            "$ref" : "#/components/schemas/StatisticsInclusion"
           },
           "summary" : {
             "maxLength" : 128,
@@ -9740,7 +9814,7 @@
       },
       "ProcedureType" : {
         "type" : "string",
-        "enum" : [ "REGULAR_EXAMINATION", "CAN_CHILD", "ENTRY_LEVEL", "DRAFT_CITIZEN_OFFICE_IMPORT", "DRAFT_SCHOOL_IMPORT", "INSPECTION", "TM_VACCINATION_CONSULTATION", "MEASLES_PROTECTION", "STI_PROTECTION", "MEDICAL_REGISTRY_ENTRY", "MEDICAL_REGISTRY_CITIZEN_DRAFT", "MEDICAL_REGISTRY_EMPLOYEE_DRAFT", "DENTAL_CHILD", "OFFICIAL_MEDICAL_SERVICE", "MEDS_ABROAD", "PROSTITUTE_PROTECTION", "INFECTION_BRIEFING_NEW", "INFECTION_BRIEFING_REPLACEMENT" ]
+        "enum" : [ "REGULAR_EXAMINATION", "CAN_CHILD", "ENTRY_LEVEL", "DRAFT_CITIZEN_OFFICE_IMPORT", "DRAFT_SCHOOL_IMPORT", "INSPECTION", "TM_VACCINATION_CONSULTATION", "MEASLES_PROTECTION", "STI_PROTECTION", "MEDICAL_REGISTRY_ENTRY", "MEDICAL_REGISTRY_CITIZEN_DRAFT", "MEDICAL_REGISTRY_EMPLOYEE_DRAFT", "DENTAL_CHILD", "OFFICIAL_MEDICAL_SERVICE", "MEDS_ABROAD", "PROSTITUTE_PROTECTION_INITIAL", "PROSTITUTE_PROTECTION_FOLLOW_UP", "INFECTION_BRIEFING_NEW", "INFECTION_BRIEFING_REPLACEMENT" ]
       },
       "ProcedureWithDuration" : {
         "required" : [ "createdAt", "id" ],
@@ -9984,6 +10058,10 @@
       "SortDirection" : {
         "type" : "string",
         "enum" : [ "ASC", "DESC" ]
+      },
+      "StatisticsInclusion" : {
+        "type" : "string",
+        "enum" : [ "INCLUDE", "CUSTOM", "EXCLUDE" ]
       },
       "StepWithAppliedServices" : {
         "required" : [ "appliedServices", "appointmentDateTime", "procedureStepId" ],
@@ -10450,6 +10528,12 @@
         "required" : [ "consultants", "end", "mfas", "parallelExaminations", "physicians", "sopasss", "start" ],
         "type" : "object",
         "properties" : {
+          "availableForBulkBooking" : {
+            "type" : "boolean"
+          },
+          "availableForCitizen" : {
+            "type" : "boolean"
+          },
           "consultants" : {
             "type" : "array",
             "items" : {

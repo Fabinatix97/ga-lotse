@@ -47,4 +47,7 @@
   <include file="migrations/0038_add_online_portal_config.xml"/>
   <include file="migrations/0039_add_infection_briefing_procedure_types.xml"/>
   <include file="migrations/0040_add_extended_personal_data.xml"/>
+  <include file="migrations/0041_add_statistics_inclusion_to_procedure.xml"/>
+  <include file="migrations/0042_move_availability_flags_to_appointment_block.xml"/>
+  <include file="migrations/0043_modify_ppr_procedure_type.xml"/>
 </databaseChangeLog>

@@ -11,6 +11,7 @@ import { Formik } from "formik";
 import { ConfirmLeaveDirtyFormEffect } from "@eshg/lib-employee-portal";
 import {
   FormPlus,
+  OptionalFieldValue,
   mapOptionalValue,
   parseOptionalValue,
   useHandledMutation,
@@ -29,24 +30,28 @@ import { PPA10Section } from "./PPA10Section";
 import { StickyBottomBar } from "./StickyBottomBar";
 
 export interface ConsultationFormData {
-  alcoholAndDrugUsage: boolean;
-  birthControl: boolean;
-  clearing: boolean;
-  consultingServices: boolean;
-  diseasePrevention: boolean;
-  emergencyHelp: boolean;
-  healthAndSocialInsurance: boolean;
-  informationMaterial: boolean;
-  interpreterConsulted: boolean;
-  legalAdvices: boolean;
-  predicament: boolean;
-  pregnancy: boolean;
-  referral: boolean;
-  taxLiability: boolean;
   version: number;
+  paragraph7: {
+    legalAdvices: boolean;
+    healthAndSocialInsurance: boolean;
+    consultingServices: boolean;
+    emergencyHelp: boolean;
+    taxLiability: boolean;
+    informationMaterial: boolean;
+    predicament: boolean;
+  };
+  paragraph10: {
+    diseasePrevention: boolean;
+    birthControl: boolean;
+    pregnancy: boolean;
+    alcoholAndDrugUsage: boolean;
+    referral: boolean;
+    clearing: boolean;
+  };
+  interpreterConsulted: boolean;
   interpreterFirstName?: string;
   interpreterLastName?: string;
-  languageOfConsultation?: ApiPersonLanguage | "";
+  languageOfConsultation?: OptionalFieldValue<ApiPersonLanguage>;
 }
 
 export function ConsultationForm({
@@ -108,7 +113,26 @@ export function ConsultationForm({
 
 function mapApiToForm(consultation: ApiConsultation): ConsultationFormData {
   return {
-    ...consultation,
+    version: consultation.version,
+    paragraph7: {
+      legalAdvices: consultation.paragraph7.legalAdvices,
+      healthAndSocialInsurance:
+        consultation.paragraph7.healthAndSocialInsurance,
+      consultingServices: consultation.paragraph7.consultingServices,
+      emergencyHelp: consultation.paragraph7.emergencyHelp,
+      taxLiability: consultation.paragraph7.taxLiability,
+      informationMaterial: consultation.paragraph7.informationMaterial,
+      predicament: consultation.paragraph7.predicament,
+    },
+    paragraph10: {
+      diseasePrevention: consultation.paragraph10.diseasePrevention,
+      birthControl: consultation.paragraph10.birthControl,
+      pregnancy: consultation.paragraph10.pregnancy,
+      alcoholAndDrugUsage: consultation.paragraph10.alcoholAndDrugUsage,
+      referral: consultation.paragraph10.referral,
+      clearing: consultation.paragraph10.clearing,
+    },
+    interpreterConsulted: consultation.interpreterConsulted,
     interpreterLastName: parseOptionalValue(consultation.interpreterLastName),
     interpreterFirstName: parseOptionalValue(consultation.interpreterFirstName),
     languageOfConsultation: parseOptionalValue(
@@ -119,7 +143,25 @@ function mapApiToForm(consultation: ApiConsultation): ConsultationFormData {
 
 function mapFormToApi(values: ConsultationFormData): ApiConsultation {
   return {
-    ...values,
+    version: values.version,
+    paragraph7: {
+      legalAdvices: values.paragraph7.legalAdvices,
+      healthAndSocialInsurance: values.paragraph7.healthAndSocialInsurance,
+      consultingServices: values.paragraph7.consultingServices,
+      emergencyHelp: values.paragraph7.emergencyHelp,
+      taxLiability: values.paragraph7.taxLiability,
+      informationMaterial: values.paragraph7.informationMaterial,
+      predicament: values.paragraph7.predicament,
+    },
+    paragraph10: {
+      diseasePrevention: values.paragraph10.diseasePrevention,
+      birthControl: values.paragraph10.birthControl,
+      pregnancy: values.paragraph10.pregnancy,
+      alcoholAndDrugUsage: values.paragraph10.alcoholAndDrugUsage,
+      referral: values.paragraph10.referral,
+      clearing: values.paragraph10.clearing,
+    },
+    interpreterConsulted: values.interpreterConsulted,
     interpreterLastName: values.interpreterConsulted
       ? mapOptionalValue(values.interpreterLastName)
       : undefined,

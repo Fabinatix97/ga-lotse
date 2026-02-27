@@ -7757,7 +7757,7 @@
       },
       "BaseEventType" : {
         "type" : "string",
-        "enum" : [ "HOLIDAY", "SERVICE", "VACATION" ]
+        "enum" : [ "HOLIDAY", "SERVICE", "VACATION", "INFORMATION" ]
       },
       "BaseFeature" : {
         "type" : "string",
@@ -7874,7 +7874,7 @@
       },
       "CalendarType" : {
         "type" : "string",
-        "enum" : [ "GLOBAL", "RESOURCE", "USER" ]
+        "enum" : [ "GLOBAL", "RESOURCE", "USER", "MODULE" ]
       },
       "CancelGdprProcedureRequest" : {
         "required" : [ "internalNote", "version" ],
@@ -8643,7 +8643,7 @@
       },
       "EventType" : {
         "type" : "string",
-        "enum" : [ "BUSINESS_CASE", "HOLIDAY", "SERVICE", "VACATION" ]
+        "enum" : [ "BUSINESS_CASE", "HOLIDAY", "SERVICE", "VACATION", "INFORMATION" ]
       },
       "EventWithTimeData" : {
         "required" : [ "id", "timeData" ],
@@ -10646,7 +10646,7 @@
         }
       },
       "GetRelevantCalendarsResponse" : {
-        "required" : [ "currentUserCalendar", "globalCalendars", "resolvedUsers", "userGroupCalendarInfos" ],
+        "required" : [ "currentUserCalendar", "globalCalendars", "moduleCalendars", "resolvedUsers", "userGroupCalendarInfos" ],
         "type" : "object",
         "properties" : {
           "currentUserCalendar" : {
@@ -10656,6 +10656,12 @@
             "type" : "array",
             "items" : {
               "$ref" : "#/components/schemas/GlobalCalendar"
+            }
+          },
+          "moduleCalendars" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/ModuleCalendar"
             }
           },
           "resolvedUsers" : {
@@ -11518,6 +11524,19 @@
           }
         }
       },
+      "ModuleCalendar" : {
+        "required" : [ "businessModule", "calendarId" ],
+        "type" : "object",
+        "properties" : {
+          "businessModule" : {
+            "$ref" : "#/components/schemas/BusinessModule"
+          },
+          "calendarId" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }
+      },
       "MukUserAttributes" : {
         "required" : [ "address", "facilityName" ],
         "type" : "object",
@@ -12015,7 +12034,7 @@
         "description" : "Contains the details on the encrypted private key from a user, which is necessary for decrypting the symmetric key which is used for decrypting audit log files.\nCan be decrypted with the password of the corresponding user.\n"
       },
       "Procedure" : {
-        "required" : [ "archivingRelevanceSettings", "businessModule", "createdAt", "modifiedAt", "procedureId", "procedureStatus", "procedureType", "summary" ],
+        "required" : [ "archivingRelevanceSettings", "businessModule", "createdAt", "modifiedAt", "procedureId", "procedureStatus", "procedureType", "statisticsInclusion", "summary" ],
         "type" : "object",
         "properties" : {
           "archivingRelevanceSettings" : {
@@ -12049,6 +12068,9 @@
           },
           "procedureType" : {
             "$ref" : "#/components/schemas/ProcedureType"
+          },
+          "statisticsInclusion" : {
+            "$ref" : "#/components/schemas/StatisticsInclusion"
           },
           "summary" : {
             "maxLength" : 128,
@@ -12121,7 +12143,7 @@
       },
       "ProcedureType" : {
         "type" : "string",
-        "enum" : [ "REGULAR_EXAMINATION", "CAN_CHILD", "ENTRY_LEVEL", "DRAFT_CITIZEN_OFFICE_IMPORT", "DRAFT_SCHOOL_IMPORT", "INSPECTION", "TM_VACCINATION_CONSULTATION", "MEASLES_PROTECTION", "STI_PROTECTION", "MEDICAL_REGISTRY_ENTRY", "MEDICAL_REGISTRY_CITIZEN_DRAFT", "MEDICAL_REGISTRY_EMPLOYEE_DRAFT", "DENTAL_CHILD", "OFFICIAL_MEDICAL_SERVICE", "MEDS_ABROAD", "PROSTITUTE_PROTECTION", "INFECTION_BRIEFING_NEW", "INFECTION_BRIEFING_REPLACEMENT" ]
+        "enum" : [ "REGULAR_EXAMINATION", "CAN_CHILD", "ENTRY_LEVEL", "DRAFT_CITIZEN_OFFICE_IMPORT", "DRAFT_SCHOOL_IMPORT", "INSPECTION", "TM_VACCINATION_CONSULTATION", "MEASLES_PROTECTION", "STI_PROTECTION", "MEDICAL_REGISTRY_ENTRY", "MEDICAL_REGISTRY_CITIZEN_DRAFT", "MEDICAL_REGISTRY_EMPLOYEE_DRAFT", "DENTAL_CHILD", "OFFICIAL_MEDICAL_SERVICE", "MEDS_ABROAD", "PROSTITUTE_PROTECTION_INITIAL", "PROSTITUTE_PROTECTION_FOLLOW_UP", "INFECTION_BRIEFING_NEW", "INFECTION_BRIEFING_REPLACEMENT" ]
       },
       "ProcedureWithDuration" : {
         "required" : [ "createdAt", "id" ],
@@ -12502,6 +12524,10 @@
             "format" : "int64"
           }
         }
+      },
+      "StatisticsInclusion" : {
+        "type" : "string",
+        "enum" : [ "INCLUDE", "CUSTOM", "EXCLUDE" ]
       },
       "SyncFileStateRequest" : {
         "required" : [ "version" ],

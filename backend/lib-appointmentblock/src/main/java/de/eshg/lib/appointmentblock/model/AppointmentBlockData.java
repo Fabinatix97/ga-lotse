@@ -15,4 +15,6 @@ public record AppointmentBlockData(
     Instant end,
     int parallelExaminations,
     Duration freeDuration,
-    Duration bookedDuration) {}
+    Duration bookedDuration,
+    Boolean availableForCitizen,
+    Boolean availableForBulkBooking) {}

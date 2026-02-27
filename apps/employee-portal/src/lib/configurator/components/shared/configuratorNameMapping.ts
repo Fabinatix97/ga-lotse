@@ -21,6 +21,7 @@ export const configuratorNameMapping: Record<ConfiguratorModuleName, string> = {
   OPEN_DATA: "Open Data",
   INSPECTION: "Hygiene",
   PROSTITUTE_PROTECTION: "Prostituiertenschutzgesetz",
+  INFECTION_BRIEFING: "Lebensmittelausweis",
 };
 
 export function getTabNamesByEndpointName(
@@ -69,6 +70,8 @@ export function getTabNamesByEndpointName(
     case "INSPECTION":
       return "Fachliche Einstellungen";
     case "PROSTITUTE_PROTECTION":
+      return "Fachliche Einstellungen";
+    case "INFECTION_BRIEFING":
       return "Fachliche Einstellungen";
   }
 }

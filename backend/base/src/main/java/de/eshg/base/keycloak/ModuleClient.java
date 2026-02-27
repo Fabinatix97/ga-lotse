@@ -60,7 +60,8 @@ public enum ModuleClient {
   MEDS_ABROAD("meds-abroad", List.of(EmployeePermissionRole.BASE_MAIL_SEND)),
   PROSTITUTE_PROTECTION("prostitute-protection"),
   INFECTION_BRIEFING("infection-briefing", List.of(BASE_MAIL_SEND)),
-  OPENDATA("opendata");
+  OPENDATA("opendata"),
+  FILE_JOCKEY("file-jockey");
 
   private final String clientIdWithoutPrefix;
   private final List<EmployeePermissionRole> roles;

@@ -6,7 +6,7 @@
 import { Grid, Stack, Typography } from "@mui/joy";
 import { isDefined } from "remeda";
 
-import { NumberField, QueryKeyFactory } from "@eshg/lib-portal";
+import { CheckboxField, NumberField, QueryKeyFactory } from "@eshg/lib-portal";
 
 import { AppointmentBlockApi } from "../../api/AppointmentBlockApi";
 import { User } from "../../api/models/User";
@@ -40,6 +40,8 @@ export function UpdateAppointmentBlockSidebarContent(props: {
   appointmentBlockApiQueryKey: QueryKeyFactory;
   standardDurations: AppointmentStandardDurations;
   formValues: UpdateAppointmentBlockValues;
+  availableForCitizen?: boolean;
+  availableForBulkBooking?: boolean;
 }) {
   const { appointmentBlock, formValues, withTeam = true } = props;
 
@@ -102,6 +104,15 @@ export function UpdateAppointmentBlockSidebarContent(props: {
               )
             }
             singleColumn
+          />
+        )}
+        {isDefined(appointmentBlock.availableForCitizen) && (
+          <CheckboxField name="availableForCitizen" label="Online-Portal" />
+        )}
+        {isDefined(appointmentBlock.availableForBulkBooking) && (
+          <CheckboxField
+            name="availableForBulkBooking"
+            label="Massenterminzuweisung"
           />
         )}
         <AppointmentRoomField

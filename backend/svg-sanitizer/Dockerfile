@@ -19,7 +19,7 @@ COPY resources/pnpm-lock.yaml ./
 COPY resources/server.js ./
 
 HEALTHCHECK --interval=5s --timeout=2s --retries=3 --start-period=5s \
-  CMD wget --spider -q http://localhost:8080/health
+  CMD wget --spider -q http://localhost:8081/health
 
 RUN pnpm install --frozen-lockfile --ignore-workspace
 

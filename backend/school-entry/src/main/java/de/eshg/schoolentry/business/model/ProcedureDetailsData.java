@@ -9,6 +9,7 @@ import de.eshg.lib.appointmentblock.api.LocationDto;
 import de.eshg.lib.appointmentblock.persistence.entity.Appointment;
 import de.eshg.lib.procedure.domain.model.ProcedureStatus;
 import de.eshg.lib.procedure.domain.model.ProcedureType;
+import de.eshg.lib.procedure.domain.model.StatisticsInclusion;
 import de.eshg.schoolentry.api.SchoolDto;
 import de.eshg.schoolentry.domain.model.ProcedureLabel;
 import de.eshg.schoolentry.domain.model.WaitingRoom;
@@ -34,6 +35,7 @@ public record ProcedureDetailsData(
     boolean isDeceased,
     LocalDate deceased,
     Year schoolYear,
+    Integer childAge,
     ProcedureStatus status,
     boolean isDeletable,
     Instant createdAt,
@@ -42,4 +44,5 @@ public record ProcedureDetailsData(
     Instant schoolInfoLetterCreatedAt,
     boolean hasInformationBlock,
     boolean hasBeenClosed,
-    boolean isPastProcedure) {}
+    boolean isPastProcedure,
+    StatisticsInclusion statisticsInclusion) {}

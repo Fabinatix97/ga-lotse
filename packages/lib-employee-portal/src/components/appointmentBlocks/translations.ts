@@ -21,7 +21,8 @@ export const APPOINTMENT_TYPES: EnumMap<ApiAppointmentType> = {
   [ApiAppointmentType.OfficialMedicalServiceShort]: "Kleine Untersuchung",
   [ApiAppointmentType.OfficialMedicalServiceLong]: "Große Untersuchung",
   [ApiAppointmentType.MedsAbroadCertification]: "Beglaubigung",
-  [ApiAppointmentType.ProstituteProtectionConsultation]: "Beratung",
+  [ApiAppointmentType.ProstituteProtectionInitial]: "Erstberatung",
+  [ApiAppointmentType.ProstituteProtectionFollowUp]: "Folgeberatung",
   [ApiAppointmentType.InfectionBriefingNew]: "Neuer Lebensmittelausweis",
   [ApiAppointmentType.InfectionBriefingReplacement]:
     "Lebensmittelausweis Duplikat",

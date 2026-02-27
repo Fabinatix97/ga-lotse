@@ -126,5 +126,9 @@
   <include file="migrations/0116_add_sopass_to_appointment_blocks.xml"/>
   <include file="migrations/0117_add_infection_briefing_appointment_types.xml"/>
   <include file="migrations/0118_add_infection_briefing_procedure_types.xml"/>
+  <include file="migrations/0119_add_child_age_to_school_entry_procedure.xml"/>
+  <include file="migrations/0120_add_statistics_inclusion_to_procedure.xml"/>
+  <include file="migrations/0121_move_availability_flags_to_appointment_block.xml"/>
+  <include file="migrations/0122_modify_ppr_procedure_type.xml"/>
 
 </databaseChangeLog>

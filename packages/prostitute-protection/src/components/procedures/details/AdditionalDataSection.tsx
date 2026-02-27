@@ -16,14 +16,13 @@ import {
   DetailsColumn,
   DetailsList,
   OPTIONAL_FALLBACK_VALUE,
-  formatOptionalKey,
   formatPersonName,
 } from "@eshg/lib-portal";
 import { ApiProcedureDetails } from "@eshg/prostitute-protection-api";
 
 import {
   ADDITIONAL_DATA_FIELD_NAME,
-  CONSULTATION_TYPE_VALUES,
+  PROCEDURE_TYPE_VALUES,
 } from "../../../shared/constants";
 import {
   formatAppointmentWithDuration,
@@ -59,11 +58,8 @@ export function AdditionalDataSection({
           <DetailsList>
             <DetailsColumn>
               <DetailsItem
-                label={ADDITIONAL_DATA_FIELD_NAME.consultationType}
-                value={formatOptionalKey(
-                  procedure.consultationType,
-                  CONSULTATION_TYPE_VALUES,
-                )}
+                label={ADDITIONAL_DATA_FIELD_NAME.procedureType}
+                value={PROCEDURE_TYPE_VALUES[procedure.procedureType]}
               />
               <DetailsItem
                 label={ADDITIONAL_DATA_FIELD_NAME.appointment}

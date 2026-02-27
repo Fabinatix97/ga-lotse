@@ -45,27 +45,7 @@ public class AppointmentBlockGroup extends BaseEntityWithExternalId {
   @BatchSize(size = 100)
   private final Set<AppointmentBlock> appointmentBlocks = new LinkedHashSet<>();
 
-  private Boolean availableForCitizen;
-
-  private Boolean availableForBulkBooking;
-
   @NotNull private boolean extraLength = false;
-
-  public Boolean isAvailableForBulkBooking() {
-    return availableForBulkBooking;
-  }
-
-  public void setAvailableForBulkBooking(Boolean availableForBulkBooking) {
-    this.availableForBulkBooking = availableForBulkBooking;
-  }
-
-  public Boolean isAvailableForCitizen() {
-    return availableForCitizen;
-  }
-
-  public void setAvailableForCitizen(Boolean availableForCitizen) {
-    this.availableForCitizen = availableForCitizen;
-  }
 
   public List<AppointmentTypeHolder> getAppointmentTypeHolders() {
     return appointmentTypeHolders;

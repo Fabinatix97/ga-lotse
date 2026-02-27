@@ -5008,6 +5008,35 @@
         "tags" : [ "ProgressEntry" ]
       }
     },
+    "/statistics-inclusion" : {
+      "post" : {
+        "operationId" : "updateStatisticsInclusion",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/BulkUpdateProceduresStatisticsInclusionRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/BulkUpdateProceduresStatisticsInclusionResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Update the statistics inclusion of procedures in bulk",
+        "tags" : [ "Procedure" ]
+      }
+    },
     "/statistics/procedure-ids" : {
       "post" : {
         "operationId" : "getProcedureIds",
@@ -6242,6 +6271,50 @@
               "type" : "string",
               "format" : "uuid"
             }
+          },
+          "updatedProcedures" : {
+            "uniqueItems" : true,
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "format" : "uuid"
+            }
+          }
+        }
+      },
+      "BulkUpdateProceduresStatisticsInclusionRequest" : {
+        "required" : [ "procedures", "statisticsInclusion" ],
+        "type" : "object",
+        "properties" : {
+          "procedures" : {
+            "maxItems" : 200,
+            "minItems" : 1,
+            "uniqueItems" : true,
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "format" : "uuid"
+            }
+          },
+          "statisticsInclusion" : {
+            "$ref" : "#/components/schemas/StatisticsInclusion"
+          }
+        }
+      },
+      "BulkUpdateProceduresStatisticsInclusionResponse" : {
+        "required" : [ "failedProcedures", "statisticsInclusion", "updatedProcedures" ],
+        "type" : "object",
+        "properties" : {
+          "failedProcedures" : {
+            "uniqueItems" : true,
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "format" : "uuid"
+            }
+          },
+          "statisticsInclusion" : {
+            "$ref" : "#/components/schemas/StatisticsInclusion"
           },
           "updatedProcedures" : {
             "uniqueItems" : true,
@@ -11205,7 +11278,7 @@
         } ]
       },
       "Procedure" : {
-        "required" : [ "archivingRelevanceSettings", "businessModule", "createdAt", "modifiedAt", "procedureId", "procedureStatus", "procedureType", "summary" ],
+        "required" : [ "archivingRelevanceSettings", "businessModule", "createdAt", "modifiedAt", "procedureId", "procedureStatus", "procedureType", "statisticsInclusion", "summary" ],
         "type" : "object",
         "properties" : {
           "archivingRelevanceSettings" : {
@@ -11239,6 +11312,9 @@
           },
           "procedureType" : {
             "$ref" : "#/components/schemas/ProcedureType"
+          },
+          "statisticsInclusion" : {
+            "$ref" : "#/components/schemas/StatisticsInclusion"
           },
           "summary" : {
             "maxLength" : 128,
@@ -11290,7 +11366,7 @@
       },
       "ProcedureType" : {
         "type" : "string",
-        "enum" : [ "REGULAR_EXAMINATION", "CAN_CHILD", "ENTRY_LEVEL", "DRAFT_CITIZEN_OFFICE_IMPORT", "DRAFT_SCHOOL_IMPORT", "INSPECTION", "TM_VACCINATION_CONSULTATION", "MEASLES_PROTECTION", "STI_PROTECTION", "MEDICAL_REGISTRY_ENTRY", "MEDICAL_REGISTRY_CITIZEN_DRAFT", "MEDICAL_REGISTRY_EMPLOYEE_DRAFT", "DENTAL_CHILD", "OFFICIAL_MEDICAL_SERVICE", "MEDS_ABROAD", "PROSTITUTE_PROTECTION", "INFECTION_BRIEFING_NEW", "INFECTION_BRIEFING_REPLACEMENT" ]
+        "enum" : [ "REGULAR_EXAMINATION", "CAN_CHILD", "ENTRY_LEVEL", "DRAFT_CITIZEN_OFFICE_IMPORT", "DRAFT_SCHOOL_IMPORT", "INSPECTION", "TM_VACCINATION_CONSULTATION", "MEASLES_PROTECTION", "STI_PROTECTION", "MEDICAL_REGISTRY_ENTRY", "MEDICAL_REGISTRY_CITIZEN_DRAFT", "MEDICAL_REGISTRY_EMPLOYEE_DRAFT", "DENTAL_CHILD", "OFFICIAL_MEDICAL_SERVICE", "MEDS_ABROAD", "PROSTITUTE_PROTECTION_INITIAL", "PROSTITUTE_PROTECTION_FOLLOW_UP", "INFECTION_BRIEFING_NEW", "INFECTION_BRIEFING_REPLACEMENT" ]
       },
       "ProcedureWithDuration" : {
         "required" : [ "createdAt", "id" ],
@@ -11519,6 +11595,10 @@
             "$ref" : "#/components/schemas/InspectionType"
           }
         }
+      },
+      "StatisticsInclusion" : {
+        "type" : "string",
+        "enum" : [ "INCLUDE", "CUSTOM", "EXCLUDE" ]
       },
       "SystemProgressEntry" : {
         "required" : [ "createdAt", "modifiedAt", "progressEntryId", "systemProgressEntryType", "triggerType" ],

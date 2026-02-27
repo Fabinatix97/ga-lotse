@@ -41,10 +41,7 @@ export function FluoridationConsentInformationSection(
   if (!isDefined(fluoridationConsent)) {
     return (
       <DetailsList>
-        <DetailsItem
-          label="Einverständnis zur Fluoridierung"
-          value="Liegt nicht vor"
-        />
+        <DetailsItem label="Einverständnis zur Fluoridierung" value="-" />
       </DetailsList>
     );
   }

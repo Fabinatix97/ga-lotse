@@ -28,7 +28,10 @@ public class AppointmentMapper {
     if (appointment == null) {
       return null;
     }
-    return new AppointmentDto(appointment.getAppointmentStart(), appointment.getAppointmentEnd());
+    return new AppointmentDto(
+        appointment.getAppointmentStart(),
+        appointment.getAppointmentEnd(),
+        appointment.getAppointmentBlock().getExternalId());
   }
 
   public static AppointmentDto toInterfaceType(UserDefinedAppointment appointment) {

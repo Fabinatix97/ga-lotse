@@ -11,6 +11,6 @@ import java.time.Instant;
 
 public record BookNewCertificateAppointmentRequest(
     @NotNull @Valid PersonDto applicant,
-    @NotNull @Valid ApplicantAddressDto applicantAddress,
+    @Valid ApplicantAddressDto applicantAddress,
     @NotNull ApplicantCategoryDto applicantCategoryDto,
     @NotNull Instant startTime) {}

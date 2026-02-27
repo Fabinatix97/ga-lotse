@@ -25,11 +25,12 @@ import {
 } from "react";
 import { isDefined, isNonNullish } from "remeda";
 
-import { CalendarEventApi } from "@eshg/base-api";
+import { ApiBusinessModule, CalendarEventApi } from "@eshg/base-api";
 import { LoadingIndicator } from "@eshg/lib-portal";
 
 import { useCalendarEventApi } from "@/lib/baseModule/api/clients";
 import { theme } from "@/lib/baseModule/theme/theme";
+import { businessModuleNames } from "@/lib/shared/components/procedures/constants";
 
 import { HeaderToolbar } from "./HeaderToolbar";
 import { CalendarInfo } from "./calendarDisplay";
@@ -46,6 +47,7 @@ function createEventSource(
   calendarId: string,
   color: string,
   calendarEventApi: CalendarEventApi,
+  businessModuleName?: string,
 ): EventSourceInput {
   return {
     async events(info: EventSourceFuncArg) {
@@ -56,7 +58,11 @@ function createEventSource(
           timeRangeEnd: info.end,
         })
         .then((response) => response.value());
-      return mapCalendarEventsBackendToUi(events, calendarId);
+      return mapCalendarEventsBackendToUi(
+        events,
+        calendarId,
+        businessModuleName,
+      );
     },
     color,
   };
@@ -70,13 +76,20 @@ interface FullCalendarViewState {
 interface CalendarProps {
   calendars: CalendarInfo[];
   displayedCalendarIds: string[];
-  onNewEventButtonClick: () => void;
+  onNewAbsenceEventButtonClick: () => void;
+  onNewModuleEventButtonClick: (() => void) | null;
   onEventClick: (event: EventWithCalendarId) => void;
   onSettingsButtonClick: () => void;
 }
 
 export interface CalendarHandle {
   refetchEvents: () => void;
+}
+
+function isApiBusinessModule(value: string): value is ApiBusinessModule {
+  return Object.values(businessModuleNames).includes(
+    value as ApiBusinessModule,
+  );
 }
 
 export const Calendar = forwardRef<CalendarHandle, CalendarProps>(
@@ -98,13 +111,14 @@ export const Calendar = forwardRef<CalendarHandle, CalendarProps>(
       const displayedCalendars = props.calendars.filter((calendar) =>
         props.displayedCalendarIds.includes(calendar.id),
       );
-      return displayedCalendars.map((calendar) =>
-        createEventSource(
+      return displayedCalendars.map((calendar) => {
+        return createEventSource(
           calendar.id,
           calendar.color,
           calendarEventApiRef.current,
-        ),
-      );
+          isApiBusinessModule(calendar.name) ? calendar.name : undefined,
+        );
+      });
     }, [props.calendars, props.displayedCalendarIds, calendarEventApiRef]);
 
     // FullCalendar is an uncontrolled component and should manage most of its state internally.
@@ -202,7 +216,9 @@ export const Calendar = forwardRef<CalendarHandle, CalendarProps>(
               )}
               {isDefined(eventInfo.event.extendedProps.metaData.subject) && (
                 <Typography level="body-sm" sx={sx}>
-                  Eintrag von {eventInfo.event.extendedProps.metaData.subject}
+                  {eventInfo.event.extendedProps.type === "INFORMATION"
+                    ? eventInfo.event.extendedProps.metaData.subject
+                    : `Eintrag von ${eventInfo.event.extendedProps.metaData.subject}`}
                 </Typography>
               )}
               <Typography level="body-sm" sx={sx}>
@@ -242,7 +258,8 @@ export const Calendar = forwardRef<CalendarHandle, CalendarProps>(
               fullCalendarRef.current?.getApi().changeView(view);
             });
           }}
-          onNewEventButtonClick={props.onNewEventButtonClick}
+          onNewAbsenceEventButtonClick={props.onNewAbsenceEventButtonClick}
+          onNewModuleEventButtonClick={props.onNewModuleEventButtonClick}
           onSettingsButtonClick={props.onSettingsButtonClick}
         />
         <Stack

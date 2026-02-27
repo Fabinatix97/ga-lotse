@@ -131,8 +131,8 @@ public class SchoolEntryCitizenService {
   }
 
   public void updateAppointment(
-      SchoolEntryProcedure schoolEntryProcedure, Instant start, Instant end) {
-    validateIsFreeAppointment(schoolEntryProcedure, start, end);
+      SchoolEntryProcedure schoolEntryProcedure, AppointmentDto appointment) {
+    validateIsFreeAppointment(schoolEntryProcedure, appointment);
 
     AppointmentType appointmentType =
         schoolEntryService.computeAppointmentType(schoolEntryProcedure, null, null);
@@ -142,8 +142,7 @@ public class SchoolEntryCitizenService {
         schoolEntryService.getAppointmentLocation(schoolEntryProcedure),
         null,
         schoolEntryProcedure,
-        start,
-        end);
+        appointment);
     schoolEntryProcedure.setAppointmentChangesByCitizen(
         schoolEntryProcedure.getAppointmentChangesByCitizen() + 1);
 
@@ -151,13 +150,14 @@ public class SchoolEntryCitizenService {
         schoolEntryProcedure, APPOINTMENT_RESCHEDULED_BY_CITIZEN, TriggerType.CITIZEN);
     schoolEntryProcedure
         .getTaskOfType(TaskType.PERFORM_SCHOOL_ENTRY_EXAMINATION)
-        .updateDueAt(start);
+        .updateDueAt(appointment.start());
   }
 
   private void validateIsFreeAppointment(
-      SchoolEntryProcedure schoolEntryProcedure, Instant start, Instant end) {
+      SchoolEntryProcedure schoolEntryProcedure, AppointmentDto appointmentDto) {
     List<AppointmentDto> freeAppointments = getFreeAppointments(schoolEntryProcedure);
-    AppointmentBlockSlot requestedSlot = new AppointmentBlockSlot(start, end);
+    AppointmentBlockSlot requestedSlot =
+        new AppointmentBlockSlot(appointmentDto.start(), appointmentDto.end());
     freeAppointments.stream()
         .map(appointment -> new AppointmentBlockSlot(appointment.start(), appointment.end()))
         .filter(requestedSlot::equals)

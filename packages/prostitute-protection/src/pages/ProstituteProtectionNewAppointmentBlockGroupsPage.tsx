@@ -19,9 +19,7 @@ export function ProstituteProtectionNewAppointmentBlockGroupsPage() {
       toolbar={
         <Toolbar
           title="Neuen Terminblock planen"
-          backButton={
-            <ToolbarBackButton href={routes.appointmentBlockGroups.index} />
-          }
+          backButton={<ToolbarBackButton href={routes.appointments.index} />}
         />
       }
     >

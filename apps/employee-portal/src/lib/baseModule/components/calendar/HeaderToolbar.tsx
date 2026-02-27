@@ -21,7 +21,8 @@ export function HeaderToolbar(props: {
   goToPrevious: CalendarApi["prev"];
   goToNext: CalendarApi["next"];
   onViewTypeChange: (viewType: CalendarViewType) => void;
-  onNewEventButtonClick: () => void;
+  onNewAbsenceEventButtonClick: () => void;
+  onNewModuleEventButtonClick: (() => void) | null;
   onSettingsButtonClick: () => void;
 }) {
   const settingsLabel = "Kalender Einstellungen";
@@ -46,10 +47,18 @@ export function HeaderToolbar(props: {
         <>
           <Button
             startDecorator={<Add />}
-            onClick={props.onNewEventButtonClick}
+            onClick={props.onNewAbsenceEventButtonClick}
           >
             Neue Abwesenheit
           </Button>
+          {props.onNewModuleEventButtonClick && (
+            <Button
+              startDecorator={<Add />}
+              onClick={props.onNewModuleEventButtonClick}
+            >
+              Neuer Fachmodulkalendereintrag
+            </Button>
+          )}
           <Tooltip title={settingsLabel} arrow placement="bottom">
             <IconButton
               color="primary"

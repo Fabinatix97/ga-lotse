@@ -135,7 +135,7 @@ export function AppointmentBlockGroupForm({
           <FormButtonBar
             submitLabel="Planen"
             submitting={isSubmitting}
-            onCancel={routes.appointmentBlockGroups.index}
+            onCancel={routes.appointments.index}
           />
         </FormSheet>
       )}

@@ -8,5 +8,6 @@ package de.eshg.base.calendar.persistence.entity;
 public enum CalendarType {
   GLOBAL,
   RESOURCE,
-  USER
+  USER,
+  MODULE
 }

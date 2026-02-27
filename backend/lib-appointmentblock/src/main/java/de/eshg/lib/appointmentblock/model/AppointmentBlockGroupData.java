@@ -16,6 +16,4 @@ public record AppointmentBlockGroupData(
     List<AppointmentTypeDto> types,
     LocationDto location,
     List<AppointmentBlockData> appointmentBlocks,
-    Boolean availableForCitizen,
-    Boolean availableForBulkBooking,
     boolean extraLength) {}

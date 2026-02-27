@@ -27,6 +27,7 @@ import { getAppointmentBlockGroupsQuery } from "../../api/queries/appointmentBlo
 import { useGetAppointmentStandardDurationOptions } from "../../api/queries/appointmentStandardDuration";
 import { routes } from "../../config/routes";
 import { useProstituteProtectionApiClients } from "../../contexts/ProstituteProtectionApi";
+import { PROSTITUTE_PROTECTION_GROUP_NAME } from "../../shared/constants";
 
 interface AppointmentBlockGroupsTableProps {
   controls?: ReactNode;
@@ -60,7 +61,7 @@ export function ProstituteProtectionAppointmentBlockGroupsTable(
         sortDirection: getSortDirection(tableControl.tableSorting),
       }),
       useGetAppointmentStandardDurationOptions(appointmentStandardDurationApi),
-      useGetUsersByGroupQuery("[System] ProstSchG-Berater"),
+      useGetUsersByGroupQuery(PROSTITUTE_PROTECTION_GROUP_NAME),
     ],
   });
 
@@ -81,7 +82,7 @@ export function ProstituteProtectionAppointmentBlockGroupsTable(
       appointmentBlockGroups={appointmentBlockGroups.data}
       isLoading={appointmentBlockGroups.isFetching}
       columns={appointmentBlockGroupsColumns}
-      newAppointmentBlockRoute={routes.appointmentBlockGroups.new}
+      newAppointmentBlockRoute={routes.appointments.new}
     />
   );
 }

@@ -1,0 +1,17 @@
+/*
+ * Copyright 2026 cronn GmbH
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+package de.eshg.prostituteprotection.api;
+
+import io.swagger.v3.oas.annotations.media.Schema;
+
+@Schema(
+    name = "ProstituteProtectionProcedureType",
+    description = "Type of consultation. It defines how long the consultation lasts.",
+    example = "INITIAL")
+public enum ProcedureTypeDto {
+  INITIAL,
+  FOLLOW_UP
+}

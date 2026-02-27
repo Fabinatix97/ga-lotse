@@ -19,7 +19,7 @@ import {
 } from "@eshg/lib-portal";
 import { ApiAppointmentBookingType } from "@eshg/prostitute-protection-api";
 
-import { CONSULTATION_TYPE_VALUES } from "../../../shared/constants";
+import { PROCEDURE_TYPE_VALUES } from "../../../shared/constants";
 import { AppointmentFields } from "../../form/AppointmentFields";
 import { ConsultantSelectField } from "../../form/ConsultantSelectField";
 
@@ -30,24 +30,28 @@ interface AppointmentStepProps extends FieldProps {
 }
 
 export function AppointmentStep(props: AppointmentStepProps) {
+  const { setFieldValue } = useFormikContext();
+
   return (
     <Layout {...props}>
       <Stack gap={2} mt={2}>
         <SelectField
           autoFocus
-          name="consultationType"
+          name="procedureType"
           label="Beratungstyp"
-          options={buildEnumOptions(CONSULTATION_TYPE_VALUES)}
+          options={buildEnumOptions(PROCEDURE_TYPE_VALUES)}
+          required="Bitte einen Beratungstyp auswählen."
+          onChange={() => {
+            void setFieldValue("appointmentBookingType", "");
+            void setFieldValue("blockAppointment", undefined);
+          }}
         />
         <ConsultantSelectField
           name="consultantId"
           options={props.allAssignableUsers}
         />
         <Divider sx={{ marginBlock: 1 }} />
-        <AppointmentFields
-          isCreation
-          freeAppointments={props.freeAppointments}
-        />
+        <AppointmentFields isCreation />
       </Stack>
     </Layout>
   );

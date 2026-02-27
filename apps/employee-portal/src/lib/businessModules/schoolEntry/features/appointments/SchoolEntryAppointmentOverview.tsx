@@ -6,50 +6,47 @@
 "use client";
 
 import { Settings } from "@mui/icons-material";
-import { useRef } from "react";
-import { isDefined } from "remeda";
+import { useSuspenseQueries } from "@tanstack/react-query";
 
+import { AppointmentOverview } from "@eshg/lib-employee-portal";
 import { InternalLinkButton } from "@eshg/lib-portal";
 
-import { AppointmentOverview } from "@/lib/businessModules/schoolEntry/features/appointments/AppointmentOverview";
-import { AppointmentViewTypes } from "@/lib/businessModules/schoolEntry/features/appointments/appointmentViews";
-import { useAppointmentBlockSidebar } from "@/lib/businessModules/schoolEntry/features/appointments/sidebars/AppointmentBlockSidebar";
-import { useAppointmentSidebar } from "@/lib/businessModules/schoolEntry/features/appointments/sidebars/AppointmentSidebar";
+import { useUserApi } from "@/lib/baseModule/api/clients";
 import {
-  AppointmentEventClickHandler,
-  CalendarHandle,
-} from "@/lib/businessModules/schoolEntry/features/appointments/useAppointmentOverview";
+  useAppointmentBlockApi,
+  useAppointmentStandardDurationsApi,
+} from "@/lib/businessModules/schoolEntry/api/clients";
+import { mapAppointmentBlockApi } from "@/lib/businessModules/schoolEntry/api/mapAppointmentBlockApi";
+import { appointmentBlockApiQueryKey } from "@/lib/businessModules/schoolEntry/api/queries/apiQueryKeys";
+import {
+  getAllMedicalAssistantsQuery,
+  getAllPhysiciansQuery,
+  getAllSopassQualifiedMFAsQuery,
+} from "@/lib/businessModules/schoolEntry/api/queries/appointmentStaff";
+import { useGetAppointmentStandardDurationsQuery } from "@/lib/businessModules/schoolEntry/api/queries/appointmentStandardDuration";
 import { routes } from "@/lib/businessModules/schoolEntry/shared/routes";
 
 export function SchoolEntryAppointmentOverview() {
-  const calendarHandleRef = useRef<CalendarHandle>(null);
-  function refetchEvents() {
-    calendarHandleRef.current?.refetchEvents();
-  }
+  const appointmentBlockApi = useAppointmentBlockApi();
+  const standardDurationApi = useAppointmentStandardDurationsApi();
+  const userApi = useUserApi();
 
-  const appointmentSidebar = useAppointmentSidebar();
-  const appointmentBlockSidebar = useAppointmentBlockSidebar();
-
-  const handleEventClick = function (eventData, viewType) {
-    if (eventData.type === "slot") {
-      const { appointmentId, appointmentBlockId } = eventData;
-      if (eventData.booked && isDefined(appointmentId)) {
-        appointmentSidebar.open({ appointmentId });
-      } else if (!eventData.booked && isDefined(appointmentBlockId)) {
-        appointmentBlockSidebar.open({ appointmentBlockId, refetchEvents });
-      }
-    } else if (eventData.type === "block") {
-      appointmentBlockSidebar.open({
-        appointmentBlockId: eventData.appointmentBlockId,
-        isLimitedView: viewType === AppointmentViewTypes.TimeGridWeek,
-        refetchEvents,
-      });
-    }
-  } satisfies AppointmentEventClickHandler;
+  const [
+    { data: standardDurations },
+    { data: physicians },
+    { data: mfas },
+    { data: sopasss },
+  ] = useSuspenseQueries({
+    queries: [
+      useGetAppointmentStandardDurationsQuery(standardDurationApi),
+      getAllPhysiciansQuery(userApi),
+      getAllMedicalAssistantsQuery(userApi),
+      getAllSopassQualifiedMFAsQuery(userApi),
+    ],
+  });
 
   return (
     <AppointmentOverview
-      ref={calendarHandleRef}
       buttons={
         <>
           <InternalLinkButton
@@ -67,7 +64,16 @@ export function SchoolEntryAppointmentOverview() {
           </InternalLinkButton>
         </>
       }
-      onEventClick={handleEventClick}
+      standardDurations={standardDurations}
+      appointmentBlockApi={mapAppointmentBlockApi(appointmentBlockApi)}
+      withTeam
+      appointmentBlockApiQueryKey={appointmentBlockApiQueryKey}
+      physicians={physicians}
+      mfas={mfas}
+      sopasss={sopasss}
+      detailsHref={(procedureId: string) =>
+        routes.procedures.byId(procedureId).details
+      }
     />
   );
 }

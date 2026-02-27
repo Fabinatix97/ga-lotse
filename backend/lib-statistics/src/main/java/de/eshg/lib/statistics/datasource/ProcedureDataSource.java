@@ -8,10 +8,14 @@ package de.eshg.lib.statistics.datasource;
 import de.eshg.domain.model.BaseEntity_;
 import de.eshg.lib.procedure.domain.model.Procedure;
 import de.eshg.lib.procedure.domain.model.Procedure_;
+import de.eshg.lib.procedure.domain.model.StatisticsInclusion;
 import de.eshg.lib.procedure.domain.repository.ProcedureRepository;
 import de.eshg.lib.statistics.api.DataSourceSensitivity;
 import de.eshg.lib.statistics.attributes.AttributeInfo;
 import de.eshg.lib.statistics.util.TimeRange;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Root;
 import java.util.UUID;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -43,6 +47,12 @@ public abstract class ProcedureDataSource<P extends Procedure<P, ?, ?, ?>, A ext
 
   protected Specification<P> getProcedureSpecification(TimeRange timeRange) {
     return (root, query, criteriaBuilder) ->
-        isInTimeRange(criteriaBuilder, root.get(Procedure_.createdAt), timeRange);
+        criteriaBuilder.and(
+            isIncluded(root, criteriaBuilder),
+            isInTimeRange(criteriaBuilder, root.get(Procedure_.createdAt), timeRange));
+  }
+
+  protected Predicate isIncluded(Root<P> root, CriteriaBuilder builder) {
+    return builder.equal(root.get(Procedure_.statisticsInclusion), StatisticsInclusion.INCLUDE);
   }
 }

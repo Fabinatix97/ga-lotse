@@ -10,6 +10,7 @@ import de.eshg.lib.appointmentblock.persistence.AppointmentType;
 import de.eshg.lib.appointmentblock.persistence.entity.Appointment;
 import de.eshg.prostituteprotection.api.AppointmentBookingTypeDto;
 import de.eshg.prostituteprotection.api.CreateProstituteProtectionProcedureRequest;
+import de.eshg.prostituteprotection.api.ProcedureTypeDto;
 import de.eshg.prostituteprotection.api.UpdateProstituteProtectionProcedureRequest;
 import de.eshg.prostituteprotection.domain.data.AppointmentData;
 import de.eshg.prostituteprotection.domain.model.AppointmentBookingType;
@@ -23,6 +24,7 @@ public class AppointmentMapper {
   public static AppointmentData toDataType(CreateProstituteProtectionProcedureRequest request) {
     return toDataType(
         request.appointmentBookingType(),
+        request.procedureType(),
         request.appointmentStart(),
         request.durationInMinutes(),
         request.consultantId());
@@ -31,6 +33,7 @@ public class AppointmentMapper {
   public static AppointmentData toDataType(UpdateProstituteProtectionProcedureRequest request) {
     return toDataType(
         request.appointmentBookingType(),
+        request.procedureType(),
         request.appointmentStart(),
         request.durationInMinutes(),
         request.consultantId());
@@ -38,12 +41,13 @@ public class AppointmentMapper {
 
   private static AppointmentData toDataType(
       AppointmentBookingTypeDto appointmentBookingTypeDto,
+      ProcedureTypeDto procedureType,
       Instant appointmentStart,
       Integer appointmentDurationInMinutes,
       UUID consultantId) {
     return new AppointmentData(
         mapToDomain(appointmentBookingTypeDto),
-        AppointmentType.PROSTITUTE_PROTECTION_CONSULTATION,
+        mapToAppointmentType(procedureType),
         appointmentStart,
         appointmentDurationInMinutes,
         consultantId);
@@ -63,7 +67,10 @@ public class AppointmentMapper {
     if (appointment == null) {
       return null;
     }
-    return new AppointmentDto(appointment.getAppointmentStart(), appointment.getAppointmentEnd());
+    return new AppointmentDto(
+        appointment.getAppointmentStart(),
+        appointment.getAppointmentEnd(),
+        appointment.getAppointmentBlock().getExternalId());
   }
 
   public static AppointmentDto toInterfaceType(UserDefinedAppointment appointment) {
@@ -79,6 +86,13 @@ public class AppointmentMapper {
       case USER_DEFINED -> AppointmentBookingType.USER_DEFINED;
       case APPOINTMENT_BLOCK -> AppointmentBookingType.APPOINTMENT_BLOCK;
       case SPONTANEOUS -> AppointmentBookingType.SPONTANEOUS;
+    };
+  }
+
+  public static AppointmentType mapToAppointmentType(ProcedureTypeDto procedureType) {
+    return switch (procedureType) {
+      case INITIAL -> AppointmentType.PROSTITUTE_PROTECTION_INITIAL;
+      case FOLLOW_UP -> AppointmentType.PROSTITUTE_PROTECTION_FOLLOW_UP;
     };
   }
 }

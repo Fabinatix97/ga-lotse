@@ -92,8 +92,7 @@ public class SchoolEntryCitizenController {
     validator.validateAppointmentChanges(schoolEntryProcedure);
     AppointmentDto newAppointment = request.newAppointment();
 
-    schoolEntryCitizenService.updateAppointment(
-        schoolEntryProcedure, newAppointment.start(), newAppointment.end());
+    schoolEntryCitizenService.updateAppointment(schoolEntryProcedure, newAppointment);
   }
 
   private SchoolEntryProcedure getSchoolEntryProcedure(Jwt principal) {

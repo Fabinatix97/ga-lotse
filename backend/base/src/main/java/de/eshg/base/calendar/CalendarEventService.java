@@ -109,6 +109,7 @@ public class CalendarEventService {
     validateStartBeforeEnd(request.timeData().start(), request.timeData().end());
     validateEventTypeFitsToCalendarType(calendarData.getType(), request.type());
     validateNoSubjectForUserCalendar(calendarData.getType(), request.subject());
+    validateSubjectForModuleCalendar(calendarData.getType(), request.subject());
 
     return doWithResourceCalendarLocks(
         calendarDatas,
@@ -133,6 +134,7 @@ public class CalendarEventService {
     validateStartBeforeEnd(request.timeData().start(), request.timeData().end());
     validateEventTypeFitsToCalendarType(calendarData.getType(), request.type());
     validateNoSubjectForUserCalendar(calendarData.getType(), request.subject());
+    validateSubjectForModuleCalendar(calendarData.getType(), request.subject());
 
     return doWithResourceCalendarLocks(
         calendarDatas,
@@ -402,11 +404,21 @@ public class CalendarEventService {
         && !baseEventTypeDto.equals(BaseEventTypeDto.VACATION)) {
       throw new BadRequestException("Only 'VACATION' events allowed in user calendars");
     }
+    if (calendarType.equals(CalendarType.MODULE)
+        && !baseEventTypeDto.equals(BaseEventTypeDto.INFORMATION)) {
+      throw new BadRequestException("Only 'INFORMATION' events allowed in module calendars");
+    }
   }
 
   private void validateNoSubjectForUserCalendar(CalendarType calendarType, String subject) {
     if (calendarType.equals(CalendarType.USER) && subject != null) {
       throw new BadRequestException("No subject allowed for user calendar events");
+    }
+  }
+
+  private void validateSubjectForModuleCalendar(CalendarType calendarType, String subject) {
+    if (calendarType.equals(CalendarType.MODULE) && subject == null) {
+      throw new BadRequestException("Subject required for module calendar events");
     }
   }
 

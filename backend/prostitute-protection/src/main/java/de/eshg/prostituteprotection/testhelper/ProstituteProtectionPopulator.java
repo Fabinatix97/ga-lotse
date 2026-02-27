@@ -10,10 +10,12 @@ import static de.eshg.base.util.ClassNameUtil.getClassNameAsPropertyKey;
 import de.eshg.prostituteprotection.ProstituteProtectionController;
 import de.eshg.prostituteprotection.api.AppointmentBookingTypeDto;
 import de.eshg.prostituteprotection.api.ConsultationDto;
-import de.eshg.prostituteprotection.api.ConsultationTypeDto;
+import de.eshg.prostituteprotection.api.ConsultationParagraph10Dto;
+import de.eshg.prostituteprotection.api.ConsultationParagraph7Dto;
 import de.eshg.prostituteprotection.api.CreateProstituteProtectionProcedureRequest;
 import de.eshg.prostituteprotection.api.CreateProstituteProtectionProcedureResponse;
 import de.eshg.prostituteprotection.api.LanguageDto;
+import de.eshg.prostituteprotection.api.ProcedureTypeDto;
 import de.eshg.prostituteprotection.domain.model.ProstituteProtectionProcedure;
 import de.eshg.prostituteprotection.domain.repository.ProstituteProtectionProcedureRepository;
 import de.eshg.rest.service.security.CurrentUserHelper;
@@ -68,7 +70,7 @@ public class ProstituteProtectionPopulator
             faker.artist().name(),
             faker.phoneNumber().phoneNumber(),
             List.of(randomElement(faker, LanguageDto.values())),
-            ConsultationTypeDto.INITIAL,
+            randomElement(faker, ProcedureTypeDto.values()),
             CurrentUserHelper.getCurrentUserId(),
             AppointmentBookingTypeDto.USER_DEFINED,
             clock.instant().plus(start),
@@ -88,19 +90,21 @@ public class ProstituteProtectionPopulator
     ConsultationDto updateConsultationRequest =
         new ConsultationDto(
             currentConsultation.version(),
-            faker.bool().bool(),
-            faker.bool().bool(),
-            faker.bool().bool(),
-            faker.bool().bool(),
-            faker.bool().bool(),
-            faker.bool().bool(),
-            faker.bool().bool(),
-            faker.bool().bool(),
-            faker.bool().bool(),
-            faker.bool().bool(),
-            faker.bool().bool(),
-            faker.bool().bool(),
-            faker.bool().bool(),
+            new ConsultationParagraph7Dto(
+                faker.bool().bool(),
+                faker.bool().bool(),
+                faker.bool().bool(),
+                faker.bool().bool(),
+                faker.bool().bool(),
+                faker.bool().bool(),
+                faker.bool().bool()),
+            new ConsultationParagraph10Dto(
+                faker.bool().bool(),
+                faker.bool().bool(),
+                faker.bool().bool(),
+                faker.bool().bool(),
+                faker.bool().bool(),
+                faker.bool().bool()),
             randomElement(faker, LanguageDto.values()),
             true,
             faker.name().firstName(),

@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { PsychologyOutlined } from "@mui/icons-material";
+import { FoodBankOutlined } from "@mui/icons-material";
 
 import { ApiUserRole } from "@eshg/base-api";
 import {
@@ -16,14 +16,19 @@ import { routes } from "./routes";
 
 const sideNavigationItem = {
   name: "Lebensmittelausweis",
-  decorator: <PsychologyOutlined />,
+  decorator: <FoodBankOutlined />,
 };
 
 const defaultSubItems: SideNavigationSubItem[] = [
   {
     name: "Vorgänge",
     href: routes.procedures.index,
-    accessCheck: hasUserRole(ApiUserRole.InfectionBriefingLeader),
+    accessCheck: hasUserRole(ApiUserRole.InfectionBriefingAdmin),
+  },
+  {
+    name: "Terminblöcke",
+    href: routes.appointmentBlockGroups.index,
+    accessCheck: hasUserRole(ApiUserRole.InfectionBriefingAdmin),
   },
 ];
 

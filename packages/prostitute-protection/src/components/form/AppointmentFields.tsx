@@ -4,7 +4,8 @@
  */
 
 import { Box, Stack } from "@mui/joy";
-import { addMinutes } from "date-fns";
+import { useQuery } from "@tanstack/react-query";
+import { addMinutes, startOfHour } from "date-fns";
 import { useFormikContext } from "formik";
 import { useState } from "react";
 
@@ -27,11 +28,15 @@ import {
 import {
   ApiAppointment,
   ApiAppointmentBookingType,
+  ApiProstituteProtectionProcedureType,
 } from "@eshg/prostitute-protection-api";
 
+import { useGetFreeAppointmentsOptions } from "../../api/queries/appointmentBlockApi";
+import { useProstituteProtectionApiClients } from "../../contexts/ProstituteProtectionApi";
 import { APPOINTMENT_FORM_LABELS } from "../../shared/constants";
 
 export interface AppointmentFieldsData {
+  procedureType: ApiProstituteProtectionProcedureType;
   appointmentBookingType: OptionalFieldValue<ApiAppointmentBookingType>;
   blockAppointment?: ApiAppointment;
   customAppointmentDate?: string;
@@ -76,19 +81,27 @@ function ConnectedAppointmentPicker({
 
 interface AppointmentFieldsProps {
   isCreation?: boolean;
-  freeAppointments: ApiAppointment[];
 }
 
 export function AppointmentFields(props: AppointmentFieldsProps) {
-  const formikContext = useFormikContext<AppointmentFieldsData>();
-
+  const { values, setFieldValue } = useFormikContext<AppointmentFieldsData>();
+  const { appointmentBlockApi } = useProstituteProtectionApiClients();
+  const { data: freeAppointments } = useQuery(
+    useGetFreeAppointmentsOptions(
+      {
+        procedureType: values.procedureType,
+        earliestDate: startOfHour(new Date()),
+      },
+      appointmentBlockApi,
+    ),
+  );
   return (
     <RadioSheets
       name="appointmentBookingType"
       aria-label="Buchungsart"
       required="Bitte eine Buchungsart auswählen"
     >
-      {props.freeAppointments.length === 0 && (
+      {freeAppointments?.length === 0 && (
         <Alert
           color="warning"
           message="Es sind keine freien Terminblöcke verfügbar."
@@ -98,11 +111,11 @@ export function AppointmentFields(props: AppointmentFieldsProps) {
         name="appointmentBookingType"
         value={ApiAppointmentBookingType.AppointmentBlock}
         label="Aus Terminblock"
-        disabled={props.freeAppointments.length === 0}
+        disabled={freeAppointments?.length === 0}
       >
         <ConnectedAppointmentPicker
           name="blockAppointment"
-          freeAppointments={props.freeAppointments}
+          freeAppointments={freeAppointments ?? []}
         />
       </RadioSheetOption>
       <RadioSheetOption
@@ -132,7 +145,7 @@ export function AppointmentFields(props: AppointmentFieldsProps) {
           value={ApiAppointmentBookingType.Spontaneous}
           onSelect={() => {
             const now = new Date();
-            void formikContext.setFieldValue(
+            void setFieldValue(
               "customAppointmentDate",
               toDateTimeString(addMinutes(now, 5 - (now.getMinutes() % 5))),
             );

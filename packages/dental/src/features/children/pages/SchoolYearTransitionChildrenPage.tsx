@@ -43,16 +43,16 @@ import { DentalDaycareChildrenRouteParams } from "../schemas/DentalDaycareChildr
 
 const columnHelper = createColumnHelper<ChildForTransition>();
 const columns = [
-  columnHelper.accessor("firstName", {
-    header: "Vorname",
+  columnHelper.accessor("lastName", {
+    header: "Nachname",
     cell: (props) => props.getValue(),
     enableSorting: true,
     meta: {
       width: 180,
     },
   }),
-  columnHelper.accessor("lastName", {
-    header: "Nachname",
+  columnHelper.accessor("firstName", {
+    header: "Vorname",
     cell: (props) => props.getValue(),
     enableSorting: true,
     meta: {

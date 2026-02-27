@@ -26,14 +26,16 @@ import { useGetAppointmentBlockDefaultAvailabilityOptions } from "../../api/quer
 import { useGetAppointmentStandardDurationOptions } from "../../api/queries/appointmentStandardDuration";
 import { routes } from "../../config/routes";
 import { useProstituteProtectionApiClients } from "../../contexts/ProstituteProtectionApi";
+import { PROSTITUTE_PROTECTION_GROUP_NAME } from "../../shared/constants";
 
 import {
   AppointmentBlockGroupForm,
   ProstituteProtectionAppointmentValues,
 } from "./AppointmentBlockGroupForm";
 
-const APPOINTMENT_TYPES: ApiAppointmentType[] = [
-  ApiAppointmentType.ProstituteProtectionConsultation,
+export const APPOINTMENT_TYPES: ApiAppointmentType[] = [
+  ApiAppointmentType.ProstituteProtectionInitial,
+  ApiAppointmentType.ProstituteProtectionFollowUp,
 ];
 
 function mapAppointmentBlock(
@@ -76,7 +78,7 @@ export function CreateAppointmentBlockGroupForm() {
       useGetAppointmentBlockDefaultAvailabilityOptions(
         appointmentBlockAvailabilityApi,
       ),
-      useGetUsersByGroupQuery("[System] ProstSchG-Berater"),
+      useGetUsersByGroupQuery(PROSTITUTE_PROTECTION_GROUP_NAME),
     ],
   });
 
@@ -86,7 +88,7 @@ export function CreateAppointmentBlockGroupForm() {
       appointmentBlockGroupValues,
       {
         onSuccess: () => {
-          router.push(routes.appointmentBlockGroups.index);
+          router.push(routes.appointments.index);
         },
       },
     );

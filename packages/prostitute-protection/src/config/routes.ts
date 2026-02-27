@@ -8,6 +8,7 @@ import { defineRoutes } from "@eshg/lib-portal/universal";
 const basePath = "/prostitute-protection";
 const proceduresRoute = "/procedures";
 const searchPersonRoute = "/person-search";
+const appointmentsRoute = "/appointments";
 
 export const routes = defineRoutes(basePath, (prostituteProtectionPath) => ({
   procedures: defineRoutes(
@@ -29,10 +30,13 @@ export const routes = defineRoutes(basePath, (prostituteProtectionPath) => ({
       index: searchPersonPath("/"),
     }),
   ),
-  appointmentBlockGroups: defineRoutes(
-    prostituteProtectionPath("/appointment-block-groups"),
+  appointments: defineRoutes(
+    prostituteProtectionPath(appointmentsRoute),
     (appointmentBlockGroupsPath) => ({
       index: appointmentBlockGroupsPath("/"),
+      appointmentBlockGroups: appointmentBlockGroupsPath(
+        "/appointment-block-groups",
+      ),
       new: appointmentBlockGroupsPath("/new"),
     }),
   ),

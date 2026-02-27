@@ -8,9 +8,9 @@ import { useMultiStepForm } from "@eshg/lib-portal";
 import { AppointmentFormValues } from "@/lib/businessModules/officialMedicalService/components/appointment/AppointmentForm";
 import { ConfirmationSection } from "@/lib/businessModules/officialMedicalService/components/appointment/steps/ConfirmationSection";
 import { OverviewSection } from "@/lib/businessModules/officialMedicalService/components/appointment/steps/OverviewSection";
-import { MultiStepFormButtonBar } from "@/lib/businessModules/officialMedicalService/shared/MultiStepFormButtonBar";
 import { useCitizenRoutes } from "@/lib/businessModules/officialMedicalService/shared/routes";
 import { useTranslation } from "@/lib/i18n/client";
+import { MultiStepFormButtonBar } from "@/lib/shared/components/form/MultiStepFormButtonBar";
 import { ContentSheet } from "@/lib/shared/components/layout/contentSheet";
 
 export function AppointmentFormSidePanel({

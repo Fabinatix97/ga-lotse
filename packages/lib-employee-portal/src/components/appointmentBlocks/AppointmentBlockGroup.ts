@@ -17,6 +17,26 @@ export interface AppointmentLocation {
   name: string;
 }
 
+export interface AppointmentBlockUser {
+  firstName: string;
+  lastName: string;
+  userId: string;
+}
+
+export interface AppointmentBlockSlot {
+  appointmentId?: number;
+  appointmentType?: ApiAppointmentType;
+  booked: boolean;
+  end: Date;
+  information?: string;
+  procedureId?: string;
+  start: Date;
+}
+
+export interface AppointmentBlockBin {
+  appointmentBlockSlots: AppointmentBlockSlot[];
+}
+
 export interface AppointmentBlock extends BaseEntity {
   readonly start: Date;
   readonly end: Date;
@@ -30,6 +50,12 @@ export interface AppointmentBlock extends BaseEntity {
   readonly consultants?: string[];
   readonly sopasss?: string[];
   readonly room?: string;
+  readonly resolvedUsers?: Record<string, AppointmentBlockUser>;
+  readonly creatorId?: string;
+  readonly availableForCitizen?: boolean;
+  readonly availableForBulkBooking?: boolean;
+  readonly appointmentBlockBins?: AppointmentBlockBin[];
+  readonly types?: ApiAppointmentType[];
 }
 
 export interface AppointmentBlockGroup extends AppointmentBlock {

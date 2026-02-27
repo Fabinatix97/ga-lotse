@@ -5,8 +5,15 @@
 
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 
-import { SEMI_STATIC_QUERY_OPTIONS } from "@eshg/lib-portal";
-import { ProstituteProtectionPublicCitizenApi } from "@eshg/prostitute-protection-api";
+import {
+  OptionalFieldValue,
+  SEMI_STATIC_QUERY_OPTIONS,
+  isNonEmptyString,
+} from "@eshg/lib-portal";
+import {
+  ApiProstituteProtectionProcedureType,
+  ProstituteProtectionPublicCitizenApi,
+} from "@eshg/prostitute-protection-api";
 
 import { useProstituteProtectionCitizenPublicApi } from "@/lib/businessModules/prostituteProtection/api/clients";
 import { prostituteProtectionPublicCitizenApiQueryKey } from "@/lib/businessModules/prostituteProtection/api/queries/apiQueryKeys";
@@ -48,18 +55,28 @@ export function getOpeningHoursQuery(
 
 function getFreeAppointmentsQuery(
   publicCitizenApi: ProstituteProtectionPublicCitizenApi,
+  procedureType: OptionalFieldValue<ApiProstituteProtectionProcedureType>,
 ) {
   return queryOptions({
     queryKey: prostituteProtectionPublicCitizenApiQueryKey([
       "getFreeAppointments",
+      procedureType,
     ]),
-    queryFn: () => publicCitizenApi.getFreeAppointmentsForCitizen(),
+    queryFn: () =>
+      publicCitizenApi.getFreeAppointmentsForCitizen(
+        procedureType as ApiProstituteProtectionProcedureType,
+      ),
+    enabled: isNonEmptyString(procedureType),
   });
 }
 
-export function useFreeAppointments() {
+export function useFreeAppointments(
+  procedureType: OptionalFieldValue<ApiProstituteProtectionProcedureType>,
+) {
   const publicCitizenApi = useProstituteProtectionCitizenPublicApi();
-  return useSuspenseQuery(getFreeAppointmentsQuery(publicCitizenApi));
+  return useSuspenseQuery(
+    getFreeAppointmentsQuery(publicCitizenApi, procedureType),
+  );
 }
 
 export function getDepartmentInfoQuery(

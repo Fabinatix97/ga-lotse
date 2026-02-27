@@ -29,4 +29,6 @@ public record UpdateAppointmentBlockRequest(
     @NotNull List<UUID> mfas,
     @NotNull List<UUID> consultants,
     @NotNull List<UUID> sopasss,
-    String room) {}
+    String room,
+    Boolean availableForCitizen,
+    Boolean availableForBulkBooking) {}

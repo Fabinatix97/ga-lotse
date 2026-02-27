@@ -17,7 +17,7 @@ public record UpdateProstituteProtectionProcedureRequest(
             description =
                 "Version of the entity. Each time the entity is changed, it is incremented by one.")
         long version,
-    @NotNull ConsultationTypeDto consultationType,
+    @NotNull ProcedureTypeDto procedureType,
     @NotNull AppointmentBookingTypeDto appointmentBookingType,
     @Schema(description = "The start date and time of the appointment.") @NotNull
         Instant appointmentStart,

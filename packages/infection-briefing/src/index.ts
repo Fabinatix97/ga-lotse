@@ -14,3 +14,5 @@ export {
 } from "./contexts/InfectionBriefingApi";
 
 export { InfectionBriefingOverviewPage } from "./pages/InfectionBriefingOverviewPage";
+export { InfectionBriefingAppointmentBlockOverviewPage } from "./pages/InfectionBriefingAppointmentBlockOverviewPage";
+export { InfectionBriefingNewAppointmentBlockGroupsPage } from "./pages/InfectionBriefingNewAppointmentBlockGroupsPage";

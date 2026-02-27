@@ -4,29 +4,29 @@
  */
 
 import { useSuspenseQueries } from "@tanstack/react-query";
-import { startOfHour } from "date-fns";
 import { Formik } from "formik";
 import { useRouter } from "next/navigation";
 import { ReactNode } from "react";
 
 import { ApiUser } from "@eshg/base-api";
 import {
-  ApiAppointmentType,
   SidebarWithFormRefProps,
   UseSidebarWithFormRefResult,
   useGetUsersByGroupQuery,
   useSidebarWithFormRef,
   useStepper,
 } from "@eshg/lib-employee-portal";
-import { OptionalFieldValue, mapOptionalValue } from "@eshg/lib-portal";
 import {
-  ApiAppointment,
-  ApiConsultationType,
+  OptionalFieldValue,
+  mapOptionalValue,
+  mapRequiredValue,
+} from "@eshg/lib-portal";
+import {
   ApiCreateProstituteProtectionProcedureRequest,
+  ApiProstituteProtectionProcedureType,
 } from "@eshg/prostitute-protection-api";
 
 import { useCreateProcedureMutation } from "../../../api/mutations/procedures";
-import { useGetFreeAppointmentsOptions } from "../../../api/queries/appointmentBlockApi";
 import { useGetAppointmentStandardDurationOptions } from "../../../api/queries/appointmentStandardDuration";
 import { routes } from "../../../config/routes";
 import { useProstituteProtectionApiClients } from "../../../contexts/ProstituteProtectionApi";
@@ -60,7 +60,6 @@ export interface FieldProps extends SidebarWithFormRefProps {
   jumpToAppointmentSelection: () => void;
   jumpToPersonalData: () => void;
   allAssignableUsers: ApiUser[];
-  freeAppointments: ApiAppointment[];
 }
 const steps = [
   {
@@ -84,7 +83,6 @@ export interface AddNewProcedureForm
   extends LanguageFieldsData, AppointmentFieldsData {
   alias: string;
   phoneNumber: string;
-  consultationType: OptionalFieldValue<ApiConsultationType>;
   consultantId: OptionalFieldValue<string>;
 }
 
@@ -97,26 +95,18 @@ export function useAddNewProcedureSidebar(): UseSidebarWithFormRefResult {
 function SidebarWrapper(props: SidebarWithFormRefProps) {
   const addNewProcedure = useCreateProcedureMutation();
   const router = useRouter();
-  const { appointmentStandardDurationApi, appointmentBlockApi } =
+  const { appointmentStandardDurationApi } =
     useProstituteProtectionApiClients();
 
-  const [
-    { data: allAssignableUsers },
-    { data: standardDuration },
-    { data: freeAppointments },
-  ] = useSuspenseQueries({
-    queries: [
-      useGetUsersByGroupQuery(PROSTITUTE_PROTECTION_GROUP_NAME),
-      useGetAppointmentStandardDurationOptions(appointmentStandardDurationApi),
-      useGetFreeAppointmentsOptions(
-        {
-          appointmentType: ApiAppointmentType.ProstituteProtectionConsultation,
-          earliestDate: startOfHour(new Date()),
-        },
-        appointmentBlockApi,
-      ),
-    ],
-  });
+  const [{ data: allAssignableUsers }, { data: standardDuration }] =
+    useSuspenseQueries({
+      queries: [
+        useGetUsersByGroupQuery(PROSTITUTE_PROTECTION_GROUP_NAME),
+        useGetAppointmentStandardDurationOptions(
+          appointmentStandardDurationApi,
+        ),
+      ],
+    });
 
   const initialValues: AddNewProcedureForm = {
     alias: "",
@@ -124,11 +114,10 @@ function SidebarWrapper(props: SidebarWithFormRefProps) {
     languages: [],
     hasSufficientGermanLanguageSkills: false,
     customAppointmentDate: "",
-    consultationType: "",
+    procedureType: ApiProstituteProtectionProcedureType.FollowUp,
     consultantId: "",
     duration:
-      standardDuration.standardDurations.PROSTITUTE_PROTECTION_CONSULTATION ??
-      0,
+      standardDuration.standardDurations.PROSTITUTE_PROTECTION_FOLLOW_UP ?? 0,
     appointmentBookingType: "",
   };
 
@@ -174,7 +163,6 @@ function SidebarWrapper(props: SidebarWithFormRefProps) {
           jumpToAppointmentSelection={jumpToAppointmentSelection}
           jumpToPersonalData={jumpToPersonalData}
           allAssignableUsers={allAssignableUsers}
-          freeAppointments={freeAppointments ?? []}
           onClose={props.onClose}
         />
       )}
@@ -204,7 +192,7 @@ function mapProcedureFormToApi(
     phoneNumber: mapOptionalValue(form.phoneNumber),
     languages: form.languages ?? [],
     appointmentBookingType: form.appointmentBookingType,
-    consultationType: mapOptionalValue(form.consultationType),
+    procedureType: mapRequiredValue(form.procedureType),
     consultantId: mapOptionalValue(form.consultantId),
   };
 }

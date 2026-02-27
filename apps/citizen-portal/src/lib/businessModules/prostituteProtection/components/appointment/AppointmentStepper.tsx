@@ -10,14 +10,15 @@ import { useId, useState } from "react";
 import {
   FormPlus,
   MultiStepForm,
+  OptionalFieldValue,
   StepFactory,
   YesOrNoFieldData,
 } from "@eshg/lib-portal";
 import {
   ApiAppointment,
-  ApiConsultationType,
   type ApiCreateCitizenProcedureRequest,
   ApiPersonLanguage,
+  ApiProstituteProtectionProcedureType,
 } from "@eshg/prostitute-protection-api";
 
 import { useBookAppointment } from "@/lib/businessModules/prostituteProtection/api/mutations/publicCitizenApi";
@@ -31,7 +32,7 @@ import { TimeSlotStep } from "./TimeSlotStep";
 
 export interface AppointmentFormData {
   appointment?: ApiAppointment | null;
-  consultationType: ApiConsultationType | "";
+  procedureType: OptionalFieldValue<ApiProstituteProtectionProcedureType>;
   hasSufficientGermanLanguageSkills?: YesOrNoFieldData;
   otherKnownLanguages?: ApiPersonLanguage[];
   alias: string;
@@ -43,7 +44,7 @@ const STEPS: StepFactory<AppointmentFormData>[] = [
 ] as const;
 export const initialData: AppointmentFormData = {
   alias: "",
-  consultationType: "",
+  procedureType: "",
   hasSufficientGermanLanguageSkills: null,
   otherKnownLanguages: [],
   appointment: null,
@@ -104,14 +105,14 @@ function mapToCreateProcedure({
   alias,
   hasSufficientGermanLanguageSkills,
   otherKnownLanguages,
-  consultationType,
+  procedureType,
 }: AppointmentFormData): ApiCreateCitizenProcedureRequest {
   if (!appointment) {
     throw new Error("appointment required");
   }
 
-  if (!consultationType) {
-    throw new Error("Consultation type required");
+  if (!procedureType) {
+    throw new Error("Procedure type required");
   }
 
   let languages: ApiPersonLanguage[];
@@ -128,6 +129,6 @@ function mapToCreateProcedure({
     languages,
     appointment,
     alias,
-    consultationType,
+    procedureType,
   };
 }

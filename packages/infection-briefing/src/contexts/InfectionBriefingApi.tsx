@@ -7,7 +7,11 @@
 
 import { ReactNode, createContext, useContext, useRef } from "react";
 
-const InfectionBriefingContext = createContext<string | null>(null);
+import { InfectionBriefingClients, createClients } from "../api/createClients";
+
+const InfectionBriefingContext = createContext<InfectionBriefingClients | null>(
+  null,
+);
 
 export function InfectionBriefingApiClientProvider({
   children,
@@ -16,7 +20,7 @@ export function InfectionBriefingApiClientProvider({
   baseUrl: string;
   children: ReactNode;
 }) {
-  const clients = useRef(baseUrl);
+  const clients = useRef(createClients(baseUrl));
 
   return (
     <InfectionBriefingContext value={clients.current}>
@@ -27,10 +31,8 @@ export function InfectionBriefingApiClientProvider({
 
 export function useInfectionBriefingApiClients() {
   const infectionBriefingContext = useContext(InfectionBriefingContext);
-
   if (infectionBriefingContext === null) {
     throw new Error("Missing Infection Briefing Provider");
   }
-
   return infectionBriefingContext;
 }

@@ -26,7 +26,7 @@ export function ProstituteProtectionAppointmentBlockGroupsOverviewPage() {
               right={
                 <InternalLinkButton
                   autoFocus
-                  href={routes.appointmentBlockGroups.new}
+                  href={routes.appointments.new}
                   size="sm"
                   startDecorator={<Schedule />}
                 >

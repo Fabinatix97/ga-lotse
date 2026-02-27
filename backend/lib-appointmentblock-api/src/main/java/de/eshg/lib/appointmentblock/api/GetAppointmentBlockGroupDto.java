@@ -22,6 +22,4 @@ public record GetAppointmentBlockGroupDto(
         UUID id,
     @NotNull @Size(min = 1) List<AppointmentTypeDto> types,
     @Valid LocationDto location,
-    @Valid @NotNull @NotEmpty List<GetAppointmentBlockDto> appointmentBlocks,
-    Boolean availableForCitizen,
-    Boolean availableForBulkBooking) {}
+    @Valid @NotNull @NotEmpty List<GetAppointmentBlockDto> appointmentBlocks) {}

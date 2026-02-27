@@ -412,6 +412,8 @@ export {
 export { ProcedureLabelSelection } from "./features/procedureLabels/components/ProcedureLabelSelection";
 export { ProcedureLabelsPage } from "./features/procedureLabels/components/ProcedureLabelsPage";
 
+export { StatisticsInclusionPanel } from "./features/procedureStatisticsInclusion/components/StatisticsInclusionPanel";
+
 export { ProgressEntriesPage } from "./features/progressEntries/components/ProgressEntriesPage";
 export { manualProgressEntryTypeNames } from "./features/progressEntries/config/progressEntryTypes";
 
@@ -529,6 +531,16 @@ export {
 export { isBusinessModule, isInteger } from "./helpers/guards";
 
 export { CustomAppointmentQuickButtons } from "./components/CustomAppointmentQuickButtons";
+export {
+  CalendarHeaderToolbar,
+  type CalendarHeaderToolbarProps,
+} from "./components/calendar/CalendarHeaderToolbar";
+
+export { AppointmentOverview } from "./components/appointmentBlocks/appointmentOverview/AppointmentOverview";
+export {
+  type AppointmentViewType,
+  AppointmentViewTypes,
+} from "./components/appointmentBlocks/appointmentOverview/appointmentViews";
 
 export {
   buildOptionFromUser,

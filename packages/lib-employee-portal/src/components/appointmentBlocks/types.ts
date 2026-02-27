@@ -28,7 +28,8 @@ export const ApiAppointmentType = {
   OfficialMedicalServiceShort: "OFFICIAL_MEDICAL_SERVICE_SHORT",
   OfficialMedicalServiceLong: "OFFICIAL_MEDICAL_SERVICE_LONG",
   MedsAbroadCertification: "MEDS_ABROAD_CERTIFICATION",
-  ProstituteProtectionConsultation: "PROSTITUTE_PROTECTION_CONSULTATION",
+  ProstituteProtectionInitial: "PROSTITUTE_PROTECTION_INITIAL",
+  ProstituteProtectionFollowUp: "PROSTITUTE_PROTECTION_FOLLOW_UP",
   InfectionBriefingNew: "INFECTION_BRIEFING_NEW",
   InfectionBriefingReplacement: "INFECTION_BRIEFING_REPLACEMENT",
 } as const;

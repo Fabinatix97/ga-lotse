@@ -3,7 +3,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiChildDetails, ApiFluoridationConsent } from "@eshg/dental-api";
+import {
+  ApiChildDetails,
+  ApiFluoridationConsent,
+  ApiProcedureStatus,
+  ApiStatisticsInclusion,
+} from "@eshg/dental-api";
 import {
   ProcedureLabel,
   Versioned,
@@ -21,12 +26,14 @@ import { ChildExamination, mapChildExamination } from "./ChildExamination";
 import { PersonDetails, mapPersonDetails } from "./PersonDetails";
 
 export interface ChildDetails extends Child, Versioned {
+  readonly status: ApiProcedureStatus;
   readonly examinations: ChildExamination[];
   readonly institutions: AnnualInstitution[];
   readonly currentFluoridationConsent?: ApiFluoridationConsent;
   readonly allFluoridationConsents: ApiFluoridationConsent[];
   readonly personDetails: PersonDetails;
   readonly procedureLabels: ProcedureLabel[];
+  readonly statisticsInclusion: ApiStatisticsInclusion;
   readonly note?: string;
 }
 
@@ -43,12 +50,14 @@ export function mapChildDetails(response: ApiChildDetails): ChildDetails {
       institution: getCurrentInstitution(institutions),
       fluoridationConsent: currentFluoridationConsent?.consented ?? "UNKNOWN",
     }),
+    status: response.status,
     personDetails: mapPersonDetails(response),
     institutions,
     examinations: response.examinations.map(mapChildExamination),
     currentFluoridationConsent,
     allFluoridationConsents: response.fluoridationConsents,
     procedureLabels: response.procedureLabels,
+    statisticsInclusion: response.statisticsInclusion,
     note: response.note,
   };
 }

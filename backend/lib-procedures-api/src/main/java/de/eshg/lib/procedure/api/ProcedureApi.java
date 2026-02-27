@@ -6,6 +6,8 @@
 package de.eshg.lib.procedure.api;
 
 import de.eshg.api.commons.InlineParameterObject;
+import de.eshg.lib.procedure.model.BulkUpdateProceduresStatisticsInclusionRequest;
+import de.eshg.lib.procedure.model.BulkUpdateProceduresStatisticsInclusionResponse;
 import de.eshg.lib.procedure.model.GetDetailedProcedureResponse;
 import de.eshg.lib.procedure.model.GetProcedureApprovalRequestsResponse;
 import de.eshg.lib.procedure.model.GetProcedureFileDetailsResponse;
@@ -20,8 +22,10 @@ import jakarta.validation.Valid;
 import java.util.UUID;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.service.annotation.GetExchange;
+import org.springframework.web.service.annotation.PostExchange;
 
 public interface ProcedureApi extends BusinessModuleProcedureApi, ProcedureMetricsApi {
 
@@ -59,6 +63,12 @@ public interface ProcedureApi extends BusinessModuleProcedureApi, ProcedureMetri
   @ApiResponse(responseCode = "200", description = "a single procedure with details")
   @Operation(summary = "Get a single procedure with details")
   GetDetailedProcedureResponse getDetailedProcedure(@PathVariable("id") UUID id);
+
+  @PostExchange(ProcedureLibrary.PROCEDURES_API_STATISTICS_INCLUSION)
+  @ApiResponse(responseCode = "200")
+  @Operation(summary = "Update the statistics inclusion of procedures in bulk")
+  BulkUpdateProceduresStatisticsInclusionResponse updateStatisticsInclusion(
+      @RequestBody @Valid BulkUpdateProceduresStatisticsInclusionRequest id);
 
   @GetExchange(ProcedureLibrary.PROCEDURES_API + "/{id}/files")
   @ApiResponse(responseCode = "200")

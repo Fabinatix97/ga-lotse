@@ -6,6 +6,7 @@
 package de.eshg.prostituteprotection.api;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 
 @Schema(name = "Consultation")
@@ -15,56 +16,14 @@ public record ConsultationDto(
             description =
                 "Version of the entity. Each time the entity is changed, it is incremented by one.")
         long version,
-    @NotNull boolean legalAdvices,
-    @NotNull boolean healthAndSocialInsurance,
-    @NotNull boolean consultingServices,
-    @NotNull boolean emergencyHelp,
-    @NotNull boolean taxLiability,
-    @NotNull boolean clearing,
-    @NotNull boolean informationMaterial,
-    @NotNull boolean predicament,
-    @NotNull boolean diseasePrevention,
-    @NotNull boolean birthControl,
-    @NotNull boolean pregnancy,
-    @NotNull boolean alcoholAndDrugUsage,
-    @NotNull boolean referral,
+    @NotNull @Valid ConsultationParagraph7Dto paragraph7,
+    @NotNull @Valid ConsultationParagraph10Dto paragraph10,
     LanguageDto languageOfConsultation,
     @NotNull boolean interpreterConsulted,
     String interpreterFirstName,
     String interpreterLastName) {
   public ConsultationDto(
-      long version,
-      boolean legalAdvices,
-      boolean healthAndSocialInsurance,
-      boolean consultingServices,
-      boolean emergencyHelp,
-      boolean taxLiability,
-      boolean clearing,
-      boolean informationMaterial,
-      boolean predicament,
-      boolean diseasePrevention,
-      boolean birthControl,
-      boolean pregnancy,
-      boolean alcoholAndDrugUsage,
-      boolean referral) {
-    this(
-        version,
-        legalAdvices,
-        healthAndSocialInsurance,
-        consultingServices,
-        emergencyHelp,
-        taxLiability,
-        clearing,
-        informationMaterial,
-        predicament,
-        diseasePrevention,
-        birthControl,
-        pregnancy,
-        alcoholAndDrugUsage,
-        referral,
-        null,
-        false,
-        null,
-        null);
+      long version, ConsultationParagraph7Dto paragraph7, ConsultationParagraph10Dto paragraph10) {
+    this(version, paragraph7, paragraph10, null, false, null, null);
   }
 }

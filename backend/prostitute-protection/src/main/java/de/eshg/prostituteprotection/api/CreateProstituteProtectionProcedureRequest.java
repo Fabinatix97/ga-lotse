@@ -17,7 +17,7 @@ public record CreateProstituteProtectionProcedureRequest(
     String alias,
     @Size(min = 1, max = 23) String phoneNumber,
     @NotNull List<LanguageDto> languages,
-    ConsultationTypeDto consultationType,
+    @NotNull ProcedureTypeDto procedureType,
     UUID consultantId,
     @NotNull AppointmentBookingTypeDto appointmentBookingType,
     @Schema(description = "The start date and time of the appointment.") @NotNull

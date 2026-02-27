@@ -14,6 +14,7 @@ import {
   validateRange,
 } from "@eshg/lib-portal";
 
+import { InfectionBriefingAppointmentStandardDuration } from "@/lib/configurator/components/shared/ConfiguratorDetails/appointmentStandardDuration/InfectionBriefingAppointmentStandardDuration";
 import { ProstituteProtectionAppointmentStandardDuration } from "@/lib/configurator/components/shared/ConfiguratorDetails/appointmentStandardDuration/ProstituteProtectionAppointmentStandardDuration";
 import {
   ConfiguratorForm,
@@ -48,6 +49,8 @@ export function AppointmentStandardDuration(props: {
       return <SexWorkAppointmentStandardDuration />;
     case ConfiguratorModuleName.ProstituteProtection:
       return <ProstituteProtectionAppointmentStandardDuration />;
+    case ConfiguratorModuleName.InfectionBriefing:
+      return <InfectionBriefingAppointmentStandardDuration />;
     default:
       notFound();
   }

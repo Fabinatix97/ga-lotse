@@ -5,8 +5,10 @@
 
 package de.eshg.lib.appointmentblock;
 
+import static de.eshg.lib.appointmentblock.AppointmentMapper.mapAppointmentToDto;
 import static de.eshg.lib.appointmentblock.AppointmentTypeMapper.toInterfaceType;
 import static java.time.temporal.ChronoUnit.DAYS;
+import static java.util.Comparator.comparing;
 
 import de.eshg.api.commons.SortDirection;
 import de.eshg.base.user.UserApi;
@@ -25,12 +27,12 @@ import de.eshg.lib.appointmentblock.api.ValidateAppointmentBlockGroupResponse;
 import de.eshg.lib.appointmentblock.client.CalendarClient;
 import de.eshg.lib.appointmentblock.model.AppointmentBlockData;
 import de.eshg.lib.appointmentblock.model.AppointmentBlockGroupData;
-import de.eshg.lib.appointmentblock.model.AppointmentBlockSlot;
 import de.eshg.lib.appointmentblock.model.CreateAppointmentBlockData;
 import de.eshg.lib.appointmentblock.persistence.AppointmentBlockGroupRepository;
 import de.eshg.lib.appointmentblock.persistence.AppointmentBlockGroupSpecification;
 import de.eshg.lib.appointmentblock.persistence.AppointmentBlockRepository;
 import de.eshg.lib.appointmentblock.persistence.AppointmentType;
+import de.eshg.lib.appointmentblock.persistence.entity.Appointment;
 import de.eshg.lib.appointmentblock.persistence.entity.AppointmentBlock;
 import de.eshg.lib.appointmentblock.persistence.entity.AppointmentBlockGroup;
 import de.eshg.lib.appointmentblock.persistence.entity.AppointmentTypeHolder;
@@ -45,6 +47,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalTime;
 import java.time.ZonedDateTime;
+import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -56,6 +59,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.slf4j.Logger;
@@ -194,6 +198,26 @@ public class AppointmentBlockService {
     return filterAndMapAppointments(latestStart, appointmentType, appointmentBlocks, start);
   }
 
+  public static List<AppointmentDto> filterFreeAppointmentsIncludeExisting(
+      List<AppointmentDto> freeAppointments, Appointment existingAppointment) {
+    if (existingAppointment == null) {
+      return freeAppointments;
+    }
+
+    AppointmentDto appointmentDto = mapAppointmentToDto(existingAppointment);
+
+    Stream<AppointmentDto> freeAppointmentsWithoutExistingOne =
+        freeAppointments.stream()
+            .filter(
+                appointment ->
+                    !(appointment.start().equals(existingAppointment.getAppointmentStart())
+                        && appointment.end().equals(existingAppointment.getAppointmentEnd())));
+
+    return Stream.concat(freeAppointmentsWithoutExistingOne, Stream.of(appointmentDto))
+        .sorted(comparing(AppointmentDto::start))
+        .toList();
+  }
+
   public List<AppointmentDto> getFreeAppointmentsWithAvailability(
       Instant earliestStart,
       Instant latestStart,
@@ -230,14 +254,27 @@ public class AppointmentBlockService {
       Instant start) {
     return appointmentBlockSlotUtil
         .calculateFreeAppointmentBlockSlotsForType(appointmentBlocks, appointmentType)
+        .entrySet()
+        .stream()
+        .map(
+            entry ->
+                entry.getValue().stream()
+                    .map(
+                        slot ->
+                            new AppointmentDto(
+                                slot.start(), slot.end(), entry.getKey().getExternalId()))
+                    .toList())
+        .flatMap(Collection::stream)
+        .filter(appointment -> appointment.start().isAfter(start))
+        .filter(appointment -> latestStart == null || !appointment.start().isAfter(latestStart))
+        .collect(
+            Collectors.toMap(
+                apt -> new AbstractMap.SimpleEntry<>(apt.start(), apt.end()),
+                Function.identity(),
+                (existing, _) -> existing))
         .values()
         .stream()
-        .flatMap(Collection::stream)
-        .distinct()
-        .filter(slot -> slot.start().isAfter(start))
-        .filter(slot -> latestStart == null || !slot.start().isAfter(latestStart))
-        .sorted(Comparator.comparing(AppointmentBlockSlot::start))
-        .map(slot -> new AppointmentDto(slot.start(), slot.end()))
+        .sorted(Comparator.comparing(AppointmentDto::start))
         .toList();
   }
 
@@ -259,8 +296,6 @@ public class AppointmentBlockService {
             .toList(),
         location,
         mapAppointmentBlockToData(appointmentBlockGroup, appointmentBlockData),
-        appointmentBlockGroup.isAvailableForCitizen(),
-        appointmentBlockGroup.isAvailableForBulkBooking(),
         appointmentBlockGroup.isExtraLength());
   }
 
@@ -394,6 +429,8 @@ public class AppointmentBlockService {
         appointmentBlock.setSopasss(request.sopasss());
       }
       appointmentBlock.setRoom(request.room() != null ? request.room().trim() : null);
+      appointmentBlock.setAvailableForCitizen(request.availableForCitizen());
+      appointmentBlock.setAvailableForBulkBooking(request.availableForBulkBooking());
       appointmentBlockGroup.addAppointmentBlock(appointmentBlock);
     }
 
@@ -476,8 +513,6 @@ public class AppointmentBlockService {
     appointmentBlockGroup.setAppointmentTypeHolders(appointmentTypeHolders);
     appointmentBlockGroup.setCreatorId(userApi.getSelfUser().userId());
     appointmentBlockGroup.setLocationId(request.locationId());
-    appointmentBlockGroup.setAvailableForCitizen(request.availableForCitizen());
-    appointmentBlockGroup.setAvailableForBulkBooking(request.availableForBulkBooking());
     appointmentBlockGroup.setExtraLength(Boolean.TRUE.equals(request.extraLength()));
     return appointmentBlockGroup;
   }
@@ -594,6 +629,8 @@ public class AppointmentBlockService {
     appointmentBlock.setConsultants(request.consultants());
     appointmentBlock.setSopasss(request.sopasss());
     appointmentBlock.setRoom(request.room() != null ? request.room().trim() : null);
+    appointmentBlock.setAvailableForCitizen(request.availableForCitizen());
+    appointmentBlock.setAvailableForBulkBooking(request.availableForBulkBooking());
   }
 
   public ValidateAppointmentBlockGroupResponse validateUpdateAppointmentBlock(

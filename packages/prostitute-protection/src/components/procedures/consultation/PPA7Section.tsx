@@ -3,49 +3,55 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { CheckboxField, FieldSetControl } from "@eshg/lib-portal";
+import {
+  CheckboxField,
+  FieldSetControl,
+  createFieldNameMapper,
+} from "@eshg/lib-portal";
 
-import { CONSULTATION_FIELD_NAME } from "../../../shared/constants";
+import { CONSULTATION_PARAGRAPH7_FIELD_NAME } from "../../../shared/constants";
 
 import { Section, SectionColumn, SectionGridContainer } from "./Section";
 
 export function PPA7Section() {
+  const fieldName = createFieldNameMapper("paragraph7");
+
   return (
     <Section title="Beratung nach §7 ProstSchG" titleId="consultation_clause_7">
       <FieldSetControl aria-labelledby="consultation_clause_7">
         <SectionGridContainer>
           <SectionColumn>
             <CheckboxField
-              name="legalAdvices"
-              label={`${CONSULTATION_FIELD_NAME.legalAdvices} *`}
+              name={fieldName("legalAdvices")}
+              label={`${CONSULTATION_PARAGRAPH7_FIELD_NAME.legalAdvices} *`}
             />
             <CheckboxField
-              name="healthAndSocialInsurance"
-              label={`${CONSULTATION_FIELD_NAME.healthAndSocialInsurance} *`}
+              name={fieldName("healthAndSocialInsurance")}
+              label={`${CONSULTATION_PARAGRAPH7_FIELD_NAME.healthAndSocialInsurance} *`}
             />
             <CheckboxField
-              name="consultingServices"
-              label={`${CONSULTATION_FIELD_NAME.consultingServices} *`}
-            />
-          </SectionColumn>
-          <SectionColumn>
-            <CheckboxField
-              name="emergencyHelp"
-              label={`${CONSULTATION_FIELD_NAME.emergencyHelp} *`}
-            />
-            <CheckboxField
-              name="taxLiability"
-              label={`${CONSULTATION_FIELD_NAME.taxLiability} *`}
+              name={fieldName("consultingServices")}
+              label={`${CONSULTATION_PARAGRAPH7_FIELD_NAME.consultingServices} *`}
             />
           </SectionColumn>
           <SectionColumn>
             <CheckboxField
-              name="informationMaterial"
-              label={CONSULTATION_FIELD_NAME.informationMaterial}
+              name={fieldName("emergencyHelp")}
+              label={`${CONSULTATION_PARAGRAPH7_FIELD_NAME.emergencyHelp} *`}
             />
             <CheckboxField
-              name="predicament"
-              label={CONSULTATION_FIELD_NAME.predicament}
+              name={fieldName("taxLiability")}
+              label={`${CONSULTATION_PARAGRAPH7_FIELD_NAME.taxLiability} *`}
+            />
+          </SectionColumn>
+          <SectionColumn>
+            <CheckboxField
+              name={fieldName("informationMaterial")}
+              label={CONSULTATION_PARAGRAPH7_FIELD_NAME.informationMaterial}
+            />
+            <CheckboxField
+              name={fieldName("predicament")}
+              label={CONSULTATION_PARAGRAPH7_FIELD_NAME.predicament}
             />
           </SectionColumn>
         </SectionGridContainer>

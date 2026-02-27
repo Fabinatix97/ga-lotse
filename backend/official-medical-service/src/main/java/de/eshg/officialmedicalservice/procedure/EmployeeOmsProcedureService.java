@@ -853,7 +853,7 @@ public class EmployeeOmsProcedureService {
     updatePhysician(procedure, request.physicianId());
 
     updateMedicalOpinionCutOffDate(procedure, request.cutOffDate());
-    if (request.sendEmailNotifications() != null) {
+    if (!Objects.equals(procedure.isSendEmailNotifications(), request.sendEmailNotifications())) {
       updateEmailNotifications(procedure, request.sendEmailNotifications());
     }
     progressEntryService.createProgressEntryForAdditionalInfoChanged(procedure);

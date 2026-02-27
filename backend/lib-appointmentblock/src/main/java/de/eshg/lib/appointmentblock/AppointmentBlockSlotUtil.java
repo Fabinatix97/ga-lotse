@@ -6,6 +6,7 @@
 package de.eshg.lib.appointmentblock;
 
 import de.cronn.commons.lang.StreamUtil;
+import de.eshg.lib.appointmentblock.api.AppointmentDto;
 import de.eshg.lib.appointmentblock.model.AppointmentBlockData;
 import de.eshg.lib.appointmentblock.model.AppointmentBlockSlot;
 import de.eshg.lib.appointmentblock.model.AppointmentBlockSlotWithAppointment;
@@ -158,19 +159,16 @@ public class AppointmentBlockSlotUtil {
   public void assignAdHocAppointment(
       AppointmentType appointmentType,
       EntityWithAppointment entityWithAppointment,
-      Instant appointmentStart,
-      Instant appointmentEnd,
+      AppointmentDto appointment,
       AppointmentBlockGroup adHocAppointmentBlockGroup) {
     Appointment currentAppointment = entityWithAppointment.getAppointment();
-    if (appointmentIsUnchanged(
-        appointmentType, appointmentStart, appointmentEnd, currentAppointment)) {
+    if (appointmentIsUnchanged(appointmentType, appointment, currentAppointment)) {
       return;
     }
 
     removeAppointmentFromBlockIfExists(currentAppointment);
 
-    Appointment newAppointment =
-        getNewAppointment(appointmentType, appointmentStart, appointmentEnd);
+    Appointment newAppointment = getNewAppointment(appointmentType, appointment);
     Set<AppointmentBlock> appointmentBlocks = adHocAppointmentBlockGroup.getAppointmentBlocks();
     Assert.isTrue(appointmentBlocks.size() == 1, "Only one appointment block is allowed");
     AppointmentBlock newAppointmentBlock = appointmentBlocks.stream().findFirst().orElseThrow();
@@ -185,16 +183,27 @@ public class AppointmentBlockSlotUtil {
       EntityWithAppointment entityWithAppointment,
       Instant appointmentStart,
       Instant appointmentEnd) {
+    updateAppointment(
+        appointmentType,
+        locationId,
+        physicianId,
+        entityWithAppointment,
+        new AppointmentDto(appointmentStart, appointmentEnd, null));
+  }
+
+  public void updateAppointment(
+      AppointmentType appointmentType,
+      UUID locationId,
+      UUID physicianId,
+      EntityWithAppointment entityWithAppointment,
+      AppointmentDto appointment) {
     Appointment currentAppointment = entityWithAppointment.getAppointment();
-    if (appointmentIsUnchanged(
-        appointmentType, appointmentStart, appointmentEnd, currentAppointment)) return;
+    if (appointmentIsUnchanged(appointmentType, appointment, currentAppointment)) return;
     removeAppointmentFromBlockIfExists(currentAppointment);
 
-    Appointment newAppointment =
-        getNewAppointment(appointmentType, appointmentStart, appointmentEnd);
+    Appointment newAppointment = getNewAppointment(appointmentType, appointment);
     AppointmentBlock newAppointmentBlock =
-        findSuitableAppointmentBlock(
-            appointmentType, locationId, physicianId, appointmentStart, appointmentEnd);
+        findSuitableAppointmentBlock(appointmentType, locationId, physicianId, appointment);
 
     addAppointmentToBlock(entityWithAppointment, newAppointmentBlock, newAppointment);
   }
@@ -208,21 +217,29 @@ public class AppointmentBlockSlotUtil {
   }
 
   private static boolean appointmentIsUnchanged(
-      AppointmentType appointmentType,
-      Instant appointmentStart,
-      Instant appointmentEnd,
-      Appointment currentAppointment) {
-    return currentAppointment != null
-        && (currentAppointment.getAppointmentStart().equals(appointmentStart)
-            && currentAppointment.getAppointmentEnd().equals(appointmentEnd)
-            && currentAppointment.getType().equals(appointmentType));
+      AppointmentType appointmentType, AppointmentDto appointmentDto, Appointment appointment) {
+    return appointmentIsUnchanged(appointment, appointmentDto)
+        && appointment.getType().equals(appointmentType);
+  }
+
+  public static boolean appointmentIsUnchanged(
+      Appointment appointment, AppointmentDto appointmentDto) {
+    if (appointment == null) {
+      return false;
+    }
+    return appointment.getAppointmentStart().equals(appointmentDto.start())
+        && appointment.getAppointmentEnd().equals(appointmentDto.end())
+        && (appointmentDto.appointmentBlockId() == null
+            || appointmentDto
+                .appointmentBlockId()
+                .equals(appointment.getAppointmentBlock().getExternalId()));
   }
 
   private static Appointment getNewAppointment(
-      AppointmentType appointmentType, Instant appointmentStart, Instant appointmentEnd) {
+      AppointmentType appointmentType, AppointmentDto appointment) {
     Appointment newAppointment = new Appointment();
-    newAppointment.setAppointmentStart(appointmentStart);
-    newAppointment.setAppointmentEnd(appointmentEnd);
+    newAppointment.setAppointmentStart(appointment.start());
+    newAppointment.setAppointmentEnd(appointment.end());
     newAppointment.setType(appointmentType);
     return newAppointment;
   }
@@ -249,8 +266,18 @@ public class AppointmentBlockSlotUtil {
       AppointmentType appointmentType,
       UUID locationId,
       UUID physicianId,
-      Instant start,
-      Instant end) {
+      AppointmentDto appointment) {
+
+    if (appointment.appointmentBlockId() != null) {
+      return appointmentBlockRepository
+          .findByExternalId(appointment.appointmentBlockId())
+          .orElseThrow(
+              () -> new BadRequestException("The requested appointment block was not found!"));
+    }
+
+    Instant start = appointment.start();
+    Instant end = appointment.end();
+
     AppointmentBlockSlot requestedSlot = new AppointmentBlockSlot(start, end);
 
     Duration appointmentDuration = Duration.between(start, end);
@@ -328,7 +355,9 @@ public class AppointmentBlockSlotUtil {
         appointmentBlock.getAppointmentBlockEnd(),
         appointmentBlock.getParallelExaminations(),
         totalDuration.compareTo(bookedDuration) < 0 ? null : totalDuration.minus(bookedDuration),
-        bookedDuration);
+        bookedDuration,
+        appointmentBlock.isAvailableForCitizen(),
+        appointmentBlock.isAvailableForBulkBooking());
   }
 
   public static String mapAppointmentTypesToNames(Set<AppointmentType> appointmentTypes) {
@@ -352,7 +381,8 @@ public class AppointmentBlockSlotUtil {
       case OFFICIAL_MEDICAL_SERVICE_SHORT -> "Amtsärztliches Gutachten";
       case OFFICIAL_MEDICAL_SERVICE_LONG -> "Amtsärztliches Gutachten";
       case MEDS_ABROAD_CERTIFICATION -> "Reisen mit BTM - Beglaubigung";
-      case PROSTITUTE_PROTECTION_CONSULTATION -> "Beratung";
+      case PROSTITUTE_PROTECTION_INITIAL -> "Erstberatung";
+      case PROSTITUTE_PROTECTION_FOLLOW_UP -> "Folgeberatung";
       case INFECTION_BRIEFING_NEW -> "Erstbescheinigung";
       case INFECTION_BRIEFING_REPLACEMENT -> "Ersatzbescheinigung";
     };

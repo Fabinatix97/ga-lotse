@@ -5,6 +5,7 @@
 
 package de.eshg.infectionbriefing.mapper;
 
+import static de.eshg.infectionbriefing.util.ProcedureUtil.getFieldOrNull;
 import static de.eshg.lib.procedure.mapping.ProcedureMapper.toInterfaceType;
 
 import de.cronn.commons.lang.StreamUtil;
@@ -12,6 +13,7 @@ import de.eshg.base.centralfile.api.person.GetPersonFileStateResponse;
 import de.eshg.infectionbriefing.PersonClient;
 import de.eshg.infectionbriefing.api.ProcedureDto;
 import de.eshg.infectionbriefing.domain.model.InfectionBriefingProcedure;
+import de.eshg.infectionbriefing.domain.model.NewCertificateProcedure;
 import de.eshg.lib.appointmentblock.persistence.entity.Appointment;
 import de.eshg.lib.procedure.domain.model.RelatedPerson;
 import java.time.Instant;
@@ -36,20 +38,18 @@ public class InfectionBriefingProcedureMapper {
     Appointment appointment = procedure.getAppointment();
     return new ProcedureDto(
         procedure.getExternalId(),
-        person.lastName(),
         person.firstName(),
+        person.lastName(),
         person.dateOfBirth(),
         toInterfaceType(procedure.getProcedureStatus()),
         toInterfaceType(procedure.getProcedureType()),
-        getAppointmentStart(appointment),
-        getAppointmentEnd(appointment));
+        getAppointmentTime(appointment),
+        getFieldOrNull(procedure, NewCertificateProcedure::getInstructionDate),
+        InstructionTypeMapper.toInterfaceType(
+            getFieldOrNull(procedure, NewCertificateProcedure::getInstructionType)));
   }
 
-  private static Instant getAppointmentStart(Appointment appointment) {
+  private static Instant getAppointmentTime(Appointment appointment) {
     return Optional.ofNullable(appointment).map(Appointment::getAppointmentStart).orElse(null);
-  }
-
-  private static Instant getAppointmentEnd(Appointment appointment) {
-    return Optional.ofNullable(appointment).map(Appointment::getAppointmentEnd).orElse(null);
   }
 }

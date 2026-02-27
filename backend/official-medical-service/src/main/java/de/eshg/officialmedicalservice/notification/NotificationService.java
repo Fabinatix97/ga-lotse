@@ -267,8 +267,8 @@ public class NotificationService {
     log.info("send mail(s): {}", subject);
     String fromAddress = departmentInfoService.getDepartmentInfo().email();
 
-    for (String emailAddress : personDto.emailAddresses()) {
-      mailClient.sendMail(emailAddress, fromAddress, subject, body);
+    if (!personDto.emailAddresses().isEmpty()) {
+      mailClient.sendMail(personDto.emailAddresses().getFirst(), fromAddress, subject, body);
     }
     return personDto.emailAddresses().size();
   }

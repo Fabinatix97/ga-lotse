@@ -13,6 +13,7 @@ import {
   ApiDetailedEventWithoutCalendarId,
   ApiEventType,
 } from "@eshg/base-api";
+import { parseOptionalValue } from "@eshg/lib-portal";
 
 import {
   mapDateTimeToInput,
@@ -21,18 +22,22 @@ import {
 } from "@/lib/shared/components/formFields/dateOrDateTimeFieldHelper";
 import { formatDateToFullReadableString } from "@/lib/shared/helpers/dateTime";
 
-import { EventFormValues } from "./EventForm";
+import { EventFormValues, ModuleEventFormValues } from "./EventForm";
 import { CalendarViewTypes } from "./calendarViews";
 
 export function mapCalendarEventsBackendToUi(
   events: ApiDetailedEventWithoutCalendarId[],
   calendarId: string,
+  businessModuleName?: string,
 ): EventInput[] {
   return events.map((event) => {
     const eventWithCalendarId: EventWithCalendarId = { ...event, calendarId };
     return {
       id: event.id,
-      title: event.metaData.subject ?? mapEventTypeToFallbackTitle(event.type),
+      title:
+        businessModuleName ??
+        event.metaData.subject ??
+        mapEventTypeToFallbackTitle(event.type),
       start: event.timeData.start,
       end: mapEndDate(event.timeData.end, event.timeData.wholeDay),
       allDay: event.timeData.wholeDay,
@@ -74,6 +79,19 @@ export function mapFormToRequestValues(
   };
 }
 
+export function mapModuleEventFormToRequestValues(
+  values: ModuleEventFormValues,
+): ApiBaseEventRequest {
+  return {
+    ...mapFormToRequestValues(
+      values,
+      ApiBaseEventType.Information,
+      values.calendarId,
+    ),
+    subject: values.subject,
+  };
+}
+
 export function mapEventToFormValues(
   event: ApiDetailedEventWithoutCalendarId,
 ): EventFormValues {
@@ -81,6 +99,17 @@ export function mapEventToFormValues(
     start: mapDateTimeToInput(event.timeData.start, event.timeData.wholeDay),
     end: mapDateTimeToInput(event.timeData.end, event.timeData.wholeDay),
     wholeDay: event.timeData.wholeDay,
+  };
+}
+
+export function mapModuleEventToFormValues(
+  event: ApiDetailedEventWithoutCalendarId,
+  calendarId: string,
+): ModuleEventFormValues {
+  return {
+    subject: parseOptionalValue(event.metaData.subject),
+    calendarId,
+    ...mapEventToFormValues(event),
   };
 }
 

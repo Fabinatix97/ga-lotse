@@ -2543,7 +2543,7 @@ spec:
             memory: 64Mi
         env:
         - name: HOSTNAME
-          value: 0.0.0.0
+          value: 127.0.0.1
         - name: PORT
           value: "8080"
         - name: PUBLIC_ENVIRONMENT_TYPE
@@ -3406,7 +3406,7 @@ spec:
             memory: 64Mi
         env:
         - name: HOSTNAME
-          value: 0.0.0.0
+          value: 127.0.0.1
         - name: PORT
           value: "8080"
         - name: PUBLIC_ENVIRONMENT_TYPE
@@ -5566,20 +5566,20 @@ spec:
         startupProbe:
           httpGet:
             path: /health
-            port: 8080
+            port: 8081
           periodSeconds: 1
           failureThreshold: 20
         livenessProbe:
           httpGet:
             path: /health
-            port: 8080
+            port: 8081
           periodSeconds: 10
           failureThreshold: 1
           timeoutSeconds: 10
         readinessProbe:
           httpGet:
             path: /health
-            port: 8080
+            port: 8081
           periodSeconds: 10
           failureThreshold: 1
           timeoutSeconds: 10
@@ -5588,8 +5588,8 @@ spec:
           value: /etc/ssl/certs/localca.pem
         - name: SSL_CERT_FILE
           value: /etc/ssl/certs/localca.pem
-        - name: PORT
-          value: "8080"
+        - name: BIND_ADDRESS
+          value: "127.0.0.1"
         volumeMounts:
         - name: ca
           mountPath: /etc/ssl/certs/localca.pem

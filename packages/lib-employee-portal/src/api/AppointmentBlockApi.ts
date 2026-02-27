@@ -5,7 +5,11 @@
 
 import { ApiResponse } from "@eshg/base-api";
 
-import { AppointmentBlock } from "../components/appointmentBlocks/AppointmentBlockGroup";
+import {
+  AppointmentBlock,
+  AppointmentBlockBin,
+  AppointmentBlockSlot,
+} from "../components/appointmentBlocks/AppointmentBlockGroup";
 
 export interface ApiUpdateAppointmentBlockRequest {
   start: Date;
@@ -16,6 +20,8 @@ export interface ApiUpdateAppointmentBlockRequest {
   consultants: string[];
   sopasss: string[];
   room?: string;
+  availableForCitizen?: boolean;
+  availableForBulkBooking?: boolean;
 }
 
 export interface UpdateAppointmentBlockRequest {
@@ -36,6 +42,10 @@ interface GetAppointmentBlockRoomsResponse {
   rooms: string[];
 }
 
+export interface GetAppointmentBlocksResponse {
+  appointmentBlocks: AppointmentBlock[];
+}
+
 export interface AppointmentBlockApi {
   getAppointmentBlock(appointmentBlockId: string): Promise<AppointmentBlock>;
   updateAppointmentBlock(
@@ -48,4 +58,13 @@ export interface AppointmentBlockApi {
     requestParameters: DeleteAppointmentBlockRequest,
   ): Promise<ApiResponse<void>>;
   getAppointmentBlockRooms(): Promise<GetAppointmentBlockRoomsResponse>;
+  getAppointmentBlocks?: (
+    timeRangeStart: Date,
+    timeRangeEnd: Date,
+  ) => Promise<GetAppointmentBlocksResponse>;
+  getAppointments?: (
+    timeRangeStart: Date,
+    timeRangeEnd: Date,
+  ) => Promise<AppointmentBlockBin>;
+  getAppointment?: (appointmentId: number) => Promise<AppointmentBlockSlot>;
 }

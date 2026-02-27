@@ -5,12 +5,11 @@
 
 package de.eshg.prostituteprotection;
 
-import static de.eshg.prostituteprotection.mapper.ProstituteProtectionMapper.mapConsultationType;
 import static de.eshg.prostituteprotection.mapper.ProstituteProtectionMapper.mapLanguages;
+import static de.eshg.prostituteprotection.mapper.ProstituteProtectionMapper.mapProcedureType;
 
 import de.eshg.config.domain.Document;
 import de.eshg.config.domain.MultiLangDocument;
-import de.eshg.lib.appointmentblock.persistence.AppointmentType;
 import de.eshg.lib.procedure.domain.model.BasicSystemProgressEntryType;
 import de.eshg.lib.procedure.domain.model.TaskStatus;
 import de.eshg.lib.procedure.domain.model.TaskType;
@@ -21,6 +20,7 @@ import de.eshg.prostituteprotection.domain.model.ProstituteProtectionConfig;
 import de.eshg.prostituteprotection.domain.model.ProstituteProtectionProcedure;
 import de.eshg.prostituteprotection.domain.model.ProstituteProtectionTask;
 import de.eshg.prostituteprotection.domain.repository.ProstituteProtectionProcedureRepository;
+import de.eshg.prostituteprotection.mapper.AppointmentMapper;
 import de.eshg.rest.service.i18n.Language;
 import de.eshg.rest.service.i18n.LanguageContextHolder;
 import java.util.UUID;
@@ -49,7 +49,7 @@ public class ProstituteProtectionPublicCitizenService {
     ProstituteProtectionProcedure procedure =
         new ProstituteProtectionProcedure(
             BasicSystemProgressEntryType.CREATED, TriggerType.CITIZEN);
-    procedure.setConsultationType(mapConsultationType(request.consultationType()));
+    procedure.setProcedureType(mapProcedureType(request.procedureType()));
     prostituteProtectionService.initialiseProcedure(procedure);
 
     ProstituteProtectionTask task = new ProstituteProtectionTask();
@@ -64,7 +64,7 @@ public class ProstituteProtectionPublicCitizenService {
 
     appointmentService.bookAppointmentFromAppointmentBlock(
         procedure,
-        AppointmentType.PROSTITUTE_PROTECTION_CONSULTATION,
+        AppointmentMapper.mapToAppointmentType(request.procedureType()),
         request.appointment().start(),
         request.appointment().end());
     procedureRepository.save(procedure);

@@ -5,6 +5,8 @@
 
 package de.eshg.base.calendar;
 
+import static de.eshg.base.calendar.mapper.CalendarMapper.mapToModuleCalendar;
+
 import de.cronn.commons.lang.StreamUtil;
 import de.eshg.base.calendar.api.AddGlobalCalendarRequest;
 import de.eshg.base.calendar.api.CalendarDto;
@@ -14,6 +16,7 @@ import de.eshg.base.calendar.api.GetRelevantCalendarsResponse;
 import de.eshg.base.calendar.api.GetResourceCalendarsResponse;
 import de.eshg.base.calendar.api.GetUserCalendarsResponse;
 import de.eshg.base.calendar.api.GlobalCalendar;
+import de.eshg.base.calendar.api.ModuleCalendar;
 import de.eshg.base.calendar.api.ResourceCalendar;
 import de.eshg.base.calendar.api.UserCalendar;
 import de.eshg.base.calendar.api.UserGroupCalendarInfo;
@@ -25,6 +28,7 @@ import de.eshg.base.user.UserService;
 import de.eshg.base.user.api.UserDto;
 import de.eshg.base.user.mapper.UserMapper;
 import de.eshg.keycloak.api.user.model.KeycloakApiGroupMemberDto;
+import de.eshg.lib.common.BusinessModule;
 import de.eshg.rest.service.error.NotFoundException;
 import de.eshg.rest.service.security.CurrentUserHelper;
 import java.util.ArrayList;
@@ -40,6 +44,9 @@ import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import org.hibernate.exception.ConstraintViolationException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -47,6 +54,8 @@ import org.springframework.transaction.annotation.Transactional;
 public class CalendarService {
   private final CalendarRepository calendarRepository;
   private final UserService userService;
+
+  private static final Logger log = LoggerFactory.getLogger(CalendarService.class);
 
   public CalendarService(CalendarRepository calendarRepository, UserService userService) {
     this.calendarRepository = calendarRepository;
@@ -86,6 +95,13 @@ public class CalendarService {
     return new GetResourceCalendarsResponse(
         existingResourceCalendars.stream().map(CalendarMapper::mapToResourceCalendar).toList(),
         notExistingResourceIds);
+  }
+
+  public Calendar addModuleCalendar(BusinessModule module) {
+    Calendar calendar = new Calendar();
+    calendar.setType(CalendarType.MODULE);
+    calendar.setBusinessModule(module);
+    return calendarRepository.saveAndFlush(calendar);
   }
 
   @Transactional
@@ -165,6 +181,8 @@ public class CalendarService {
   @Transactional
   public GetRelevantCalendarsResponse getRelevantCalendars(UserCalendar currentUserCalendar) {
     List<GlobalCalendar> globalCalendars = getGlobalCalendars();
+    List<ModuleCalendar> moduleCalendars =
+        getOrCreateModuleCalendars(userService.getSelfBusinessModules());
 
     Map<String, List<UserDto>> groupsToUsers =
         getGroupsToUsersWithoutSelf(currentUserCalendar.userId());
@@ -173,7 +191,11 @@ public class CalendarService {
         getUserGroupCalendarInfos(resolvedUsers.keySet(), groupsToUsers);
 
     return new GetRelevantCalendarsResponse(
-        currentUserCalendar, globalCalendars, userGroupCalendarInfos, resolvedUsers);
+        currentUserCalendar,
+        globalCalendars,
+        moduleCalendars,
+        userGroupCalendarInfos,
+        resolvedUsers);
   }
 
   private List<GlobalCalendar> getGlobalCalendars() {
@@ -188,6 +210,38 @@ public class CalendarService {
                     RegionalHolidayCalendar.HOLIDAY_CALENDAR_ID,
                     RegionalHolidayCalendar.HOLIDAY_CALENDAR_NAME)))
         .toList();
+  }
+
+  private List<ModuleCalendar> getOrCreateModuleCalendars(Set<BusinessModule> selfBusinessModules) {
+    List<ModuleCalendar> persistedCalendars =
+        new ArrayList<>(
+            calendarRepository.findAllByTypeOrderById(CalendarType.MODULE).stream()
+                .filter(calendar -> selfBusinessModules.contains(calendar.getBusinessModule()))
+                .map(CalendarMapper::mapToModuleCalendar)
+                .toList());
+
+    List<BusinessModule> persistedModules =
+        persistedCalendars.stream().map(ModuleCalendar::businessModule).toList();
+    List<Calendar> newCalendars = new ArrayList<>();
+    for (BusinessModule businessModule : selfBusinessModules) {
+      if (!persistedModules.contains(businessModule)) {
+        try {
+          Calendar calendar = addModuleCalendar(businessModule);
+          newCalendars.add(calendar);
+        } catch (ConstraintViolationException cve) {
+          log.debug("Calendar for business module {} already exists}", businessModule);
+          Calendar persistedModuleCalendar =
+              calendarRepository.findByBusinessModule(businessModule);
+          persistedCalendars.add(mapToModuleCalendar(persistedModuleCalendar));
+        }
+      }
+    }
+
+    if (!newCalendars.isEmpty()) {
+      persistedCalendars.addAll(
+          newCalendars.stream().map(CalendarMapper::mapToModuleCalendar).toList());
+    }
+    return persistedCalendars;
   }
 
   private Map<String, List<UserDto>> getGroupsToUsersWithoutSelf(UUID currentUserId) {

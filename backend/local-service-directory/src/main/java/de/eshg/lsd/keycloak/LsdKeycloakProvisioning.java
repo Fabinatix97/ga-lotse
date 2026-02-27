@@ -268,6 +268,11 @@ public class LsdKeycloakProvisioning {
     for (LsdAttributeKey attribute : LsdAttributeKey.values()) {
       profileConfig.addOrReplaceAttribute(getAttributeConfig(attribute, group));
     }
+    // remove legacy attributes
+    for (String legacyAttribute :
+        List.of("eshg.actor.certificate.value", "eshg.actor.certificate.signature")) {
+      profileConfig.removeAttribute(legacyAttribute);
+    }
 
     profileResource.update(profileConfig);
   }

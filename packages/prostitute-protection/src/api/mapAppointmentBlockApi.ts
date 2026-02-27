@@ -36,5 +36,14 @@ export function mapAppointmentBlockApi(
     ) => await appointmentBlockApi.deleteAppointmentBlockRaw(requestParameters),
     getAppointmentBlockRooms: async () =>
       await appointmentBlockApi.getAppointmentBlockRooms(),
+    getAppointmentBlocks: async (timeRangeStart: Date, timeRangeEnd: Date) =>
+      await appointmentBlockApi.getAppointmentBlocks(
+        timeRangeStart,
+        timeRangeEnd,
+      ),
+    getAppointments: async (timeRangeStart: Date, timeRangeEnd: Date) =>
+      await appointmentBlockApi.getAppointments(timeRangeStart, timeRangeEnd),
+    getAppointment: async (appointmentId: number) =>
+      await appointmentBlockApi.getAppointment(appointmentId),
   };
 }

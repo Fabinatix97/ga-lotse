@@ -30,8 +30,11 @@ function mapStandardDurations(
 ): AppointmentStandardDurations {
   return {
     standardDurations: {
-      [ApiAppointmentType.ProstituteProtectionConsultation]: durationToMinutes(
-        standardDurations.consultation,
+      [ApiAppointmentType.ProstituteProtectionInitial]: durationToMinutes(
+        standardDurations.initialConsultation,
+      ),
+      [ApiAppointmentType.ProstituteProtectionFollowUp]: durationToMinutes(
+        standardDurations.followUpConsultation,
       ),
     },
     extraDuration: 0,

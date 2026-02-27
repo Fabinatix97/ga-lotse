@@ -2,3 +2,7 @@
 
 # disable autocrlf for generated .bat files
 *.bat binary
+
+# GDT files will always have CRLF line endings on checkout.
+*.gdt text eol=crlf
+

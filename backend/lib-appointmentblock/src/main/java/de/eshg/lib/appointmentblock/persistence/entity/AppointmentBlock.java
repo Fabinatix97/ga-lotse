@@ -72,6 +72,12 @@ public class AppointmentBlock extends BaseEntityWithExternalId {
   @DataSensitivity(SensitivityLevel.PSEUDONYMIZED)
   private String room;
 
+  @DataSensitivity(SensitivityLevel.PSEUDONYMIZED)
+  private Boolean availableForCitizen;
+
+  @DataSensitivity(SensitivityLevel.PSEUDONYMIZED)
+  private Boolean availableForBulkBooking;
+
   @DataSensitivity(SensitivityLevel.PUBLIC)
   @ManyToOne(optional = false)
   @JoinColumn(name = "appointment_block_group_id")
@@ -165,5 +171,21 @@ public class AppointmentBlock extends BaseEntityWithExternalId {
 
   public void setRoom(String room) {
     this.room = room;
+  }
+
+  public Boolean isAvailableForBulkBooking() {
+    return availableForBulkBooking;
+  }
+
+  public void setAvailableForBulkBooking(Boolean availableForBulkBooking) {
+    this.availableForBulkBooking = availableForBulkBooking;
+  }
+
+  public Boolean isAvailableForCitizen() {
+    return availableForCitizen;
+  }
+
+  public void setAvailableForCitizen(Boolean availableForCitizen) {
+    this.availableForCitizen = availableForCitizen;
   }
 }

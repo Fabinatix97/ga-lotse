@@ -36,8 +36,8 @@ const defaultSubItems: SideNavigationSubItem[] = [
     accessCheck: hasUserRole(ApiUserRole.ProstituteProtectionAdmin),
   },
   {
-    name: "Terminblöcke",
-    href: routes.appointmentBlockGroups.index,
+    name: "Terminübersicht",
+    href: routes.appointments.index,
     accessCheck: hasUserRole(ApiUserRole.ProstituteProtectionAdmin),
   },
 ];

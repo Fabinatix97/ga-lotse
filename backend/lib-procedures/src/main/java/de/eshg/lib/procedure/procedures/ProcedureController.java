@@ -29,7 +29,9 @@ import de.eshg.base.centralfile.api.person.GetPersonFileStateResponse;
 import de.eshg.base.centralfile.api.person.GetPersonFileStatesRequest;
 import de.eshg.base.centralfile.api.person.GetPersonFileStatesResponse;
 import de.eshg.base.user.api.UserDto;
+import de.eshg.base.util.CollectionUtils;
 import de.eshg.domain.model.BaseEntity;
+import de.eshg.domain.model.EntityWithExternalId;
 import de.eshg.lib.common.BusinessModule;
 import de.eshg.lib.foureyes.domain.model.ApprovalRequest;
 import de.eshg.lib.foureyes.mapping.ApprovalRequestMapper;
@@ -49,6 +51,7 @@ import de.eshg.lib.procedure.domain.model.ProcedureType;
 import de.eshg.lib.procedure.domain.model.ProgressEntry;
 import de.eshg.lib.procedure.domain.model.RelatedFacility;
 import de.eshg.lib.procedure.domain.model.RelatedPerson;
+import de.eshg.lib.procedure.domain.model.StatisticsInclusion;
 import de.eshg.lib.procedure.domain.model.SystemProgressEntry;
 import de.eshg.lib.procedure.domain.model.Task;
 import de.eshg.lib.procedure.domain.repository.ProcedureRepository;
@@ -62,6 +65,8 @@ import de.eshg.lib.procedure.mapping.FileMapper;
 import de.eshg.lib.procedure.mapping.PersonTypeMapper;
 import de.eshg.lib.procedure.mapping.ProcedureLibraryEnrichingMapper;
 import de.eshg.lib.procedure.mapping.ProcedureMapper;
+import de.eshg.lib.procedure.model.BulkUpdateProceduresStatisticsInclusionRequest;
+import de.eshg.lib.procedure.model.BulkUpdateProceduresStatisticsInclusionResponse;
 import de.eshg.lib.procedure.model.CheckFileStateUsageRequest;
 import de.eshg.lib.procedure.model.CheckFileStateUsageResponse;
 import de.eshg.lib.procedure.model.DetailedFacilityDto;
@@ -619,5 +624,31 @@ public class ProcedureController<
           .map(attachment -> new ProgressEntryReferenceFilePair(externalId, attachment))
           .forEach(filePairCollector);
     }
+  }
+
+  @Override
+  @Transactional
+  public BulkUpdateProceduresStatisticsInclusionResponse updateStatisticsInclusion(
+      BulkUpdateProceduresStatisticsInclusionRequest request) {
+    List<ProcedureT> procedures =
+        procedureRepository
+            .findByExternalIdsForUpdate(request.procedures().stream().toList())
+            .toList();
+
+    StatisticsInclusion statisticsInclusion =
+        ProcedureMapper.toDomainType(request.statisticsInclusion());
+
+    for (ProcedureT procedure : procedures) {
+      procedure.setStatisticsInclusion(statisticsInclusion);
+    }
+
+    Set<UUID> updatedProcedures =
+        procedures.stream().map(EntityWithExternalId::getExternalId).collect(Collectors.toSet());
+
+    Set<UUID> failedProcedures =
+        CollectionUtils.difference(request.procedures(), updatedProcedures);
+
+    return new BulkUpdateProceduresStatisticsInclusionResponse(
+        updatedProcedures, failedProcedures, request.statisticsInclusion());
   }
 }

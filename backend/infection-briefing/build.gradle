@@ -17,6 +17,7 @@ dependencies {
 
     testImplementation testFixtures(project(':business-module-persistence-commons'))
     testImplementation testFixtures(project(':base-api'))
+    testImplementation testFixtures(project(':lib-appointmentblock'))
     testImplementation testFixtures(project(':lib-document-generator'))
 
     implementation 'org.springdoc:springdoc-openapi-starter-common:latest.release'

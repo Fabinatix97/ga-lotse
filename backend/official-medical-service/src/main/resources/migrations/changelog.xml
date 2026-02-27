@@ -38,5 +38,8 @@
   <include file="migrations/0028_add_sopass_to_appointment_blocks.xml"/>
   <include file="migrations/0029_add_infection_briefing_appointment_types.xml"/>
   <include file="migrations/0030_add_infection_briefing_procedure_types.xml"/>
+  <include file="migrations/0031_add_statistics_inclusion_to_procedure.xml"/>
+  <include file="migrations/0032_move_availability_flags_to_appointment_block.xml"/>
+  <include file="migrations/0033_modify_ppr_procedure_type.xml"/>
 
 </databaseChangeLog>

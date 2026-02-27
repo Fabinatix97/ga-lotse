@@ -24,6 +24,15 @@ public enum ProstituteProtectionAttributes implements AttributeInfo {
   PROCEDURE_ID(
       ProcedureAttribute.create(
           "Vorgangsreferenz", ProstituteProtectionAttributes.CATEGORY_PROCEDURE_REFERENCE, true)),
+  PROCEDURE_TYPE(
+      TextAttribute.create(
+          "Art der Beratung",
+          "PROCEDURE_TYPE",
+          ProstituteProtectionAttributes.CATEGORY_CONSULTATION,
+          true,
+          null,
+          DataPrivacyCategory.INSENSITIVE)),
+
   AGE(
       IntegerAttribute.createQuasiIdentifying(
           "Alter",
@@ -57,14 +66,6 @@ public enum ProstituteProtectionAttributes implements AttributeInfo {
           true,
           null,
           DataPrivacyCategory.QUASI_IDENTIFYING)),
-  CONSULTATION_TYPE(
-      TextAttribute.create(
-          "Art der Beratung",
-          "CONSULTATION_TYPE",
-          ProstituteProtectionAttributes.CATEGORY_CONSULTATION,
-          true,
-          null,
-          DataPrivacyCategory.INSENSITIVE)),
   CONSULTATION_LANGUAGE(
       ValueWithOptionsAttribute.createSensitive(
           "Sprache der Beratung",

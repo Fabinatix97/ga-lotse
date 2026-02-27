@@ -148,6 +148,12 @@ function ConfiguratorSideNavigationItem() {
             accessCheck: sideNavigationItem.accessCheck,
             data,
           }),
+          subItem({
+            name: "Lebensmittelausweis",
+            module: "INFECTION_BRIEFING",
+            accessCheck: sideNavigationItem.accessCheck,
+            data,
+          }),
         ].filter(isDefined),
       }}
     />

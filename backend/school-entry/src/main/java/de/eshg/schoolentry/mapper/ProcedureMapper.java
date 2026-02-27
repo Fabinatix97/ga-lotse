@@ -8,6 +8,7 @@ package de.eshg.schoolentry.mapper;
 import de.eshg.api.commons.SortDirection;
 import de.eshg.lib.appointmentblock.AppointmentMapper;
 import de.eshg.lib.procedure.domain.model.ProcedureStatus;
+import de.eshg.lib.procedure.domain.model.StatisticsInclusion;
 import de.eshg.schoolentry.api.*;
 import de.eshg.schoolentry.business.model.ProcedureData;
 import de.eshg.schoolentry.business.model.ProcedureDetailsData;
@@ -40,6 +41,7 @@ public final class ProcedureMapper {
         procedureDetailsData.isDeceased(),
         procedureDetailsData.deceased(),
         mapYearToInteger(procedureDetailsData.schoolYear()),
+        procedureDetailsData.childAge(),
         mapStatusToDto(procedureDetailsData.status()),
         procedureDetailsData.isDeletable(),
         procedureDetailsData.createdAt(),
@@ -48,7 +50,8 @@ public final class ProcedureMapper {
         procedureDetailsData.schoolInfoLetterCreatedAt(),
         procedureDetailsData.hasInformationBlock(),
         procedureDetailsData.hasBeenClosed(),
-        procedureDetailsData.isPastProcedure());
+        procedureDetailsData.isPastProcedure(),
+        mapToDto(procedureDetailsData.statisticsInclusion()));
   }
 
   public static ProcedureDto mapProcedureToDto(ProcedureData procedureData) {
@@ -148,5 +151,13 @@ public final class ProcedureMapper {
       return null;
     }
     return Year.of(schoolYear);
+  }
+
+  public static StatisticsInclusionDto mapToDto(StatisticsInclusion inclusion) {
+    return switch (inclusion) {
+      case INCLUDE -> StatisticsInclusionDto.INCLUDE;
+      case CUSTOM -> StatisticsInclusionDto.CUSTOM;
+      case EXCLUDE -> StatisticsInclusionDto.EXCLUDE;
+    };
   }
 }

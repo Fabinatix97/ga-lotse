@@ -9,11 +9,22 @@ import createDOMPurify from "dompurify"
 import { JSDOM } from "jsdom"
 import pino from "pino"
 
-const listenPort = process.env.PORT ?? 8080;
+const listenPort = Number.parseInt(process.env.PORT ?? 8080);
+const bindAddress = process.env.BIND_ADDRESS ?? "::";
+const healthPort = Number.parseInt(process.env.HEALTH_PORT ?? 8081);
+const healthBindAddress = process.env.HEALTH_BIND_ADDRESS ?? "::";
 
 const logger = pino();
 
+if (listenPort === healthPort) {
+  logger.error({ bindAddress, healthBindAddress },
+    "health port must be different from main port");
+  process.exit(1);
+}
+
 const app = express();
+const healthApp = express();
+
 app.use(bodyParser.text({ type: "*/*", limit: "1mb" }));
 
 const window = new JSDOM("").window;
@@ -42,19 +53,27 @@ app.post("/sanitize", (req, res) => {
   }
 });
 
-app.get("/health", (req, res) => {
+healthApp.get("/health", (req, res) => {
   res.status(200).send("OK");
 });
 
-const server = app.listen(listenPort, () => {
-  logger.info(`DOMPurify server listening on port ${listenPort}`);
+const server = app.listen(listenPort, bindAddress, () => {
+  logger.info(`DOMPurify server listening on ${bindAddress}:${listenPort}`);
+});
+
+const healthServer = healthApp.listen(healthPort, healthBindAddress, () => {
+  logger.info(
+    `Health endpoint listening on ${healthBindAddress}:${healthPort}`);
 });
 
 const shutdown = () => {
   logger.info("Shutting down...");
-  server.close(() => {
-    logger.info("Server closed.");
-    process.exit(0);
+  healthServer.close(() => {
+    logger.info("Health server closed.");
+    server.close(() => {
+      logger.info("Server closed.");
+      process.exit(0);
+    });
   });
 };
 

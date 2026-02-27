@@ -17,10 +17,11 @@ import java.util.UUID;
 @Schema(name = "Procedure")
 public record ProcedureDto(
     @NotNull UUID procedureId,
-    @NotBlank String lastName,
     @NotBlank String firstName,
+    @NotBlank String lastName,
     @NotNull LocalDate dateOfBirth,
     @NotNull ProcedureStatusDto status,
     @NotNull ProcedureTypeDto procedureType,
-    Instant appointmentStart,
-    Instant appointmentEnd) {}
+    Instant appointmentTime,
+    LocalDate instructionDate,
+    InstructionTypeDto instructionType) {}

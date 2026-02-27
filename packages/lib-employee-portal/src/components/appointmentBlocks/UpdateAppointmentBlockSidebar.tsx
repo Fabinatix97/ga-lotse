@@ -45,7 +45,7 @@ export function useUpdateAppointmentBlockSidebar(): UseSidebarWithFormRefResult<
 
 interface UpdateAppointmentBlockProps extends SidebarWithFormRefProps {
   appointmentBlockId: string;
-  appointmentTypes: ApiAppointmentType[];
+  appointmentTypes?: ApiAppointmentType[];
   withTeam: boolean;
   physicians?: User[];
   mfas?: User[];
@@ -55,6 +55,8 @@ interface UpdateAppointmentBlockProps extends SidebarWithFormRefProps {
   appointmentBlockApi: AppointmentBlockApi;
   appointmentBlockApiQueryKey: QueryKeyFactory;
   standardDurations: AppointmentStandardDurations;
+  refetchEvents?: () => void;
+  onCancel?: () => void;
 }
 
 export interface UpdateAppointmentBlockValues {
@@ -66,9 +68,13 @@ export interface UpdateAppointmentBlockValues {
   consultants?: string[];
   sopasss?: string[];
   room: string;
+  availableForCitizen?: boolean;
+  availableForBulkBooking?: boolean;
 }
 
-function UpdateAppointmentBlockSidebar(props: UpdateAppointmentBlockProps) {
+export function UpdateAppointmentBlockSidebar(
+  props: UpdateAppointmentBlockProps,
+) {
   const { appointmentBlockApi, appointmentBlockId } = props;
   const { data: appointmentBlock } = useGetAppointmentBlock(
     appointmentBlockId,
@@ -82,7 +88,7 @@ function UpdateAppointmentBlockSidebar(props: UpdateAppointmentBlockProps) {
     await updateMutations.mutateAsync(
       mapFormValuesToApiValues(appointmentBlock, values),
     );
-
+    props.refetchEvents?.();
     props.onClose(true);
   }
 
@@ -110,7 +116,7 @@ function UpdateAppointmentBlockSidebar(props: UpdateAppointmentBlockProps) {
     const sopasssEmpty = isEmpty(values.sopasss ?? []);
 
     if (isDefined(physicianOptions) && physiciansEmpty) {
-      missing.push("einen Arzt/eine Ärztin");
+      missing.push("ein Arzt/eine Ärztin");
     }
     if (isDefined(medicalAssistantOptions) && mfasEmpty) {
       missing.push("ein:e MFA");
@@ -144,6 +150,8 @@ function UpdateAppointmentBlockSidebar(props: UpdateAppointmentBlockProps) {
         consultants: appointmentBlock.consultants,
         sopasss: appointmentBlock.sopasss,
         room: parseOptionalValue(appointmentBlock.room),
+        availableForCitizen: appointmentBlock.availableForCitizen,
+        availableForBulkBooking: appointmentBlock.availableForBulkBooking,
       }}
       validate={handleValidate}
       onSubmit={handleUpdate}
@@ -153,7 +161,9 @@ function UpdateAppointmentBlockSidebar(props: UpdateAppointmentBlockProps) {
           <UpdateAppointmentBlockSidebarContent
             formValues={values}
             appointmentBlock={appointmentBlock}
-            appointmentTypes={props.appointmentTypes}
+            appointmentTypes={
+              props.appointmentTypes ?? appointmentBlock.types ?? []
+            }
             withTeam={props.withTeam}
             physicians={physicianOptions}
             mfas={medicalAssistantOptions}
@@ -167,7 +177,9 @@ function UpdateAppointmentBlockSidebar(props: UpdateAppointmentBlockProps) {
             <FormButtonBar
               submitLabel="Speichern"
               submitting={isSubmitting}
-              onCancel={() => props.onClose(true)}
+              onCancel={() =>
+                props.onCancel ? props.onCancel() : props.onClose(true)
+              }
             />
           </SidebarActions>
         </SidebarForm>
@@ -197,6 +209,8 @@ export function mapFormValuesToApiValues(
       consultants: values.consultants ?? [],
       sopasss: values.sopasss ?? [],
       room: mapOptionalValue(values.room),
+      availableForCitizen: values.availableForCitizen,
+      availableForBulkBooking: values.availableForBulkBooking,
     },
   };
 }

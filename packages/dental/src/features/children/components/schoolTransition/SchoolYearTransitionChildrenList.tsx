@@ -45,16 +45,16 @@ export function SchoolYearTransitionChildrenList(
           <Table stripe="even" sx={TABLE_STYLE}>
             <thead>
               <tr>
-                <th role="columnheader">Vorname</th>
                 <th role="columnheader">Nachname</th>
+                <th role="columnheader">Vorname</th>
               </tr>
             </thead>
             <tbody>
               {props.rows.map((row) => {
                 return (
                   <tr key={row.id}>
-                    <td>{row.firstName}</td>
                     <td>{row.lastName}</td>
+                    <td>{row.firstName}</td>
                   </tr>
                 );
               })}

@@ -22,7 +22,11 @@ public class ProstituteProtectionAppointmentStandardDuration
 
   @DataSensitivity(SensitivityLevel.PUBLIC)
   @NotNull
-  private Duration consultation;
+  private Duration initialConsultation;
+
+  @DataSensitivity(SensitivityLevel.PUBLIC)
+  @NotNull
+  private Duration followUpConsultation;
 
   @Override
   public boolean isInitialized() {
@@ -34,11 +38,19 @@ public class ProstituteProtectionAppointmentStandardDuration
     this.initialized = initialized;
   }
 
-  public Duration getConsultation() {
-    return consultation;
+  public Duration getFollowUpConsultation() {
+    return followUpConsultation;
   }
 
-  public void setConsultation(Duration prostituteProtectionConsultation) {
-    this.consultation = prostituteProtectionConsultation;
+  public void setFollowUpConsultation(Duration prostituteProtectionConsultation) {
+    this.followUpConsultation = prostituteProtectionConsultation;
+  }
+
+  public Duration getInitialConsultation() {
+    return initialConsultation;
+  }
+
+  public void setInitialConsultation(Duration initial) {
+    this.initialConsultation = initial;
   }
 }

@@ -5,11 +5,14 @@
 
 package de.eshg.base.calendar.persistence.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import de.eshg.domain.model.BaseEntityWithExternalId;
+import de.eshg.lib.common.BusinessModule;
 import de.eshg.lib.common.DataSensitivity;
 import de.eshg.lib.common.SensitivityLevel;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.validation.constraints.AssertFalse;
 import java.util.UUID;
 import org.hibernate.annotations.JdbcType;
 import org.hibernate.dialect.PostgreSQLEnumJdbcType;
@@ -33,6 +36,18 @@ public class Calendar extends BaseEntityWithExternalId {
   @DataSensitivity(SensitivityLevel.PROTECTED)
   @Column(unique = true)
   private UUID resourceId;
+
+  @DataSensitivity(SensitivityLevel.PROTECTED)
+  @Column(unique = true)
+  @JdbcType(PostgreSQLEnumJdbcType.class)
+  private BusinessModule businessModule;
+
+  @AssertFalse(message = "A businessModule is required for calendarType MODULE")
+  @JsonIgnore
+  @SuppressWarnings("unused")
+  public boolean hasBusinessModuleWithCalendarTypeModule() {
+    return CalendarType.MODULE.equals(type) && businessModule == null;
+  }
 
   public CalendarType getType() {
     return type;
@@ -64,5 +79,13 @@ public class Calendar extends BaseEntityWithExternalId {
 
   public void setResourceId(UUID resourceId) {
     this.resourceId = resourceId;
+  }
+
+  public BusinessModule getBusinessModule() {
+    return businessModule;
+  }
+
+  public void setBusinessModule(BusinessModule businessModule) {
+    this.businessModule = businessModule;
   }
 }

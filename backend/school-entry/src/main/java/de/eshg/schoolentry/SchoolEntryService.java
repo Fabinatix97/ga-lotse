@@ -7,7 +7,6 @@ package de.eshg.schoolentry;
 
 import static de.eshg.schoolentry.population.CreateLabelsTask.SPECIAL_NEEDS_LABEL_NAME;
 import static de.eshg.schoolentry.util.SchoolEntrySystemProgressEntryType.*;
-import static java.util.Comparator.comparing;
 
 import com.google.common.collect.Streams;
 import de.eshg.base.citizenuser.CitizenAccessCodeUserApi;
@@ -325,6 +324,7 @@ public class SchoolEntryService {
     schoolEntryProcedure.setAnamnesis(anamnesis);
     schoolEntryProcedure.setWaitingRoom(new WaitingRoom());
     schoolEntryProcedure.setSchoolYear(schoolYear);
+    schoolEntryProcedure.setChildAge(null);
 
     return schoolEntryProcedureRepository.save(schoolEntryProcedure);
   }
@@ -392,6 +392,7 @@ public class SchoolEntryService {
         procedure.isDeceased(),
         procedure.getDeceased(),
         procedure.getSchoolYear(),
+        procedure.getChildAge(),
         procedure.getProcedureStatus(),
         procedure.isDeletable(),
         procedure.getCreatedAt(),
@@ -400,7 +401,8 @@ public class SchoolEntryService {
         procedure.getSchoolInfoLetterCreatedAt(),
         procedure.hasInformationBlock(),
         procedure.hasBeenClosed(),
-        isPastProcedure(procedure));
+        isPastProcedure(procedure),
+        procedure.getStatisticsInclusion());
   }
 
   private boolean isPastProcedure(SchoolEntryProcedure procedure) {
@@ -470,17 +472,8 @@ public class SchoolEntryService {
         appointmentBlockService.getFreeAppointments(
             earliestStart, null, appointmentType, appointmentLocationId, null);
 
-    Appointment persistedAppointment = procedure.getAppointment();
-    if (persistedAppointment != null) {
-      AppointmentDto appointmentDto =
-          de.eshg.lib.appointmentblock.AppointmentMapper.mapAppointmentToDto(persistedAppointment);
-      return Stream.concat(freeAppointments.stream(), Stream.of(appointmentDto))
-          .distinct()
-          .sorted(comparing(AppointmentDto::start))
-          .toList();
-    }
-
-    return freeAppointments;
+    return AppointmentBlockService.filterFreeAppointmentsIncludeExisting(
+        freeAppointments, procedure.getAppointment());
   }
 
   List<AppointmentDto> getFreeAppointmentsWithAvailability(
@@ -605,13 +598,12 @@ public class SchoolEntryService {
   }
 
   public void updateAppointment(
-      Instant start, Instant end, SchoolEntryProcedure procedure, AppointmentType appointmentType) {
-    updateAppointment(start, end, false, procedure, appointmentType, null);
+      AppointmentDto appointment, SchoolEntryProcedure procedure, AppointmentType appointmentType) {
+    updateAppointment(appointment, false, procedure, appointmentType, null);
   }
 
   public void updateAppointment(
-      Instant start,
-      Instant end,
+      AppointmentDto appointment,
       boolean createAdHocAppointment,
       SchoolEntryProcedure procedure,
       AppointmentType appointmentType,
@@ -625,20 +617,26 @@ public class SchoolEntryService {
         && locationId == null) {
       throw new BadRequestException("Appointment location is missing at procedure.");
     }
+
+    Instant appointmentStart = appointment.start();
+
     if (createAdHocAppointment) {
       Duration standardDuration =
           appointmentStandardDurationService.getStandardDuration(appointmentType);
-      Instant appointmentEnd = start.plus(standardDuration);
+      Instant appointmentEnd = appointmentStart.plus(standardDuration);
 
       AppointmentBlockGroup adHocAppointmentBlockGroup =
           appointmentBlockService.createAdHocAppointmentBlockGroup(
-              appointmentType, locationId, start, appointmentEnd);
+              appointmentType, locationId, appointmentStart, appointmentEnd);
 
       appointmentBlockSlotUtil.assignAdHocAppointment(
-          appointmentType, procedure, start, appointmentEnd, adHocAppointmentBlockGroup);
+          appointmentType,
+          procedure,
+          new AppointmentDto(appointmentStart, appointmentEnd),
+          adHocAppointmentBlockGroup);
     } else {
       appointmentBlockSlotUtil.updateAppointment(
-          appointmentType, locationId, null, procedure, start, end);
+          appointmentType, locationId, null, procedure, appointment);
     }
 
     CitizenAccessCodeUserDto citizenAccessCodeUser = createOrGetCitizenAccessCodeUser(procedure);
@@ -660,14 +658,14 @@ public class SchoolEntryService {
         invitationGenerator.generateInvitation(
             accessCode,
             childDataWithPersonIdAndCustodian,
-            start,
+            appointmentStart,
             getAppointmentLocation(procedure),
             examinerId,
             room);
     progressEntryUtil.addProgressEntry(
         procedure,
         APPOINTMENT_MODIFIED,
-        getAppointmentChangeDescription(start, custodianId),
+        getAppointmentChangeDescription(appointmentStart, custodianId),
         invitation,
         SchoolEntryKeyDocumentType.INVITATION);
 
@@ -677,7 +675,11 @@ public class SchoolEntryService {
     } else if (procedure.getSchoolInfoLetterCreatedAt() == null) {
       TaskUtil.reopenSingleTaskOfType(procedure, TaskType.PERFORM_SCHOOL_ENTRY_EXAMINATION);
     }
-    procedure.getTaskOfType(TaskType.PERFORM_SCHOOL_ENTRY_EXAMINATION).updateDueAt(start);
+    procedure
+        .getTaskOfType(TaskType.PERFORM_SCHOOL_ENTRY_EXAMINATION)
+        .updateDueAt(appointmentStart);
+
+    updateChildAge(procedure, childDataWithPersonIdAndCustodian.childData().dateOfBirth());
 
     schoolEntryProcedureRepository.flush();
   }
@@ -710,13 +712,9 @@ public class SchoolEntryService {
   }
 
   private static boolean hasAppointmentChanged(
-      SchoolEntryProcedure procedure, Instant start, Instant end) {
+      SchoolEntryProcedure procedure, AppointmentDto appointmentDto) {
     Appointment appointment = procedure.getAppointment();
-    if (appointment == null) {
-      return true;
-    }
-    return !(appointment.getAppointmentStart().equals(start)
-        && appointment.getAppointmentEnd().equals(end));
+    return !AppointmentBlockSlotUtil.appointmentIsUnchanged(appointment, appointmentDto);
   }
 
   private CitizenAccessCodeUserDto createOrGetCitizenAccessCodeUser(
@@ -774,7 +772,7 @@ public class SchoolEntryService {
             stats.countError();
           } else {
             AppointmentDto appointment = freeAppointments.getFirst();
-            updateAppointment(appointment.start(), appointment.end(), procedure, appointmentType);
+            updateAppointment(appointment, procedure, appointmentType);
             stats.countCreated();
           }
         }
@@ -842,8 +840,7 @@ public class SchoolEntryService {
       removeAppointment(procedure);
     }
     if (appointment != null
-        && (hasAppointmentChanged(procedure, appointment.start(), appointment.end())
-            || request.custodianId() != null)) {
+        && (hasAppointmentChanged(procedure, appointment) || request.custodianId() != null)) {
       if (procedure.hasBeenClosed()) {
         throw new BadRequestException(
             "An appointment cannot be updated, when the procedure has been closed before.");
@@ -851,8 +848,7 @@ public class SchoolEntryService {
       AppointmentType appointmentType =
           computeAppointmentType(procedure, requestedType, requestedLabelIds);
       updateAppointment(
-          appointment.start(),
-          appointment.end(),
+          appointment,
           Boolean.TRUE.equals(request.createAdHocAppointment()),
           procedure,
           appointmentType,
@@ -961,6 +957,23 @@ public class SchoolEntryService {
       validator.validateSchoolYear(requestedSchoolYear);
       log.info("Modifying schoolYear {} to {}", persistedSchoolYear, requestedSchoolYear);
       procedure.setSchoolYear(requestedSchoolYear);
+    }
+  }
+
+  private void updateChildAge(SchoolEntryProcedure procedure, LocalDate childDateOfBirth) {
+    Appointment appointment = procedure.getAppointment();
+    if (appointment == null || childDateOfBirth == null) {
+      return;
+    }
+    Integer calculatedChildAge =
+        Period.between(
+                childDateOfBirth,
+                appointment.getAppointmentStart().atZone(clock.getZone()).toLocalDate())
+            .getYears();
+    if (!Objects.equals(procedure.getChildAge(), calculatedChildAge)) {
+      validator.validateChildAge(calculatedChildAge);
+      log.info("Modifying childAge {} to {}", procedure.getChildAge(), calculatedChildAge);
+      procedure.setChildAge(calculatedChildAge);
     }
   }
 

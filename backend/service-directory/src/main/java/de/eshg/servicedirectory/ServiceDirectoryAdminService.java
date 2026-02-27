@@ -39,7 +39,9 @@ import de.eshg.servicedirectory.orgunit.persistence.entity.OrgUnitType;
 import de.eshg.servicedirectory.orgunit.persistence.entity.StagedOrgUnit;
 import de.eshg.servicedirectory.orgunit.persistence.repository.AuditedOrgUnitRepository;
 import de.eshg.servicedirectory.orgunit.persistence.repository.StagedOrgUnitRepository;
+import de.eshg.servicedirectory.rule.exception.InvalidRuleStagingStatusException;
 import de.eshg.servicedirectory.rule.exception.RuleNotFoundException;
+import de.eshg.servicedirectory.rule.exception.UnauthorizedRuleModificationException;
 import de.eshg.servicedirectory.rule.mapper.RuleMapper;
 import de.eshg.servicedirectory.rule.persistence.entity.AuditedRule;
 import de.eshg.servicedirectory.rule.persistence.entity.Rule;
@@ -447,6 +449,11 @@ public class ServiceDirectoryAdminService {
 
         Rule ruleToUpdate = optionalRuleToUpdate.get();
 
+        if (ruleToUpdate instanceof StagedRule stagedRule) {
+          validateAdminModificationPermission(stagedRule);
+          validateStagedRuleStage(stagedRule);
+        }
+
         if (!isUpdateRequired(ruleToUpdate, rule)) {
           continue;
         }
@@ -538,8 +545,24 @@ public class ServiceDirectoryAdminService {
     stagedRule.setClient(RuleMapper.toPersistence(rule.client()));
     stagedRule.setServer(RuleMapper.toPersistence(rule.server()));
     stagedRule.setActive(rule.active());
-    stagedRule.setStagingStatus(StagingStatus.from(StagingStatus.READY_FOR_REVIEW));
+    stagedRule.setStagingStatus(StagingStatus.from(StagingStatus.WORK_IN_PROGRESS));
     return stagedRule;
+  }
+
+  private void validateAdminModificationPermission(StagedRule stagedRule) {
+    String createdBy = stagedRule.getStagingInfo().getCreatedBy();
+
+    if (!Objects.equals(createdBy, AdminNameHolder.getAdminName())) {
+      throw new UnauthorizedRuleModificationException(
+          "Cannot modify rules created by another admin");
+    }
+  }
+
+  private void validateStagedRuleStage(StagedRule stagedRule) {
+    if (StagingStatus.READY_FOR_REVIEW.equals(stagedRule.getStagingStatus())) {
+      throw new InvalidRuleStagingStatusException(
+          "Cannot modify rules with READY_FOR_REVIEW status");
+    }
   }
 
   private void applyUpdate(Rule ruleToUpdate, RuleImportDto dto) {
@@ -549,14 +572,12 @@ public class ServiceDirectoryAdminService {
       staged.setDescription(dto.description());
       staged.setClient(RuleMapper.toPersistence(dto.client()));
       staged.setServer(RuleMapper.toPersistence(dto.server()));
-      staged.setStagingStatus(StagingStatus.READY_FOR_REVIEW);
       stagedRuleRepository.save(staged);
     } else if (ruleToUpdate instanceof StagedRule staged) {
       staged.setActive(dto.active());
       staged.setDescription(dto.description());
       staged.setClient(RuleMapper.toPersistence(dto.client()));
       staged.setServer(RuleMapper.toPersistence(dto.server()));
-      staged.setStagingStatus(StagingStatus.READY_FOR_REVIEW);
     }
   }
 

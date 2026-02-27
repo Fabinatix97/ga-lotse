@@ -119,6 +119,15 @@ public class Validator {
     }
   }
 
+  public void validateChildAge(Integer childAge) {
+    if (childAge == null) {
+      return;
+    }
+    if (childAge < 0) {
+      throw new BadRequestException("Illegal Child Age: " + childAge);
+    }
+  }
+
   public void validateChildHasAddress(ChildData childData) {
     if (childData.address() == null) {
       throw new BadRequestException(

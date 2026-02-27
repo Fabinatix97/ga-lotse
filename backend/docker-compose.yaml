@@ -671,3 +671,10 @@ services:
       POSTGRES_DB: infection_briefing
       POSTGRES_USER: testuser
       POSTGRES_PASSWORD: testpassword
+
+  file-jockey:
+    image: ga-lotse/file-jockey
+    environment:
+      - spring.profiles.active=${ACTIVE_SPRING_PROFILES:-local,dev-config,test-helper}
+    ports:
+      - 8104:8080

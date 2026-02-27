@@ -9,6 +9,9 @@ import { useMemo, useRef, useState } from "react";
 
 import { ApiGetRelevantCalendarsResponse } from "@eshg/base-api";
 
+import { useAddModuleEventSidebar } from "@/lib/baseModule/components/calendar/sidebar/AddModuleCalendarEventSidebar";
+import { useEditModuleEventSidebar } from "@/lib/baseModule/components/calendar/sidebar/EditModuleCalendarEventSidebar";
+
 import { Calendar, CalendarHandle } from "./Calendar";
 import { mapApiCalendarsToCalendarInfo } from "./calendarDisplay";
 import { EventWithCalendarId } from "./calendarMapper";
@@ -25,12 +28,15 @@ export function UserCalendar(props: {
     [props.calendarsResponse],
   );
 
+  const moduleCalendars = props.calendarsResponse.moduleCalendars;
   const [displayedCalendarIds, setDisplayedCalendarIds] = useState([
     userCalendarId,
   ]);
 
   const addAbsenceSidebar = useAddAbsenceSidebar();
   const editAbsenceSidebar = useEditAbsenceSidebar();
+  const addModuleEventSidebar = useAddModuleEventSidebar();
+  const editModuleEventSidebar = useEditModuleEventSidebar();
   const viewEventSidebar = useViewEventSidebar();
   const settingsSidebar = useSettingsSidebar();
 
@@ -54,6 +60,20 @@ export function UserCalendar(props: {
     });
   }
 
+  function openAddModuleCalendarEventSidebar() {
+    addModuleEventSidebar.open({
+      calendars: moduleCalendars,
+      refetchEvents,
+    });
+  }
+
+  function openEditModuleCalendarEventSidebar(event: EventWithCalendarId) {
+    editModuleEventSidebar.open({
+      event,
+      refetchEvents,
+    });
+  }
+
   function openViewEventSidebar(event: EventWithCalendarId) {
     viewEventSidebar.open({
       calendars,
@@ -74,13 +94,19 @@ export function UserCalendar(props: {
       ref={calendarRef}
       calendars={calendars}
       displayedCalendarIds={displayedCalendarIds}
-      onNewEventButtonClick={openAddAbsenceSidebar}
+      onNewAbsenceEventButtonClick={openAddAbsenceSidebar}
+      onNewModuleEventButtonClick={
+        moduleCalendars.length === 0 ? null : openAddModuleCalendarEventSidebar
+      }
       onEventClick={(event) => {
         if (event.type === "VACATION" && event.calendarId === userCalendarId) {
           openEditAbsenceSidebar(event);
         }
         if (event.type === "BUSINESS_CASE") {
           openViewEventSidebar(event);
+        }
+        if (event.type === "INFORMATION") {
+          openEditModuleCalendarEventSidebar(event);
         }
       }}
       onSettingsButtonClick={openSettingsSidebar}

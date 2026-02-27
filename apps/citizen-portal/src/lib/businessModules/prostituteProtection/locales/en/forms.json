@@ -69,7 +69,7 @@
       "HUNGARIAN": "Hungarian",
       "UNKNOWN": "Unknown"
     },
-    "consultation_type": {
+    "procedure_type": {
       "INITIAL": "Initial consultation",
       "FOLLOW_UP": "Follow-up consultation"
     }

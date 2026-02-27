@@ -27,7 +27,7 @@ public record ProcedureDetailsDto(
     @Valid AppointmentDto appointment,
     @NotNull boolean appointmentFromAppointmentBlock,
     @NotNull List<LanguageDto> languages,
-    ConsultationTypeDto consultationType,
+    @NotNull ProcedureTypeDto procedureType,
     @NotNull ProcedureStatusDto procedureStatus,
     DocumentTypeDto documentTypeDto,
     Instant consultationCertificateCreatedAt,

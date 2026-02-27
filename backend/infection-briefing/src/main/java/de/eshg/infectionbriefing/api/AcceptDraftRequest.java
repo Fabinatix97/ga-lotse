@@ -5,7 +5,6 @@
 
 package de.eshg.infectionbriefing.api;
 
-import jakarta.validation.constraints.NotNull;
 import java.util.UUID;
 
-public record AcceptDraftRequest(@NotNull UUID referencePersonId) {}
+public record AcceptDraftRequest(UUID referencePersonId, CustodianConsentDto custodianConsent) {}

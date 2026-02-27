@@ -7,7 +7,9 @@ import { Box, Checkbox, Grid, Typography } from "@mui/joy";
 import { useFormikContext } from "formik";
 
 import {
+  AddressAutoFillField,
   InputField,
+  StreetField,
   createFieldNameMapper,
   useValidateLength,
   useValidateZipCode,
@@ -20,6 +22,7 @@ import {
 import { FormSectionLabel } from "@/lib/businessModules/measlesProtection/components/reportCase/ReportCaseForm";
 import { FacilityContactAddressFormInputs } from "@/lib/businessModules/measlesProtection/components/reportCase/types";
 import { useTranslation } from "@/lib/i18n/client";
+import { usePublicStreetApi } from "@/lib/shared/api/clients";
 import { CountryField } from "@/lib/shared/components/form/CountryField";
 
 import { NestedFormProps } from "./AffectedPersonForm";
@@ -47,10 +50,12 @@ export function AddressForm({
   name,
 }: AddressFormProps) {
   const { t } = useTranslation(["measlesProtection/forms"]);
+  const publicStreetApi = usePublicStreetApi();
   const validateLength = useValidateLength();
   const validateZipCode = useValidateZipCode();
-  const fieldName = createFieldNameMapper<ApiDomesticAddress>(name);
   const ctx = useFormikContext();
+
+  const fieldName = createFieldNameMapper<ApiDomesticAddress>(name);
 
   return (
     <>
@@ -69,10 +74,12 @@ export function AddressForm({
         </Grid>
       )}
       <Grid xxs={12} xs={8} lg={9}>
-        <InputField
+        <StreetField
+          api={publicStreetApi}
           name={fieldName("street")}
           label={t("common.addressForm.street")}
           required={t("common.addressForm.street_required")}
+          validate={validateLength(1, 55)}
         />
       </Grid>
       <Grid xxs={12} xs={4} lg={3}>
@@ -93,8 +100,10 @@ export function AddressForm({
         />
       </Grid>
       <Grid xxs={12} xs={4} lg={3}>
-        <InputField
-          name={fieldName("postalCode")}
+        <AddressAutoFillField
+          api={publicStreetApi}
+          fieldName={fieldName}
+          name="postalCode"
           label={t("common.addressForm.postalCode")}
           required={t("common.addressForm.postalCode_required")}
           validate={validateZipCode(
@@ -104,8 +113,10 @@ export function AddressForm({
         />
       </Grid>
       <Grid xxs={12} xs={8} lg={9}>
-        <InputField
-          name={fieldName("city")}
+        <AddressAutoFillField
+          api={publicStreetApi}
+          fieldName={fieldName}
+          name="city"
           label={t("common.addressForm.city")}
           required={t("common.addressForm.city_required")}
         />

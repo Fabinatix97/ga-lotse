@@ -5,21 +5,30 @@
 
 package de.eshg.infectionbriefing;
 
+import static de.eshg.infectionbriefing.mapper.ApplicantCategoryMapper.toInterfaceType;
+import static de.eshg.infectionbriefing.mapper.PersonDetailsMapper.mapToPersonDetailsDto;
 import static de.eshg.infectionbriefing.util.PageUtil.toPageSpec;
+import static de.eshg.infectionbriefing.util.ProcedureUtil.getFieldOrNull;
 
 import de.cronn.commons.lang.StreamUtil;
-import de.eshg.infectionbriefing.api.AcceptDraftRequest;
+import de.eshg.base.centralfile.api.person.GetPersonFileStateResponse;
 import de.eshg.infectionbriefing.api.GetProceduresResponse;
+import de.eshg.infectionbriefing.api.ProcedureDetailsDto;
 import de.eshg.infectionbriefing.api.ProcedureFilterParameters;
 import de.eshg.infectionbriefing.api.ProcedurePaginationParameters;
-import de.eshg.infectionbriefing.domain.model.InfectionBriefingPerson;
+import de.eshg.infectionbriefing.api.ProcedureSourceDto;
 import de.eshg.infectionbriefing.domain.model.InfectionBriefingProcedure;
+import de.eshg.infectionbriefing.domain.model.NewCertificateProcedure;
 import de.eshg.infectionbriefing.domain.repository.InfectionBriefingProcedureRepository;
 import de.eshg.infectionbriefing.domain.specification.InfectionBriefingProcedureSpecification;
 import de.eshg.infectionbriefing.mapper.InfectionBriefingProcedureMapper;
+import de.eshg.infectionbriefing.mapper.InstructionTypeMapper;
 import de.eshg.infectionbriefing.util.ProcedureValidator;
+import de.eshg.lib.appointmentblock.persistence.entity.Appointment;
 import de.eshg.lib.auditlog.AuditLogger;
 import de.eshg.lib.procedure.domain.model.ProcedureStatus;
+import de.eshg.lib.procedure.domain.model.RelatedPerson;
+import de.eshg.lib.procedure.mapping.ProcedureMapper;
 import de.eshg.rest.service.error.NotFoundException;
 import java.time.Clock;
 import java.time.Instant;
@@ -39,18 +48,21 @@ public class InfectionBriefingProcedureService {
   private final Clock clock;
   private final AuditLogger auditLogger;
   private final PersonClient personClient;
+  private final CustodianConsentHelper custodianConsentHelper;
 
   public InfectionBriefingProcedureService(
       InfectionBriefingProcedureRepository repository,
       InfectionBriefingProcedureMapper procedureMapper,
       Clock clock,
       AuditLogger auditLogger,
-      PersonClient personClient) {
+      PersonClient personClient,
+      CustodianConsentHelper custodianConsentHelper) {
     this.repository = repository;
     this.procedureMapper = procedureMapper;
     this.clock = clock;
     this.auditLogger = auditLogger;
     this.personClient = personClient;
+    this.custodianConsentHelper = custodianConsentHelper;
   }
 
   public GetProceduresResponse getProcedures(
@@ -64,12 +76,36 @@ public class InfectionBriefingProcedureService {
         proceduresPage.getTotalElements());
   }
 
+  public ProcedureDetailsDto getProcedureDetails(UUID procedureId) {
+    InfectionBriefingProcedure procedure = getProcedure(procedureId);
+    GetPersonFileStateResponse applicant =
+        personClient.getPersonFileState(
+            procedure.getRelatedPersons().stream()
+                .map(RelatedPerson::getCentralFileStateId)
+                .collect(StreamUtil.toSingleElement()));
+    return new ProcedureDetailsDto(
+        procedure.getExternalId(),
+        ProcedureMapper.toInterfaceType(procedure.getProcedureStatus()),
+        ProcedureMapper.toInterfaceType(procedure.getProcedureType()),
+        mapToPersonDetailsDto(applicant),
+        custodianConsentHelper.getCustodianConsent(procedure, applicant.dateOfBirth()),
+        Optional.ofNullable(procedure.getAppointment())
+            .map(Appointment::getAppointmentStart)
+            .orElse(null),
+        toInterfaceType(getFieldOrNull(procedure, NewCertificateProcedure::getApplicantCategory)),
+        getFieldOrNull(procedure, NewCertificateProcedure::getInstructionDate),
+        InstructionTypeMapper.toInterfaceType(
+            getFieldOrNull(procedure, NewCertificateProcedure::getInstructionType)),
+        ProcedureSourceDto.STAFF_PORTAL);
+  }
+
   private InfectionBriefingProcedureSpecification getSpecification(
       ProcedureFilterParameters parameters) {
     return new InfectionBriefingProcedureSpecification(
         new ArrayList<>(
             List.of(ProcedureStatus.DRAFT, ProcedureStatus.OPEN, ProcedureStatus.IN_PROGRESS)),
-        getStartOfDay(parameters.appointmentDay()));
+        getStartOfDay(parameters.appointmentDay()),
+        InstructionTypeMapper.toDomainType(parameters.instructionType()));
   }
 
   private Instant getStartOfDay(LocalDate localDate) {
@@ -78,25 +114,6 @@ public class InfectionBriefingProcedureService {
     } else {
       return localDate.atStartOfDay(clock.getZone()).toInstant();
     }
-  }
-
-  public void acceptDraft(UUID procedureId, Optional<AcceptDraftRequest> request) {
-    InfectionBriefingProcedure procedure =
-        new ProcedureValidator<>(getProcedure(procedureId))
-            .validateStatus(ProcedureStatus.DRAFT)
-            .get();
-    InfectionBriefingPerson person =
-        procedure.getRelatedPersons().stream().collect(StreamUtil.toSingleElement());
-    UUID referencePersonId = request.map(AcceptDraftRequest::referencePersonId).orElse(null);
-    if (referencePersonId == null) {
-      person.setCentralFileStateId(
-          personClient.createInternalReferencePerson(person.getCentralFileStateId()));
-    } else {
-      person.setCentralFileStateId(
-          personClient.updatePersonAndCreateFileState(
-              referencePersonId, person.getCentralFileStateId()));
-    }
-    procedure.updateProcedureStatus(ProcedureStatus.OPEN, clock, auditLogger);
   }
 
   public void abort(UUID procedureId) {

@@ -129,6 +129,9 @@ public class SchoolEntryProcedure
   @DataSensitivity(PROTECTED)
   private Year schoolYear;
 
+  @DataSensitivity(SENSITIVE)
+  private Integer childAge;
+
   @DataSensitivity(PSEUDONYMIZED)
   private UUID locationId;
 
@@ -347,6 +350,14 @@ public class SchoolEntryProcedure
 
   public void setSchoolYear(Year schoolYear) {
     this.schoolYear = schoolYear;
+  }
+
+  public Integer getChildAge() {
+    return childAge;
+  }
+
+  public void setChildAge(Integer childAgeAtExamination) {
+    this.childAge = childAgeAtExamination;
   }
 
   public UUID getLocationId() {

@@ -5,6 +5,8 @@
 
 package de.eshg.infectionbriefing;
 
+import static de.eshg.infectionbriefing.mapper.SalutationMapper.mapToBaseSalutationDto;
+
 import de.cronn.commons.lang.StreamUtil;
 import de.eshg.base.address.AddressDto;
 import de.eshg.base.address.DomesticAddressDto;
@@ -49,7 +51,7 @@ public class PersonClient {
         .addPersonFromExternalSource(
             new ExternalAddPersonFileStateRequest(
                 null,
-                applicant.salutation(),
+                mapToBaseSalutationDto(applicant.salutation()),
                 null,
                 applicant.firstName().trim(),
                 applicant.lastName().trim(),

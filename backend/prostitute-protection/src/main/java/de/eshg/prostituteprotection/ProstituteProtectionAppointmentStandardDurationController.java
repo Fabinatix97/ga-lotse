@@ -31,8 +31,7 @@ public class ProstituteProtectionAppointmentStandardDurationController {
     this.service = service;
   }
 
-  @Operation(
-      summary = "Get the standard duration for prostitute protection consultation appointments")
+  @Operation(summary = "Get the standard duration for prostitute protection appointments")
   @ApiResponse(
       responseCode = "200",
       description = "A response containing the standard duration if initialized.")

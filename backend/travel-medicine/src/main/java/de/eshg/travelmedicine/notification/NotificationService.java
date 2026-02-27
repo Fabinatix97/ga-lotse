@@ -159,9 +159,12 @@ public class NotificationService {
 
   private void doSendMail(String subject, String body, PatientDto patientDto) {
     log.info("send mail(s): " + subject);
-    for (String emailAddress : patientDto.emailAddresses()) {
+    if (!patientDto.emailAddresses().isEmpty()) {
       mailClient.sendMail(
-          emailAddress, notificationConfigService.getConfig().getFromAddress(), subject, body);
+          patientDto.emailAddresses().getFirst(),
+          notificationConfigService.getConfig().getFromAddress(),
+          subject,
+          body);
     }
   }
 }

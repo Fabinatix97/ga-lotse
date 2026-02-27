@@ -32,6 +32,7 @@ public record ProcedureDetailsDto(
     @NotNull boolean isDeceased,
     LocalDate deceased,
     @Min(1900) Integer schoolYear,
+    Integer childAge,
     @NotNull ProcedureStatusDto status,
     @NotNull boolean isDeletable,
     @NotNull Instant createdAt,
@@ -40,5 +41,6 @@ public record ProcedureDetailsDto(
     Instant schoolInfoLetterCreatedAt,
     @NotNull boolean hasInformationBlock,
     @NotNull boolean hasBeenClosed,
-    @NotNull boolean isPastProcedure)
+    @NotNull boolean isPastProcedure,
+    @NotNull StatisticsInclusionDto statisticsInclusion)
     implements ProcedureBaseDto {}

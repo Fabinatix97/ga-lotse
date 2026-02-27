@@ -11,10 +11,6 @@ import java.util.*;
 public enum LsdAttributeKey {
   CERTIFICATE("eshg.actor.certificate", 10_000),
 
-  // legacy:
-  CERTIFICATE_VALUE("eshg.actor.certificate.value", 10_000),
-  CERTIFICATE_SIGNATURE("eshg.actor.certificate.signature", 10_000),
-
   READABLE_NAME("eshg.actor.readableName", null),
   HOST_NAME("eshg.actor.hostName", null),
 

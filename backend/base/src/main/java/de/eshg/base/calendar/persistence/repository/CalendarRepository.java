@@ -7,6 +7,7 @@ package de.eshg.base.calendar.persistence.repository;
 
 import de.eshg.base.calendar.persistence.entity.Calendar;
 import de.eshg.base.calendar.persistence.entity.CalendarType;
+import de.eshg.lib.common.BusinessModule;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -27,4 +28,6 @@ public interface CalendarRepository extends JpaRepository<Calendar, Long> {
   List<Calendar> findAllByUserIdIn(Collection<UUID> userIds);
 
   List<Calendar> findAllByResourceIdInOrderById(List<UUID> resourceIds);
+
+  Calendar findByBusinessModule(BusinessModule businessModule);
 }

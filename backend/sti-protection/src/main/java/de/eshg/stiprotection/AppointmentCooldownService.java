@@ -23,8 +23,9 @@ public class AppointmentCooldownService {
     this.cooldownRepository = cooldownRepository;
   }
 
-  public List<AppointmentCooldown> getAppointmentsOnCooldown() {
-    return cooldownRepository.findAll();
+  public List<AppointmentCooldown> getAppointmentsOnCooldownByAppointmentType(
+      AppointmentType appointmentType) {
+    return cooldownRepository.findAllByType(appointmentType);
   }
 
   public void setAppointmentOnCooldown(Appointment appointment) {

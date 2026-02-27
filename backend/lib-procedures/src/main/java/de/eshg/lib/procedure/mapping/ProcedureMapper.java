@@ -10,11 +10,13 @@ import de.eshg.lib.procedure.domain.model.ArchivingRelevance;
 import de.eshg.lib.procedure.domain.model.Procedure;
 import de.eshg.lib.procedure.domain.model.ProcedureStatus;
 import de.eshg.lib.procedure.domain.model.ProcedureType;
+import de.eshg.lib.procedure.domain.model.StatisticsInclusion;
 import de.eshg.lib.procedure.model.ArchivingRelevanceDto;
 import de.eshg.lib.procedure.model.ArchivingRelevanceSettingsDto;
 import de.eshg.lib.procedure.model.ProcedureDto;
 import de.eshg.lib.procedure.model.ProcedureStatusDto;
 import de.eshg.lib.procedure.model.ProcedureTypeDto;
+import de.eshg.lib.procedure.model.StatisticsInclusionDto;
 
 public final class ProcedureMapper {
 
@@ -37,7 +39,8 @@ public final class ProcedureMapper {
         summary,
         new ArchivingRelevanceSettingsDto(
             toInterfaceType(domainModelProcedure.getArchivingRelevance()),
-            toInterfaceType(defaultArchivingRelevance)));
+            toInterfaceType(defaultArchivingRelevance)),
+        toInterfaceType(domainModelProcedure.getStatisticsInclusion()));
   }
 
   public static ProcedureStatusDto toInterfaceType(ProcedureStatus procedureStatus) {
@@ -68,7 +71,8 @@ public final class ProcedureMapper {
       case DENTAL_CHILD -> ProcedureTypeDto.DENTAL_CHILD;
       case OFFICIAL_MEDICAL_SERVICE -> ProcedureTypeDto.OFFICIAL_MEDICAL_SERVICE;
       case MEDS_ABROAD -> ProcedureTypeDto.MEDS_ABROAD;
-      case PROSTITUTE_PROTECTION -> ProcedureTypeDto.PROSTITUTE_PROTECTION;
+      case PROSTITUTE_PROTECTION_INITIAL -> ProcedureTypeDto.PROSTITUTE_PROTECTION_INITIAL;
+      case PROSTITUTE_PROTECTION_FOLLOW_UP -> ProcedureTypeDto.PROSTITUTE_PROTECTION_FOLLOW_UP;
       case INFECTION_BRIEFING_NEW -> ProcedureTypeDto.INFECTION_BRIEFING_NEW;
       case INFECTION_BRIEFING_REPLACEMENT -> ProcedureTypeDto.INFECTION_BRIEFING_REPLACEMENT;
     };
@@ -79,6 +83,14 @@ public final class ProcedureMapper {
       case DEFAULT -> ArchivingRelevanceDto.DEFAULT;
       case RELEVANT -> ArchivingRelevanceDto.RELEVANT;
       case IRRELEVANT -> ArchivingRelevanceDto.IRRELEVANT;
+    };
+  }
+
+  public static StatisticsInclusionDto toInterfaceType(StatisticsInclusion statisticsInclusion) {
+    return switch (statisticsInclusion) {
+      case INCLUDE -> StatisticsInclusionDto.INCLUDE;
+      case CUSTOM -> StatisticsInclusionDto.CUSTOM;
+      case EXCLUDE -> StatisticsInclusionDto.EXCLUDE;
     };
   }
 
@@ -100,7 +112,8 @@ public final class ProcedureMapper {
       case DENTAL_CHILD -> ProcedureType.DENTAL_CHILD;
       case OFFICIAL_MEDICAL_SERVICE -> ProcedureType.OFFICIAL_MEDICAL_SERVICE;
       case MEDS_ABROAD -> ProcedureType.MEDS_ABROAD;
-      case PROSTITUTE_PROTECTION -> ProcedureType.PROSTITUTE_PROTECTION;
+      case PROSTITUTE_PROTECTION_INITIAL -> ProcedureType.PROSTITUTE_PROTECTION_INITIAL;
+      case PROSTITUTE_PROTECTION_FOLLOW_UP -> ProcedureType.PROSTITUTE_PROTECTION_FOLLOW_UP;
       case INFECTION_BRIEFING_NEW -> ProcedureType.INFECTION_BRIEFING_NEW;
       case INFECTION_BRIEFING_REPLACEMENT -> ProcedureType.INFECTION_BRIEFING_REPLACEMENT;
     };
@@ -121,6 +134,14 @@ public final class ProcedureMapper {
       case DEFAULT -> ArchivingRelevance.DEFAULT;
       case RELEVANT -> ArchivingRelevance.RELEVANT;
       case IRRELEVANT -> ArchivingRelevance.IRRELEVANT;
+    };
+  }
+
+  public static StatisticsInclusion toDomainType(StatisticsInclusionDto statisticsInclusion) {
+    return switch (statisticsInclusion) {
+      case INCLUDE -> StatisticsInclusion.INCLUDE;
+      case CUSTOM -> StatisticsInclusion.CUSTOM;
+      case EXCLUDE -> StatisticsInclusion.EXCLUDE;
     };
   }
 }

@@ -13,7 +13,7 @@ export function formatBooleanWithUnknown(
   value: ApiBooleanWithUnknown | undefined,
 ) {
   if (value === undefined) {
-    return "";
+    return "-";
   }
 
   switch (value) {
@@ -22,6 +22,6 @@ export function formatBooleanWithUnknown(
     case ApiBooleanWithUnknown.False:
       return "Nein";
     case ApiBooleanWithUnknown.Unknown:
-      return "Liegt nicht vor";
+      return "-";
   }
 }

@@ -35,6 +35,8 @@ export function resolveProcedureDefinitionDiagram(
       return officialMedicalServiceProcedureDefinitionDiagram;
     case "STI_PROTECTION":
       return stiProtectionProcedureDefinitionDiagram;
+    case "MEDS_ABROAD":
+      return undefined;
     case "DENTAL":
       return undefined;
     case "PROSTITUTE_PROTECTION":

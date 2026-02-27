@@ -17,6 +17,7 @@ dependencies {
     implementation project(':lib-statistics')
     implementation project(':lib-scheduling')
     implementation project(':file-commons')
+    implementation project(':lib-xlsx-import')
 
     implementation 'org.bouncycastle:bcprov-jdk18on:latest.release'
     implementation 'com.bucket4j:bucket4j-core:latest.release'
@@ -31,6 +32,7 @@ dependencies {
     testImplementation testFixtures(project(':lib-document-generator'))
     testImplementation testFixtures(project(':lib-procedures'))
     testImplementation testFixtures(project(':lib-statistics'))
+    testImplementation testFixtures(project(':lib-xlsx-import'))
     testImplementation 'jakarta.mail:jakarta.mail-api'
 }
 

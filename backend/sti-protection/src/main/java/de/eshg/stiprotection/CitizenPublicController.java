@@ -44,6 +44,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import java.time.Clock;
 import java.time.Instant;
+import java.util.AbstractMap;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -142,19 +143,27 @@ public class CitizenPublicController {
     List<AppointmentDto> appointments =
         appointmentBlockService.getFreeAppointments(earliestDate, null, appType, null, null);
 
-    Set<AppointmentDto> appointmentsOnCooldown =
-        appointmentCooldownService.getAppointmentsOnCooldown().stream()
-            .filter(appointmentCooldown -> appointmentCooldown.getType().equals(appType))
+    // the cooldown feature will remove all appointments with matching start/end
+    // times from the free appointments response. The result will probably
+    // be unexpected in case of overlapping appointment blocks or block with
+    // parallel examination (currently not possible as the UI does not expose
+    // that setting)
+    Set<AbstractMap.SimpleEntry<Instant, Instant>> appointmentKeysOnCooldown =
+        appointmentCooldownService.getAppointmentsOnCooldownByAppointmentType(appType).stream()
             .map(
                 appointmentCooldown ->
-                    new AppointmentDto(
+                    new AbstractMap.SimpleEntry<>(
                         appointmentCooldown.getAppointmentStart(),
                         appointmentCooldown.getAppointmentEnd()))
             .collect(Collectors.toSet());
 
     return new GetFreeAppointmentsResponse(
         appointments.stream()
-            .filter(appointmentDto -> !appointmentsOnCooldown.contains(appointmentDto))
+            .filter(
+                appointmentDto ->
+                    !appointmentKeysOnCooldown.contains(
+                        new AbstractMap.SimpleEntry<>(
+                            appointmentDto.start(), appointmentDto.end())))
             .toList());
   }
 

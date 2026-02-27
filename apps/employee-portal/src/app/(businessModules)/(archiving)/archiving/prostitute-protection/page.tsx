@@ -6,8 +6,9 @@
 "use client";
 
 import { ArchivePage } from "@eshg/lib-employee-portal";
-import { ApiBusinessModule, ApiProcedureType } from "@eshg/lib-procedures-api";
+import { ApiBusinessModule } from "@eshg/lib-procedures-api";
 import {
+  procedureTypes,
   routes,
   useProstituteProtectionApiClients,
 } from "@eshg/prostitute-protection";
@@ -24,7 +25,7 @@ export default function ProstituteProtectionArchivePage() {
       }
       businessModule={ApiBusinessModule.ProstituteProtection}
       archivingApi={archivingApi}
-      procedureTypes={[ApiProcedureType.ProstituteProtection]}
+      procedureTypes={procedureTypes}
     />
   );
 }

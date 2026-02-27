@@ -7,10 +7,12 @@ import { Button, Grid, Stack } from "@mui/joy";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { isDefined } from "remeda";
 
+import { ApiStatisticsInclusion, ApiUserRole } from "@eshg/base-api";
 import {
   ContentPanel,
   DetailsSection,
   PageGrid,
+  StatisticsInclusionPanel,
   useConfirmationDialog,
 } from "@eshg/lib-employee-portal";
 import { DisabledFormProvider, DynamicPageProps } from "@eshg/lib-portal";
@@ -26,11 +28,24 @@ import { DentalChildRouteParams } from "../schemas/DentalChildRouteParams";
 
 const SPACING = { xxs: 2, sm: 3, md: 4, xxl: 5 };
 
+const STATISTICS_INCLUDE_NAMES = {
+  [ApiStatisticsInclusion.Include]: "Ja",
+  [ApiStatisticsInclusion.Custom]: "custom (not implemented)",
+  [ApiStatisticsInclusion.Exclude]: "Nein",
+};
+
+const STATISTICS_INCLUDE_READ_ONLY_NAMES = {
+  [ApiStatisticsInclusion.Include]:
+    "Der Vorgang wird in Auswertungen berücksichtigt.",
+  [ApiStatisticsInclusion.Custom]: "custom (not implemented)",
+  [ApiStatisticsInclusion.Exclude]: "Der Vorgang wird nicht berücksichtigt.",
+};
+
 export function DentalChildDetailsPage(
   props: DynamicPageProps<DentalChildRouteParams>,
 ) {
   const { childId } = useChildRouteParams(props.params);
-  const { childApi } = useDentalApi();
+  const { childApi, procedureApi } = useDentalApi();
   const { data: child } = useSuspenseQuery(
     getChildDetailsQuery(childApi, childId),
   );
@@ -42,8 +57,8 @@ export function DentalChildDetailsPage(
   }
 
   return (
-    <DisabledFormProvider disabled={child.isClosed}>
-      <PageGrid>
+    <PageGrid>
+      <DisabledFormProvider disabled={child.isClosed}>
         <Grid xs={8}>
           <Stack spacing={SPACING}>
             <ContentPanel>
@@ -61,8 +76,10 @@ export function DentalChildDetailsPage(
             )}
           </Stack>
         </Grid>
-        <Grid xs={4}>
-          <Stack spacing={SPACING}>
+      </DisabledFormProvider>
+      <Grid xs={4}>
+        <Stack spacing={SPACING}>
+          <DisabledFormProvider disabled={child.isClosed}>
             <ContentPanel>
               <AdditionalInformationDetailsSection child={child} />
             </ContentPanel>
@@ -84,9 +101,19 @@ export function DentalChildDetailsPage(
                 </Button>
               </ContentPanel>
             )}
-          </Stack>
-        </Grid>
-      </PageGrid>
-    </DisabledFormProvider>
+          </DisabledFormProvider>
+          <StatisticsInclusionPanel
+            procedure={child}
+            procedureStatisticsClient={procedureApi}
+            writeRole={ApiUserRole.DentalLeader}
+            hideCustom
+            statisticsInclusionDisplayValues={STATISTICS_INCLUDE_NAMES}
+            statisticsInclusionDisplayReadOnlyValues={
+              STATISTICS_INCLUDE_READ_ONLY_NAMES
+            }
+          />
+        </Stack>
+      </Grid>
+    </PageGrid>
   );
 }

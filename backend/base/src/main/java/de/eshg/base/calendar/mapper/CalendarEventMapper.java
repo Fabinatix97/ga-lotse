@@ -96,7 +96,13 @@ public final class CalendarEventMapper {
   }
 
   private static EventTypeDto mapToEventTypeDto(EventType eventType) {
-    return EventTypeDto.valueOf(eventType.name());
+    return switch (eventType) {
+      case BUSINESS_CASE -> EventTypeDto.BUSINESS_CASE;
+      case HOLIDAY -> EventTypeDto.HOLIDAY;
+      case SERVICE -> EventTypeDto.SERVICE;
+      case VACATION -> EventTypeDto.VACATION;
+      case INFORMATION -> EventTypeDto.INFORMATION;
+    };
   }
 
   public static DetailedEventWithoutCalendarId mapToDetailedEventWithoutCalendarId(

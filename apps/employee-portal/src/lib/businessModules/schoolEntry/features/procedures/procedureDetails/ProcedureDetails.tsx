@@ -8,10 +8,15 @@
 import { Box, Grid, Stack } from "@mui/joy";
 import { isDefined } from "remeda";
 
-import { PageGrid } from "@eshg/lib-employee-portal";
+import { ApiUserRole } from "@eshg/base-api";
+import { PageGrid, StatisticsInclusionPanel } from "@eshg/lib-employee-portal";
 import { useControlledAlert } from "@eshg/lib-portal";
-import { ApiLocationSelectionMode } from "@eshg/school-entry-api";
+import {
+  ApiLocationSelectionMode,
+  ApiStatisticsInclusion,
+} from "@eshg/school-entry-api";
 
+import { useProcedureApi } from "@/lib/businessModules/schoolEntry/api/clients";
 import { ProcedureDetails as ProcedureDetailsType } from "@/lib/businessModules/schoolEntry/api/models/ProcedureDetails";
 import { AddCustodianPanel } from "@/lib/businessModules/schoolEntry/features/procedures/procedureDetails/AddCustodianPanel";
 import { ProcedureActionsPanel } from "@/lib/businessModules/schoolEntry/features/procedures/procedureDetails/ProcedureActionsPanel";
@@ -22,6 +27,20 @@ import { PersonDetailsPanel } from "./PersonDetailsPanel";
 
 const SPACING = { xxs: 2, sm: 3, md: 4, xxl: 5 };
 
+const STATISTICS_INCLUDE_NAMES = {
+  [ApiStatisticsInclusion.Include]: "Ja",
+  [ApiStatisticsInclusion.Custom]: "Nur Mitarbeiterstatistik",
+  [ApiStatisticsInclusion.Exclude]: "Nein",
+};
+
+const STATISTICS_INCLUDE_READ_ONLY_NAMES = {
+  [ApiStatisticsInclusion.Include]:
+    "Der Vorgang wird in Auswertungen berücksichtigt.",
+  [ApiStatisticsInclusion.Custom]:
+    "Der Vorgang wird nur für die Mitarbeiterstatistik berücksichtigt.",
+  [ApiStatisticsInclusion.Exclude]: "Der Vorgang wird nicht berücksichtigt.",
+};
+
 interface ProcedureDetailsProps {
   procedure: ProcedureDetailsType;
   locationSelectionMode: ApiLocationSelectionMode;
@@ -29,6 +48,8 @@ interface ProcedureDetailsProps {
 
 export function ProcedureDetails(props: ProcedureDetailsProps) {
   const { procedure, locationSelectionMode } = props;
+
+  const procedureApi = useProcedureApi();
 
   useControlledAlert({
     type: "error",
@@ -70,6 +91,15 @@ export function ProcedureDetails(props: ProcedureDetailsProps) {
           <Stack spacing={SPACING}>
             <ProcedureDetailsSection procedure={procedure} />
             <ProcedureActionsPanel procedure={procedure} />
+            <StatisticsInclusionPanel
+              procedure={procedure}
+              writeRole={ApiUserRole.SchoolEntryLeader}
+              procedureStatisticsClient={procedureApi}
+              statisticsInclusionDisplayValues={STATISTICS_INCLUDE_NAMES}
+              statisticsInclusionDisplayReadOnlyValues={
+                STATISTICS_INCLUDE_READ_ONLY_NAMES
+              }
+            />
             {locationSelectionMode === ApiLocationSelectionMode.None &&
               !procedure.isClosed &&
               isDefined(procedure.appointment) && (

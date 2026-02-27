@@ -11,6 +11,10 @@ import {
   DepartmentConfigurationApi,
 } from "@eshg/base-api";
 import {
+  InfectionBriefingAppointmentStandardDurationConfigApi,
+  Configuration as InfectionBriefingConfiguration,
+} from "@eshg/infection-briefing-api";
+import {
   ConfigStatusApi,
   DepartmentInfoConfigApi,
   Configuration as LibConfigConfiguration,
@@ -292,6 +296,16 @@ export function useProstituteProtectionAppointmentBlockAvailabilityApi() {
     ProstituteProtectionConfiguration,
   );
   return new ProstituteProtectionAppointmentBlockAvailabilityConfigApi(
+    configuration,
+  );
+}
+
+export function useInfectionBriefingAppointmentStandardDurationConfigApi() {
+  const configuration = useConfigurationByBusinessModule(
+    ApiBusinessModule.InfectionBriefing,
+    InfectionBriefingConfiguration,
+  );
+  return new InfectionBriefingAppointmentStandardDurationConfigApi(
     configuration,
   );
 }

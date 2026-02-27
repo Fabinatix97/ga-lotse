@@ -76,20 +76,20 @@ spec:
           startupProbe:
             httpGet:
               path: /health
-              port: {{ .Values.synapse.port }}
+              port: 8081
             periodSeconds: 1
             failureThreshold: 90
           livenessProbe:
             httpGet:
               path: /health
-              port: {{ .Values.synapse.port }}
+              port: 8081
             periodSeconds: 10
             failureThreshold: 1
             timeoutSeconds: 10
           readinessProbe:
             httpGet:
-              path: /_matrix/client/versions
-              port: {{ .Values.synapse.port }}
+              path: /health
+              port: 8081
             periodSeconds: 10
             failureThreshold: 1
             timeoutSeconds: 10

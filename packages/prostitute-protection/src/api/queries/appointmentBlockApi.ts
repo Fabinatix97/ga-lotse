@@ -4,12 +4,14 @@
  */
 
 import { DefaultError, queryOptions } from "@tanstack/react-query";
+import { isNonNullish } from "remeda";
 
 import { mapPaginatedList } from "@eshg/lib-employee-portal";
 import { unwrapRawResponse } from "@eshg/lib-portal";
 import {
   ApiAppointmentType,
   ApiCreateDailyAppointmentBlockGroupRequest,
+  ApiProstituteProtectionProcedureType,
   ApiValidateAppointmentBlockGroupResponse,
   AppointmentBlockApi,
   GetAppointmentBlockGroupsRequest,
@@ -37,7 +39,7 @@ export function getAppointmentBlockGroupsQuery(
 }
 
 interface GetFreeAppointmentsArgs {
-  appointmentType?: ApiAppointmentType;
+  procedureType: ApiProstituteProtectionProcedureType;
   earliestDate?: Date;
 }
 
@@ -45,22 +47,40 @@ export function useGetFreeAppointmentsOptions(
   request: GetFreeAppointmentsArgs,
   appointmentBlockApi: AppointmentBlockApi,
 ) {
+  const appointmentType = mapToAppointmentType(request.procedureType);
   return queryOptions({
-    queryKey: appointmentBlockApiQueryKey(["freeAppointments", request]),
+    queryKey: appointmentBlockApiQueryKey([
+      "freeAppointments",
+      request,
+      appointmentType,
+    ]),
     queryFn: () => {
-      if (request.appointmentType === undefined) {
+      if (
+        request.procedureType === undefined ||
+        request.procedureType === null
+      ) {
         throw Error("Appointment type not specified");
       }
       return appointmentBlockApi.getFreeAppointments(
-        request.appointmentType,
+        appointmentType,
         request.earliestDate,
       );
     },
     select: (data) => data.appointments,
-    enabled: request.appointmentType !== undefined,
+    enabled: isNonNullish(appointmentType),
   });
 }
 
+function mapToAppointmentType(
+  procedureType: ApiProstituteProtectionProcedureType,
+): ApiAppointmentType {
+  switch (procedureType) {
+    case "INITIAL":
+      return ApiAppointmentType.ProstituteProtectionInitial;
+    case "FOLLOW_UP":
+      return ApiAppointmentType.ProstituteProtectionFollowUp;
+  }
+}
 export function getValidateDailyAppointmentBlocksForGroupQuery(
   appointmentBlockApi: AppointmentBlockApi,
   request: ApiCreateDailyAppointmentBlockGroupRequest,

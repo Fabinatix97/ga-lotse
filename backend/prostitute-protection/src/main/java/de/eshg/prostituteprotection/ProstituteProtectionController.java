@@ -5,9 +5,13 @@
 
 package de.eshg.prostituteprotection;
 
+import static de.eshg.prostituteprotection.ProstituteProtectionService.formatProcedureType;
+import static de.eshg.prostituteprotection.mapper.ProstituteProtectionMapper.mapProcedureTypeToDto;
+
 import de.eshg.api.commons.InlineParameterObject;
-import de.eshg.lib.appointmentblock.api.AppointmentDto;
+import de.eshg.file.common.CustomMediaTypes;
 import de.eshg.lib.appointmentblock.api.GetFreeAppointmentsResponse;
+import de.eshg.lib.procedure.domain.model.ProcedureType;
 import de.eshg.lib.procedure.domain.model.TaskType;
 import de.eshg.lib.procedure.util.ProcedureValidator;
 import de.eshg.prostituteprotection.api.ConsultationDto;
@@ -21,6 +25,7 @@ import de.eshg.prostituteprotection.api.GetProstituteProtectionProceduresRespons
 import de.eshg.prostituteprotection.api.GetWaitingRoomProceduresResponse;
 import de.eshg.prostituteprotection.api.ProcedureDetailsDto;
 import de.eshg.prostituteprotection.api.ProcedureProperty;
+import de.eshg.prostituteprotection.api.ProcedureTypeDto;
 import de.eshg.prostituteprotection.api.ProstituteProtectionProcedurePaginationAndSortParameters;
 import de.eshg.prostituteprotection.api.ProstituteProtectionProcedurePersonSearchParameters;
 import de.eshg.prostituteprotection.api.ProstituteProtectionProcedureSearchOverviewDto;
@@ -35,16 +40,17 @@ import de.eshg.prostituteprotection.crypto.DecryptedPersonalDataDto;
 import de.eshg.prostituteprotection.domain.data.ProstituteProtectionProcedureWithAugmentedData;
 import de.eshg.prostituteprotection.domain.model.CertificateType;
 import de.eshg.prostituteprotection.domain.model.Consultation;
-import de.eshg.prostituteprotection.domain.model.ConsultationType;
 import de.eshg.prostituteprotection.domain.model.EncryptedFile;
 import de.eshg.prostituteprotection.domain.model.ProstituteProtectionProcedure;
 import de.eshg.prostituteprotection.domain.model.WaitingRoom;
+import de.eshg.prostituteprotection.export.ProstituteProtectionExportService;
 import de.eshg.prostituteprotection.mapper.AppointmentMapper;
 import de.eshg.prostituteprotection.mapper.ProstituteProtectionMapper;
 import de.eshg.prostituteprotection.mapper.WaitingRoomMapper;
 import de.eshg.prostituteprotection.pdf.ConsultationCertificateGenerator;
 import de.eshg.prostituteprotection.pdf.PrintDocumentType;
 import de.eshg.prostituteprotection.pdf.RegistrationConsultationCertificateGenerator;
+import de.eshg.prostituteprotection.rate.limit.ProstituteProtectionGdprExportGuard;
 import de.eshg.prostituteprotection.rate.limit.ProstituteProtectionGuard;
 import de.eshg.prostituteprotection.util.ProgressEntryUtil;
 import de.eshg.prostituteprotection.util.ProstituteProtectionProgressEntryType;
@@ -59,15 +65,13 @@ import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.EnumSet;
-import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.UUID;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ContentDisposition;
 import org.springframework.http.HttpHeaders;
@@ -102,6 +106,8 @@ public class ProstituteProtectionController {
   private final RegistrationConsultationCertificateGenerator
       registrationConsultationCertificateGenerator;
   private final ProstituteProtectionGuard prostituteProtectionGuard;
+  private final ProstituteProtectionGdprExportGuard prostituteProtectionGdprExportGuard;
+  private final ProstituteProtectionExportService prostituteProtectionExportService;
   private final Clock clock;
 
   public ProstituteProtectionController(
@@ -111,6 +117,8 @@ public class ProstituteProtectionController {
       ConsultationCertificateGenerator consultationCertificateGenerator,
       RegistrationConsultationCertificateGenerator registrationConsultationCertificateGenerator,
       ProstituteProtectionGuard prostituteProtectionGuard,
+      ProstituteProtectionGdprExportGuard prostituteProtectionGdprExportGuard,
+      ProstituteProtectionExportService prostituteProtectionExportService,
       Clock clock) {
     this.prostituteProtectionService = prostituteProtectionService;
     this.prostituteProtectionAppointmentService = prostituteProtectionAppointmentService;
@@ -119,6 +127,8 @@ public class ProstituteProtectionController {
     this.registrationConsultationCertificateGenerator =
         registrationConsultationCertificateGenerator;
     this.prostituteProtectionGuard = prostituteProtectionGuard;
+    this.prostituteProtectionGdprExportGuard = prostituteProtectionGdprExportGuard;
+    this.prostituteProtectionExportService = prostituteProtectionExportService;
     this.clock = clock;
   }
 
@@ -315,7 +325,7 @@ public class ProstituteProtectionController {
     progressEntryUtil.addSystemProgressEntry(
         procedure,
         ProstituteProtectionProgressEntryType.CONSULTATION_CERTIFICATE_GENERATED,
-        getCertificateCreatedDescription(procedure.getConsultationType()));
+        getCertificateCreatedDescription(procedure.getProcedureType()));
     procedure.setConsultationCertificateCreatedAt(Instant.now(clock));
     multipart.add(CONSULTATION_CERTIFICATE_KEY, consultationCertificate);
 
@@ -329,7 +339,7 @@ public class ProstituteProtectionController {
       progressEntryUtil.addSystemProgressEntry(
           procedure,
           ProstituteProtectionProgressEntryType.REGISTRATION_CONSULTATION_CERTIFICATE_GENERATED,
-          getCertificateCreatedDescription(procedure.getConsultationType()));
+          getCertificateCreatedDescription(procedure.getProcedureType()));
 
       multipart.add(REGISTRATION_CERTIFICATE_KEY, registrationCertificate);
     }
@@ -340,12 +350,9 @@ public class ProstituteProtectionController {
     return ResponseEntity.ok().contentType(MediaType.MULTIPART_FORM_DATA).body(multipart);
   }
 
-  private String getCertificateCreatedDescription(ConsultationType consultationType) {
-    return switch (consultationType) {
-      case null -> null;
-      case INITIAL -> "Das Zertifikat wurde für die Erstberatung erstellt.";
-      case FOLLOW_UP -> "Das Zertifikat wurde für die Folgeberatung erstellt.";
-    };
+  private String getCertificateCreatedDescription(ProcedureType procedureType) {
+    String typeDescription = formatProcedureType(procedureType);
+    return "Das Zertifikat wurde für die %s erstellt.".formatted(typeDescription);
   }
 
   @PostMapping("/{procedureId}/certificate")
@@ -424,24 +431,39 @@ public class ProstituteProtectionController {
   @Transactional(readOnly = true)
   @Operation(summary = "Get free appointments for a procedure.")
   public GetFreeAppointmentsResponse getFreeAppointmentsForProcedure(
-      @PathVariable("procedureId") UUID procedureId) {
-    List<AppointmentDto> freeAppointments =
-        prostituteProtectionAppointmentService.getFreeAppointments();
-    List<AppointmentDto> freeAppointmentsForProcedure = new ArrayList<>(freeAppointments);
-
+      @PathVariable("procedureId") UUID procedureId,
+      @RequestParam(name = "procedureType", required = false) ProcedureTypeDto procedureType) {
     ProstituteProtectionProcedure procedure =
         prostituteProtectionService.findByExternalIdOrThrow(procedureId);
-    if (procedure.getAppointment() != null) {
-      freeAppointmentsForProcedure.add(
-          new AppointmentDto(
-              procedure.getAppointment().getAppointmentStart(),
-              procedure.getAppointment().getAppointmentEnd()));
-    }
-    List<AppointmentDto> sortedAppointments =
-        freeAppointmentsForProcedure.stream()
-            .sorted(Comparator.comparing(AppointmentDto::start))
-            .toList();
+    ProcedureTypeDto typeToSearchFor =
+        procedureType != null ? procedureType : mapProcedureTypeToDto(procedure.getProcedureType());
 
-    return new GetFreeAppointmentsResponse(sortedAppointments);
+    return new GetFreeAppointmentsResponse(
+        prostituteProtectionAppointmentService.getFreeAppointmentsForProcedure(
+            procedure, AppointmentMapper.mapToAppointmentType(typeToSearchFor)));
+  }
+
+  @PostMapping("/export")
+  @Transactional
+  @Operation(
+      summary =
+          "Export GDPR data for all procedures matching person search parameters as XLSX file")
+  public ResponseEntity<Resource> exportGdprDataToXlsx(
+      @Valid @RequestBody ProstituteProtectionProcedurePersonSearchParameters searchParameters) {
+    prostituteProtectionGdprExportGuard.guard();
+    Resource xlsxResource =
+        prostituteProtectionExportService.exportGdprDataToXlsxByPersonSearch(searchParameters);
+
+    String filename =
+        "dsgvo-export-"
+            + ZonedDateTime.now(clock).format(DateTimeFormatter.ofPattern("yyyyMMdd-HHmmss"))
+            + ".xlsx";
+
+    return ResponseEntity.ok()
+        .header(
+            HttpHeaders.CONTENT_DISPOSITION,
+            ContentDisposition.attachment().filename(filename).build().toString())
+        .header(HttpHeaders.CONTENT_TYPE, CustomMediaTypes.APPLICATION_XLSX_VALUE)
+        .body(xlsxResource);
   }
 }

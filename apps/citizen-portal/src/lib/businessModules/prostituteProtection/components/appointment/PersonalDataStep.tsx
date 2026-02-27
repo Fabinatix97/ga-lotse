@@ -10,8 +10,8 @@ import { useMemo } from "react";
 
 import { InputField, RadioButtonsField, SelectField } from "@eshg/lib-portal";
 import {
-  ApiConsultationType,
   ApiPersonLanguage,
+  ApiProstituteProtectionProcedureType,
 } from "@eshg/prostitute-protection-api";
 
 import { SelectionOption } from "@/lib/businessModules/travelMedicine/components/shared/CountryFieldMulti";
@@ -24,12 +24,12 @@ import { StepSubTitle } from "./StepSubTitle";
 export function PersonalDataStep() {
   const { t } = useTranslation("prostituteProtection/forms");
   const { values } = useFormikContext<AppointmentFormData>();
-  const translatedConsultationTypeOptions: SelectionOption[] = useMemo(
+  const translatedProcedureTypeOptions: SelectionOption[] = useMemo(
     () =>
-      Object.values(ApiConsultationType).map((value) => {
+      Object.values(ApiProstituteProtectionProcedureType).map((value) => {
         return {
           value,
-          label: t(`options.consultation_type.${value}`),
+          label: t(`options.procedure_type.${value}`),
         };
       }),
     [t],
@@ -40,8 +40,8 @@ export function PersonalDataStep() {
       <StepSubTitle title={t("personal_data.title")} />
       <PersonalDataGrid>
         <SelectField
-          options={translatedConsultationTypeOptions}
-          name="consultationType"
+          options={translatedProcedureTypeOptions}
+          name="procedureType"
           label={t("personal_data.fields.application_type")}
           required={t("personal_data.fields.application_type_required")}
         />

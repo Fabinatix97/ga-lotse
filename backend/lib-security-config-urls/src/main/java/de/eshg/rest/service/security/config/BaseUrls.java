@@ -277,6 +277,7 @@ public final class BaseUrls {
 
   public static final class ProcedureLibrary {
     public static final String PROCEDURES_API = "/procedures";
+    public static final String PROCEDURES_API_STATISTICS_INCLUSION = "/statistics-inclusion";
     public static final String PROGRESS_ENTRIES_API =
         PROCEDURES_API + "/{procedureId}/progress-entries";
     public static final String PROCEDURE_METRICS_API = "/procedure-metrics";

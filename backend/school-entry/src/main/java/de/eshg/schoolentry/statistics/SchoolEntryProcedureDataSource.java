@@ -157,6 +157,7 @@ public class SchoolEntryProcedureDataSource
       case KIH -> AnamnesisStatistics.getNumberOfSiblings(procedure);
       case SCHULE -> procedure.getSchoolId();
       case SCHULJAHR -> getSchoolYear(procedure);
+      case CHILD_AGE -> getAgeOfChildAtProcedure(procedure);
     };
   }
 
@@ -170,6 +171,10 @@ public class SchoolEntryProcedureDataSource
         "%s/%s",
         procedure.getSchoolYear().format(yearPattern),
         procedure.getSchoolYear().plusYears(1).format(yearPattern));
+  }
+
+  private static Integer getAgeOfChildAtProcedure(SchoolEntryProcedure procedure) {
+    return procedure.getChildAge();
   }
 
   private String getAppointmentOrExaminationDate(SchoolEntryProcedure procedure) {

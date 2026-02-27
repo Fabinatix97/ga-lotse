@@ -200,8 +200,8 @@ public class AppointmentBlockViewService {
           resolvedUsers,
           mapToDto(block.getAppointments()),
           appointmentBlockBins,
-          appointmentBlockGroup.isAvailableForCitizen(),
-          appointmentBlockGroup.isAvailableForBulkBooking());
+          block.isAvailableForCitizen(),
+          block.isAvailableForBulkBooking());
     } else {
       return new AppointmentBlockDto(
           block.getExternalId(),
@@ -219,8 +219,8 @@ public class AppointmentBlockViewService {
           Map.of(),
           mapToDto(block.getAppointments()),
           appointmentBlockBins,
-          appointmentBlockGroup.isAvailableForCitizen(),
-          appointmentBlockGroup.isAvailableForBulkBooking());
+          block.isAvailableForCitizen(),
+          block.isAvailableForBulkBooking());
     }
   }
 
@@ -229,7 +229,9 @@ public class AppointmentBlockViewService {
         .map(
             appointment ->
                 new AppointmentDto(
-                    appointment.getAppointmentStart(), appointment.getAppointmentEnd()))
+                    appointment.getAppointmentStart(),
+                    appointment.getAppointmentEnd(),
+                    appointment.getAppointmentBlock().getExternalId()))
         .toList();
   }
 

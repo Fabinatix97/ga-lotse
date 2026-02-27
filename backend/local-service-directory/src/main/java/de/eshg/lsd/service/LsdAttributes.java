@@ -55,8 +55,6 @@ public class LsdAttributes {
   public void update(String certificate, int maxCertificates) {
     List<String> certificates = new ArrayList<>(getCertificates());
 
-    handleLegacyCertificates(certificates);
-
     certificates.add(normalize(certificate));
 
     certificates = trimList(certificates, maxCertificates);
@@ -79,17 +77,6 @@ public class LsdAttributes {
 
   public boolean isEmpty() {
     return attributes.isEmpty();
-  }
-
-  private void handleLegacyCertificates(List<String> certificates) {
-    String legacyCertificate =
-        Optional.ofNullable(attributes.remove(LsdAttributeKey.CERTIFICATE_VALUE.getKey()))
-            .map(a -> a.isEmpty() ? null : a.getFirst())
-            .orElse(null);
-    attributes.remove(LsdAttributeKey.CERTIFICATE_SIGNATURE.getKey());
-    if (legacyCertificate != null) {
-      certificates.add(normalize(legacyCertificate));
-    }
   }
 
   private List<String> trimList(List<String> certPems, int size) {

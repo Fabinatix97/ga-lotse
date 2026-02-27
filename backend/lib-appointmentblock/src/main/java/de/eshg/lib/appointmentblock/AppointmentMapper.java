@@ -14,6 +14,7 @@ import de.eshg.lib.appointmentblock.model.AppointmentBlockData;
 import de.eshg.lib.appointmentblock.model.AppointmentBlockGroupData;
 import de.eshg.lib.appointmentblock.persistence.entity.Appointment;
 import java.time.Instant;
+import java.util.UUID;
 
 public final class AppointmentMapper {
   private AppointmentMapper() {}
@@ -29,9 +30,7 @@ public final class AppointmentMapper {
         appointmentBlockGroupData.location(),
         appointmentBlockGroupData.appointmentBlocks().stream()
             .map(AppointmentMapper::mapAppointmentBlockToDto)
-            .toList(),
-        appointmentBlockGroupData.availableForCitizen(),
-        appointmentBlockGroupData.availableForBulkBooking());
+            .toList());
   }
 
   public static GetAppointmentBlockDto mapAppointmentBlockToDto(AppointmentBlockData details) {
@@ -54,7 +53,8 @@ public final class AppointmentMapper {
 
     Instant start = appointment.getAppointmentStart();
     Instant end = appointment.getAppointmentEnd();
-    return new AppointmentDto(start, end);
+    UUID externalId = appointment.getAppointmentBlock().getExternalId();
+    return new AppointmentDto(start, end, externalId);
   }
 
   public static AppointmentBlockGroupPageSpec mapToPageSpec(

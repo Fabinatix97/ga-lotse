@@ -96,4 +96,7 @@ public interface ProstituteProtectionProcedureRepository
 
   List<ProstituteProtectionProcedure> findAllByCalendarEventIdInOrderByCalendarEventId(
       Collection<UUID> calendarEventIds);
+
+  List<ProstituteProtectionProcedure> findByEncryptedPersonalData_HashedPersonIdentifier(
+      byte[] hashedPersonIdentifier);
 }

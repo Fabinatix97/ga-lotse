@@ -32,6 +32,12 @@ export function mapApiAppointmentBlock(
     consultants: response.consultants,
     sopasss: response.sopasss,
     room: response.room,
+    resolvedUsers: response.resolvedUsers,
+    creatorId: response.creatorId,
+    appointmentBlockBins: response.appointmentBlockBins,
+    availableForCitizen: response.availableForCitizen,
+    availableForBulkBooking: response.availableForBulkBooking,
+    types: response.types,
   };
 }
 

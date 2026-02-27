@@ -7,7 +7,8 @@ package de.eshg.schoolentry.api;
 
 import de.eshg.schoolentry.api.schoolinfoletter.SchoolInfoLetterExaminationDto;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 
 public record GetSchoolInfoLetterResponse(
-    @Valid SchoolInfoLetterExaminationDto defaultValuesLetter,
+    @NotNull @Valid SchoolInfoLetterExaminationDto defaultValuesLetter,
     @Valid SchoolInfoLetterExaminationDto savedLetter) {}

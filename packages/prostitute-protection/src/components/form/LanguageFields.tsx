@@ -3,11 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Chip, Stack } from "@mui/joy";
 import { useFormikContext } from "formik";
 import { ChangeEvent } from "react";
 
-import { CheckboxField, SelectField } from "@eshg/lib-portal";
+import { CheckboxField, MultiAutocompleteField } from "@eshg/lib-portal";
 import { ApiPersonLanguage } from "@eshg/prostitute-protection-api";
 
 import { LANGUAGE_OPTIONS, PERSON_FIELD_NAME } from "../../shared/constants";
@@ -56,20 +55,10 @@ export function LanguageFields({}: LanguageFieldsProps) {
         label={PERSON_FIELD_NAME.hasSufficientGermanLanguageSkills}
         onChange={handleCheckboxChange}
       />
-      <SelectField
+      <MultiAutocompleteField
         name="languages"
         label={PERSON_FIELD_NAME.otherLanguages}
         options={LANGUAGE_OPTIONS}
-        renderValue={(modules) => (
-          <Stack direction="row" spacing={0.5} flexWrap="wrap">
-            {modules.map((option) => (
-              <Chip key={option.value} color="primary">
-                {option.label}
-              </Chip>
-            ))}
-          </Stack>
-        )}
-        multiple
         onChange={handleSelectChange}
       />
     </>

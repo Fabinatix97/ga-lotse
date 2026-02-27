@@ -11,5 +11,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 public enum CalendarTypeDto {
   GLOBAL,
   RESOURCE,
-  USER
+  USER,
+  MODULE
 }

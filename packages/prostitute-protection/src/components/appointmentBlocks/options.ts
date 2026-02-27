@@ -8,7 +8,8 @@ import { buildEnumOptions } from "@eshg/lib-portal";
 import { ApiAppointmentType } from "@eshg/prostitute-protection-api";
 
 export const SUPPORTED_APPOINTMENT_TYPES = [
-  ApiAppointmentType.ProstituteProtectionConsultation,
+  ApiAppointmentType.ProstituteProtectionInitial,
+  ApiAppointmentType.ProstituteProtectionFollowUp,
 ] as string[];
 
 export const APPOINTMENT_TYPE_OPTIONS = buildEnumOptions(

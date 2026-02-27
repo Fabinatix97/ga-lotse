@@ -25,10 +25,7 @@ import { mapAnamnesis } from "@/lib/businessModules/schoolEntry/api/models/Anamn
 import { mapAppointment } from "@/lib/businessModules/schoolEntry/api/models/Appointment";
 import { mapProcedure } from "@/lib/businessModules/schoolEntry/api/models/Procedure";
 import { mapProcedureDetails } from "@/lib/businessModules/schoolEntry/api/models/ProcedureDetails";
-import {
-  emptySchoolInfoLetter,
-  mapSchoolInfoLetter,
-} from "@/lib/businessModules/schoolEntry/api/models/SchoolInfoLetter";
+import { mapSchoolInfoLetter } from "@/lib/businessModules/schoolEntry/api/models/SchoolInfoLetter";
 import { mapVaccinationStatus } from "@/lib/businessModules/schoolEntry/api/models/VaccinationStatus";
 import { mapWaitingRoomProcedure } from "@/lib/businessModules/schoolEntry/api/models/WaitingRoom";
 import { mapDevelopmentScreeningResult } from "@/lib/businessModules/schoolEntry/api/models/examinations/DevelopmentScreeningResult";
@@ -195,9 +192,7 @@ export function useGetSchoolInfoLetter(procedureId: string) {
     queryKey: schoolEntryApiQueryKey(["getSchoolInfoLetter", procedureId]),
     queryFn: () => schoolEntryApi.getSchoolInfoLetter(procedureId),
     select: (value) => ({
-      defaultValuesLetter: isDefined(value.defaultValuesLetter)
-        ? mapSchoolInfoLetter(value.defaultValuesLetter)
-        : emptySchoolInfoLetter,
+      defaultValuesLetter: mapSchoolInfoLetter(value.defaultValuesLetter),
       savedLetter: isDefined(value.savedLetter)
         ? mapSchoolInfoLetter(value.savedLetter)
         : undefined,

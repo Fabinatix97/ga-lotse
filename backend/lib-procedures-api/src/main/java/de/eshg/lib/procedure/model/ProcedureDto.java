@@ -27,5 +27,6 @@ public record ProcedureDto(
     @NotNull ProcedureStatusDto procedureStatus,
     @NotNull UUID procedureId,
     @Pattern(regexp = "[a-zA-Z0-9.].+") @Size(max = 128) @NotEmpty String summary,
-    @Valid @NotNull ArchivingRelevanceSettingsDto archivingRelevanceSettings)
+    @Valid @NotNull ArchivingRelevanceSettingsDto archivingRelevanceSettings,
+    @NotNull StatisticsInclusionDto statisticsInclusion)
     implements AbstractProcedureDto {}
