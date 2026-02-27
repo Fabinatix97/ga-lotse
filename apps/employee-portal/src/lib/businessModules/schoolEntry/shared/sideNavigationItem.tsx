@@ -45,6 +45,11 @@ const defaultSubItems: SideNavigationSubItem[] = [
     href: routes.procedureLabels.overview,
     accessCheck: hasUserRole(ApiUserRole.SchoolEntryAdmin),
   },
+  {
+    name: "Eigenstatistik",
+    href: routes.employeeSelfStatistics.overview,
+    accessCheck: hasUserRole(ApiUserRole.SchoolEntryAdmin),
+  },
 ];
 
 const inboxNavigationItem: SideNavigationSubItem = {

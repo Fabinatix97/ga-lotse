@@ -18,16 +18,19 @@ import { startTransition, useState } from "react";
 import { unique } from "remeda";
 
 import { ApiProcedureMetric } from "@eshg/inspection-api";
-import { DataTable, TableSheet } from "@eshg/lib-employee-portal";
+import {
+  DataTable,
+  TableSheet,
+  TimeRangeSelect,
+  lastXMonthsInDate,
+} from "@eshg/lib-employee-portal";
 
 import { useAggregateProcedureMetricsQuery } from "@/lib/baseModule/api/queries/procedures";
 import { routes } from "@/lib/baseModule/shared/routes";
 import { FlashCard } from "@/lib/shared/components/cards/FlashCard";
 import { businessModuleNames } from "@/lib/shared/components/procedures/constants";
 
-import { TimeRangeSelect } from "./TimeRangeSelect";
 import { columnName, initialSorting, procedureMetricsColumns } from "./columns";
-import { lastXMonthsInDate } from "./rangeSelectHelper";
 
 export function ProcedureMetricsDisplay() {
   const timeRangeEnd = endOfToday();

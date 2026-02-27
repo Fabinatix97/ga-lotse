@@ -157,6 +157,7 @@ function InnerSelectField<
         multiple={props.multiple}
         placeholder={props.placeholder}
         disabled={disabled}
+        required={props.fieldRequired}
         renderValue={props.renderValue}
         color={props.primary ? "primary" : undefined}
         aria-description={

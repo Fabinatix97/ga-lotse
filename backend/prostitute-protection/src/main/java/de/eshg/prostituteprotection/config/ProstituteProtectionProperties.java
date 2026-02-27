@@ -17,15 +17,15 @@ public class ProstituteProtectionProperties implements ResettableProperties {
 
   @Positive
   @DurationUnit(ChronoUnit.MINUTES)
-  private Duration rateLimitIntervalMinutes = Duration.ofMinutes(10);
+  private Duration rateLimitIntervalMinutes = Duration.ofMinutes(1);
 
-  @Positive private int rateLimitCapacity = 20;
+  @Positive private int rateLimitCapacity = 100;
 
   @Positive
   @DurationUnit(ChronoUnit.MINUTES)
-  private Duration gdprExportRateLimitIntervalMinutes = Duration.ofMinutes(10);
+  private Duration gdprExportRateLimitIntervalMinutes = Duration.ofMinutes(1);
 
-  @Positive private int gdprExportRateLimitCapacity = 20;
+  @Positive private int gdprExportRateLimitCapacity = 100;
 
   public @Positive Duration getRateLimitIntervalMinutes() {
     return rateLimitIntervalMinutes;

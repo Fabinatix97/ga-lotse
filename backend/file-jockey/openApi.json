@@ -9,6 +9,54 @@
     "url" : "http://localhost:8104"
   } ],
   "paths" : {
+    "/file-io/{equipmentSelector}/{correlationId}/output" : {
+      "get" : {
+        "operationId" : "getOutputFile",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "equipmentSelector",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "in" : "path",
+          "name" : "correlationId",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/octet-stream" : { }
+            },
+            "description" : "File found and returned"
+          },
+          "400" : {
+            "content" : {
+              "application/json" : { }
+            },
+            "description" : "Invalid correlation ID format"
+          },
+          "404" : {
+            "content" : {
+              "application/json" : { }
+            },
+            "description" : "No matching file found for the given correlation ID, or the equipment selector is unknown"
+          },
+          "503" : {
+            "content" : {
+              "application/json" : { }
+            },
+            "description" : "Output folder does not exist or is not accessible"
+          }
+        },
+        "summary" : "Download output file for given equipment selector and correlation ID. Scans the equipment output folder for files containing the correlation ID. Returns the oldest matching file if multiple matches are found.",
+        "tags" : [ "FileIo" ]
+      }
+    },
     "/test-helper/population" : {
       "post" : {
         "operationId" : "populateDefaults",

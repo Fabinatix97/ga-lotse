@@ -6,15 +6,21 @@
 package de.eshg.infectionbriefing;
 
 import de.eshg.infectionbriefing.config.InfectionBriefingProperties;
+import de.eshg.infectionbriefing.config.InitialInfectionBriefingConfiguration;
 import de.eshg.lib.common.BusinessModule;
 import de.eshg.rest.service.security.config.InfectionBriefingPublicSecurityConfig;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 
 @SpringBootApplication
-@Import({InfectionBriefingPublicSecurityConfig.class, InfectionBriefingProperties.class})
+@Import(InfectionBriefingPublicSecurityConfig.class)
+@EnableConfigurationProperties({
+  InfectionBriefingProperties.class,
+  InitialInfectionBriefingConfiguration.class
+})
 public class InfectionBriefingApplication {
   @Bean
   BusinessModule businessModule() {

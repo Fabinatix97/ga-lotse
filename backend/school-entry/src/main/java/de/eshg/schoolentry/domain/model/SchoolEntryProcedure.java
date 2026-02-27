@@ -148,6 +148,12 @@ public class SchoolEntryProcedure
   @JoinColumn
   private SchoolInfoLetterExamination schoolInfoLetter;
 
+  @DataSensitivity(SensitivityLevel.PSEUDONYMIZED)
+  private UUID firstEyeExaminationOrHearingTestModifiedBy;
+
+  @DataSensitivity(SensitivityLevel.PSEUDONYMIZED)
+  private UUID firstSchoolInfoLetterGeneratedBy;
+
   public UUID getSchoolId() {
     return schoolId;
   }
@@ -390,6 +396,23 @@ public class SchoolEntryProcedure
 
   public void setSchoolInfoLetter(SchoolInfoLetterExamination schoolInfoLetter) {
     this.schoolInfoLetter = schoolInfoLetter;
+  }
+
+  public UUID getFirstEyeExaminationOrHearingTestModifiedBy() {
+    return firstEyeExaminationOrHearingTestModifiedBy;
+  }
+
+  public void setFirstEyeExaminationOrHearingTestModifiedBy(
+      UUID firstEyeExaminationOrHearingTestModifiedBy) {
+    this.firstEyeExaminationOrHearingTestModifiedBy = firstEyeExaminationOrHearingTestModifiedBy;
+  }
+
+  public UUID getFirstSchoolInfoLetterGeneratedBy() {
+    return firstSchoolInfoLetterGeneratedBy;
+  }
+
+  public void setFirstSchoolInfoLetterGeneratedBy(UUID firstSchoolInfoLetterGeneratedBy) {
+    this.firstSchoolInfoLetterGeneratedBy = firstSchoolInfoLetterGeneratedBy;
   }
 
   public boolean hasBeenClosed() {

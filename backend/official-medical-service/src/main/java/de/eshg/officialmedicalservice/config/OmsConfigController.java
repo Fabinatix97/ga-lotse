@@ -59,7 +59,6 @@ class OmsConfigController {
     if (config.isInitialized()) {
       return omsConfigMapper.toInterfaceType(config);
     } else {
-      log.error("getOmsDataConfig(): config isn't intialized.");
       return new GetOmsConfigResponse(null);
     }
   }

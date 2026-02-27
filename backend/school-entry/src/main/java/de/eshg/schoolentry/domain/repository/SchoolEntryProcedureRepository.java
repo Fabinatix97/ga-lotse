@@ -8,15 +8,19 @@ package de.eshg.schoolentry.domain.repository;
 import de.eshg.lib.appointmentblock.persistence.entity.Appointment;
 import de.eshg.lib.procedure.domain.model.File;
 import de.eshg.lib.procedure.domain.repository.ProcedureRepository;
+import de.eshg.schoolentry.api.WeeklyDataBinDto;
 import de.eshg.schoolentry.domain.model.SchoolEntryProcedure;
 import de.eshg.schoolentry.domain.model.SchoolEntryProcedure_;
 import jakarta.persistence.LockModeType;
+import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Stream;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.Lock;
@@ -109,4 +113,23 @@ public interface SchoolEntryProcedureRepository extends ProcedureRepository<Scho
       @Param("keyDocumentType") String keyDocumentType);
 
   List<SchoolEntryProcedure> findByAppointmentIn(List<Appointment> appointments);
+
+  Slice<SchoolEntryProcedure>
+      findByIdGreaterThanAndAppointmentIsNotNullAndChildAgeIsNullOrderByIdAsc(
+          Long lastId, PageRequest of);
+
+  @Query(
+      """
+        select new de.eshg.schoolentry.api.WeeklyDataBinDto(cast(date_trunc('week', a.appointmentStart) as LocalDate), count(p))
+        from SchoolEntryProcedure p
+        join p.appointment a
+        where :userId in (p.firstEyeExaminationOrHearingTestModifiedBy, p.firstSchoolInfoLetterGeneratedBy)
+        and a.appointmentStart >= :start
+        and a.appointmentEnd < :end
+        and p.statisticsInclusion <> de.eshg.lib.procedure.domain.model.StatisticsInclusion.EXCLUDE
+        group by date_trunc('week', a.appointmentStart)
+        order by date_trunc('week', a.appointmentStart)
+        """)
+  List<WeeklyDataBinDto> getExaminationDates(
+      @Param("userId") UUID userId, @Param("start") Instant start, @Param("end") Instant end);
 }

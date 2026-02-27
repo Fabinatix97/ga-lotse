@@ -30,12 +30,15 @@ import de.eshg.lib.contact.ContactClient;
 import de.eshg.lib.procedure.domain.model.*;
 import de.eshg.lib.procedure.util.ProcedureValidator;
 import de.eshg.rest.service.error.BadRequestException;
+import de.eshg.rest.service.security.CurrentUserHelper;
 import de.eshg.schoolentry.api.*;
 import de.eshg.schoolentry.business.model.*;
 import de.eshg.schoolentry.client.PersonClient;
 import de.eshg.schoolentry.domain.model.*;
-import de.eshg.schoolentry.domain.repository.*;
-import de.eshg.schoolentry.mapper.*;
+import de.eshg.schoolentry.domain.repository.SchoolEntryProcedureRepository;
+import de.eshg.schoolentry.domain.repository.WaitingRoomRepository;
+import de.eshg.schoolentry.mapper.AppointmentMapper;
+import de.eshg.schoolentry.mapper.ProcedureMapper;
 import de.eshg.schoolentry.pdf.ReportGeneratorConstants;
 import de.eshg.schoolentry.pdf.invitation.ChildDataWithPersonIdAndCustodian;
 import de.eshg.schoolentry.pdf.invitation.InvitationGenerator;
@@ -914,9 +917,22 @@ public class SchoolEntryService {
         validator.validateSchoolExists(requestedSchoolId);
       }
       log.info("Modifying school {} to {}", procedure.getSchoolId(), requestedSchoolId);
+
       procedure.setSchoolId(requestedSchoolId);
-      progressEntryUtil.addProgressEntry(procedure, SCHOOL_MODIFIED);
+      String changeDescription = getSchoolChangeDescription(persistedSchoolId, requestedSchoolId);
+      progressEntryUtil.addProgressEntry(procedure, SCHOOL_MODIFIED, changeDescription);
     }
+  }
+
+  private String getSchoolChangeDescription(UUID persistedSchoolId, UUID requestedSchoolId) {
+    return "%s -> %s".formatted(getSchoolName(persistedSchoolId), getSchoolName(requestedSchoolId));
+  }
+
+  private String getSchoolName(UUID schoolId) {
+    if (schoolId == null) {
+      return "<keine eingetragene Schule>";
+    }
+    return contactClient.getContact(schoolId).name();
   }
 
   private void updateLocationId(
@@ -1114,5 +1130,26 @@ public class SchoolEntryService {
       }
     }
     return stats.mapToResponse();
+  }
+
+  void updateFirstEyeExaminationOrHearingTestModifiedBy(UUID procedureId) {
+    SchoolEntryProcedure procedure =
+        schoolEntryProcedureRepository.findByExternalIdForUpdate(procedureId).orElseThrow();
+    if (procedure.getFirstEyeExaminationOrHearingTestModifiedBy() == null) {
+      procedure.setFirstEyeExaminationOrHearingTestModifiedBy(CurrentUserHelper.getCurrentUserId());
+    }
+  }
+
+  void updateFirstSchoolInfoLetterGeneratedBy(SchoolEntryProcedure procedure) {
+    if (procedure.getFirstSchoolInfoLetterGeneratedBy() == null) {
+      procedure.setFirstSchoolInfoLetterGeneratedBy(CurrentUserHelper.getCurrentUserId());
+    }
+  }
+
+  public GetEmployeeSelfStatisticsResponse getEmployeeStatistics(
+      UUID user, Instant timeRangeStart, Instant timeRangeEnd) {
+    List<WeeklyDataBinDto> examinationDates =
+        schoolEntryProcedureRepository.getExaminationDates(user, timeRangeStart, timeRangeEnd);
+    return new GetEmployeeSelfStatisticsResponse(examinationDates);
   }
 }

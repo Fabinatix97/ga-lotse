@@ -33,7 +33,7 @@ public class ProstituteProtectionDataSource
 
   public static final UUID DATA_SOURCE_ID = UUID.fromString("39370017-f0a7-4121-b8f4-9ebf31fb9312");
 
-  public static final String DATA_SOURCE_NAME = "Vorgänge";
+  public static final String DATA_SOURCE_NAME = "ProstSchG";
   static final DateTimeFormatter DATE_FORMAT =
       DateTimeFormatter.ofPattern("MM.yyyy", Locale.GERMANY);
 
@@ -60,7 +60,8 @@ public class ProstituteProtectionDataSource
       Predicate isClosed =
           criteriaBuilder.equal(root.get(Procedure_.procedureStatus), ProcedureStatus.CLOSED);
 
-      return criteriaBuilder.and(appointmentStartInTimeRange, isClosed);
+      return criteriaBuilder.and(
+          appointmentStartInTimeRange, isClosed, isIncluded(root, criteriaBuilder));
     };
   }
 

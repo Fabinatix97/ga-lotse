@@ -5,6 +5,7 @@
 
 package de.eshg.rest.service.security.config;
 
+import de.eshg.lib.keycloak.CitizenPermissionRole;
 import de.eshg.lib.keycloak.EmployeePermissionRole;
 import de.eshg.lib.keycloak.ModuleLeaderRole;
 import org.springframework.stereotype.Component;
@@ -28,5 +29,8 @@ public final class InfectionBriefingPublicSecurityConfig
         .hasRole(EmployeePermissionRole.INFECTION_BRIEFING_ADMIN);
 
     requestMatchers(BaseUrls.InfectionBriefing.PUBLIC_CITIZEN_CONTROLLER + "/**").permitAll();
+
+    requestMatchers(BaseUrls.InfectionBriefing.CITIZEN_AUTH_CONTROLLER + "/**")
+        .hasRole(CitizenPermissionRole.ACCESS_CODE_USER);
   }
 }

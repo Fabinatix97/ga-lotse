@@ -10,6 +10,7 @@ import static de.eshg.lib.keycloak.EmployeePermissionRole.AUDITLOG_PUBLIC_KEYS_R
 import static de.eshg.lib.keycloak.EmployeePermissionRole.BASE_ACCESS_CODE_USER_ADMIN;
 import static de.eshg.lib.keycloak.EmployeePermissionRole.BASE_FACILITIES_DELETE;
 import static de.eshg.lib.keycloak.EmployeePermissionRole.BASE_GDPR_VALIDATION_TASK_CLEANUP;
+import static de.eshg.lib.keycloak.EmployeePermissionRole.BASE_INTER_MODULE_MIGRATION;
 import static de.eshg.lib.keycloak.EmployeePermissionRole.BASE_MAIL_SEND;
 import static de.eshg.lib.keycloak.EmployeePermissionRole.BASE_PERSONS_DELETE;
 import static de.eshg.lib.keycloak.EmployeePermissionRole.SCHOOL_ENTRY_VACCINATION_CHECK;
@@ -36,7 +37,12 @@ public enum ModuleClient {
           BASE_FACILITIES_DELETE,
           SCHOOL_ENTRY_VACCINATION_CHECK)),
   SCHOOL_ENTRY(
-      "school-entry", List.of(BASE_MAIL_SEND, BASE_PERSONS_DELETE, BASE_FACILITIES_DELETE)),
+      "school-entry",
+      List.of(
+          BASE_MAIL_SEND,
+          BASE_PERSONS_DELETE,
+          BASE_FACILITIES_DELETE,
+          BASE_INTER_MODULE_MIGRATION)),
   STATISTICS("statistics", List.of(STATISTICS_STATISTICS_TECHNICAL_USER)),
   TRAVEL_MEDICINE(
       "travel-medicine",
@@ -59,7 +65,7 @@ public enum ModuleClient {
       "official-medical-service", List.of(BASE_MAIL_SEND, BASE_ACCESS_CODE_USER_ADMIN)),
   MEDS_ABROAD("meds-abroad", List.of(EmployeePermissionRole.BASE_MAIL_SEND)),
   PROSTITUTE_PROTECTION("prostitute-protection"),
-  INFECTION_BRIEFING("infection-briefing", List.of(BASE_MAIL_SEND)),
+  INFECTION_BRIEFING("infection-briefing", List.of(BASE_MAIL_SEND, BASE_ACCESS_CODE_USER_ADMIN)),
   OPENDATA("opendata"),
   FILE_JOCKEY("file-jockey");
 

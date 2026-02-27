@@ -1,0 +1,86 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<!--
+ Copyright 2026 cronn GmbH
+ SPDX-License-Identifier: AGPL-3.0-only
+-->
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+  <changeSet author="GA-Lotse" id="1771416292824">
+    <ext:createPostgresEnumType name="gdtdriver" values="DUMMY"/>
+    <ext:createPostgresEnumType name="measuringdevicetype"
+                                values="HEARING_TEST, SEEING_TEST"/>
+    <createTable tableName="measuring_device">
+      <column autoIncrement="true" name="id" type="BIGINT">
+        <constraints nullable="false" primaryKey="true"
+                     primaryKeyName="pk_measuring_device"/>
+      </column>
+      <column name="version" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="external_id" type="UUID">
+        <constraints nullable="false"/>
+      </column>
+      <column name="driver" type="GDTDRIVER">
+        <constraints nullable="false"/>
+      </column>
+      <column name="equipment_selector" type="TEXT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="measuring_device_type" type="MEASURINGDEVICETYPE">
+        <constraints nullable="false"/>
+      </column>
+      <column name="name" type="TEXT">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+    <addUniqueConstraint columnNames="external_id"
+                         constraintName="measuring_device_external_id_key"
+                         tableName="measuring_device"/>
+    <addUniqueConstraint columnNames="name"
+                         constraintName="measuring_device_name_key"
+                         tableName="measuring_device"/>
+    <addUniqueConstraint columnNames="equipment_selector"
+                         constraintName="measuring_device_equipment_selector_key"
+                         tableName="measuring_device"/>
+    <createTable tableName="school_entry_device_registry_config">
+      <column autoIncrement="true" name="id" type="BIGINT">
+        <constraints nullable="false" primaryKey="true"
+                     primaryKeyName="pk_school_entry_device_registry_config"/>
+      </column>
+      <column name="version" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+    <createTable
+      tableName="school_entry_device_registry_config_measuring_device">
+      <column name="school_entry_device_registry_config_id" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="measuring_devices_id" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+    <addUniqueConstraint columnNames="measuring_devices_id"
+                         constraintName="school_entry_device_registry_config_me_measuring_devices_id_key"
+                         tableName="school_entry_device_registry_config_measuring_device"/>
+    <addForeignKeyConstraint baseColumnNames="measuring_devices_id"
+                             baseTableName="school_entry_device_registry_config_measuring_device"
+                             constraintName="fk_school_entry_device_registry_config_measuring_device_measuring_device"
+                             deferrable="false" initiallyDeferred="false"
+                             onDelete="NO ACTION" onUpdate="NO ACTION"
+                             referencedColumnNames="id"
+                             referencedTableName="measuring_device"
+                             validate="true"/>
+    <addForeignKeyConstraint
+      baseColumnNames="school_entry_device_registry_config_id"
+      baseTableName="school_entry_device_registry_config_measuring_device"
+      constraintName="fk_school_entry_device_registry_config_measuring_device_school_entry_device_registry_config"
+      deferrable="false" initiallyDeferred="false" onDelete="NO ACTION"
+      onUpdate="NO ACTION" referencedColumnNames="id"
+      referencedTableName="school_entry_device_registry_config"
+      validate="true"/>
+  </changeSet>
+</databaseChangeLog>

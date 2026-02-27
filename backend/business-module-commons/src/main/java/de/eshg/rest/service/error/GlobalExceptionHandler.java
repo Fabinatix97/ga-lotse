@@ -215,6 +215,12 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     return logAndMapToErrorResponse(ex);
   }
 
+  @ExceptionHandler
+  @ResponseStatus(HttpStatus.SERVICE_UNAVAILABLE)
+  public ErrorResponse handleServiceUnavailableException(ServiceUnavailableException ex) {
+    return logAndMapToErrorResponse(ex);
+  }
+
   private static ErrorResponse logAndMapToErrorResponse(EshgBusinessException businessException) {
     ErrorResponse errorResponse =
         new ErrorResponse(

@@ -18,4 +18,7 @@
   <include file="migrations/0009_add_statistics_inclusion_to_procedure.xml"/>
   <include file="migrations/0010_move_availability_flags_to_appointment_block.xml"/>
   <include file="migrations/0011_modify_ppr_procedure_type.xml"/>
+  <include file="migrations/0012_add_infection_briefing_config.xml"/>
+  <include file="migrations/0013_make_applicant_category_optional.xml"/>
+  <include file="migrations/0014_add_citizenUserId.xml"/>
 </databaseChangeLog>

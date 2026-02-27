@@ -20,6 +20,7 @@
     "@emotion/react": "catalog:joy",
     "@emotion/styled": "catalog:joy",
     "@eshg/base-api": "workspace:*",
+    "@eshg/infection-briefing-api": "workspace:*",
     "@eshg/lib-portal": "workspace:*",
     "@eshg/lib-procedures-api": "workspace:*",
     "@eshg/measles-protection-api": "workspace:*",

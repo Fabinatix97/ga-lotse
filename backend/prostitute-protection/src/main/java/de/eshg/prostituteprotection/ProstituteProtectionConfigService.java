@@ -21,6 +21,7 @@ import de.eshg.prostituteprotection.api.UpdateProstituteProtectionConfigRequest;
 import de.eshg.prostituteprotection.config.InitialProstituteProtectionConfiguration;
 import de.eshg.prostituteprotection.domain.model.ProstituteProtectionConfig;
 import de.eshg.rest.service.error.BadRequestException;
+import de.eshg.rest.service.error.NotFoundException;
 import de.eshg.rest.service.i18n.Language;
 import jakarta.persistence.EntityManager;
 import java.io.IOException;
@@ -107,7 +108,8 @@ public class ProstituteProtectionConfigService
         getRelevantFieldsForLogging(currentConfig.getLandingContent()),
         getRelevantFieldsForLogging(updateDocument));
 
-    currentConfig.setLandingContent(updateDocument);
+    currentConfig.getLandingContent().updateDe(updateDocument.getDe());
+    currentConfig.getLandingContent().updateEn(updateDocument.getEn());
     currentConfig.setOnlinePortalBookingEnabled(request.onlinePortalBookingEnabled());
     currentConfig.setInitialized(true);
     return currentConfig;
@@ -122,7 +124,10 @@ public class ProstituteProtectionConfigService
   }
 
   ResponseEntity<Resource> downloadLandingPage(Language language) {
-    return MultiLangDocumentHelper.getAsResponseWithFallback(
+    if (!getConfig().isInitialized()) {
+      throw new NotFoundException("Config is not initialized");
+    }
+    return MultiLangDocumentHelper.getAsResourceByLanguageOrThrow(
         getConfig().getLandingContent(), getMultiLangFileName(), language, MediaType.TEXT_MARKDOWN);
   }
 }

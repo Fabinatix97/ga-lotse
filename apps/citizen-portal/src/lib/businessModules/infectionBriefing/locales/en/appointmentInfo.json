@@ -1,0 +1,36 @@
+{
+  "page_title": "My appointment",
+  "details": {
+    "title": "Information",
+    "appointment_type": "Type of service",
+    "consultation_name": "Infection Briefing Consultation",
+    "date": "Appointment date",
+    "location": "Location",
+    "alias": "Alias",
+    "time": {
+      "title": "Time",
+      "start": "{{ time }} o’clock",
+      "duration": "Duration: {{ duration }} minutes"
+    },
+    "links": {
+      "title": "Internet",
+      "publicHealth_department": "Public Health Department"
+    }
+  },
+  "preparations": {
+    "title": "Preparation for the appointment",
+    "subtitle": "Important information",
+    "alias_info": "In addition, the specified alias must be provided at the appointment.",
+    "documents_info": "Please bring a valid identification document to your appointment (e.g. identity card, passport, residence permit, certificate of suspension of deportation, or another valid document)."
+  },
+  "contact_section": {
+    "title": "Contact",
+    "phone_number": "Phone: {{ phoneNumber }}",
+    "eMail": "Email:"
+  },
+  "important_notice": {
+    "title": "Important Notice",
+    "description": "You won’t be able to access these appointment details again.",
+    "reschedule": "If you need to reschedule or cancel your appointment, please contact the Health Department by phone."
+  }
+}

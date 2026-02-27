@@ -10,12 +10,14 @@ import de.eshg.lib.appointmentblock.persistence.entity.Appointment;
 import de.eshg.lib.common.DataSensitivity;
 import de.eshg.lib.common.SensitivityLevel;
 import de.eshg.lib.procedure.domain.model.Procedure;
+import de.eshg.lib.procedure.domain.model.TriggerType;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.Inheritance;
 import jakarta.persistence.InheritanceType;
 import jakarta.persistence.OneToOne;
+import java.util.UUID;
 
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
@@ -27,9 +29,20 @@ public abstract class InfectionBriefingProcedure
         InfectionBriefingFacility>
     implements EntityWithAppointment {
 
+  protected InfectionBriefingProcedure() {
+    super();
+  }
+
+  protected InfectionBriefingProcedure(TriggerType triggerType) {
+    super(triggerType);
+  }
+
   @OneToOne(orphanRemoval = true, cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
   @DataSensitivity(SensitivityLevel.PROTECTED)
   private Appointment appointment;
+
+  @DataSensitivity(SensitivityLevel.PSEUDONYMIZED)
+  private UUID citizenUserId;
 
   @Override
   public Appointment getAppointment() {
@@ -39,5 +52,13 @@ public abstract class InfectionBriefingProcedure
   @Override
   public void setAppointment(Appointment appointment) {
     this.appointment = appointment;
+  }
+
+  public UUID getCitizenUserId() {
+    return citizenUserId;
+  }
+
+  public void setCitizenUserId(UUID citizenUserId) {
+    this.citizenUserId = citizenUserId;
   }
 }

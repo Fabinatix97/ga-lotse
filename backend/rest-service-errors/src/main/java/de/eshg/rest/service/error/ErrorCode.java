@@ -46,4 +46,6 @@ public enum ErrorCode {
   LOCKED,
   /** Use when a xlsx file has too many rows */
   XLSX_TOO_MANY_ROWS,
+  /** Equivalent to http status 503: Service Unavailable */
+  SERVICE_UNAVAILABLE,
 }

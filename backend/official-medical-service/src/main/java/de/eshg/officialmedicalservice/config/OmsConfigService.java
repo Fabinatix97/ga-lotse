@@ -18,6 +18,7 @@ import de.eshg.officialmedicalservice.config.api.PutOmsConfigRequest;
 import de.eshg.officialmedicalservice.config.persistence.entity.OmsConfiguration;
 import de.eshg.persistence.TransactionHelper;
 import de.eshg.rest.service.error.BadRequestException;
+import de.eshg.rest.service.error.NotFoundException;
 import de.eshg.rest.service.i18n.Language;
 import jakarta.persistence.EntityManager;
 import jakarta.validation.constraints.NotNull;
@@ -122,7 +123,10 @@ public class OmsConfigService extends EshgConfigurationService<OmsConfiguration>
 
   @Transactional
   public ResponseEntity<Resource> downloadLandingPage(Language language) {
-    return MultiLangDocumentHelper.getAsResponseWithFallback(
+    if (!getConfig().isInitialized()) {
+      throw new NotFoundException("Config is not initialized");
+    }
+    return MultiLangDocumentHelper.getAsResourceByLanguageOrThrow(
         getConfig().getLandingContent(),
         getLandingContentFileNames(),
         language,

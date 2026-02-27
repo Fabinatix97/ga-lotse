@@ -130,5 +130,7 @@
   <include file="migrations/0120_add_statistics_inclusion_to_procedure.xml"/>
   <include file="migrations/0121_move_availability_flags_to_appointment_block.xml"/>
   <include file="migrations/0122_modify_ppr_procedure_type.xml"/>
+  <include file="migrations/0123_add_device_registry.xml"/>
+  <include file="migrations/0124_add_whodunit_columns_to_procedure.xml"/>
 
 </databaseChangeLog>

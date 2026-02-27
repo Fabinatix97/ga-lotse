@@ -5,6 +5,8 @@
 
 package de.eshg.schoolentry.mapper;
 
+import de.eshg.schoolentry.api.configuration.UpdateSchoolEntryMeasurementDeviceRequest;
+import de.eshg.schoolentry.domain.model.MeasuringDevice;
 import de.eshg.schoolentry.domain.model.SchoolEntryConfig;
 import java.util.LinkedHashMap;
 import java.util.SequencedMap;
@@ -29,6 +31,28 @@ public class SchoolEntryConfigAuditLogMapper {
       relevantFields.put(
           "invitationIncludeRoom", Boolean.toString(schoolEntryConfig.isInvitationIncludeRoom()));
     }
+    return relevantFields;
+  }
+
+  public static SequencedMap<String, String> getRelevantDeviceFieldsForLogging(
+      MeasuringDevice measuringDevice) {
+    LinkedHashMap<String, String> relevantFields = new LinkedHashMap<>();
+    if (measuringDevice != null) {
+      relevantFields.put("measuringDeviceType", measuringDevice.getMeasuringDeviceType().name());
+      relevantFields.put("name", measuringDevice.getName());
+      relevantFields.put("equipmentSelector", measuringDevice.getEquipmentSelector());
+      relevantFields.put("driver", measuringDevice.getDriver().name());
+    }
+    return relevantFields;
+  }
+
+  public static SequencedMap<String, String> getRelevantDeviceFieldsForLoggingOfRequest(
+      UpdateSchoolEntryMeasurementDeviceRequest request) {
+    LinkedHashMap<String, String> relevantFields = new LinkedHashMap<>();
+    relevantFields.put("measuringDeviceType", request.deviceType().name());
+    relevantFields.put("name", request.name());
+    relevantFields.put("equipmentSelector", request.equipmentSelector());
+    relevantFields.put("driver", request.gdtDriver().name());
     return relevantFields;
   }
 }

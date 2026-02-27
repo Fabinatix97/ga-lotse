@@ -238,6 +238,8 @@ public final class BaseUrls {
   public static final class InfectionBriefing {
     public static final String PROCEDURE_CONTROLLER = "/infection-briefing-procedures";
     public static final String PUBLIC_CITIZEN_CONTROLLER = "/citizen/public";
+    public static final String CITIZEN_AUTH_CONTROLLER = "/citizen/auth";
+    public static final String CONFIG_CONTROLLER = "/configuration";
 
     private InfectionBriefing() {}
   }
@@ -345,5 +347,11 @@ public final class BaseUrls {
     public static final String CONFIGURATION_API = "/configuration";
 
     private OfficialMedicalService() {}
+  }
+
+  public static final class FileJockey {
+    public static final String FILE_IO_API = "/file-io";
+
+    private FileJockey() {}
   }
 }

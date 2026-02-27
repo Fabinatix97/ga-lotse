@@ -164,6 +164,7 @@ export {
 } from "./components/searchableGroups/SearchableGroups";
 export { ResettableSingleSelect } from "./components/select/ResettableSingleSelect";
 export { RoomSelect } from "./components/select/RoomSelect";
+export { TimeRangeSelect } from "./components/select/TimeRangeSelect";
 export { PersonToolbarHeader } from "./components/tabNavigationToolbar/PersonToolbarHeader";
 export { type TabNavigationItem } from "./components/tabNavigationToolbar/TabNavigation";
 export {
@@ -529,6 +530,8 @@ export {
 } from "./helpers/validators";
 
 export { isBusinessModule, isInteger } from "./helpers/guards";
+
+export { lastXMonthsInDate } from "./helpers/rangeSelectHelper";
 
 export { CustomAppointmentQuickButtons } from "./components/CustomAppointmentQuickButtons";
 export {

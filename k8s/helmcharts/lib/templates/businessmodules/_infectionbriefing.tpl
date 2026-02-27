@@ -37,6 +37,8 @@ S{{- define "module.infectionbriefing.container" }}
   value: "https://{{ .Values.domains.hosts.keycloak }}"
 - name: eshg.keycloak.internal.url
   value: "https://{{ .Values.domains.hosts.keycloakInternal }}"
+- name: eshg.citizen-portal.reverse-proxy.url
+  value: "https://{{ .Values.domains.hosts.citizenportal }}"
 - name: spring.security.oauth2.client.registration.module-client.client-id
   value: system-infection-briefing
 - name: spring.security.oauth2.client.registration.module-client.client-secret

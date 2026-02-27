@@ -30,6 +30,17 @@ public class ProgressEntryUtil {
   public void addProgressEntry(
       SchoolEntryProcedure procedure,
       SchoolEntrySystemProgressEntryType progressEntryType,
+      String changeDescription) {
+    SystemProgressEntry progressEntry =
+        SystemProgressEntryFactory.createSystemProgressEntry(
+            progressEntryType.name(), changeDescription, TriggerType.SYSTEM_AUTOMATIC);
+
+    progressEntryService.addSystemProgressEntry(procedure, progressEntry);
+  }
+
+  public void addProgressEntry(
+      SchoolEntryProcedure procedure,
+      SchoolEntrySystemProgressEntryType progressEntryType,
       TriggerType triggerType) {
     SystemProgressEntry progressEntry =
         SystemProgressEntryFactory.createSystemProgressEntry(

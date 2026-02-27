@@ -262,6 +262,8 @@ public abstract class AbstractPublicSecurityConfiguration {
   protected void grantAccessToConfiguration() {
     requestMatchers(GET, DepartmentInfoLibrary.CONFIGURATION_API + "/**").hasRole(CONFIGURATION);
     requestMatchers(PUT, DepartmentInfoLibrary.CONFIGURATION_API + "/**").hasRole(CONFIGURATION);
+    requestMatchers(POST, DepartmentInfoLibrary.CONFIGURATION_API + "/**").hasRole(CONFIGURATION);
+    requestMatchers(DELETE, DepartmentInfoLibrary.CONFIGURATION_API + "/**").hasRole(CONFIGURATION);
   }
 
   @CheckReturnValue

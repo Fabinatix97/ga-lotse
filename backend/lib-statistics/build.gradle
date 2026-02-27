@@ -24,6 +24,7 @@ dependencies {
     testFixturesApi project(':test-commons')
     testFixturesApi 'org.springframework.boot:spring-boot-test'
     testFixturesImplementation 'org.assertj:assertj-core'
+    testFixturesImplementation project(':lib-procedures-api')
 
     testRuntimeOnly 'org.postgresql:postgresql'
 }

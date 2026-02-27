@@ -7,6 +7,7 @@ package de.eshg.infectionbriefing.domain.model;
 
 import de.eshg.lib.common.DataSensitivity;
 import de.eshg.lib.common.SensitivityLevel;
+import de.eshg.lib.procedure.domain.model.TriggerType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import java.time.LocalDate;
@@ -24,7 +25,6 @@ public class NewCertificateProcedure extends InfectionBriefingProcedure {
   @JdbcType(PostgreSQLEnumJdbcType.class)
   private InstructionType instructionType;
 
-  @Column(nullable = false)
   @DataSensitivity(SensitivityLevel.PSEUDONYMIZED)
   @JdbcType(PostgreSQLEnumJdbcType.class)
   private ApplicantCategory applicantCategory;
@@ -32,6 +32,12 @@ public class NewCertificateProcedure extends InfectionBriefingProcedure {
   @DataSensitivity(SensitivityLevel.PSEUDONYMIZED)
   @JdbcType(PostgreSQLEnumJdbcType.class)
   private CustodianConsent custodianConsent;
+
+  public NewCertificateProcedure() {}
+
+  public NewCertificateProcedure(TriggerType triggerType) {
+    super(triggerType);
+  }
 
   public LocalDate getInstructionDate() {
     return instructionDate;

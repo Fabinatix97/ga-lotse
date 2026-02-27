@@ -64,7 +64,6 @@ public class ProstituteProtectionConfigController {
           new ProstituteProtectionConfigDto(
               landingContentMultiLangDocument, config.isOnlinePortalBookingEnabled()));
     } else {
-      log.error("prostitute protection config isn't initialized.");
       return new GetProstituteProtectionConfigResponse(null);
     }
   }

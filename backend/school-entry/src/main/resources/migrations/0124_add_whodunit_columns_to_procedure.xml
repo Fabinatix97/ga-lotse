@@ -1,0 +1,42 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<!--
+ Copyright 2026 cronn GmbH
+ SPDX-License-Identifier: AGPL-3.0-only
+-->
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+  <changeSet author="GA-Lotse" id="1770648966076-1">
+    <addColumn tableName="school_entry_procedure">
+      <column name="first_eye_examination_or_hearing_test_modified_by" type="UUID"/>
+      <column name="first_school_info_letter_generated_by" type="UUID"/>
+    </addColumn>
+  </changeSet>
+  <changeSet id="1770649270361-2" author="GA-Lotse">
+    <sql>
+      update school_entry_procedure sep
+      set first_eye_examination_or_hearing_test_modified_by = first_examination.triggered_by from (
+            select distinct on (pe.procedure_id)
+                pe.procedure_id,
+                spe.triggered_by
+            from progress_entry pe
+            join system_progress_entry spe on pe.id = spe.id
+            where spe.system_progress_entry_type in ('EYE_EXAMINATION_MODIFIED', 'HEARING_TEST_MODIFIED')
+            order by pe.procedure_id, pe.created_at
+        ) first_examination
+      WHERE sep.id = first_examination.procedure_id
+    </sql>
+    <sql>
+      update school_entry_procedure sep
+      set first_school_info_letter_generated_by = first_info_letter.triggered_by from (
+            select distinct on (pe.procedure_id)
+                pe.procedure_id,
+                spe.triggered_by
+            from progress_entry pe
+            join system_progress_entry spe on pe.id = spe.id
+            where spe.system_progress_entry_type = 'SCHOOL_INFO_LETTER_GENERATED'
+            order by pe.procedure_id, pe.created_at
+        ) first_info_letter
+      WHERE sep.id = first_info_letter.procedure_id
+    </sql>
+  </changeSet>
+</databaseChangeLog>

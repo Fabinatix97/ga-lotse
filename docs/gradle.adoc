@@ -44,7 +44,7 @@ These are necessary for the e2e tests and for developing performance tests again
 | `./gradlew startLocalAdminPortal`    | Start **only** a service-directory container and serve the admin portal locally in "production mode"
 | `./gradlew startLocalPdfaConverterPortal` | Start **only** the pdf-converter portal locally in "production mode"
 | `./gradlew startLocalDocker`         | Start all backend containers and dockerized employee, citizen, admin and pdf-converter portals
-| `./gradlew startLocalDockerForBusinessModule -Pmodule=<business-module>` | Start the minimal setup needed for running a single business module
+| `./gradlew startLocalDockerForBusinessModule -Pmodule=<business-module>` | Start the minimal setup needed for running a single business module WITHOUT THE FRONTEND.
 |===
 
 == Tasks for the subprojects

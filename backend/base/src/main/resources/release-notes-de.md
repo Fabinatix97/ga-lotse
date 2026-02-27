@@ -2,6 +2,23 @@ GA-Lotse ist ein Kooperationsprojekt des Gesundheitsamts Frankfurt am Main mit d
 
 Finanziert von der Europäischen Union – NextGenerationEU
 
+## GA-Lotse 2.22
+_25.02.2026_
+
+Fünfunddreißigster Release der Anwendung GA-Lotse
+
+### Grundmodul:
+
+* Uploads unterstützen jetzt auch Dateinamen mit Sonderzeichen
+
+### Einschulungsuntersuchungen:
+
+* Einführung einer Eigenstatistik für Ärzt:innen, MFA und SOPASS: Übersicht der selbst durchgeführten Untersuchungen
+
+### Statistikmodul:
+
+* Auswertungen nach „Alter bei der Einschulungsuntersuchung“ sind nun verfügbar
+
 ## GA-Lotse 2.21
 _18.02.2026_
 

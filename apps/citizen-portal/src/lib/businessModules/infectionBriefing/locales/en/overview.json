@@ -1,0 +1,11 @@
+{
+  "appointmentsSection": {
+    "create_appointment": "Schedule an Appointment",
+    "description": "Appointments for consultations can be arranged online.",
+    "title": "Would you like to schedule an appointment?"
+  },
+  "generalInformation": {
+    "title": "Informations"
+  },
+  "pageTitle": "Infection Briefing"
+}

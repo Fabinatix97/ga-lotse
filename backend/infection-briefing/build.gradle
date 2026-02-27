@@ -14,6 +14,7 @@ dependencies {
     implementation project(':lib-appointmentblock')
     implementation project(':rest-oauth-client-commons')
     implementation project(':lib-document-generator')
+    implementation project(':file-commons')
 
     testImplementation testFixtures(project(':business-module-persistence-commons'))
     testImplementation testFixtures(project(':base-api'))

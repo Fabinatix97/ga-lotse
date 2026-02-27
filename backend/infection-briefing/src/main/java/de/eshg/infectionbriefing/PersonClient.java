@@ -23,7 +23,7 @@ import de.eshg.base.centralfile.api.person.SearchReferencePersonsResponse;
 import de.eshg.base.centralfile.api.person.UpdatePersonRequest;
 import de.eshg.base.centralfile.api.person.UpdateReferencePersonRequest;
 import de.eshg.infectionbriefing.api.ApplicantAddressDto;
-import de.eshg.infectionbriefing.api.PersonDto;
+import de.eshg.infectionbriefing.api.PersonCreationData;
 import de.eshg.lib.common.CountryCode;
 import de.eshg.rest.service.error.BadRequestException;
 import java.util.HashSet;
@@ -42,11 +42,12 @@ public class PersonClient {
     this.personApi = personApi;
   }
 
-  public UUID createPerson(PersonDto applicant) {
-    return createPerson(applicant, null);
+  public UUID createExternalSourcePerson(PersonCreationData applicant) {
+    return createExternalSourcePerson(applicant, null);
   }
 
-  public UUID createPerson(PersonDto applicant, ApplicantAddressDto address) {
+  public UUID createExternalSourcePerson(
+      PersonCreationData applicant, ApplicantAddressDto address) {
     return personApi
         .addPersonFromExternalSource(
             new ExternalAddPersonFileStateRequest(
@@ -59,20 +60,15 @@ public class PersonClient {
                 null,
                 null,
                 null,
-                List.of(applicant.email()),
-                Optional.ofNullable(applicant.phone()).map(List::of).orElse(null),
+                listOrNull(applicant.email()),
+                listOrNull(applicant.phone()),
                 Optional.ofNullable(address).map(this::mapToBaseAddress).orElse(null),
                 null))
         .id();
   }
 
-  private AddressDto mapToBaseAddress(ApplicantAddressDto address) {
-    return new DomesticAddressDto(
-        CountryCode.DE,
-        address.city(),
-        address.postalCode(),
-        address.street(),
-        address.houseNumber());
+  public UUID createPersonInCentralFile(PersonCreationData person, ApplicantAddressDto address) {
+    return personApi.addPersonFileState(mapToAddPersonRequest(person, address)).id();
   }
 
   public UUID createInternalReferencePerson(UUID fileStateId) {
@@ -123,6 +119,26 @@ public class PersonClient {
   }
 
   private AddPersonFileStateRequest mapToAddPersonRequest(
+      PersonCreationData person, ApplicantAddressDto address) {
+    return new AddPersonFileStateRequest(
+        null,
+        null,
+        mapToBaseSalutationDto(person.salutation()),
+        null,
+        person.firstName().trim(),
+        person.lastName().trim(),
+        person.dateOfBirth(),
+        null,
+        null,
+        null,
+        listOrNull(person.email()),
+        listOrNull(person.phone()),
+        mapToBaseAddress(address),
+        null,
+        DataOriginDto.MANUAL);
+  }
+
+  private AddPersonFileStateRequest mapToAddPersonRequest(
       GetReferencePersonResponse referencePerson) {
     return new AddPersonFileStateRequest(
         referencePerson.id(),
@@ -140,6 +156,17 @@ public class PersonClient {
         referencePerson.contactAddress(),
         referencePerson.differentBillingAddress(),
         DataOriginDto.MANUAL);
+  }
+
+  private AddressDto mapToBaseAddress(ApplicantAddressDto address) {
+    return address == null
+        ? null
+        : new DomesticAddressDto(
+            CountryCode.DE,
+            address.city(),
+            address.postalCode(),
+            address.street(),
+            address.houseNumber());
   }
 
   private boolean addEmailAndPhoneNumberToReferencePerson(
@@ -226,5 +253,9 @@ public class PersonClient {
         referencePerson.phoneNumbers(),
         referencePerson.contactAddress(),
         referencePerson.differentBillingAddress());
+  }
+
+  private static <T> List<T> listOrNull(T object) {
+    return Optional.ofNullable(object).map(List::of).orElse(null);
   }
 }

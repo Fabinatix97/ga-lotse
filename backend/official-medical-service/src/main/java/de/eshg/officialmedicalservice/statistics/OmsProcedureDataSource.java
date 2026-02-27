@@ -363,7 +363,9 @@ public class OmsProcedureDataSource
   @Override
   protected Specification<OmsProcedure> getProcedureSpecification(TimeRange timeRange) {
     return (root, query, criteriaBuilder) ->
-        isInTimeRange(criteriaBuilder, root.get(OmsProcedure_.createdAt), timeRange);
+        criteriaBuilder.and(
+            isInTimeRange(criteriaBuilder, root.get(OmsProcedure_.createdAt), timeRange),
+            isIncluded(root, criteriaBuilder));
   }
 
   private Long getDurationInMinutes(OmsProcedure procedure) {

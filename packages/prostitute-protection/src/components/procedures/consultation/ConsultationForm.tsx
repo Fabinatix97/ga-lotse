@@ -88,10 +88,9 @@ export function ConsultationForm({
           <ConfirmLeaveDirtyFormEffect
             onSaveMutation={{
               mutationOptions: upsertConsultationOptions,
-              variableSupplier: () => ({
-                procedureId: procedure.id,
-                apiConsultation: mapFormToApi(values),
-              }),
+              variableSupplier() {
+                return mapFormToApi(values);
+              },
             }}
           />
           <Stack sx={{ flexGrow: 1, mb: 3 }}>

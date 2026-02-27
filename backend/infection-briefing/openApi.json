@@ -749,6 +749,35 @@
         "tags" : [ "Archiving" ]
       }
     },
+    "/citizen/auth/procedure-appointments" : {
+      "delete" : {
+        "operationId" : "cancelAppointment",
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          }
+        },
+        "summary" : "Cancel an appointment from citizen portal.",
+        "tags" : [ "CitizenAuth" ]
+      },
+      "get" : {
+        "operationId" : "getCitizenAppointmentOverview",
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/GetCitizenAppointmentOverviewResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Gets all procedure appointments",
+        "tags" : [ "CitizenAuth" ]
+      }
+    },
     "/citizen/public/appointment/new-certificate" : {
       "post" : {
         "operationId" : "bookNewCertificateAppointment",
@@ -774,7 +803,7 @@
             "description" : "OK"
           }
         },
-        "tags" : [ "PublicCitizen" ]
+        "tags" : [ "InfectionBriefingPublicCitizen" ]
       }
     },
     "/citizen/public/appointment/replacement-certificate" : {
@@ -802,7 +831,26 @@
             "description" : "OK"
           }
         },
-        "tags" : [ "PublicCitizen" ]
+        "tags" : [ "InfectionBriefingPublicCitizen" ]
+      }
+    },
+    "/citizen/public/department-info" : {
+      "get" : {
+        "operationId" : "getDepartmentInfo",
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/GetDepartmentInfoResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Get department info.",
+        "tags" : [ "InfectionBriefingPublicCitizen" ]
       }
     },
     "/citizen/public/free-appointments" : {
@@ -829,7 +877,46 @@
           }
         },
         "summary" : "Get free appointments for an appointment type.",
-        "tags" : [ "PublicCitizen" ]
+        "tags" : [ "InfectionBriefingPublicCitizen" ]
+      }
+    },
+    "/citizen/public/landing" : {
+      "get" : {
+        "operationId" : "getLandingPageContent",
+        "responses" : {
+          "200" : {
+            "content" : {
+              "text/markdown" : {
+                "schema" : {
+                  "type" : "string",
+                  "format" : "binary"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Get the landing page markdowns from the config.",
+        "tags" : [ "InfectionBriefingPublicCitizen" ]
+      }
+    },
+    "/citizen/public/opening-hours" : {
+      "get" : {
+        "operationId" : "getOpeningHours",
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/GetOpeningHoursResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Get the official opening hours.",
+        "tags" : [ "InfectionBriefingPublicCitizen" ]
       }
     },
     "/configuration" : {
@@ -924,6 +1011,87 @@
           }
         },
         "tags" : [ "DepartmentInfoConfig" ]
+      }
+    },
+    "/configuration/infection-briefing" : {
+      "get" : {
+        "operationId" : "getConfig",
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/GetInfectionBriefingConfigResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "InfectionBriefingConfig" ]
+      },
+      "put" : {
+        "operationId" : "updateConfig",
+        "requestBody" : {
+          "content" : {
+            "multipart/form-data" : {
+              "schema" : {
+                "type" : "object",
+                "properties" : {
+                  "landingContent_de" : {
+                    "type" : "string",
+                    "format" : "binary"
+                  },
+                  "landingContent_en" : {
+                    "type" : "string",
+                    "format" : "binary"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/GetInfectionBriefingConfigResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "InfectionBriefingConfig" ]
+      }
+    },
+    "/configuration/infection-briefing/{lang}" : {
+      "get" : {
+        "operationId" : "downloadLandingPage",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "lang",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/components/schemas/Language"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "type" : "string",
+                  "format" : "binary"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Download the current content of the citizen portal landing page (markdown file, one language)",
+        "tags" : [ "InfectionBriefingConfig" ]
       }
     },
     "/configuration/opening-hours" : {
@@ -1857,6 +2025,28 @@
             "type" : "integer",
             "format" : "int32"
           }
+        }, {
+          "in" : "query",
+          "name" : "searchFirstName",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "in" : "query",
+          "name" : "searchLastName",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "in" : "query",
+          "name" : "searchDateOfBirth",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "format" : "date"
+          }
         } ],
         "responses" : {
           "200" : {
@@ -1864,6 +2054,32 @@
               "*/*" : {
                 "schema" : {
                   "$ref" : "#/components/schemas/GetProceduresResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "InfectionBriefingProcedure" ]
+      },
+      "post" : {
+        "operationId" : "createNewCertificateProcedure",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/CreateNewCertificateProcedureRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/CreateNewCertificateProcedureResponse"
                 }
               }
             },
@@ -2028,6 +2244,16 @@
             "format" : "uuid"
           }
         } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/ConfirmPaymentRequest"
+              }
+            }
+          },
+          "required" : true
+        },
         "responses" : {
           "200" : {
             "description" : "OK"
@@ -3576,6 +3802,19 @@
           }
         }
       },
+      "AppointmentSummary" : {
+        "required" : [ "appointmentType", "start" ],
+        "type" : "object",
+        "properties" : {
+          "appointmentType" : {
+            "$ref" : "#/components/schemas/AppointmentType"
+          },
+          "start" : {
+            "type" : "string",
+            "format" : "date-time"
+          }
+        }
+      },
       "AppointmentType" : {
         "type" : "string",
         "enum" : [ "CONSULTATION", "VACCINATION", "REGULAR_EXAMINATION", "CAN_CHILD", "ENTRY_LEVEL", "SPECIAL_NEEDS", "PROOF_SUBMISSION", "HIV_STI_CONSULTATION", "SEX_WORK", "RESULTS_REVIEW", "OFFICIAL_MEDICAL_SERVICE_SHORT", "OFFICIAL_MEDICAL_SERVICE_LONG", "MEDS_ABROAD_CERTIFICATION", "PROSTITUTE_PROTECTION_INITIAL", "PROSTITUTE_PROTECTION_FOLLOW_UP", "INFECTION_BRIEFING_NEW", "INFECTION_BRIEFING_REPLACEMENT" ]
@@ -3693,17 +3932,14 @@
         }
       },
       "BookNewCertificateAppointmentRequest" : {
-        "required" : [ "applicant", "applicantCategoryDto", "startTime" ],
+        "required" : [ "applicant", "startTime" ],
         "type" : "object",
         "properties" : {
           "applicant" : {
-            "$ref" : "#/components/schemas/Person"
+            "$ref" : "#/components/schemas/PersonWithEmail"
           },
           "applicantAddress" : {
             "$ref" : "#/components/schemas/ApplicantAddress"
-          },
-          "applicantCategoryDto" : {
-            "$ref" : "#/components/schemas/ApplicantCategory"
           },
           "startTime" : {
             "type" : "string",
@@ -3728,7 +3964,7 @@
         "type" : "object",
         "properties" : {
           "applicant" : {
-            "$ref" : "#/components/schemas/Person"
+            "$ref" : "#/components/schemas/PersonWithEmail"
           },
           "startTime" : {
             "type" : "string",
@@ -3887,6 +4123,15 @@
       "ConfigurationStatus" : {
         "type" : "string",
         "enum" : [ "COMPLETE", "PARTIALLY_COMPLETE", "INCOMPLETE" ]
+      },
+      "ConfirmPaymentRequest" : {
+        "required" : [ "applicantCategory" ],
+        "type" : "object",
+        "properties" : {
+          "applicantCategory" : {
+            "$ref" : "#/components/schemas/ApplicantCategory"
+          }
+        }
       },
       "ContactDetails" : {
         "required" : [ "contactType", "salutation" ],
@@ -4103,6 +4348,28 @@
           },
           "note" : {
             "type" : "string"
+          }
+        }
+      },
+      "CreateNewCertificateProcedureRequest" : {
+        "required" : [ "applicant" ],
+        "type" : "object",
+        "properties" : {
+          "applicant" : {
+            "$ref" : "#/components/schemas/PersonWithOptionalEmail"
+          },
+          "applicantAddress" : {
+            "$ref" : "#/components/schemas/ApplicantAddress"
+          }
+        }
+      },
+      "CreateNewCertificateProcedureResponse" : {
+        "required" : [ "procedureId" ],
+        "type" : "object",
+        "properties" : {
+          "procedureId" : {
+            "type" : "string",
+            "format" : "uuid"
           }
         }
       },
@@ -4786,6 +5053,27 @@
           }
         }
       },
+      "GetCitizenAppointmentOverviewResponse" : {
+        "required" : [ "dateOfBirth", "firstName", "lastName" ],
+        "type" : "object",
+        "properties" : {
+          "dateOfBirth" : {
+            "type" : "string",
+            "format" : "date"
+          },
+          "firstName" : {
+            "minLength" : 1,
+            "type" : "string"
+          },
+          "lastName" : {
+            "minLength" : 1,
+            "type" : "string"
+          },
+          "openAppointment" : {
+            "$ref" : "#/components/schemas/AppointmentSummary"
+          }
+        }
+      },
       "GetConfigurationStatusResponse" : {
         "required" : [ "endpointStates", "moduleState" ],
         "type" : "object",
@@ -4799,6 +5087,71 @@
           },
           "moduleState" : {
             "$ref" : "#/components/schemas/ConfigurationStatus"
+          }
+        }
+      },
+      "GetDepartmentInfoResponse" : {
+        "required" : [ "city", "country", "email", "homepage", "houseNumber", "location", "name", "phoneNumber", "postalCode", "street" ],
+        "type" : "object",
+        "properties" : {
+          "abbreviation" : {
+            "type" : "string",
+            "description" : "The abbreviation of the name of the department",
+            "example" : "LTG"
+          },
+          "city" : {
+            "minLength" : 1,
+            "type" : "string",
+            "description" : "The name of the city where the department is located",
+            "example" : "Berlin"
+          },
+          "country" : {
+            "$ref" : "#/components/schemas/CountryCode"
+          },
+          "email" : {
+            "minLength" : 1,
+            "type" : "string",
+            "description" : "The email address of the department",
+            "example" : "mail@address.de"
+          },
+          "homepage" : {
+            "minLength" : 1,
+            "type" : "string",
+            "description" : "The domain of the department's official homepage, excluding protocols",
+            "example" : "department-homepage.de"
+          },
+          "houseNumber" : {
+            "minLength" : 1,
+            "type" : "string",
+            "description" : "The house number at the department's address, including any extensions or suffixes",
+            "example" : "1b"
+          },
+          "location" : {
+            "$ref" : "#/components/schemas/Location"
+          },
+          "name" : {
+            "minLength" : 1,
+            "type" : "string",
+            "description" : "The name of the department",
+            "example" : "Gesundheitsamt Landkreis Testgebiet"
+          },
+          "phoneNumber" : {
+            "minLength" : 1,
+            "type" : "string",
+            "description" : "The primary contact telephone number for the department",
+            "example" : "+491234567890"
+          },
+          "postalCode" : {
+            "minLength" : 1,
+            "type" : "string",
+            "description" : "The postal code for the department’s address",
+            "example" : "12345"
+          },
+          "street" : {
+            "minLength" : 1,
+            "type" : "string",
+            "description" : "The street name for the department’s address, not including the house number",
+            "example" : "Beispielweg"
           }
         }
       },
@@ -5021,6 +5374,14 @@
           }
         }
       },
+      "GetInfectionBriefingConfigResponse" : {
+        "type" : "object",
+        "properties" : {
+          "infectionBriefingConfig" : {
+            "$ref" : "#/components/schemas/InfectionBriefingConfig"
+          }
+        }
+      },
       "GetInternalConfigDepartmentInfoResponse" : {
         "type" : "object",
         "properties" : {
@@ -5062,6 +5423,24 @@
         "properties" : {
           "openingHoursDto" : {
             "$ref" : "#/components/schemas/OpeningHours"
+          }
+        }
+      },
+      "GetOpeningHoursResponse" : {
+        "required" : [ "de", "en" ],
+        "type" : "object",
+        "properties" : {
+          "de" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          },
+          "en" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
           }
         }
       },
@@ -5615,6 +5994,15 @@
         },
         "description" : "A request containing the standard duration."
       },
+      "InfectionBriefingConfig" : {
+        "required" : [ "landingPageContent" ],
+        "type" : "object",
+        "properties" : {
+          "landingPageContent" : {
+            "$ref" : "#/components/schemas/MultiLangDocument"
+          }
+        }
+      },
       "InfectionBriefingSalutation" : {
         "type" : "string",
         "enum" : [ "NEUTRAL", "FEMALE", "MALE", "NOT_SPECIFIED" ]
@@ -5670,6 +6058,25 @@
       "Language" : {
         "type" : "string",
         "enum" : [ "GERMAN", "ENGLISH" ]
+      },
+      "Location" : {
+        "required" : [ "latitude", "longitude" ],
+        "type" : "object",
+        "properties" : {
+          "latitude" : {
+            "type" : "number",
+            "description" : "Geographic coordinate that specifies the north–south angular location of a point on the surface of the Earth.",
+            "format" : "double",
+            "example" : 52.51627
+          },
+          "longitude" : {
+            "type" : "number",
+            "description" : "Geographic coordinate that specifies the east–west angular position of a point on the surface of the Earth.",
+            "format" : "double",
+            "example" : 13.377703
+          }
+        },
+        "description" : "Location defined by latitude and longitude."
       },
       "Mail" : {
         "required" : [ "@type", "createdAt", "deletable", "deleted", "fileId", "fileName", "fileSizeBytes", "fileType", "locked", "modifiedAt", "removedInvalidAttachments" ],
@@ -5915,43 +6322,6 @@
           }
         } ]
       },
-      "Person" : {
-        "required" : [ "dateOfBirth", "email", "firstName", "lastName" ],
-        "type" : "object",
-        "properties" : {
-          "dateOfBirth" : {
-            "type" : "string",
-            "description" : "Date of birth of the applicant.",
-            "format" : "date",
-            "example" : "2018-07-26"
-          },
-          "email" : {
-            "type" : "string"
-          },
-          "firstName" : {
-            "maxLength" : 80,
-            "minLength" : 1,
-            "type" : "string",
-            "description" : "First name of the applicant.",
-            "example" : "Susanne"
-          },
-          "lastName" : {
-            "maxLength" : 120,
-            "minLength" : 1,
-            "type" : "string",
-            "description" : "Last name of the applicant.",
-            "example" : "Gerber"
-          },
-          "phone" : {
-            "maxLength" : 23,
-            "minLength" : 1,
-            "type" : "string"
-          },
-          "salutation" : {
-            "$ref" : "#/components/schemas/InfectionBriefingSalutation"
-          }
-        }
-      },
       "PersonDetails" : {
         "required" : [ "dateOfBirth", "firstName", "lastName" ],
         "type" : "object",
@@ -5991,6 +6361,80 @@
       "PersonType" : {
         "type" : "string",
         "enum" : [ "PATIENT", "PARENT", "PROFESSIONAL", "EMPLOYEE" ]
+      },
+      "PersonWithEmail" : {
+        "required" : [ "dateOfBirth", "email", "firstName", "lastName" ],
+        "type" : "object",
+        "properties" : {
+          "dateOfBirth" : {
+            "type" : "string",
+            "description" : "Date of birth of the applicant.",
+            "format" : "date",
+            "example" : "2018-07-26"
+          },
+          "email" : {
+            "type" : "string"
+          },
+          "firstName" : {
+            "maxLength" : 80,
+            "minLength" : 1,
+            "type" : "string",
+            "description" : "First name of the applicant.",
+            "example" : "Susanne"
+          },
+          "lastName" : {
+            "maxLength" : 120,
+            "minLength" : 1,
+            "type" : "string",
+            "description" : "Last name of the applicant.",
+            "example" : "Gerber"
+          },
+          "phone" : {
+            "maxLength" : 23,
+            "minLength" : 1,
+            "type" : "string"
+          },
+          "salutation" : {
+            "$ref" : "#/components/schemas/InfectionBriefingSalutation"
+          }
+        }
+      },
+      "PersonWithOptionalEmail" : {
+        "required" : [ "dateOfBirth", "firstName", "lastName" ],
+        "type" : "object",
+        "properties" : {
+          "dateOfBirth" : {
+            "type" : "string",
+            "description" : "Date of birth of the applicant.",
+            "format" : "date",
+            "example" : "2018-07-26"
+          },
+          "email" : {
+            "type" : "string"
+          },
+          "firstName" : {
+            "maxLength" : 80,
+            "minLength" : 1,
+            "type" : "string",
+            "description" : "First name of the applicant.",
+            "example" : "Susanne"
+          },
+          "lastName" : {
+            "maxLength" : 120,
+            "minLength" : 1,
+            "type" : "string",
+            "description" : "Last name of the applicant.",
+            "example" : "Gerber"
+          },
+          "phone" : {
+            "maxLength" : 23,
+            "minLength" : 1,
+            "type" : "string"
+          },
+          "salutation" : {
+            "$ref" : "#/components/schemas/InfectionBriefingSalutation"
+          }
+        }
       },
       "Population" : {
         "required" : [ "numberOfPopulatedEntities", "totalNumberOfEntities" ],

@@ -55,4 +55,10 @@ export const routes = defineRoutes("/school-entry", (schoolEntryPath) => ({
       overview: labelsPath("/"),
     }),
   ),
+  employeeSelfStatistics: defineRoutes(
+    schoolEntryPath("/employee-self-statistics"),
+    (statisticsPath) => ({
+      overview: statisticsPath("/"),
+    }),
+  ),
 }));

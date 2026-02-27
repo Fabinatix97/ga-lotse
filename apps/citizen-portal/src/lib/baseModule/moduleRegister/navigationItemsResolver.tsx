@@ -10,6 +10,7 @@ import {
   ModuleNavigationItem,
   NavigationItem,
 } from "@/lib/baseModule/components/layout/types";
+import { useCitizenNavigationItem as useInfectionBriefingCitizenNavigationItem } from "@/lib/businessModules/infectionBriefing/shared/navigationItems";
 import { useOrganizationNavigationItem as useMeaslesProtectionOrganizationNavigationItem } from "@/lib/businessModules/measlesProtection/shared/navigationItems";
 import { useCitizenNavigationItem as useMedicalRegistryCitizenNavigationItem } from "@/lib/businessModules/medicalRegistry/shared/navigationItems";
 import { useCitizenNavigationItem as useOfficialMedicalServiceNavigationItem } from "@/lib/businessModules/officialMedicalService/shared/navigationItems";
@@ -33,6 +34,8 @@ export function useResolveCitizenNavigationItems(): NavigationItem[] {
     useOfficialMedicalServiceNavigationItem();
   const prostituteProtectionCitizenNavigationItem =
     useProstituteProtectionCitizenNavigationItem();
+  const infectionBriefingCitizenNavigationItem =
+    useInfectionBriefingCitizenNavigationItem();
   const stiProtectionCitizenNavigationItem =
     useStiProtectionCitizenNavigationItem();
 
@@ -52,6 +55,9 @@ export function useResolveCitizenNavigationItems(): NavigationItem[] {
   }
   if (hasBusinessModule(ApiBusinessModule.ProstituteProtection)) {
     topicNavigation.addItem(prostituteProtectionCitizenNavigationItem);
+  }
+  if (hasBusinessModule(ApiBusinessModule.InfectionBriefing)) {
+    topicNavigation.addItem(infectionBriefingCitizenNavigationItem);
   }
   if (hasBusinessModule(ApiBusinessModule.StiProtection)) {
     topicNavigation.addItem(stiProtectionCitizenNavigationItem);

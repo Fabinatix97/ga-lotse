@@ -1295,6 +1295,157 @@
         "tags" : [ "SchoolEntryLibConfig" ]
       }
     },
+    "/configuration/school-entry/device-registry" : {
+      "get" : {
+        "operationId" : "getSchoolEntryDeviceRegistryConfig",
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/GetSchoolEntryDeviceRegistryConfigResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "SchoolEntryDeviceRegistryConfig" ]
+      },
+      "post" : {
+        "operationId" : "addDevice",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/AddSchoolEntryMeasurementDeviceRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/SchoolEntryMeasuringDevice"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "SchoolEntryDeviceRegistryConfig" ]
+      }
+    },
+    "/configuration/school-entry/device-registry/validate-equipment-selector" : {
+      "get" : {
+        "operationId" : "validateEquipmentSelectorIsUnique",
+        "parameters" : [ {
+          "in" : "query",
+          "name" : "equipmentSelector",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "type" : "boolean"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "SchoolEntryDeviceRegistryConfig" ]
+      }
+    },
+    "/configuration/school-entry/device-registry/validate-name" : {
+      "get" : {
+        "operationId" : "validateNameIsUnique",
+        "parameters" : [ {
+          "in" : "query",
+          "name" : "name",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "type" : "boolean"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "SchoolEntryDeviceRegistryConfig" ]
+      }
+    },
+    "/configuration/school-entry/device-registry/{deviceId}" : {
+      "delete" : {
+        "operationId" : "deleteDevice",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "deviceId",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "SchoolEntryDeviceRegistryConfig" ]
+      },
+      "put" : {
+        "operationId" : "updateDevice",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "deviceId",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/UpdateSchoolEntryMeasurementDeviceRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/SchoolEntryMeasuringDevice"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "SchoolEntryDeviceRegistryConfig" ]
+      }
+    },
     "/country-codes" : {
       "get" : {
         "operationId" : "getCountryCodes",
@@ -3293,6 +3444,42 @@
         "tags" : [ "SchoolEntry" ]
       }
     },
+    "/school-entries/employee-self-statistics" : {
+      "get" : {
+        "operationId" : "getEmployeeSelfStatistics",
+        "parameters" : [ {
+          "in" : "query",
+          "name" : "timeRangeStart",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "date-time"
+          }
+        }, {
+          "in" : "query",
+          "name" : "timeRangeEnd",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "date-time"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/GetEmployeeSelfStatisticsResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Get examinations performed in the given time range by current user",
+        "tags" : [ "SchoolEntry" ]
+      }
+    },
     "/school-entries/waiting-room-procedures" : {
       "get" : {
         "operationId" : "getWaitingRoomProcedures",
@@ -4465,6 +4652,41 @@
         "tags" : [ "SchoolEntry" ]
       }
     },
+    "/school-entries/{procedureId}/{equipmentId}/hearing-test-initiate" : {
+      "post" : {
+        "operationId" : "initiateHearingTest",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "procedureId",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }, {
+          "in" : "path",
+          "name" : "equipmentId",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/HearingTestInitializationResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Initiates hearing test on a machine for a procedure.",
+        "tags" : [ "SchoolEntry" ]
+      }
+    },
     "/school-entry-procedure-labels" : {
       "get" : {
         "operationId" : "getLabels",
@@ -5532,6 +5754,26 @@
           },
           "type" : {
             "$ref" : "#/components/schemas/GdprProcedureType"
+          }
+        }
+      },
+      "AddSchoolEntryMeasurementDeviceRequest" : {
+        "required" : [ "deviceType", "equipmentSelector", "gdtDriver", "name" ],
+        "type" : "object",
+        "properties" : {
+          "deviceType" : {
+            "$ref" : "#/components/schemas/MeasuringDeviceType"
+          },
+          "equipmentSelector" : {
+            "minLength" : 1,
+            "type" : "string"
+          },
+          "gdtDriver" : {
+            "$ref" : "#/components/schemas/GdtDriver"
+          },
+          "name" : {
+            "minLength" : 1,
+            "type" : "string"
           }
         }
       },
@@ -7625,6 +7867,10 @@
         "type" : "string",
         "enum" : [ "OPEN", "CLOSED" ]
       },
+      "GdtDriver" : {
+        "type" : "string",
+        "enum" : [ "DUMMY" ]
+      },
       "Gender" : {
         "type" : "string",
         "description" : "The list of genders as specified in the German Personenstandsgesetz.",
@@ -8067,6 +8313,18 @@
             "type" : "integer",
             "description" : "Version of the entity. Each time the entity is changed, it is incremented by one.",
             "format" : "int64"
+          }
+        }
+      },
+      "GetEmployeeSelfStatisticsResponse" : {
+        "required" : [ "examinationsByWeek" ],
+        "type" : "object",
+        "properties" : {
+          "examinationsByWeek" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/WeeklyDataBin"
+            }
           }
         }
       },
@@ -8694,6 +8952,15 @@
           }
         }
       },
+      "GetSchoolEntryDeviceRegistryConfigResponse" : {
+        "required" : [ "configuration" ],
+        "type" : "object",
+        "properties" : {
+          "configuration" : {
+            "$ref" : "#/components/schemas/SchoolEntryDeviceRegistryConfig"
+          }
+        }
+      },
       "GetSchoolEntryFeatureTogglesResponse" : {
         "required" : [ "disabledOldFeatures", "enabledNewFeatures" ],
         "type" : "object",
@@ -8898,6 +9165,24 @@
           }
         },
         "description" : "Diagnosis related to disability."
+      },
+      "HearingTestInitializationResponse" : {
+        "required" : [ "correlationId", "firstNameAlias", "lastNameAlias" ],
+        "type" : "object",
+        "properties" : {
+          "correlationId" : {
+            "pattern" : "^[A-Za-z0-9]{6}$",
+            "type" : "string"
+          },
+          "firstNameAlias" : {
+            "minLength" : 1,
+            "type" : "string"
+          },
+          "lastNameAlias" : {
+            "minLength" : 1,
+            "type" : "string"
+          }
+        }
       },
       "HearingTestResult" : {
         "required" : [ "examinationResult", "leftEar", "rightEar", "version" ],
@@ -9457,6 +9742,10 @@
           }
         },
         "description" : "Body measurement results of the examination."
+      },
+      "MeasuringDeviceType" : {
+        "type" : "string",
+        "enum" : [ "HEARING_TEST", "SEEING_TEST" ]
       },
       "MediaConsumption" : {
         "type" : "string",
@@ -10447,6 +10736,18 @@
         "example" : "DEU",
         "enum" : [ "AFG", "EGY", "ALB", "ALG", "AND", "ANG", "AUB", "GNQ", "ARA", "ARG", "ARM", "ASE", "ASN", "ETH", "AUS", "BAM", "BAH", "BAL", "BAD", "BAR", "BEL", "BEZ", "BEN", "BHU", "BOL", "BOS", "BOT", "BRA", "BRU", "BUL", "BUF", "BUR", "CHI", "CHV", "COO", "COR", "CIV", "DAN", "DEU", "DOA", "DOM", "DSC", "ECU", "ELS", "BRI", "ERY", "EST", "FID", "FIN", "FRA", "GAB", "GAM", "GEO", "GHA", "GOL", "GRE", "GRI", "GUA", "GUI", "GUS", "GUY", "HAI", "HND", "IND", "INS", "IRQ", "IRA", "IRL", "ISL", "ISR", "ITA", "JAM", "JAP", "JEM", "JOR", "JUG", "KAM", "KAN", "CAN", "KAP", "KAS", "KAT", "KEN", "KIR", "KIB", "KOL", "KOM", "KON", "KOR", "KOS", "KRO", "KUB", "KUW", "LAO", "LSO", "LET", "LEB", "LIB", "LYB", "LIE", "LIT", "LUX", "MAD", "MAW", "MAY", "MAL", "MAI", "MLT", "MAR", "MHL", "MAU", "MAS", "MAZ", "MEX", "MIK", "MAM", "MOL", "MON", "MOG", "MNE", "MOS", "MYA", "NAM", "CHN", "NAU", "NEP", "NEU", "NIC", "NED", "NIG", "NIA", "NOK", "NOR", "OMA", "OST", "PAK", "PAL", "PAU", "PAN", "PAP", "PAR", "PER", "PHI", "POL", "POR", "RUA", "RUM", "RUS", "SAL", "SAB", "SAA", "SAN", "STL", "STP", "SAU", "SCO", "SVE", "HEL", "SEN", "SER", "SEY", "SIL", "SIM", "SIN", "SKN", "SLO", "SOM", "SON", "SPA", "CEY", "STK", "VCT", "STA", "SAR", "SAM", "SUD", "SUK", "SUR", "SWA", "SYR", "TAD", "TAI", "TAN", "THA", "TIB", "TIM", "TOG", "TRT", "CHA", "CZN", "TUN", "TUR", "TKM", "TUV", "UGA", "UKR", "UUU", "UNG", "URU", "USA", "USB", "VAN", "VAT", "VEN", "VAE", "VIE", "WRU", "SCA", "ZYP", "G1", "G2", "G3", "G4", "G5", "G6", "G7", "G8", "G9" ]
       },
+      "SchoolEntryDeviceRegistryConfig" : {
+        "required" : [ "measuringDevices" ],
+        "type" : "object",
+        "properties" : {
+          "measuringDevices" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/SchoolEntryMeasuringDevice"
+            }
+          }
+        }
+      },
       "SchoolEntryDomesticAddress" : {
         "required" : [ "city", "country", "postalCode", "street" ],
         "type" : "object",
@@ -10512,6 +10813,34 @@
         "type" : "string",
         "description" : "The list of genders as specified in the German Personenstandsgesetz.",
         "enum" : [ "NOT_SPECIFIED", "DIVERSE", "FEMALE", "MALE" ]
+      },
+      "SchoolEntryMeasuringDevice" : {
+        "required" : [ "deviceType", "equipmentSelector", "externalId", "gdtDriver", "name", "version" ],
+        "type" : "object",
+        "properties" : {
+          "deviceType" : {
+            "$ref" : "#/components/schemas/MeasuringDeviceType"
+          },
+          "equipmentSelector" : {
+            "minLength" : 1,
+            "type" : "string"
+          },
+          "externalId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "gdtDriver" : {
+            "$ref" : "#/components/schemas/GdtDriver"
+          },
+          "name" : {
+            "minLength" : 1,
+            "type" : "string"
+          },
+          "version" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        }
       },
       "SchoolEntryPostboxAddress" : {
         "required" : [ "city", "country", "postalCode", "postbox" ],
@@ -11710,6 +12039,30 @@
           }
         }
       },
+      "UpdateSchoolEntryMeasurementDeviceRequest" : {
+        "required" : [ "deviceType", "equipmentSelector", "gdtDriver", "name", "version" ],
+        "type" : "object",
+        "properties" : {
+          "deviceType" : {
+            "$ref" : "#/components/schemas/MeasuringDeviceType"
+          },
+          "equipmentSelector" : {
+            "minLength" : 1,
+            "type" : "string"
+          },
+          "gdtDriver" : {
+            "$ref" : "#/components/schemas/GdtDriver"
+          },
+          "name" : {
+            "minLength" : 1,
+            "type" : "string"
+          },
+          "version" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        }
+      },
       "User" : {
         "required" : [ "enabled", "firstName", "lastName", "userId", "username" ],
         "type" : "object",
@@ -12007,6 +12360,20 @@
       "WaitingStatus" : {
         "type" : "string",
         "enum" : [ "WAITING", "WAITING_FOR_DOCTOR", "WAITING_FOR_MFA", "IN_EXAMINATION", "IN_EXAMINATION_DOCTOR", "IN_EXAMINATION_MFA", "IN_EXAMINATION_SOPASS", "EXAMINATION_FINISHED", "DONE", "CANCELLED", "NOT_APPEARED" ]
+      },
+      "WeeklyDataBin" : {
+        "required" : [ "count", "lowerBound" ],
+        "type" : "object",
+        "properties" : {
+          "count" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "lowerBound" : {
+            "type" : "string",
+            "format" : "date"
+          }
+        }
       }
     }
   }

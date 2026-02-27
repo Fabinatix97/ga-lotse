@@ -1,0 +1,8 @@
+Guten Tag,
+
+Sie haben Ihren Termin am %s um %s Uhr für eine Durchführung einer Infektionsschutzbelehrung abgesagt. Ihre Absage haben wir zur Kenntnis genommen.
+
+
+Mit freundlichen Grüßen,
+
+Ihr Gesundheitsamt

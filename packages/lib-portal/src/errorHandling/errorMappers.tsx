@@ -77,6 +77,11 @@ const ERROR_DESCRIPTION: Record<PortalErrorCode, ErrorDescription> = {
     title: "Zu viele Zeilen",
     message: "Die XLSX-Datei enthält mehr Zeilen als erlaubt.",
   },
+  [PortalErrorCode.ServiceUnavailable]: {
+    title: "Dienst nicht verfügbar",
+    message:
+      "Der Dienst ist momentan nicht erreichbar. Bitte versuchen Sie es später erneut.",
+  },
 };
 
 export function getErrorDescription(

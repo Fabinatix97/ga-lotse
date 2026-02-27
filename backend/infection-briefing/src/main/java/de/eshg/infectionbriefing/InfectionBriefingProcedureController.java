@@ -6,14 +6,20 @@
 package de.eshg.infectionbriefing;
 
 import static de.eshg.infectionbriefing.InfectionBriefingProcedureController.BASE_URL;
+import static de.eshg.lib.procedure.util.ProcedureValidator.hasNonNullValue;
 
 import de.eshg.api.commons.InlineParameterObject;
 import de.eshg.infectionbriefing.api.AcceptDraftRequest;
+import de.eshg.infectionbriefing.api.ConfirmPaymentRequest;
+import de.eshg.infectionbriefing.api.CreateNewCertificateProcedureRequest;
+import de.eshg.infectionbriefing.api.CreateNewCertificateProcedureResponse;
 import de.eshg.infectionbriefing.api.GetProceduresResponse;
 import de.eshg.infectionbriefing.api.IssueCertificateResponse;
 import de.eshg.infectionbriefing.api.ProcedureDetailsDto;
 import de.eshg.infectionbriefing.api.ProcedureFilterParameters;
 import de.eshg.infectionbriefing.api.ProcedurePaginationParameters;
+import de.eshg.infectionbriefing.api.ProcedureSearchParameters;
+import de.eshg.rest.service.error.BadRequestException;
 import de.eshg.rest.service.security.config.BaseUrls.InfectionBriefing;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -37,12 +43,15 @@ public class InfectionBriefingProcedureController {
 
   private final InfectionBriefingProcedureService infectionBriefingProcedureService;
   private final NewCertificateProcedureService newCertificateProcedureService;
+  private final CreateInfectionBriefingProcedureService createInfectionBriefingProcedureService;
 
   public InfectionBriefingProcedureController(
       InfectionBriefingProcedureService infectionBriefingProcedureService,
-      NewCertificateProcedureService newCertificateProcedureService) {
+      NewCertificateProcedureService newCertificateProcedureService,
+      CreateInfectionBriefingProcedureService createInfectionBriefingProcedureService) {
     this.infectionBriefingProcedureService = infectionBriefingProcedureService;
     this.newCertificateProcedureService = newCertificateProcedureService;
+    this.createInfectionBriefingProcedureService = createInfectionBriefingProcedureService;
   }
 
   @GetMapping
@@ -50,7 +59,17 @@ public class InfectionBriefingProcedureController {
   public GetProceduresResponse getInfectionBriefingProcedures(
       @InlineParameterObject @ParameterObject @Valid ProcedureFilterParameters filterParameters,
       @InlineParameterObject @ParameterObject @Valid
-          ProcedurePaginationParameters paginationParameters) {
+          ProcedurePaginationParameters paginationParameters,
+      @InlineParameterObject @ParameterObject @Valid ProcedureSearchParameters searchParameters) {
+    if (hasNonNullValue(searchParameters)) {
+      if (hasNonNullValue(filterParameters)) {
+        throw new BadRequestException(
+            "Filter parameters and search parameters can not be used in the same request.");
+      } else {
+        return infectionBriefingProcedureService.searchProcedures(
+            searchParameters, paginationParameters);
+      }
+    }
     return infectionBriefingProcedureService.getProcedures(filterParameters, paginationParameters);
   }
 
@@ -59,6 +78,13 @@ public class InfectionBriefingProcedureController {
   public ProcedureDetailsDto getInfectionBriefingProcedureDetails(
       @PathVariable(name = "procedureId") UUID procedureId) {
     return infectionBriefingProcedureService.getProcedureDetails(procedureId);
+  }
+
+  @PostMapping
+  @Transactional
+  public CreateNewCertificateProcedureResponse createNewCertificateProcedure(
+      @Valid @RequestBody CreateNewCertificateProcedureRequest request) {
+    return createInfectionBriefingProcedureService.createNewCertificateProcedureByEmployee(request);
   }
 
   @PostMapping("{procedureId}/accept-draft")
@@ -83,8 +109,10 @@ public class InfectionBriefingProcedureController {
 
   @PostMapping("{procedureId}/payment")
   @Transactional
-  public void confirmPayment(@PathVariable(name = "procedureId") UUID procedureId) {
-    newCertificateProcedureService.confirmPayment(procedureId);
+  public void confirmPayment(
+      @PathVariable(name = "procedureId") UUID procedureId,
+      @Valid @RequestBody ConfirmPaymentRequest request) {
+    newCertificateProcedureService.confirmPayment(procedureId, request);
   }
 
   @PostMapping("{procedureId}/certificate")

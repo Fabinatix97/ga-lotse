@@ -110,7 +110,8 @@ public class SchoolEntryProcedureDataSource
           appointmentStartInTimeRange,
           examinationDateOrAppointmentStartNotNull,
           isClosed,
-          isNotCanChildWithNegativeFeedback);
+          isNotCanChildWithNegativeFeedback,
+          isIncluded(root, criteriaBuilder));
     };
   }
 

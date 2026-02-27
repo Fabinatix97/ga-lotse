@@ -12,6 +12,7 @@ import {
 } from "@eshg/base-api";
 import {
   InfectionBriefingAppointmentStandardDurationConfigApi,
+  InfectionBriefingConfigApi,
   Configuration as InfectionBriefingConfiguration,
 } from "@eshg/infection-briefing-api";
 import {
@@ -313,4 +314,12 @@ export function useInfectionBriefingAppointmentStandardDurationConfigApi() {
 export function useAddressRegistryConfigurationApi() {
   const configuration = useConfiguration();
   return new AddressDirectoryConfigApi(configuration);
+}
+
+export function useConfiguratorInfectionBriefingApi() {
+  const configuration = useConfigurationByBusinessModule(
+    ApiBusinessModule.InfectionBriefing,
+    InfectionBriefingConfiguration,
+  );
+  return new InfectionBriefingConfigApi(configuration);
 }

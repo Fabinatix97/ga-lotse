@@ -4,6 +4,7 @@
  */
 
 import { useQueryClient } from "@tanstack/react-query";
+import { useMemo } from "react";
 
 import { unwrapRawResponse, useSnackbar } from "@eshg/lib-portal";
 import { ApiConsultation } from "@eshg/prostitute-protection-api";
@@ -17,15 +18,18 @@ export function useUpsertConsultationOptions(procedureId: string) {
   const { queryKey } = useGetConsultationQueryOptions(procedureId);
   const queryClient = useQueryClient();
 
-  return {
-    meta: { updatesQuery: queryKey },
-    mutationFn: (apiConsultation: ApiConsultation) =>
-      prostituteProtectionApi
-        .updateConsultationRaw({ procedureId, apiConsultation })
-        .then(unwrapRawResponse),
-    onSuccess: (response: ApiConsultation) => {
-      queryClient.setQueryData(queryKey, response);
-      snackbar.confirmation("Die Beratung wurde erfolgreich geändert.");
-    },
-  };
+  return useMemo(
+    () => ({
+      meta: { updatesQuery: queryKey },
+      mutationFn: (apiConsultation: ApiConsultation) =>
+        prostituteProtectionApi
+          .updateConsultationRaw({ procedureId, apiConsultation })
+          .then(unwrapRawResponse),
+      onSuccess: (response: ApiConsultation) => {
+        queryClient.setQueryData(queryKey, response);
+        snackbar.confirmation("Die Beratung wurde erfolgreich geändert.");
+      },
+    }),
+    [procedureId, queryKey, prostituteProtectionApi, queryClient, snackbar],
+  );
 }

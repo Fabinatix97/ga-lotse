@@ -7,6 +7,7 @@ package de.eshg.infectionbriefing;
 
 import de.cronn.commons.lang.StreamUtil;
 import de.eshg.infectionbriefing.api.AcceptDraftRequest;
+import de.eshg.infectionbriefing.api.ConfirmPaymentRequest;
 import de.eshg.infectionbriefing.api.IssueCertificateResponse;
 import de.eshg.infectionbriefing.document.CertificateGenerator;
 import de.eshg.infectionbriefing.domain.model.CustodianConsent;
@@ -14,6 +15,7 @@ import de.eshg.infectionbriefing.domain.model.InfectionBriefingPerson;
 import de.eshg.infectionbriefing.domain.model.InfectionBriefingProcedure;
 import de.eshg.infectionbriefing.domain.model.NewCertificateProcedure;
 import de.eshg.infectionbriefing.domain.repository.InfectionBriefingProcedureRepository;
+import de.eshg.infectionbriefing.mapper.ApplicantCategoryMapper;
 import de.eshg.infectionbriefing.mapper.CustodianConsentMapper;
 import de.eshg.infectionbriefing.util.InfectionBriefingKeyDocumentType;
 import de.eshg.infectionbriefing.util.InfectionBriefingProgressEntryType;
@@ -87,7 +89,7 @@ public class NewCertificateProcedureService {
             InfectionBriefingProgressEntryType.BRIEFING_CONFIRMED, TriggerType.EMPLOYEE));
   }
 
-  public void confirmPayment(UUID procedureId) {
+  public void confirmPayment(UUID procedureId, ConfirmPaymentRequest request) {
     NewCertificateProcedure procedure =
         new ProcedureValidator<>(getNewCertificateProcedure(procedureId))
             .validateStatus(ProcedureStatus.OPEN)
@@ -95,6 +97,8 @@ public class NewCertificateProcedureService {
             .validateHasSystemProgressEntryType(
                 InfectionBriefingProgressEntryType.BRIEFING_CONFIRMED)
             .get();
+    procedure.setApplicantCategory(
+        ApplicantCategoryMapper.toDomainType(request.applicantCategory()));
     progressEntryService.addSystemProgressEntry(
         procedure,
         InfectionBriefingSystemProgressEntryFactory.createSystemProgressEntry(

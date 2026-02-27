@@ -7,15 +7,20 @@ package de.eshg.infectionbriefing;
 
 import de.cronn.commons.lang.StreamUtil;
 import de.eshg.base.centralfile.api.person.GetPersonFileStateResponse;
+import de.eshg.infectionbriefing.api.AppointmentSummaryDto;
+import de.eshg.infectionbriefing.api.GetCitizenAppointmentOverviewResponse;
 import de.eshg.infectionbriefing.domain.model.InfectionBriefingProcedure;
 import de.eshg.infectionbriefing.domain.repository.InfectionBriefingProcedureRepository;
 import de.eshg.lib.appointmentblock.AbstractAppointmentService;
 import de.eshg.lib.appointmentblock.AppointmentBlockSlotUtil;
+import de.eshg.lib.appointmentblock.AppointmentTypeMapper;
 import de.eshg.lib.appointmentblock.api.AppointmentDto;
+import de.eshg.lib.appointmentblock.api.AppointmentTypeDto;
 import de.eshg.lib.appointmentblock.persistence.AppointmentType;
 import de.eshg.lib.appointmentblock.persistence.entity.Appointment;
 import de.eshg.lib.procedure.domain.model.Procedure;
 import de.eshg.lib.procedure.domain.model.RelatedPerson;
+import de.eshg.rest.service.error.BadRequestException;
 import java.time.Clock;
 import java.time.Instant;
 import java.util.Collection;
@@ -34,18 +39,21 @@ public class InfectionBriefingAppointmentService
   private final InfectionBriefingAppointmentStandardDurationService standardDurationService;
   private final PersonClient personClient;
   private final InfectionBriefingProcedureRepository procedureRepository;
+  private final MailService mailService;
 
   public InfectionBriefingAppointmentService(
       Clock clock,
       AppointmentBlockSlotUtil appointmentBlockSlotUtil,
       InfectionBriefingAppointmentStandardDurationService standardDurationService,
       PersonClient personClient,
-      InfectionBriefingProcedureRepository procedureRepository) {
+      InfectionBriefingProcedureRepository procedureRepository,
+      MailService mailService) {
     this.clock = clock;
     this.appointmentBlockSlotUtil = appointmentBlockSlotUtil;
     this.standardDurationService = standardDurationService;
     this.personClient = personClient;
     this.procedureRepository = procedureRepository;
+    this.mailService = mailService;
   }
 
   public AppointmentDto bookAppointment(
@@ -54,6 +62,47 @@ public class InfectionBriefingAppointmentService
     appointmentBlockSlotUtil.updateAppointment(
         appointmentType, null, null, procedure, startTime, endTime);
     return new AppointmentDto(startTime, endTime);
+  }
+
+  public GetCitizenAppointmentOverviewResponse getAppointsmentOfCitizen(UUID citizenUserId) {
+    InfectionBriefingProcedure procedure = getProcedureByUser(citizenUserId);
+
+    Appointment appointment = procedure.getAppointment();
+    AppointmentTypeDto interfaceType = AppointmentTypeMapper.toInterfaceType(appointment.getType());
+
+    GetPersonFileStateResponse personFileStateResponse = getPersonDetailsByProcedure(procedure);
+
+    var appointmentSummaryDto =
+        new AppointmentSummaryDto(appointment.getAppointmentStart(), interfaceType);
+    return new GetCitizenAppointmentOverviewResponse(
+        appointmentSummaryDto,
+        personFileStateResponse.lastName(),
+        personFileStateResponse.firstName(),
+        personFileStateResponse.dateOfBirth());
+  }
+
+  public void cancelAppointmentByCitizen(UUID citizenUserId) {
+    InfectionBriefingProcedure procedure = getProcedureByUser(citizenUserId);
+    Appointment appointment = procedure.getAppointment();
+    appointmentBlockSlotUtil.removeAppointment(procedure);
+    procedureRepository.delete(procedure);
+
+    GetPersonFileStateResponse personDetails = getPersonDetailsByProcedure(procedure);
+    personDetails
+        .emailAddresses()
+        .forEach(email -> mailService.sendCancelAppointmentConfirmationMail(email, appointment));
+  }
+
+  private InfectionBriefingProcedure getProcedureByUser(UUID citizenUserId) {
+    return procedureRepository.getByCitizenUserId(citizenUserId).stream()
+        .collect(StreamUtil.toSingleOptionalElement())
+        .orElseThrow(() -> new BadRequestException("Citizen has no procedures"));
+  }
+
+  public GetPersonFileStateResponse getPersonDetailsByProcedure(
+      InfectionBriefingProcedure procedure) {
+    UUID centralFileStateId = procedure.getRelatedPersons().getFirst().getCentralFileStateId();
+    return personClient.getPersonFileState(centralFileStateId);
   }
 
   @Override

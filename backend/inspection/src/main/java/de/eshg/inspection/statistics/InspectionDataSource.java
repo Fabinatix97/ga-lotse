@@ -122,7 +122,8 @@ public class InspectionDataSource extends ProcedureDataSource<Inspection, Inspec
       Predicate isClosed =
           criteriaBuilder.equal(root.get(Procedure_.procedureStatus), ProcedureStatus.CLOSED);
 
-      return criteriaBuilder.and(appointmentStartInTimeRange, isClosed);
+      return criteriaBuilder.and(
+          appointmentStartInTimeRange, isClosed, isIncluded(root, criteriaBuilder));
     };
   }
 

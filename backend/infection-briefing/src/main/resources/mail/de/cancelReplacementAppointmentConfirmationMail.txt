@@ -1,0 +1,8 @@
+Guten Tag,
+
+Sie haben Ihren Termin am %s um %s Uhr für eine Austellung einer Ersatzbescheinigung für eine bereits durchgeführte Infektionsschutzbelehrung abgesagt. Ihre Absage haben wir zur Kenntnis genommen.
+
+
+Mit freundlichen Grüßen,
+
+Ihr Gesundheitsamt

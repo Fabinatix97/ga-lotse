@@ -22,6 +22,8 @@ public class InfectionBriefingProperties {
 
   @NotNull @Valid private Mail newCertificateAppointmentConfirmationMail;
   @NotNull @Valid private Mail replacementCertificateAppointmentConfirmationMail;
+  @NotNull @Valid private Mail cancelNewCertificateAppointmentConfirmationMail;
+  @NotNull @Valid private Mail cancelReplacementCertificateAppointmentConfirmationMail;
 
   public Mail getNewCertificateAppointmentConfirmationMail() {
     return newCertificateAppointmentConfirmationMail;
@@ -29,6 +31,14 @@ public class InfectionBriefingProperties {
 
   public Mail getReplacementCertificateAppointmentConfirmationMail() {
     return replacementCertificateAppointmentConfirmationMail;
+  }
+
+  public Mail getCancelNewCertificateAppointmentConfirmationMail() {
+    return cancelNewCertificateAppointmentConfirmationMail;
+  }
+
+  public Mail getCancelReplacementCertificateAppointmentConfirmationMail() {
+    return cancelReplacementCertificateAppointmentConfirmationMail;
   }
 
   public void setNewCertificateAppointmentConfirmationMail(
@@ -40,6 +50,18 @@ public class InfectionBriefingProperties {
       Mail replacementCertificateAppointmentConfirmationMail) {
     this.replacementCertificateAppointmentConfirmationMail =
         replacementCertificateAppointmentConfirmationMail;
+  }
+
+  public void setCancelNewCertificateAppointmentConfirmationMail(
+      Mail cancelNewCertificateAppointmentConfirmationMail) {
+    this.cancelNewCertificateAppointmentConfirmationMail =
+        cancelNewCertificateAppointmentConfirmationMail;
+  }
+
+  public void setCancelReplacementCertificateAppointmentConfirmationMail(
+      Mail cancelReplacementCertificateAppointmentConfirmationMail) {
+    this.cancelReplacementCertificateAppointmentConfirmationMail =
+        cancelReplacementCertificateAppointmentConfirmationMail;
   }
 
   public static class Mail {

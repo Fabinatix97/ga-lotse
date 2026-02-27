@@ -17,6 +17,7 @@ export const PortalErrorCode = {
   Corrupt: "CORRUPT",
   Locked: "LOCKED",
   XlsxTooManyRows: "XLSX_TOO_MANY_ROWS",
+  ServiceUnavailable: "SERVICE_UNAVAILABLE",
 } as const;
 export type PortalErrorCode =
   (typeof PortalErrorCode)[keyof typeof PortalErrorCode];

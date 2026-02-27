@@ -28,13 +28,16 @@ import de.eshg.schoolentry.api.anamnesis.AnamnesisDto;
 import de.eshg.schoolentry.api.schoolinfoletter.SaveSchoolInfoLetterRequest;
 import de.eshg.schoolentry.business.model.PagedProcedures;
 import de.eshg.schoolentry.business.model.PagedWaitingRoomProcedures;
+import de.eshg.schoolentry.business.model.PersonDetailsData;
 import de.eshg.schoolentry.business.model.ProcedureDetailsData;
 import de.eshg.schoolentry.domain.model.*;
 import de.eshg.schoolentry.mapper.*;
 import de.eshg.schoolentry.mapper.SchoolInfoLetterExaminationMapper;
 import de.eshg.schoolentry.pdf.SchoolInfoLetterGenerator;
 import de.eshg.schoolentry.pdf.medicalreport.MedicalReportGenerator;
+import de.eshg.schoolentry.util.CorrelationIdGenerator;
 import de.eshg.schoolentry.util.ExceptionUtil;
+import de.eshg.schoolentry.util.NameAliasGenerator;
 import de.eshg.schoolentry.util.ProgressEntryUtil;
 import de.eshg.schoolentry.util.SchoolEntryKeyDocumentType;
 import de.eshg.schoolentry.util.TaskUtil;
@@ -80,6 +83,7 @@ public class SchoolEntryController {
   private final AppointmentBlockConfig appointmentBlockConfig;
   private final ProgressEntryUtil progressEntryUtil;
   private final AuditLogger auditLogger;
+  private final CorrelationIdGenerator correlationIdGenerator;
 
   public SchoolEntryController(
       SchoolEntryService schoolEntryService,
@@ -94,7 +98,8 @@ public class SchoolEntryController {
       Clock clock,
       AppointmentBlockConfig appointmentBlockConfig,
       ProgressEntryUtil progressEntryUtil,
-      AuditLogger auditLogger) {
+      AuditLogger auditLogger,
+      CorrelationIdGenerator correlationIdGenerator) {
     this.schoolEntryService = schoolEntryService;
     this.procedureOverviewService = procedureOverviewService;
     this.examinationResultService = examinationResultService;
@@ -108,6 +113,7 @@ public class SchoolEntryController {
     this.appointmentBlockConfig = appointmentBlockConfig;
     this.progressEntryUtil = progressEntryUtil;
     this.auditLogger = auditLogger;
+    this.correlationIdGenerator = correlationIdGenerator;
   }
 
   @PostMapping
@@ -404,8 +410,28 @@ public class SchoolEntryController {
 
     examinationResultService.updateHearingTestResult(
         hearingTestResult, ExaminationResultMapper.mapToDomain(request));
+    schoolEntryService.updateFirstEyeExaminationOrHearingTestModifiedBy(procedureId);
 
     return ExaminationResultMapper.mapToDto(hearingTestResult);
+  }
+
+  @PostMapping("/{procedureId}/{equipmentId}/hearing-test-initiate")
+  @Transactional
+  @Operation(summary = "Initiates hearing test on a machine for a procedure.")
+  public HearingTestInitializationResponse initiateHearingTest(
+      @PathVariable("procedureId") UUID procedureId,
+      @PathVariable("equipmentId") String equipmentId) {
+    ProcedureDetailsData procedureDetailsData =
+        schoolEntryService.findAndAugmentProcedureByExternalId(procedureId);
+    PersonDetailsData child = procedureDetailsData.child();
+
+    String correlationId = correlationIdGenerator.generateCorrelationId();
+    NameAliasGenerator.NameAlias nameAlias =
+        NameAliasGenerator.generateAlias(
+            procedureId, child.gender(), child.firstName(), child.lastName());
+
+    return new HearingTestInitializationResponse(
+        correlationId, nameAlias.firstName(), nameAlias.lastName());
   }
 
   @GetMapping("/{procedureId}/eye-examination-result")
@@ -431,6 +457,7 @@ public class SchoolEntryController {
 
     examinationResultService.updateEyeExaminationResult(
         eyeExaminationResult, ExaminationResultMapper.mapToDomain(request));
+    schoolEntryService.updateFirstEyeExaminationOrHearingTestModifiedBy(procedureId);
 
     return ExaminationResultMapper.mapToDto(eyeExaminationResult);
   }
@@ -616,6 +643,7 @@ public class SchoolEntryController {
         SchoolEntryKeyDocumentType.SCHOOL_INFO_LETTER);
     procedure.setSchoolInfoLetterCreatedAt(Instant.now(clock));
     TaskUtil.closeOptionalTaskOfType(procedure, TaskType.PERFORM_SCHOOL_ENTRY_EXAMINATION);
+    schoolEntryService.updateFirstSchoolInfoLetterGeneratedBy(procedure);
 
     return ResponseEntity.ok()
         .header(
@@ -706,5 +734,15 @@ public class SchoolEntryController {
     if (appointmentBlockConfig.getLocationSelectionMode() != LocationSelectionMode.NONE) {
       throw ExceptionUtil.badRequestExceptionUnsupportedLocationMode();
     }
+  }
+
+  @GetMapping("/employee-self-statistics")
+  @Transactional(readOnly = true)
+  @Operation(summary = "Get examinations performed in the given time range by current user")
+  public GetEmployeeSelfStatisticsResponse getEmployeeSelfStatistics(
+      @RequestParam(name = "timeRangeStart") Instant timeRangeStart,
+      @RequestParam(name = "timeRangeEnd") Instant timeRangeEnd) {
+    return schoolEntryService.getEmployeeStatistics(
+        CurrentUserHelper.getCurrentUserId(), timeRangeStart, timeRangeEnd);
   }
 }

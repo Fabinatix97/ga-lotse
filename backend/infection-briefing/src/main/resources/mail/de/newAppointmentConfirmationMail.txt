@@ -1,8 +1,22 @@
 Guten Tag,
 
-Sie haben einen Termin zur Durchführung einer Infektionsschutzbelehrung am %s um %s Uhr gebucht.
+Sie haben einen Termin zur Durchführung einer Infektionsschutzbelehrung am %s um %s Uhr gebucht. Bitte bewahren Sie diese Email als Bestätigung Ihrer Buchung auf.
 
-Beachten Sie bitte, dass es nicht möglich ist auf diese Email zu antworten.
+Bitte bringen Sie zu Ihrem Termin einen gültigen Personalausweis oder Reisepass mit.
+
+Bei Minderjährigen bis einschließlich 15 Jahren ist die Anwesenheit eines Sorgeberechtigten erforderlich. Ab 16 Jahren genügt eine schriftliche Einverständniserklärung der Sorgeberechtigten.
+
+Für verpflichtende Schulpraktika und ehrenamtliche Tätigkeiten ist eine entsprechende Bescheinigung vorzulegen (z. B. Bestätigung der Schule oder der Einsatzstelle). Schülerinnen und Schüler müssen zusätzlich einen gültigen Schülerausweis mitbringen.
+
+Für den Fall, dass Sie Ihren Termin ändern oder stornieren möchten, bitten wir Sie, dies über unseren Online-Service vorzunehmen. Nutzen Sie hierfür bitte den folgenden Link:
+%s
+
+Anmeldecode: %s
+Zur Verifikation wird Ihr Geburtsdatum benötigt.
+
+Beachten Sie bitte, dass es nicht möglich ist auf diese Email zu antworten. Für eine Terminabsage verwenden Sie bitte den angegebenen Link.
+
+Vielen Dank, dass Sie unseren Service nutzen. Wir freuen uns darauf, Sie bald bei uns begrüßen zu dürfen.
 
 Mit freundlichen Grüßen,
 

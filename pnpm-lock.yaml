@@ -427,6 +427,9 @@ importers:
       '@eshg/base-api':
         specifier: workspace:*
         version: link:../../packages/base-api
+      '@eshg/infection-briefing-api':
+        specifier: workspace:*
+        version: link:../../packages/infection-briefing-api
       '@eshg/lib-portal':
         specifier: workspace:*
         version: link:../../packages/lib-portal

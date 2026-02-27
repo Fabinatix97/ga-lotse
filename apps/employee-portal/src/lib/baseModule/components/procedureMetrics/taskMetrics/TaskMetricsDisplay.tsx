@@ -26,11 +26,11 @@ import {
   DataTable,
   PROCEDURE_TYPE_NAMES,
   TableSheet,
+  TimeRangeSelect,
+  lastXMonthsInDate,
 } from "@eshg/lib-employee-portal";
 
 import { useTaskMetricsQuery } from "@/lib/baseModule/api/queries/taskMetrics";
-import { TimeRangeSelect } from "@/lib/baseModule/components/procedureMetrics/TimeRangeSelect";
-import { lastXMonthsInDate } from "@/lib/baseModule/components/procedureMetrics/rangeSelectHelper";
 import { resolveProcedureDefinitionDiagram } from "@/lib/baseModule/moduleRegister/procedureDefinitionDiagramsResolver";
 import { resolveProcedureDetailsRoute } from "@/lib/baseModule/moduleRegister/routeResolver";
 import { FlashCard } from "@/lib/shared/components/cards/FlashCard";

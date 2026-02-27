@@ -10,7 +10,6 @@ import jakarta.validation.constraints.NotNull;
 import java.time.Instant;
 
 public record BookNewCertificateAppointmentRequest(
-    @NotNull @Valid PersonDto applicant,
+    @NotNull @Valid PersonWithEmailDto applicant,
     @Valid ApplicantAddressDto applicantAddress,
-    @NotNull ApplicantCategoryDto applicantCategoryDto,
     @NotNull Instant startTime) {}
