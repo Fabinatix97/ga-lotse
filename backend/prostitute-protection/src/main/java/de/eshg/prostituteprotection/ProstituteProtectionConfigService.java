@@ -26,6 +26,7 @@ import de.eshg.rest.service.i18n.Language;
 import jakarta.persistence.EntityManager;
 import java.io.IOException;
 import java.io.UncheckedIOException;
+import java.util.Map;
 import java.util.SequencedMap;
 import org.springframework.core.io.Resource;
 import org.springframework.http.MediaType;
@@ -37,7 +38,7 @@ import org.springframework.web.multipart.MultipartFile;
 public class ProstituteProtectionConfigService
     extends EshgConfigurationService<ProstituteProtectionConfig> {
 
-  public static final String LANDING_CONTENT_BASE_FILENAME = "landing_content.md";
+  public static final String LANDING_CONTENT_BASE_FILENAME = "landing_content" + ".md";
   private final InitialProstituteProtectionConfiguration initialConfiguration;
   private final AuditLogWriter auditLogWriter;
 
@@ -55,8 +56,10 @@ public class ProstituteProtectionConfigService
   protected ProstituteProtectionConfig getInitialConfiguration() throws IOException {
     ProstituteProtectionConfig prostituteProtectionConfig = new ProstituteProtectionConfig();
     MultiLangDocument landingContent = new MultiLangDocument();
-    landingContent.updateDe(initialConfiguration.landingContentDe().getContentAsByteArray());
-    landingContent.updateEn(initialConfiguration.landingContentEn().getContentAsByteArray());
+    landingContent.update(
+        Language.GERMAN, initialConfiguration.landingContentDe().getContentAsByteArray());
+    landingContent.update(
+        Language.ENGLISH, initialConfiguration.landingContentEn().getContentAsByteArray());
     prostituteProtectionConfig.setLandingContent(landingContent);
 
     return prostituteProtectionConfig;
@@ -86,48 +89,38 @@ public class ProstituteProtectionConfigService
   }
 
   ProstituteProtectionConfig updateConfig(
-      MultipartFile requestedLandingContentDe,
-      MultipartFile requestedLandingContentEn,
+      Map<Language, MultipartFile> landingContent,
       UpdateProstituteProtectionConfigRequest request) {
-
-    if (requestedLandingContentDe == null) {
+    if (!landingContent.containsKey(Language.GERMAN)) {
       throw new BadRequestException("Landing page content must be given in german language.");
     }
-    FileValidator.validateMarkdownFile(requestedLandingContentDe);
-    FileValidator.validateMarkdownFile(requestedLandingContentEn);
+    for (var entry : landingContent.values()) {
+      FileValidator.validateMarkdownFile(entry);
+    }
     ProstituteProtectionConfig currentConfig = getConfig();
 
-    MultiLangDocument updateDocument = new MultiLangDocument();
-    updateDocument.updateDe(getBytes(requestedLandingContentDe));
-
-    if (requestedLandingContentEn != null) {
-      updateDocument.updateEn(getBytes(requestedLandingContentEn));
+    MultiLangDocument updateDocument;
+    try {
+      updateDocument = MultiLangDocumentMapper.mapToDomain(landingContent);
+    } catch (IOException e) {
+      throw new UncheckedIOException(e);
     }
     auditLogWriter.writeChangeToAuditLog(
         "landingContentConfig",
         getRelevantFieldsForLogging(currentConfig.getLandingContent()),
         getRelevantFieldsForLogging(updateDocument));
 
-    currentConfig.getLandingContent().updateDe(updateDocument.getDe());
-    currentConfig.getLandingContent().updateEn(updateDocument.getEn());
+    currentConfig.setLandingContent(updateDocument);
     currentConfig.setOnlinePortalBookingEnabled(request.onlinePortalBookingEnabled());
     currentConfig.setInitialized(true);
     return currentConfig;
-  }
-
-  private static byte[] getBytes(MultipartFile file) {
-    try {
-      return file.getBytes();
-    } catch (IOException ioe) {
-      throw new UncheckedIOException(ioe);
-    }
   }
 
   ResponseEntity<Resource> downloadLandingPage(Language language) {
     if (!getConfig().isInitialized()) {
       throw new NotFoundException("Config is not initialized");
     }
-    return MultiLangDocumentHelper.getAsResourceByLanguageOrThrow(
+    return MultiLangDocumentHelper.getAsResponseWithFallback(
         getConfig().getLandingContent(), getMultiLangFileName(), language, MediaType.TEXT_MARKDOWN);
   }
 }

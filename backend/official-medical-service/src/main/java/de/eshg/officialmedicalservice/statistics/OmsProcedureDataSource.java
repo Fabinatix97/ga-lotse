@@ -35,6 +35,7 @@ import de.eshg.officialmedicalservice.appointment.persistence.entity.BookingStat
 import de.eshg.officialmedicalservice.procedure.persistence.entity.OmsProcedure;
 import de.eshg.officialmedicalservice.procedure.persistence.entity.OmsProcedureRepository;
 import de.eshg.officialmedicalservice.procedure.persistence.entity.OmsProcedure_;
+import de.eshg.rest.service.i18n.Language;
 import java.time.Duration;
 import java.util.Optional;
 import java.util.UUID;
@@ -68,9 +69,12 @@ public class OmsProcedureDataSource
     return switch (attribute) {
       case PROCEDURE_ID -> procedure.getExternalId();
       case STATUS -> procedure.getProcedureStatus().toString();
-      case CONCERN -> procedure.getConcern() != null ? procedure.getConcern().getNameDe() : null;
+      case CONCERN ->
+          procedure.getConcern() != null ? procedure.getConcern().getName(Language.GERMAN) : null;
       case CONCERN_CATEGORY ->
-          procedure.getConcern() != null ? procedure.getConcern().getCategoryNameDe() : null;
+          procedure.getConcern() != null
+              ? procedure.getConcern().getCategoryName(Language.GERMAN)
+              : null;
       case DURATION -> getDurationInMinutes(procedure);
       case PERSON_CENTRAL_FILE_ID -> procedure.findAffectedPerson().getCentralFileStateId();
       case NUMBER_OF_DOCUMENTS -> procedure.getDocuments().size();

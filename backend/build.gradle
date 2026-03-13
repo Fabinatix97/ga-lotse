@@ -202,16 +202,6 @@ subprojects {
         }
     }
 
-    configurations.configureEach {
-        resolutionStrategy.eachDependency { DependencyResolveDetails details ->
-            if (details.requested.group == 'io.swagger.core.v3' && details.requested.name == 'swagger-core-jakarta') {
-                details.useVersion libs.versions.swagger.core.jakarta.get()
-                // see ISSUE-9929
-                details.because 'starting from 2.2.39 invalid openapi specs are generated'
-            }
-        }
-    }
-
     configurations {
         productionRuntimeClasspath.shouldResolveConsistentlyWith(runtimeClasspath)
         testCompileClasspath.shouldResolveConsistentlyWith(runtimeClasspath)

@@ -5,7 +5,13 @@
 
 package de.eshg.infectionbriefing.api;
 
+import de.eshg.lib.procedure.model.ProcedureStatusDto;
 import java.time.LocalDate;
+import java.time.Year;
+import java.util.LinkedHashSet;
 
 public record ProcedureFilterParameters(
-    LocalDate appointmentDay, InstructionTypeDto instructionType) {}
+    LocalDate appointmentDay,
+    InstructionTypeDto instructionType,
+    Year instructionYear,
+    LinkedHashSet<ProcedureStatusDto> status) {}

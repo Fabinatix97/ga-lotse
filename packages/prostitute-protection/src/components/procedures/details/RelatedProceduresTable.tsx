@@ -105,8 +105,8 @@ export function RelatedProceduresTable({
   const tableControl = useTableControl({
     serverSideSorting: true,
     initialSorting,
-    sortFieldName: "sortBy",
-    sortDirectionName: "sortOrder",
+    sortFieldName: "sortKey",
+    sortDirectionName: "sortDirection",
   });
 
   const personSearchOptions = usePersonSearchOptions({
@@ -133,6 +133,7 @@ export function RelatedProceduresTable({
           <DataTable
             data={data ?? []}
             columns={getRelatedProceduresColumns()}
+            sorting={tableControl.tableSorting}
             rowNavigation={{
               onClick: (row) => () => {
                 if (personData) {

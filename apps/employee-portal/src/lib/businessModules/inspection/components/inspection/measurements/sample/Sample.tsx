@@ -131,7 +131,7 @@ export function Sample({
     e.stopPropagation();
     openCancelDialog({
       title: "Probe löschen",
-      description: `Möchten Sie die Probe ${sample.pointOfWithdrawal} und die zugehörigen Messwerten unwiderruflich löschen?`,
+      description: `Möchten Sie die Probe ${sample.samplingPoint.name} und die zugehörigen Messwerten unwiderruflich löschen?`,
       cancelLabel: "Abbrechen",
       confirmLabel: "Löschen",
       onConfirm: async () => {
@@ -455,7 +455,7 @@ export function Sample({
                 />
                 <DetailsItem
                   label="Entnahmestelle"
-                  value={initObject.pointOfWithdrawal}
+                  value={initObject.samplingPoint.name}
                 />
                 <DetailsItem
                   label="Proben-Nr."

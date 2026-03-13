@@ -3,9 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { useUpdateImprintMarkdown } from "@/lib/configurator/api/mutations/useUpdateImprint";
+import { useGetImprintMarkdown } from "@/lib/configurator/api/queries/imprint";
 import { ConfiguratorModuleName } from "@/lib/configurator/shared/types";
-import { useUpdateImprintMarkdown } from "@/lib/shared/api/mutations/configurator/useUpdateImprint";
-import { useGetImprintMarkdown } from "@/lib/shared/api/queries/configurator/imprint";
 
 import { MarkdownFiles } from "./MarkdownFiles";
 

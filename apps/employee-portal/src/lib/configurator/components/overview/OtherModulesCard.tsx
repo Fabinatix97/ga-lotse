@@ -49,8 +49,8 @@ export function OtherModulesCard(props: { tabs: ConfiguratorStatusOverview }) {
           {existModuleWarning(props.tabs) && (
             <Stack gap={2}>
               <Typography level="body-md">
-                In folgenden Modulen fehlen Daten zur englischen Übersetzung. Es
-                wird empfohlen, diese bereitzustellen:
+                In folgenden Modulen fehlen Übersetzungen. Es wird empfohlen,
+                diese bereitzustellen:
               </Typography>
               <OtherModulesLink
                 modules={getAllWarningModules(props.tabs)}

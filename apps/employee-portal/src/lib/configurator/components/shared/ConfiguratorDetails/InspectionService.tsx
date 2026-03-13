@@ -8,6 +8,8 @@ import { useMemo } from "react";
 
 import { ApiFacilityFileNumberMethod } from "@eshg/inspection-api";
 
+import { useUpdateInspectionConfig } from "@/lib/configurator/api/mutations/useUpdateInspection";
+import { useGetInspectionConfig } from "@/lib/configurator/api/queries/inspection";
 import {
   ConfiguratorForm,
   FormSheet,
@@ -18,8 +20,6 @@ import {
   ConfiguratorEndpointName,
   ConfiguratorModuleName,
 } from "@/lib/configurator/shared/types";
-import { useUpdateInspectionConfig } from "@/lib/shared/api/mutations/configurator/useUpdateInspection";
-import { useGetInspectionConfig } from "@/lib/shared/api/queries/configurator/inspection";
 
 export interface InspectionServiceFormModel {
   facilityFileNumberMethod: ApiFacilityFileNumberMethod;

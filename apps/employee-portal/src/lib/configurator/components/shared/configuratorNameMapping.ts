@@ -73,5 +73,7 @@ export function getTabNamesByEndpointName(
       return "Fachliche Einstellungen";
     case "INFECTION_BRIEFING":
       return "Fachliche Einstellungen";
+    case "DEVICE_REGISTRY":
+      return "Messgeräte-Inventar";
   }
 }

@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { useGetSingleModuleStatus } from "@/lib/configurator/api/queries/status";
 import { ConfiguratorModuleName } from "@/lib/configurator/shared/types";
-import { useGetSingleModuleStatus } from "@/lib/shared/api/queries/configurator/status";
 
 export function useTabStatus({
   moduleName,

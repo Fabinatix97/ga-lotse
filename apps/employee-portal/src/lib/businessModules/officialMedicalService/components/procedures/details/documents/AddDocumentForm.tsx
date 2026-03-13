@@ -29,12 +29,11 @@ import { theme } from "@/lib/baseModule/theme/theme";
 import { FilesSection } from "@/lib/businessModules/officialMedicalService/components/procedures/details/documents/FilesSection";
 import { SwitchField } from "@/lib/businessModules/officialMedicalService/components/procedures/details/documents/SwitchField";
 import { HorizontalFieldLabelEnd } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/shared/HorizontalFieldLabelEnd";
+import { SupportedLanguage } from "@/lib/i18n/language";
 
 export interface AddDocumentFormValues {
-  documentTypeDe: string;
-  documentTypeEn?: string;
-  helpTextDe?: string;
-  helpTextEn?: string;
+  documentType: { de: string } & Partial<Record<SupportedLanguage, string>>;
+  helpText: Partial<Record<SupportedLanguage, string>>;
   mandatoryDocument: boolean;
   uploadInCitizenPortal: boolean;
   files?: File[];
@@ -110,21 +109,21 @@ export function AddDocumentForm(props: Readonly<AddDocumentFormProps>) {
               <Typography level="title-md">Angaben zum Dokument</Typography>
               <Stack direction="column" gap={1}>
                 <InputField
-                  name="documentTypeDe"
+                  name="documentType.de"
                   label="Dokumentenart"
                   required="Bitte geben Sie eine Dokumentenart an"
                 />
-                {isDefined(values.documentTypeEn) ? (
+                {isDefined(values.documentType.en) ? (
                   <InputField
                     ref={(el) => (documentTypeEnRef.current = el)}
-                    name="documentTypeEn"
+                    name="documentType.en"
                     label="Dokumentenart (EN)"
                     endDecorator={
                       <IconButton
                         color="danger"
                         aria-label="Dokumentenart (EN) entfernen"
                         onClick={async () => {
-                          await setFieldValue("documentTypeEn", undefined);
+                          await setFieldValue("documentType.en", undefined);
                           toggleDocumentType();
                         }}
                       >
@@ -137,7 +136,7 @@ export function AddDocumentForm(props: Readonly<AddDocumentFormProps>) {
                     ref={(el) => (addDocumentTypeTransRef.current = el)}
                     aria-label="Dokument Übersetzen"
                     onClick={() => {
-                      void setFieldValue("documentTypeEn", "", false);
+                      void setFieldValue("documentType.en", "", false);
                       toggleDocumentType();
                     }}
                   >
@@ -146,18 +145,18 @@ export function AddDocumentForm(props: Readonly<AddDocumentFormProps>) {
                 )}
               </Stack>
               <Stack direction="column" gap={1}>
-                <InputField name="helpTextDe" label="Hilfstext" />
-                {isDefined(values.helpTextEn) ? (
+                <InputField name="helpText.de" label="Hilfstext" />
+                {isDefined(values.helpText.en) ? (
                   <InputField
                     ref={(el) => (helpTextEnRef.current = el)}
-                    name="helpTextEn"
+                    name="helpText.en"
                     label="Hilfstext (EN)"
                     endDecorator={
                       <IconButton
                         color="danger"
                         aria-label="Hilfstext (EN) entfernen"
                         onClick={async () => {
-                          await setFieldValue("helpTextEn", undefined);
+                          await setFieldValue("helpText.en", undefined);
                           toggleHelpText();
                         }}
                       >
@@ -170,7 +169,7 @@ export function AddDocumentForm(props: Readonly<AddDocumentFormProps>) {
                     ref={(el) => (addHelpTextTransRef.current = el)}
                     aria-label="Hilfstext Übersetzen"
                     onClick={() => {
-                      void setFieldValue("helpTextEn", "", false);
+                      void setFieldValue("helpText.en", "", false);
                       toggleHelpText();
                     }}
                   >

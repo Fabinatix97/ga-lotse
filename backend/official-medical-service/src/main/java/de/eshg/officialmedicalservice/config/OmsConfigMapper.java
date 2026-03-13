@@ -5,6 +5,7 @@
 
 package de.eshg.officialmedicalservice.config;
 
+import de.cronn.commons.lang.StreamUtil;
 import de.eshg.config.api.DocumentDetailsDto;
 import de.eshg.config.api.MultiLangDocumentDto;
 import de.eshg.config.domain.Document;
@@ -13,7 +14,9 @@ import de.eshg.config.i18n.MultiLangFileName;
 import de.eshg.officialmedicalservice.config.api.GetOmsConfigResponse;
 import de.eshg.officialmedicalservice.config.api.OmsConfigDto;
 import de.eshg.officialmedicalservice.config.persistence.entity.OmsConfiguration;
+import de.eshg.rest.service.i18n.Language;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.ContentDisposition;
@@ -58,13 +61,17 @@ public class OmsConfigMapper {
       return null;
     }
 
-    DocumentDetailsDto deDocumentDetailsDto =
-        new DocumentDetailsDto(fileNames.de(), document.getDeFileSizeBytes());
+    return new MultiLangDocumentDto(
+        Arrays.stream(Language.values())
+            .collect(StreamUtil.toLinkedHashMap(l -> l, l -> mapToDto(l, document, fileNames))));
+  }
 
-    Integer enFileSizeBytes = document.getEnFileSizeBytes();
-    DocumentDetailsDto enDocumentDetailsDto =
-        (enFileSizeBytes != null ? new DocumentDetailsDto(fileNames.en(), enFileSizeBytes) : null);
-    return new MultiLangDocumentDto(deDocumentDetailsDto, enDocumentDetailsDto);
+  private DocumentDetailsDto mapToDto(
+      Language language, MultiLangDocument document, MultiLangFileName fileNames) {
+    final var fileSizeInBytes = document.getFileSizeBytes(language);
+    return (fileSizeInBytes != null
+        ? new DocumentDetailsDto(fileNames.getFileName(language), fileSizeInBytes)
+        : null);
   }
 
   public static ResponseEntity<Resource> documentToEntity(

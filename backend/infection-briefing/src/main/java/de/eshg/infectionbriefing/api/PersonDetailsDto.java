@@ -21,4 +21,5 @@ public record PersonDetailsDto(
     @NotNull LocalDate dateOfBirth,
     List<@EmailAddressConstraint String> email,
     List<@Size(min = 1, max = 23) String> phone,
-    @Valid ApplicantAddressDto address) {}
+    @Valid ApplicantAddressDto address,
+    @NotNull boolean external) {}

@@ -54,9 +54,10 @@ public final class MultiLangDocumentHelper {
       MultiLangFileName filename,
       Language language,
       MediaType contentType) {
-    Document document = getDocument(multiLangDocument, language);
+    Document document = multiLangDocument.get(language);
+    ;
     if (document != null) {
-      return toResponseEntity(document, getFilename(filename, language), language, contentType);
+      return toResponseEntity(document, filename.getFileName(language), language, contentType);
     }
     return getAsResourceByDefaultLanguage(multiLangDocument, filename, contentType);
   }
@@ -70,8 +71,8 @@ public final class MultiLangDocumentHelper {
   private static ResponseEntity<Resource> getAsResourceByDefaultLanguage(
       MultiLangDocument multiLangDocument, MultiLangFileName filename, MediaType contentType) {
     return toResponseEntity(
-        getDocument(multiLangDocument, Language.DEFAULT),
-        getFilename(filename, Language.DEFAULT),
+        multiLangDocument.get(Language.DEFAULT),
+        filename.getFileName(Language.DEFAULT),
         Language.DEFAULT,
         contentType);
   }
@@ -81,12 +82,11 @@ public final class MultiLangDocumentHelper {
       MultiLangFileName multiLangFileName,
       Language language,
       MediaType mediaType) {
-    Document document = getDocument(multiLangDocument, language);
+    Document document = multiLangDocument.get(language);
     if (document == null) {
       throw new NotFoundException("Document does not exist in %s".formatted(language));
     }
-    return toResponseEntity(
-        document, getFilename(multiLangFileName, language), language, mediaType);
+    return toResponseEntity(document, multiLangFileName.getFileName(language), language, mediaType);
   }
 
   private static ResponseEntity<Resource> toResponseEntity(
@@ -109,20 +109,5 @@ public final class MultiLangDocumentHelper {
         .varyBy(HttpHeaders.ACCEPT_LANGUAGE)
         .contentType(contentType)
         .body(new ByteArrayResource(content));
-  }
-
-  private static String getFilename(MultiLangFileName filename, Language contentLanguage) {
-    return switch (contentLanguage) {
-      case ENGLISH -> filename.en();
-      case GERMAN -> filename.de();
-    };
-  }
-
-  private static Document getDocument(
-      MultiLangDocument multiLangDocument, Language contentLanguage) {
-    return switch (contentLanguage) {
-      case ENGLISH -> multiLangDocument.getEn();
-      case GERMAN -> multiLangDocument.getDe();
-    };
   }
 }

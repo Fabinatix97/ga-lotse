@@ -9,6 +9,7 @@ import com.google.common.collect.Streams;
 import de.eshg.inspection.inspection.api.InspectionResult;
 import de.eshg.inspection.objecttype.ObjectTypeProperties;
 import de.eshg.inspection.objecttype.persistence.ObjectType;
+import de.eshg.inspection.objecttype.persistence.ObjectTypeHierarchyReader;
 import de.eshg.lib.statistics.api.ValueOptionInternal;
 import de.eshg.lib.statistics.attributes.AttributeInfo;
 import java.util.List;
@@ -20,11 +21,14 @@ class AttributeUtil {
 
   private AttributeUtil() {}
 
-  static void addValueOptions(AttributeInfo attribute, ObjectTypeProperties objectTypeProperties) {
+  static void addValueOptions(
+      AttributeInfo attribute,
+      ObjectTypeProperties objectTypeProperties,
+      ObjectTypeHierarchyReader objectTypeHierarchyReader) {
     List<ValueOptionInternal> valueOptions = attribute.getValueOptions();
     Streams.concat(
             objectTypeProperties.legacyObjectTypes().stream(),
-            objectTypeProperties.treeObjectTypes().stream())
+            objectTypeHierarchyReader.getFlatObjectTypes().stream())
         .map(value -> new ValueOptionInternal(value, value, false))
         .forEach(valueOptions::add);
   }

@@ -74,4 +74,6 @@
   <include file="migrations/0064_add_person_without_date_of_birth.xml"/>
   <include file="migrations/0065_add_delete_at_to_person_without_date_of_birth.xml"/>
   <include file="migrations/0066_add_module_calendar_type.xml"/>
+  <include file="migrations/0067_sampling_points.xml"/>
+  <include file="migrations/0068_add_additional_languages.xml"/>
 </databaseChangeLog>

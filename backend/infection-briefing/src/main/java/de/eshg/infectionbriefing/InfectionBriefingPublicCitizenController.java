@@ -9,23 +9,23 @@ import static de.eshg.infectionbriefing.InfectionBriefingPublicCitizenController
 import static de.eshg.infectionbriefing.mapper.InfectionBriefingAppointmentTypeMapper.toDomainType;
 
 import de.eshg.base.department.GetDepartmentInfoResponse;
+import de.eshg.config.api.OpeningHoursDto;
 import de.eshg.config.departmentinfo.DepartmentInfoConfigService;
 import de.eshg.config.departmentinfo.OpeningHoursService;
+import de.eshg.config.departmentinfo.PrivacyDocumentService;
 import de.eshg.config.domain.OpeningHours;
 import de.eshg.config.i18n.MultiLangDocumentHelper;
+import de.eshg.config.mapper.OpeningHoursMapper;
+import de.eshg.infectionbriefing.api.BookAppointmentResponse;
 import de.eshg.infectionbriefing.api.BookNewCertificateAppointmentRequest;
-import de.eshg.infectionbriefing.api.BookNewCertificateAppointmentResponse;
 import de.eshg.infectionbriefing.api.BookReplacementCertificateAppointmentRequest;
-import de.eshg.infectionbriefing.api.BookReplacementCertificateAppointmentResponse;
 import de.eshg.infectionbriefing.api.InfectionBriefingAppointTypeDto;
-import de.eshg.infectionbriefing.api.citizen.GetOpeningHoursResponse;
 import de.eshg.lib.appointmentblock.AppointmentBlockService;
 import de.eshg.lib.appointmentblock.api.GetFreeAppointmentsResponse;
 import de.eshg.rest.service.security.config.BaseUrls.InfectionBriefing;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import java.util.Collections;
 import org.springframework.core.io.Resource;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -48,6 +48,7 @@ public class InfectionBriefingPublicCitizenController {
   private final AppointmentBlockService appointmentBlockService;
   private final DepartmentInfoConfigService departmentInfoService;
   private final OpeningHoursService openingHoursService;
+  private final PrivacyDocumentService privacyDocumentService;
   private final InfectionBriefingConfigService configService;
 
   public InfectionBriefingPublicCitizenController(
@@ -55,11 +56,13 @@ public class InfectionBriefingPublicCitizenController {
       AppointmentBlockService appointmentBlockService,
       DepartmentInfoConfigService departmentInfoService,
       OpeningHoursService openingHoursService,
+      PrivacyDocumentService privacyDocumentService,
       InfectionBriefingConfigService configService) {
     this.createInfectionBriefingProcedureService = createInfectionBriefingProcedureService;
     this.appointmentBlockService = appointmentBlockService;
     this.departmentInfoService = departmentInfoService;
     this.openingHoursService = openingHoursService;
+    this.privacyDocumentService = privacyDocumentService;
     this.configService = configService;
   }
 
@@ -72,11 +75,23 @@ public class InfectionBriefingPublicCitizenController {
   @GetMapping(path = "/opening-hours")
   @Operation(summary = "Get the official opening hours.")
   @Transactional(readOnly = true)
-  public GetOpeningHoursResponse getOpeningHours() {
+  public OpeningHoursDto getOpeningHours() {
     OpeningHours openingHours = openingHoursService.getConfig();
-    return new GetOpeningHoursResponse(
-        Collections.unmodifiableList(openingHours.getDe()),
-        Collections.unmodifiableList(openingHours.getEn()));
+    return OpeningHoursMapper.mapToDto(openingHours);
+  }
+
+  @GetMapping(path = "/privacy-notice")
+  @Operation(summary = "Get the privacy-notice document.")
+  @Transactional(readOnly = true)
+  public ResponseEntity<Resource> getPrivacyNotice() {
+    return privacyDocumentService.getPrivacyNotice();
+  }
+
+  @GetMapping(path = "/privacy-policy")
+  @Operation(summary = "Get the privacy-policy document.")
+  @Transactional(readOnly = true)
+  public ResponseEntity<Resource> getPrivacyPolicy() {
+    return privacyDocumentService.getPrivacyPolicy();
   }
 
   @GetMapping(path = "/landing", produces = MediaType.TEXT_MARKDOWN_VALUE)
@@ -91,14 +106,14 @@ public class InfectionBriefingPublicCitizenController {
 
   @Transactional
   @PostMapping("appointment/new-certificate")
-  public BookNewCertificateAppointmentResponse bookNewCertificateAppointment(
+  public BookAppointmentResponse bookNewCertificateAppointment(
       @Valid @RequestBody BookNewCertificateAppointmentRequest request) {
     return createInfectionBriefingProcedureService.createNewCertificateProcedureByCitizen(request);
   }
 
   @Transactional
   @PostMapping("appointment/replacement-certificate")
-  public BookReplacementCertificateAppointmentResponse bookReplacementCertificateAppointment(
+  public BookAppointmentResponse bookReplacementCertificateAppointment(
       @Valid @RequestBody BookReplacementCertificateAppointmentRequest request) {
     return createInfectionBriefingProcedureService.createReplacementCertificateProcedureByCitizen(
         request);

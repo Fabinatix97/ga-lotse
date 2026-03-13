@@ -8,16 +8,16 @@ import { FormikValues } from "formik";
 import { OptionalFieldValue } from "@eshg/lib-portal";
 import { ApiGetMeaslesProtectionAppointmentStandardDurationsResponse } from "@eshg/measles-protection-api";
 
-import { ConfiguratorModuleName } from "@/lib/configurator/shared/types";
-import { useMeaslesProtectionAppointmentStandardDurationConfigApi } from "@/lib/shared/api/clients";
 import {
   mapDurationValue,
   useUpdateAppointmentStandardDuration,
-} from "@/lib/shared/api/mutations/configurator/useUpdateAppointmentStandardDuration";
+} from "@/lib/configurator/api/mutations/useUpdateAppointmentStandardDuration";
 import {
   mapOptionalISODuration,
   useGetAppointmentStandardDurations,
-} from "@/lib/shared/api/queries/configurator/appointment";
+} from "@/lib/configurator/api/queries/appointment";
+import { ConfiguratorModuleName } from "@/lib/configurator/shared/types";
+import { useMeaslesProtectionAppointmentStandardDurationConfigApi } from "@/lib/shared/api/clients";
 
 import {
   AppointmentStandardDurationConfiguratorForm,

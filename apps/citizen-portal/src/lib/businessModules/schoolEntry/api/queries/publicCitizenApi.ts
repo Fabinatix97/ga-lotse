@@ -9,6 +9,7 @@ import { SEMI_STATIC_QUERY_OPTIONS } from "@eshg/lib-portal";
 import { SchoolEntryPublicCitizenApi } from "@eshg/school-entry-api";
 
 import { schoolEntryPublicCitizenApiQueryKey } from "@/lib/businessModules/schoolEntry/api/queries/apiQueryKeys";
+import { OpeningHoursTranslations } from "@/lib/shared/components/ContactAndAvailabilitySheet";
 
 export function getOpeningHoursQuery(
   publicCitizenApi: SchoolEntryPublicCitizenApi,
@@ -16,6 +17,8 @@ export function getOpeningHoursQuery(
   return queryOptions({
     queryKey: schoolEntryPublicCitizenApiQueryKey(["getOpeningHours"]),
     queryFn: () => publicCitizenApi.getOpeningHours(),
+    select: (openingHours) =>
+      openingHours.localizations as OpeningHoursTranslations,
   });
 }
 

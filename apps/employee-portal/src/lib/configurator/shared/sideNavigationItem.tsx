@@ -17,7 +17,7 @@ import {
 import { NavigationItem } from "@/lib/baseModule/components/layout/sideNavigation/items/NavigationItem";
 import { ConfiguratorStatusOverview } from "@/lib/configurator/api/models/configuratorStatusOverview";
 import { ConfiguratorStatus } from "@/lib/configurator/api/models/configuratorTabItem";
-import { useGetAllModulesStatuses } from "@/lib/shared/api/queries/configurator/status";
+import { useGetAllModulesStatuses } from "@/lib/configurator/api/queries/status";
 
 import { resolveConfiguratorRoute } from "./routes";
 import { ConfiguratorEndpointName, ConfiguratorModuleName } from "./types";

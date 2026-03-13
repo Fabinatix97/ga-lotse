@@ -4619,13 +4619,6 @@
             "changeDescription" : {
               "type" : "string"
             },
-            "keyDocumentType" : {
-              "type" : "string"
-            },
-            "keyDocumentVersion" : {
-              "type" : "integer",
-              "format" : "int32"
-            },
             "previousFacilityFileStateId" : {
               "type" : "string",
               "format" : "uuid"

@@ -16,7 +16,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.regex.Matcher;
@@ -90,11 +89,7 @@ public class DatabaseResetHelper {
         isLiquibaseAvailableAndEnabled(),
         "Liquibase must be available and enabled in order to restore a database snapshot.");
 
-    List<String> databaseSnapshotLines =
-        Arrays.stream(databaseSnapshotSql.split("\\r?\\n"))
-            .filter(line -> !line.isBlank())
-            .filter(line -> !line.trim().startsWith("--"))
-            .toList();
+    List<String> databaseSnapshotLines = List.of(databaseSnapshotSql.split("\\r?\\n"));
 
     dropAndRecreateTheDatabase(databaseSnapshotLines);
 

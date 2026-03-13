@@ -8,13 +8,17 @@ import {
   UseSidebarWithFormRefResult,
   useSidebarWithFormRef,
 } from "@eshg/lib-employee-portal";
-import { PostDocumentRequest } from "@eshg/official-medical-service-api";
+import {
+  ApiLanguage,
+  PostDocumentRequest,
+} from "@eshg/official-medical-service-api";
 
 import { usePostDocument } from "@/lib/businessModules/officialMedicalService/api/mutations/employeeOmsProcedureApi";
 import {
   AddDocumentForm,
   AddDocumentFormValues,
 } from "@/lib/businessModules/officialMedicalService/components/procedures/details/documents/AddDocumentForm";
+import { mapToApiLanguage, supportedLanguages } from "@/lib/i18n/language";
 
 export function useAddDocumentSidebar(): UseSidebarWithFormRefResult<AddDocumentSidebarProps> {
   return useSidebarWithFormRef({ component: AddDocumentSidebar });
@@ -25,10 +29,10 @@ interface AddDocumentSidebarProps extends SidebarWithFormRefProps {
 }
 
 const INITIAL_VALUES: AddDocumentFormValues = {
-  documentTypeDe: "",
-  documentTypeEn: undefined,
-  helpTextDe: "",
-  helpTextEn: undefined,
+  documentType: {
+    de: "",
+  },
+  helpText: {},
   mandatoryDocument: false,
   uploadInCitizenPortal: false,
   files: [],
@@ -43,10 +47,20 @@ function AddDocumentSidebar(props: Readonly<AddDocumentSidebarProps>) {
     const request: PostDocumentRequest = {
       id: props.procedureId,
       postDocumentRequest: {
-        documentTypeDe: values.documentTypeDe,
-        documentTypeEn: values.documentTypeEn,
-        helpTextDe: values.helpTextDe,
-        helpTextEn: values.helpTextEn,
+        documentType: supportedLanguages.reduce(
+          (acc, lang) => {
+            acc[mapToApiLanguage(lang)] = values.documentType[lang];
+            return acc;
+          },
+          {} as Partial<Record<ApiLanguage, string>>,
+        ),
+        helpText: supportedLanguages.reduce(
+          (acc, lang) => {
+            acc[mapToApiLanguage(lang)] = values.helpText[lang];
+            return acc;
+          },
+          {} as Partial<Record<ApiLanguage, string>>,
+        ),
         mandatoryDocument: values.mandatoryDocument,
         uploadInCitizenPortal: values.uploadInCitizenPortal,
         labCode: values.labCode,

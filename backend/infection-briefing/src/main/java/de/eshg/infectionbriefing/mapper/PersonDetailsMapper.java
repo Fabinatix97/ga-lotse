@@ -10,6 +10,7 @@ import static de.eshg.infectionbriefing.mapper.SalutationMapper.mapToInfectionBr
 import de.eshg.base.address.AddressDto;
 import de.eshg.base.address.DomesticAddressDto;
 import de.eshg.base.address.PostboxAddressDto;
+import de.eshg.base.centralfile.api.DataOriginDto;
 import de.eshg.base.centralfile.api.person.GetPersonFileStateResponse;
 import de.eshg.infectionbriefing.api.ApplicantAddressDto;
 import de.eshg.infectionbriefing.api.PersonDetailsDto;
@@ -26,7 +27,8 @@ public class PersonDetailsMapper {
         person.dateOfBirth(),
         person.emailAddresses(),
         person.phoneNumbers(),
-        mapToApplicantAddressDto(person.contactAddress()));
+        mapToApplicantAddressDto(person.contactAddress()),
+        person.dataOrigin() == DataOriginDto.EXTERNAL);
   }
 
   private static ApplicantAddressDto mapToApplicantAddressDto(AddressDto address) {

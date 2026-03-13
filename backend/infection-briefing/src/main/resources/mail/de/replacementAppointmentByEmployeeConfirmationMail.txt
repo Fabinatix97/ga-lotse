@@ -1,0 +1,16 @@
+Guten Tag,
+
+für Sie wurde ein Termin zur Austellung einer Ersatzbescheinigung für eine bereits durchgeführte Infektionsschutzbelehrung am %s um %s Uhr gebucht. Bitte bewahren Sie diese Email als Bestätigung Ihrer Buchung auf.
+Für den Fall, dass Sie Ihren Termin ändern oder stornieren möchten, können Sie dies auch über unseren Online-Service vornehmen. Nutzen Sie hierfür bitte den folgenden Link:
+%s
+
+Anmeldecode: %s
+Zur Verifikation wird Ihr Geburtsdatum benötigt.
+
+Beachten Sie bitte, dass es nicht möglich ist auf diese Email zu antworten.
+
+Vielen Dank, dass Sie unseren Service nutzen. Wir freuen uns darauf, Sie bald bei uns begrüßen zu dürfen.
+
+Mit freundlichen Grüßen,
+
+Ihr Gesundheitsamt

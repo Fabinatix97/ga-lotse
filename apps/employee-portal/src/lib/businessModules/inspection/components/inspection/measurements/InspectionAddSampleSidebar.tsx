@@ -100,6 +100,10 @@ function InspectionAddSampleSidebar({
       }) => (
         <InspectionSampleSidebarBasisData
           values={values}
+          facilityId={facility.id}
+          onSamplingPointSelection={(value) =>
+            setFieldValue("samplingPoint", value)
+          }
           onSamplingActorSelection={(value) =>
             setFieldValue("samplingActor", value)
           }
@@ -174,7 +178,10 @@ function InspectionAddSampleSidebar({
       externalId: "",
       measurementParameters: [],
       sampleNumber: "",
-      pointOfWithdrawal: "",
+      samplingPoint: {
+        label: "",
+        value: "",
+      },
       samplingActor: {
         label: "",
         value: { id: "", type: "InspectionSampleUserReference" },

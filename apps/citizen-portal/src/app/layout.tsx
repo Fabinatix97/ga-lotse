@@ -9,7 +9,7 @@ import { headers } from "next/headers";
 import { LayoutProps, NonceProvider } from "@eshg/lib-portal";
 import { getNonceFromHeader } from "@eshg/lib-portal/server";
 
-import { baseTranslations } from "@/lib/baseModule/locales";
+import { getBaseTranslation } from "@/lib/baseModule/locales";
 
 // Opt out of the Data Cache and Full Route Cache. All routes are dynamically rendered.
 export const dynamic = "force-dynamic";
@@ -30,8 +30,8 @@ export async function generateMetadata(
     return {};
   }
   return {
-    description: baseTranslations.de.site_description,
-    keywords: baseTranslations.de.site_keywords,
+    description: getBaseTranslation("de", "site_description"),
+    keywords: getBaseTranslation("de", "site_keywords"),
     alternates: { canonical: canonicalURL },
   };
 }

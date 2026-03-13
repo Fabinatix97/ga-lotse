@@ -48,7 +48,7 @@ public class InspectionSample extends BaseEntity {
   @Column(nullable = false)
   @NotNull
   @DataSensitivity(SensitivityLevel.PSEUDONYMIZED)
-  private String pointOfWithdrawal; // Entnahmestelle
+  private UUID samplingPointId; // Entnahmestelle
 
   @Column(nullable = false)
   @NotNull
@@ -125,12 +125,12 @@ public class InspectionSample extends BaseEntity {
     this.inspection = inspection;
   }
 
-  public @NotNull String getPointOfWithdrawal() {
-    return pointOfWithdrawal;
+  public @NotNull UUID getSamplingPointId() {
+    return samplingPointId;
   }
 
-  public void setPointOfWithdrawal(@NotNull String pointOfWithdrawal) {
-    this.pointOfWithdrawal = pointOfWithdrawal;
+  public void setSamplingPointId(@NotNull UUID samplingPointId) {
+    this.samplingPointId = samplingPointId;
   }
 
   public @NotNull InspectionSampleType getTypeOfSample() {

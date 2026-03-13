@@ -417,13 +417,12 @@
               "schema" : {
                 "type" : "object",
                 "properties" : {
-                  "de" : {
-                    "type" : "string",
-                    "format" : "binary"
-                  },
-                  "en" : {
-                    "type" : "string",
-                    "format" : "binary"
+                  "files" : {
+                    "type" : "array",
+                    "items" : {
+                      "type" : "string",
+                      "format" : "binary"
+                    }
                   }
                 }
               }
@@ -490,13 +489,12 @@
               "schema" : {
                 "type" : "object",
                 "properties" : {
-                  "de" : {
-                    "type" : "string",
-                    "format" : "binary"
-                  },
-                  "en" : {
-                    "type" : "string",
-                    "format" : "binary"
+                  "files" : {
+                    "type" : "array",
+                    "items" : {
+                      "type" : "string",
+                      "format" : "binary"
+                    }
                   }
                 }
               }
@@ -5720,7 +5718,7 @@
       },
       "Language" : {
         "type" : "string",
-        "enum" : [ "GERMAN", "ENGLISH" ]
+        "enum" : [ "GERMAN", "ENGLISH", "SPANISH", "TURKISH", "RUSSIAN", "ARABIC", "FRENCH", "ITALIAN", "POLISH", "ROMANIAN", "UKRAINIAN", "CROATIAN", "FARSI", "DARI" ]
       },
       "Mail" : {
         "required" : [ "@type", "createdAt", "deletable", "deleted", "fileId", "fileName", "fileSizeBytes", "fileType", "locked", "modifiedAt", "removedInvalidAttachments" ],
@@ -5978,14 +5976,14 @@
         }
       },
       "MultiLangDocument" : {
-        "required" : [ "de" ],
+        "required" : [ "localizations" ],
         "type" : "object",
         "properties" : {
-          "de" : {
-            "$ref" : "#/components/schemas/DocumentDetails"
-          },
-          "en" : {
-            "$ref" : "#/components/schemas/DocumentDetails"
+          "localizations" : {
+            "type" : "object",
+            "additionalProperties" : {
+              "$ref" : "#/components/schemas/DocumentDetails"
+            }
           }
         }
       },
@@ -6745,13 +6743,6 @@
           "properties" : {
             "changeDescription" : {
               "type" : "string"
-            },
-            "keyDocumentType" : {
-              "type" : "string"
-            },
-            "keyDocumentVersion" : {
-              "type" : "integer",
-              "format" : "int32"
             },
             "previousFacilityFileStateId" : {
               "type" : "string",

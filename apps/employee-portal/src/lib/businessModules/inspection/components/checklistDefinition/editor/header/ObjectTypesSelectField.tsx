@@ -15,6 +15,7 @@ interface ObjectTypesSelectFieldProps {
   name: string;
   objectTypes: ApiObjectType[] | ApiObjectTypeHierarchyTreeNode[];
   disabled?: boolean;
+  onChange?: (value: string) => void;
 }
 
 function isApiObjectType(
@@ -27,6 +28,7 @@ export function ObjectTypesSelectField({
   name,
   disabled,
   objectTypes,
+  onChange,
 }: Readonly<ObjectTypesSelectFieldProps>) {
   const featureToggleEnabled = useIsNewFeatureEnabled("OBJECT_TYPE_HIERARCHY");
 
@@ -48,6 +50,7 @@ export function ObjectTypesSelectField({
       groupedOptions={
         featureToggleEnabled ? transformData(objectTypes) : undefined
       }
+      onChange={(objectType) => onChange?.(objectType)}
     />
   );
 }
@@ -68,7 +71,7 @@ interface GroupedOption {
   name: string;
 }
 
-function transformData(
+export function transformData(
   data: DataNode | DataNode[],
 ): Record<string, GroupedOption[]> {
   const groups: Record<string, GroupedOption[]> = {};

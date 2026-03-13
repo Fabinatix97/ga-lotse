@@ -20,6 +20,7 @@ dependencies {
     testImplementation testFixtures(project(':base-api'))
     testImplementation testFixtures(project(':lib-appointmentblock'))
     testImplementation testFixtures(project(':lib-document-generator'))
+    testImplementation testFixtures(project(':lib-procedures'))
 
     implementation 'org.springdoc:springdoc-openapi-starter-common:latest.release'
     runtimeOnly 'org.postgresql:postgresql'

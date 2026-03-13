@@ -6,11 +6,14 @@
 import { Grid, Stack, Typography } from "@mui/joy";
 import { isNullish } from "remeda";
 
+import { ApiSchoolEntryFeature } from "@eshg/school-entry-api";
+
+import { useIsNewFeatureEnabled } from "@/lib/businessModules/schoolEntry/api/queries/featureTogglesApi";
+import { useGetAllModulesStatuses } from "@/lib/configurator/api/queries/status";
 import { ConfiguratorLayout } from "@/lib/configurator/components/shared/ConfiguratorLayout";
 import { configuratorNameMapping } from "@/lib/configurator/components/shared/configuratorNameMapping";
 import { getAllOtherModules } from "@/lib/configurator/components/shared/modulesStatusUtils";
 import { ConfiguratorModuleName } from "@/lib/configurator/shared/types";
-import { useGetAllModulesStatuses } from "@/lib/shared/api/queries/configurator/status";
 
 import { ConfiguratorCard } from "./ConfiguratorCard";
 import { AllModulesAlert } from "./ConfiguratorState";
@@ -22,10 +25,21 @@ export function ConfiguratorOverview({
   module: ConfiguratorModuleName;
 }) {
   const { data } = useGetAllModulesStatuses();
+  const isDeviceRegistryEnabled = useIsNewFeatureEnabled(
+    ApiSchoolEntryFeature.MeasuringDevices,
+  );
 
   if (isNullish(data)) {
     throw new Error("undefined GA-Konfigurator status response");
   }
+
+  const configuratorTiles =
+    module === ConfiguratorModuleName.SchoolEntry && !isDeviceRegistryEnabled
+      ? data[module]?.endpointStates.filter(
+          (tab) => tab.endpointName !== "DEVICE_REGISTRY",
+        )
+      : data[module]?.endpointStates;
+
   return (
     <ConfiguratorLayout module={module}>
       <Stack gap={2}>
@@ -38,7 +52,7 @@ export function ConfiguratorOverview({
         </Typography>
         <Stack gap={5}>
           <Grid container spacing={2} sx={{ flexGrow: 1 }} role="list">
-            {data[module]?.endpointStates.map((tab, index) => (
+            {configuratorTiles?.map((tab, index) => (
               <Grid key={tab.tabButtonName} xxs={12} xs={6} role="listitem">
                 <ConfiguratorCard
                   autoFocus={index === 0}

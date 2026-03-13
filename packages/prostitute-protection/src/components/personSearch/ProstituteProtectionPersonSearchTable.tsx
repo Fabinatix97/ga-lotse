@@ -128,8 +128,8 @@ export function ProstituteProtectionPersonSearchTable() {
   const tableControl = useTableControl({
     serverSideSorting: true,
     initialSorting,
-    sortFieldName: "sortBy",
-    sortDirectionName: "sortOrder",
+    sortFieldName: "sortKey",
+    sortDirectionName: "sortDirection",
   });
 
   const personSearchOptions = usePersonSearchOptions({
@@ -212,6 +212,7 @@ export function ProstituteProtectionPersonSearchTable() {
             <DataTable
               data={data?.elements ?? []}
               columns={getProceduresColumns()}
+              sorting={tableControl.tableSorting}
               rowNavigation={{
                 onClick: (row) => () => {
                   addDecryptedPerson(row.original);

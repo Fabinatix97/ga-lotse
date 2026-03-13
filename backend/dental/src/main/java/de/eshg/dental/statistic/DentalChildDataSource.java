@@ -7,24 +7,25 @@ package de.eshg.dental.statistic;
 
 import static de.eshg.dental.statistic.StatisticsCalculationHelper.calculateDmftValue;
 
-import de.eshg.dental.domain.model.Child;
-import de.eshg.dental.domain.model.Examination;
-import de.eshg.dental.domain.model.MainResult;
-import de.eshg.dental.domain.model.ScreeningExaminationResult;
-import de.eshg.dental.domain.model.SecondaryResult;
-import de.eshg.dental.domain.model.Tooth;
+import de.eshg.dental.domain.model.*;
 import de.eshg.dental.domain.repository.ChildRepository;
 import de.eshg.dental.statistic.model.*;
+import de.eshg.dental.statistic.model.DecayStatus;
+import de.eshg.dental.statistic.model.MihStatus;
+import de.eshg.dental.statistic.model.OralHygieneStatus;
 import de.eshg.lib.statistics.api.DataSourceSensitivity;
 import de.eshg.lib.statistics.datasource.ProcedureDataSource;
 import de.eshg.lib.statistics.util.TimeRange;
+import jakarta.persistence.criteria.Path;
+import jakarta.persistence.criteria.Root;
+import jakarta.persistence.criteria.Subquery;
+import java.time.Clock;
+import java.time.Instant;
 import java.time.format.DateTimeFormatter;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 import java.util.function.Predicate;
 import java.util.function.ToIntFunction;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -34,7 +35,12 @@ public class DentalChildDataSource extends ProcedureDataSource<Child, DentalChil
 
   public static final String DATA_SOURCE_NAME = "ZAD Kind";
 
-  public DentalChildDataSource(ChildRepository childRepository) {
+  static final DateTimeFormatter DATE_FORMAT =
+      DateTimeFormatter.ofPattern("MM.yyyy", Locale.GERMANY);
+
+  private final Clock clock;
+
+  public DentalChildDataSource(ChildRepository childRepository, Clock clock) {
     super(
         DATA_SOURCE_ID,
         DATA_SOURCE_NAME,
@@ -42,16 +48,40 @@ public class DentalChildDataSource extends ProcedureDataSource<Child, DentalChil
         null,
         childRepository,
         DentalChildAttributes.values());
+    this.clock = clock;
+  }
+
+  @Override
+  protected Specification<Child> getProcedureSpecification(TimeRange timeRange) {
+    return (root, query, criteriaBuilder) -> {
+      Subquery<Long> subquery = query.subquery(Long.class);
+      Root<Examination> examinationRoot = subquery.from(Examination.class);
+
+      Path<Instant> dateTimePath =
+          examinationRoot.get(Examination_.prophylaxisSession).get(ProphylaxisSession_.dateAndTime);
+
+      subquery
+          .select(criteriaBuilder.literal(1L))
+          .where(
+              criteriaBuilder.equal(examinationRoot.get(Examination_.child), root),
+              criteriaBuilder.greaterThanOrEqualTo(dateTimePath, timeRange.start()),
+              criteriaBuilder.lessThanOrEqualTo(dateTimePath, timeRange.end()));
+
+      return criteriaBuilder.and(
+          isIncluded(root, criteriaBuilder), criteriaBuilder.exists(subquery));
+    };
   }
 
   @Override
   protected Object mapSpecificValue(
       Child child, DentalChildAttributes attribute, TimeRange timeRange) {
     Optional<ScreeningExaminationResult> latestScreeningExamination =
-        getLatestScreeningExaminationResult(child.getExaminations());
+        getLatestScreeningExaminationResult(child.getExaminations(), timeRange);
 
     return switch (attribute) {
       case PROCEDURE_ID -> child.getExternalId();
+      case UNTERSUCHUNGSDATUM ->
+          getLatestExaminationDate(child.getExaminations(), timeRange).orElse(null);
       case CHILD_CENTRAL_FILE_ID -> child.getChildIdFromCentralFile();
       case CHILD_AGE -> latestScreeningExamination.map(this::getChildAgeAtExamination).orElse(null);
       case SCHULJAHR -> getSchoolYear(child);
@@ -177,13 +207,27 @@ public class DentalChildDataSource extends ProcedureDataSource<Child, DentalChil
         latestScreeningExamination.getOralHygieneStatus());
   }
 
+  private Optional<String> getLatestExaminationDate(
+      List<Examination> examinations, TimeRange timeRange) {
+    return examinations.stream()
+        .filter(examination -> isBeforeEndOfTimeRange(examination.getDateAndTime(), timeRange))
+        .max(Comparator.comparing(Examination::getDateAndTime))
+        .map(Examination::getDateAndTime)
+        .map(instant -> instant.atZone(clock.getZone()).format(DATE_FORMAT));
+  }
+
   private Optional<ScreeningExaminationResult> getLatestScreeningExaminationResult(
-      List<Examination> examinations) {
+      List<Examination> examinations, TimeRange timeRange) {
     return examinations.stream()
         .filter(examination -> examination.getResult() instanceof ScreeningExaminationResult)
+        .filter(examination -> isBeforeEndOfTimeRange(examination.getDateAndTime(), timeRange))
         .max(Comparator.comparing(Examination::getDateAndTime))
         .map(Examination::getResult)
         .map(ScreeningExaminationResult.class::cast);
+  }
+
+  private boolean isBeforeEndOfTimeRange(Instant dateTime, TimeRange timeRange) {
+    return dateTime.isBefore(timeRange.end());
   }
 
   private Long calculateDmftPrimaryTeethValue(

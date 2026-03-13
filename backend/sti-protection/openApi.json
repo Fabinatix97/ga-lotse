@@ -1116,7 +1116,7 @@
             "content" : {
               "*/*" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/GetOpeningHoursResponse"
+                  "$ref" : "#/components/schemas/OpeningHours"
                 }
               }
             },
@@ -6927,24 +6927,6 @@
           }
         }
       },
-      "GetOpeningHoursResponse" : {
-        "required" : [ "de", "en" ],
-        "type" : "object",
-        "properties" : {
-          "de" : {
-            "type" : "array",
-            "items" : {
-              "type" : "string"
-            }
-          },
-          "en" : {
-            "type" : "array",
-            "items" : {
-              "type" : "string"
-            }
-          }
-        }
-      },
       "GetPersonFileStateResponse" : {
         "required" : [ "dataOrigin", "dateOfBirth", "emailAddresses", "firstName", "gender", "humanReadableId", "id", "lastName", "phoneNumbers", "referenceVersion", "salutation" ],
         "type" : "object",
@@ -8098,21 +8080,16 @@
         } ]
       },
       "OpeningHours" : {
-        "required" : [ "de", "en" ],
+        "required" : [ "localizations" ],
         "type" : "object",
         "properties" : {
-          "de" : {
-            "minItems" : 1,
-            "type" : "array",
-            "items" : {
-              "type" : "string"
-            }
-          },
-          "en" : {
-            "minItems" : 1,
-            "type" : "array",
-            "items" : {
-              "type" : "string"
+          "localizations" : {
+            "type" : "object",
+            "additionalProperties" : {
+              "type" : "array",
+              "items" : {
+                "type" : "string"
+              }
             }
           }
         }
@@ -9137,13 +9114,6 @@
           "properties" : {
             "changeDescription" : {
               "type" : "string"
-            },
-            "keyDocumentType" : {
-              "type" : "string"
-            },
-            "keyDocumentVersion" : {
-              "type" : "integer",
-              "format" : "int32"
             },
             "previousFacilityFileStateId" : {
               "type" : "string",

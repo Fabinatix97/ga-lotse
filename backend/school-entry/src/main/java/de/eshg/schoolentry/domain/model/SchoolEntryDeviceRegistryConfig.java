@@ -9,6 +9,7 @@ import de.eshg.domain.model.BaseEntity;
 import de.eshg.lib.common.DataSensitivity;
 import de.eshg.lib.common.SensitivityLevel;
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.OneToMany;
@@ -29,6 +30,12 @@ public class SchoolEntryDeviceRegistryConfig extends BaseEntity {
   @BatchSize(size = 100)
   private final List<MeasuringDevice> measuringDevices = new ArrayList<>();
 
+  @Column(nullable = false)
+  private boolean hearingTestDeviceMeasuring = false;
+
+  @Column(nullable = false)
+  private boolean seeingTestDeviceMeasuring = false;
+
   public List<MeasuringDevice> getMeasuringDevices() {
     return measuringDevices;
   }
@@ -39,5 +46,21 @@ public class SchoolEntryDeviceRegistryConfig extends BaseEntity {
 
   public void removeMeasuringDevice(MeasuringDevice measuringDevice) {
     this.measuringDevices.remove(measuringDevice);
+  }
+
+  public boolean isHearingTestDeviceMeasuring() {
+    return hearingTestDeviceMeasuring;
+  }
+
+  public void setHearingTestDeviceMeasuring(boolean hearingTestDeviceMeasuring) {
+    this.hearingTestDeviceMeasuring = hearingTestDeviceMeasuring;
+  }
+
+  public boolean isSeeingTestDeviceMeasuring() {
+    return seeingTestDeviceMeasuring;
+  }
+
+  public void setSeeingTestDeviceMeasuring(boolean seeingTestDeviceMeasuring) {
+    this.seeingTestDeviceMeasuring = seeingTestDeviceMeasuring;
   }
 }

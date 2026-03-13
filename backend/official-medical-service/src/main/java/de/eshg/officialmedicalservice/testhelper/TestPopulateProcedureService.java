@@ -39,6 +39,7 @@ import de.eshg.officialmedicalservice.testhelper.api.PostPopulateProcedureRespon
 import de.eshg.officialmedicalservice.user.CitizenAccessCodeUserClient;
 import de.eshg.officialmedicalservice.waitingroom.WaitingRoomService;
 import de.eshg.rest.service.error.NotFoundException;
+import de.eshg.rest.service.i18n.Language;
 import de.eshg.testhelper.ConditionalOnTestHelperEnabled;
 import de.eshg.testhelper.population.PopulateWithAccessTokenHelper;
 import jakarta.transaction.Transactional;
@@ -67,7 +68,8 @@ Entities still to handle:
  - Appointments
     - complete / withdraw
  - Documents	(how to access docs created by concern)
-    - Files	(4, 5 Standardfiles im Backend, die via key über API angesprochen werden)
+    - Files	(4, 5 Standardfiles im Backend, die via key über API angesprochen
+    werden)
     - State
  - Opinion
     - File
@@ -75,19 +77,26 @@ Entities still to handle:
 
 API Request:
 	completeAppointments - List of AppointmentKeys
-	additionalDocuments - List DocumentPopulations (documentKey, fachlichen PostRequest)
-	uploadedFiles - List Of filePopulation (documentKey, fileKey, uploadedBy (Citizen or Employee))
-	documentState? - ListOf DocumentKeys, entweder (documentState, optional reason) oder fachlicher Patch?
-	  beobachten, möglicherweise wird state auch von fileActions beeinflusst, ggf. ist es doch einfacher,
+	additionalDocuments - List DocumentPopulations (documentKey, fachlichen
+	PostRequest)
+	uploadedFiles - List Of filePopulation (documentKey, fileKey, uploadedBy
+	(Citizen or Employee))
+	documentState? - ListOf DocumentKeys, entweder (documentState, optional
+	reason) oder fachlicher Patch?
+	  beobachten, möglicherweise wird state auch von fileActions beeinflusst,
+	  ggf. ist es doch einfacher,
 	  documents, files und documentState in einem PopulationDto zu handhaben
 	medicalOpinion - PopulationDto mit state, fileKey, publishedFlag
 	sendInvitation - true or null
 	disputeProcedure - true or null
 
-Folgende PopulationKeys werden nicht vom Client gesetzt, sondern sind im BE fixiert:
+Folgende PopulationKeys werden nicht vom Client gesetzt, sondern sind im BE
+fixiert:
  - DefaultDocumentDefinitionKey, dito
- - FileKey, ~ 3 Dateien, die im BE abgelegt werden, um in der PopulatorAPI keine Filestreamingzirkus veranstalten zu müssen
-   (sollten Dateinamen eine weitergehende Rolle spielen, nur diese dann in FilePopulationDtos aufnehmen)
+ - FileKey, ~ 3 Dateien, die im BE abgelegt werden, um in der PopulatorAPI
+ keine Filestreamingzirkus veranstalten zu müssen
+   (sollten Dateinamen eine weitergehende Rolle spielen, nur diese dann in
+   FilePopulationDtos aufnehmen)
 Vorschlag: Definitionen als EnumDto in API
 
 Workflow
@@ -113,9 +122,11 @@ Workflow
 
 API Response
 	procedureId
-	facilityId (wird aktuell nicht verwendet, könnte für SyncTestfälle sinnvoll sein, sollte dann auch mit affectedPerson so gemacht werden)
+	facilityId (wird aktuell nicht verwendet, könnte für SyncTestfälle sinnvoll
+	sein, sollte dann auch mit affectedPerson so gemacht werden)
 	appointmentMap - appointmentKey, UUID der Entity
-	documentMap - documentKeys, UUID der Entity (beinhaltet auch die Keys der Documents, die über die default Definitionen angelegt wurden)
+	documentMap - documentKeys, UUID der Entity (beinhaltet auch die Keys der
+	Documents, die über die default Definitionen angelegt wurden)
 	ggf. opinionId
 	disputeProcedureId
  */
@@ -345,14 +356,15 @@ public class TestPopulateProcedureService {
     Set<String> acceptedDocumentsSet =
         new HashSet<>(acceptedDocuments != null ? acceptedDocuments : Collections.emptyList());
 
-    // TODO ISSUE-7371: use citizen portal document function from document service
+    // TODO ISSUE-7371: use citizen portal document function from document
+    //  service
 
     List<OmsDocument> initialDocuments =
         omsProcedureRepository.findByExternalId(procedureId).orElseThrow().getDocuments();
 
     initialDocuments.forEach(
         document -> {
-          String key = document.getDocumentTypeDe();
+          String key = document.getDocumentType(Language.GERMAN);
           documentMap.put(key, document.getId());
 
           if (acceptedDocumentsSet.contains(key)) {
@@ -427,7 +439,9 @@ public class TestPopulateProcedureService {
         .flatMap(
             category ->
                 category.concerns().stream()
-                    .filter(concernDto -> concernDto.nameDe().equals(concern.getNameDe()))
+                    .filter(
+                        concernDto ->
+                            concernDto.names().get(Language.GERMAN).equals(concern.getNameDe()))
                     .map(
                         concernConfigDto ->
                             ConcernMapper.mapConcernConfigToConcernDto(

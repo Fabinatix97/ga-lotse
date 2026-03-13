@@ -325,7 +325,7 @@ export function ConfiguratorForm<T extends FormikValues>({
                     <Alert
                       variant="soft"
                       color="warning"
-                      message="Eine englischsprachige Datei wurde nicht hochgeladen. Die deutsche Version wird für diese als Fallback genutzt."
+                      message="Einige Übersetzungen wurden noch nicht hochgeladen. Die deutsche Version wird für diese als Fallback genutzt."
                     />
                   )}
                   {status === "INCOMPLETE" && (

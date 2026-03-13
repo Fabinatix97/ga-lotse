@@ -69,17 +69,21 @@ public class FacilityMapper {
             baseFacility.differentBillingAddress(),
             false,
             baseFacility.dataOrigin());
-    return fromGetFacilityResponse(facility, baseFacilityFileStateResponse, fileNumber);
+    return fromGetFacilityResponse(facility, baseFacilityFileStateResponse, fileNumber, null);
   }
 
   public static InspFacilityDto fromGetFacilityResponse(
-      Facility facility, GetFacilityFileStateResponse baseFacility, String fileNumber) {
+      Facility facility,
+      GetFacilityFileStateResponse baseFacility,
+      String fileNumber,
+      UUID assigneeId) {
     return new InspFacilityDto(
         facility.getExternalId(),
         baseFacility,
         facility.isBanned(),
         ObjectTypeMapper.toDto(facility.getObjectType()),
-        fileNumber);
+        fileNumber,
+        assigneeId);
   }
 
   static Facility facilityFrom(AddFacilityFileStateResponse baseFacility) {

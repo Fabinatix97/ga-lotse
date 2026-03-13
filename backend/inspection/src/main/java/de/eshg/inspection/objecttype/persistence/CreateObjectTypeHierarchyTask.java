@@ -5,44 +5,34 @@
 
 package de.eshg.inspection.objecttype.persistence;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import de.eshg.inspection.objecttype.ObjectTypeProperties;
+import de.eshg.inspection.objecttype.persistence.ObjectTypeHierarchyReader.JsonTreeNode;
 import de.eshg.persistence.TransactionHelper;
 import jakarta.annotation.PostConstruct;
 import java.util.Collections;
 import java.util.List;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
-import org.springframework.util.Assert;
 
 @Component
 public class CreateObjectTypeHierarchyTask {
 
-  public static final String HIERARCHY_JSON_FILE =
-      "/de/eshg/inspection/objecttype/objectTypeHierarchy.json";
-
-  private final ClassPathResource hierarchyJsonFile;
   private final ObjectTypeRepository objectTypeRepository;
   private final ObjectTypeHierarchyTreeNodeRepository objectTypeHierarchyTreeNodeRepository;
   private final ObjectTypeProperties objectTypeProperties;
   private final TransactionHelper transactionHelper;
-  private final ObjectMapper objectMapper;
+  private final ObjectTypeHierarchyReader objectTypeHierarchyReader;
   private final CreateObjectTypeTask createObjectTypeTask;
 
   public CreateObjectTypeHierarchyTask(
-      @Value(HIERARCHY_JSON_FILE) ClassPathResource hierarchyJsonFile,
       ObjectTypeRepository objectTypeRepository,
       ObjectTypeHierarchyTreeNodeRepository objectTypeHierarchyTreeNodeRepository,
       ObjectTypeProperties objectTypeProperties,
       TransactionHelper transactionHelper,
-      ObjectMapper objectMapper,
+      ObjectTypeHierarchyReader objectTypeHierarchyReader,
       CreateObjectTypeTask createObjectTypeTask) {
     this.objectTypeHierarchyTreeNodeRepository = objectTypeHierarchyTreeNodeRepository;
-    this.objectMapper = objectMapper;
+    this.objectTypeHierarchyReader = objectTypeHierarchyReader;
     this.createObjectTypeTask = createObjectTypeTask;
-    Assert.isTrue(hierarchyJsonFile.exists(), hierarchyJsonFile + " does not exist");
-    this.hierarchyJsonFile = hierarchyJsonFile;
     this.objectTypeRepository = objectTypeRepository;
     this.objectTypeProperties = objectTypeProperties;
     this.transactionHelper = transactionHelper;
@@ -59,15 +49,10 @@ public class CreateObjectTypeHierarchyTask {
           // again.
           // If we ever need to import an updated version, we need to think about how to do a
           // migration.
-          // Furthermore, the spring property de.eshg.inspection.object-types.treeObjectTypes has to
-          // be kept in sync with the json.
           if (objectTypeHierarchyTreeNodeRepository.findByRootNode(true).isEmpty()) {
             List<ObjectType> legacyObjectTypes = objectTypeRepository.findAll();
 
-            JsonTreeNode root =
-                objectMapper.readValue(hierarchyJsonFile.getInputStream(), JsonTreeNode.class);
-
-            toDatabaseTreeNode(root, true, legacyObjectTypes);
+            toDatabaseTreeNode(objectTypeHierarchyReader.getRootNode(), true, legacyObjectTypes);
           }
         });
   }
@@ -75,15 +60,15 @@ public class CreateObjectTypeHierarchyTask {
   private ObjectTypeHierarchyTreeNode toDatabaseTreeNode(
       JsonTreeNode jsonTreeNode, boolean isRoot, List<ObjectType> legacyObjectTypes) {
     ObjectTypeHierarchyTreeNode treeNode = new ObjectTypeHierarchyTreeNode();
-    treeNode.setName(jsonTreeNode.name);
-    treeNode.setOriginalIndex(jsonTreeNode.originalIndex);
+    treeNode.setName(jsonTreeNode.name());
+    treeNode.setOriginalIndex(jsonTreeNode.originalIndex());
     treeNode.setRootNode(isRoot);
     List<JsonTreeNode> objectTypes =
-        jsonTreeNode.children.stream()
+        jsonTreeNode.children().stream()
             .filter(n -> n.children() == null || n.children().isEmpty())
             .toList();
     List<JsonTreeNode> childNodes =
-        jsonTreeNode.children.stream()
+        jsonTreeNode.children().stream()
             .filter(n -> n.children() != null && !n.children().isEmpty())
             .toList();
     treeNode.addObjectTypes(objectTypes.stream().map(this::toObjectType).toList());
@@ -108,15 +93,13 @@ public class CreateObjectTypeHierarchyTask {
 
   private ObjectType toObjectType(JsonTreeNode jsonTreeNode) {
     ObjectType objectType = new ObjectType();
-    objectType.setName(jsonTreeNode.name);
+    objectType.setName(jsonTreeNode.name());
     objectType.setRoutineInterval(this.objectTypeProperties.routineInterval());
     objectType.setComplaintInterval(this.objectTypeProperties.complaintInterval());
     objectType.setStandardDuration(this.objectTypeProperties.standardDuration());
     objectType.setStandardBufferTime(this.objectTypeProperties.standardBufferTime());
-    objectType.setOriginalIndex(jsonTreeNode.originalIndex);
+    objectType.setOriginalIndex(jsonTreeNode.originalIndex());
     objectTypeRepository.save(objectType);
     return objectType;
   }
-
-  record JsonTreeNode(String name, Integer originalIndex, List<JsonTreeNode> children) {}
 }

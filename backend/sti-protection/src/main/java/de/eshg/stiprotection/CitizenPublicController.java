@@ -7,6 +7,7 @@ package de.eshg.stiprotection;
 
 import de.eshg.base.citizenuser.api.CitizenAccessCodeUserDto;
 import de.eshg.base.department.GetDepartmentInfoResponse;
+import de.eshg.config.api.OpeningHoursDto;
 import de.eshg.lib.appointmentblock.AppointmentBlockService;
 import de.eshg.lib.appointmentblock.MappingUtil;
 import de.eshg.lib.appointmentblock.api.AppointmentDto;
@@ -25,7 +26,6 @@ import de.eshg.stiprotection.api.citizen.BookAppointmentRequest;
 import de.eshg.stiprotection.api.citizen.BookAppointmentResponse;
 import de.eshg.stiprotection.api.citizen.CreateAnonymousUserRequest;
 import de.eshg.stiprotection.api.citizen.CreateAnonymousUserResponse;
-import de.eshg.stiprotection.api.citizen.GetOpeningHoursResponse;
 import de.eshg.stiprotection.department.SexWorkDepartmentInfoConfigService;
 import de.eshg.stiprotection.department.SexWorkOpeningHoursService;
 import de.eshg.stiprotection.department.StiConsultationDepartmentInfoConfigService;
@@ -119,8 +119,7 @@ public class CitizenPublicController {
   @GetMapping("/opening-hours")
   @Operation(summary = "Get opening hours")
   @Transactional(readOnly = true)
-  public GetOpeningHoursResponse getOpeningHours(
-      @RequestParam(name = "concern") ConcernDto concern) {
+  public OpeningHoursDto getOpeningHours(@RequestParam(name = "concern") ConcernDto concern) {
     return switch (concern) {
       case HIV_STI_CONSULTATION -> stiConsultationOpeningHoursService.getOpeningHours();
       case SEX_WORK -> sexWorkOpeningHoursService.getOpeningHours();

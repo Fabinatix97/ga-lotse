@@ -231,11 +231,20 @@ public enum DentalChildAttributes implements AttributeInfo {
           null,
           null,
           new SensitiveParameters(null, 0.2))),
+  UNTERSUCHUNGSDATUM(
+      TextAttribute.create(
+          "Untersuchungsdatum",
+          "UNTERSUCHUNGSDATUM",
+          DentalChildAttributes.CATEGORY_PROCEDURE,
+          true,
+          null,
+          DataPrivacyCategory.QUASI_IDENTIFYING)),
   ;
 
   static final String CATEGORY_CHILD = "Kind";
   static final String CATEGORY_PROPHYLAXIS = "Maßnahme";
   static final String CATEGORY_PROCEDURE_REFERENCE = "Vorgangsreferenz";
+  static final String CATEGORY_PROCEDURE = "Vorgang";
 
   private final AttributeData attribute;
 

@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { DefaultError, queryOptions } from "@tanstack/react-query";
+import { DefaultError, queryOptions, useQuery } from "@tanstack/react-query";
 import { isNonNullish } from "remeda";
 
 import { mapPaginatedList } from "@eshg/lib-employee-portal";
@@ -17,6 +17,7 @@ import {
   GetAppointmentBlockGroupsRequest,
 } from "@eshg/prostitute-protection-api";
 
+import { useProstituteProtectionApiClients } from "../../contexts/ProstituteProtectionApi";
 import { mapAppointmentBlockGroup } from "../models/AppointmentBlockGroup";
 
 import { appointmentBlockApiQueryKey } from "./apiQueryKeys";
@@ -43,12 +44,11 @@ interface GetFreeAppointmentsArgs {
   earliestDate?: Date;
 }
 
-export function useGetFreeAppointmentsOptions(
-  request: GetFreeAppointmentsArgs,
-  appointmentBlockApi: AppointmentBlockApi,
-) {
+export function useGetFreeAppointments(request: GetFreeAppointmentsArgs) {
   const appointmentType = mapToAppointmentType(request.procedureType);
-  return queryOptions({
+  const { appointmentBlockApi } = useProstituteProtectionApiClients();
+
+  return useQuery({
     queryKey: appointmentBlockApiQueryKey([
       "freeAppointments",
       request,

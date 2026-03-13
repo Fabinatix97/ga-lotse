@@ -10,6 +10,7 @@ import static java.util.Optional.ofNullable;
 import de.eshg.base.calendar.CalendarEventApi;
 import de.eshg.base.calendar.api.GetBusinessCaseEventResponse;
 import de.eshg.base.centralfile.api.facility.GetFacilityFileStateResponse;
+import de.eshg.base.centralfile.api.samplingpoint.GetSamplingPointFileStateResponse;
 import de.eshg.base.contact.api.ContactDto;
 import de.eshg.base.inventory.InventoryApi;
 import de.eshg.base.resource.ResourceApi;
@@ -46,6 +47,7 @@ import de.eshg.inspection.inspection.persistence.InspectionAnnouncement;
 import de.eshg.inspection.inspection.persistence.InspectionAppointment;
 import de.eshg.inspection.inspection.persistence.InspectionTask;
 import de.eshg.inspection.inspection.persistence.InspectionTravelTime;
+import de.eshg.inspection.objecttype.persistence.ObjectType;
 import de.eshg.inspection.packlist.persistence.Packlist;
 import de.eshg.inspection.packlistdefinition.persistence.PacklistDefinitionRevision;
 import de.eshg.inspection.report.persistence.Report;
@@ -56,13 +58,16 @@ import de.eshg.inspection.sample.persistence.InspectionSampleActorReference;
 import de.eshg.inspection.sample.persistence.InspectionSampleActorReferenceType;
 import de.eshg.inspection.sample.persistence.InspectionSampleEvaluationType;
 import de.eshg.inspection.sample.persistence.InspectionSampleType;
+import de.eshg.inspection.samplingpoint.SamplingPointClient;
 import de.eshg.inspection.util.Holder;
 import de.eshg.lib.procedure.domain.model.Pdf;
 import de.eshg.lib.procedure.domain.model.Task;
 import de.eshg.lib.procedure.domain.model.TaskType;
 import de.eshg.lib.procedure.mapping.ProcedureMapper;
+import jakarta.validation.constraints.NotNull;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -72,14 +77,10 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 @Component
 public class InspectionMapper {
-
-  private static final Logger log = LoggerFactory.getLogger(InspectionMapper.class);
 
   private final InventoryApi inventoryApi;
   private final ResourceApi resourceApi;
@@ -88,6 +89,7 @@ public class InspectionMapper {
   private final FacilityClient facilityClient;
   private final FacilityFileNumberService facilityFileNumberService;
   private final ContactClient contactClient;
+  private final SamplingPointClient samplingPointClient;
 
   public InspectionMapper(
       InventoryApi inventoryApi,
@@ -96,7 +98,8 @@ public class InspectionMapper {
       CalendarEventApi calendarEventApi,
       FacilityClient facilityClient,
       FacilityFileNumberService facilityFileNumberService,
-      ContactClient contactClient) {
+      ContactClient contactClient,
+      SamplingPointClient samplingPointClient) {
     this.inventoryApi = inventoryApi;
     this.resourceApi = resourceApi;
     this.userClient = userClient;
@@ -104,6 +107,7 @@ public class InspectionMapper {
     this.facilityClient = facilityClient;
     this.facilityFileNumberService = facilityFileNumberService;
     this.contactClient = contactClient;
+    this.samplingPointClient = samplingPointClient;
   }
 
   public static String mapToTaskSummary(String facilityName, TaskType taskType) {
@@ -123,21 +127,35 @@ public class InspectionMapper {
   }
 
   public InspectionDto mapToDto(Inspection inspection) {
+    Facility facility = inspection.getFacility();
+    UUID assigneeId = null;
+    if (facility != null) {
+      if (facility.getAssigneeId() != null) {
+        assigneeId = facility.getAssigneeId();
+      } else {
+        ObjectType objectType = facility.getObjectType();
+        if (objectType != null && objectType.getDesignatedAssigneeId() != null) {
+          assigneeId = objectType.getDesignatedAssigneeId();
+        }
+      }
+    }
     InspFacilityDto facilityDto =
         mapToDto(
             inspection.getCentralFileStateId(),
-            inspection.getFacility(),
-            inspection.getFileNumberSuffix());
+            facility,
+            inspection.getFileNumberSuffix(),
+            assigneeId);
     return mapToDto(inspection, facilityDto);
   }
 
-  InspectionDto mapToDto(Inspection inspection, InspFacilityDto facility) {
+  InspectionDto mapToDto(Inspection inspection, InspFacilityDto inspFacilityDto) {
     List<InspectionCLDVersionDto> selectedCLDVersions =
         mapChecklistsToInspectionCLDVersionDto(inspection.getChecklists());
     List<InspectionPLDRevisionDto> selectedPLDRevisions =
         mapPacklistsToInspectionPLDRevisionDto(inspection.getPacklists());
 
-    UUID assigneeId = inspection.getPlanningTask().map(Task::getAssigneeId).orElse(null);
+    UUID assigneeId =
+        inspection.getPlanningTask().map(Task::getAssigneeId).orElse(inspFacilityDto.assigneeId());
     UserDto assignee = null;
     if (assigneeId != null) {
       assignee = userClient.getUserById(assigneeId);
@@ -152,10 +170,10 @@ public class InspectionMapper {
 
     return new InspectionDto(
         inspection.getExternalId(),
-        mapToInspectionTitle(facility.baseFacility().name()),
+        mapToInspectionTitle(inspFacilityDto.baseFacility().name()),
         ProcedureMapper.toInterfaceType(inspection.getProcedureStatus()),
         inspection.isChallenging(),
-        facility,
+        inspFacilityDto,
         inspection.getType(),
         inspection.getPhase(),
         inspection.getResult(),
@@ -355,11 +373,35 @@ public class InspectionMapper {
     Map<UUID, ContactDto> contactMap =
         contactClient.getContactsAsMap(getContactIdsForSamples(inspection.getSamples()));
 
+    Map<@NotNull UUID, GetSamplingPointFileStateResponse> samplingPointFileStates =
+        retrieveSamplingPoints(inspection);
+
     return getSortedSamples(inspection.getSamples())
         .map(
             sample ->
-                InspectionSampleMapper.mapToDto(sample, facilityFileState, userMap, contactMap))
+                InspectionSampleMapper.mapToDto(
+                    sample,
+                    facilityFileState,
+                    samplingPointFileStates.get(sample.getSamplingPointId()),
+                    userMap,
+                    contactMap))
         .toList();
+  }
+
+  private Map<@NotNull UUID, GetSamplingPointFileStateResponse> retrieveSamplingPoints(
+      Inspection inspection) {
+    Set<UUID> samplingPointIds =
+        inspection.getSamples().stream()
+            .map(InspectionSample::getSamplingPointId)
+            .collect(Collectors.toSet());
+    if (samplingPointIds.isEmpty()) {
+      return Collections.emptyMap();
+    }
+    return samplingPointClient
+        .getSamplingPointFileStates(samplingPointIds)
+        .samplingPointFileStates()
+        .stream()
+        .collect(Collectors.toMap(GetSamplingPointFileStateResponse::id, response -> response));
   }
 
   public static Set<UUID> getReferencedIdsForSamplesFromActorsOfType(
@@ -394,8 +436,6 @@ public class InspectionMapper {
     return samples.stream()
         .sorted(
             Comparator.comparing(
-                    InspectionSample::getPointOfWithdrawal, Comparator.nullsLast(String::compareTo))
-                .thenComparing(
                     InspectionSample::getSampleNumber, Comparator.nullsLast(String::compareTo))
                 .thenComparing(
                     InspectionSample::getTypeOfSample,
@@ -426,11 +466,11 @@ public class InspectionMapper {
   }
 
   public InspFacilityDto mapToDto(
-      UUID centralFileStateId, Facility facility, Integer fileNumberSuffix) {
+      UUID centralFileStateId, Facility facility, Integer fileNumberSuffix, UUID assigneeId) {
     GetFacilityFileStateResponse baseFacility =
         facilityClient.getFacilityFileState(centralFileStateId);
     String fileNumber = facilityFileNumberService.getFileNumber(baseFacility, fileNumberSuffix);
-    return FacilityMapper.fromGetFacilityResponse(facility, baseFacility, fileNumber);
+    return FacilityMapper.fromGetFacilityResponse(facility, baseFacility, fileNumber, assigneeId);
   }
 
   public static InspectionAnnouncementDto mapToDto(InspectionAnnouncement inspectionAnnouncement) {

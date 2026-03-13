@@ -60,13 +60,13 @@ export function Columns({
         headerLabel: "Status Pflichtdokument",
       },
     }),
-    columnHelper.accessor("documentTypeDe", {
+    columnHelper.accessor("documentType.GERMAN", {
       header: "Dokumentenart",
       cell: (props) => props.getValue(),
       enableSorting: true,
       meta: { width: 250, canNavigate: { parentRow: true } },
     }),
-    columnHelper.accessor("helpTextDe", {
+    columnHelper.accessor("helpText.GERMAN", {
       header: "Hilfstext",
       cell: (props) => props.getValue(),
       enableSorting: true,

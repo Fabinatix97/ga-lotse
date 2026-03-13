@@ -119,10 +119,6 @@ function InspectionTemplateSampleSidebar({
                 }),
               ),
             );
-            await setFieldValue(
-              "pointOfWithdrawal",
-              templates[i]?.pointOfWithdrawal,
-            );
             await setFieldValue("evaluationType", templates[i]?.evaluationType);
             await setFieldValue("typeOfSample", templates[i]?.typeOfSample);
           }}
@@ -145,6 +141,10 @@ function InspectionTemplateSampleSidebar({
       }) => (
         <InspectionSampleSidebarBasisData
           values={values}
+          facilityId={facility.id}
+          onSamplingPointSelection={(value) =>
+            setFieldValue("samplingPoint", value)
+          }
           onSamplingActorSelection={(value) =>
             setFieldValue("samplingActor", value)
           }
@@ -204,19 +204,13 @@ function InspectionTemplateSampleSidebar({
 
   const initialValues: InspectionSampleSidebarFormType = useMemo(() => {
     return {
-      evaluatingActor: {
-        label: "",
-        value: { id: "", type: "InspectionSampleUserReference" },
-      },
+      evaluatingActor: null,
       evaluationType: ApiInspectionSampleEvaluationType.OnSite,
       externalId: "",
       measurementParameters: [],
       sampleNumber: "",
-      pointOfWithdrawal: "",
-      samplingActor: {
-        label: "",
-        value: { id: "", type: "InspectionSampleUserReference" },
-      },
+      samplingPoint: null,
+      samplingActor: null,
       timeOfEvaluation: "",
       timeOfSampling: "",
       typeOfSample: ApiInspectionSampleType.DrinkingWater,
@@ -229,7 +223,7 @@ function InspectionTemplateSampleSidebar({
       initialValues={initialValues}
       onSubmit={handleNext}
     >
-      {({ isValid, values, setFieldValue }) => (
+      {({ isSubmitting, values, setFieldValue }) => (
         <SidebarForm ref={formRef}>
           <ConfirmLeaveDirtyFormEffect />
           <SidebarContent title={step.title} subtitle={step.subTitle}>
@@ -237,7 +231,7 @@ function InspectionTemplateSampleSidebar({
           </SidebarContent>
           <SidebarActions>
             <MultiFormButtonBar
-              submitting={!isValid}
+              submitting={isSubmitting}
               submitLabel={
                 isOnLastStep ? "Probe hinzufügen" : "Vorlage verwenden"
               }

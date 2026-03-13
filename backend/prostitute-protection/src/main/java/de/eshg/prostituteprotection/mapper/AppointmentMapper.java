@@ -15,6 +15,7 @@ import de.eshg.prostituteprotection.api.UpdateProstituteProtectionProcedureReque
 import de.eshg.prostituteprotection.domain.data.AppointmentData;
 import de.eshg.prostituteprotection.domain.model.AppointmentBookingType;
 import de.eshg.prostituteprotection.domain.model.UserDefinedAppointment;
+import java.time.Duration;
 import java.time.Instant;
 import java.util.UUID;
 
@@ -49,7 +50,7 @@ public class AppointmentMapper {
         mapToDomain(appointmentBookingTypeDto),
         mapToAppointmentType(procedureType),
         appointmentStart,
-        appointmentDurationInMinutes,
+        appointmentStart.plus(Duration.ofMinutes(appointmentDurationInMinutes)),
         consultantId);
   }
 

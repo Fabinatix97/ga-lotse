@@ -51,7 +51,7 @@ export function ConfiguratorCard({
           </Stack>
           {status === "COMPLETE" && <Chip color="success">Vollständig</Chip>}
           {status === "PARTIALLY_COMPLETE" && (
-            <Chip color="neutral">Englische Übersetzung fehlt</Chip>
+            <Chip color="neutral">Einige Übersetzungen fehlen</Chip>
           )}
           {status === "INCOMPLETE" && (
             <Chip color="warning">Unvollständig</Chip>

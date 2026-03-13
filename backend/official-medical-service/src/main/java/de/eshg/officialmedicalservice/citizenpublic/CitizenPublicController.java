@@ -9,10 +9,12 @@ import static de.eshg.officialmedicalservice.config.OmsAppointmentStandardDurati
 import static org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE;
 
 import de.eshg.base.department.GetDepartmentInfoResponse;
+import de.eshg.config.api.OpeningHoursDto;
 import de.eshg.config.departmentinfo.DepartmentInfoConfigService;
 import de.eshg.config.departmentinfo.OpeningHoursService;
 import de.eshg.config.departmentinfo.PrivacyDocumentService;
 import de.eshg.config.domain.OpeningHours;
+import de.eshg.config.mapper.OpeningHoursMapper;
 import de.eshg.lib.appointmentblock.AppointmentBlockService;
 import de.eshg.lib.appointmentblock.MappingUtil;
 import de.eshg.lib.appointmentblock.api.AppointmentDto;
@@ -20,7 +22,6 @@ import de.eshg.lib.appointmentblock.api.AppointmentTypeDto;
 import de.eshg.lib.appointmentblock.api.GetFreeAppointmentsResponse;
 import de.eshg.lib.appointmentblock.persistence.AppointmentType;
 import de.eshg.officialmedicalservice.citizenpublic.api.GetCitizenConcernsResponse;
-import de.eshg.officialmedicalservice.citizenpublic.api.GetOpeningHoursResponse;
 import de.eshg.officialmedicalservice.concern.ConcernService;
 import de.eshg.officialmedicalservice.config.OmsAppointmentStandardDurationService;
 import de.eshg.officialmedicalservice.config.api.OmsAppointmentStandardDurationsDto;
@@ -32,7 +33,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import java.time.Clock;
 import java.time.Instant;
-import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 import org.springframework.core.io.Resource;
@@ -99,11 +99,9 @@ public class CitizenPublicController {
   @Operation(summary = "Get opening hours.")
   @GetMapping(path = OPENING_HOURS_URL, produces = MediaType.APPLICATION_JSON_VALUE)
   @Transactional(readOnly = true)
-  public GetOpeningHoursResponse getOpeningHours() {
+  public OpeningHoursDto getOpeningHours() {
     OpeningHours openingHours = openingHoursService.getConfig();
-    return new GetOpeningHoursResponse(
-        Collections.unmodifiableList(openingHours.getDe()),
-        Collections.unmodifiableList(openingHours.getEn()));
+    return OpeningHoursMapper.mapToDto(openingHours);
   }
 
   @Operation(summary = "Get department info.")
@@ -173,7 +171,7 @@ public class CitizenPublicController {
   }
 
   @Operation(
-      summary = "Get standard durations for official medical service appointments for citizen")
+      summary = "Get standard durations for official medical service " + "appointments for citizen")
   @GetMapping(
       path = APPOINTMENT_STANDARD_DURATIONS_URL,
       produces = MediaType.APPLICATION_JSON_VALUE)

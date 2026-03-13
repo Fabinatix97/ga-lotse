@@ -6,20 +6,18 @@
 package de.eshg.infectionbriefing;
 
 import static de.eshg.infectionbriefing.InfectionBriefingProcedureController.BASE_URL;
-import static de.eshg.lib.procedure.util.ProcedureValidator.hasNonNullValue;
 
 import de.eshg.api.commons.InlineParameterObject;
 import de.eshg.infectionbriefing.api.AcceptDraftRequest;
 import de.eshg.infectionbriefing.api.ConfirmPaymentRequest;
 import de.eshg.infectionbriefing.api.CreateNewCertificateProcedureRequest;
 import de.eshg.infectionbriefing.api.CreateNewCertificateProcedureResponse;
-import de.eshg.infectionbriefing.api.GetProceduresResponse;
+import de.eshg.infectionbriefing.api.GetInfectionBriefingProceduresResponse;
+import de.eshg.infectionbriefing.api.InfectionBriefingProcedureDetailsDto;
 import de.eshg.infectionbriefing.api.IssueCertificateResponse;
-import de.eshg.infectionbriefing.api.ProcedureDetailsDto;
 import de.eshg.infectionbriefing.api.ProcedureFilterParameters;
 import de.eshg.infectionbriefing.api.ProcedurePaginationParameters;
 import de.eshg.infectionbriefing.api.ProcedureSearchParameters;
-import de.eshg.rest.service.error.BadRequestException;
 import de.eshg.rest.service.security.config.BaseUrls.InfectionBriefing;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -56,26 +54,18 @@ public class InfectionBriefingProcedureController {
 
   @GetMapping
   @Transactional(readOnly = true)
-  public GetProceduresResponse getInfectionBriefingProcedures(
+  public GetInfectionBriefingProceduresResponse getInfectionBriefingProcedures(
       @InlineParameterObject @ParameterObject @Valid ProcedureFilterParameters filterParameters,
       @InlineParameterObject @ParameterObject @Valid
           ProcedurePaginationParameters paginationParameters,
       @InlineParameterObject @ParameterObject @Valid ProcedureSearchParameters searchParameters) {
-    if (hasNonNullValue(searchParameters)) {
-      if (hasNonNullValue(filterParameters)) {
-        throw new BadRequestException(
-            "Filter parameters and search parameters can not be used in the same request.");
-      } else {
-        return infectionBriefingProcedureService.searchProcedures(
-            searchParameters, paginationParameters);
-      }
-    }
-    return infectionBriefingProcedureService.getProcedures(filterParameters, paginationParameters);
+    return infectionBriefingProcedureService.getProcedures(
+        filterParameters, paginationParameters, searchParameters);
   }
 
   @GetMapping("{procedureId}")
   @Transactional(readOnly = true)
-  public ProcedureDetailsDto getInfectionBriefingProcedureDetails(
+  public InfectionBriefingProcedureDetailsDto getInfectionBriefingProcedureDetails(
       @PathVariable(name = "procedureId") UUID procedureId) {
     return infectionBriefingProcedureService.getProcedureDetails(procedureId);
   }

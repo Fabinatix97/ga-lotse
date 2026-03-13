@@ -22,6 +22,7 @@ import { ConcernFilters } from "@/lib/businessModules/officialMedicalService/com
 import { useConcernFilterValues } from "@/lib/businessModules/officialMedicalService/components/appointment/steps/useConcernFilterValues";
 import { RadioSheet } from "@/lib/businessModules/travelMedicine/components/shared/components/RadioSheet";
 import { useTranslation } from "@/lib/i18n/client";
+import { SupportedLanguage, mapToApiLanguage } from "@/lib/i18n/options";
 import {
   ContentSheet,
   ContentSheetTitle,
@@ -42,7 +43,7 @@ export function ConcernStep() {
   });
 
   const numberOfCategories = [
-    ...new Set(concerns.map((concern) => concern.categoryNameDe)),
+    ...new Set(concerns.map((concern) => concern.categoryNames.GERMAN!)),
   ].length;
 
   useEffect(() => {
@@ -56,11 +57,9 @@ export function ConcernStep() {
             standardDurationInMinutes: isDefined(tmp.appointmentType)
               ? appointmentTypes[tmp.appointmentType]
               : undefined,
-            categoryNameDe: tmp.categoryNameDe,
-            categoryNameEn: tmp.categoryNameEn,
+            categoryNames: tmp.categoryNames,
             highPriority: tmp.highPriority,
-            nameDe: tmp.nameDe,
-            nameEn: tmp.nameEn,
+            names: tmp.names,
           });
         })();
       }
@@ -95,17 +94,17 @@ function ConcernStepRadioGroup(props: { data: ApiConcern[] }) {
           {props.data
             .filter((item) =>
               isNonEmptyString(filterValues.category)
-                ? item.categoryNameDe === filterValues.category
+                ? item.categoryNames?.GERMAN === filterValues.category
                 : item,
             )
             .map((concern, index) => {
               return (
                 <RadioSheet
-                  key={`${concern.nameDe}.${index}`}
+                  key={`${concern.names.GERMAN!}.${index}`}
                   label={
-                    i18n.language === "en" && isDefined(concern.nameEn)
-                      ? concern.nameEn
-                      : concern.nameDe
+                    concern.names?.[
+                      mapToApiLanguage(i18n.language as SupportedLanguage)
+                    ] ?? concern.names.GERMAN!
                   }
                   value={index}
                   radioProps={{

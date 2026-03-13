@@ -8,35 +8,30 @@ package de.eshg.infectionbriefing.mapper;
 import static de.eshg.infectionbriefing.util.ProcedureUtil.getFieldOrNull;
 import static de.eshg.lib.procedure.mapping.ProcedureMapper.toInterfaceType;
 
-import de.cronn.commons.lang.StreamUtil;
 import de.eshg.base.centralfile.api.person.GetPersonFileStateResponse;
-import de.eshg.infectionbriefing.PersonClient;
-import de.eshg.infectionbriefing.api.ProcedureDto;
+import de.eshg.infectionbriefing.api.InfectionBriefingProcedureDto;
 import de.eshg.infectionbriefing.domain.model.InfectionBriefingProcedure;
 import de.eshg.infectionbriefing.domain.model.NewCertificateProcedure;
 import de.eshg.lib.appointmentblock.persistence.entity.Appointment;
-import de.eshg.lib.procedure.domain.model.RelatedPerson;
+import de.eshg.lib.procedure.domain.model.ProcedureStatus;
+import de.eshg.lib.procedure.mapping.ProcedureMapper;
+import de.eshg.lib.procedure.model.ProcedureStatusDto;
 import java.time.Instant;
+import java.util.LinkedHashSet;
+import java.util.Map;
 import java.util.Optional;
-import org.springframework.stereotype.Component;
+import java.util.UUID;
 
-@Component
 public class InfectionBriefingProcedureMapper {
 
-  private final PersonClient personClient;
+  private InfectionBriefingProcedureMapper() {}
 
-  public InfectionBriefingProcedureMapper(PersonClient personClient) {
-    this.personClient = personClient;
-  }
-
-  public ProcedureDto enrichAndMapToInterfaceType(InfectionBriefingProcedure procedure) {
+  public static InfectionBriefingProcedureDto enrichAndMapToInterfaceType(
+      InfectionBriefingProcedure procedure, Map<UUID, GetPersonFileStateResponse> personDirectory) {
     GetPersonFileStateResponse person =
-        personClient.getPersonFileState(
-            procedure.getRelatedPersons().stream()
-                .map(RelatedPerson::getCentralFileStateId)
-                .collect(StreamUtil.toSingleElement()));
+        personDirectory.get(procedure.getApplicant().getCentralFileStateId());
     Appointment appointment = procedure.getAppointment();
-    return new ProcedureDto(
+    return new InfectionBriefingProcedureDto(
         procedure.getExternalId(),
         person.firstName(),
         person.lastName(),
@@ -47,6 +42,14 @@ public class InfectionBriefingProcedureMapper {
         getFieldOrNull(procedure, NewCertificateProcedure::getInstructionDate),
         InstructionTypeMapper.toInterfaceType(
             getFieldOrNull(procedure, NewCertificateProcedure::getInstructionType)));
+  }
+
+  public static LinkedHashSet<ProcedureStatus> toDomainType(
+      LinkedHashSet<ProcedureStatusDto> statusSet) {
+    if (statusSet == null) {
+      return null;
+    }
+    return new LinkedHashSet<>(statusSet.stream().map(ProcedureMapper::toDomainType).toList());
   }
 
   private static Instant getAppointmentTime(Appointment appointment) {

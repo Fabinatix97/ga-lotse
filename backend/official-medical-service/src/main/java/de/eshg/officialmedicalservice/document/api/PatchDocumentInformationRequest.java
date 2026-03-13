@@ -5,13 +5,14 @@
 
 package de.eshg.officialmedicalservice.document.api;
 
+import de.eshg.rest.service.i18n.Language;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
+import java.util.Map;
 
 public record PatchDocumentInformationRequest(
-    @NotNull String documentTypeDe,
-    String documentTypeEn,
-    String helpTextDe,
-    String helpTextEn,
+    @NotNull @Valid Map<Language, String> documentType,
+    @NotNull @Valid Map<Language, String> helpText,
     @NotNull boolean mandatoryDocument,
     @NotNull boolean uploadInCitizenPortal,
     String labCode) {}

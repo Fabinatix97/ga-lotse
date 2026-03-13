@@ -6,9 +6,13 @@
 import { notFound } from "next/navigation";
 import { useMemo } from "react";
 
-import { ApiLanguage } from "@eshg/base-api";
 import { FileType } from "@eshg/lib-portal";
 
+import { useUpdateInfectionBriefing } from "@/lib/configurator/api/mutations/useUpdateInfectionBriefing";
+import {
+  useDownloadInfectionBriefingLandingPage,
+  useGetInfectionBriefingConfig,
+} from "@/lib/configurator/api/queries/infectionBriefing";
 import {
   ConfiguratorForm,
   FormSection,
@@ -21,15 +25,14 @@ import {
   ConfiguratorEndpointName,
   ConfiguratorModuleName,
 } from "@/lib/configurator/shared/types";
-import { useUpdateInfectionBriefing } from "@/lib/shared/api/mutations/configurator/useUpdateInfectionBriefing";
 import {
-  useDownloadInfectionBriefingLandingPage,
-  useGetInfectionBriefingConfig,
-} from "@/lib/shared/api/queries/configurator/infectionBriefing";
+  SupportedLanguage,
+  languageLabel,
+  supportedLanguages,
+} from "@/lib/i18n/language";
 
 export interface InfectionBriefingFormModel {
-  landingContentDe: ConfigFile;
-  landingContentEn: ConfigFile;
+  landingContent: Record<SupportedLanguage, ConfigFile>;
 }
 
 const endpointName: ConfiguratorEndpointName = "INFECTION_BRIEFING";
@@ -53,23 +56,14 @@ function InfectionBriefingConfiguratorForm(props: {
   });
   const sheets = useInfectionBriefingSheets();
 
-  async function handleSubmit({
-    landingContentDe,
-    landingContentEn,
-  }: InfectionBriefingFormModel) {
-    await updateInfectionBriefing({
-      landingContentDe,
-      landingContentEn,
-    });
+  async function handleSubmit(model: InfectionBriefingFormModel) {
+    await updateInfectionBriefing(model);
   }
 
   return (
     <ConfiguratorForm
       sheets={sheets}
-      initialValues={{
-        landingContentDe: data.landingContentDe,
-        landingContentEn: data.landingContentEn,
-      }}
+      initialValues={data}
       status={currentTabStatus}
       onSubmit={handleSubmit}
     />
@@ -85,20 +79,14 @@ function useInfectionBriefingSheets() {
       [
         {
           title: "Startseite im Online Portal",
-          sections: [
+          sections: supportedLanguages.map((lang) =>
             markdownFileSection({
-              title: "Deutsch",
-              name: "landingContentDe",
-              required: true,
-              downloadFile: () => downloadLandingPage(ApiLanguage.German),
+              title: languageLabel[lang],
+              name: "landingContent." + lang,
+              required: lang === "de",
+              downloadFile: () => downloadLandingPage(lang),
             }),
-            markdownFileSection({
-              title: "Englisch",
-              name: "landingContentEn",
-              required: false,
-              downloadFile: () => downloadLandingPage(ApiLanguage.English),
-            }),
-          ],
+          ),
         },
       ] satisfies FormSheet[],
     [downloadLandingPage],

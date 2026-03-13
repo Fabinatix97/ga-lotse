@@ -144,7 +144,10 @@ function InspectionEditSampleSidebar({
       externalId: sample.sampleId,
       measurementParameters: [],
       sampleNumber: sample.sampleNumber,
-      pointOfWithdrawal: sample.pointOfWithdrawal,
+      samplingPoint: {
+        label: sample.samplingPoint.name,
+        value: sample.samplingPoint.id,
+      },
       samplingActor: {
         label: getActorName(sample.samplingActor),
         value: {
@@ -231,6 +234,10 @@ function InspectionEditSampleSidebar({
               <TabPanel value={0}>
                 <InspectionSampleSidebarBasisData
                   values={values}
+                  facilityId={facility.id}
+                  onSamplingPointSelection={(value) =>
+                    setFieldValue("samplingPoint", value)
+                  }
                   onSamplingActorSelection={(value) =>
                     setFieldValue("samplingActor", value)
                   }

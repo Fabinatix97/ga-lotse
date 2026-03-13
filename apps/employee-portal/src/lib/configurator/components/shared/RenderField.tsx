@@ -112,8 +112,8 @@ interface RadioFormField extends Omit<BaseFormField, "label"> {
 
 interface OpeningHoursFormField {
   type: "openinghours";
-  english?: boolean;
   name: string;
+  required?: boolean;
 }
 
 export type FileUploadValue = Pick<FileCardProps, "name" | "size" | "type">;
@@ -256,7 +256,7 @@ export function RenderField({ field }: { field: FormFields }) {
         </RadioGroupField>
       );
     case "openinghours":
-      return <OpeningHoursField name={field.name} english={field.english} />;
+      return <OpeningHoursField name={field.name} required={field.required} />;
   }
 }
 

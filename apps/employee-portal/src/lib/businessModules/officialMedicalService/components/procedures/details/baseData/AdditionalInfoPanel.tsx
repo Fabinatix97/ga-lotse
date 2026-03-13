@@ -69,7 +69,7 @@ export function AdditionalInfoPanel({
         <DetailsColumn gap={2}>
           <DetailsItem
             label="Anliegen"
-            value={procedure.concern?.nameDe ?? "-"}
+            value={procedure.concern?.names?.GERMAN ?? "-"}
           />
           <DetailsItem
             label="Arzt/Ärztin"

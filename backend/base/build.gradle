@@ -68,6 +68,7 @@ dependencies {
     // Replace those interfaces with dummy ones.
     // Remove when upgrading to mockwebserver 5
     testImplementation 'io.quarkus:quarkus-junit4-mock:latest.release'
+    testImplementation 'org.instancio:instancio-core:latest.release'
 }
 
 dockerCompose {

@@ -16,7 +16,7 @@ import {
 
 interface OpeningHoursFieldProps {
   name: string;
-  english?: boolean;
+  required?: boolean;
 }
 
 export interface OpeningHoursFieldValue {
@@ -57,7 +57,7 @@ export function OpeningHoursField(props: OpeningHoursFieldProps) {
       if (currentValue?.length > maxLength) {
         return `Maximal ${maxLength} Zeichen`;
       }
-      if (isEmpty) {
+      if (isEmpty && props.required) {
         return "Mind. eine Zeile oder Zusatzinformationen ausfüllen";
       }
       if (emptyRow) {
@@ -90,7 +90,7 @@ export function OpeningHoursField(props: OpeningHoursFieldProps) {
               type="text"
               name={`${props.name}.rows.${i}.weekday`}
               label="Wochentag"
-              placeholder={props.english ? "e.g. Monday" : "z.B. Montag"}
+              placeholder="z.B. Montag"
               validate={validateField(75, i)}
             />
             <InputField
@@ -100,11 +100,7 @@ export function OpeningHoursField(props: OpeningHoursFieldProps) {
               type="text"
               name={`${props.name}.rows.${i}.timeWindow`}
               label="Zeitfenster"
-              placeholder={
-                props.english
-                  ? "e.g. 08:00 am to 12:00 pm"
-                  : "z.B. 08:00 Uhr bis 12:00 Uhr"
-              }
+              placeholder="z.B. 08:00 Uhr bis 12:00 Uhr"
               validate={validateField(100, i, true)}
             />
             {amountRows > 1 && (
@@ -154,11 +150,7 @@ export function OpeningHoursField(props: OpeningHoursFieldProps) {
       <Divider />
       <TextareaField
         label="Zusatzinformationen"
-        placeholder={
-          props.english
-            ? "e.g. by appointment only; Thursdays only during the Hessian school vacations"
-            : "z.B. Nur nach Terminabsprache; donnerstags nur in den hessischen Schulferien"
-        }
+        placeholder="z.B. Nur nach Terminabsprache; donnerstags nur in den hessischen Schulferien"
         name={`${props.name}.additionalInfo`}
         validate={validateField(150)}
       />

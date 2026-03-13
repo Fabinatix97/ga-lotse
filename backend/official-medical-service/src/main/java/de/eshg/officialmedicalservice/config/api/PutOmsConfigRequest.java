@@ -11,7 +11,4 @@ import jakarta.validation.constraints.PositiveOrZero;
 public record PutOmsConfigRequest(
     @NotNull @PositiveOrZero Integer keycloakUserCleanupJobOverdueDuration,
     @NotNull @PositiveOrZero Integer medicalOpinionCutOffDateLeadTime,
-    @NotNull Boolean citizenPortalAnamnesisEnabled,
-    Boolean deleteLandingPageEn,
-    Boolean deleteSelectConcernInfoboxDe,
-    Boolean deleteSelectConcernInfoboxEn) {}
+    @NotNull Boolean citizenPortalAnamnesisEnabled) {}

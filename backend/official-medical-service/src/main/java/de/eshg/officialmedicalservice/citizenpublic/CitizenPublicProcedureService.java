@@ -85,7 +85,7 @@ public class CitizenPublicProcedureService {
         procedure, request.appointment().bookingInfo().start(), TriggerType.SYSTEM_AUTOMATIC);
 
     progressEntryService.createProgressEntryForConcernChanged(
-        procedure, request.concern().nameDe());
+        procedure, request.concern().names().get(Language.GERMAN));
 
     return procedure.getExternalId();
   }
@@ -108,15 +108,11 @@ public class CitizenPublicProcedureService {
 
   private static byte[] getDocumentContent(MultiLangDocument document) {
     Language language = LanguageContextHolder.getLanguage();
-    Document langDocument =
-        switch (language) {
-          case ENGLISH -> document.getEn();
-          case GERMAN -> document.getDe();
-        };
+    Document langDocument = document.get(language);
     if (langDocument != null) {
       return langDocument.getContent();
     } else {
-      return document.getDe().getContent();
+      return document.get(Language.GERMAN).getContent();
     }
   }
 }

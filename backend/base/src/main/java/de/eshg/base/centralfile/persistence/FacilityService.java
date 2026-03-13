@@ -23,6 +23,8 @@ import de.eshg.base.centralfile.persistence.FacilityFileNumberService.StreetName
 import de.eshg.base.centralfile.persistence.entity.*;
 import de.eshg.base.centralfile.persistence.repository.FacilityRepository;
 import de.eshg.base.centralfile.persistence.repository.FacilitySearchSpecification;
+import de.eshg.base.feature.BaseFeature;
+import de.eshg.base.feature.BaseFeatureToggle;
 import de.eshg.base.util.*;
 import de.eshg.mutex.MutexService;
 import de.eshg.rest.service.error.AlreadyExistsException;
@@ -58,6 +60,7 @@ public class FacilityService {
   private final Clock clock;
   private final EntityManager entityManager;
   private final FacilityFileNumberService facilityFileNumberService;
+  private final BaseFeatureToggle baseFeatureToggle;
 
   public FacilityService(
       FacilityRepository facilityRepository,
@@ -66,7 +69,8 @@ public class FacilityService {
       CentralFileAuditLogger auditLogger,
       Clock clock,
       EntityManager entityManager,
-      FacilityFileNumberService facilityFileNumberService) {
+      FacilityFileNumberService facilityFileNumberService,
+      BaseFeatureToggle baseFeatureToggle) {
     this.facilityRepository = facilityRepository;
     this.mutexService = mutexService;
     this.auditLogger = auditLogger;
@@ -74,6 +78,7 @@ public class FacilityService {
     this.clock = clock;
     this.entityManager = entityManager;
     this.facilityFileNumberService = facilityFileNumberService;
+    this.baseFeatureToggle = baseFeatureToggle;
   }
 
   public List<Facility> searchReferenceFacilities(String name) {
@@ -125,6 +130,15 @@ public class FacilityService {
     return facilityRepository
         .findByExternalIdEqualsAndReferenceFacilityIsNull(referenceFacilityId)
         .orElseThrow(() -> new NotFoundException(FACILITY_REFERENCE_NOT_FOUND));
+  }
+
+  public Facility getReferenceFacilityByFileStateId(UUID fileStateId) {
+    return facilityRepository
+        .findReferenceFacilityByFileStateExternalId(fileStateId)
+        .orElseThrow(
+            () ->
+                new NotFoundException(
+                    "Facility File State with given ID (or associated Reference Facility) not found"));
   }
 
   private Facility addFacilityFileState(Facility facilityFileState, Facility referenceFacility) {
@@ -330,9 +344,11 @@ public class FacilityService {
     Set<Facility> referenceFacilities = new LinkedHashSet<>();
     for (Facility fileState : fileStates) {
       Facility referenceFacility = fileState.getReferenceFacility();
-      referenceFacilities.add(referenceFacility);
-      fileState.setDeleteAt(timestamp);
-      auditLogger.logDeleteFileState(fileState);
+      if (shouldMarkForDeletion(referenceFacility)) {
+        referenceFacilities.add(referenceFacility);
+        fileState.setDeleteAt(timestamp);
+        auditLogger.logDeleteFileState(fileState);
+      }
     }
 
     for (Facility referenceFacility : referenceFacilities) {
@@ -342,6 +358,11 @@ public class FacilityService {
         auditLogger.logDeleteReferenceData(referenceFacility);
       }
     }
+  }
+
+  private boolean shouldMarkForDeletion(Facility referenceFacility) {
+    return !(baseFeatureToggle.isNewFeatureEnabled(BaseFeature.SAMPLES)
+        && facilityRepository.hasSamplingPointNotToBeDeletedBefore(referenceFacility));
   }
 
   public Facility updateFileStateAndReferenceFacility(
@@ -691,7 +712,6 @@ public class FacilityService {
         facilityRoot.join(Facility_.CONTACT_ADDRESS, JoinType.LEFT);
     Join<DomesticFacilityAddress, EmbeddableDomesticAddress> embeddableAddressJoin =
         addressJoin.join(DomesticFacilityAddress_.EMBEDDED_DOMESTIC_ADDRESS, JoinType.LEFT);
-
     return new RootAndJoins(facilityRoot, addressJoin, embeddableAddressJoin);
   }
 

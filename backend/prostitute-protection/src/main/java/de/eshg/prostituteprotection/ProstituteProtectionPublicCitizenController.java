@@ -6,9 +6,11 @@
 package de.eshg.prostituteprotection;
 
 import de.eshg.base.department.GetDepartmentInfoResponse;
+import de.eshg.config.api.OpeningHoursDto;
 import de.eshg.config.departmentinfo.DepartmentInfoConfigService;
 import de.eshg.config.departmentinfo.OpeningHoursService;
 import de.eshg.config.domain.OpeningHours;
+import de.eshg.config.mapper.OpeningHoursMapper;
 import de.eshg.lib.appointmentblock.AppointmentBlockAvailabilityService;
 import de.eshg.lib.appointmentblock.AppointmentBlockService;
 import de.eshg.lib.appointmentblock.api.AppointmentDto;
@@ -16,7 +18,6 @@ import de.eshg.lib.appointmentblock.api.GetFreeAppointmentsResponse;
 import de.eshg.prostituteprotection.api.CreateProstituteProtectionProcedureResponse;
 import de.eshg.prostituteprotection.api.ProcedureTypeDto;
 import de.eshg.prostituteprotection.api.citizen.CreateCitizenProcedureRequest;
-import de.eshg.prostituteprotection.api.citizen.GetOpeningHoursResponse;
 import de.eshg.prostituteprotection.api.citizen.GetPublicCitizenConfigurationResponse;
 import de.eshg.prostituteprotection.mapper.AppointmentMapper;
 import de.eshg.rest.service.error.BadRequestException;
@@ -27,7 +28,6 @@ import jakarta.validation.Valid;
 import java.time.Clock;
 import java.time.Duration;
 import java.time.Instant;
-import java.util.Collections;
 import java.util.List;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -76,11 +76,9 @@ public class ProstituteProtectionPublicCitizenController {
   @GetMapping(path = "/opening-hours")
   @Operation(summary = "Get the official opening hours.")
   @Transactional(readOnly = true)
-  public GetOpeningHoursResponse getOpeningHours() {
+  public OpeningHoursDto getOpeningHours() {
     OpeningHours openingHours = openingHoursService.getConfig();
-    return new GetOpeningHoursResponse(
-        Collections.unmodifiableList(openingHours.getDe()),
-        Collections.unmodifiableList(openingHours.getEn()));
+    return OpeningHoursMapper.mapToDto(openingHours);
   }
 
   @GetMapping(path = "/landing", produces = MediaType.TEXT_MARKDOWN_VALUE)

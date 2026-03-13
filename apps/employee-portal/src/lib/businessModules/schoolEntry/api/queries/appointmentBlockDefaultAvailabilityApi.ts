@@ -7,7 +7,7 @@ import { queryOptions } from "@tanstack/react-query";
 
 import { AppointmentBlockDefaultAvailabilityApi } from "@eshg/school-entry-api";
 
-import { configuratorApiQueryKey } from "@/lib/shared/api/queries/configurator/apiQueryKey";
+import { configuratorApiQueryKey } from "@/lib/configurator/api/queries/apiQueryKey";
 
 export function getAppointmentBlockDefaultAvailabilityQuery(
   appointmentBlockDefaultAvailabilityApi: AppointmentBlockDefaultAvailabilityApi,

@@ -17,7 +17,7 @@ import java.util.UUID;
 public record CreateInspectionSampleRequest(
     @NotNull UUID externalId,
     @NotNull InspectionSampleTypeDto typeOfSample,
-    @NotNull String pointOfWithdrawal,
+    @NotNull UUID samplingPointId,
     @NotNull String sampleNumber,
     @NotNull InspectionSampleEvaluationTypeDto evaluationType,
     @NotNull @Valid InspectionSampleActorReferenceDto samplingActor,

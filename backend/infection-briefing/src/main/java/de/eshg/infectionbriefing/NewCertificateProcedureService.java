@@ -6,12 +6,13 @@
 package de.eshg.infectionbriefing;
 
 import de.cronn.commons.lang.StreamUtil;
+import de.eshg.base.centralfile.api.DataOriginDto;
+import de.eshg.base.centralfile.api.person.GetPersonFileStateResponse;
 import de.eshg.infectionbriefing.api.AcceptDraftRequest;
 import de.eshg.infectionbriefing.api.ConfirmPaymentRequest;
 import de.eshg.infectionbriefing.api.IssueCertificateResponse;
 import de.eshg.infectionbriefing.document.CertificateGenerator;
 import de.eshg.infectionbriefing.domain.model.CustodianConsent;
-import de.eshg.infectionbriefing.domain.model.InfectionBriefingPerson;
 import de.eshg.infectionbriefing.domain.model.InfectionBriefingProcedure;
 import de.eshg.infectionbriefing.domain.model.NewCertificateProcedure;
 import de.eshg.infectionbriefing.domain.repository.InfectionBriefingProcedureRepository;
@@ -23,7 +24,6 @@ import de.eshg.infectionbriefing.util.InfectionBriefingSystemProgressEntryFactor
 import de.eshg.infectionbriefing.util.ProcedureValidator;
 import de.eshg.lib.auditlog.AuditLogger;
 import de.eshg.lib.procedure.domain.model.ProcedureStatus;
-import de.eshg.lib.procedure.domain.model.RelatedPerson;
 import de.eshg.lib.procedure.domain.model.SystemProgressEntry;
 import de.eshg.lib.procedure.domain.model.TriggerType;
 import de.eshg.lib.procedure.progressentry.ProgressEntryService;
@@ -68,10 +68,18 @@ public class NewCertificateProcedureService {
         new ProcedureValidator<>(getNewCertificateProcedure(procedureId))
             .validateStatus(ProcedureStatus.DRAFT)
             .get();
-    InfectionBriefingPerson person =
-        procedure.getRelatedPersons().stream().collect(StreamUtil.toSingleElement());
-    createOrUpdateCentralFileState(request, person);
-    procedure.setCustodianConsent(validateAndGetCustodianConsent(request, person));
+    GetPersonFileStateResponse personFileState =
+        personClient.getPersonFileState(procedure.getApplicant().getCentralFileStateId());
+    procedure.setCustodianConsent(
+        validateCustodianConsent(
+            CustodianConsentMapper.toDomainType(
+                request.map(AcceptDraftRequest::custodianConsent).orElse(null)),
+            personFileState.dateOfBirth()));
+    procedure
+        .getApplicant()
+        .setCentralFileStateId(
+            getCentralFileState(
+                request.map(AcceptDraftRequest::referencePersonId).orElse(null), personFileState));
     procedure.updateProcedureStatus(ProcedureStatus.OPEN, clock, auditLogger);
   }
 
@@ -125,9 +133,7 @@ public class NewCertificateProcedureService {
                     InfectionBriefingKeyDocumentType.CERTIFICATE),
                 certificateGenerator.generate(
                     personClient.getPersonFileState(
-                        procedure.getRelatedPersons().stream()
-                            .map(RelatedPerson::getCentralFileStateId)
-                            .collect(StreamUtil.toSingleElement())),
+                        procedure.getApplicant().getCentralFileStateId()),
                     procedure.getInstructionDate()))
             .getFile()
             .getExternalId());
@@ -147,32 +153,34 @@ public class NewCertificateProcedureService {
     return new IssueCertificateResponse(fileId);
   }
 
-  private CustodianConsent validateAndGetCustodianConsent(
-      Optional<AcceptDraftRequest> request, InfectionBriefingPerson person) {
-    CustodianConsent custodianConsent =
-        request
-            .map(AcceptDraftRequest::custodianConsent)
-            .map(CustodianConsentMapper::toDomainType)
-            .orElse(null);
-    if (custodianConsent == null
-        && custodianConsentHelper.isMinor(
-            personClient.getPersonFileState(person.getCentralFileStateId()).dateOfBirth())) {
+  private CustodianConsent validateCustodianConsent(
+      CustodianConsent custodianConsent, LocalDate dateOfBirth) {
+    if (custodianConsent == null && custodianConsentHelper.isMinor(dateOfBirth)) {
       throw new BadRequestException("Missing custodian consent for minor applicant");
     }
-
     return custodianConsent;
   }
 
-  private void createOrUpdateCentralFileState(
-      Optional<AcceptDraftRequest> request, InfectionBriefingPerson person) {
-    UUID referencePersonId = request.map(AcceptDraftRequest::referencePersonId).orElse(null);
-    if (referencePersonId == null) {
-      person.setCentralFileStateId(
-          personClient.createInternalReferencePerson(person.getCentralFileStateId()));
+  private UUID getCentralFileState(
+      UUID referencePersonId, GetPersonFileStateResponse externalPerson) {
+    if (externalPerson.dataOrigin() == DataOriginDto.EXTERNAL) {
+      return createOrUpdateCentralFileState(referencePersonId, externalPerson);
     } else {
-      person.setCentralFileStateId(
-          personClient.updatePersonAndCreateFileState(
-              referencePersonId, person.getCentralFileStateId()));
+      if (referencePersonId != null) {
+        throw new BadRequestException(
+            "ReferencePersonId not allowed (person data origin is not EXTERNAL)");
+      } else {
+        return externalPerson.id();
+      }
+    }
+  }
+
+  private UUID createOrUpdateCentralFileState(
+      UUID referencePersonId, GetPersonFileStateResponse externalPerson) {
+    if (referencePersonId == null) {
+      return personClient.createInternalReferencePerson(externalPerson);
+    } else {
+      return personClient.updatePersonAndCreateFileState(referencePersonId, externalPerson);
     }
   }
 

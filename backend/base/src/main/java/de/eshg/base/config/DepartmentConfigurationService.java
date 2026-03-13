@@ -19,6 +19,7 @@ import de.eshg.config.domain.Document;
 import de.eshg.config.domain.MultiLangDocument;
 import de.eshg.lib.auditlog.AuditLogger;
 import de.eshg.persistence.TransactionHelper;
+import de.eshg.rest.service.i18n.Language;
 import de.eshg.rest.service.security.CurrentUserHelper;
 import de.eshg.svgsanitizer.SvgSanitizerApi;
 import jakarta.persistence.EntityManager;
@@ -26,7 +27,6 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Map;
-import java.util.Objects;
 import java.util.SequencedMap;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
@@ -204,8 +204,9 @@ public class DepartmentConfigurationService
         "departmentConfiguration." + loggingPrefix,
         getRelevantFieldsForLogging(persistedDocument),
         getRelevantFieldsForLogging(documentUpdate));
-    persistedDocument.updateDe(documentUpdate.getDe());
-    persistedDocument.updateEn(documentUpdate.getEn());
+    for (Language language : Language.values()) {
+      persistedDocument.update(language, documentUpdate.get(language));
+    }
   }
 
   @Override
@@ -313,9 +314,7 @@ public class DepartmentConfigurationService
     if (!initialized) {
       return ConfigurationStatus.INCOMPLETE;
     }
-    boolean hasEmptyEnglishDocuments =
-        Arrays.stream(multiLangDocuments).map(MultiLangDocument::getEn).anyMatch(Objects::isNull);
-    if (hasEmptyEnglishDocuments) {
+    if (Arrays.stream(multiLangDocuments).anyMatch(doc -> !doc.isComplete())) {
       return ConfigurationStatus.PARTIALLY_COMPLETE;
     } else {
       return ConfigurationStatus.COMPLETE;
@@ -334,7 +333,7 @@ public class DepartmentConfigurationService
 
   private MultiLangDocument fromResourceDe(Resource resource) throws IOException {
     MultiLangDocument multiLangDocument = new MultiLangDocument();
-    multiLangDocument.updateDe(resource.getContentAsByteArray());
+    multiLangDocument.update(Language.GERMAN, resource.getContentAsByteArray());
     return multiLangDocument;
   }
 }

@@ -120,8 +120,17 @@ function InnerRadioGroupField({
         aria-label={props["aria-label"]}
         onChange={handleChange}
         onFocus={(el) => {
-          // Transfer the focus to its first Radio input
-          el.target.querySelector("input")?.focus();
+          // Transfer focus to the first Radio input when Tab navigation
+          // lands on the RadioGroup container (roving tabindex pattern).
+          // Guard: skip when child elements bubble their focus events up,
+          // or when a Sheet click causes the container to receive focus
+          // from an element already inside the group.
+          const comingFromOutside =
+            el.relatedTarget === null ||
+            !el.currentTarget.contains(el.relatedTarget as Node);
+          if (el.target === el.currentTarget && comingFromOutside) {
+            el.currentTarget.querySelector("input")?.focus();
+          }
         }}
       >
         {children}

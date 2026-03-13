@@ -5,11 +5,12 @@
 
 package de.eshg.schoolentry.api.configuration;
 
+import de.eshg.validation.constraints.FourCharCode;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
 public record AddSchoolEntryMeasurementDeviceRequest(
     @NotNull MeasuringDeviceTypeDto deviceType,
     @NotBlank String name,
-    @NotBlank String equipmentSelector,
+    @NotBlank @FourCharCode String equipmentSelector,
     @NotNull GdtDriverDto gdtDriver) {}

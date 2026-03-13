@@ -125,6 +125,8 @@ public final class BaseUrls {
     public static final String TASK_API = "/tasks";
     public static final String PUBLIC_CONFIG_API = "/public/config";
     public static final String ICD_10_CODES_API = "/icd10-codes";
+    public static final String SAMPLING_POINT_API = "/sampling-points";
+    public static final String SAMPLING_POINT_FILE_STATE_URL = "/centralfilestates";
 
     private Base() {}
   }
@@ -148,6 +150,7 @@ public final class BaseUrls {
         PACKLIST_CONTROLLER + "/definitions";
     public static final String INSPECTION_IMPORT_CONTROLLER = "/import";
     public static final String CONFIGURATION_API = "/configuration";
+    public static final String SAMPLING_POINTS = "/sampling-points";
 
     private Inspection() {}
   }
@@ -237,6 +240,7 @@ public final class BaseUrls {
 
   public static final class InfectionBriefing {
     public static final String PROCEDURE_CONTROLLER = "/infection-briefing-procedures";
+    public static final String APPOINTMENT_CONTROLLER = "/appointments";
     public static final String PUBLIC_CITIZEN_CONTROLLER = "/citizen/public";
     public static final String CITIZEN_AUTH_CONTROLLER = "/citizen/auth";
     public static final String CONFIG_CONTROLLER = "/configuration";

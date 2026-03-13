@@ -19,7 +19,7 @@ export interface MeasurementParametersType {
 }
 
 export interface InspectionSampleSidebarFormType {
-  evaluatingActor?: {
+  evaluatingActor: {
     label: string;
     value: {
       id: string;
@@ -29,12 +29,12 @@ export interface InspectionSampleSidebarFormType {
         | "InspectionSampleUserReference"
         | "AutocompleteContact";
     };
-  };
+  } | null;
   evaluationType: ApiInspectionSampleEvaluationType;
   measurementParameters: MeasurementParametersType[];
   sampleNumber: string;
-  pointOfWithdrawal: string;
-  samplingActor?: {
+  samplingPoint: { label: string; value: string } | null;
+  samplingActor: {
     label: string;
     value: {
       id: string;
@@ -43,7 +43,7 @@ export interface InspectionSampleSidebarFormType {
         | "InspectionSampleInspectedFacilityReference"
         | "InspectionSampleUserReference";
     };
-  };
+  } | null;
   timeOfEvaluation?: string;
   timeOfSampling?: string;
   typeOfSample: ApiInspectionSampleType;
@@ -114,7 +114,7 @@ export function makeInspectionSampleRequest(
     evaluatingActor: createActor(formValues.evaluatingActor!.value),
     evaluationType: formValues.evaluationType,
     sampleNumber: formValues.sampleNumber,
-    pointOfWithdrawal: formValues.pointOfWithdrawal,
+    samplingPointId: formValues.samplingPoint!.value,
     samplingActor: createActor(formValues.samplingActor!.value),
     timeOfEvaluation: formValues.timeOfEvaluation
       ? new Date(formValues.timeOfEvaluation)

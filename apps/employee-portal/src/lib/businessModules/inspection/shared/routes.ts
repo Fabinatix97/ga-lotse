@@ -10,6 +10,7 @@ const checklistDefinitionsPath = `${checklistsPath}/def`;
 const facilitiesPath = `${basePath}/facility`;
 const facilitiesWebSearchPath = `${facilitiesPath}/search`;
 const objectTypesPath = `${basePath}/objecttype`;
+const samplingPointsPath = `${basePath}/samplingPoints`;
 const teamviewPath = `${basePath}/teamview`;
 const proceduresPath = `${basePath}/procedures`;
 const textBlocksPath = `${basePath}/textblocks`;
@@ -56,6 +57,9 @@ export const routes = {
   },
   objectTypes: {
     index: objectTypesPath,
+  },
+  samplingPoints: {
+    index: samplingPointsPath,
   },
   teamview: {
     index: teamviewPath,

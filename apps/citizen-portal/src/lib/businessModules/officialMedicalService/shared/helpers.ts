@@ -25,11 +25,9 @@ export function mapToConcernApiList(
   val.concerns.forEach((concern) => {
     newArray.push({
       appointmentType: mapOptionalValue(concern.appointmentType),
-      categoryNameDe: val.nameDe,
-      categoryNameEn: val.nameEn,
+      categoryNames: val.names,
       highPriority: concern.highPriority,
-      nameDe: concern.nameDe,
-      nameEn: mapOptionalValue(concern.nameEn),
+      names: concern.names,
       version: 0,
       visibleInOnlinePortal: true,
     });
@@ -86,11 +84,9 @@ export function mapToPostCitizenProcedureRequest(
       },
       concern: {
         appointmentType: mapOptionalValue(values.concern.appointmentType),
-        categoryNameDe: values.concern.categoryNameDe,
-        categoryNameEn: values.concern.categoryNameEn,
+        categoryNames: values.concern.categoryNames,
         highPriority: values.concern.highPriority,
-        nameDe: values.concern.nameDe,
-        nameEn: mapOptionalValue(values.concern.nameEn),
+        names: values.concern.names,
         version: 0,
         visibleInOnlinePortal: true,
       },

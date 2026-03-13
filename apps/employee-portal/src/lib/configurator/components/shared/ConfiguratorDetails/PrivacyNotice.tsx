@@ -8,9 +8,10 @@ import { FormikValues } from "formik";
 import { notFound } from "next/navigation";
 import { useMemo } from "react";
 
-import { ApiLanguage } from "@eshg/lib-config-api";
 import { FileType, useFileDownload } from "@eshg/lib-portal";
 
+import { useUpdatePrivacyNotice } from "@/lib/configurator/api/mutations/useUpdatePrivacyNotice";
+import { useGetPrivacyNotice } from "@/lib/configurator/api/queries/useGetPrivacyNotice";
 import {
   ConfiguratorForm,
   FormSection,
@@ -22,20 +23,17 @@ import {
   ConfiguratorEndpointName,
   ConfiguratorModuleName,
 } from "@/lib/configurator/shared/types";
+import {
+  SupportedLanguage,
+  languageLabel,
+  mapToApiLanguage,
+  supportedLanguages,
+} from "@/lib/i18n/language";
 import { useConfiguratorPrivacyDocumentApi } from "@/lib/shared/api/clients";
-import { useUpdatePrivacyNotice } from "@/lib/shared/api/mutations/configurator/useUpdatePrivacyNotice";
-import { useGetPrivacyNotice } from "@/lib/shared/api/queries/configurator/useGetPrivacyNotice";
-
-enum FormNames {
-  USE_NOTICE_OF_HEALTH_DEPARTMENT = "useNoticeOfHealthDepartment",
-  GERMAN_PRIVACY_NOTICE_DOCUMENT = "germanPrivacyNoticeDocument",
-  ENGLISH_PRIVACY_NOTICE_DOCUMENT = "englishPrivacyNoticeDocument",
-}
 
 export interface PrivacyNoticeFormModel extends FormikValues {
-  [FormNames.USE_NOTICE_OF_HEALTH_DEPARTMENT]: "DEFAULT" | "CUSTOM";
-  [FormNames.GERMAN_PRIVACY_NOTICE_DOCUMENT]: ConfigFile;
-  [FormNames.ENGLISH_PRIVACY_NOTICE_DOCUMENT]: ConfigFile;
+  useNoticeOfHealthDepartment: "DEFAULT" | "CUSTOM";
+  files: Record<SupportedLanguage, ConfigFile>;
 }
 
 const UPLOAD_FIELD_MAX_WIDTH = "500px";
@@ -79,11 +77,11 @@ function PrivacyNoticeConfiguratorForm(props: {
               fields: [
                 {
                   type: "upload",
-                  name: FormNames.GERMAN_PRIVACY_NOTICE_DOCUMENT,
+                  name: "files.de",
                   label: "Upload (PDF-Datei)",
                   accept: FileType.Pdf,
                   required: "Upload erforderlich",
-                  downloadFile: () => download("GERMAN"),
+                  downloadFile: () => download("de"),
                   width: { width: "100%", maxWidth: UPLOAD_FIELD_MAX_WIDTH },
                 },
               ],
@@ -91,26 +89,34 @@ function PrivacyNoticeConfiguratorForm(props: {
           ],
         },
       },
-      {
-        content: {
-          type: "field",
-          title: "Englisch",
-          rows: [
-            {
-              fields: [
-                {
-                  type: "upload",
-                  name: FormNames.ENGLISH_PRIVACY_NOTICE_DOCUMENT,
-                  label: "Upload (PDF-Datei)",
-                  accept: FileType.Pdf,
-                  downloadFile: () => download("ENGLISH"),
-                  width: { width: "100%", maxWidth: UPLOAD_FIELD_MAX_WIDTH },
-                },
-              ],
-            },
-          ],
-        },
-      },
+      ...(supportedLanguages
+        .filter((lang) => lang !== "de")
+        .map(
+          (lang) =>
+            ({
+              content: {
+                type: "field",
+                title: languageLabel[lang],
+                rows: [
+                  {
+                    fields: [
+                      {
+                        type: "upload",
+                        name: `files.${lang}`,
+                        label: "Upload (PDF-Datei)",
+                        accept: FileType.Pdf,
+                        downloadFile: () => download(lang),
+                        width: {
+                          width: "100%",
+                          maxWidth: UPLOAD_FIELD_MAX_WIDTH,
+                        },
+                      },
+                    ],
+                  },
+                ],
+              },
+            }) satisfies FormSection,
+        ) satisfies FormSection[]),
     ] satisfies FormSection[];
 
     if (showChooser) {
@@ -118,7 +124,7 @@ function PrivacyNoticeConfiguratorForm(props: {
         {
           content: {
             type: "choose",
-            name: FormNames.USE_NOTICE_OF_HEALTH_DEPARTMENT,
+            name: "useNoticeOfHealthDepartment",
             options: [
               {
                 label: "Datenschutzhinweise von Grundmodul übernehmen",
@@ -164,7 +170,8 @@ function PrivacyNoticeConfiguratorForm(props: {
 
 function usePrivacyNoticeDownload(module: ConfiguratorModuleName) {
   const { moduleApi, baseApi } = useConfiguratorPrivacyDocumentApi(module);
-  async function downloadFn(lang: ApiLanguage) {
+  async function downloadFn(supportedLanguage: SupportedLanguage) {
+    const lang = mapToApiLanguage(supportedLanguage);
     return module === "BASE"
       ? baseApi.downloadPrivacyNoticeRaw({ lang })
       : moduleApi.downloadPrivacyNoticeRaw({ lang });

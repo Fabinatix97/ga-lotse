@@ -71,7 +71,6 @@ public class InspectionController {
   @Transactional
   public InspectionAndFileNumberCollisionsDto startInspection(
       @PathVariable("id") UUID procedureId, @Valid @RequestBody StartInspectionRequest request) {
-    validateAssignmentRole(request.assigneeId());
     return inspectionService.startInspection(procedureId, request);
   }
 

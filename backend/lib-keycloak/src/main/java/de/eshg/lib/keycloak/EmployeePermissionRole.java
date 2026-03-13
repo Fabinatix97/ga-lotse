@@ -299,6 +299,17 @@ public enum EmployeePermissionRole implements PermissionRole {
       "Kern-Checklisten-Definition in Zentralen Diensten bereitstellen", Module.INSPECTION),
   INSPECTION_IMPORT("Vorgänge importieren", Module.INSPECTION),
 
+  OFFICIAL_MEDICAL_SERVICE_ASSESSMENT_CREATE(
+      "Hinzufügen eines Schriftguts", Module.OFFICIAL_MEDICAL_SERVICE),
+  OFFICIAL_MEDICAL_SERVICE_ASSESSMENT_EDITOR_EDIT(
+      "Ändern des Bearbeiters von Schriftgütern", Module.OFFICIAL_MEDICAL_SERVICE),
+  OFFICIAL_MEDICAL_SERVICE_ASSESSMENT_PREVIEW_READER_EDIT(
+      "Ändern der Entwurf-Leseberechtigten von Schriftgütern", Module.OFFICIAL_MEDICAL_SERVICE),
+  OFFICIAL_MEDICAL_SERVICE_TEXT_TEMPLATES_WRITE(
+      "Konfiguration der Textvorlagen", Module.OFFICIAL_MEDICAL_SERVICE),
+  OFFICIAL_MEDICAL_SERVICE_LEGAL_NOTES_WRITE(
+      "Konfiguration der Rechtlichen Hinweise", Module.OFFICIAL_MEDICAL_SERVICE),
+
   SCHOOL_ENTRY_VACCINATED_FILE_STATES(
       "Abholen aller Sachstand-IDs, die nachgewiesen vollständig geimpft sind",
       Module.SCHOOL_ENTRY),

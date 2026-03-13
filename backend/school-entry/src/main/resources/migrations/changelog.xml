@@ -132,5 +132,7 @@
   <include file="migrations/0122_modify_ppr_procedure_type.xml"/>
   <include file="migrations/0123_add_device_registry.xml"/>
   <include file="migrations/0124_add_whodunit_columns_to_procedure.xml"/>
+  <include file="migrations/0125_add_additional_languages.xml"/>
+  <include file="migrations/0126_add_measuring_toggles.xml"/>
 
 </databaseChangeLog>

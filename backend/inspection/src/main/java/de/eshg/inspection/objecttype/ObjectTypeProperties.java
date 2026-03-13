@@ -11,7 +11,6 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @ConfigurationProperties(prefix = "de.eshg.inspection.object-types")
 public record ObjectTypeProperties(
     List<String> legacyObjectTypes,
-    List<String> treeObjectTypes,
     Integer routineInterval,
     Integer complaintInterval,
     Integer standardDuration,

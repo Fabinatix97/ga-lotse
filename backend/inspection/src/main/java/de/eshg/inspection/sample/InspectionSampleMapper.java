@@ -6,6 +6,7 @@
 package de.eshg.inspection.sample;
 
 import de.eshg.base.centralfile.api.facility.GetFacilityFileStateResponse;
+import de.eshg.base.centralfile.api.samplingpoint.GetSamplingPointFileStateResponse;
 import de.eshg.base.contact.api.ContactDto;
 import de.eshg.base.user.api.UserDto;
 import de.eshg.inspection.sample.api.AutocompleteParameterDto;
@@ -32,6 +33,7 @@ import de.eshg.inspection.sample.persistence.InspectionSampleActorReferenceType;
 import de.eshg.inspection.sample.persistence.InspectionSampleMeasurementParameter;
 import de.eshg.inspection.sample.persistence.InspectionSampleMeasurementParameterTemplate;
 import de.eshg.inspection.sample.persistence.InspectionSampleTemplate;
+import de.eshg.inspection.samplingpoint.api.InspectionSamplingPointDto;
 import de.eshg.inspection.teis.persistence.TeisEinheit;
 import de.eshg.inspection.teis.persistence.TeisParameter;
 import de.eshg.inspection.teis.persistence.TeisParameterRepository;
@@ -61,6 +63,24 @@ public class InspectionSampleMapper {
   public static InspectionSampleDto mapToDto(
       InspectionSample sample,
       GetFacilityFileStateResponse facilityFileState,
+      GetSamplingPointFileStateResponse samplingPointFileState,
+      Map<UUID, UserDto> userMap,
+      Map<UUID, ContactDto> contactMap) {
+    return mapToDto(
+        sample,
+        facilityFileState,
+        new InspectionSamplingPointDto(
+            samplingPointFileState.id(),
+            samplingPointFileState.zid(),
+            samplingPointFileState.name()),
+        userMap,
+        contactMap);
+  }
+
+  public static InspectionSampleDto mapToDto(
+      InspectionSample sample,
+      GetFacilityFileStateResponse facilityFileState,
+      InspectionSamplingPointDto samplingPointFileState,
       Map<UUID, UserDto> userMap,
       Map<UUID, ContactDto> contactMap) {
 
@@ -68,7 +88,7 @@ public class InspectionSampleMapper {
         sample.getInspection().getExternalId(),
         sample.getSampleExternalId(),
         InspectionSampleTypeDto.valueOf(sample.getTypeOfSample().name()),
-        sample.getPointOfWithdrawal(),
+        samplingPointFileState,
         sample.getSampleNumber(),
         InspectionSampleEvaluationTypeDto.valueOf(sample.getEvaluationType().name()),
         mapToDto(sample.getSamplingActor(), facilityFileState, userMap, contactMap),
@@ -201,7 +221,6 @@ public class InspectionSampleMapper {
     return new InspectionSampleTemplateDto(
         sampleTemplate.getExternalId(),
         sampleTemplate.getName(),
-        sampleTemplate.getPointOfWithdrawal(),
         InspectionSampleEvaluationTypeDto.valueOf(sampleTemplate.getEvaluationType().name()),
         InspectionSampleTypeDto.valueOf(sampleTemplate.getTypeOfSample().name()),
         sampleTemplate.getMeasurementParameters().stream()

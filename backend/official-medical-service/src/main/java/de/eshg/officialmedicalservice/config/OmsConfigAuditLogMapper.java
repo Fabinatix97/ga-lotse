@@ -9,6 +9,7 @@ import static de.eshg.config.HashUtil.hashOf;
 
 import de.eshg.config.domain.Document;
 import de.eshg.config.domain.MultiLangDocument;
+import de.eshg.rest.service.i18n.Language;
 import java.util.LinkedHashMap;
 import java.util.SequencedMap;
 
@@ -52,8 +53,12 @@ public class OmsConfigAuditLogMapper {
       String fieldKey,
       MultiLangDocument multiLangDocument) {
     if (multiLangDocument != null) {
-      addRelevantFieldsOfDocument(relevantFields, fieldKey + ".de", multiLangDocument.getDe());
-      addRelevantFieldsOfDocument(relevantFields, fieldKey + ".en", multiLangDocument.getEn());
+      for (Language language : Language.values()) {
+        addRelevantFieldsOfDocument(
+            relevantFields,
+            fieldKey + "." + Language.LANGUAGE_TO_LANGUAGE_TAG.get(language),
+            multiLangDocument.get(language));
+      }
     }
   }
 }

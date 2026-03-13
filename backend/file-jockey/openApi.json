@@ -9,6 +9,89 @@
     "url" : "http://localhost:8104"
   } ],
   "paths" : {
+    "/file-io/{equipmentSelector}/{correlationId}" : {
+      "delete" : {
+        "operationId" : "deleteFiles",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "equipmentSelector",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "in" : "path",
+          "name" : "correlationId",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "File(s) deleted"
+          },
+          "204" : {
+            "description" : "No files found to delete"
+          },
+          "400" : {
+            "description" : "Invalid correlation ID format"
+          },
+          "404" : {
+            "description" : "The equipment selector is unknown"
+          },
+          "429" : {
+            "description" : "Too many requests"
+          },
+          "503" : {
+            "description" : "Input or output folder does not exist or is not accessible"
+          }
+        },
+        "summary" : "Delete input and output files for given equipment selector and correlation ID. Scans the input folder by filename template and the output folder for files containing the correlation ID embedding (prefix+correlationId+postfix).",
+        "tags" : [ "FileIo" ]
+      }
+    },
+    "/file-io/{equipmentSelector}/{correlationId}/input" : {
+      "put" : {
+        "operationId" : "putInputFile",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "equipmentSelector",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "in" : "path",
+          "name" : "correlationId",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/octet-stream" : {
+              "schema" : {
+                "type" : "string",
+                "format" : "byte"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "File uploaded"
+          },
+          "429" : {
+            "description" : "Too many requests"
+          }
+        },
+        "summary" : "Upload input file for given equipment selector and correlation ID. Tolerates repeated calls with the same content.",
+        "tags" : [ "FileIo" ]
+      }
+    },
     "/file-io/{equipmentSelector}/{correlationId}/output" : {
       "get" : {
         "operationId" : "getOutputFile",
@@ -45,6 +128,17 @@
               "application/json" : { }
             },
             "description" : "No matching file found for the given correlation ID, or the equipment selector is unknown"
+          },
+          "429" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "type" : "string",
+                  "format" : "binary"
+                }
+              }
+            },
+            "description" : "Too many requests"
           },
           "503" : {
             "content" : {

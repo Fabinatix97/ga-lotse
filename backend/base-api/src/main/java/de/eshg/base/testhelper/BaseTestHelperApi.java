@@ -76,6 +76,9 @@ public interface BaseTestHelperApi extends TestHelperApi, LoginProvider {
   @DeleteExchange("/keycloak/user/{userName}")
   void deleteKeycloakUser(@PathVariable("userName") String userName);
 
+  @GetExchange("/enabled-new-features/{featureEnabled}")
+  boolean isNewFeatureEnabled(@PathVariable("featureEnabled") BaseFeature featureEnabled);
+
   @PostExchange("/enabled-new-features/{featureToEnable}")
   void enableNewFeature(@PathVariable("featureToEnable") BaseFeature featureToEnable);
 

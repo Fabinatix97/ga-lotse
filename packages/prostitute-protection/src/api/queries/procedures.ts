@@ -3,7 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
+import {
+  queryOptions,
+  useQuery,
+  useSuspenseQuery,
+} from "@tanstack/react-query";
 
 import {
   PaginationProps,
@@ -13,13 +17,17 @@ import {
 } from "@eshg/lib-employee-portal";
 import { unwrapRawResponse } from "@eshg/lib-portal";
 import {
+  ApiProstituteProtectionProcedureType,
   ApiProstitutionProtectionProcedureSortKey,
   GetProceduresRequest,
 } from "@eshg/prostitute-protection-api";
 
 import { useProstituteProtectionApiClients } from "../../contexts/ProstituteProtectionApi";
 
-import { proceduresQueryKey } from "./apiQueryKeys";
+import {
+  proceduresQueryKey,
+  prostituteProtectionApiQueryKey,
+} from "./apiQueryKeys";
 
 type PageRequest = Pick<PaginationProps, "pageSize" | "pageNumber">;
 
@@ -52,6 +60,27 @@ export function useProceduresQueryOptions({
     queryFn: () =>
       prostituteProtectionApi.getProceduresRaw(request).then(unwrapRawResponse),
     queryKey: proceduresQueryKey(["getProcedures", request]),
+  });
+}
+
+export function useGetFreeAppointmentsForProcedure(
+  procedureId: string,
+  procedureType: ApiProstituteProtectionProcedureType,
+) {
+  const { prostituteProtectionApi } = useProstituteProtectionApiClients();
+  return useQuery({
+    queryKey: prostituteProtectionApiQueryKey([
+      "getFreeAppointmentsForProcedure",
+      procedureId,
+      procedureType,
+    ]),
+    queryFn: () => {
+      return prostituteProtectionApi.getFreeAppointmentsForProcedure(
+        procedureId,
+        procedureType,
+      );
+    },
+    select: (data) => data.appointments,
   });
 }
 

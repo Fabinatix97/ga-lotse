@@ -5,8 +5,6 @@
 
 package de.eshg.base.config;
 
-import static de.eshg.config.departmentinfo.PrivacyDocumentController.DE;
-import static de.eshg.config.departmentinfo.PrivacyDocumentController.EN;
 import static de.eshg.config.departmentinfo.PrivacyDocumentController.PRIVACY_NOTICE_PATH;
 import static de.eshg.config.departmentinfo.PrivacyDocumentController.PRIVACY_POLICY_PATH;
 import static org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE;
@@ -20,6 +18,7 @@ import de.eshg.config.domain.MultiLangDocument;
 import de.eshg.config.i18n.MultiLangDocumentHelper;
 import de.eshg.config.mapper.MultiLangDocumentMapper;
 import de.eshg.file.common.FileValidator;
+import de.eshg.rest.service.error.BadRequestException;
 import de.eshg.rest.service.error.NotFoundException;
 import de.eshg.rest.service.i18n.Language;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -27,6 +26,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.io.IOException;
+import java.util.List;
 import org.springframework.core.io.Resource;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -35,7 +35,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -91,13 +91,19 @@ class BasePrivacyDocumentsController {
   @PutMapping(value = PRIVACY_NOTICE_PATH, consumes = MULTIPART_FORM_DATA_VALUE)
   @Transactional
   public void updatePrivacyNoticeConfig(
-      @RequestPart(DE) MultipartFile privacyNoticeDe,
-      @RequestPart(value = EN, required = false) MultipartFile privacyNoticeEn)
+      @RequestParam(value = "files", required = false) List<MultipartFile> privacyNotices)
       throws IOException {
-    FileValidator.validatePdfFile(privacyNoticeDe);
-    FileValidator.validatePdfFile(privacyNoticeEn);
-    basePrivacyDocumentService.updatePrivacyNotice(
-        MultiLangDocumentMapper.mapToDomain(privacyNoticeDe, privacyNoticeEn));
+    final var files = MultiLangDocumentMapper.mapMultipartFilesToDomain(privacyNotices);
+
+    if (!files.containsKey(Language.GERMAN)) {
+      throw new BadRequestException("German document is mandatory.");
+    }
+
+    for (var entry : files.values()) {
+      FileValidator.validatePdfFile(entry);
+    }
+
+    basePrivacyDocumentService.updatePrivacyNotice(MultiLangDocumentMapper.mapToDomain(files));
   }
 
   @GetMapping(PRIVACY_POLICY_PATH)
@@ -141,12 +147,18 @@ class BasePrivacyDocumentsController {
   @PutMapping(value = PRIVACY_POLICY_PATH, consumes = MULTIPART_FORM_DATA_VALUE)
   @Transactional
   public void updatePrivacyPolicyConfig(
-      @RequestPart(DE) MultipartFile privacyPolicyDe,
-      @RequestPart(value = EN, required = false) MultipartFile privacyPolicyEn)
+      @RequestParam(value = "files", required = false) List<MultipartFile> privacyPolicies)
       throws IOException {
-    FileValidator.validatePdfFile(privacyPolicyDe);
-    FileValidator.validatePdfFile(privacyPolicyEn);
-    basePrivacyDocumentService.updatePrivacyPolicy(
-        MultiLangDocumentMapper.mapToDomain(privacyPolicyDe, privacyPolicyEn));
+    final var files = MultiLangDocumentMapper.mapMultipartFilesToDomain(privacyPolicies);
+
+    if (!files.containsKey(Language.GERMAN)) {
+      throw new BadRequestException("German document is mandatory.");
+    }
+
+    for (var entry : files.values()) {
+      FileValidator.validatePdfFile(entry);
+    }
+
+    basePrivacyDocumentService.updatePrivacyPolicy(MultiLangDocumentMapper.mapToDomain(files));
   }
 }

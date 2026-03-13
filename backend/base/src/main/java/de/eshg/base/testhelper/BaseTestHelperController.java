@@ -162,6 +162,11 @@ public class BaseTestHelperController extends TestHelperController
   }
 
   @Override
+  public boolean isNewFeatureEnabled(BaseFeature featureEnabled) {
+    return baseFeatureToggle.isNewFeatureEnabled(featureEnabled);
+  }
+
+  @Override
   public void disableNewFeature(BaseFeature featureToDisable) {
     baseFeatureToggle.disableNewFeature(featureToDisable);
   }

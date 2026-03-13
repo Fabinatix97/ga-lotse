@@ -5,10 +5,7 @@
 
 package de.eshg.inspection.facility;
 
-import static java.util.Locale.ROOT;
 import static java.util.stream.Collectors.toUnmodifiableMap;
-import static org.apache.commons.lang3.StringUtils.containsIgnoreCase;
-import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.springframework.util.CollectionUtils.isEmpty;
 
 import com.google.common.collect.Streams;
@@ -16,6 +13,7 @@ import de.eshg.base.address.AddressDto;
 import de.eshg.base.address.DomesticAddressDto;
 import de.eshg.base.centralfile.api.DataOriginDto;
 import de.eshg.base.centralfile.api.facility.*;
+import de.eshg.base.centralfile.api.samplingpoint.GetSamplingPointFileStateResponse;
 import de.eshg.base.user.UserApi;
 import de.eshg.base.user.api.UserDto;
 import de.eshg.domain.model.BaseEntity_;
@@ -63,6 +61,7 @@ import de.eshg.inspection.sample.persistence.InspectionSampleMeasurementParamete
 import de.eshg.inspection.sample.persistence.InspectionSampleMeasurementParameter_;
 import de.eshg.inspection.sample.persistence.InspectionSamplePreclassification;
 import de.eshg.inspection.sample.persistence.InspectionSample_;
+import de.eshg.inspection.samplingpoint.SamplingPointClient;
 import de.eshg.lib.common.CountryCode;
 import de.eshg.lib.procedure.domain.model.ProcedureStatus;
 import de.eshg.lib.procedure.mapping.ProcedureMapper;
@@ -113,12 +112,13 @@ import org.springframework.web.client.HttpClientErrorException.NotFound;
 
 @Service
 public class FacilityService {
-  private static final Logger log = LoggerFactory.getLogger(FacilityService.class);
+  private static final Logger LOG = LoggerFactory.getLogger(FacilityService.class);
 
   private static final long KIND_PENDING_RANGE_IN_DAYS = 14;
 
   private final FacilityRepository facilityRepository;
   private final FacilityClient facilityClient;
+  private final SamplingPointClient samplingPointClient;
   private final InspectionService inspectionService;
   private final WebSearchService webSearchService;
   private final Clock clock;
@@ -134,6 +134,7 @@ public class FacilityService {
   public FacilityService(
       FacilityRepository facilityRepository,
       FacilityClient facilityClient,
+      SamplingPointClient samplingPointClient,
       InspectionService inspectionService,
       WebSearchService webSearchService,
       Clock clock,
@@ -148,6 +149,7 @@ public class FacilityService {
       FeatureToggle<InspectionFeature> featureToggle) {
     this.facilityRepository = facilityRepository;
     this.facilityClient = facilityClient;
+    this.samplingPointClient = samplingPointClient;
     this.inspectionService = inspectionService;
     this.webSearchService = webSearchService;
     this.clock = clock;
@@ -188,13 +190,13 @@ public class FacilityService {
     boolean isNew = false;
 
     if (matchedInspFacility.isEmpty()) {
-      log.info("addFacility: saved new facility {}", savedFacility.getId());
+      LOG.info("addFacility: saved new facility {}", savedFacility.getId());
 
       // create draft inspection
       isNew = true;
       inspection = inspectionService.createDraftInspection(savedFacility);
     } else {
-      log.info("addFacility: matched existing facility {}", savedFacility.getId());
+      LOG.info("addFacility: matched existing facility {}", savedFacility.getId());
 
       // If we have an inspection for the matched facility, we want to provide the ID, so the
       // frontend can route to it.
@@ -215,11 +217,17 @@ public class FacilityService {
     if (!featureToggle.isNewFeatureEnabled(InspectionFeature.SAMPLES)) {
       throw new BadRequestException("Feature toggle SAMPLES is disabled");
     }
+
     Optional<Facility> optFac = facilityRepository.findByExternalId(externalId);
     if (optFac.isEmpty()) {
       throw new IllegalArgumentException(
           "Facility with externalId " + externalId + " not found in table Inspection.facility");
     }
+
+    // check that user exists, otherwise an erroneous entry in the facility table
+    // will block the tab for the sampling points
+    userApi.getUser(assigneeId);
+
     Facility fac = optFac.get();
     fac.setAssigneeId(assigneeId);
     facilityRepository.save(fac);
@@ -265,7 +273,7 @@ public class FacilityService {
 
       Facility facility = FacilityMapper.facilityFrom(baseFacilityResponse);
       Facility savedFacility = facilityRepository.save(facility);
-      log.info("linkBaseFacility: saved new inspection facility {}", savedFacility.getId());
+      LOG.info("linkBaseFacility: saved new inspection facility {}", savedFacility.getId());
       isNew = true;
       newestInspection = inspectionService.createDraftInspection(savedFacility);
     } else {
@@ -341,10 +349,10 @@ public class FacilityService {
     // save in db with new central file state
     Facility savedFacility =
         facilityRepository.save(FacilityMapper.mapFacility(facility, baseResponse, request));
-    log.info("updated facility {}", savedFacility.getId());
+    LOG.info("updated facility {}", savedFacility.getId());
 
     inspection.getRelatedFacility().setCentralFileStateId(baseResponse.id());
-    log.info("updated inspection {}", inspection.getId());
+    LOG.info("updated inspection {}", inspection.getId());
 
     if (!baseFacility.contactAddress().equals(request.baseFacility().contactAddress())) {
       inspectionProgressEntryService.createProgressEntryForUpdateFacility(
@@ -376,7 +384,7 @@ public class FacilityService {
     // We determine the pagination mode, which tells us if we can paginate in one of the databases
     // and, if applicable, which one.
     PaginationMode paginationMode = determinePaginationMode(params, pagination, baseSideSorting);
-    log.debug(
+    LOG.debug(
         "Getting pending facilities with params {} and pagination {} with pagination mode: {}",
         params,
         pagination,
@@ -390,6 +398,21 @@ public class FacilityService {
     long numberOfDuplicates =
         (long) facilityIdsWithFacilityDuplicate.size()
             + (long) inspectionIdsWithInspectionDuplicate.size();
+
+    List<UUID> samplingPointFileStateIds = Collections.emptyList();
+    if (params.zid() != null) {
+      samplingPointFileStateIds =
+          samplingPointClient
+              .searchSamplingPointFileStates(params.zid())
+              .samplingPointFileStates()
+              .stream()
+              .map(GetSamplingPointFileStateResponse::id)
+              .toList();
+      if (samplingPointFileStateIds == null || samplingPointFileStateIds.isEmpty()) {
+        return new InspPendingFacilitiesOverviewResponse(
+            0, 0, Collections.emptyList(), numberOfDuplicates);
+      }
+    }
 
     List<UUID> centralFileStateIdsForFileNumber = null;
     Integer fileNumberSuffix = null;
@@ -423,7 +446,7 @@ public class FacilityService {
             fileNumberSuffix,
             params.unfinishedSamples(),
             params.suspiciousSamples(),
-            params.pointOfWithdrawal());
+            samplingPointFileStateIds);
 
     FindPendingFacilitiesResult inspectionDatabaseResult =
         findPendingFacilities(
@@ -438,8 +461,8 @@ public class FacilityService {
     long totalNumberOfElementsAccordingToInspectionDatabase =
         inspectionDatabaseResult.totalNumberOfElements;
 
-    if (log.isTraceEnabled()) {
-      log.trace(
+    if (LOG.isTraceEnabled()) {
+      LOG.trace(
           "candidate ids: {}",
           candidates.stream()
               .map(c -> c.inspection() == null ? null : c.inspection().getId())
@@ -948,7 +971,7 @@ public class FacilityService {
 
   boolean isBaseSideSortParameter(String sortString) {
     String property = sortString.split("\\|")[0];
-    return Set.of("name", "postalCode", "city", "street").contains(property);
+    return Set.of("zid", "name", "postalCode", "city", "street").contains(property);
   }
 
   private List<String> getBaseSideSorting(GetPendingFacilitiesPaginationOptionsDto pagination) {
@@ -961,7 +984,8 @@ public class FacilityService {
   boolean hasBaseSideFilter(GetPendingFacilitiesFilterOptionsDto filters) {
     // For the purpose of this method, we do not consider file number a base side filter, because
     // for file numbers, we do our search before even reading inspections from the database.
-    return filters.name() != null
+    return filters.zid() != null
+        || filters.name() != null
         || filters.postalCode() != null
         || filters.city() != null
         || filters.street() != null;
@@ -991,7 +1015,7 @@ public class FacilityService {
 
   private static boolean idExists(UUID centralFileStateId, UUID externalId, Set<UUID> foundIds) {
     if (foundIds.contains(centralFileStateId)) return true;
-    log.debug(
+    LOG.debug(
         "CentralFileStateID {} not found for inspection ID {}", centralFileStateId, externalId);
     return false;
   }
@@ -1162,10 +1186,11 @@ public class FacilityService {
       }
     }
 
-    if (filters.pointOfWithdrawal != null) {
-      Predicate pointOfWithdrawalPredicate =
-          buildPointOfWithdrawalPredicate(cb, cq, rootAndJoins, filters.pointOfWithdrawal);
-      predicates.add(pointOfWithdrawalPredicate);
+    if (filters.samplingPointFileStateIds != null && !filters.samplingPointFileStateIds.isEmpty()) {
+      Predicate samplingPointPredicate =
+          buildSamplesWithSelectedSamplingPointPredicate(
+              cb, cq, rootAndJoins, filters.samplingPointFileStateIds);
+      predicates.add(samplingPointPredicate);
     }
 
     return predicates;
@@ -1191,7 +1216,7 @@ public class FacilityService {
       @Nullable Integer fileNumberSuffix,
       @Nullable Boolean unfinishedSamples,
       @Nullable Boolean suspiciousSamples,
-      @Nullable String pointOfWithdrawal) {}
+      @Nullable List<UUID> samplingPointFileStateIds) {}
 
   private FindPendingFacilitiesResult findPendingFacilities(
       Instant now,
@@ -1478,6 +1503,30 @@ public class FacilityService {
     return incidentsSubquery;
   }
 
+  private Predicate buildSamplesWithSelectedSamplingPointPredicate(
+      CriteriaBuilder cb,
+      CriteriaQuery<?> cq,
+      RootAndJoins rootAndJoins,
+      List<UUID> samplingPointFileStateIds) {
+    Subquery<Long> samplesForSamplingPointSubquery = cq.subquery(Long.class);
+
+    Root<Inspection> samplesSubRoot = samplesForSamplingPointSubquery.from(Inspection.class);
+    ListJoin<Inspection, InspectionSample> subSamplesJoin =
+        samplesSubRoot.join(Inspection_.samples);
+
+    return cb.exists(
+        samplesForSamplingPointSubquery
+            .select(cb.literal(1L))
+            .where(
+                cb.and(
+                    cb.equal(
+                        rootAndJoins.inspectionRoot.get(Inspection_.id),
+                        samplesSubRoot.get(Inspection_.id)),
+                    subSamplesJoin
+                        .get(InspectionSample_.samplingPointId)
+                        .in(samplingPointFileStateIds))));
+  }
+
   private Predicate buildUnfinishedSamplesPredicate(
       CriteriaBuilder cb, CriteriaQuery<?> cq, RootAndJoins rootAndJoins) {
     Subquery<Long> unfinishedSamplesSubquery = cq.subquery(Long.class);
@@ -1526,34 +1575,6 @@ public class FacilityService {
                             subMeasurementParametersJoin.get(
                                 InspectionSampleMeasurementParameter_.preclassification),
                             cb.literal(InspectionSamplePreclassification.TOO_HIGH))))));
-  }
-
-  private Predicate buildPointOfWithdrawalPredicate(
-      CriteriaBuilder cb,
-      CriteriaQuery<?> cq,
-      RootAndJoins rootAndJoins,
-      String pointOfWithdrawal) {
-    Subquery<Long> pointOfWithdrawalSubquery = cq.subquery(Long.class);
-    Root<Inspection> samplesSubRoot = pointOfWithdrawalSubquery.from(Inspection.class);
-    ListJoin<Inspection, InspectionSample> subSamplesJoin =
-        samplesSubRoot.join(Inspection_.samples);
-    return cb.exists(
-        pointOfWithdrawalSubquery
-            .select(cb.literal(1L))
-            .where(
-                cb.and(
-                    cb.equal(
-                        rootAndJoins.inspectionRoot.get(Inspection_.id),
-                        samplesSubRoot.get(Inspection_.id)),
-                    cb.like(
-                        cb.lower(subSamplesJoin.get(InspectionSample_.pointOfWithdrawal)),
-                        cb.literal(prepareStringForLike(pointOfWithdrawal))))));
-  }
-
-  private static String prepareStringForLike(String s) {
-    return "%"
-        + s.replace("\\", "\\\\").replace("%", "\\%").replace("_", "\\_").toLowerCase(ROOT)
-        + "%";
   }
 
   private List<PendingFacilityView> findEqualFacilities(
@@ -1922,7 +1943,7 @@ public class FacilityService {
         webSearchEntry.setCentralFileStateId(newFileStateId);
         webSearchEntry.setStatus(WebSearchEntryStatus.SAVED);
       } catch (NotFoundException e) {
-        log.error(
+        LOG.error(
             "Could not link facility {} to web search entry {}",
             centralFileStateId,
             webSearchEntryId,
@@ -1968,15 +1989,11 @@ public class FacilityService {
 
     result = filterCandidatesBasedOnCentralFileStatesForViewAndDto(result, baseOrderMap.keySet());
 
-    if (log.isTraceEnabled()) {
-      log.trace("result ids: {}", result.stream().map(e -> e.view.inspection().getId()).toList());
+    if (LOG.isTraceEnabled()) {
+      LOG.trace("result ids: {}", result.stream().map(e -> e.view.inspection().getId()).toList());
     }
 
     return result.stream().map(e -> e.dto).toList();
-  }
-
-  private static boolean ilike(String s, String filter) {
-    return isBlank(filter) || containsIgnoreCase(s, filter);
   }
 
   private Optional<Facility> findMatchingInspFacility(
@@ -2014,7 +2031,7 @@ public class FacilityService {
       relatedBaseFacilityIds =
           facilityClient.getFacilityFileStateIdsWithSameReferenceFacility(centralFileStateId);
     } catch (NotFound e) {
-      log.error("No base facility found for ID {}", centralFileStateId, e);
+      LOG.error("No base facility found for ID {}", centralFileStateId, e);
       throw new BadRequestException("No base facility found for ID");
     }
 

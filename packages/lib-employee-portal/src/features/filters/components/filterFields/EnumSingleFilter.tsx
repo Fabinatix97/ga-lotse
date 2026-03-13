@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { Option, Select } from "@mui/joy";
+import { List, ListItem, Option, Select, Typography } from "@mui/joy";
 import { SyntheticEvent } from "react";
 
 import {
@@ -44,7 +44,29 @@ export function EnumSingleFilter(props: EnumSingleFilterProps) {
       aria-label={props.definition.name}
       onChange={handleChange}
     >
-      {props.definition.options.map((option) => (
+      {props.definition.groupedOptions
+        ? Object.entries(props.definition.groupedOptions).map(
+            ([groupName, items]) => (
+              <List key={groupName} aria-labelledby={groupName}>
+                <ListItem
+                  id={groupName}
+                  sticky
+                  sx={{
+                    backgroundColor: (theme) => theme.palette.background.level1,
+                  }}
+                >
+                  <Typography level="body-md">{groupName}</Typography>
+                </ListItem>
+                {items.map((item) => (
+                  <Option key={item.id} value={item.id} sx={{ paddingLeft: 4 }}>
+                    {item.name}
+                  </Option>
+                ))}
+              </List>
+            ),
+          )
+        : null}
+      {props.definition.options?.map((option) => (
         <Option key={option.value} value={option.value}>
           {option.label}
         </Option>

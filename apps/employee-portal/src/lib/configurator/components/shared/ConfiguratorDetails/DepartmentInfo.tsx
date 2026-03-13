@@ -7,6 +7,8 @@ import { FormikValues } from "formik";
 import { useMemo } from "react";
 import { isNullish } from "remeda";
 
+import { useUpdateDepartmentInfo } from "@/lib/configurator/api/mutations/useUpdateDepartmentInfo";
+import { useGetDepartmentInfo } from "@/lib/configurator/api/queries/departmentInfo";
 import {
   ConfiguratorForm,
   FormSection,
@@ -17,8 +19,6 @@ import {
 } from "@/lib/configurator/components/shared/configuratorNameMapping";
 import { useTabStatus } from "@/lib/configurator/components/shared/hooks/useTabStatus";
 import { ConfiguratorModuleName } from "@/lib/configurator/shared/types";
-import { useUpdateDepartmentInfo } from "@/lib/shared/api/mutations/configurator/useUpdateDepartmentInfo";
-import { useGetDepartmentInfo } from "@/lib/shared/api/queries/configurator/departmentInfo";
 
 enum FormNames {
   USE_INFO_OF_HEALTH_DEPARTMENT = "useInfoOfHealthDepartment",

@@ -38,6 +38,7 @@ import de.eshg.officialmedicalservice.procedure.persistence.entity.OmsProcedureR
 import de.eshg.officialmedicalservice.procedure.persistence.entity.Person;
 import de.eshg.rest.service.error.BadRequestException;
 import de.eshg.rest.service.error.NotFoundException;
+import de.eshg.rest.service.i18n.Language;
 import java.io.IOException;
 import java.time.Clock;
 import java.time.Instant;
@@ -95,10 +96,10 @@ public class OmsDocumentService {
     List<File> parsedFiles = validateAndParseFiles(files);
 
     OmsDocument document = new OmsDocument();
-    document.setDocumentTypeDe(request.documentTypeDe());
-    document.setDocumentTypeEn(request.documentTypeEn());
-    document.setHelpTextDe(request.helpTextDe());
-    document.setHelpTextEn(request.helpTextEn());
+    for (Language language : Language.values()) {
+      document.setDocumentType(language, request.documentType().get(language));
+      document.setHelpText(language, request.helpText().get(language));
+    }
     document.setLabCode(request.labCode());
 
     if (!files.isEmpty()) {
@@ -138,7 +139,9 @@ public class OmsDocumentService {
           PersonMapper.mapToAffectedPersonDto(
               personClient.getPersonFileState(person.getCentralFileStateId()), person.getVersion());
       notificationService.notifyNewDocument(
-          affectedPersonDto, document.getDocumentTypeDe(), document.getHelpTextDe());
+          affectedPersonDto,
+          document.getDocumentType(Language.GERMAN),
+          document.getHelpText(Language.GERMAN));
     }
 
     return document.getExternalId();
@@ -149,8 +152,8 @@ public class OmsDocumentService {
     List<File> parsedFiles = validateAndParseFiles(files);
 
     OmsDocument document = new OmsDocument();
-    document.setDocumentTypeDe("Auftragsschreiben");
-    document.setDocumentTypeEn("Letter of assignment");
+    document.setDocumentType(Language.GERMAN, "Auftragsschreiben");
+    document.setDocumentType(Language.ENGLISH, "Letter of assignment");
     document.setDocumentStatus(OmsDocumentStatus.SUBMITTED);
     document.setLastDocumentUpload(Instant.now(clock));
     document.setMandatoryDocument(true);
@@ -179,8 +182,8 @@ public class OmsDocumentService {
   @Transactional
   public void addInitialReleaseFromConfidentiality(OmsProcedure procedure) {
     OmsDocument document = new OmsDocument();
-    document.setDocumentTypeDe("Schweigepflichtsentbindung");
-    document.setDocumentTypeEn("Release from confidentiality");
+    document.setDocumentType(Language.GERMAN, "Schweigepflichtsentbindung");
+    document.setDocumentType(Language.ENGLISH, "Release from confidentiality");
     document.setDocumentStatus(OmsDocumentStatus.MISSING);
     document.setUploadInCitizenPortal(false);
     document.setMandatoryDocument(true);
@@ -196,25 +199,25 @@ public class OmsDocumentService {
 
     if (omsDocument.getOmsProcedure().isFinalized()) {
       throw new BadRequestException(
-          "Document information cannot be updated when the procedure is finalized.");
+          "Document information cannot be updated when the procedure is " + "finalized.");
     }
     if (omsDocument.getDocumentStatus() != OmsDocumentStatus.MISSING) {
       throw new BadRequestException("Document information can only be updated in MISSING status");
     }
 
-    String oldDocumentTypeDe = omsDocument.getDocumentTypeDe();
-    String oldHelpTextDe = omsDocument.getHelpTextDe();
+    String oldDocumentTypeDe = omsDocument.getDocumentType(Language.GERMAN);
+    String oldHelpTextDe = omsDocument.getHelpText(Language.GERMAN);
     boolean oldIsUploadInCitizenPortal = omsDocument.isUploadInCitizenPortal();
-    omsDocument.setDocumentTypeDe(request.documentTypeDe());
-    omsDocument.setDocumentTypeEn(request.documentTypeEn());
-    omsDocument.setHelpTextDe(request.helpTextDe());
-    omsDocument.setHelpTextEn(request.helpTextEn());
+    for (Language language : Language.values()) {
+      omsDocument.setDocumentType(language, request.documentType().get(language));
+      omsDocument.setHelpText(language, request.helpText().get(language));
+    }
     omsDocument.setMandatoryDocument(request.mandatoryDocument());
     omsDocument.setUploadInCitizenPortal(request.uploadInCitizenPortal());
     omsDocument.setLabCode(request.labCode());
 
-    if (!Objects.equals(oldDocumentTypeDe, request.documentTypeDe())
-        || !Objects.equals(oldHelpTextDe, request.helpTextDe())) {
+    if (!Objects.equals(oldDocumentTypeDe, request.documentType().get(Language.GERMAN))
+        || !Objects.equals(oldHelpTextDe, request.helpText().get(Language.GERMAN))) {
       OmsProcedure omsProcedure = omsDocument.getOmsProcedure();
       progressEntryService.createProgressEntryUpdateDocumentInformation(
           omsProcedure, omsDocument, oldDocumentTypeDe, oldHelpTextDe);
@@ -233,7 +236,9 @@ public class OmsDocumentService {
         && !oldIsUploadInCitizenPortal
         && newIsUploadInCitizenPortal) {
       notificationService.notifyNewDocument(
-          affectedPersonDto, omsDocument.getDocumentTypeDe(), omsDocument.getHelpTextDe());
+          affectedPersonDto,
+          omsDocument.getDocumentType(Language.GERMAN),
+          omsDocument.getHelpText(Language.GERMAN));
     }
   }
 
@@ -440,9 +445,10 @@ public class OmsDocumentService {
     AffectedPersonDto affectedPersonDto =
         PersonMapper.mapToAffectedPersonDto(
             personClient.getPersonFileState(person.getCentralFileStateId()), person.getVersion());
-    String documentType = document.getDocumentTypeDe();
-    if (document.getHelpTextDe() != null && !document.getHelpTextDe().isBlank()) {
-      documentType += " - " + document.getHelpTextDe();
+    String documentType = document.getDocumentType(Language.GERMAN);
+    if (document.getHelpText(Language.GERMAN) != null
+        && !document.getHelpText(Language.GERMAN).isBlank()) {
+      documentType += " - " + document.getHelpText(Language.GERMAN);
     }
     if (document.getDocumentStatus() == OmsDocumentStatus.ACCEPTED) {
       notificationService.notifyReviewDocumentAccepted(affectedPersonDto, documentType);

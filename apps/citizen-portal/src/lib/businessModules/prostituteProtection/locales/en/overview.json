@@ -1,7 +1,8 @@
 {
   "appointmentsSection": {
     "create_appointment": "Schedule an Appointment",
-    "description": "Appointments for consultations can be arranged online.",
+    "description_enabled": "Appointments for consultations can be arranged online or by phone.",
+    "description_not_enabled": "Appointments for consultations can be arranged by phone.",
     "title": "Would you like to schedule an appointment?"
   },
   "generalInformation": {

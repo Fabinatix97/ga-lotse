@@ -14,6 +14,11 @@ import {
   useConcernFilterValues,
 } from "@/lib/businessModules/officialMedicalService/components/appointment/steps/useConcernFilterValues";
 import { useTranslation } from "@/lib/i18n/client";
+import {
+  SupportedLanguage,
+  mapToApiLanguage,
+  supportedLanguages,
+} from "@/lib/i18n/options";
 import { byBreakpoint } from "@/lib/shared/breakpoints";
 import {
   SearchParamReplacement,
@@ -68,15 +73,16 @@ function useConcernOptions(allConcerns: ApiConcern[]) {
     ...new Set(
       allConcerns
         .map((item) => {
-          return {
-            categoryNameDe: item.categoryNameDe,
-            categoryNameEn: item.categoryNameEn ?? "",
-          };
+          return supportedLanguages.reduce(
+            (acc, it) => {
+              acc[it] = item.categoryNames[mapToApiLanguage(it)]!;
+              return acc;
+            },
+            {} as { de: string } & Partial<Record<SupportedLanguage, string>>,
+          );
         })
         .map((i) =>
-          allConcerns.find(
-            (concern) => concern.categoryNameDe === i.categoryNameDe,
-          ),
+          allConcerns.find((concern) => concern.categoryNames.GERMAN === i.de),
         ),
     ),
   ];
@@ -85,11 +91,11 @@ function useConcernOptions(allConcerns: ApiConcern[]) {
   Object.values(uniqueCategory).forEach((concern) => {
     if (isDefined(concern)) {
       options.push({
-        value: concern.categoryNameDe,
+        value: concern.categoryNames.GERMAN!,
         label:
-          isDefined(concern.categoryNameEn) && i18n.language === "en"
-            ? concern.categoryNameEn
-            : concern.categoryNameDe,
+          concern.categoryNames[
+            mapToApiLanguage(i18n.language as SupportedLanguage)
+          ] ?? concern.categoryNames.GERMAN!,
       });
     }
   });

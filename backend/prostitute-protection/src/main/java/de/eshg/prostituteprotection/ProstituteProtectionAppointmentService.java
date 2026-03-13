@@ -26,7 +26,6 @@ import de.eshg.prostituteprotection.domain.model.UserDefinedAppointment;
 import de.eshg.prostituteprotection.domain.repository.ProstituteProtectionProcedureRepository;
 import de.eshg.rest.service.error.BadRequestException;
 import java.time.Clock;
-import java.time.Duration;
 import java.time.Instant;
 import java.util.List;
 import java.util.Map;
@@ -72,7 +71,7 @@ public class ProstituteProtectionAppointmentService
   void bookAppointment(ProstituteProtectionProcedure procedure, AppointmentData appointment) {
     AppointmentType type = appointment.appointmentType();
     Instant start = appointment.appointmentStart();
-    Instant end = start.plus(Duration.ofMinutes(appointment.durationInMinutes()));
+    Instant end = appointment.appointmentEnd();
     switch (appointment.appointmentBookingType()) {
       case APPOINTMENT_BLOCK -> bookAppointmentFromAppointmentBlock(procedure, type, start, end);
       case USER_DEFINED, SPONTANEOUS ->

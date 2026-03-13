@@ -861,7 +861,7 @@
             "content" : {
               "*/*" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/GetOpeningHoursResponse"
+                  "$ref" : "#/components/schemas/OpeningHours"
                 }
               }
             },
@@ -1096,13 +1096,12 @@
               "schema" : {
                 "type" : "object",
                 "properties" : {
-                  "de" : {
-                    "type" : "string",
-                    "format" : "binary"
-                  },
-                  "en" : {
-                    "type" : "string",
-                    "format" : "binary"
+                  "files" : {
+                    "type" : "array",
+                    "items" : {
+                      "type" : "string",
+                      "format" : "binary"
+                    }
                   }
                 }
               }
@@ -1169,13 +1168,12 @@
               "schema" : {
                 "type" : "object",
                 "properties" : {
-                  "de" : {
-                    "type" : "string",
-                    "format" : "binary"
-                  },
-                  "en" : {
-                    "type" : "string",
-                    "format" : "binary"
+                  "files" : {
+                    "type" : "array",
+                    "items" : {
+                      "type" : "string",
+                      "format" : "binary"
+                    }
                   }
                 }
               }
@@ -1245,13 +1243,12 @@
                   "config-request" : {
                     "$ref" : "#/components/schemas/UpdateProstituteProtectionConfigRequest"
                   },
-                  "landingContent_de" : {
-                    "type" : "string",
-                    "format" : "binary"
-                  },
-                  "landingContent_en" : {
-                    "type" : "string",
-                    "format" : "binary"
+                  "files" : {
+                    "type" : "array",
+                    "items" : {
+                      "type" : "string",
+                      "format" : "binary"
+                    }
                   }
                 },
                 "required" : [ "config-request" ]
@@ -5987,24 +5984,6 @@
           }
         }
       },
-      "GetOpeningHoursResponse" : {
-        "required" : [ "de", "en" ],
-        "type" : "object",
-        "properties" : {
-          "de" : {
-            "type" : "array",
-            "items" : {
-              "type" : "string"
-            }
-          },
-          "en" : {
-            "type" : "array",
-            "items" : {
-              "type" : "string"
-            }
-          }
-        }
-      },
       "GetPersonFileStateResponse" : {
         "required" : [ "dataOrigin", "dateOfBirth", "emailAddresses", "firstName", "gender", "humanReadableId", "id", "lastName", "phoneNumbers", "referenceVersion", "salutation" ],
         "type" : "object",
@@ -6676,7 +6655,7 @@
       },
       "Language" : {
         "type" : "string",
-        "enum" : [ "GERMAN", "ENGLISH" ]
+        "enum" : [ "GERMAN", "ENGLISH", "SPANISH", "TURKISH", "RUSSIAN", "ARABIC", "FRENCH", "ITALIAN", "POLISH", "ROMANIAN", "UKRAINIAN", "CROATIAN", "FARSI", "DARI" ]
       },
       "Location" : {
         "required" : [ "latitude", "longitude" ],
@@ -6846,14 +6825,14 @@
         }
       },
       "MultiLangDocument" : {
-        "required" : [ "de" ],
+        "required" : [ "localizations" ],
         "type" : "object",
         "properties" : {
-          "de" : {
-            "$ref" : "#/components/schemas/DocumentDetails"
-          },
-          "en" : {
-            "$ref" : "#/components/schemas/DocumentDetails"
+          "localizations" : {
+            "type" : "object",
+            "additionalProperties" : {
+              "$ref" : "#/components/schemas/DocumentDetails"
+            }
           }
         }
       },
@@ -6879,21 +6858,16 @@
         }
       },
       "OpeningHours" : {
-        "required" : [ "de", "en" ],
+        "required" : [ "localizations" ],
         "type" : "object",
         "properties" : {
-          "de" : {
-            "minItems" : 1,
-            "type" : "array",
-            "items" : {
-              "type" : "string"
-            }
-          },
-          "en" : {
-            "minItems" : 1,
-            "type" : "array",
-            "items" : {
-              "type" : "string"
+          "localizations" : {
+            "type" : "object",
+            "additionalProperties" : {
+              "type" : "array",
+              "items" : {
+                "type" : "string"
+              }
             }
           }
         }
@@ -7504,13 +7478,6 @@
           "properties" : {
             "changeDescription" : {
               "type" : "string"
-            },
-            "keyDocumentType" : {
-              "type" : "string"
-            },
-            "keyDocumentVersion" : {
-              "type" : "integer",
-              "format" : "int32"
             },
             "previousFacilityFileStateId" : {
               "type" : "string",

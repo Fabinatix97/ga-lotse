@@ -9,12 +9,18 @@ import assert from "assert";
 import {
   ApiCitizenPortalMarkdownName,
   ApiEmployeePortalMarkdownName,
-  ApiLanguage,
   ApiMultiLangDocument,
 } from "@eshg/base-api";
 import { FileType } from "@eshg/lib-portal";
 
-import { ConfiguratorForm } from "@/lib/configurator/components/shared/ConfiguratorForm";
+import {
+  useGetCitizenMarkdownFile,
+  useGetEmployeeMarkdownFile,
+} from "@/lib/configurator/api/queries/markdown";
+import {
+  ConfiguratorForm,
+  FormSection,
+} from "@/lib/configurator/components/shared/ConfiguratorForm";
 import {
   ConfigFile,
   FormFields,
@@ -26,12 +32,13 @@ import {
   ConfiguratorModuleName,
 } from "@/lib/configurator/shared/types";
 import {
-  useGetCitizenMarkdownFile,
-  useGetEmployeeMarkdownFile,
-} from "@/lib/shared/api/queries/configurator/markdown";
+  SupportedLanguage,
+  languageLabel,
+  mapToApiLanguage,
+  supportedLanguages,
+} from "@/lib/i18n/language";
 
-type Language = keyof ApiMultiLangDocument;
-type MarkdownFileData = Record<Language, ConfigFile>;
+type MarkdownFileData = Partial<Record<SupportedLanguage, ConfigFile>>;
 
 export interface MarkdownFormData {
   markdownFiles: MarkdownFileData;
@@ -41,29 +48,24 @@ function getInitialValues(
   markdownFiles?: ApiMultiLangDocument,
 ): MarkdownFormData {
   return {
-    markdownFiles: {
-      de: markdownFiles?.de
+    markdownFiles: supportedLanguages.reduce((acc, key) => {
+      acc[key] = markdownFiles?.localizations?.[mapToApiLanguage(key)]
         ? {
-            name: markdownFiles?.de.fileName,
-            size: markdownFiles.de.fileSizeBytes,
+            name: markdownFiles.localizations[mapToApiLanguage(key)]!.fileName,
+            size: markdownFiles.localizations[mapToApiLanguage(key)]!
+              .fileSizeBytes,
             type: "MD",
           }
-        : null,
-      en: markdownFiles?.en
-        ? {
-            name: markdownFiles?.en.fileName,
-            size: markdownFiles.en.fileSizeBytes,
-            type: "MD",
-          }
-        : null,
-    },
+        : null;
+
+      return acc;
+    }, {} as MarkdownFileData),
   };
 }
 
-export interface UpdateMarkdownRequest {
-  de: ConfigFile;
-  en?: ConfigFile;
-}
+export type UpdateMarkdownRequest = { de: ConfigFile } & Partial<
+  Record<SupportedLanguage, ConfigFile>
+>;
 
 type PortalType = "EMPLOYEE" | "CITIZEN";
 type PortalMarkdownName<T extends PortalType> = T extends "EMPLOYEE"
@@ -103,19 +105,18 @@ export function MarkdownFiles<T extends PortalType>(props: {
   const employeeFileDownload = useGetEmployeeMarkdownFile();
 
   async function onSubmit({ markdownFiles }: MarkdownFormData) {
-    const { de, en } = markdownFiles;
-
-    assert.ok(de, "German language file required");
-
-    const updateMarkdownRequest = { de, en };
-
-    await props.updateMarkdown(updateMarkdownRequest);
+    assert.ok(markdownFiles.de, "German language file required");
+    await props.updateMarkdown({
+      de: markdownFiles.de,
+      ...markdownFiles,
+    });
   }
 
   const title = getTabNamesByEndpointName(props.module, props.endpointName);
   const description = getDescription(props.endpointName);
 
-  function downloadFileNow(lang: ApiLanguage) {
+  function downloadFileNow(supportedLanguage: SupportedLanguage) {
+    const lang = mapToApiLanguage(supportedLanguage);
     if (props.portalType === "EMPLOYEE") {
       void employeeFileDownload.download({
         name: props.fileName as ApiEmployeePortalMarkdownName,
@@ -146,7 +147,7 @@ export function MarkdownFiles<T extends PortalType>(props: {
                   {
                     fields: [
                       {
-                        downloadFile: () => downloadFileNow(ApiLanguage.German),
+                        downloadFile: () => downloadFileNow("de"),
                         name: `markdownFiles.de`,
                         required: "Bitte ausfüllen",
                         ...MARKDOWN_UPLOAD_FIELD_PROPS,
@@ -156,24 +157,28 @@ export function MarkdownFiles<T extends PortalType>(props: {
                 ],
               },
             },
-            {
-              title: "Englisch",
-              content: {
-                type: "field",
-                rows: [
-                  {
-                    fields: [
-                      {
-                        downloadFile: () =>
-                          downloadFileNow(ApiLanguage.English),
-                        name: `markdownFiles.en`,
-                        ...MARKDOWN_UPLOAD_FIELD_PROPS,
-                      },
-                    ],
-                  },
-                ],
-              },
-            },
+            ...(supportedLanguages
+              .filter((lang) => lang !== "de")
+              .map(
+                (lang) =>
+                  ({
+                    content: {
+                      type: "field",
+                      title: languageLabel[lang],
+                      rows: [
+                        {
+                          fields: [
+                            {
+                              downloadFile: () => downloadFileNow(lang),
+                              name: `markdownFiles.${lang}`,
+                              ...MARKDOWN_UPLOAD_FIELD_PROPS,
+                            },
+                          ],
+                        },
+                      ],
+                    },
+                  }) satisfies FormSection,
+              ) satisfies FormSection[]),
           ],
         },
       ]}

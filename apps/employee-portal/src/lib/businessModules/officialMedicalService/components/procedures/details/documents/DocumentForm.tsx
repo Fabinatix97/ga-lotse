@@ -19,14 +19,13 @@ import {
 } from "@eshg/official-medical-service-api";
 
 import { useReviewDocument } from "@/lib/businessModules/officialMedicalService/api/mutations/omsDocumentApi";
+import { SupportedLanguage } from "@/lib/i18n/language";
 
 import { DocumentFormContent } from "./DocumentFormContent";
 
 export interface DocumentFormValues {
-  documentTypeDe: string;
-  documentTypeEn?: string;
-  helpTextDe?: string;
-  helpTextEn?: string;
+  documentType: { de: string } & Partial<Record<SupportedLanguage, string>>;
+  helpText: Partial<Record<SupportedLanguage, string>>;
   mandatoryDocument: boolean;
   uploadInCitizenPortal: boolean;
   files?: File[];

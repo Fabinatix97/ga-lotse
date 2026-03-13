@@ -57,6 +57,7 @@ export function AddInspectionTiles({
           facility={facility}
           selfUser={selfUser}
           allAssignableUsers={allAssignableUsers}
+          assignee={inspection.assignee}
         />
       </Grid>
     </Grid>

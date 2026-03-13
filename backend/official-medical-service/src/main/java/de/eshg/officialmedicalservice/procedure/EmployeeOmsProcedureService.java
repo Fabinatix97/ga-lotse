@@ -109,6 +109,7 @@ import de.eshg.persistence.TransactionHelper;
 import de.eshg.rest.service.error.BadRequestException;
 import de.eshg.rest.service.error.ErrorCode;
 import de.eshg.rest.service.error.NotFoundException;
+import de.eshg.rest.service.i18n.Language;
 import de.eshg.rest.service.security.CurrentUserHelper;
 import de.eshg.validation.ValidationUtil;
 import jakarta.annotation.Nullable;
@@ -245,8 +246,8 @@ public class EmployeeOmsProcedureService {
       String documentTypeDe, String documentTypeEn, OmsProcedure procedure) {
     OmsDocument newDocument = new OmsDocument();
     newDocument.setDocumentStatus(OmsDocumentStatus.MISSING);
-    newDocument.setDocumentTypeDe(documentTypeDe);
-    newDocument.setDocumentTypeEn(documentTypeEn);
+    newDocument.setDocumentType(Language.GERMAN, documentTypeDe);
+    newDocument.setDocumentType(Language.ENGLISH, documentTypeEn);
     newDocument.setUploadInCitizenPortal(false);
     newDocument.setMandatoryDocument(true);
     newDocument.setOmsProcedure(procedure);
@@ -336,8 +337,10 @@ public class EmployeeOmsProcedureService {
       LocalDate dateStart = appointmentDateSpan.getDateStart();
       LocalDate dateEnd = appointmentDateSpan.getDateEnd();
 
-      // Note: the second instant is not the last millisecond of the given date but the first
-      // millisecond of the next date; we do keep this is mind when choosing the rsp. comparison
+      // Note: the second instant is not the last millisecond of the given
+      // date but the first
+      // millisecond of the next date; we do keep this is mind when choosing
+      // the rsp. comparison
       // operators
       Instant instantStart =
           (dateStart == null ? null : dateStart.atStartOfDay(clock.getZone()).toInstant());
@@ -647,7 +650,8 @@ public class EmployeeOmsProcedureService {
       }
     }
 
-    // temporarily skip the access token authentication (and use a module authentication
+    // temporarily skip the access token authentication (and use a module
+    // authentication
     // instead) in order to create a citizen keycloak user
     CitizenAccessCodeUserDto citizenAccessCodeUser =
         disabledCurrentAuthentication(
@@ -846,7 +850,10 @@ public class EmployeeOmsProcedureService {
     }
 
     if (procedure.getConcern() == null
-        || !procedure.getConcern().getNameDe().equals(request.concern().nameDe())) {
+        || !procedure
+            .getConcern()
+            .getName(Language.GERMAN)
+            .equals(request.concern().names().get(Language.GERMAN))) {
       updateConcern(procedure, request.concern());
     }
 
@@ -907,7 +914,7 @@ public class EmployeeOmsProcedureService {
     procedure.setMedicalOpinionCutOffDate(medicalOpinionCutOffDate);
   }
 
-  public void updateEmailNotifications(OmsProcedure procedure, boolean sendEmailNotifications) {
+  public void updateEmailNotifications(OmsProcedure procedure, Boolean sendEmailNotifications) {
     if (procedure.isFinalized()) {
       throw new BadRequestException(
           "E-Mail notification can not be edited when the procedure is finalized.");
@@ -915,7 +922,7 @@ public class EmployeeOmsProcedureService {
 
     procedure.setSendEmailNotifications(sendEmailNotifications);
 
-    if (sendEmailNotifications
+    if (Boolean.TRUE.equals(sendEmailNotifications)
         && List.of(ProcedureStatus.OPEN, ProcedureStatus.IN_PROGRESS)
             .contains(procedure.getProcedureStatus())) {
       UUID citizenUserId = procedure.getCitizenUserId();
@@ -1001,8 +1008,10 @@ public class EmployeeOmsProcedureService {
   public void mergeAffectedPerson(UUID externalId, MergeAffectedPersonRequest request) {
     AtomicReference<UUID> personFileStateToDelete = new AtomicReference<>();
 
-    // We manually put only this part in the transaction so we don't accidentally delete the old
-    // file state even though the transaction failed, leaving us with a procedure with a deleted
+    // We manually put only this part in the transaction so we don't
+    // accidentally delete the old
+    // file state even though the transaction failed, leaving us with a
+    // procedure with a deleted
     // file state
     transactionHelper.executeInTransaction(
         () -> {

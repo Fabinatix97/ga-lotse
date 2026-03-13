@@ -22,6 +22,7 @@ import {
   zip,
 } from "remeda";
 
+import { ApiLanguage } from "@eshg/base-api";
 import {
   ExternalLink,
   formatPostalCodeAndCity,
@@ -29,7 +30,7 @@ import {
 } from "@eshg/lib-portal";
 
 import { useTranslation } from "@/lib/i18n/client";
-import { SupportedLanguage } from "@/lib/i18n/options";
+import { mapToApiLanguage } from "@/lib/i18n/options";
 import { useLang } from "@/lib/i18n/useLang";
 import {
   InfoSection,
@@ -135,18 +136,26 @@ function Section(props: {
   );
 }
 
+export type OpeningHoursTranslations = { GERMAN: string[] } & Partial<
+  Record<ApiLanguage, string[]>
+>;
+
 interface OpeningHoursSectionProps {
   title: string;
   information?: string;
-  openingHourTranslations?: Record<SupportedLanguage, string[]>;
+  openingHourTranslations?: OpeningHoursTranslations;
   subtitle?: string;
 }
 
 export function OpeningHoursSection(props: Readonly<OpeningHoursSectionProps>) {
   const lang = useLang();
-  const translatedOpeningHours = props.openingHourTranslations
-    ? props.openingHourTranslations[lang]
-    : [];
+  const api_lang = mapToApiLanguage(lang);
+
+  let translatedOpeningHours = props.openingHourTranslations?.[api_lang] ?? [];
+
+  if (translatedOpeningHours.length === 0) {
+    translatedOpeningHours = props.openingHourTranslations?.GERMAN ?? [];
+  }
 
   // If the length is odd, the last element is additional information
   const [lines, [additionalInformation]] =

@@ -9,7 +9,8 @@ import { useLang } from "@/lib/i18n/useLang";
 // given a map of language to translation, return the translation for the current language
 export function useManualTranslation<
   TValue,
-  TOptions extends Record<SupportedLanguage, TValue>,
+  TOptions extends { de: TValue } & Partial<Record<SupportedLanguage, TValue>> =
+    { de: TValue } & Partial<Record<SupportedLanguage, TValue>>,
   TFallbackLang extends SupportedLanguage = "de",
 >(
   translations: TOptions,

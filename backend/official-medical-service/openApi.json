@@ -1002,7 +1002,7 @@
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/GetOpeningHoursResponse"
+                  "$ref" : "#/components/schemas/OpeningHours"
                 }
               }
             },
@@ -1260,21 +1260,19 @@
                   "config_request" : {
                     "$ref" : "#/components/schemas/PutOmsConfigRequest"
                   },
-                  "landingContent_de" : {
-                    "type" : "string",
-                    "format" : "binary"
+                  "landingContent" : {
+                    "type" : "array",
+                    "items" : {
+                      "type" : "string",
+                      "format" : "binary"
+                    }
                   },
-                  "landingContent_en" : {
-                    "type" : "string",
-                    "format" : "binary"
-                  },
-                  "selectConcernInfobox_de" : {
-                    "type" : "string",
-                    "format" : "binary"
-                  },
-                  "selectConcernInfobox_en" : {
-                    "type" : "string",
-                    "format" : "binary"
+                  "selectConcernInfobox" : {
+                    "type" : "array",
+                    "items" : {
+                      "type" : "string",
+                      "format" : "binary"
+                    }
                   }
                 },
                 "required" : [ "config_request" ]
@@ -1429,13 +1427,12 @@
               "schema" : {
                 "type" : "object",
                 "properties" : {
-                  "de" : {
-                    "type" : "string",
-                    "format" : "binary"
-                  },
-                  "en" : {
-                    "type" : "string",
-                    "format" : "binary"
+                  "files" : {
+                    "type" : "array",
+                    "items" : {
+                      "type" : "string",
+                      "format" : "binary"
+                    }
                   }
                 }
               }
@@ -1502,13 +1499,12 @@
               "schema" : {
                 "type" : "object",
                 "properties" : {
-                  "de" : {
-                    "type" : "string",
-                    "format" : "binary"
-                  },
-                  "en" : {
-                    "type" : "string",
-                    "format" : "binary"
+                  "files" : {
+                    "type" : "array",
+                    "items" : {
+                      "type" : "string",
+                      "format" : "binary"
+                    }
                   }
                 }
               }
@@ -5431,29 +5427,26 @@
         }
       },
       "Concern" : {
-        "required" : [ "categoryNameDe", "categoryNameEn", "highPriority", "nameDe", "version", "visibleInOnlinePortal" ],
+        "required" : [ "categoryNames", "highPriority", "names", "version", "visibleInOnlinePortal" ],
         "type" : "object",
         "properties" : {
           "appointmentType" : {
             "$ref" : "#/components/schemas/AppointmentType"
           },
-          "categoryNameDe" : {
-            "minLength" : 1,
-            "type" : "string"
-          },
-          "categoryNameEn" : {
-            "minLength" : 1,
-            "type" : "string"
+          "categoryNames" : {
+            "type" : "object",
+            "additionalProperties" : {
+              "type" : "string"
+            }
           },
           "highPriority" : {
             "type" : "boolean"
           },
-          "nameDe" : {
-            "minLength" : 1,
-            "type" : "string"
-          },
-          "nameEn" : {
-            "type" : "string"
+          "names" : {
+            "type" : "object",
+            "additionalProperties" : {
+              "type" : "string"
+            }
           },
           "version" : {
             "type" : "integer",
@@ -5465,7 +5458,7 @@
         }
       },
       "ConcernCategoryConfig" : {
-        "required" : [ "concerns", "nameDe", "nameEn" ],
+        "required" : [ "concerns", "names" ],
         "type" : "object",
         "properties" : {
           "concerns" : {
@@ -5474,18 +5467,16 @@
               "$ref" : "#/components/schemas/ConcernConfig"
             }
           },
-          "nameDe" : {
-            "minLength" : 1,
-            "type" : "string"
-          },
-          "nameEn" : {
-            "minLength" : 1,
-            "type" : "string"
+          "names" : {
+            "type" : "object",
+            "additionalProperties" : {
+              "type" : "string"
+            }
           }
         }
       },
       "ConcernConfig" : {
-        "required" : [ "highPriority", "nameDe", "visibleInOnlinePortal" ],
+        "required" : [ "highPriority", "names", "visibleInOnlinePortal" ],
         "type" : "object",
         "properties" : {
           "appointmentType" : {
@@ -5494,12 +5485,11 @@
           "highPriority" : {
             "type" : "boolean"
           },
-          "nameDe" : {
-            "minLength" : 1,
-            "type" : "string"
-          },
-          "nameEn" : {
-            "type" : "string"
+          "names" : {
+            "type" : "object",
+            "additionalProperties" : {
+              "type" : "string"
+            }
           },
           "visibleInOnlinePortal" : {
             "type" : "boolean"
@@ -5927,17 +5917,17 @@
         }
       },
       "Document" : {
-        "required" : [ "documentStatus", "documentTypeDe", "files", "id", "mandatoryDocument", "uploadInCitizenPortal" ],
+        "required" : [ "documentStatus", "documentType", "files", "helpText", "id", "mandatoryDocument", "uploadInCitizenPortal" ],
         "type" : "object",
         "properties" : {
           "documentStatus" : {
             "$ref" : "#/components/schemas/DocumentStatus"
           },
-          "documentTypeDe" : {
-            "type" : "string"
-          },
-          "documentTypeEn" : {
-            "type" : "string"
+          "documentType" : {
+            "type" : "object",
+            "additionalProperties" : {
+              "type" : "string"
+            }
           },
           "files" : {
             "type" : "array",
@@ -5945,11 +5935,11 @@
               "$ref" : "#/components/schemas/OmsFile"
             }
           },
-          "helpTextDe" : {
-            "type" : "string"
-          },
-          "helpTextEn" : {
-            "type" : "string"
+          "helpText" : {
+            "type" : "object",
+            "additionalProperties" : {
+              "type" : "string"
+            }
           },
           "id" : {
             "type" : "string",
@@ -7220,24 +7210,6 @@
           }
         }
       },
-      "GetOpeningHoursResponse" : {
-        "required" : [ "de", "en" ],
-        "type" : "object",
-        "properties" : {
-          "de" : {
-            "type" : "array",
-            "items" : {
-              "type" : "string"
-            }
-          },
-          "en" : {
-            "type" : "array",
-            "items" : {
-              "type" : "string"
-            }
-          }
-        }
-      },
       "GetPersonFileStateResponse" : {
         "required" : [ "dataOrigin", "dateOfBirth", "emailAddresses", "firstName", "gender", "humanReadableId", "id", "lastName", "phoneNumbers", "referenceVersion", "salutation" ],
         "type" : "object",
@@ -7889,7 +7861,7 @@
       },
       "Language" : {
         "type" : "string",
-        "enum" : [ "GERMAN", "ENGLISH" ]
+        "enum" : [ "GERMAN", "ENGLISH", "SPANISH", "TURKISH", "RUSSIAN", "ARABIC", "FRENCH", "ITALIAN", "POLISH", "ROMANIAN", "UKRAINIAN", "CROATIAN", "FARSI", "DARI" ]
       },
       "Location" : {
         "required" : [ "latitude", "longitude" ],
@@ -8208,14 +8180,14 @@
         }
       },
       "MultiLangDocument" : {
-        "required" : [ "de" ],
+        "required" : [ "localizations" ],
         "type" : "object",
         "properties" : {
-          "de" : {
-            "$ref" : "#/components/schemas/DocumentDetails"
-          },
-          "en" : {
-            "$ref" : "#/components/schemas/DocumentDetails"
+          "localizations" : {
+            "type" : "object",
+            "additionalProperties" : {
+              "$ref" : "#/components/schemas/DocumentDetails"
+            }
           }
         }
       },
@@ -8320,21 +8292,16 @@
         }
       },
       "OpeningHours" : {
-        "required" : [ "de", "en" ],
+        "required" : [ "localizations" ],
         "type" : "object",
         "properties" : {
-          "de" : {
-            "minItems" : 1,
-            "type" : "array",
-            "items" : {
-              "type" : "string"
-            }
-          },
-          "en" : {
-            "minItems" : 1,
-            "type" : "array",
-            "items" : {
-              "type" : "string"
+          "localizations" : {
+            "type" : "object",
+            "additionalProperties" : {
+              "type" : "array",
+              "items" : {
+                "type" : "string"
+              }
             }
           }
         }
@@ -8409,20 +8376,20 @@
         }
       },
       "PatchDocumentInformationRequest" : {
-        "required" : [ "documentTypeDe", "mandatoryDocument", "uploadInCitizenPortal" ],
+        "required" : [ "documentType", "helpText", "mandatoryDocument", "uploadInCitizenPortal" ],
         "type" : "object",
         "properties" : {
-          "documentTypeDe" : {
-            "type" : "string"
+          "documentType" : {
+            "type" : "object",
+            "additionalProperties" : {
+              "type" : "string"
+            }
           },
-          "documentTypeEn" : {
-            "type" : "string"
-          },
-          "helpTextDe" : {
-            "type" : "string"
-          },
-          "helpTextEn" : {
-            "type" : "string"
+          "helpText" : {
+            "type" : "object",
+            "additionalProperties" : {
+              "type" : "string"
+            }
           },
           "labCode" : {
             "type" : "string"
@@ -8585,20 +8552,20 @@
         }
       },
       "PostDocumentRequest" : {
-        "required" : [ "documentTypeDe", "mandatoryDocument", "uploadInCitizenPortal" ],
+        "required" : [ "documentType", "helpText", "mandatoryDocument", "uploadInCitizenPortal" ],
         "type" : "object",
         "properties" : {
-          "documentTypeDe" : {
-            "type" : "string"
+          "documentType" : {
+            "type" : "object",
+            "additionalProperties" : {
+              "type" : "string"
+            }
           },
-          "documentTypeEn" : {
-            "type" : "string"
-          },
-          "helpTextDe" : {
-            "type" : "string"
-          },
-          "helpTextEn" : {
-            "type" : "string"
+          "helpText" : {
+            "type" : "object",
+            "additionalProperties" : {
+              "type" : "string"
+            }
           },
           "labCode" : {
             "type" : "string"
@@ -9084,15 +9051,6 @@
           "citizenPortalAnamnesisEnabled" : {
             "type" : "boolean"
           },
-          "deleteLandingPageEn" : {
-            "type" : "boolean"
-          },
-          "deleteSelectConcernInfoboxDe" : {
-            "type" : "boolean"
-          },
-          "deleteSelectConcernInfoboxEn" : {
-            "type" : "boolean"
-          },
           "keycloakUserCleanupJobOverdueDuration" : {
             "type" : "integer",
             "format" : "int32"
@@ -9275,13 +9233,6 @@
           "properties" : {
             "changeDescription" : {
               "type" : "string"
-            },
-            "keyDocumentType" : {
-              "type" : "string"
-            },
-            "keyDocumentVersion" : {
-              "type" : "integer",
-              "format" : "int32"
             },
             "previousFacilityFileStateId" : {
               "type" : "string",

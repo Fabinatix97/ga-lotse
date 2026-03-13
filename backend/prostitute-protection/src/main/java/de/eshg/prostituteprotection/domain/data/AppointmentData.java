@@ -14,5 +14,5 @@ public record AppointmentData(
     AppointmentBookingType appointmentBookingType,
     AppointmentType appointmentType,
     Instant appointmentStart,
-    Integer durationInMinutes,
+    Instant appointmentEnd,
     UUID consultantId) {}

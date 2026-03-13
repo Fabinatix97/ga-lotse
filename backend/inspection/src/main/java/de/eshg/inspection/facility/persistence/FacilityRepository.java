@@ -126,4 +126,8 @@ public interface FacilityRepository
       @org.springframework.data.repository.query.Param("objectType") ObjectType objectType,
       @org.springframework.data.repository.query.Param("endTime") Instant endTime,
       @org.springframework.data.repository.query.Param("result") InspectionResult result);
+
+  @Query(
+      "select new de.eshg.inspection.facility.persistence.FacilityCentralFileState(f.externalId, f.originalCentralFileStateId) from Facility f")
+  List<FacilityCentralFileState> centralFileStateByFacilityId();
 }

@@ -31,6 +31,7 @@ import {
   PacklistDefinitionApi,
   ProcedureApi,
   ProgressEntryApi,
+  SamplingPointApi,
   TaskApi,
   TextBlockApi,
   WebSearchApi,
@@ -188,4 +189,9 @@ export function useUntersuchungsparameterApi() {
 export function useSampleTemplateApi() {
   const configuration = useConfiguration();
   return new InspectionSampleTemplateApi(configuration);
+}
+
+export function useSamplingPointApi() {
+  const configuration = useConfiguration();
+  return new SamplingPointApi(configuration);
 }

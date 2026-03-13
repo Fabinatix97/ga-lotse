@@ -35,7 +35,7 @@ function createClient(lang: string) {
   const client = createInstance({
     ...options,
     lng: lang,
-    fallbackLng: lang,
+    fallbackLng: "de",
   })
     .use(initReactI18next)
     .use(resourcesToBackend(resourceResolver));

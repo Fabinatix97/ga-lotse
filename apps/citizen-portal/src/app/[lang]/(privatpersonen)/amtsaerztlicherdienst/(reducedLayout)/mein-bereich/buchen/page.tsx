@@ -52,10 +52,7 @@ export default function CitizenOmsEntryPage() {
     await bookAppointment.mutateAsync(
       {
         appointmentId: procedure.appointment?.appointmentId ?? "",
-        apiAppointment: {
-          start: values.appointment.start,
-          end: values.appointment.end,
-        },
+        apiAppointment: values.appointment,
       },
       {
         onSuccess: () =>

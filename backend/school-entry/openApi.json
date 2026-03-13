@@ -913,7 +913,7 @@
             "content" : {
               "*/*" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/GetOpeningHoursResponse"
+                  "$ref" : "#/components/schemas/OpeningHours"
                 }
               }
             },
@@ -933,6 +933,42 @@
               "*/*" : {
                 "schema" : {
                   "$ref" : "#/components/schemas/GetSchoolEntryConfigResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "SchoolEntryConfig" ]
+      }
+    },
+    "/config/hearing-test" : {
+      "get" : {
+        "operationId" : "getHearingTestMeasuringConfig",
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "type" : "boolean"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "SchoolEntryConfig" ]
+      }
+    },
+    "/config/seeing-test" : {
+      "get" : {
+        "operationId" : "getSeeingTestMeasuringConfig",
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "type" : "boolean"
                 }
               }
             },
@@ -1137,13 +1173,12 @@
               "schema" : {
                 "type" : "object",
                 "properties" : {
-                  "de" : {
-                    "type" : "string",
-                    "format" : "binary"
-                  },
-                  "en" : {
-                    "type" : "string",
-                    "format" : "binary"
+                  "files" : {
+                    "type" : "array",
+                    "items" : {
+                      "type" : "string",
+                      "format" : "binary"
+                    }
                   }
                 }
               }
@@ -1210,13 +1245,12 @@
               "schema" : {
                 "type" : "object",
                 "properties" : {
-                  "de" : {
-                    "type" : "string",
-                    "format" : "binary"
-                  },
-                  "en" : {
-                    "type" : "string",
-                    "format" : "binary"
+                  "files" : {
+                    "type" : "array",
+                    "items" : {
+                      "type" : "string",
+                      "format" : "binary"
+                    }
                   }
                 }
               }
@@ -1333,6 +1367,44 @@
                 }
               }
             },
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "SchoolEntryDeviceRegistryConfig" ]
+      }
+    },
+    "/configuration/school-entry/device-registry/hearing-test-measuring" : {
+      "put" : {
+        "operationId" : "updateHearingTestMeasuringToggle",
+        "parameters" : [ {
+          "in" : "query",
+          "name" : "enabled",
+          "required" : true,
+          "schema" : {
+            "type" : "boolean"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "SchoolEntryDeviceRegistryConfig" ]
+      }
+    },
+    "/configuration/school-entry/device-registry/seeing-test-measuring" : {
+      "put" : {
+        "operationId" : "updateSeeingTestMeasuringToggle",
+        "parameters" : [ {
+          "in" : "query",
+          "name" : "enabled",
+          "required" : true,
+          "schema" : {
+            "type" : "boolean"
+          }
+        } ],
+        "responses" : {
+          "200" : {
             "description" : "OK"
           }
         },
@@ -8556,24 +8628,6 @@
           }
         }
       },
-      "GetOpeningHoursResponse" : {
-        "required" : [ "de", "en" ],
-        "type" : "object",
-        "properties" : {
-          "de" : {
-            "type" : "array",
-            "items" : {
-              "type" : "string"
-            }
-          },
-          "en" : {
-            "type" : "array",
-            "items" : {
-              "type" : "string"
-            }
-          }
-        }
-      },
       "GetPersonFileStateResponse" : {
         "required" : [ "dataOrigin", "dateOfBirth", "emailAddresses", "firstName", "gender", "humanReadableId", "id", "lastName", "phoneNumbers", "referenceVersion", "salutation" ],
         "type" : "object",
@@ -9541,7 +9595,7 @@
       },
       "Language" : {
         "type" : "string",
-        "enum" : [ "GERMAN", "ENGLISH" ]
+        "enum" : [ "GERMAN", "ENGLISH", "SPANISH", "TURKISH", "RUSSIAN", "ARABIC", "FRENCH", "ITALIAN", "POLISH", "ROMANIAN", "UKRAINIAN", "CROATIAN", "FARSI", "DARI" ]
       },
       "LanguageKnowledgeValue" : {
         "type" : "string",
@@ -9810,33 +9864,28 @@
         }
       },
       "MultiLangDocument" : {
-        "required" : [ "de" ],
+        "required" : [ "localizations" ],
         "type" : "object",
         "properties" : {
-          "de" : {
-            "$ref" : "#/components/schemas/DocumentDetails"
-          },
-          "en" : {
-            "$ref" : "#/components/schemas/DocumentDetails"
+          "localizations" : {
+            "type" : "object",
+            "additionalProperties" : {
+              "$ref" : "#/components/schemas/DocumentDetails"
+            }
           }
         }
       },
       "OpeningHours" : {
-        "required" : [ "de", "en" ],
+        "required" : [ "localizations" ],
         "type" : "object",
         "properties" : {
-          "de" : {
-            "minItems" : 1,
-            "type" : "array",
-            "items" : {
-              "type" : "string"
-            }
-          },
-          "en" : {
-            "minItems" : 1,
-            "type" : "array",
-            "items" : {
-              "type" : "string"
+          "localizations" : {
+            "type" : "object",
+            "additionalProperties" : {
+              "type" : "array",
+              "items" : {
+                "type" : "string"
+              }
             }
           }
         }
@@ -10737,14 +10786,20 @@
         "enum" : [ "AFG", "EGY", "ALB", "ALG", "AND", "ANG", "AUB", "GNQ", "ARA", "ARG", "ARM", "ASE", "ASN", "ETH", "AUS", "BAM", "BAH", "BAL", "BAD", "BAR", "BEL", "BEZ", "BEN", "BHU", "BOL", "BOS", "BOT", "BRA", "BRU", "BUL", "BUF", "BUR", "CHI", "CHV", "COO", "COR", "CIV", "DAN", "DEU", "DOA", "DOM", "DSC", "ECU", "ELS", "BRI", "ERY", "EST", "FID", "FIN", "FRA", "GAB", "GAM", "GEO", "GHA", "GOL", "GRE", "GRI", "GUA", "GUI", "GUS", "GUY", "HAI", "HND", "IND", "INS", "IRQ", "IRA", "IRL", "ISL", "ISR", "ITA", "JAM", "JAP", "JEM", "JOR", "JUG", "KAM", "KAN", "CAN", "KAP", "KAS", "KAT", "KEN", "KIR", "KIB", "KOL", "KOM", "KON", "KOR", "KOS", "KRO", "KUB", "KUW", "LAO", "LSO", "LET", "LEB", "LIB", "LYB", "LIE", "LIT", "LUX", "MAD", "MAW", "MAY", "MAL", "MAI", "MLT", "MAR", "MHL", "MAU", "MAS", "MAZ", "MEX", "MIK", "MAM", "MOL", "MON", "MOG", "MNE", "MOS", "MYA", "NAM", "CHN", "NAU", "NEP", "NEU", "NIC", "NED", "NIG", "NIA", "NOK", "NOR", "OMA", "OST", "PAK", "PAL", "PAU", "PAN", "PAP", "PAR", "PER", "PHI", "POL", "POR", "RUA", "RUM", "RUS", "SAL", "SAB", "SAA", "SAN", "STL", "STP", "SAU", "SCO", "SVE", "HEL", "SEN", "SER", "SEY", "SIL", "SIM", "SIN", "SKN", "SLO", "SOM", "SON", "SPA", "CEY", "STK", "VCT", "STA", "SAR", "SAM", "SUD", "SUK", "SUR", "SWA", "SYR", "TAD", "TAI", "TAN", "THA", "TIB", "TIM", "TOG", "TRT", "CHA", "CZN", "TUN", "TUR", "TKM", "TUV", "UGA", "UKR", "UUU", "UNG", "URU", "USA", "USB", "VAN", "VAT", "VEN", "VAE", "VIE", "WRU", "SCA", "ZYP", "G1", "G2", "G3", "G4", "G5", "G6", "G7", "G8", "G9" ]
       },
       "SchoolEntryDeviceRegistryConfig" : {
-        "required" : [ "measuringDevices" ],
+        "required" : [ "hearingTestDeviceMeasuring", "measuringDevices", "seeingTestDeviceMeasuring" ],
         "type" : "object",
         "properties" : {
+          "hearingTestDeviceMeasuring" : {
+            "type" : "boolean"
+          },
           "measuringDevices" : {
             "type" : "array",
             "items" : {
               "$ref" : "#/components/schemas/SchoolEntryMeasuringDevice"
             }
+          },
+          "seeingTestDeviceMeasuring" : {
+            "type" : "boolean"
           }
         }
       },
@@ -10807,7 +10862,7 @@
       },
       "SchoolEntryFeature" : {
         "type" : "string",
-        "enum" : [ "DUMMY" ]
+        "enum" : [ "DUMMY", "MEASURING_DEVICES" ]
       },
       "SchoolEntryGender" : {
         "type" : "string",
@@ -11441,13 +11496,6 @@
           "properties" : {
             "changeDescription" : {
               "type" : "string"
-            },
-            "keyDocumentType" : {
-              "type" : "string"
-            },
-            "keyDocumentVersion" : {
-              "type" : "integer",
-              "format" : "int32"
             },
             "previousFacilityFileStateId" : {
               "type" : "string",

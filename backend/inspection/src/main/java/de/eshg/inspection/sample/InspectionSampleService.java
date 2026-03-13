@@ -6,10 +6,13 @@
 package de.eshg.inspection.sample;
 
 import static de.eshg.inspection.inspection.InspectionUtils.checkInspectionIsNotClosed;
-import static java.util.Locale.ROOT;
 
 import de.eshg.api.commons.SortDirection;
 import de.eshg.base.centralfile.api.facility.GetFacilityFileStateResponse;
+import de.eshg.base.centralfile.api.samplingpoint.AddSamplingPointFileStateRequest;
+import de.eshg.base.centralfile.api.samplingpoint.AddSamplingPointFileStateResponse;
+import de.eshg.base.centralfile.api.samplingpoint.GetReferenceSamplingPointResponse;
+import de.eshg.base.centralfile.api.samplingpoint.GetSamplingPointFileStateResponse;
 import de.eshg.base.contact.api.ContactDto;
 import de.eshg.base.contact.api.ContactFilterParameters;
 import de.eshg.base.contact.api.ContactSortKey;
@@ -22,6 +25,8 @@ import de.eshg.base.user.api.UserRoleDto;
 import de.eshg.inspection.client.ContactClient;
 import de.eshg.inspection.client.UserClient;
 import de.eshg.inspection.facility.FacilityClient;
+import de.eshg.inspection.feature.InspectionFeature;
+import de.eshg.inspection.feature.InspectionFeatureToggle;
 import de.eshg.inspection.inspection.InspectionMapper;
 import de.eshg.inspection.inspection.InspectionService;
 import de.eshg.inspection.inspection.InspectionUpdater;
@@ -50,10 +55,13 @@ import de.eshg.inspection.sample.persistence.InspectionSampleMeasurementParamete
 import de.eshg.inspection.sample.persistence.InspectionSampleMeasurementParameterRepository;
 import de.eshg.inspection.sample.persistence.InspectionSamplePreclassification;
 import de.eshg.inspection.sample.persistence.InspectionSampleType;
+import de.eshg.inspection.samplingpoint.SamplingPointClient;
+import de.eshg.inspection.samplingpoint.api.InspectionSamplingPointDto;
 import de.eshg.inspection.teis.persistence.TeisParameter;
 import de.eshg.inspection.teis.persistence.TeisParameterRepository;
 import de.eshg.inspection.teis.persistence.TeisUntersuchungsparameter;
 import de.eshg.inspection.teis.persistence.TeisUntersuchungsparameterRepository;
+import de.eshg.inspection.util.StringUtil;
 import de.eshg.rest.service.error.BadRequestException;
 import de.eshg.rest.service.error.ErrorCode;
 import de.eshg.rest.service.error.NotFoundException;
@@ -86,6 +94,8 @@ public class InspectionSampleService {
   private final InspectionSampleMapper inspectionSampleMapper;
   private final TeisParameterRepository teisParameterRepository;
   private final TeisUntersuchungsparameterRepository teisUntersuchungsparameterRepository;
+  private final SamplingPointClient samplingPointClient;
+  private final InspectionFeatureToggle inspectionFeatureToggle;
 
   public InspectionSampleService(
       InspectionService inspectionService,
@@ -98,7 +108,9 @@ public class InspectionSampleService {
       ContactClient contactClient,
       InspectionSampleMapper inspectionSampleMapper,
       TeisParameterRepository teisParameterRepository,
-      TeisUntersuchungsparameterRepository teisUntersuchungsparameterRepository) {
+      TeisUntersuchungsparameterRepository teisUntersuchungsparameterRepository,
+      SamplingPointClient samplingPointClient,
+      InspectionFeatureToggle inspectionFeatureToggle) {
     this.inspectionService = inspectionService;
     this.inspectionUpdater = inspectionUpdater;
     this.inspectionMapper = inspectionMapper;
@@ -111,6 +123,8 @@ public class InspectionSampleService {
     this.inspectionSampleMapper = inspectionSampleMapper;
     this.teisParameterRepository = teisParameterRepository;
     this.teisUntersuchungsparameterRepository = teisUntersuchungsparameterRepository;
+    this.samplingPointClient = samplingPointClient;
+    this.inspectionFeatureToggle = inspectionFeatureToggle;
   }
 
   public GetInspectionSamplesResponse getSamples(UUID inspectionId) {
@@ -122,6 +136,9 @@ public class InspectionSampleService {
   public InspectionSampleDto createSample(
       UUID inspectionId, CreateInspectionSampleRequest request) {
     Inspection inspection = inspectionService.loadInspectionForUpdate(inspectionId);
+    if (inspectionFeatureToggle.isNewFeatureEnabled(InspectionFeature.SAMPLES)) {
+      validateSamplingPointId(inspection.getFacility().getExternalId(), request.samplingPointId());
+    }
     checkInspectionIsNotClosed(
         inspection,
         "Proben können nicht zu abgeschlossenen Vorgängen hinzugefügt werden.",
@@ -152,10 +169,21 @@ public class InspectionSampleService {
       validateContact(contact);
     }
 
+    GetReferenceSamplingPointResponse referenceSamplingPoint =
+        samplingPointClient.getReferenceSamplingPoint(request.samplingPointId());
+    AddSamplingPointFileStateResponse samplingPointFileState =
+        samplingPointClient.addSamplingPointFileState(
+            new AddSamplingPointFileStateRequest(
+                referenceSamplingPoint.id(),
+                referenceSamplingPoint.facilityId(),
+                referenceSamplingPoint.name(),
+                referenceSamplingPoint.zid(),
+                referenceSamplingPoint.dataOrigin()));
+
     InspectionSample sample = new InspectionSample();
     sample.setSampleExternalId(request.externalId());
     sample.setTypeOfSample(InspectionSampleType.valueOf(request.typeOfSample().name()));
-    sample.setPointOfWithdrawal(request.pointOfWithdrawal());
+    sample.setSamplingPointId(samplingPointFileState.id());
     sample.setSampleNumber(request.sampleNumber());
     sample.setEvaluationType(
         InspectionSampleEvaluationType.valueOf(request.evaluationType().name()));
@@ -180,7 +208,15 @@ public class InspectionSampleService {
           "A sample with the specified sample number already exists in this inspection.");
     }
 
-    return InspectionSampleMapper.mapToDto(sample, facilityFileState, userMap, contactMap);
+    return InspectionSampleMapper.mapToDto(
+        sample,
+        facilityFileState,
+        new InspectionSamplingPointDto(
+            samplingPointFileState.id(),
+            samplingPointFileState.zid(),
+            samplingPointFileState.name()),
+        userMap,
+        contactMap);
   }
 
   public InspectionSampleDto updateSample(
@@ -217,9 +253,32 @@ public class InspectionSampleService {
       validateContact(contact);
     }
 
-    // TODO Maybe this should be in the mapper?
+    InspectionSamplingPointDto inspectionSamplingPointDto = null;
+    if (sample.getSamplingPointId().equals(request.samplingPointId())) {
+      GetSamplingPointFileStateResponse response =
+          samplingPointClient.getSamplingPointFileState(sample.getSamplingPointId());
+      inspectionSamplingPointDto =
+          new InspectionSamplingPointDto(response.id(), response.zid(), response.name());
+    } else {
+      GetReferenceSamplingPointResponse referenceSamplingPoint =
+          samplingPointClient.getReferenceSamplingPoint(request.samplingPointId());
+      AddSamplingPointFileStateResponse samplingPointFileState =
+          samplingPointClient.addSamplingPointFileState(
+              new AddSamplingPointFileStateRequest(
+                  referenceSamplingPoint.id(),
+                  referenceSamplingPoint.facilityId(),
+                  referenceSamplingPoint.name(),
+                  referenceSamplingPoint.zid(),
+                  referenceSamplingPoint.dataOrigin()));
+      inspectionSamplingPointDto =
+          new InspectionSamplingPointDto(
+              samplingPointFileState.id(),
+              samplingPointFileState.zid(),
+              samplingPointFileState.name());
+    }
+
     sample.setTypeOfSample(InspectionSampleType.valueOf(request.typeOfSample().name()));
-    sample.setPointOfWithdrawal(request.pointOfWithdrawal());
+    sample.setSamplingPointId(inspectionSamplingPointDto.id());
     sample.setSampleNumber(request.sampleNumber());
     sample.setEvaluationType(
         InspectionSampleEvaluationType.valueOf(request.evaluationType().name()));
@@ -249,7 +308,8 @@ public class InspectionSampleService {
           "A sample with the specified sample number already exists in this inspection.");
     }
 
-    return InspectionSampleMapper.mapToDto(sample, facilityFileState, userMap, contactMap);
+    return InspectionSampleMapper.mapToDto(
+        sample, facilityFileState, inspectionSamplingPointDto, userMap, contactMap);
   }
 
   public InspectionSampleMeasurementParameterDto updateSampleMeasurementParameterValue(
@@ -334,7 +394,8 @@ public class InspectionSampleService {
 
   public AutocompleteParameterResponse getParameterAutocomplete(String prefix) {
     List<TeisParameter> parameterList =
-        teisParameterRepository.findAutocomplete(prepareStringForPrefixLike(prefix), 100);
+        teisParameterRepository.findAutocomplete(
+            StringUtil.prepareStringForPrefixLike(prefix, true), 100);
     return new AutocompleteParameterResponse(
         parameterList.stream()
             .map(InspectionSampleMapper::mapToUntersuchungsParameterReferenceDto)
@@ -465,6 +526,14 @@ public class InspectionSampleService {
             () -> new NotFoundException("Sample measurement parameter not found for given id"));
   }
 
+  private void validateSamplingPointId(UUID facilityId, UUID samplingPointId) {
+    GetReferenceSamplingPointResponse resp =
+        samplingPointClient.getReferenceSamplingPoint(samplingPointId);
+    if (resp == null || facilityId == null || facilityId.equals(resp.facilityId())) {
+      throw new BadRequestException("Sampling point does not exist or fit to facility");
+    }
+  }
+
   private void validateContact(ContactDto contact) {
     if (contact instanceof InstitutionContactDto institution) {
       if (institution.category() != InstitutionContactCategoryDto.LABORATORY) {
@@ -512,9 +581,5 @@ public class InspectionSampleService {
         .filter(actor -> actor instanceof InspectionSampleContactReferenceDto)
         .map(actor -> ((InspectionSampleContactReferenceDto) actor).contactId())
         .collect(Collectors.toSet());
-  }
-
-  private static String prepareStringForPrefixLike(String s) {
-    return s.replace("\\", "\\\\").replace("%", "\\%").replace("_", "\\_").toLowerCase(ROOT) + "%";
   }
 }

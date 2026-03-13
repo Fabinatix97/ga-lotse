@@ -87,6 +87,11 @@ function getProceduresColumns({ onAbortProcedure }: RowActions) {
       header: "Sprachen",
       cell: ({ getValue }) => <LanguagesCell languages={getValue()} />,
       enableSorting: false,
+      meta: {
+        canNavigate: {
+          parentRow: true,
+        },
+      },
     }),
     columnHelper.display({
       id: "actions",
@@ -119,8 +124,8 @@ export function ProstituteProtectionProceduresTable() {
   const tableControl = useTableControl({
     serverSideSorting: true,
     initialSorting,
-    sortFieldName: "sortBy",
-    sortDirectionName: "sortOrder",
+    sortFieldName: "sortKey",
+    sortDirectionName: "sortDirection",
   });
 
   const proceduresQueryOptions = useProceduresQueryOptions({
@@ -175,11 +180,13 @@ export function ProstituteProtectionProceduresTable() {
                   procedureId: id,
                 }),
             })}
+            sorting={tableControl.tableSorting}
             rowNavigation={{
               route: ({ original: { id: procedureId } }) =>
                 routes.procedures.byId(procedureId).details,
               focusColumnAccessorKey: "alias",
             }}
+            minWidth={1050}
           />
         </TableSheet>
       </TablePage>

@@ -24,13 +24,13 @@ export function SampleTemplate({
   parameters,
   index,
   selectedIndex,
-  onSelect,
+  action,
 }: {
   title: string;
   parameters: ApiInspectionSampleMeasurementParameterTemplate[];
   index: number;
   selectedIndex: number | null;
-  onSelect: (index: number) => void;
+  action: (index: number) => void;
 }) {
   const [open, setOpen] = useState(false);
 
@@ -50,7 +50,7 @@ export function SampleTemplate({
           <Radio
             checked={selectedIndex === index}
             value={index}
-            onChange={() => onSelect(index)}
+            onChange={() => action(index)}
           />
         </Grid>
         <Grid>

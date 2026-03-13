@@ -10,6 +10,7 @@ import { ApiConcern } from "@eshg/sti-protection-api";
 
 import { useCitizenPublicApi } from "@/lib/businessModules/stiProtection/api/clients";
 import { stiProtectionPublicCitizenApiQueryKey } from "@/lib/businessModules/stiProtection/api/queries/apiQueryKeys";
+import { OpeningHoursTranslations } from "@/lib/shared/components/ContactAndAvailabilitySheet";
 
 function useDepartmentInfoQuery(concern: ApiConcern) {
   const publicCitizenApi = useCitizenPublicApi();
@@ -59,6 +60,8 @@ function useOpeningHoursQuery(concern: ApiConcern) {
   return queryOptions({
     queryKey: stiProtectionPublicCitizenApiQueryKey(["openingHours", concern]),
     queryFn: () => publicCitizenApi.getOpeningHours(concern),
+    select: (openingHours) =>
+      openingHours.localizations as OpeningHoursTranslations,
   });
 }
 

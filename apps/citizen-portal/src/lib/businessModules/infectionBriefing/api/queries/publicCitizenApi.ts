@@ -14,6 +14,7 @@ import { SEMI_STATIC_QUERY_OPTIONS } from "@eshg/lib-portal";
 import { useInfectionBriefingCitizenPublicApi } from "@/lib/businessModules/infectionBriefing/api/clients";
 import { infectionBriefingPublicCitizenApiQueryKey } from "@/lib/businessModules/infectionBriefing/api/queries/apiQueryKeys";
 import { useLang } from "@/lib/i18n/useLang";
+import { OpeningHoursTranslations } from "@/lib/shared/components/ContactAndAvailabilitySheet";
 
 export function useGetLandingPageContentQuery(
   publicCitizenApi: InfectionBriefingPublicCitizenApi,
@@ -36,6 +37,8 @@ export function getOpeningHoursQuery(
   return queryOptions({
     queryKey: infectionBriefingPublicCitizenApiQueryKey(["getOpeningHours"]),
     queryFn: () => publicCitizenApi.getOpeningHours(),
+    select: (openingHours) =>
+      openingHours.localizations as OpeningHoursTranslations,
   });
 }
 

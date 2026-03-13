@@ -70,6 +70,7 @@ The set of all preview features is defined in the `application-preview-features.
 | 11             | chat-management-db           |5432           |5441
 | 35             | dental                       |8080           |8098
 | 18             | dental-db                    |5432           |5448
+| 51             | file-jockey                  |8080           |8104          
 | 39             | infection-briefing           |8080           |8103
 | 22             | infection-briefing-db        |5432           |5452
 | 25             | inspection                   |8080           |8081

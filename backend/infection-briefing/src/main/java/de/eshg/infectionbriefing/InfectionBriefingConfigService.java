@@ -25,6 +25,7 @@ import de.eshg.rest.service.i18n.Language;
 import jakarta.persistence.EntityManager;
 import java.io.IOException;
 import java.io.UncheckedIOException;
+import java.util.Map;
 import java.util.SequencedMap;
 import org.springframework.core.io.Resource;
 import org.springframework.http.MediaType;
@@ -36,7 +37,7 @@ import org.springframework.web.multipart.MultipartFile;
 public class InfectionBriefingConfigService
     extends EshgConfigurationService<InfectionBriefingConfig> {
 
-  public static final String LANDING_CONTENT_BASE_FILENAME = "landing_content.md";
+  public static final String LANDING_CONTENT_BASE_FILENAME = "landing_content" + ".md";
   private final InitialInfectionBriefingConfiguration initialConfiguration;
   private final AuditLogWriter auditLogWriter;
 
@@ -54,8 +55,10 @@ public class InfectionBriefingConfigService
   protected InfectionBriefingConfig getInitialConfiguration() throws IOException {
     InfectionBriefingConfig infectionBriefingConfig = new InfectionBriefingConfig();
     MultiLangDocument landingContent = new MultiLangDocument();
-    landingContent.updateDe(initialConfiguration.landingContentDe().getContentAsByteArray());
-    landingContent.updateEn(initialConfiguration.landingContentEn().getContentAsByteArray());
+    landingContent.update(
+        Language.GERMAN, initialConfiguration.landingContentDe().getContentAsByteArray());
+    landingContent.update(
+        Language.ENGLISH, initialConfiguration.landingContentEn().getContentAsByteArray());
     infectionBriefingConfig.setLandingContent(landingContent);
 
     return infectionBriefingConfig;
@@ -84,40 +87,29 @@ public class InfectionBriefingConfigService
     return MultiLangFileName.fromFilenameWithLanguageTags(LANDING_CONTENT_BASE_FILENAME);
   }
 
-  InfectionBriefingConfig updateConfig(
-      MultipartFile requestedLandingContentDe, MultipartFile requestedLandingContentEn) {
-
-    if (requestedLandingContentDe == null) {
+  InfectionBriefingConfig updateConfig(Map<Language, MultipartFile> landingContent) {
+    if (!landingContent.containsKey(Language.GERMAN)) {
       throw new BadRequestException("Landing page content must be given in german language.");
     }
-    FileValidator.validateMarkdownFile(requestedLandingContentDe);
-    FileValidator.validateMarkdownFile(requestedLandingContentEn);
+    for (var entry : landingContent.values()) {
+      FileValidator.validateMarkdownFile(entry);
+    }
     InfectionBriefingConfig currentConfig = getConfig();
 
-    MultiLangDocument updateDocument = new MultiLangDocument();
-    updateDocument.updateDe(getBytes(requestedLandingContentDe));
-
-    if (requestedLandingContentEn != null) {
-      updateDocument.updateEn(getBytes(requestedLandingContentEn));
+    MultiLangDocument updateDocument;
+    try {
+      updateDocument = MultiLangDocumentMapper.mapToDomain(landingContent);
+    } catch (IOException e) {
+      throw new UncheckedIOException(e);
     }
     auditLogWriter.writeChangeToAuditLog(
         "landingContentConfig",
         getRelevantFieldsForLogging(currentConfig.getLandingContent()),
         getRelevantFieldsForLogging(updateDocument));
 
-    currentConfig.getLandingContent().updateDe(updateDocument.getDe());
-    currentConfig.getLandingContent().updateEn(updateDocument.getEn());
-
+    currentConfig.setLandingContent(updateDocument);
     currentConfig.setInitialized(true);
     return currentConfig;
-  }
-
-  private static byte[] getBytes(MultipartFile file) {
-    try {
-      return file.getBytes();
-    } catch (IOException ioe) {
-      throw new UncheckedIOException(ioe);
-    }
   }
 
   ResponseEntity<Resource> downloadLandingPage(Language language) {

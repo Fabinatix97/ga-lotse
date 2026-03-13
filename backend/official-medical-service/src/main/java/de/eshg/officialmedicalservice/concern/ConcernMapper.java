@@ -5,12 +5,15 @@
 
 package de.eshg.officialmedicalservice.concern;
 
+import de.cronn.commons.lang.StreamUtil;
 import de.eshg.lib.appointmentblock.AppointmentTypeMapper;
 import de.eshg.lib.appointmentblock.api.AppointmentTypeDto;
 import de.eshg.officialmedicalservice.procedure.api.ConcernCategoryConfigDto;
 import de.eshg.officialmedicalservice.procedure.api.ConcernConfigDto;
 import de.eshg.officialmedicalservice.procedure.api.ConcernDto;
 import de.eshg.officialmedicalservice.procedure.persistence.entity.Concern;
+import de.eshg.rest.service.i18n.Language;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -24,28 +27,51 @@ public class ConcernMapper {
         .map(
             yamlCategory ->
                 new ConcernCategoryConfigDto(
-                    String.valueOf(yamlCategory.get("category_de")),
-                    String.valueOf(yamlCategory.get("category_en")),
+                    Arrays.stream(Language.values())
+                        .filter(
+                            l ->
+                                yamlCategory.get(
+                                        "category_" + Language.LANGUAGE_TO_LANGUAGE_TAG.get(l))
+                                    != null)
+                        .collect(
+                            StreamUtil.toLinkedHashMap(
+                                l -> l,
+                                l ->
+                                    String.valueOf(
+                                        yamlCategory.get(
+                                            "category_"
+                                                + Language.LANGUAGE_TO_LANGUAGE_TAG.get(l))))),
                     ((List<Map<String, Object>>) (yamlCategory.get("concerns")))
                         .stream().map(ConcernMapper::mapToConcernConfigDto).toList()))
         .toList();
   }
 
   public static ConcernConfigDto mapToConcernConfigDto(Map<String, Object> yaml) {
-    String concernEn =
-        yaml.get("concern_en") != null ? String.valueOf(yaml.get("concern_en")) : null;
+    final var concernNames =
+        Arrays.stream(Language.values())
+            .filter(l -> yaml.get("concern_" + Language.LANGUAGE_TO_LANGUAGE_TAG.get(l)) != null)
+            .collect(
+                StreamUtil.toLinkedHashMap(
+                    l -> l,
+                    l ->
+                        String.valueOf(
+                            yaml.get("concern_" + Language.LANGUAGE_TO_LANGUAGE_TAG.get(l)))));
+
     AppointmentTypeDto appointmentType =
         yaml.get("appointment_type") != null
             ? AppointmentTypeDto.valueOf(String.valueOf(yaml.get("appointment_type")))
             : null;
     boolean visibleInOnlinePortal = Boolean.TRUE.equals(yaml.get("online_portal_visibility"));
-    if (visibleInOnlinePortal && (concernEn == null || appointmentType == null)) {
+    if (visibleInOnlinePortal
+        && (Arrays.stream(Language.values()).allMatch(concernNames::containsKey)
+            || appointmentType == null)) {
       throw new RuntimeException(
-          "An english concern name and appointment type must be specified when visible in online portal");
+          "All translations for the concern name and the appointment type must "
+              + "be specified when "
+              + "visible in online portal");
     }
     return new ConcernConfigDto(
-        String.valueOf(yaml.get("concern_de")),
-        concernEn,
+        concernNames,
         Boolean.TRUE.equals(yaml.get("high_priority")),
         appointmentType,
         visibleInOnlinePortal);
@@ -57,11 +83,13 @@ public class ConcernMapper {
     }
     return new ConcernDto(
         concern.getVersion(),
-        concern.getNameDe(),
-        concern.getNameEn(),
+        Arrays.stream(Language.values())
+            .filter(l -> concern.getName(l) != null)
+            .collect(StreamUtil.toLinkedHashMap(l -> l, concern::getName)),
         concern.isHighPriority(),
-        concern.getCategoryNameDe(),
-        concern.getCategoryNameEn(),
+        Arrays.stream(Language.values())
+            .filter(l -> concern.getCategoryName(l) != null)
+            .collect(StreamUtil.toLinkedHashMap(l -> l, concern::getCategoryName)),
         concern.getAppointmentType() != null
             ? AppointmentTypeMapper.toInterfaceType(concern.getAppointmentType())
             : null,
@@ -75,11 +103,16 @@ public class ConcernMapper {
   }
 
   public static void mapOntoExistingEntity(ConcernDto concernDto, Concern concern) {
-    concern.setNameDe(concernDto.nameDe());
-    concern.setNameEn(concernDto.nameEn());
+    for (Language language : Language.values()) {
+      if (concernDto.names().get(language) != null) {
+        concern.setName(language, concernDto.names().get(language));
+      }
+      if (concernDto.categoryNames().get(language) != null) {
+        concern.setCategoryName(language, concernDto.categoryNames().get(language));
+      }
+    }
+
     concern.setHighPriority(concernDto.highPriority());
-    concern.setCategoryNameDe(concernDto.categoryNameDe());
-    concern.setCategoryNameEn(concernDto.categoryNameEn());
     concern.setAppointmentType(
         concernDto.appointmentType() != null
             ? AppointmentTypeMapper.toDomainType(concernDto.appointmentType())
@@ -93,11 +126,9 @@ public class ConcernMapper {
       long version) {
     return new ConcernDto(
         version,
-        concernConfigDto.nameDe(),
-        concernConfigDto.nameEn(),
+        concernConfigDto.names(),
         concernConfigDto.highPriority(),
-        concernCategoryConfigDto.nameDe(),
-        concernCategoryConfigDto.nameEn(),
+        concernCategoryConfigDto.names(),
         concernConfigDto.appointmentType(),
         concernConfigDto.visibleInOnlinePortal());
   }

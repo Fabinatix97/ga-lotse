@@ -11,16 +11,16 @@ import {
   ApiSexWorkAppointmentStandardDurations,
 } from "@eshg/sti-protection-api";
 
-import { ConfiguratorModuleName } from "@/lib/configurator/shared/types";
-import { useStiProtectionAppointmentStandardDurationConfigApi } from "@/lib/shared/api/clients";
 import {
   mapDurationValue,
   useUpdateAppointmentStandardDuration,
-} from "@/lib/shared/api/mutations/configurator/useUpdateAppointmentStandardDuration";
+} from "@/lib/configurator/api/mutations/useUpdateAppointmentStandardDuration";
 import {
   mapOptionalISODuration,
   useGetAppointmentStandardDurations,
-} from "@/lib/shared/api/queries/configurator/appointment";
+} from "@/lib/configurator/api/queries/appointment";
+import { ConfiguratorModuleName } from "@/lib/configurator/shared/types";
+import { useStiProtectionAppointmentStandardDurationConfigApi } from "@/lib/shared/api/clients";
 
 import {
   AppointmentStandardDurationConfiguratorForm,

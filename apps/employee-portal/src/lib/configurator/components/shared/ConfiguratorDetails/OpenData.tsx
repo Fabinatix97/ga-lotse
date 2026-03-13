@@ -6,11 +6,15 @@
 import { FormikValues } from "formik";
 import { notFound } from "next/navigation";
 
-import { ApiLanguage } from "@eshg/lib-config-api";
 import { validateURL } from "@eshg/lib-employee-portal";
 import { FileType, useFileDownload } from "@eshg/lib-portal";
 
-import { ConfiguratorForm } from "@/lib/configurator/components/shared/ConfiguratorForm";
+import { useUpdateOpenData } from "@/lib/configurator/api/mutations/useUpdateOpenData";
+import { useGetOpenDataConfig } from "@/lib/configurator/api/queries/openData";
+import {
+  ConfiguratorForm,
+  FormSection,
+} from "@/lib/configurator/components/shared/ConfiguratorForm";
 import { ConfigFile } from "@/lib/configurator/components/shared/RenderField";
 import { useTabStatus } from "@/lib/configurator/components/shared/hooks/useTabStatus";
 import { isEndpointSupportedByModule } from "@/lib/configurator/shared/config";
@@ -18,20 +22,21 @@ import {
   ConfiguratorEndpointName,
   ConfiguratorModuleName,
 } from "@/lib/configurator/shared/types";
+import {
+  SupportedLanguage,
+  languageLabel,
+  mapToApiLanguage,
+  supportedLanguages,
+} from "@/lib/i18n/language";
 import { useOpenDataConfigApi } from "@/lib/shared/api/clients";
-import { useUpdateOpenData } from "@/lib/shared/api/mutations/configurator/useUpdateOpenData";
-import { useGetOpenDataConfig } from "@/lib/shared/api/queries/configurator/openData";
 
 enum FormNames {
-  OPEN_DATA_TERMS_OF_USE_DE = "openDataTermsOfUseDe",
-  OPEN_DATA_TERMS_OF_USE_EN = "openDataTermsOfUseEn",
   OPEN_DATA_LICENCE_URL = "openDataLicenceUrl",
   OPEN_DATA_AUTHOR = "openDataAuthor",
 }
 
 export interface OpenDataFormModel extends FormikValues {
-  [FormNames.OPEN_DATA_TERMS_OF_USE_DE]: ConfigFile;
-  [FormNames.OPEN_DATA_TERMS_OF_USE_EN]: ConfigFile;
+  termsOfUse: Record<SupportedLanguage, ConfigFile>;
   [FormNames.OPEN_DATA_LICENCE_URL]: string;
   [FormNames.OPEN_DATA_AUTHOR]: string;
 }
@@ -78,10 +83,10 @@ function OpenDataConfiguratorForm(props: { module: ConfiguratorModuleName }) {
                     fields: [
                       {
                         type: "upload",
-                        name: FormNames.OPEN_DATA_TERMS_OF_USE_DE,
+                        name: "termsOfUse.de",
                         label: "Upload (Markdown-Datei)",
                         required: "Upload erforderlich",
-                        downloadFile: () => download("GERMAN"),
+                        downloadFile: () => download("de"),
                         width: { width: UPLOAD_FIELD_WIDTH },
                         accept: FileType.Md,
                       },
@@ -90,26 +95,31 @@ function OpenDataConfiguratorForm(props: { module: ConfiguratorModuleName }) {
                 ],
               },
             },
-            {
-              content: {
-                title: "Englisch",
-                type: "field",
-                rows: [
-                  {
-                    fields: [
-                      {
-                        type: "upload",
-                        name: FormNames.OPEN_DATA_TERMS_OF_USE_EN,
-                        label: "Upload (Markdown-Datei)",
-                        downloadFile: () => download("ENGLISH"),
-                        width: { width: UPLOAD_FIELD_WIDTH },
-                        accept: FileType.Md,
-                      },
-                    ],
-                  },
-                ],
-              },
-            },
+            ...(supportedLanguages
+              .filter((lang) => lang !== "de")
+              .map(
+                (lang) =>
+                  ({
+                    content: {
+                      type: "field",
+                      title: languageLabel[lang],
+                      rows: [
+                        {
+                          fields: [
+                            {
+                              type: "upload",
+                              name: `termsOfUse.${lang}`,
+                              label: "Upload (Markdown-Datei)",
+                              accept: FileType.Md,
+                              downloadFile: () => download(lang),
+                              width: { width: UPLOAD_FIELD_WIDTH },
+                            },
+                          ],
+                        },
+                      ],
+                    },
+                  }) satisfies FormSection,
+              ) satisfies FormSection[]),
           ],
         },
         {
@@ -165,7 +175,8 @@ function OpenDataConfiguratorForm(props: { module: ConfiguratorModuleName }) {
 
 function useTermsOfUseDownload() {
   const openDataConfigApi = useOpenDataConfigApi();
-  async function downloadFn(lang: ApiLanguage) {
+  async function downloadFn(supportedLanguage: SupportedLanguage) {
+    const lang = mapToApiLanguage(supportedLanguage);
     return openDataConfigApi.downloadTermsOfUseRaw({ lang });
   }
 

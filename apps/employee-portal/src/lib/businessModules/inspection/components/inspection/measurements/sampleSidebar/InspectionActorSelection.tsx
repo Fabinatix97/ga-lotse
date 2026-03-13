@@ -18,22 +18,21 @@ import {
 
 import { useAutocompleteUserFacilityContactQuery } from "@/lib/businessModules/inspection/api/queries/autocomplete";
 
+interface InspectionActorSelectionOption {
+  label: string;
+  value: { id: string; type: string };
+}
+
 interface InspectionActorSelectionProps {
   useLaboratories: boolean;
   onSelfAssign: () => void;
-  onFacilityAssign: () => void;
+  onFacilityAssign?: () => void;
   name: string;
   label: string;
   required?: string;
   placeholder?: string;
   onChange?: (
-    value: SelectObjectFieldValue<
-      {
-        label: string;
-        value: { id: string; type: string };
-      },
-      false
-    >,
+    value: SelectObjectFieldValue<InspectionActorSelectionOption, false>,
   ) => void;
 }
 
@@ -83,13 +82,29 @@ export function InspectionActorSelection(props: InspectionActorSelectionProps) {
     }
   }
 
+  function getGroupOfOption(option: InspectionActorSelectionOption) {
+    switch (option.value.type) {
+      case "AutocompleteContact":
+        return "Facility";
+      case "InspectionSampleUserReference":
+        return "User";
+      default:
+        return "Else";
+    }
+  }
+
   return (
     <Stack direction="column" spacing={2}>
       <SelectObjectField
         filterOptions={createFilterOptions({ matchFrom: "start" })}
         loading={query.isLoading}
-        options={options}
+        options={options.sort(
+          (a, b) => -b.value.type.localeCompare(a.value.type),
+        )}
         sx={{ flex: 1 }}
+        groupBy={(option: InspectionActorSelectionOption) =>
+          getGroupOfOption(option)
+        }
         getOptionLabel={(option) => option.label ?? ""}
         getOptionKey={(option) => option.value.id ?? ""}
         isOptionEqualToValue={(option, value) =>
@@ -107,13 +122,15 @@ export function InspectionActorSelection(props: InspectionActorSelectionProps) {
         >
           Mir zuweisen
         </ButtonLink>
-        <ButtonLink
-          underline="always"
-          level="body-md"
-          onClick={() => props.onFacilityAssign()}
-        >
-          Meine Facility zuweisen
-        </ButtonLink>
+        {props.onFacilityAssign && (
+          <ButtonLink
+            underline="always"
+            level="body-md"
+            onClick={props.onFacilityAssign}
+          >
+            Meine Einrichtung zuweisen
+          </ButtonLink>
+        )}
       </Stack>
     </Stack>
   );

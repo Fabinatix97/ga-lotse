@@ -15,6 +15,7 @@ import de.eshg.config.domain.MultiLangDocument;
 import de.eshg.config.i18n.MultiLangFileName;
 import de.eshg.config.mapper.MultiLangDocumentMapper;
 import de.eshg.persistence.TransactionHelper;
+import de.eshg.rest.service.i18n.Language;
 import jakarta.persistence.EntityManager;
 import java.util.SequencedMap;
 import org.springframework.stereotype.Component;
@@ -52,7 +53,8 @@ public class OpenDataConfigService extends EshgConfigurationService<OpenDataConf
     openDataConfiguration.setFallbackLicenseUrl(initialOpenDataConfiguration.fallbackLicenseUrl());
 
     MultiLangDocument termsOfUse = new MultiLangDocument();
-    termsOfUse.updateDe(initialOpenDataConfiguration.termsOfUse().getContentAsByteArray());
+    termsOfUse.update(
+        Language.GERMAN, initialOpenDataConfiguration.termsOfUse().getContentAsByteArray());
     openDataConfiguration.setTermsOfUse(termsOfUse);
 
     return openDataConfiguration;
@@ -70,8 +72,9 @@ public class OpenDataConfigService extends EshgConfigurationService<OpenDataConf
     config.setFallbackLicenseUrl(updateOpenDataConfiguration.getFallbackLicenseUrl());
 
     MultiLangDocument persistedDocument = config.getTermsOfUse();
-    persistedDocument.updateDe(updateOpenDataConfiguration.getTermsOfUse().getDe());
-    persistedDocument.updateEn(updateOpenDataConfiguration.getTermsOfUse().getEn());
+    for (Language language : Language.values()) {
+      persistedDocument.update(language, updateOpenDataConfiguration.getTermsOfUse().get(language));
+    }
   }
 
   @Override

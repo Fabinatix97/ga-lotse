@@ -20,6 +20,7 @@ import { useCitizenPublicApi } from "@/lib/businessModules/officialMedicalServic
 import { citizenPublicApiQueryKey } from "@/lib/businessModules/officialMedicalService/api/queries/apiQueryKeys";
 import { mapToConcernApiList } from "@/lib/businessModules/officialMedicalService/shared/helpers";
 import { useLang } from "@/lib/i18n/useLang";
+import { OpeningHoursTranslations } from "@/lib/shared/components/ContactAndAvailabilitySheet";
 
 export function useGetAppointmentStandardDurationsQuery() {
   const citizenPublicApi = useCitizenPublicApi();
@@ -61,6 +62,8 @@ export function useGetOpeningHoursQuery() {
   return queryOptions({
     queryKey: citizenPublicApiQueryKey(["getOpeningHours"]),
     queryFn: () => departmentApi.getOpeningHours(),
+    select: (openingHours) =>
+      openingHours.localizations as OpeningHoursTranslations,
   });
 }
 

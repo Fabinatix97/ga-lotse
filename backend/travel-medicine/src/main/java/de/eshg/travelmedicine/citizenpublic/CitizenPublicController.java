@@ -8,10 +8,12 @@ package de.eshg.travelmedicine.citizenpublic;
 import static de.eshg.travelmedicine.config.TravelMedicineAppointmentStandardDurationMapper.mapToTravelMedicineAppointmentStandardDurationsDto;
 
 import de.eshg.base.department.GetDepartmentInfoResponse;
+import de.eshg.config.api.OpeningHoursDto;
 import de.eshg.config.departmentinfo.DepartmentInfoConfigService;
 import de.eshg.config.departmentinfo.OpeningHoursService;
 import de.eshg.config.departmentinfo.PrivacyDocumentService;
 import de.eshg.config.domain.OpeningHours;
+import de.eshg.config.mapper.OpeningHoursMapper;
 import de.eshg.lib.appointmentblock.AppointmentBlockService;
 import de.eshg.lib.appointmentblock.MappingUtil;
 import de.eshg.lib.appointmentblock.api.AppointmentDto;
@@ -19,7 +21,6 @@ import de.eshg.lib.appointmentblock.api.AppointmentTypeDto;
 import de.eshg.lib.appointmentblock.api.GetFreeAppointmentsResponse;
 import de.eshg.lib.appointmentblock.persistence.AppointmentType;
 import de.eshg.rest.service.security.config.BaseUrls;
-import de.eshg.travelmedicine.citizenpublic.api.GetOpeningHoursResponse;
 import de.eshg.travelmedicine.citizenpublic.api.PostCitizenVaccinationConsultationRequest;
 import de.eshg.travelmedicine.config.TravelMedicineAppointmentStandardDurationService;
 import de.eshg.travelmedicine.config.TravelMedicineAppointmentStandardDurationsDto;
@@ -31,7 +32,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import java.time.Clock;
 import java.time.Instant;
-import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 import org.springframework.core.io.Resource;
@@ -110,7 +110,7 @@ public class CitizenPublicController {
     return new GetFreeAppointmentsResponse(appointments);
   }
 
-  @Operation(summary = "Get standard durations for travel medicine appointments for citizen")
+  @Operation(summary = "Get standard durations for travel medicine " + "appointments for citizen")
   @GetMapping(APPOINTMENT_STANDARD_DURATIONS_URL)
   @Transactional(readOnly = true)
   public TravelMedicineAppointmentStandardDurationsDto getAppointmentStandardDurationsForCitizen() {
@@ -138,12 +138,10 @@ public class CitizenPublicController {
   @Operation(summary = "Get opening hours.")
   @GetMapping("/opening-hours")
   @Transactional(readOnly = true)
-  public GetOpeningHoursResponse getOpeningHours() {
+  public OpeningHoursDto getOpeningHours() {
 
     OpeningHours openingHours = openingHoursService.getConfig();
-    return new GetOpeningHoursResponse(
-        Collections.unmodifiableList(openingHours.getDe()),
-        Collections.unmodifiableList(openingHours.getEn()));
+    return OpeningHoursMapper.mapToDto(openingHours);
   }
 
   @GetMapping(path = "/documents/privacy-notice")

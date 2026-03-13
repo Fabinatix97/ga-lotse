@@ -56,6 +56,7 @@ export interface SelectObjectFieldProps<
   endDecorator?: ReactNode;
   isOptionEqualToValue?: (option: TValue, value: TValue) => boolean;
   autoFocus?: boolean;
+  groupBy?: (option: TValue) => string;
 }
 
 export function SelectObjectField<
@@ -96,6 +97,7 @@ export function SelectObjectField<
           )
         }
         sx={props.sx}
+        groupBy={props.groupBy}
         onChange={(_, newValue) => {
           const emptyValue = props.multiple ? [] : null;
           const value = (newValue ?? emptyValue) as SelectObjectFieldValue<

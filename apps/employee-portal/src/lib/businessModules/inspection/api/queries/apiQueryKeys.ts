@@ -94,3 +94,7 @@ export const sampleActorApiQueryKey = queryKeyFactory(
 export const sampleTemplateApiQueryKey = queryKeyFactory(
   apiQueryKey(["sampleTemplateApi"]),
 );
+
+export const samplingPointsApiQueryKey = queryKeyFactory(
+  apiQueryKey(["samplingPointsApi"]),
+);

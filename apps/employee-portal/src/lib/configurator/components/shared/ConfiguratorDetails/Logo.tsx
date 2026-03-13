@@ -8,6 +8,8 @@ import { notFound } from "next/navigation";
 
 import { FileType } from "@eshg/lib-portal";
 
+import { useUpdateLogo } from "@/lib/configurator/api/mutations/useUpdateLogo";
+import { useGetLogoInfo } from "@/lib/configurator/api/queries/logo";
 import { ConfiguratorForm } from "@/lib/configurator/components/shared/ConfiguratorForm";
 import { ConfigFile } from "@/lib/configurator/components/shared/RenderField";
 import { useTabStatus } from "@/lib/configurator/components/shared/hooks/useTabStatus";
@@ -16,8 +18,6 @@ import {
   ConfiguratorEndpointName,
   ConfiguratorModuleName,
 } from "@/lib/configurator/shared/types";
-import { useUpdateLogo } from "@/lib/shared/api/mutations/configurator/useUpdateLogo";
-import { useGetLogoInfo } from "@/lib/shared/api/queries/configurator/logo";
 
 enum FormNames {
   LOGO = "logo",

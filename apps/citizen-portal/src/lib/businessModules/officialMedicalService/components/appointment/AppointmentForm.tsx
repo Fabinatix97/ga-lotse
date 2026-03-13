@@ -93,11 +93,15 @@ const INITIAL_VALUES: AppointmentFormValues = {
     index: "",
     standardDurationInMinutes: "",
     appointmentType: "",
-    categoryNameDe: "",
-    categoryNameEn: "",
+    categoryNames: {
+      GERMAN: "",
+      ENGLISH: "",
+    },
     highPriority: false,
-    nameDe: "",
-    nameEn: "",
+    names: {
+      GERMAN: "",
+      ENGLISH: "",
+    },
   },
   affectedPerson: {
     salutation: "",

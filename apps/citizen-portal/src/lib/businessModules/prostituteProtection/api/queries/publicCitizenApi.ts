@@ -18,6 +18,7 @@ import {
 import { useProstituteProtectionCitizenPublicApi } from "@/lib/businessModules/prostituteProtection/api/clients";
 import { prostituteProtectionPublicCitizenApiQueryKey } from "@/lib/businessModules/prostituteProtection/api/queries/apiQueryKeys";
 import { useLang } from "@/lib/i18n/useLang";
+import { OpeningHoursTranslations } from "@/lib/shared/components/ContactAndAvailabilitySheet";
 
 export function useGetLandingPageContentQuery(
   publicCitizenApi: ProstituteProtectionPublicCitizenApi,
@@ -50,6 +51,8 @@ export function getOpeningHoursQuery(
   return queryOptions({
     queryKey: prostituteProtectionPublicCitizenApiQueryKey(["getOpeningHours"]),
     queryFn: () => publicCitizenApi.getOpeningHours(),
+    select: (openingHours) =>
+      openingHours.localizations as OpeningHoursTranslations,
   });
 }
 

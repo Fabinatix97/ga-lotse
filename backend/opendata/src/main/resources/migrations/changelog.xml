@@ -19,5 +19,6 @@
   <include file="migrations/0009_terms_of_use_as_markdown.xml"/>
   <include file="migrations/0010_add_prostitute_protection_module.xml"/>
   <include file="migrations/0011_add_infection_briefing_module.xml"/>
+  <include file="migrations/0012_add_additional_languages.xml"/>
 
 </databaseChangeLog>

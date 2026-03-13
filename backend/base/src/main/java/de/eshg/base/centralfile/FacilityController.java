@@ -22,8 +22,10 @@ import java.time.Clock;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Collections;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RestController;
@@ -74,8 +76,19 @@ public class FacilityController implements FacilityApi {
   @Override
   @Transactional(readOnly = true)
   public GetReferenceFacilityResponse getReferenceFacility(UUID id) {
-    Facility referenceFacility = findReferenceFacility(id);
+    Facility referenceFacility = facilityService.getReferenceFacilityByFileStateId(id);
     return FacilityMapper.mapReferenceFacilityToApi(referenceFacility);
+  }
+
+  @Override
+  @Transactional(readOnly = true)
+  public GetReferenceFacilitiesResponse getReferenceFacilities(
+      GetReferenceFacilitiesRequest request) {
+    Set<UUID> queryIds = new LinkedHashSet<>(request.fileStateIds());
+    Map<UUID, Facility> facByCFSId =
+        facilityRepository.getReferenceFacilitiesByFileStateExternalIds(queryIds);
+
+    return FacilityMapper.mapToGetReferenceFacilitiesResponse(queryIds, facByCFSId);
   }
 
   @Override
@@ -265,15 +278,6 @@ public class FacilityController implements FacilityApi {
         facilityService.searchByFacilityFileNumber(fileNumber, method).stream()
             .map(FacilityController::mapFacilityToGetFacilityFileStateResponse)
             .toList());
-  }
-
-  private Facility findReferenceFacility(UUID id) {
-    return facilityRepository
-        .findReferenceFacilityByFileStateExternalId(id)
-        .orElseThrow(
-            () ->
-                new NotFoundException(
-                    "Facility File State with given ID (or associated Reference Facility) not found"));
   }
 
   private static GetFacilityFileStateResponse mapFacilityToGetFacilityFileStateResponse(

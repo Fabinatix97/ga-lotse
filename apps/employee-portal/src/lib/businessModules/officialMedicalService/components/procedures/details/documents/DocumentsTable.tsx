@@ -91,7 +91,7 @@ export function DocumentsTable({ procedureId }: Readonly<DocumentsTableProps>) {
                 isProcedureFinalized: isProcedureFinalized(procedureDetails),
               });
             },
-            focusColumnAccessorKey: "documentTypeDe",
+            focusColumnAccessorKey: "documentType.GERMAN",
           }}
           noDataComponent={() => (
             <NoDocumentsAvailable

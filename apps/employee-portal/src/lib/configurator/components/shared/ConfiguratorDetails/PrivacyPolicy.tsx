@@ -8,9 +8,10 @@ import { FormikValues } from "formik";
 import { notFound } from "next/navigation";
 import { useMemo } from "react";
 
-import { ApiLanguage } from "@eshg/lib-config-api";
 import { FileType, useFileDownload } from "@eshg/lib-portal";
 
+import { useUpdatePrivacyPolicy } from "@/lib/configurator/api/mutations/useUpdatePrivacyPolicy";
+import { useGetPrivacyPolicy } from "@/lib/configurator/api/queries/privacyPolicy";
 import {
   ConfiguratorForm,
   FormSection,
@@ -22,20 +23,17 @@ import {
   ConfiguratorEndpointName,
   ConfiguratorModuleName,
 } from "@/lib/configurator/shared/types";
+import {
+  SupportedLanguage,
+  languageLabel,
+  mapToApiLanguage,
+  supportedLanguages,
+} from "@/lib/i18n/language";
 import { useConfiguratorPrivacyDocumentApi } from "@/lib/shared/api/clients";
-import { useUpdatePrivacyPolicy } from "@/lib/shared/api/mutations/configurator/useUpdatePrivacyPolicy";
-import { useGetPrivacyPolicy } from "@/lib/shared/api/queries/configurator/privacyPolicy";
-
-enum FormNames {
-  USE_POLICY_OF_HEALTH_DEPARTMENT = "usePolicyOfHealthDepartment",
-  GERMAN_PRIVACY_POLICY_DOCUMENT = "germanPrivacyPolicyDocument",
-  ENGLISH_PRIVACY_POLICY_DOCUMENT = "englishPrivacyPolicyDocument",
-}
 
 export interface PrivacyPolicyFormModel extends FormikValues {
-  [FormNames.USE_POLICY_OF_HEALTH_DEPARTMENT]: "DEFAULT" | "CUSTOM";
-  [FormNames.GERMAN_PRIVACY_POLICY_DOCUMENT]: ConfigFile;
-  [FormNames.ENGLISH_PRIVACY_POLICY_DOCUMENT]: ConfigFile;
+  usePolicyOfHealthDepartment: "DEFAULT" | "CUSTOM";
+  privacyPolicies: Record<SupportedLanguage, ConfigFile>;
 }
 
 const UPLOAD_FIELD_MAX_WIDTH = "500px";
@@ -79,11 +77,11 @@ function PrivacyPolicyConfiguratorForm(props: {
               fields: [
                 {
                   type: "upload",
-                  name: FormNames.GERMAN_PRIVACY_POLICY_DOCUMENT,
+                  name: "privacyPolicies.de",
                   label: "Upload (PDF-Datei)",
                   accept: FileType.Pdf,
                   required: "Upload erforderlich",
-                  downloadFile: () => download("GERMAN"),
+                  downloadFile: () => download("de"),
                   width: { width: "100%", maxWidth: UPLOAD_FIELD_MAX_WIDTH },
                 },
               ],
@@ -91,26 +89,34 @@ function PrivacyPolicyConfiguratorForm(props: {
           ],
         },
       },
-      {
-        content: {
-          type: "field",
-          title: "Englisch",
-          rows: [
-            {
-              fields: [
-                {
-                  type: "upload",
-                  name: FormNames.ENGLISH_PRIVACY_POLICY_DOCUMENT,
-                  label: "Upload (PDF-Datei)",
-                  accept: FileType.Pdf,
-                  downloadFile: () => download("ENGLISH"),
-                  width: { width: "100%", maxWidth: UPLOAD_FIELD_MAX_WIDTH },
-                },
-              ],
-            },
-          ],
-        },
-      },
+      ...(supportedLanguages
+        .filter((lang) => lang !== "de")
+        .map(
+          (lang) =>
+            ({
+              content: {
+                type: "field",
+                title: languageLabel[lang],
+                rows: [
+                  {
+                    fields: [
+                      {
+                        type: "upload",
+                        name: `privacyPolicies.${lang}`,
+                        label: "Upload (PDF-Datei)",
+                        accept: FileType.Pdf,
+                        downloadFile: () => download(lang),
+                        width: {
+                          width: "100%",
+                          maxWidth: UPLOAD_FIELD_MAX_WIDTH,
+                        },
+                      },
+                    ],
+                  },
+                ],
+              },
+            }) satisfies FormSection,
+        ) satisfies FormSection[]),
     ] satisfies FormSection[];
 
     if (showChooser) {
@@ -118,7 +124,7 @@ function PrivacyPolicyConfiguratorForm(props: {
         {
           content: {
             type: "choose",
-            name: FormNames.USE_POLICY_OF_HEALTH_DEPARTMENT,
+            name: "usePolicyOfHealthDepartment",
             options: [
               {
                 label: "Datenschutzerklärung von Grundmodul übernehmen",
@@ -167,7 +173,8 @@ function PrivacyPolicyConfiguratorForm(props: {
 
 function usePrivacyPolicyDownload(module: ConfiguratorModuleName) {
   const { moduleApi, baseApi } = useConfiguratorPrivacyDocumentApi(module);
-  async function downloadFn(lang: ApiLanguage) {
+  async function downloadFn(supportedLang: SupportedLanguage) {
+    const lang = mapToApiLanguage(supportedLang);
     return module === "BASE"
       ? baseApi.downloadPrivacyPolicyRaw({ lang })
       : moduleApi.downloadPrivacyPolicyRaw({ lang });

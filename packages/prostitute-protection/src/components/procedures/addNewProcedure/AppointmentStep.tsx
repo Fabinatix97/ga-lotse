@@ -4,6 +4,7 @@
  */
 
 import { Divider, Stack } from "@mui/joy";
+import { startOfHour } from "date-fns";
 import { useFormikContext } from "formik";
 
 import {
@@ -19,8 +20,12 @@ import {
 } from "@eshg/lib-portal";
 import { ApiAppointmentBookingType } from "@eshg/prostitute-protection-api";
 
+import { useGetFreeAppointments } from "../../../api/queries/appointmentBlockApi";
 import { PROCEDURE_TYPE_VALUES } from "../../../shared/constants";
-import { AppointmentFields } from "../../form/AppointmentFields";
+import {
+  AppointmentFields,
+  AppointmentFieldsData,
+} from "../../form/AppointmentFields";
 import { ConsultantSelectField } from "../../form/ConsultantSelectField";
 
 import { FieldProps, LayoutProps } from "./useAddNewProcedureSidebar";
@@ -30,7 +35,11 @@ interface AppointmentStepProps extends FieldProps {
 }
 
 export function AppointmentStep(props: AppointmentStepProps) {
-  const { setFieldValue } = useFormikContext();
+  const { setFieldValue, values } = useFormikContext<AppointmentFieldsData>();
+  const { data: freeAppointments } = useGetFreeAppointments({
+    earliestDate: startOfHour(new Date()),
+    procedureType: values.procedureType,
+  });
 
   return (
     <Layout {...props}>
@@ -51,7 +60,7 @@ export function AppointmentStep(props: AppointmentStepProps) {
           options={props.allAssignableUsers}
         />
         <Divider sx={{ marginBlock: 1 }} />
-        <AppointmentFields isCreation />
+        <AppointmentFields isCreation freeAppointments={freeAppointments} />
       </Stack>
     </Layout>
   );

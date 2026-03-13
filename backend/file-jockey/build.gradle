@@ -9,6 +9,7 @@ plugins {
 dependencies {
     implementation project(':lib-base-client')
     implementation project(':business-module-commons')
+    implementation 'com.bucket4j:bucket4j-core:latest.release'
 
     testImplementation testFixtures(project(':business-module-commons'))
     implementation 'org.springdoc:springdoc-openapi-starter-common:latest.release'

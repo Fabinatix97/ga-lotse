@@ -163,8 +163,8 @@ public class OmsProcedure extends Procedure<OmsProcedure, OmsTask, Person, Facil
     return sendEmailNotifications;
   }
 
-  public void setSendEmailNotifications(boolean sendEmailNotifications) {
-    this.sendEmailNotifications = sendEmailNotifications;
+  public void setSendEmailNotifications(Boolean sendEmailNotifications) {
+    this.sendEmailNotifications = Boolean.TRUE.equals(sendEmailNotifications);
   }
 
   public WaitingRoom getWaitingRoom() {

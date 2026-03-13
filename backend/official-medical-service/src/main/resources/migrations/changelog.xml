@@ -41,5 +41,6 @@
   <include file="migrations/0031_add_statistics_inclusion_to_procedure.xml"/>
   <include file="migrations/0032_move_availability_flags_to_appointment_block.xml"/>
   <include file="migrations/0033_modify_ppr_procedure_type.xml"/>
+  <include file="migrations/0034_add_additional_languages.xml"/>
 
 </databaseChangeLog>

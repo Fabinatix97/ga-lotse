@@ -8,10 +8,14 @@ import { FormikValues } from "formik";
 import { notFound } from "next/navigation";
 
 import { ApiEmployeePortalMarkdownName } from "@eshg/base-api";
-import { ApiLanguage } from "@eshg/lib-config-api";
 import { FileType, useFileDownload } from "@eshg/lib-portal";
 
-import { ConfiguratorForm } from "@/lib/configurator/components/shared/ConfiguratorForm";
+import { useUpdatePrivacyPolicyMarkdown } from "@/lib/configurator/api/mutations/useUpdatePrivacyPolicyMarkdown";
+import { useGetPrivacyPolicyMarkdownConfig } from "@/lib/configurator/api/queries/privacyPolicyMarkdown";
+import {
+  ConfiguratorForm,
+  FormSection,
+} from "@/lib/configurator/components/shared/ConfiguratorForm";
 import { ConfigFile } from "@/lib/configurator/components/shared/RenderField";
 import { useTabStatus } from "@/lib/configurator/components/shared/hooks/useTabStatus";
 import { isEndpointSupportedByModule } from "@/lib/configurator/shared/config";
@@ -19,22 +23,17 @@ import {
   ConfiguratorEndpointName,
   ConfiguratorModuleName,
 } from "@/lib/configurator/shared/types";
+import {
+  SupportedLanguage,
+  languageLabel,
+  mapToApiLanguage,
+  supportedLanguages,
+} from "@/lib/i18n/language";
 import { useDepartmentConfigurationApi } from "@/lib/shared/api/clients";
-import { useUpdatePrivacyPolicyMarkdown } from "@/lib/shared/api/mutations/configurator/useUpdatePrivacyPolicyMarkdown";
-import { useGetPrivacyPolicyMarkdownConfig } from "@/lib/shared/api/queries/configurator/privacyPolicyMarkdown";
-
-enum FormNames {
-  CITIZEN_PORTAL_PRIVACY_POLICY_DE = "citizenPortalPrivacyPolicyDe",
-  CITIZEN_PORTAL_PRIVACY_POLICY_EN = "citizenPortalPrivacyPolicyEn",
-  EMPLOYEE_PORTAL_PRIVACY_POLICY_DE = "employeePortalPrivacyPolicyDe",
-  EMPLOYEE_PORTAL_PRIVACY_POLICY_EN = "employeePortalPrivacyPolicyEn",
-}
 
 export interface PrivacyPolicyMarkdownFormModel extends FormikValues {
-  [FormNames.CITIZEN_PORTAL_PRIVACY_POLICY_DE]: ConfigFile;
-  [FormNames.CITIZEN_PORTAL_PRIVACY_POLICY_EN]: ConfigFile;
-  [FormNames.EMPLOYEE_PORTAL_PRIVACY_POLICY_DE]: ConfigFile;
-  [FormNames.EMPLOYEE_PORTAL_PRIVACY_POLICY_EN]: ConfigFile;
+  citizen: Record<SupportedLanguage, ConfigFile>;
+  employee: Record<SupportedLanguage, ConfigFile>;
 }
 
 const UPLOAD_FIELD_WIDTH = "500px";
@@ -92,12 +91,15 @@ function PrivacyPolicyMarkdownConfiguratorForm(props: {
                     fields: [
                       {
                         type: "upload",
-                        name: FormNames.CITIZEN_PORTAL_PRIVACY_POLICY_DE,
+                        name: "citizen.de",
                         label: "Upload (Markdown-Datei)",
                         required: "Upload erforderlich",
                         accept: FileType.Md,
                         downloadFile: () =>
-                          download({ portalType: "CITIZEN", lang: "GERMAN" }),
+                          download({
+                            portalType: "CITIZEN",
+                            supportedLanguage: "de",
+                          }),
                         width: { width: UPLOAD_FIELD_WIDTH },
                       },
                     ],
@@ -105,27 +107,35 @@ function PrivacyPolicyMarkdownConfiguratorForm(props: {
                 ],
               },
             },
-            {
-              content: {
-                title: "Englisch",
-                type: "field",
-                rows: [
-                  {
-                    fields: [
-                      {
-                        type: "upload",
-                        name: FormNames.CITIZEN_PORTAL_PRIVACY_POLICY_EN,
-                        label: "Upload (Markdown-Datei)",
-                        accept: FileType.Md,
-                        downloadFile: () =>
-                          download({ portalType: "CITIZEN", lang: "ENGLISH" }),
-                        width: { width: UPLOAD_FIELD_WIDTH },
-                      },
-                    ],
-                  },
-                ],
-              },
-            },
+            ...(supportedLanguages
+              .filter((lang) => lang !== "de")
+              .map(
+                (lang) =>
+                  ({
+                    content: {
+                      type: "field",
+                      title: languageLabel[lang],
+                      rows: [
+                        {
+                          fields: [
+                            {
+                              type: "upload",
+                              name: `citizen.${lang}`,
+                              label: "Upload (Markdown-Datei)",
+                              accept: FileType.Md,
+                              downloadFile: () =>
+                                download({
+                                  portalType: "CITIZEN",
+                                  supportedLanguage: lang,
+                                }),
+                              width: { width: UPLOAD_FIELD_WIDTH },
+                            },
+                          ],
+                        },
+                      ],
+                    },
+                  }) satisfies FormSection,
+              ) satisfies FormSection[]),
           ],
         },
         {
@@ -147,12 +157,15 @@ function PrivacyPolicyMarkdownConfiguratorForm(props: {
                     fields: [
                       {
                         type: "upload",
-                        name: FormNames.EMPLOYEE_PORTAL_PRIVACY_POLICY_DE,
+                        name: "employee.de",
                         label: "Upload (Markdown-Datei)",
                         required: "Upload erforderlich",
                         accept: FileType.Md,
                         downloadFile: () =>
-                          download({ portalType: "EMPLOYEE", lang: "GERMAN" }),
+                          download({
+                            portalType: "EMPLOYEE",
+                            supportedLanguage: "de",
+                          }),
                         width: { width: UPLOAD_FIELD_WIDTH },
                       },
                     ],
@@ -160,27 +173,35 @@ function PrivacyPolicyMarkdownConfiguratorForm(props: {
                 ],
               },
             },
-            {
-              content: {
-                title: "Englisch",
-                type: "field",
-                rows: [
-                  {
-                    fields: [
-                      {
-                        type: "upload",
-                        name: FormNames.EMPLOYEE_PORTAL_PRIVACY_POLICY_EN,
-                        label: "Upload (Markdown-Datei)",
-                        accept: FileType.Md,
-                        downloadFile: () =>
-                          download({ portalType: "EMPLOYEE", lang: "ENGLISH" }),
-                        width: { width: UPLOAD_FIELD_WIDTH },
-                      },
-                    ],
-                  },
-                ],
-              },
-            },
+            ...(supportedLanguages
+              .filter((lang) => lang !== "de")
+              .map(
+                (lang) =>
+                  ({
+                    content: {
+                      type: "field",
+                      title: languageLabel[lang],
+                      rows: [
+                        {
+                          fields: [
+                            {
+                              type: "upload",
+                              name: `employee.${lang}`,
+                              label: "Upload (Markdown-Datei)",
+                              accept: FileType.Md,
+                              downloadFile: () =>
+                                download({
+                                  portalType: "EMPLOYEE",
+                                  supportedLanguage: lang,
+                                }),
+                              width: { width: UPLOAD_FIELD_WIDTH },
+                            },
+                          ],
+                        },
+                      ],
+                    },
+                  }) satisfies FormSection,
+              ) satisfies FormSection[]),
           ],
         },
       ]}
@@ -195,14 +216,14 @@ function usePrivacyPolicyDownload() {
   const configApi = useDepartmentConfigurationApi();
   async function downloadFn({
     portalType,
-    lang,
+    supportedLanguage,
   }: {
     portalType: "EMPLOYEE" | "CITIZEN";
-    lang: ApiLanguage;
+    supportedLanguage: SupportedLanguage;
   }) {
     const body = {
       name: ApiEmployeePortalMarkdownName.Privacy,
-      lang,
+      lang: mapToApiLanguage(supportedLanguage),
     };
     return portalType === "EMPLOYEE"
       ? configApi.getEmployeeMarkdownFileRaw(body)

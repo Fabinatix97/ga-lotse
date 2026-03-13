@@ -18,6 +18,7 @@ import org.springframework.validation.annotation.Validated;
 @ConfigurationProperties(prefix = "de.eshg.official-medical-service.config")
 public record InitialOmsConfiguration(
     @NotNull Resource concerns,
+    // TODO: Are we going to need them for all languages?
     @NotNull Resource landingContentDe,
     @NotNull Resource landingContentEn,
     @NotNull Duration keycloakUserCleanupJobOverdueDuration,

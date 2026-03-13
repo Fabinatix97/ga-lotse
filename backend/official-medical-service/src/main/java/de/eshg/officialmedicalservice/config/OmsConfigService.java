@@ -21,9 +21,9 @@ import de.eshg.rest.service.error.BadRequestException;
 import de.eshg.rest.service.error.NotFoundException;
 import de.eshg.rest.service.i18n.Language;
 import jakarta.persistence.EntityManager;
-import jakarta.validation.constraints.NotNull;
 import java.io.IOException;
 import java.io.UncheckedIOException;
+import java.util.Map;
 import java.util.SequencedMap;
 import org.springframework.core.io.Resource;
 import org.springframework.http.MediaType;
@@ -94,8 +94,10 @@ public class OmsConfigService extends EshgConfigurationService<OmsConfiguration>
     omsConfiguration.setConcerns(concerns);
 
     MultiLangDocument landingContent = new MultiLangDocument();
-    landingContent.updateDe(initialOmsConfiguration.landingContentDe().getContentAsByteArray());
-    landingContent.updateEn(initialOmsConfiguration.landingContentEn().getContentAsByteArray());
+    landingContent.update(
+        Language.GERMAN, initialOmsConfiguration.landingContentDe().getContentAsByteArray());
+    landingContent.update(
+        Language.ENGLISH, initialOmsConfiguration.landingContentEn().getContentAsByteArray());
     omsConfiguration.setLandingContent(landingContent);
 
     omsConfiguration.setKeycloakUserCleanupJobOverdueDuration(
@@ -149,39 +151,26 @@ public class OmsConfigService extends EshgConfigurationService<OmsConfiguration>
   @Transactional
   public void updateConfiguration(
       MultipartFile concerns,
-      MultipartFile landingContentDe,
-      MultipartFile landingContentEn,
-      MultipartFile selectConcernInfoboxDe,
-      MultipartFile selectConcernInfoboxEn,
+      Map<Language, MultipartFile> landingContent,
+      Map<Language, MultipartFile> selectConcernInfobox,
       PutOmsConfigRequest configRequest) {
-    boolean landingPageEnDeletionRequested =
-        Boolean.TRUE.equals(configRequest.deleteLandingPageEn());
-    if (landingPageEnDeletionRequested && landingContentEn != null) {
-      throw new BadRequestException(
-          "Landing page EN: can't combine a deletion request and new content");
+    if (!landingContent.containsKey(Language.GERMAN)) {
+      throw new BadRequestException("German landing content is mandatory!");
     }
-    boolean selectConcernInfoboxDeDeletionRequested =
-        Boolean.TRUE.equals(configRequest.deleteSelectConcernInfoboxDe());
-    if (selectConcernInfoboxDeDeletionRequested && selectConcernInfoboxDe != null) {
+    if (!selectConcernInfobox.isEmpty() && !selectConcernInfobox.containsKey(Language.GERMAN)) {
       throw new BadRequestException(
-          "Select concern infobox DE: can't combine a deletion request and new content");
-    }
-    boolean selectConcernInfoboxEnDeletionRequested =
-        Boolean.TRUE.equals(configRequest.deleteSelectConcernInfoboxEn());
-    if (selectConcernInfoboxEnDeletionRequested && selectConcernInfoboxEn != null) {
-      throw new BadRequestException(
-          "Select concern infobox EN: can't combine a deletion request and new content");
+          "Select concern infobox: German localization is mandatory if another localization is present");
     }
 
     try {
       omsConfigValidator.validateConcerns(concerns);
-      omsConfigValidator.validateContent(landingContentDe, Language.GERMAN, "landing page");
-      omsConfigValidator.validateContent(landingContentEn, Language.ENGLISH, "landing page");
-      ;
-      omsConfigValidator.validateContent(
-          selectConcernInfoboxDe, Language.GERMAN, "Select concern infobox");
-      omsConfigValidator.validateContent(
-          selectConcernInfoboxEn, Language.ENGLISH, "Select concern infobox");
+      for (var entry : landingContent.entrySet()) {
+        omsConfigValidator.validateContent(entry.getValue(), entry.getKey(), "landing page");
+      }
+      for (var entry : selectConcernInfobox.entrySet()) {
+        omsConfigValidator.validateContent(
+            entry.getValue(), entry.getKey(), "Select concern infobox");
+      }
     } catch (OmsConfigValidator.OmsConfigValidatorException cve) {
       String jsonInfo =
           "{ \"document\": \""
@@ -194,27 +183,15 @@ public class OmsConfigService extends EshgConfigurationService<OmsConfiguration>
 
     OmsConfiguration currentConfig = getConfig();
 
-    Document updateConcerns = determineUpdateConcerns(concerns, currentConfig);
-    MultiLangDocument updateLandingPage =
-        determineDocumentUpdate(
-            currentConfig.getLandingContent(),
-            landingContentDe,
-            landingContentEn,
-            false,
-            landingPageEnDeletionRequested);
-    MultiLangDocument selectConcernInfobox =
-        determineDocumentUpdate(
-            currentConfig.getSelectConcernInfobox(),
-            selectConcernInfoboxDe,
-            selectConcernInfoboxEn,
-            selectConcernInfoboxDeDeletionRequested,
-            selectConcernInfoboxEnDeletionRequested);
-
-    if (selectConcernInfobox != null
-        && selectConcernInfobox.getDe() == null
-        && selectConcernInfobox.getEn() != null) {
-      throw new BadRequestException(
-          "Select concern infobox: German localization is mandatory if English localization is present");
+    Document updateConcerns = new Document();
+    MultiLangDocument updateLandingPage;
+    MultiLangDocument selectConcernInfoboxDoc;
+    try {
+      updateConcerns.setContent(concerns.getBytes());
+      updateLandingPage = MultiLangDocumentMapper.mapToDomain(landingContent);
+      selectConcernInfoboxDoc = MultiLangDocumentMapper.mapToDomain(selectConcernInfobox);
+    } catch (IOException e) {
+      throw new UncheckedIOException(e);
     }
 
     Integer updateKeycloakUserCleanupJobOverdueDuration =
@@ -227,7 +204,7 @@ public class OmsConfigService extends EshgConfigurationService<OmsConfiguration>
         new OmsConfigurationData(
             updateConcerns,
             updateLandingPage,
-            selectConcernInfobox,
+            selectConcernInfoboxDoc,
             updateKeycloakUserCleanupJobOverdueDuration,
             updateMedicalOpinionCutOffDateLeadTime,
             updateCitizenPortalAnamnesisEnabled);
@@ -239,7 +216,7 @@ public class OmsConfigService extends EshgConfigurationService<OmsConfiguration>
 
     currentConfig.setConcerns(updateConcerns);
     currentConfig.setLandingContent(updateLandingPage);
-    currentConfig.setSelectConcernInfobox(selectConcernInfobox);
+    currentConfig.setSelectConcernInfobox(selectConcernInfoboxDoc);
     currentConfig.setKeycloakUserCleanupJobOverdueDuration(
         configRequest.keycloakUserCleanupJobOverdueDuration());
     currentConfig.setMedicalOpinionCutOffDateLeadTime(
@@ -257,68 +234,5 @@ public class OmsConfigService extends EshgConfigurationService<OmsConfiguration>
     // verify that all document localizations are complete
     return MultiLangDocumentMapper.mapToConfigurationStatus(
         config.getLandingContent(), config.getSelectConcernInfobox());
-  }
-
-  private static Document determineUpdateConcerns(
-      MultipartFile concerns, OmsConfiguration currentConfig) {
-    Document updateConcerns;
-
-    if (concerns != null) {
-      updateConcerns = mapToDomain(concerns);
-    } else {
-      Document currentConcernsContent = currentConfig.getConcerns();
-      updateConcerns = cloneDocument(currentConcernsContent);
-    }
-    return updateConcerns;
-  }
-
-  private static MultiLangDocument determineDocumentUpdate(
-      MultiLangDocument currentDocument,
-      MultipartFile updatedContentDe,
-      MultipartFile updatedContentEn,
-      boolean deDeletionRequested,
-      boolean enDeletionRequested) {
-    MultiLangDocument updateDocument = new MultiLangDocument();
-
-    if (currentDocument != null) {
-      Document de = currentDocument.getDe();
-      Document en = currentDocument.getEn();
-
-      if (de != null && !deDeletionRequested) {
-        updateDocument.updateDe(de);
-      }
-      if (en != null && !enDeletionRequested) {
-        updateDocument.updateEn(en);
-      }
-    }
-
-    if (updatedContentDe != null) updateDocument.updateDe(getBytes(updatedContentDe));
-    if (updatedContentEn != null) updateDocument.updateEn(getBytes(updatedContentEn));
-
-    if (updateDocument.getDe() == null && updateDocument.getEn() == null) {
-      return null;
-    }
-    return updateDocument;
-  }
-
-  private static byte[] getBytes(MultipartFile file) {
-    try {
-      return file.getBytes();
-    } catch (IOException ioe) {
-      throw new UncheckedIOException(ioe);
-    }
-  }
-
-  private static Document mapToDomain(MultipartFile file) {
-    Document document = new Document();
-    document.setContent(getBytes(file));
-    return document;
-  }
-
-  private static Document cloneDocument(@NotNull Document document) {
-    Document cloned = new Document();
-    cloned.setContent(document.getContent());
-
-    return cloned;
   }
 }

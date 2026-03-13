@@ -4,8 +4,7 @@
  */
 
 import { Box, Stack } from "@mui/joy";
-import { useQuery } from "@tanstack/react-query";
-import { addMinutes, startOfHour } from "date-fns";
+import { addMinutes } from "date-fns";
 import { useFormikContext } from "formik";
 import { useState } from "react";
 
@@ -31,8 +30,6 @@ import {
   ApiProstituteProtectionProcedureType,
 } from "@eshg/prostitute-protection-api";
 
-import { useGetFreeAppointmentsOptions } from "../../api/queries/appointmentBlockApi";
-import { useProstituteProtectionApiClients } from "../../contexts/ProstituteProtectionApi";
 import { APPOINTMENT_FORM_LABELS } from "../../shared/constants";
 
 export interface AppointmentFieldsData {
@@ -81,27 +78,19 @@ function ConnectedAppointmentPicker({
 
 interface AppointmentFieldsProps {
   isCreation?: boolean;
+  freeAppointments?: ApiAppointment[];
 }
 
 export function AppointmentFields(props: AppointmentFieldsProps) {
-  const { values, setFieldValue } = useFormikContext<AppointmentFieldsData>();
-  const { appointmentBlockApi } = useProstituteProtectionApiClients();
-  const { data: freeAppointments } = useQuery(
-    useGetFreeAppointmentsOptions(
-      {
-        procedureType: values.procedureType,
-        earliestDate: startOfHour(new Date()),
-      },
-      appointmentBlockApi,
-    ),
-  );
+  const { setFieldValue } = useFormikContext<AppointmentFieldsData>();
+
   return (
     <RadioSheets
       name="appointmentBookingType"
       aria-label="Buchungsart"
       required="Bitte eine Buchungsart auswählen"
     >
-      {freeAppointments?.length === 0 && (
+      {props.freeAppointments?.length === 0 && (
         <Alert
           color="warning"
           message="Es sind keine freien Terminblöcke verfügbar."
@@ -111,11 +100,11 @@ export function AppointmentFields(props: AppointmentFieldsProps) {
         name="appointmentBookingType"
         value={ApiAppointmentBookingType.AppointmentBlock}
         label="Aus Terminblock"
-        disabled={freeAppointments?.length === 0}
+        disabled={props.freeAppointments?.length === 0}
       >
         <ConnectedAppointmentPicker
           name="blockAppointment"
-          freeAppointments={freeAppointments ?? []}
+          freeAppointments={props.freeAppointments ?? []}
         />
       </RadioSheetOption>
       <RadioSheetOption

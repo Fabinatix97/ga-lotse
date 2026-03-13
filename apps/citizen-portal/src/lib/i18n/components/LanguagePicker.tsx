@@ -30,14 +30,40 @@ import { MouseEvent, useRef } from "react";
 import { useIsMobile } from "@eshg/lib-portal";
 
 import { useTranslation } from "@/lib/i18n/client";
-import { DeutschFlag } from "@/lib/i18n/flags/DeutschFlag";
-import { UKFlag } from "@/lib/i18n/flags/UKFlag";
+import {
+  AfghanFlag,
+  ArabicFlag,
+  CroatianFlag,
+  FrenchFlag,
+  GermanFlag,
+  IranianFlag,
+  ItalianFlag,
+  PolishFlag,
+  RomanianFlag,
+  RussianFlag,
+  SpanishFlag,
+  TurkishFlag,
+  UKFlag,
+  UkrainianFlag,
+} from "@/lib/i18n/flags";
 import { useGivenLang, useLang, useSwitchLanguage } from "@/lib/i18n/useLang";
 import { byBreakpoint } from "@/lib/shared/breakpoints";
 
 const languages = [
+  { name: "Deutsch", shortCode: "de", image: <GermanFlag /> },
   { name: "English", shortCode: "en", image: <UKFlag /> },
-  { name: "Deutsch", shortCode: "de", image: <DeutschFlag /> },
+  { name: "Français", shortCode: "fr", image: <FrenchFlag /> },
+  { name: "Español", shortCode: "es", image: <SpanishFlag /> },
+  { name: "Polski", shortCode: "pl", image: <PolishFlag /> },
+  { name: "Türkçe", shortCode: "tr", image: <TurkishFlag /> },
+  { name: "Русский", shortCode: "ru", image: <RussianFlag /> },
+  { name: "Italiano", shortCode: "it", image: <ItalianFlag /> },
+  { name: "العربية", shortCode: "ar", image: <ArabicFlag /> },
+  { name: "Română", shortCode: "ro", image: <RomanianFlag /> },
+  { name: "Українська", shortCode: "uk", image: <UkrainianFlag /> },
+  { name: "Hrvatski", shortCode: "hr", image: <CroatianFlag /> },
+  { name: "فارسی", shortCode: "fa", image: <IranianFlag /> },
+  { name: "دری", shortCode: "prs", image: <AfghanFlag /> },
 ] as const;
 
 function useCurrentLanguage() {

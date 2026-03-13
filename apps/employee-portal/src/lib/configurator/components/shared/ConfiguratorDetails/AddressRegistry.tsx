@@ -9,6 +9,8 @@ import { notFound } from "next/navigation";
 
 import { ButtonLink, FileType, useFileDownload } from "@eshg/lib-portal";
 
+import { useUpdateAddressRegistry } from "@/lib/configurator/api/mutations/useUpdateAddressRegistry";
+import { useAddressRegistryConfig } from "@/lib/configurator/api/queries/addressRegistry";
 import { ConfiguratorForm } from "@/lib/configurator/components/shared/ConfiguratorForm";
 import { ConfigFile } from "@/lib/configurator/components/shared/RenderField";
 import { useTabStatus } from "@/lib/configurator/components/shared/hooks/useTabStatus";
@@ -18,8 +20,6 @@ import {
   ConfiguratorModuleName,
 } from "@/lib/configurator/shared/types";
 import { useAddressRegistryConfigurationApi } from "@/lib/shared/api/clients";
-import { useUpdateAddressRegistry } from "@/lib/shared/api/mutations/configurator/useUpdateAddressRegistry";
-import { useAddressRegistryConfig } from "@/lib/shared/api/queries/configurator/addressRegistry";
 
 enum FormNames {
   STREET_DIRECTORY = "streetDirectory",

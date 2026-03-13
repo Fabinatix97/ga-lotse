@@ -11,6 +11,7 @@ import de.eshg.lib.common.SensitivityLevel;
 import de.eshg.officialmedicalservice.file.persistence.entity.OmsFile;
 import de.eshg.officialmedicalservice.file.persistence.entity.OmsFile_;
 import de.eshg.officialmedicalservice.procedure.persistence.entity.OmsProcedure;
+import de.eshg.rest.service.i18n.Language;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -29,39 +30,77 @@ import org.hibernate.dialect.PostgreSQLEnumJdbcType;
 
 @Entity
 @Table(indexes = @Index(columnList = "oms_procedure_id"))
+@DataSensitivity(SensitivityLevel.PSEUDONYMIZED)
 public class OmsDocument extends GloballyUniqueEntityBase {
 
   @ManyToOne(optional = false)
   @JoinColumn(name = "oms_procedure_id")
-  @DataSensitivity(SensitivityLevel.PSEUDONYMIZED)
   private OmsProcedure omsProcedure;
 
   @Column(nullable = false)
   @NotNull
-  @DataSensitivity(SensitivityLevel.PSEUDONYMIZED)
   private String documentTypeDe;
 
-  @Column
-  @DataSensitivity(SensitivityLevel.PSEUDONYMIZED)
-  private String documentTypeEn;
+  @Column private String documentTypeEn;
 
-  @Column
-  @DataSensitivity(SensitivityLevel.PSEUDONYMIZED)
-  private String helpTextDe;
+  @Column private String documentTypeEs;
 
-  @Column
-  @DataSensitivity(SensitivityLevel.PSEUDONYMIZED)
-  private String helpTextEn;
+  @Column private String documentTypeTr;
+
+  @Column private String documentTypeRu;
+
+  @Column private String documentTypeAr;
+
+  @Column private String documentTypeFr;
+
+  @Column private String documentTypeIt;
+
+  @Column private String documentTypePl;
+
+  @Column private String documentTypeRo;
+
+  @Column private String documentTypeUk;
+
+  @Column private String documentTypeHr;
+
+  @Column private String documentTypeFa;
+
+  @Column private String documentTypePrs;
+
+  @Column private String helpTextDe;
+
+  @Column private String helpTextEn;
+
+  @Column private String helpTextEs;
+
+  @Column private String helpTextTr;
+
+  @Column private String helpTextRu;
+
+  @Column private String helpTextAr;
+
+  @Column private String helpTextFr;
+
+  @Column private String helpTextIt;
+
+  @Column private String helpTextPl;
+
+  @Column private String helpTextRo;
+
+  @Column private String helpTextUk;
+
+  @Column private String helpTextHr;
+
+  @Column private String helpTextFa;
+
+  @Column private String helpTextPrs;
 
   @Column(nullable = false)
   @NotNull
   @JdbcType(PostgreSQLEnumJdbcType.class)
-  @DataSensitivity(SensitivityLevel.PSEUDONYMIZED)
   private OmsDocumentStatus documentStatus;
 
-  @Column
-  @DataSensitivity(SensitivityLevel.PSEUDONYMIZED)
-  private Instant lastDocumentUpload;
+  @Column private Instant lastDocumentUpload;
 
   @Column
   @OneToMany(
@@ -69,35 +108,25 @@ public class OmsDocument extends GloballyUniqueEntityBase {
       cascade = {CascadeType.PERSIST, CascadeType.REMOVE},
       orphanRemoval = true)
   @OrderBy("createdDate")
-  @DataSensitivity(SensitivityLevel.PSEUDONYMIZED)
   private final List<OmsFile> files = new ArrayList<>();
 
-  @Column
-  @DataSensitivity(SensitivityLevel.PSEUDONYMIZED)
-  private String note;
+  @Column private String note;
 
   @Column(nullable = false)
   @NotNull
-  @DataSensitivity(SensitivityLevel.PSEUDONYMIZED)
   private boolean mandatoryDocument;
 
   @Column(nullable = false)
   @NotNull
-  @DataSensitivity(SensitivityLevel.PSEUDONYMIZED)
   private boolean uploadInCitizenPortal;
 
   @Column
   @JdbcType(PostgreSQLEnumJdbcType.class)
-  @DataSensitivity(SensitivityLevel.PSEUDONYMIZED)
   private DocumentUploadedBy uploadedBy;
 
-  @Column
-  @DataSensitivity(SensitivityLevel.PSEUDONYMIZED)
-  private String reasonForRejection;
+  @Column private String reasonForRejection;
 
-  @Column
-  @DataSensitivity(SensitivityLevel.PSEUDONYMIZED)
-  private String labCode;
+  @Column private String labCode;
 
   public OmsProcedure getOmsProcedure() {
     return omsProcedure;
@@ -107,36 +136,80 @@ public class OmsDocument extends GloballyUniqueEntityBase {
     this.omsProcedure = omsProcedure;
   }
 
-  public String getDocumentTypeDe() {
-    return documentTypeDe;
+  public String getDocumentType(Language language) {
+    return switch (language) {
+      case GERMAN -> documentTypeDe;
+      case ENGLISH -> documentTypeEn;
+      case SPANISH -> documentTypeEs;
+      case TURKISH -> documentTypeTr;
+      case RUSSIAN -> documentTypeRu;
+      case ARABIC -> documentTypeAr;
+      case FRENCH -> documentTypeFr;
+      case ITALIAN -> documentTypeIt;
+      case POLISH -> documentTypePl;
+      case ROMANIAN -> documentTypeRo;
+      case UKRAINIAN -> documentTypeUk;
+      case CROATIAN -> documentTypeHr;
+      case FARSI -> documentTypeFa;
+      case DARI -> documentTypePrs;
+    };
   }
 
-  public void setDocumentTypeDe(String documentTypeDe) {
-    this.documentTypeDe = documentTypeDe;
+  public void setDocumentType(Language language, String documentType) {
+    switch (language) {
+      case GERMAN -> documentTypeDe = documentType;
+      case ENGLISH -> documentTypeEn = documentType;
+      case SPANISH -> documentTypeEs = documentType;
+      case TURKISH -> documentTypeTr = documentType;
+      case RUSSIAN -> documentTypeRu = documentType;
+      case ARABIC -> documentTypeAr = documentType;
+      case FRENCH -> documentTypeFr = documentType;
+      case ITALIAN -> documentTypeIt = documentType;
+      case POLISH -> documentTypePl = documentType;
+      case ROMANIAN -> documentTypeRo = documentType;
+      case UKRAINIAN -> documentTypeUk = documentType;
+      case CROATIAN -> documentTypeHr = documentType;
+      case FARSI -> documentTypeFa = documentType;
+      case DARI -> documentTypePrs = documentType;
+    }
   }
 
-  public String getDocumentTypeEn() {
-    return documentTypeEn;
+  public String getHelpText(Language language) {
+    return switch (language) {
+      case GERMAN -> helpTextDe;
+      case ENGLISH -> helpTextEn;
+      case SPANISH -> helpTextEs;
+      case TURKISH -> helpTextTr;
+      case RUSSIAN -> helpTextRu;
+      case ARABIC -> helpTextAr;
+      case FRENCH -> helpTextFr;
+      case ITALIAN -> helpTextIt;
+      case POLISH -> helpTextPl;
+      case ROMANIAN -> helpTextRo;
+      case UKRAINIAN -> helpTextUk;
+      case CROATIAN -> helpTextHr;
+      case FARSI -> helpTextFa;
+      case DARI -> helpTextPrs;
+    };
   }
 
-  public void setDocumentTypeEn(String documentTypeEn) {
-    this.documentTypeEn = documentTypeEn;
-  }
-
-  public String getHelpTextDe() {
-    return helpTextDe;
-  }
-
-  public void setHelpTextDe(String helpTextDe) {
-    this.helpTextDe = helpTextDe;
-  }
-
-  public String getHelpTextEn() {
-    return helpTextEn;
-  }
-
-  public void setHelpTextEn(String helpTextEn) {
-    this.helpTextEn = helpTextEn;
+  public void setHelpText(Language language, String helpText) {
+    switch (language) {
+      case GERMAN -> helpTextDe = helpText;
+      case ENGLISH -> helpTextEn = helpText;
+      case SPANISH -> helpTextEs = helpText;
+      case TURKISH -> helpTextTr = helpText;
+      case RUSSIAN -> helpTextRu = helpText;
+      case ARABIC -> helpTextAr = helpText;
+      case FRENCH -> helpTextFr = helpText;
+      case ITALIAN -> helpTextIt = helpText;
+      case POLISH -> helpTextPl = helpText;
+      case ROMANIAN -> helpTextRo = helpText;
+      case UKRAINIAN -> helpTextUk = helpText;
+      case CROATIAN -> helpTextHr = helpText;
+      case FARSI -> helpTextFa = helpText;
+      case DARI -> helpTextPrs = helpText;
+    }
   }
 
   public OmsDocumentStatus getDocumentStatus() {

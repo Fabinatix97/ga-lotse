@@ -25,6 +25,11 @@ import { useGetAppointmentStandardDurationsQuery } from "@/lib/businessModules/o
 import { BookAppointmentFormValues } from "@/lib/businessModules/officialMedicalService/components/personalArea/bookAppointment/BookAppointmentWrapper";
 import { useCitizenRoutes } from "@/lib/businessModules/officialMedicalService/shared/routes";
 import { useTranslation } from "@/lib/i18n/client";
+import {
+  SupportedLanguage,
+  mapToApiLanguage,
+  supportedLanguages,
+} from "@/lib/i18n/options";
 import { byBreakpoint } from "@/lib/shared/breakpoints";
 import { DetailsItem } from "@/lib/shared/components/DetailsItem";
 import {
@@ -46,10 +51,15 @@ export function BookAppointmentSidePanel({
   const citizenRoutes = useCitizenRoutes();
   const accessCode = useAccessCodeParam();
 
-  const concernName = useManualTranslation({
-    de: procedure.concern.nameDe,
-    en: procedure.concern.nameEn,
-  });
+  const concernName = useManualTranslation<string>(
+    supportedLanguages.reduce(
+      (acc, it) => {
+        acc[it] = procedure.concern.names[mapToApiLanguage(it)]!;
+        return acc;
+      },
+      {} as { de: string } & Partial<Record<SupportedLanguage, string>>,
+    ),
+  );
 
   const [{ data: appointmentStandardDurations }] = useSuspenseQueries({
     queries: [useGetAppointmentStandardDurationsQuery()],

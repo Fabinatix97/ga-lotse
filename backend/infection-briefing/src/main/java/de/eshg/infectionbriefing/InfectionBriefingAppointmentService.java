@@ -9,21 +9,19 @@ import de.cronn.commons.lang.StreamUtil;
 import de.eshg.base.centralfile.api.person.GetPersonFileStateResponse;
 import de.eshg.infectionbriefing.api.AppointmentSummaryDto;
 import de.eshg.infectionbriefing.api.GetCitizenAppointmentOverviewResponse;
+import de.eshg.infectionbriefing.api.InfectionBriefingAppointmentDto;
 import de.eshg.infectionbriefing.domain.model.InfectionBriefingProcedure;
 import de.eshg.infectionbriefing.domain.repository.InfectionBriefingProcedureRepository;
 import de.eshg.lib.appointmentblock.AbstractAppointmentService;
 import de.eshg.lib.appointmentblock.AppointmentBlockSlotUtil;
 import de.eshg.lib.appointmentblock.AppointmentTypeMapper;
-import de.eshg.lib.appointmentblock.api.AppointmentDto;
 import de.eshg.lib.appointmentblock.api.AppointmentTypeDto;
 import de.eshg.lib.appointmentblock.persistence.AppointmentType;
 import de.eshg.lib.appointmentblock.persistence.entity.Appointment;
-import de.eshg.lib.procedure.domain.model.Procedure;
 import de.eshg.lib.procedure.domain.model.RelatedPerson;
 import de.eshg.rest.service.error.BadRequestException;
 import java.time.Clock;
 import java.time.Instant;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -56,12 +54,12 @@ public class InfectionBriefingAppointmentService
     this.mailService = mailService;
   }
 
-  public AppointmentDto bookAppointment(
+  public InfectionBriefingAppointmentDto bookAppointment(
       InfectionBriefingProcedure procedure, AppointmentType appointmentType, Instant startTime) {
     Instant endTime = startTime.plus(standardDurationService.getStandardDuration(appointmentType));
     appointmentBlockSlotUtil.updateAppointment(
         appointmentType, null, null, procedure, startTime, endTime);
-    return new AppointmentDto(startTime, endTime);
+    return new InfectionBriefingAppointmentDto(startTime, endTime);
   }
 
   public GetCitizenAppointmentOverviewResponse getAppointsmentOfCitizen(UUID citizenUserId) {
@@ -90,7 +88,10 @@ public class InfectionBriefingAppointmentService
     GetPersonFileStateResponse personDetails = getPersonDetailsByProcedure(procedure);
     personDetails
         .emailAddresses()
-        .forEach(email -> mailService.sendCancelAppointmentConfirmationMail(email, appointment));
+        .forEach(
+            email ->
+                mailService.sendCancelAppointmentConfirmationMail(
+                    email, appointment.getType(), appointment.getAppointmentStart()));
   }
 
   private InfectionBriefingProcedure getProcedureByUser(UUID citizenUserId) {
@@ -101,7 +102,7 @@ public class InfectionBriefingAppointmentService
 
   public GetPersonFileStateResponse getPersonDetailsByProcedure(
       InfectionBriefingProcedure procedure) {
-    UUID centralFileStateId = procedure.getRelatedPersons().getFirst().getCentralFileStateId();
+    UUID centralFileStateId = procedure.getApplicant().getCentralFileStateId();
     return personClient.getPersonFileState(centralFileStateId);
   }
 
@@ -121,8 +122,7 @@ public class InfectionBriefingAppointmentService
       List<InfectionBriefingProcedure> procedures) {
     List<UUID> centralFileStateIds =
         procedures.stream()
-            .map(Procedure::getRelatedPersons)
-            .flatMap(Collection::stream)
+            .map(InfectionBriefingProcedure::getApplicant)
             .map(RelatedPerson::getCentralFileStateId)
             .toList();
     Map<UUID, String> personMap =
@@ -135,11 +135,7 @@ public class InfectionBriefingAppointmentService
         .collect(
             StreamUtil.toLinkedHashMap(
                 Function.identity(),
-                procedure ->
-                    personMap.get(
-                        procedure.getRelatedPersons().stream()
-                            .collect(StreamUtil.toSingleElement())
-                            .getCentralFileStateId())));
+                procedure -> personMap.get(procedure.getApplicant().getCentralFileStateId())));
   }
 
   @Override

@@ -8,6 +8,7 @@ package de.eshg.rest.service.security.config;
 import de.eshg.lib.keycloak.CitizenPermissionRole;
 import de.eshg.lib.keycloak.EmployeePermissionRole;
 import de.eshg.lib.keycloak.ModuleLeaderRole;
+import de.eshg.rest.service.security.config.BaseUrls.InfectionBriefing;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -25,6 +26,7 @@ public final class InfectionBriefingPublicSecurityConfig
 
     requestMatchers(
             BaseUrls.InfectionBriefing.PROCEDURE_CONTROLLER + "/**",
+            InfectionBriefing.APPOINTMENT_CONTROLLER + "/**",
             BaseUrls.EVENT_METADATA_API + "/**")
         .hasRole(EmployeePermissionRole.INFECTION_BRIEFING_ADMIN);
 

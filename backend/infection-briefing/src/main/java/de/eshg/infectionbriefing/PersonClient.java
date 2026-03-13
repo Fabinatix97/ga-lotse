@@ -24,6 +24,7 @@ import de.eshg.base.centralfile.api.person.UpdatePersonRequest;
 import de.eshg.base.centralfile.api.person.UpdateReferencePersonRequest;
 import de.eshg.infectionbriefing.api.ApplicantAddressDto;
 import de.eshg.infectionbriefing.api.PersonCreationData;
+import de.eshg.infectionbriefing.api.PersonWithOptionalEmailDto;
 import de.eshg.lib.common.CountryCode;
 import de.eshg.rest.service.error.BadRequestException;
 import java.util.HashSet;
@@ -67,35 +68,32 @@ public class PersonClient {
         .id();
   }
 
+  public UUID createPersonInCentralFile(PersonWithOptionalEmailDto applicant) {
+    return createPersonInCentralFile(applicant, null);
+  }
+
   public UUID createPersonInCentralFile(PersonCreationData person, ApplicantAddressDto address) {
     return personApi.addPersonFileState(mapToAddPersonRequest(person, address)).id();
   }
 
-  public UUID createInternalReferencePerson(UUID fileStateId) {
-
-    GetPersonFileStateResponse personFromCentralFile = personApi.getPersonFileState(fileStateId);
-
-    UpdatePersonRequest updatePersonRequest = mapToUpdatePersonRequest(personFromCentralFile);
-
+  public UUID createInternalReferencePerson(GetPersonFileStateResponse externalPerson) {
+    UpdatePersonRequest updatePersonRequest = mapToUpdatePersonRequest(externalPerson);
     AddPersonFileStateResponse addPersonFileStateResponse =
-        personApi.updatePersonFileStateAndReference(fileStateId, updatePersonRequest);
+        personApi.updatePersonFileStateAndReference(externalPerson.id(), updatePersonRequest);
     return addPersonFileStateResponse.id();
   }
 
-  public UUID updatePersonAndCreateFileState(UUID referencePersonId, UUID oldFileStateId) {
-    GetPersonFileStateResponse personFromCentralFile = personApi.getPersonFileState(oldFileStateId);
+  public UUID updatePersonAndCreateFileState(
+      UUID referencePersonId, GetPersonFileStateResponse externalPerson) {
     SearchReferencePersonsResponse searchReferencePersons =
         personApi.searchReferencePersons(
-            personFromCentralFile.firstName(),
-            personFromCentralFile.lastName(),
-            personFromCentralFile.dateOfBirth());
+            externalPerson.firstName(), externalPerson.lastName(), externalPerson.dateOfBirth());
     GetReferencePersonResponse referencePerson =
         searchReferencePersons.persons().stream()
             .filter(p -> p.id().equals(referencePersonId))
             .collect(StreamUtil.toSingleOptionalElement())
             .orElseThrow(() -> new BadRequestException("Reference person not found."));
-    boolean dataAdded =
-        addEmailAndPhoneNumberToReferencePerson(referencePerson, personFromCentralFile);
+    boolean dataAdded = addEmailAndPhoneNumberToReferencePerson(referencePerson, externalPerson);
     if (dataAdded) {
       return personApi
           .updateReferencePerson(

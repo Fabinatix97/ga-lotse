@@ -3,9 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { useUpdateAcknowledgementsMarkdown } from "@/lib/configurator/api/mutations/useUpdateAcknowledgements";
+import { useGetAcknowledgementsMarkdown } from "@/lib/configurator/api/queries/acknowledgements";
 import { ConfiguratorModuleName } from "@/lib/configurator/shared/types";
-import { useUpdateAcknowledgementsMarkdown } from "@/lib/shared/api/mutations/configurator/useUpdateAcknowledgements";
-import { useGetAcknowledgementsMarkdown } from "@/lib/shared/api/queries/configurator/acknowledgements";
 
 import { MarkdownFiles } from "./MarkdownFiles";
 

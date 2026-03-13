@@ -66,13 +66,13 @@ export function EditDocumentInformationForm(
                 component={HorizontalFieldLabelEnd}
               />
               <InputField
-                name="documentTypeDe"
+                name="documentType.de"
                 label="Dokumentenart"
                 required="Bitte geben Sie eine Dokumentenart an"
               />
-              <InputField name="documentTypeEn" label="Dokumentenart (EN)" />
-              <InputField name="helpTextDe" label="Hilfstext" />
-              <InputField name="helpTextEn" label="Hilfstext (EN)" />
+              <InputField name="documentType.en" label="Dokumentenart (EN)" />
+              <InputField name="helpText.de" label="Hilfstext" />
+              <InputField name="helpText.en" label="Hilfstext (EN)" />
               <InputField name="labCode" label="Labortest-Barcode" />
             </Stack>
           </SidebarContent>

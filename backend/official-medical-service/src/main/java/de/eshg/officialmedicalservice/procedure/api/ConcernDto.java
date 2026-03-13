@@ -6,17 +6,17 @@
 package de.eshg.officialmedicalservice.procedure.api;
 
 import de.eshg.lib.appointmentblock.api.AppointmentTypeDto;
+import de.eshg.rest.service.i18n.Language;
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
+import java.util.Map;
 
 @Schema(name = "Concern")
 public record ConcernDto(
     @NotNull long version,
-    @NotBlank String nameDe, // reason_de
-    String nameEn,
+    @NotNull @Valid Map<Language, String> names,
     @NotNull boolean highPriority,
-    @NotBlank String categoryNameDe,
-    @NotBlank String categoryNameEn,
+    @NotNull @Valid Map<Language, String> categoryNames,
     AppointmentTypeDto appointmentType,
     @NotNull boolean visibleInOnlinePortal) {}

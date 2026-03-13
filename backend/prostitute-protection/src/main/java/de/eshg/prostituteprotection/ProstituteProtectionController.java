@@ -11,6 +11,7 @@ import static de.eshg.prostituteprotection.mapper.ProstituteProtectionMapper.map
 import de.eshg.api.commons.InlineParameterObject;
 import de.eshg.file.common.CustomMediaTypes;
 import de.eshg.lib.appointmentblock.api.GetFreeAppointmentsResponse;
+import de.eshg.lib.appointmentblock.persistence.entity.Appointment;
 import de.eshg.lib.procedure.domain.model.ProcedureType;
 import de.eshg.lib.procedure.domain.model.TaskType;
 import de.eshg.lib.procedure.util.ProcedureValidator;
@@ -37,7 +38,9 @@ import de.eshg.prostituteprotection.api.ValidateRequiredProcedureDataResponse;
 import de.eshg.prostituteprotection.api.WaitingRoomDto;
 import de.eshg.prostituteprotection.api.WaitingRoomProcedurePaginationAndSortParameters;
 import de.eshg.prostituteprotection.crypto.DecryptedPersonalDataDto;
+import de.eshg.prostituteprotection.domain.data.AppointmentData;
 import de.eshg.prostituteprotection.domain.data.ProstituteProtectionProcedureWithAugmentedData;
+import de.eshg.prostituteprotection.domain.model.AppointmentBookingType;
 import de.eshg.prostituteprotection.domain.model.CertificateType;
 import de.eshg.prostituteprotection.domain.model.Consultation;
 import de.eshg.prostituteprotection.domain.model.EncryptedFile;
@@ -68,6 +71,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.EnumSet;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.core.io.ByteArrayResource;
@@ -197,13 +201,27 @@ public class ProstituteProtectionController {
     ProstituteProtectionProcedure procedure =
         prostituteProtectionService.findByExternalIdForUpdate(procedureId, request.version());
     prostituteProtectionService.updateProcedure(procedure, request);
-    prostituteProtectionAppointmentService.bookAppointment(
-        procedure, AppointmentMapper.toDataType(request));
 
+    AppointmentData requestedAppointment = AppointmentMapper.toDataType(request);
+    if (!isSameAppointmentFromBlock(procedure, requestedAppointment)) {
+      prostituteProtectionAppointmentService.bookAppointment(procedure, requestedAppointment);
+    }
     progressEntryUtil.addSystemProgressEntry(
         procedure, ProstituteProtectionProgressEntryType.PROCEDURE_DETAILS_MODIFIED);
 
     return getProcedure(procedureId);
+  }
+
+  private boolean isSameAppointmentFromBlock(
+      ProstituteProtectionProcedure procedure, AppointmentData requestedAppointment) {
+
+    Appointment persistedAppointment = procedure.getAppointment();
+    return persistedAppointment != null
+        && requestedAppointment.appointmentBookingType() == AppointmentBookingType.APPOINTMENT_BLOCK
+        && Objects.equals(
+            persistedAppointment.getAppointmentStart(), requestedAppointment.appointmentStart())
+        && Objects.equals(
+            persistedAppointment.getAppointmentEnd(), requestedAppointment.appointmentEnd());
   }
 
   @PatchMapping("/{procedureId}/personal-data")

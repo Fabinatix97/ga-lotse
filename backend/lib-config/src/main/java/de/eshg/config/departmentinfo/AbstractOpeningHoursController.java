@@ -10,6 +10,8 @@ import static de.eshg.config.mapper.OpeningHoursMapper.mapToResponse;
 import de.eshg.config.api.GetOpeningHoursConfigResponse;
 import de.eshg.config.api.OpeningHoursDto;
 import de.eshg.config.domain.AbstractOpeningHours;
+import de.eshg.rest.service.error.BadRequestException;
+import de.eshg.rest.service.i18n.Language;
 import jakarta.validation.Valid;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -33,6 +35,19 @@ public abstract class AbstractOpeningHoursController<T extends AbstractOpeningHo
   @Transactional
   @PutMapping
   public void updateConfigOpeningHours(@Valid @RequestBody OpeningHoursDto openingHoursDto) {
-    openingHoursService.updateOpeningHours(openingHoursDto.de(), openingHoursDto.en());
+    if (!openingHoursDto.localizations().containsKey(Language.GERMAN)) {
+      throw new BadRequestException("German localization is mandatory.");
+    }
+
+    openingHoursDto
+        .localizations()
+        .forEach(
+            (key, value) -> {
+              if (value == null) {
+                throw new BadRequestException("Invalid input for " + key);
+              }
+            });
+
+    openingHoursService.updateOpeningHours(openingHoursDto.localizations());
   }
 }

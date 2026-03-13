@@ -5,10 +5,12 @@
 
 package de.eshg.config.api;
 
+import de.eshg.rest.service.i18n.Language;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
+import java.util.Map;
 
 @Schema(name = "MultiLangDocument")
 public record MultiLangDocumentDto(
-    @Valid @NotNull DocumentDetailsDto de, @Valid DocumentDetailsDto en) {}
+    @NotNull @Valid Map<Language, DocumentDetailsDto> localizations) {}

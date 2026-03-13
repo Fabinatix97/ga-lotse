@@ -5,6 +5,7 @@
 
 package de.eshg.rest.service.security.config;
 
+import static de.eshg.lib.keycloak.EmployeePermissionRole.INSPECTION_PROCEDURE_EDIT;
 import static org.springframework.http.HttpMethod.*;
 
 import de.eshg.lib.keycloak.EmployeePermissionRole;
@@ -23,7 +24,7 @@ public final class InspectionPublicSecurityConfig extends AbstractPublicSecurity
     // specific rights, then for `/checklists/**` with a lesser right.
     //
 
-    grantAccessToStatistics(EmployeePermissionRole.INSPECTION_PROCEDURE_EDIT);
+    grantAccessToStatistics(INSPECTION_PROCEDURE_EDIT);
     objectType();
     checklistDefinitionCentralRepository();
     checklistDefinition();
@@ -32,9 +33,9 @@ public final class InspectionPublicSecurityConfig extends AbstractPublicSecurity
     inspectionTestData();
     features();
     importer();
+    samplingPoint();
 
-    grantAccessToLibProceduresUrls(
-        EmployeePermissionRole.INSPECTION_PROCEDURE_EDIT, ModuleLeaderRole.INSPECTION_LEADER);
+    grantAccessToLibProceduresUrls(INSPECTION_PROCEDURE_EDIT, ModuleLeaderRole.INSPECTION_LEADER);
     grantAccessToConfiguration();
   }
 
@@ -43,6 +44,18 @@ public final class InspectionPublicSecurityConfig extends AbstractPublicSecurity
         .hasRole(EmployeePermissionRole.INSPECTION_OBJECTTYPES_READ);
     requestMatchers(BaseUrls.Inspection.OBJECT_TYPE_CONTROLLER + "/**")
         .hasRole(EmployeePermissionRole.INSPECTION_OBJECTTYPES_WRITE);
+  }
+
+  private void samplingPoint() {
+    // grant read access to all employees
+    requestMatchers(GET, Inspection.SAMPLING_POINTS, Inspection.SAMPLING_POINTS + "/**")
+        .hasRole(EmployeePermissionRole.STANDARD_EMPLOYEE);
+
+    // grant modify access to all employees with any write access to inspection module
+    requestMatchers(POST, Inspection.SAMPLING_POINTS + "/**").hasAnyRole(INSPECTION_PROCEDURE_EDIT);
+    requestMatchers(PUT, Inspection.SAMPLING_POINTS + "/*").hasAnyRole(INSPECTION_PROCEDURE_EDIT);
+    requestMatchers(DELETE, Inspection.SAMPLING_POINTS + "/*")
+        .hasAnyRole(INSPECTION_PROCEDURE_EDIT);
   }
 
   private void checklistDefinitionCentralRepository() {
@@ -71,23 +84,22 @@ public final class InspectionPublicSecurityConfig extends AbstractPublicSecurity
             BaseUrls.Inspection.CHECKLIST_CONTROLLER + "/**",
             BaseUrls.Inspection.PACKLIST_CONTROLLER + "/**",
             BaseUrls.EVENT_METADATA_API + "/**")
-        .hasRole(EmployeePermissionRole.INSPECTION_PROCEDURE_EDIT);
+        .hasRole(INSPECTION_PROCEDURE_EDIT);
   }
 
   private void editor() {
     requestMatchers(GET, BaseUrls.EditorLibrary.EDITOR_API + "/**")
-        .hasRole(EmployeePermissionRole.INSPECTION_PROCEDURE_EDIT);
-    requestMatchers(BaseUrls.EditorLibrary.EDITOR_API + "/**")
-        .hasRole(EmployeePermissionRole.INSPECTION_PROCEDURE_EDIT);
+        .hasRole(INSPECTION_PROCEDURE_EDIT);
+    requestMatchers(BaseUrls.EditorLibrary.EDITOR_API + "/**").hasRole(INSPECTION_PROCEDURE_EDIT);
     requestMatchers(BaseUrls.EditorLibrary.TEXTBLOCK_API + "/**")
-        .hasRole(EmployeePermissionRole.INSPECTION_PROCEDURE_EDIT);
+        .hasRole(INSPECTION_PROCEDURE_EDIT);
     requestMatchers(BaseUrls.Inspection.PACKLIST_DEFINITION_CONTROLLER + "/**")
-        .hasRole(EmployeePermissionRole.INSPECTION_PROCEDURE_EDIT);
+        .hasRole(INSPECTION_PROCEDURE_EDIT);
   }
 
   private void inspectionTestData() {
     requestMatchers(Inspection.INSPECTION_TEST_DATA_CONTROLLER + "/inspections/test-data")
-        .hasRole(EmployeePermissionRole.INSPECTION_PROCEDURE_EDIT);
+        .hasRole(INSPECTION_PROCEDURE_EDIT);
   }
 
   private void features() {

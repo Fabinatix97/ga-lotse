@@ -212,7 +212,6 @@
           "name" : "category",
           "required" : true,
           "schema" : {
-            "minLength" : 1,
             "type" : "string"
           }
         }, {
@@ -220,7 +219,6 @@
           "name" : "name",
           "required" : true,
           "schema" : {
-            "minLength" : 1,
             "type" : "string"
           }
         }, {
@@ -496,7 +494,6 @@
           "name" : "category",
           "required" : true,
           "schema" : {
-            "minLength" : 1,
             "type" : "string"
           }
         }, {
@@ -504,7 +501,6 @@
           "name" : "name",
           "required" : true,
           "schema" : {
-            "minLength" : 1,
             "type" : "string"
           }
         }, {

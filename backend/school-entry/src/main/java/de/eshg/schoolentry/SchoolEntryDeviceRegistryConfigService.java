@@ -5,8 +5,8 @@
 
 package de.eshg.schoolentry;
 
+import static de.eshg.schoolentry.mapper.MeasuringDeviceMapper.mapConfigToDto;
 import static de.eshg.schoolentry.mapper.MeasuringDeviceMapper.mapGdtDriverToDomain;
-import static de.eshg.schoolentry.mapper.MeasuringDeviceMapper.mapMeasuringDeviceToDto;
 import static de.eshg.schoolentry.mapper.MeasuringDeviceMapper.mapMeasuringDeviceTypeToDomain;
 import static de.eshg.schoolentry.mapper.SchoolEntryConfigAuditLogMapper.getRelevantDeviceFieldsForLogging;
 import static de.eshg.schoolentry.mapper.SchoolEntryConfigAuditLogMapper.getRelevantDeviceFieldsForLoggingOfRequest;
@@ -24,6 +24,7 @@ import de.eshg.schoolentry.domain.model.MeasuringDevice;
 import de.eshg.schoolentry.domain.model.SchoolEntryDeviceRegistryConfig;
 import de.eshg.schoolentry.domain.repository.MeasuringDeviceRepository;
 import jakarta.persistence.EntityManager;
+import java.util.Map;
 import java.util.SequencedMap;
 import java.util.UUID;
 import org.springframework.stereotype.Service;
@@ -58,8 +59,29 @@ public class SchoolEntryDeviceRegistryConfigService
 
   public SchoolEntryDeviceRegistryConfigDto getConfiguration() {
     SchoolEntryDeviceRegistryConfig config = getConfig();
-    return new SchoolEntryDeviceRegistryConfigDto(
-        mapMeasuringDeviceToDto(config.getMeasuringDevices()));
+    return mapConfigToDto(config);
+  }
+
+  public void updateHearingTestMeasuringToggle(boolean enabled) {
+    SchoolEntryDeviceRegistryConfig config = getConfig();
+
+    auditLogWriter.writeChangeToAuditLog(
+        "schoolEntryDeviceRegistryConfiguration",
+        Map.of("hearingTestDeviceMeasuring", String.valueOf(config.isHearingTestDeviceMeasuring())),
+        Map.of("hearingTestDeviceMeasuring", String.valueOf(enabled)));
+
+    config.setHearingTestDeviceMeasuring(enabled);
+  }
+
+  public void updateSeeingTestMeasuringToggle(boolean enabled) {
+    SchoolEntryDeviceRegistryConfig config = getConfig();
+
+    auditLogWriter.writeChangeToAuditLog(
+        "schoolEntryDeviceRegistryConfiguration",
+        Map.of("seeingTestDeviceMeasuring", String.valueOf(config.isSeeingTestDeviceMeasuring())),
+        Map.of("seeingTestDeviceMeasuring", String.valueOf(enabled)));
+
+    config.setSeeingTestDeviceMeasuring(enabled);
   }
 
   public void addMeasurementDevice(MeasuringDevice measuringDevice) {

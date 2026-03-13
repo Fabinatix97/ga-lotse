@@ -38,6 +38,7 @@ public final class BasePublicSecurityConfig extends AbstractPublicSecurityConfig
     config();
     icd10codes();
     grantAccessToConfiguration();
+    samplingPoints();
   }
 
   private void citizenUsers() {
@@ -97,12 +98,17 @@ public final class BasePublicSecurityConfig extends AbstractPublicSecurityConfig
   }
 
   private void facilities() {
-    requestMatchers(GET, BaseUrls.Base.FACILITY_API)
+    // read operations
+    requestMatchers(GET, Base.FACILITY_API, BaseUrls.Base.FACILITY_API + "/**")
         .hasAnyRole(
             EmployeePermissionRole.BASE_FACILITIES_READ,
             EmployeePermissionRole.PROCEDURE_ARCHIVE_ADMIN);
     requestMatchers(GET, BaseUrls.Base.FACILITY_API + "/centralfilestates/*/diff")
         .hasRole(EmployeePermissionRole.BASE_FACILITIES_READ);
+    requestMatchers(POST, BaseUrls.Base.FACILITY_API + "/reference-facility/bulk-get")
+        .hasRole(EmployeePermissionRole.BASE_FACILITIES_READ);
+
+    // write operations
     requestMatchers(POST, BaseUrls.Base.FACILITY_API + "/reference/*/update")
         .hasAnyRole(
             EmployeePermissionRole.BASE_FACILITIES_WRITE,
@@ -349,5 +355,18 @@ public final class BasePublicSecurityConfig extends AbstractPublicSecurityConfig
   private void icd10codes() {
     requestMatchers(GET, Base.ICD_10_CODES_API).permitAll();
     requestMatchers(POST, Base.ICD_10_CODES_API).permitAll();
+  }
+
+  private void samplingPoints() {
+    requestMatchers(GET, Base.SAMPLING_POINT_API, Base.SAMPLING_POINT_API + "/**")
+        .hasRole(EmployeePermissionRole.STANDARD_EMPLOYEE);
+
+    requestMatchers(
+            POST,
+            Base.SAMPLING_POINT_API + "/reference/*/update",
+            Base.SAMPLING_POINT_API + Base.SAMPLING_POINT_FILE_STATE_URL + "/**",
+            Base.SAMPLING_POINT_API + "/centralfilestates/bulk-add",
+            Base.SAMPLING_POINT_API + "/reference/*/*")
+        .hasRole(EmployeePermissionRole.INSPECTION_PROCEDURE_EDIT);
   }
 }

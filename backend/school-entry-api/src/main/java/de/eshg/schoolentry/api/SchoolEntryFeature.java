@@ -6,5 +6,6 @@
 package de.eshg.schoolentry.api;
 
 public enum SchoolEntryFeature {
-  DUMMY
+  DUMMY,
+  MEASURING_DEVICES
 }

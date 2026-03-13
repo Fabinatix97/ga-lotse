@@ -179,12 +179,13 @@ function optionsFromConcernsResponse(
   return concernsResponse.categories
     .filter(
       (category) =>
-        categoryKey === ALL_CATEGORIES_KEY || categoryKey === category.nameDe,
+        categoryKey === ALL_CATEGORIES_KEY ||
+        categoryKey === category.names?.GERMAN,
     )
     .flatMap((category) =>
       category.concerns.map((concern) => ({
-        value: concern.nameDe,
-        label: concern.nameDe,
+        value: concern.names.GERMAN!,
+        label: concern.names.GERMAN!,
       })),
     )
     .sort((c1, c2) => {
@@ -207,8 +208,8 @@ function categoryOptionsFromConcernsResponse(
       label: "Alle Kategorien",
     },
     ...concernsResponse.categories.map((category) => ({
-      value: category.nameDe,
-      label: category.nameDe,
+      value: category.names.GERMAN!,
+      label: category.names.GERMAN!,
     })),
   ];
 }

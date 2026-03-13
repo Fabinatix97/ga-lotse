@@ -6,6 +6,8 @@
 import { List, ListItem } from "@mui/joy";
 import { FormikValues } from "formik";
 
+import { useUpdateOpeningHours } from "@/lib/configurator/api/mutations/useUpdateOpeningHours";
+import { useGetOpeningHours } from "@/lib/configurator/api/queries/openingHours";
 import {
   ConfiguratorForm,
   FormSection,
@@ -13,17 +15,14 @@ import {
 import { OpeningHoursFieldValue } from "@/lib/configurator/components/shared/OpeningHoursField";
 import { useTabStatus } from "@/lib/configurator/components/shared/hooks/useTabStatus";
 import { ConfiguratorModuleName } from "@/lib/configurator/shared/types";
-import { useUpdateOpeningHours } from "@/lib/shared/api/mutations/configurator/useUpdateOpeningHours";
-import { useGetOpeningHours } from "@/lib/shared/api/queries/configurator/openingHours";
-
-enum FormNames {
-  ENGLISH = "opening_hours_english",
-  GERMAN = "opening_hours_german",
-}
+import {
+  SupportedLanguage,
+  languageLabel,
+  supportedLanguages,
+} from "@/lib/i18n/language";
 
 export interface OpeningHoursFormModel extends FormikValues {
-  [FormNames.GERMAN]: OpeningHoursFieldValue;
-  [FormNames.ENGLISH]: OpeningHoursFieldValue;
+  openingHours: Record<SupportedLanguage, OpeningHoursFieldValue>;
 }
 
 export function OpeningHours(props: { module: ConfiguratorModuleName }) {
@@ -34,7 +33,7 @@ export function OpeningHours(props: { module: ConfiguratorModuleName }) {
     endpointName: "OPENING_HOURS",
   });
 
-  function getSections(language: "english" | "german") {
+  function getSections(language: SupportedLanguage) {
     return [
       {
         content: {
@@ -44,8 +43,8 @@ export function OpeningHours(props: { module: ConfiguratorModuleName }) {
               fields: [
                 {
                   type: "openinghours",
-                  name: `opening_hours_${language}`,
-                  english: language === "english",
+                  name: `openingHours.${language}`,
+                  required: language === "de",
                 },
               ],
             },
@@ -82,13 +81,15 @@ export function OpeningHours(props: { module: ConfiguratorModuleName }) {
               </ListItem>
             </List>
           ),
-          sections: getSections("german"),
+          sections: getSections("de"),
         },
-        {
-          title: "Öffnungszeiten der Fachabteilung (Englisch)",
-          description: "Ergänzen Sie hier die englische Übersetzung.",
-          sections: getSections("english"),
-        },
+        ...supportedLanguages
+          .filter((it) => it !== "de")
+          .map((lang) => ({
+            title: `Öffnungszeiten der Fachabteilung (${languageLabel[lang]})`,
+            description: "Ergänzen Sie hier Ihre Übersetzung.",
+            sections: getSections(lang),
+          })),
       ]}
       initialValues={initialValues}
       status={currentTabStatus}

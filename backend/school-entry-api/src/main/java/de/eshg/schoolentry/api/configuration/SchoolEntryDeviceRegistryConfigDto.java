@@ -12,4 +12,6 @@ import java.util.List;
 
 @Schema(name = "SchoolEntryDeviceRegistryConfig")
 public record SchoolEntryDeviceRegistryConfigDto(
+    @NotNull boolean hearingTestDeviceMeasuring,
+    @NotNull boolean seeingTestDeviceMeasuring,
     @NotNull @Valid List<MeasuringDeviceDto> measuringDevices) {}

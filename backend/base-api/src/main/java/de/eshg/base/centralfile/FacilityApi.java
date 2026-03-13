@@ -60,9 +60,15 @@ public interface FacilityApi {
           Caution: The returned id of the reference facility must not be stored.
           """)
   GetReferenceFacilityResponse getReferenceFacility(
-      @Parameter(description = "The Id of the File State of the Facility.")
-          @PathVariable(name = "id")
+      @PathVariable(name = "id")
+          @Parameter(description = "The Id of the File State of the Facility.")
           UUID id);
+
+  @PostExchange("reference-facility/bulk-get")
+  @ApiResponse(responseCode = "200")
+  @Operation(summary = "Get multiple reference facilities")
+  GetReferenceFacilitiesResponse getReferenceFacilities(
+      @Valid @RequestBody GetReferenceFacilitiesRequest request);
 
   @GetExchange
   @ApiResponse(responseCode = "200")

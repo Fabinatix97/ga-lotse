@@ -10,6 +10,8 @@ import { useMemo } from "react";
 import { OptionalFieldValue, validateHexColorCode } from "@eshg/lib-portal";
 import { ApiLocationSelectionMode } from "@eshg/school-entry-api";
 
+import { useUpdateSchoolEntry } from "@/lib/configurator/api/mutations/useUpdateSchoolEntry";
+import { useGetSchoolEntryConfig } from "@/lib/configurator/api/queries/schoolEntry";
 import {
   ConfiguratorForm,
   FormSection,
@@ -20,8 +22,6 @@ import {
   ConfiguratorEndpointName,
   ConfiguratorModuleName,
 } from "@/lib/configurator/shared/types";
-import { useUpdateSchoolEntry } from "@/lib/shared/api/mutations/configurator/useUpdateSchoolEntry";
-import { useGetSchoolEntryConfig } from "@/lib/shared/api/queries/configurator/schoolEntry";
 
 enum FormNames {
   LOCATION_SELECTION_MODE = "locationSelectionMode",

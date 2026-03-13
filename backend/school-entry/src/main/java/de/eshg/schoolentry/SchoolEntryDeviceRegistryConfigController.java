@@ -11,10 +11,12 @@ import static de.eshg.schoolentry.mapper.MeasuringDeviceMapper.mapMeasuringDevic
 
 import de.eshg.rest.service.error.BadRequestException;
 import de.eshg.rest.service.security.config.BaseUrls.DepartmentInfoLibrary;
+import de.eshg.schoolentry.api.SchoolEntryFeature;
 import de.eshg.schoolentry.api.configuration.AddSchoolEntryMeasurementDeviceRequest;
 import de.eshg.schoolentry.api.configuration.GetSchoolEntryDeviceRegistryConfigResponse;
 import de.eshg.schoolentry.api.configuration.MeasuringDeviceDto;
 import de.eshg.schoolentry.api.configuration.UpdateSchoolEntryMeasurementDeviceRequest;
+import de.eshg.schoolentry.config.SchoolEntryFeatureToggle;
 import de.eshg.schoolentry.domain.model.MeasuringDevice;
 import de.eshg.validation.ValidationUtil;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -40,21 +42,47 @@ public class SchoolEntryDeviceRegistryConfigController {
       DepartmentInfoLibrary.CONFIGURATION_API + "/school-entry/device-registry";
 
   private final SchoolEntryDeviceRegistryConfigService service;
+  private final SchoolEntryFeatureToggle schoolEntryFeatureToggle;
 
-  public SchoolEntryDeviceRegistryConfigController(SchoolEntryDeviceRegistryConfigService service) {
+  public SchoolEntryDeviceRegistryConfigController(
+      SchoolEntryDeviceRegistryConfigService service,
+      SchoolEntryFeatureToggle schoolEntryFeatureToggle) {
     this.service = service;
+    this.schoolEntryFeatureToggle = schoolEntryFeatureToggle;
   }
 
   @GetMapping
   @Transactional(readOnly = true)
   public GetSchoolEntryDeviceRegistryConfigResponse getSchoolEntryDeviceRegistryConfig() {
+    validateFeatureToggleEnabled();
     return new GetSchoolEntryDeviceRegistryConfigResponse(service.getConfiguration());
+  }
+
+  private void validateFeatureToggleEnabled() {
+    if (!schoolEntryFeatureToggle.isNewFeatureEnabled(SchoolEntryFeature.MEASURING_DEVICES)) {
+      throw new BadRequestException("Feature toggle for device registry is not enabled!");
+    }
+  }
+
+  @PutMapping("/hearing-test-measuring")
+  @Transactional
+  public void updateHearingTestMeasuringToggle(@RequestParam("enabled") boolean enabled) {
+    validateFeatureToggleEnabled();
+    service.updateHearingTestMeasuringToggle(enabled);
+  }
+
+  @PutMapping("/seeing-test-measuring")
+  @Transactional
+  public void updateSeeingTestMeasuringToggle(@RequestParam("enabled") boolean enabled) {
+    validateFeatureToggleEnabled();
+    service.updateSeeingTestMeasuringToggle(enabled);
   }
 
   @PostMapping
   @Transactional
   public MeasuringDeviceDto addDevice(
       @Valid @RequestBody AddSchoolEntryMeasurementDeviceRequest request) {
+    validateFeatureToggleEnabled();
     validateName(request.name());
     validateEquipmentSelector(request.equipmentSelector());
 
@@ -81,6 +109,7 @@ public class SchoolEntryDeviceRegistryConfigController {
   public MeasuringDeviceDto updateDevice(
       @PathVariable("deviceId") UUID deviceId,
       @Valid @RequestBody UpdateSchoolEntryMeasurementDeviceRequest request) {
+    validateFeatureToggleEnabled();
     MeasuringDevice measuringDevice = service.findByExternalIdForUpdateOrThrow(deviceId);
     if (!request.name().equals(measuringDevice.getName())) {
       validateName(request.name());
@@ -96,6 +125,7 @@ public class SchoolEntryDeviceRegistryConfigController {
   @DeleteMapping("/{deviceId}")
   @Transactional
   public void deleteDevice(@PathVariable("deviceId") UUID deviceId) {
+    validateFeatureToggleEnabled();
     MeasuringDevice measuringDevice = service.findByExternalIdForUpdateOrThrow(deviceId);
     service.deleteDevice(measuringDevice);
   }
@@ -103,6 +133,7 @@ public class SchoolEntryDeviceRegistryConfigController {
   @GetMapping("/validate-name")
   @Transactional(readOnly = true)
   public boolean validateNameIsUnique(@RequestParam("name") String name) {
+    validateFeatureToggleEnabled();
     return !service.existsByName(name);
   }
 
@@ -110,6 +141,7 @@ public class SchoolEntryDeviceRegistryConfigController {
   @Transactional(readOnly = true)
   public boolean validateEquipmentSelectorIsUnique(
       @RequestParam("equipmentSelector") String equipmentSelector) {
+    validateFeatureToggleEnabled();
     return !service.existsByEquipmentSelector(equipmentSelector);
   }
 }

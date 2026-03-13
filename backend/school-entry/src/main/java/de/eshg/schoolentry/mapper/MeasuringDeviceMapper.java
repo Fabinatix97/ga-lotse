@@ -9,14 +9,24 @@ import de.eshg.schoolentry.api.configuration.AddSchoolEntryMeasurementDeviceRequ
 import de.eshg.schoolentry.api.configuration.GdtDriverDto;
 import de.eshg.schoolentry.api.configuration.MeasuringDeviceDto;
 import de.eshg.schoolentry.api.configuration.MeasuringDeviceTypeDto;
+import de.eshg.schoolentry.api.configuration.SchoolEntryDeviceRegistryConfigDto;
 import de.eshg.schoolentry.domain.model.GdtDriver;
 import de.eshg.schoolentry.domain.model.MeasuringDevice;
 import de.eshg.schoolentry.domain.model.MeasuringDeviceType;
+import de.eshg.schoolentry.domain.model.SchoolEntryDeviceRegistryConfig;
 import java.util.List;
 
 public class MeasuringDeviceMapper {
 
   private MeasuringDeviceMapper() {}
+
+  public static SchoolEntryDeviceRegistryConfigDto mapConfigToDto(
+      SchoolEntryDeviceRegistryConfig config) {
+    return new SchoolEntryDeviceRegistryConfigDto(
+        config.isHearingTestDeviceMeasuring(),
+        config.isSeeingTestDeviceMeasuring(),
+        mapMeasuringDeviceToDto(config.getMeasuringDevices()));
+  }
 
   public static List<MeasuringDeviceDto> mapMeasuringDeviceToDto(List<MeasuringDevice> devices) {
     return devices.stream().map(MeasuringDeviceMapper::mapMeasuringDeviceToDto).toList();

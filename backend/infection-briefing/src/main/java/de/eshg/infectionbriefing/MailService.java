@@ -5,13 +5,16 @@
 
 package de.eshg.infectionbriefing;
 
+import static de.eshg.infectionbriefing.api.InfectionBriefingAppointTypeDto.INFECTION_BRIEFING_REPLACEMENT;
+
 import de.eshg.base.mail.MailApi;
 import de.eshg.base.mail.MailType;
 import de.eshg.base.mail.SendEmailRequest;
 import de.eshg.config.departmentinfo.DepartmentInfoConfigService;
 import de.eshg.infectionbriefing.config.InfectionBriefingProperties;
 import de.eshg.infectionbriefing.config.InfectionBriefingProperties.Mail;
-import de.eshg.lib.appointmentblock.persistence.entity.Appointment;
+import de.eshg.lib.appointmentblock.persistence.AppointmentType;
+import de.eshg.lib.procedure.domain.model.TriggerType;
 import de.eshg.lib.rest.oauth.client.commons.ModuleClientAuthenticator;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -65,65 +68,72 @@ public class MailService {
     this.citizenPortalUrl = citizenPortalUrl;
   }
 
-  public void sendNewCertificateAppointmentConfirmationMail(
-      Instant appointmentStart, String recipientEmail, String accessCode) {
-    sendMail(
-        recipientEmail,
-        departmentInfoConfigService.getDepartmentInfo().email(),
-        properties.getNewCertificateAppointmentConfirmationMail().getSubject(),
-        readTemplateBody(properties.getNewCertificateAppointmentConfirmationMail().getBody())
-            .formatted(
-                appointmentStart.atZone(clock.getZone()).toLocalDateTime().format(dateFormatter),
-                appointmentStart.atZone(clock.getZone()).toLocalTime().format(timeFormatter),
-                buildLoginUrl(accessCode),
-                accessCode));
-  }
-
-  public void sendReplacementCertificateAppointmentConfirmationMail(
-      Instant appointmentStart, String recipientEmail, String accessCode) {
-    sendMail(
-        recipientEmail,
-        departmentInfoConfigService.getDepartmentInfo().email(),
-        properties.getReplacementCertificateAppointmentConfirmationMail().getSubject(),
-        readTemplateBody(
-                properties.getReplacementCertificateAppointmentConfirmationMail().getBody())
-            .formatted(
-                appointmentStart.atZone(clock.getZone()).toLocalDateTime().format(dateFormatter),
-                appointmentStart.atZone(clock.getZone()).toLocalTime().format(timeFormatter),
-                buildLoginUrl(accessCode),
-                accessCode));
+  public boolean sendAppointmentConfirmationMail(
+      String recipientEmail,
+      AppointmentType appointmentType,
+      TriggerType triggerType,
+      Instant startTime,
+      String accessCode) {
+    Mail template = getConfirmationMailTemplate(appointmentType, triggerType);
+    try {
+      sendMail(
+          recipientEmail,
+          departmentInfoConfigService.getDepartmentInfo().email(),
+          template.getSubject(),
+          readTemplateBody(template.getBody())
+              .formatted(
+                  dateStringOf(startTime),
+                  timeStringOf(startTime),
+                  buildLoginUrl(accessCode),
+                  accessCode));
+      return true;
+    } catch (Exception e) {
+      log.warn("Cannot send confirmation e-mail", e);
+      return false;
+    }
   }
 
   public void sendCancelAppointmentConfirmationMail(
-      String recipientEmail, Appointment appointment) {
-    Mail template = getCancellationMailTemplate(appointment);
+      String recipientEmail, AppointmentType appointmentType, Instant startTime) {
+    Mail template = getCancellationMailTemplate(appointmentType);
     sendMail(
         recipientEmail,
         departmentInfoConfigService.getDepartmentInfo().email(),
         template.getSubject(),
         readTemplateBody(template.getBody())
-            .formatted(
-                appointment
-                    .getAppointmentStart()
-                    .atZone(clock.getZone())
-                    .toLocalDateTime()
-                    .format(dateFormatter),
-                appointment
-                    .getAppointmentStart()
-                    .atZone(clock.getZone())
-                    .toLocalTime()
-                    .format(timeFormatter)));
+            .formatted(dateStringOf(startTime), timeStringOf(startTime)));
   }
 
-  private Mail getCancellationMailTemplate(Appointment appointment) {
-    return switch (appointment.getType()) {
+  private Mail getConfirmationMailTemplate(
+      AppointmentType appointmentType, TriggerType triggerType) {
+    return switch (appointmentType) {
+      case INFECTION_BRIEFING_NEW ->
+          switch (triggerType) {
+            case CITIZEN -> properties.getNewCertificateAppointmentConfirmationMail();
+            case EMPLOYEE -> properties.getNewCertificateAppointmentByEmployeeConfirmationMail();
+            default -> throw new IllegalArgumentException("Unsupported triggerType " + triggerType);
+          };
+      case INFECTION_BRIEFING_REPLACEMENT ->
+          switch (triggerType) {
+            case CITIZEN -> properties.getReplacementCertificateAppointmentConfirmationMail();
+            case EMPLOYEE ->
+                properties.getReplacementCertificateAppointmentByEmployeeConfirmationMail();
+            default -> throw new IllegalArgumentException("Unsupported triggerType " + triggerType);
+          };
+      default ->
+          throw new IllegalArgumentException("Unsupported appointment type " + appointmentType);
+    };
+  }
+
+  private Mail getCancellationMailTemplate(AppointmentType appointmentType) {
+    return switch (appointmentType) {
       case INFECTION_BRIEFING_NEW ->
           properties.getCancelNewCertificateAppointmentConfirmationMail();
       case INFECTION_BRIEFING_REPLACEMENT ->
           properties.getCancelReplacementCertificateAppointmentConfirmationMail();
       default ->
           throw new IllegalArgumentException(
-              "Unsupported appointment type %s".formatted(appointment.getType()));
+              "Unsupported appointment type %s".formatted(appointmentType));
     };
   }
 
@@ -143,6 +153,14 @@ public class MailService {
     } catch (IOException e) {
       throw new UncheckedIOException(e);
     }
+  }
+
+  private String dateStringOf(Instant time) {
+    return time.atZone(clock.getZone()).toLocalDateTime().format(dateFormatter);
+  }
+
+  private String timeStringOf(Instant time) {
+    return time.atZone(clock.getZone()).toLocalDateTime().format(timeFormatter);
   }
 
   private String buildLoginUrl(String accessCode) {

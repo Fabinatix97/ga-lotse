@@ -6,15 +6,15 @@
 package de.eshg.schoolentry;
 
 import de.eshg.base.department.GetDepartmentInfoResponse;
+import de.eshg.config.api.OpeningHoursDto;
 import de.eshg.config.departmentinfo.DepartmentInfoConfigService;
 import de.eshg.config.departmentinfo.OpeningHoursService;
 import de.eshg.config.departmentinfo.PrivacyDocumentService;
 import de.eshg.config.domain.OpeningHours;
+import de.eshg.config.mapper.OpeningHoursMapper;
 import de.eshg.rest.service.security.config.BaseUrls;
-import de.eshg.schoolentry.api.citizen.GetOpeningHoursResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import java.util.Collections;
 import org.springframework.core.io.Resource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
@@ -49,11 +49,9 @@ public class SchoolEntryPublicCitizenController {
   @GetMapping(path = "/opening-hours")
   @Operation(summary = "Get the official opening hours.")
   @Transactional(readOnly = true)
-  public GetOpeningHoursResponse getOpeningHours() {
+  public OpeningHoursDto getOpeningHours() {
     OpeningHours openingHours = openingHoursService.getConfig();
-    return new GetOpeningHoursResponse(
-        Collections.unmodifiableList(openingHours.getDe()),
-        Collections.unmodifiableList(openingHours.getEn()));
+    return OpeningHoursMapper.mapToDto(openingHours);
   }
 
   @GetMapping(path = "/documents/privacy-notice")

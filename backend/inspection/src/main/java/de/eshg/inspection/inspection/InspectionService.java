@@ -9,6 +9,7 @@ import com.google.common.base.Objects;
 import de.eshg.base.address.DomesticAddressDto;
 import de.eshg.base.centralfile.api.facility.AddFacilityFileStateResponse;
 import de.eshg.base.centralfile.api.facility.GetFacilityFileStateResponse;
+import de.eshg.base.user.UserApi;
 import de.eshg.domain.model.GloballyUniqueEntityBase;
 import de.eshg.inspection.checklist.ChecklistService;
 import de.eshg.inspection.checklist.api.ChecklistDto;
@@ -104,6 +105,7 @@ public class InspectionService {
   private final FileNumberCollisionService fileNumberCollisionService;
   private final InspectionPropertiesConfigService inspectionPropertiesConfigService;
   private final InspectionProgressEntryService inspectionProgressEntryService;
+  private final UserApi userApi;
 
   public InspectionService(
       InspectionRepository inspectionRepository,
@@ -121,7 +123,8 @@ public class InspectionService {
       InboxProcedureService inboxProcedureService,
       FileNumberCollisionService fileNumberCollisionService,
       InspectionPropertiesConfigService inspectionPropertiesConfigService,
-      InspectionProgressEntryService inspectionProgressEntryService) {
+      InspectionProgressEntryService inspectionProgressEntryService,
+      UserApi userApi) {
     this.inspectionRepository = inspectionRepository;
     this.inspectionRelatedFacilityRepository = inspectionRelatedFacilityRepository;
     this.objectTypeRepository = objectTypeRepository;
@@ -138,6 +141,7 @@ public class InspectionService {
     this.fileNumberCollisionService = fileNumberCollisionService;
     this.inspectionPropertiesConfigService = inspectionPropertiesConfigService;
     this.inspectionProgressEntryService = inspectionProgressEntryService;
+    this.userApi = userApi;
   }
 
   public InspectionAndFileNumberCollisionsDto startInspection(
@@ -158,7 +162,14 @@ public class InspectionService {
     }
 
     inspection.setType(request.type());
-    inspection.setModifiedBy(CurrentUserHelper.getCurrentUserId());
+
+    try {
+      userApi.getUser(request.assigneeId());
+    } catch (Exception e) {
+      throw new BadRequestException("When starting new inspection: " + e.getMessage());
+    }
+    inspection.setModifiedBy(request.assigneeId());
+
     inspection.setPhase(InspectionPhase.PLANNING);
 
     Instant now = Instant.now(clock);

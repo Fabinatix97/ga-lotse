@@ -211,19 +211,15 @@ export function DocumentFormContent(props: {
             </Stack>
             <DetailsItem
               label="Dokumentenart (EN)"
-              value={props.document.documentTypeEn ?? "-"}
+              value={props.document.documentType?.ENGLISH ?? "-"}
             />
             <DetailsItem
               label="Hilfstext"
-              value={
-                !isEmpty(props.document.helpTextDe)
-                  ? props.document.helpTextDe
-                  : "-"
-              }
+              value={props.document.helpText?.GERMAN ?? "-"}
             />
             <DetailsItem
               label="Hilfstext (EN)"
-              value={props.document.helpTextEn ?? "-"}
+              value={props.document.helpText?.ENGLISH ?? "-"}
             />
             <DetailsItem
               label="Labortest-Barcode"

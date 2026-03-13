@@ -34,6 +34,11 @@ import {
 import { AppointmentFormValues } from "@/lib/businessModules/officialMedicalService/components/appointment/AppointmentForm";
 import { useDepartmentContext } from "@/lib/businessModules/officialMedicalService/shared/contexts/DepartmentContext";
 import { useTranslation } from "@/lib/i18n/client";
+import {
+  SupportedLanguage,
+  mapToApiLanguage,
+  supportedLanguages,
+} from "@/lib/i18n/options";
 import { byBreakpoint } from "@/lib/shared/breakpoints";
 import { DetailsItem } from "@/lib/shared/components/DetailsItem";
 import { ContentSheetTitle } from "@/lib/shared/components/layout/contentSheet";
@@ -50,10 +55,15 @@ export function OverviewSection({ buttonBar }: Readonly<OverviewSectionProps>) {
   const { values } = useFormikContext<AppointmentFormValues>();
   const { currentStep } = useMultiStepForm();
 
-  const concernName = useManualTranslation({
-    de: values.concern.nameDe,
-    en: values.concern.nameEn,
-  });
+  const concernName = useManualTranslation<string>(
+    supportedLanguages.reduce(
+      (acc, it) => {
+        acc[it] = values.concern.names[mapToApiLanguage(it)]!;
+        return acc;
+      },
+      {} as { de: string } & Partial<Record<SupportedLanguage, string>>,
+    ),
+  );
 
   return (
     <>

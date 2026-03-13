@@ -39,4 +39,5 @@ export type ConfiguratorEndpointName =
   | "ADDRESS_REGISTRY"
   | "INSPECTION"
   | "PROSTITUTE_PROTECTION"
-  | "INFECTION_BRIEFING";
+  | "INFECTION_BRIEFING"
+  | "DEVICE_REGISTRY";

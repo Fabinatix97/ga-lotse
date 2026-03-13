@@ -7,15 +7,15 @@
 
 import { Typography } from "@mui/joy";
 
-import {
-  ApiGetDepartmentInfoResponse,
-  ApiGetOpeningHoursResponse,
-} from "@eshg/infection-briefing-api";
+import { ApiGetDepartmentInfoResponse } from "@eshg/infection-briefing-api";
 
 import { MarkdownSheet } from "@/lib/baseModule/components/MarkdownSheet";
 import { useCitizenRoutes } from "@/lib/businessModules/infectionBriefing/shared/routes";
 import { useTranslation } from "@/lib/i18n/client";
-import { ContactAndAvailabilitySheet } from "@/lib/shared/components/ContactAndAvailabilitySheet";
+import {
+  ContactAndAvailabilitySheet,
+  OpeningHoursTranslations,
+} from "@/lib/shared/components/ContactAndAvailabilitySheet";
 import {
   ContentSheet,
   ContentSheetTitle,
@@ -25,7 +25,7 @@ import { ScopedInternalLinkButton } from "@/lib/shared/components/scopedLinks";
 
 interface LandingPageContentProps {
   landingContent: string;
-  openingHours: ApiGetOpeningHoursResponse;
+  openingHours: OpeningHoursTranslations;
   departmentInfo: ApiGetDepartmentInfoResponse;
 }
 

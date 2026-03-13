@@ -19,6 +19,7 @@ import de.eshg.officialmedicalservice.procedure.persistence.entity.MedicalOpinio
 import de.eshg.officialmedicalservice.procedure.persistence.entity.MedicalOpinionStatus;
 import de.eshg.officialmedicalservice.procedure.persistence.entity.OmsProcedure;
 import de.eshg.officialmedicalservice.user.UserClient;
+import de.eshg.rest.service.i18n.Language;
 import java.time.Clock;
 import java.time.Instant;
 import java.time.format.DateTimeFormatter;
@@ -237,9 +238,9 @@ public class ProgressEntryService {
             omsProgressEntryType.name(),
             "Dokument %s %s %s"
                 .formatted(
-                    omsDocument.getDocumentTypeDe(),
-                    !StringUtils.isBlank(omsDocument.getHelpTextDe())
-                        ? "- " + omsDocument.getHelpTextDe()
+                    omsDocument.getDocumentType(Language.GERMAN),
+                    !StringUtils.isBlank(omsDocument.getHelpText(Language.GERMAN))
+                        ? "- " + omsDocument.getHelpText(Language.GERMAN)
                         : "",
                     action),
             TriggerType.EMPLOYEE);
@@ -259,9 +260,9 @@ public class ProgressEntryService {
                 .formatted(
                     oldDocumentTypeDe,
                     !StringUtils.isBlank(oldHelpTextDe) ? "- " + oldHelpTextDe : "",
-                    omsDocument.getDocumentTypeDe(),
-                    !StringUtils.isBlank(omsDocument.getHelpTextDe())
-                        ? "- " + omsDocument.getHelpTextDe()
+                    omsDocument.getDocumentType(Language.GERMAN),
+                    !StringUtils.isBlank(omsDocument.getHelpText(Language.GERMAN))
+                        ? "- " + omsDocument.getHelpText(Language.GERMAN)
                         : ""),
             TriggerType.EMPLOYEE);
     omsProcedure.addProgressEntry(progressEntry);
@@ -275,9 +276,9 @@ public class ProgressEntryService {
             OmsProgressEntryType.DOCUMENT_STATUS_CHANGE_ACCEPTED.name(),
             "Für Dokument %s %s wurden Dateien hinzugefügt."
                 .formatted(
-                    omsDocument.getDocumentTypeDe(),
-                    !StringUtils.isBlank(omsDocument.getHelpTextDe())
-                        ? "- " + omsDocument.getHelpTextDe()
+                    omsDocument.getDocumentType(Language.GERMAN),
+                    !StringUtils.isBlank(omsDocument.getHelpText(Language.GERMAN))
+                        ? "- " + omsDocument.getHelpText(Language.GERMAN)
                         : ""),
             TriggerType.EMPLOYEE);
     omsProcedure.addProgressEntry(progressEntry);
@@ -314,8 +315,8 @@ public class ProgressEntryService {
 
   private String assembleDocumentDescription(OmsDocument document) {
     StringBuilder documentDescription = new StringBuilder();
-    documentDescription.append(document.getDocumentTypeDe());
-    String helpTextDe = document.getHelpTextDe();
+    documentDescription.append(document.getDocumentType(Language.GERMAN));
+    String helpTextDe = document.getHelpText(Language.GERMAN);
     if (helpTextDe != null && !helpTextDe.isEmpty())
       documentDescription.append(" - ").append(helpTextDe);
     return documentDescription.toString();
@@ -365,7 +366,7 @@ public class ProgressEntryService {
   }
 
   public void createProgressEntryForAdditionalInfoChanged(OmsProcedure procedure) {
-    String concernNameDe = procedure.getConcern().getNameDe();
+    String concernNameDe = procedure.getConcern().getName(Language.GERMAN);
     String cutOffDate =
         procedure.getMedicalOpinionCutOffDate() != null
             ? procedure.getMedicalOpinionCutOffDate().format(dateFormatter)

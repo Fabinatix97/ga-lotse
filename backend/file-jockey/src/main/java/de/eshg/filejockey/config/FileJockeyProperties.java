@@ -5,22 +5,24 @@
 
 package de.eshg.filejockey.config;
 
-import static java.util.stream.Collectors.toMap;
+import static de.cronn.commons.lang.StreamUtil.toLinkedHashMap;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import java.nio.charset.Charset;
 import java.nio.file.Path;
-import java.util.LinkedHashMap;
+import java.time.Duration;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
-import java.util.function.Function;
+import java.util.function.UnaryOperator;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.bind.DefaultValue;
+import org.springframework.boot.convert.DurationUnit;
 import org.springframework.util.unit.DataSize;
 import org.springframework.validation.annotation.Validated;
 
@@ -28,23 +30,30 @@ import org.springframework.validation.annotation.Validated;
 @ConfigurationProperties(prefix = "de.eshg.file-jockey", ignoreUnknownFields = false)
 public class FileJockeyProperties {
 
-  @NotNull private final DataSize defaultMaxFileSize;
+  public record RateLimit(
+      @DefaultValue("100") @Positive int capacity,
+      @DefaultValue("1") @Positive @DurationUnit(ChronoUnit.MINUTES) Duration intervalInMinutes) {}
 
   private final Map<String, @Valid Device> devicesByEquipmentSelector;
 
-  public FileJockeyProperties(DataSize defaultMaxFileSize, List<Device> devices) {
+  public final DataSize maxRequestSize;
+
+  public final DataSize defaultMaxFileSize;
+
+  public final RateLimit rateLimit;
+
+  public FileJockeyProperties(
+      DataSize maxRequestSize,
+      DataSize defaultMaxFileSize,
+      List<Device> devices,
+      @DefaultValue RateLimit rateLimit) {
+    this.maxRequestSize = maxRequestSize;
     this.defaultMaxFileSize = defaultMaxFileSize;
+    this.rateLimit = rateLimit;
+    UnaryOperator<Device> withDefaults = device -> device.withDefaults(defaultMaxFileSize);
     this.devicesByEquipmentSelector =
         Optional.ofNullable(devices).orElseGet(List::of).stream()
-            .collect(
-                toMap(
-                    Device::equipmentSelector,
-                    Function.identity(),
-                    (a, _) -> {
-                      throw new IllegalStateException(
-                          "Found unexpected duplicate: " + a.equipmentSelector());
-                    },
-                    LinkedHashMap::new));
+            .collect(toLinkedHashMap(Device::equipmentSelector, withDefaults));
   }
 
   public List<Device> getDevices() {
@@ -55,23 +64,22 @@ public class FileJockeyProperties {
     return Optional.ofNullable(devicesByEquipmentSelector.get(equipmentSelector));
   }
 
-  public DataSize getMaxFileSizeForDevice(String equipmentSelector) {
-    Device device = devicesByEquipmentSelector.get(equipmentSelector);
-    if (device == null) {
-      throw new IllegalArgumentException("Device not found: " + equipmentSelector);
-    }
-    return Objects.requireNonNullElse(device.maxFileSize(), defaultMaxFileSize);
-  }
-
   public record Device(
       @NotBlank String equipmentSelector,
       DataSize maxFileSize,
       @NotNull @Valid DeviceInputFileProperties input,
       @NotNull @Valid DeviceOutputFileProperties output,
-      @DefaultValue("ISO-8859-15") Charset charset) {}
+      @DefaultValue("ISO-8859-15") Charset charset) {
+
+    Device withDefaults(DataSize defaultMaxFileSize) {
+      return (maxFileSize != null)
+          ? this
+          : new Device(equipmentSelector, defaultMaxFileSize, input, output, charset);
+    }
+  }
 
   public record DeviceInputFileProperties(
-      @NotNull Path folder, @NotBlank String fileNamePrefix, @NotBlank String fileNamePostfix) {}
+      @NotNull Path folder, @NotBlank @ValidMessageFormat(2) String filenameTemplate) {}
 
   public record DeviceOutputFileProperties(
       @NotNull Path folder, @NotEmpty String embeddingPrefix, @NotEmpty String embeddingPostfix) {}

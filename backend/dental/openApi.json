@@ -878,7 +878,6 @@
           "name" : "searchString",
           "required" : true,
           "schema" : {
-            "minLength" : 1,
             "type" : "string"
           }
         } ],
@@ -7474,13 +7473,6 @@
           "properties" : {
             "changeDescription" : {
               "type" : "string"
-            },
-            "keyDocumentType" : {
-              "type" : "string"
-            },
-            "keyDocumentVersion" : {
-              "type" : "integer",
-              "format" : "int32"
             },
             "previousFacilityFileStateId" : {
               "type" : "string",

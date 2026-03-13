@@ -18,6 +18,7 @@ import {
 
 import { InspectionActorSelection } from "@/lib/businessModules/inspection/components/inspection/measurements/sampleSidebar/InspectionActorSelection";
 import { InspectionSampleSidebarFormType } from "@/lib/businessModules/inspection/components/inspection/measurements/sampleSidebar/InspectionSampleSidebarHelper";
+import { InspectionSamplingPointSelection } from "@/lib/businessModules/inspection/components/inspection/measurements/sampleSidebar/InspectionSamplingPointSelection";
 import {
   EVALUATION_TYPE_OPTIONS,
   SAMPLE_TYPE_OPTIONS,
@@ -25,6 +26,9 @@ import {
 
 interface InspectionSampleSidebarBasisDataProps {
   values: InspectionSampleSidebarFormType;
+  onSamplingPointSelection: (
+    value: { label: string; value: string } | null,
+  ) => void;
   onSelfAssignEvaluatingActor: () => void;
   onFacilityAssignEvaluatingActor: () => void;
   onSelfAssignSamplingActor: () => void;
@@ -47,6 +51,7 @@ interface InspectionSampleSidebarBasisDataProps {
       false
     >,
   ) => void;
+  facilityId?: string;
 }
 
 export function InspectionSampleSidebarBasisData({
@@ -57,15 +62,15 @@ export function InspectionSampleSidebarBasisData({
   onFacilityAssignSamplingActor,
   onSamplingActorSelection,
   onEvaluatingActorSelection,
+  onSamplingPointSelection,
+  facilityId,
 }: InspectionSampleSidebarBasisDataProps) {
   return (
     <Grid container component={FormPlus} spacing={2} sx={{ flexGrow: 1 }}>
       <Grid xxs={12}>
-        <InputField
-          name="pointOfWithdrawal"
-          type="text"
-          label="Entnahmestelle"
-          required="Bitte eine Entnahmestelle eingeben"
+        <InspectionSamplingPointSelection
+          facilityId={facilityId}
+          onChange={onSamplingPointSelection}
         />
       </Grid>
       <Grid xxs={12}>

@@ -18,8 +18,11 @@ import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 import java.io.Serial;
 import java.time.Instant;
+import java.time.LocalDate;
+import java.time.Year;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
 import org.springframework.data.jpa.domain.Specification;
 
@@ -28,17 +31,20 @@ public class InfectionBriefingProcedureSpecification
 
   @Serial private static final long serialVersionUID = 1L;
 
-  private final ArrayList<ProcedureStatus> procedureStatuus;
   private final Instant startOfAppointmentDay;
   private final InstructionType instructionType;
+  private final Year instructionYear;
+  private final LinkedHashSet<ProcedureStatus> status;
 
   public InfectionBriefingProcedureSpecification(
-      ArrayList<ProcedureStatus> procedureStatuus,
       Instant startOfAppointmentDay,
-      InstructionType instructionType) {
-    this.procedureStatuus = procedureStatuus;
+      InstructionType instructionType,
+      Year instructionYear,
+      LinkedHashSet<ProcedureStatus> status) {
     this.startOfAppointmentDay = startOfAppointmentDay;
     this.instructionType = instructionType;
+    this.instructionYear = instructionYear;
+    this.status = status;
   }
 
   @Override
@@ -48,23 +54,37 @@ public class InfectionBriefingProcedureSpecification
       CriteriaBuilder criteriaBuilder) {
     List<Predicate> conjunctions = new ArrayList<>();
 
-    if (procedureStatuus != null && !procedureStatuus.isEmpty()) {
-      conjunctions.add(root.get(InfectionBriefingProcedure_.procedureStatus).in(procedureStatuus));
+    if (status != null && !status.isEmpty()) {
+      conjunctions.add(root.get(InfectionBriefingProcedure_.procedureStatus).in(status));
     }
     if (startOfAppointmentDay != null) {
       conjunctions.add(
-          criteriaBuilder.between(
+          criteriaBuilder.greaterThanOrEqualTo(
               root.join(InfectionBriefingProcedure_.appointment).get(Appointment_.appointmentStart),
-              startOfAppointmentDay,
+              startOfAppointmentDay));
+      conjunctions.add(
+          criteriaBuilder.lessThan(
+              root.join(InfectionBriefingProcedure_.appointment).get(Appointment_.appointmentStart),
               startOfAppointmentDay.plus(1, ChronoUnit.DAYS)));
     }
-    if (instructionType != null) {
+    if (instructionType != null || instructionYear != null) {
       Root<NewCertificateProcedure> newCertificateProcedureRoot =
           criteriaBuilder.treat(root, NewCertificateProcedure.class);
-      conjunctions.add(
-          criteriaBuilder.equal(
-              newCertificateProcedureRoot.get(NewCertificateProcedure_.instructionType),
-              instructionType));
+      if (instructionType != null) {
+        conjunctions.add(
+            criteriaBuilder.equal(
+                newCertificateProcedureRoot.get(NewCertificateProcedure_.instructionType),
+                instructionType));
+      }
+      if (instructionYear != null) {
+        LocalDate startOfYear = instructionYear.atDay(1);
+        LocalDate endOfYear = instructionYear.plusYears(1).atDay(1).minusDays(1);
+        conjunctions.add(
+            criteriaBuilder.between(
+                newCertificateProcedureRoot.get(NewCertificateProcedure_.instructionDate),
+                startOfYear,
+                endOfYear));
+      }
     }
     return criteriaBuilder.and(conjunctions.toArray(Predicate[]::new));
   }

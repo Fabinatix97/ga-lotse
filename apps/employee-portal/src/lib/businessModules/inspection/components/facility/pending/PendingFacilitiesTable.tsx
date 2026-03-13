@@ -9,7 +9,10 @@ import { useSuspenseQueries } from "@tanstack/react-query";
 import { addDays, formatISO } from "date-fns";
 import { useMemo, useState } from "react";
 
-import { ApiObjectType } from "@eshg/inspection-api";
+import {
+  ApiObjectType,
+  ApiObjectTypeHierarchyTreeNode,
+} from "@eshg/inspection-api";
 import {
   ButtonBar,
   DataTable,
@@ -37,7 +40,12 @@ import {
   useGdprValidationTaskApi,
 } from "@/lib/businessModules/inspection/api/clients";
 import { getPendingFacilitiesQuery } from "@/lib/businessModules/inspection/api/queries/facility";
-import { useGetObjectTypes } from "@/lib/businessModules/inspection/api/queries/objectTypes";
+import { useIsNewFeatureEnabled } from "@/lib/businessModules/inspection/api/queries/feature";
+import {
+  useGetObjectTypeHierarchyTree,
+  useGetObjectTypes,
+} from "@/lib/businessModules/inspection/api/queries/objectTypes";
+import { transformData } from "@/lib/businessModules/inspection/components/checklistDefinition/editor/header/ObjectTypesSelectField";
 import { ExportBannedFacilitiesButton } from "@/lib/businessModules/inspection/components/facility/pending/ExportBannedFacilitiesButton";
 import { NewFacilityButton } from "@/lib/businessModules/inspection/components/facility/pending/NewFacilityButton";
 import { PendingFacilitiesIncidentsSidebar } from "@/lib/businessModules/inspection/components/facility/pending/PendingFacilitiesIncidentsSidebar";
@@ -61,20 +69,32 @@ import {
   getPendingFacilityRowRoute,
 } from "./columns";
 
+interface EnumSingleFilterOption {
+  label: string;
+  value: string;
+}
+
 type UserActivityState =
   | { type: "view-table" }
   | { type: "view-incidents"; inspectionId: string; facilityName: string };
 
 const initialUserActivity: UserActivityState = { type: "view-table" };
-
 function createFilterDefinitions(
-  objectTypes: ApiObjectType[],
+  objectTypes: ApiObjectType[] | ApiObjectTypeHierarchyTreeNode[],
+  featureToggleEnabled: boolean,
 ): FilterDefinition[] {
-  const objectTypeOptions = objectTypes.map((o) => ({
-    label: o.name,
-    value: o.id,
-  }));
-
+  const objectTypeOptions: EnumSingleFilterOption[] = objectTypes
+    .map((o) => {
+      if ("id" in o) {
+        return {
+          label: o.name,
+          value: o.id,
+        };
+      } else {
+        return undefined;
+      }
+    })
+    .filter((option): option is EnumSingleFilterOption => option !== undefined);
   return [
     {
       type: "EnumSingle",
@@ -85,8 +105,12 @@ function createFilterDefinitions(
     {
       type: "EnumSingle",
       key: "objectTypeId",
+      placeholder: undefined,
       name: "Objekttyp",
       options: objectTypeOptions,
+      groupedOptions: featureToggleEnabled
+        ? transformData(objectTypes)
+        : undefined,
     },
     {
       type: "Enum",
@@ -167,7 +191,7 @@ function createFilterDefinitions(
     },
     {
       type: "Text",
-      key: "pointOfWithdrawal",
+      key: "zid",
       name: "Entnahmestelle",
     },
   ];
@@ -178,8 +202,14 @@ export function PendingFacilitiesTable(
 ) {
   const tableControl = useTableControl({ serverSideSorting: true });
   const { data: objectTypes } = useGetObjectTypes();
+  const { data: objectTypesHierarchyTree } = useGetObjectTypeHierarchyTree();
 
-  const filterDefinitions = createFilterDefinitions(objectTypes);
+  const featureToggleEnabled = useIsNewFeatureEnabled("OBJECT_TYPE_HIERARCHY");
+
+  const filterDefinitions = createFilterDefinitions(
+    featureToggleEnabled ? objectTypesHierarchyTree : objectTypes,
+    featureToggleEnabled,
+  );
   const paramStateProvider = useQueryParamStateProvider(filterDefinitions, {
     useRouterReplace: true,
   });

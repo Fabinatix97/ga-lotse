@@ -5,13 +5,13 @@
 
 package de.eshg.inspection.statistics;
 
-import de.eshg.inspection.feature.InspectionFeatureToggle;
 import de.eshg.inspection.inspection.persistence.Inspection;
 import de.eshg.inspection.inspection.persistence.InspectionAppointment;
 import de.eshg.inspection.inspection.persistence.InspectionAppointment_;
 import de.eshg.inspection.inspection.persistence.InspectionRepository;
 import de.eshg.inspection.inspection.persistence.Inspection_;
 import de.eshg.inspection.objecttype.ObjectTypeProperties;
+import de.eshg.inspection.objecttype.persistence.ObjectTypeHierarchyReader;
 import de.eshg.lib.procedure.domain.model.ProcedureStatus;
 import de.eshg.lib.procedure.domain.model.Procedure_;
 import de.eshg.lib.statistics.api.DataSourceSensitivity;
@@ -55,13 +55,12 @@ public class InspectionDataSource extends ProcedureDataSource<Inspection, Inspec
           InspectionAttributes.NUMBER_OF_INCIDENTS);
 
   private final Clock clock;
-  private final InspectionFeatureToggle inspectionFeatureToggle;
 
   public InspectionDataSource(
       InspectionRepository inspectionRepository,
       Clock clock,
       ObjectTypeProperties objectTypeProperties,
-      InspectionFeatureToggle inspectionFeatureToggle) {
+      ObjectTypeHierarchyReader objectTypeHierarchyReader) {
     super(
         DATA_SOURCE_ID,
         DATA_SOURCE_NAME,
@@ -70,10 +69,12 @@ public class InspectionDataSource extends ProcedureDataSource<Inspection, Inspec
         inspectionRepository,
         NO_ANONYMIZATION_ATTRIBUTES.toArray(InspectionAttributes[]::new));
     this.clock = clock;
-    this.inspectionFeatureToggle = inspectionFeatureToggle;
-    AttributeUtil.addValueOptions(InspectionAttributes.OBJECT_TYPE, objectTypeProperties);
     AttributeUtil.addValueOptions(
-        InspectionAttributes.OBJECT_TYPE_ANONYMIZATION, objectTypeProperties);
+        InspectionAttributes.OBJECT_TYPE, objectTypeProperties, objectTypeHierarchyReader);
+    AttributeUtil.addValueOptions(
+        InspectionAttributes.OBJECT_TYPE_ANONYMIZATION,
+        objectTypeProperties,
+        objectTypeHierarchyReader);
   }
 
   @Override

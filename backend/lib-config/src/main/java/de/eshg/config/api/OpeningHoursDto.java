@@ -5,9 +5,12 @@
 
 package de.eshg.config.api;
 
+import de.eshg.rest.service.i18n.Language;
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import java.util.List;
+import java.util.Map;
 
 @Schema(name = "OpeningHours")
-public record OpeningHoursDto(@NotEmpty List<String> de, @NotEmpty List<String> en) {}
+public record OpeningHoursDto(@NotNull @Valid Map<Language, List<String>> localizations) {}

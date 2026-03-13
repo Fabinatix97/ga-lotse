@@ -1,0 +1,386 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<!--
+ Copyright 2026 SCOOP Software GmbH, cronn GmbH
+ SPDX-License-Identifier: AGPL-3.0-only
+-->
+
+<databaseChangeLog
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+  <changeSet author="GA-Lotse" id="1770036398422-1">
+    <addColumn tableName="opening_hours">
+      <column name="ar" type="TEXT[]" />
+    </addColumn>
+    <addColumn tableName="multi_lang_document">
+      <column name="ar_file_size_bytes" type="INTEGER" />
+    </addColumn>
+    <addColumn tableName="opening_hours">
+      <column name="es" type="TEXT[]" />
+    </addColumn>
+    <addColumn tableName="multi_lang_document">
+      <column name="es_file_size_bytes" type="INTEGER" />
+    </addColumn>
+    <addColumn tableName="opening_hours">
+      <column name="fa" type="TEXT[]" />
+    </addColumn>
+    <addColumn tableName="multi_lang_document">
+      <column name="fa_file_size_bytes" type="INTEGER" />
+    </addColumn>
+    <addColumn tableName="opening_hours">
+      <column name="fr" type="TEXT[]" />
+    </addColumn>
+    <addColumn tableName="multi_lang_document">
+      <column name="fr_file_size_bytes" type="INTEGER" />
+    </addColumn>
+    <addColumn tableName="opening_hours">
+      <column name="hr" type="TEXT[]" />
+    </addColumn>
+    <addColumn tableName="multi_lang_document">
+      <column name="hr_file_size_bytes" type="INTEGER" />
+    </addColumn>
+    <addColumn tableName="multi_lang_document">
+      <column name="it_file_size_bytes" type="INTEGER" />
+    </addColumn>
+    <addColumn tableName="opening_hours">
+      <column name="it" type="TEXT[]" />
+    </addColumn>
+    <addColumn tableName="multi_lang_document">
+      <column name="pl_file_size_bytes" type="INTEGER" />
+    </addColumn>
+    <addColumn tableName="opening_hours">
+      <column name="pl" type="TEXT[]" />
+    </addColumn>
+    <addColumn tableName="multi_lang_document">
+      <column name="prs_file_size_bytes" type="INTEGER" />
+    </addColumn>
+    <addColumn tableName="opening_hours">
+      <column name="prs" type="TEXT[]" />
+    </addColumn>
+    <addColumn tableName="multi_lang_document">
+      <column name="ro_file_size_bytes" type="INTEGER" />
+    </addColumn>
+    <addColumn tableName="opening_hours">
+      <column name="ro" type="TEXT[]" />
+    </addColumn>
+    <addColumn tableName="multi_lang_document">
+      <column name="ru_file_size_bytes" type="INTEGER" />
+    </addColumn>
+    <addColumn tableName="opening_hours">
+      <column name="ru" type="TEXT[]" />
+    </addColumn>
+    <addColumn tableName="multi_lang_document">
+      <column name="tr_file_size_bytes" type="INTEGER" />
+    </addColumn>
+    <addColumn tableName="opening_hours">
+      <column name="tr" type="TEXT[]" />
+    </addColumn>
+    <addColumn tableName="multi_lang_document">
+      <column name="uk_file_size_bytes" type="INTEGER" />
+    </addColumn>
+    <addColumn tableName="multi_lang_document">
+      <column name="ar_id" type="BIGINT" />
+    </addColumn>
+    <addColumn tableName="opening_hours">
+      <column name="uk" type="TEXT[]" />
+    </addColumn>
+    <addColumn tableName="multi_lang_document">
+      <column name="es_id" type="BIGINT" />
+    </addColumn>
+    <addColumn tableName="multi_lang_document">
+      <column name="fa_id" type="BIGINT" />
+    </addColumn>
+    <addColumn tableName="multi_lang_document">
+      <column name="fr_id" type="BIGINT" />
+    </addColumn>
+    <addColumn tableName="multi_lang_document">
+      <column name="hr_id" type="BIGINT" />
+    </addColumn>
+    <addColumn tableName="multi_lang_document">
+      <column name="it_id" type="BIGINT" />
+    </addColumn>
+    <addColumn tableName="multi_lang_document">
+      <column name="pl_id" type="BIGINT" />
+    </addColumn>
+    <addColumn tableName="multi_lang_document">
+      <column name="prs_id" type="BIGINT" />
+    </addColumn>
+    <addColumn tableName="multi_lang_document">
+      <column name="ro_id" type="BIGINT" />
+    </addColumn>
+    <addColumn tableName="multi_lang_document">
+      <column name="ru_id" type="BIGINT" />
+    </addColumn>
+    <addColumn tableName="multi_lang_document">
+      <column name="tr_id" type="BIGINT" />
+    </addColumn>
+    <addColumn tableName="multi_lang_document">
+      <column name="uk_id" type="BIGINT" />
+    </addColumn>
+    <addUniqueConstraint columnNames="ar_id"
+                         constraintName="multi_lang_document_ar_id_key"
+                         tableName="multi_lang_document" />
+    <addUniqueConstraint columnNames="es_id"
+                         constraintName="multi_lang_document_es_id_key"
+                         tableName="multi_lang_document" />
+    <addUniqueConstraint columnNames="fa_id"
+                         constraintName="multi_lang_document_fa_id_key"
+                         tableName="multi_lang_document" />
+    <addUniqueConstraint columnNames="fr_id"
+                         constraintName="multi_lang_document_fr_id_key"
+                         tableName="multi_lang_document" />
+    <addUniqueConstraint columnNames="hr_id"
+                         constraintName="multi_lang_document_hr_id_key"
+                         tableName="multi_lang_document" />
+    <addUniqueConstraint columnNames="it_id"
+                         constraintName="multi_lang_document_it_id_key"
+                         tableName="multi_lang_document" />
+    <addUniqueConstraint columnNames="pl_id"
+                         constraintName="multi_lang_document_pl_id_key"
+                         tableName="multi_lang_document" />
+    <addUniqueConstraint columnNames="prs_id"
+                         constraintName="multi_lang_document_prs_id_key"
+                         tableName="multi_lang_document" />
+    <addUniqueConstraint columnNames="ro_id"
+                         constraintName="multi_lang_document_ro_id_key"
+                         tableName="multi_lang_document" />
+    <addUniqueConstraint columnNames="ru_id"
+                         constraintName="multi_lang_document_ru_id_key"
+                         tableName="multi_lang_document" />
+    <addUniqueConstraint columnNames="tr_id"
+                         constraintName="multi_lang_document_tr_id_key"
+                         tableName="multi_lang_document" />
+    <addUniqueConstraint columnNames="uk_id"
+                         constraintName="multi_lang_document_uk_id_key"
+                         tableName="multi_lang_document" />
+
+    <addForeignKeyConstraint baseColumnNames="ar_id"
+                             baseTableName="multi_lang_document"
+                             constraintName="fk_multi_lang_document_document_ar_id"
+                             deferrable="false" initiallyDeferred="false"
+                             onDelete="NO ACTION" onUpdate="NO ACTION"
+                             referencedColumnNames="id"
+                             referencedTableName="document" validate="true" />
+    <addForeignKeyConstraint baseColumnNames="es_id"
+                             baseTableName="multi_lang_document"
+                             constraintName="fk_multi_lang_document_document_es_id"
+                             deferrable="false" initiallyDeferred="false"
+                             onDelete="NO ACTION" onUpdate="NO ACTION"
+                             referencedColumnNames="id"
+                             referencedTableName="document" validate="true" />
+    <addForeignKeyConstraint baseColumnNames="fa_id"
+                             baseTableName="multi_lang_document"
+                             constraintName="fk_multi_lang_document_document_fa_id"
+                             deferrable="false" initiallyDeferred="false"
+                             onDelete="NO ACTION" onUpdate="NO ACTION"
+                             referencedColumnNames="id"
+                             referencedTableName="document" validate="true" />
+    <addForeignKeyConstraint baseColumnNames="fr_id"
+                             baseTableName="multi_lang_document"
+                             constraintName="fk_multi_lang_document_document_fr_id"
+                             deferrable="false" initiallyDeferred="false"
+                             onDelete="NO ACTION" onUpdate="NO ACTION"
+                             referencedColumnNames="id"
+                             referencedTableName="document" validate="true" />
+    <addForeignKeyConstraint baseColumnNames="hr_id"
+                             baseTableName="multi_lang_document"
+                             constraintName="fk_multi_lang_document_document_hr_id"
+                             deferrable="false" initiallyDeferred="false"
+                             onDelete="NO ACTION" onUpdate="NO ACTION"
+                             referencedColumnNames="id"
+                             referencedTableName="document" validate="true" />
+    <addForeignKeyConstraint baseColumnNames="it_id"
+                             baseTableName="multi_lang_document"
+                             constraintName="fk_multi_lang_document_document_it_id"
+                             deferrable="false" initiallyDeferred="false"
+                             onDelete="NO ACTION" onUpdate="NO ACTION"
+                             referencedColumnNames="id"
+                             referencedTableName="document" validate="true" />
+    <addForeignKeyConstraint baseColumnNames="pl_id"
+                             baseTableName="multi_lang_document"
+                             constraintName="fk_multi_lang_document_document_pl_id"
+                             deferrable="false" initiallyDeferred="false"
+                             onDelete="NO ACTION" onUpdate="NO ACTION"
+                             referencedColumnNames="id"
+                             referencedTableName="document" validate="true" />
+    <addForeignKeyConstraint baseColumnNames="prs_id"
+                             baseTableName="multi_lang_document"
+                             constraintName="fk_multi_lang_document_document_prs_id"
+                             deferrable="false" initiallyDeferred="false"
+                             onDelete="NO ACTION" onUpdate="NO ACTION"
+                             referencedColumnNames="id"
+                             referencedTableName="document" validate="true" />
+    <addForeignKeyConstraint baseColumnNames="ro_id"
+                             baseTableName="multi_lang_document"
+                             constraintName="fk_multi_lang_document_document_ro_id"
+                             deferrable="false" initiallyDeferred="false"
+                             onDelete="NO ACTION" onUpdate="NO ACTION"
+                             referencedColumnNames="id"
+                             referencedTableName="document" validate="true" />
+    <addForeignKeyConstraint baseColumnNames="ru_id"
+                             baseTableName="multi_lang_document"
+                             constraintName="fk_multi_lang_document_document_ru_id"
+                             deferrable="false" initiallyDeferred="false"
+                             onDelete="NO ACTION" onUpdate="NO ACTION"
+                             referencedColumnNames="id"
+                             referencedTableName="document" validate="true" />
+    <addForeignKeyConstraint baseColumnNames="tr_id"
+                             baseTableName="multi_lang_document"
+                             constraintName="fk_multi_lang_document_document_tr_id"
+                             deferrable="false" initiallyDeferred="false"
+                             onDelete="NO ACTION" onUpdate="NO ACTION"
+                             referencedColumnNames="id"
+                             referencedTableName="document" validate="true" />
+    <addForeignKeyConstraint baseColumnNames="uk_id"
+                             baseTableName="multi_lang_document"
+                             constraintName="fk_multi_lang_document_document_uk_id"
+                             deferrable="false" initiallyDeferred="false"
+                             onDelete="NO ACTION" onUpdate="NO ACTION"
+                             referencedColumnNames="id"
+                             referencedTableName="document" validate="true" />
+    <addColumn tableName="concern">
+      <column name="category_name_ar" type="TEXT" />
+    </addColumn>
+    <addColumn tableName="concern">
+      <column name="category_name_es" type="TEXT" />
+    </addColumn>
+    <addColumn tableName="concern">
+      <column name="category_name_fa" type="TEXT" />
+    </addColumn>
+    <addColumn tableName="concern">
+      <column name="category_name_fr" type="TEXT" />
+    </addColumn>
+    <addColumn tableName="concern">
+      <column name="category_name_hr" type="TEXT" />
+    </addColumn>
+    <addColumn tableName="concern">
+      <column name="category_name_it" type="TEXT" />
+    </addColumn>
+    <addColumn tableName="concern">
+      <column name="category_name_pl" type="TEXT" />
+    </addColumn>
+    <addColumn tableName="concern">
+      <column name="category_name_prs" type="TEXT" />
+    </addColumn>
+    <addColumn tableName="concern">
+      <column name="category_name_ro" type="TEXT" />
+    </addColumn>
+    <addColumn tableName="concern">
+      <column name="category_name_ru" type="TEXT" />
+    </addColumn>
+    <addColumn tableName="concern">
+      <column name="category_name_tr" type="TEXT" />
+    </addColumn>
+    <addColumn tableName="concern">
+      <column name="category_name_uk" type="TEXT" />
+    </addColumn>
+    <addColumn tableName="concern">
+      <column name="name_ar" type="TEXT" />
+    </addColumn>
+    <addColumn tableName="concern">
+      <column name="name_es" type="TEXT" />
+    </addColumn>
+    <addColumn tableName="concern">
+      <column name="name_fa" type="TEXT" />
+    </addColumn>
+    <addColumn tableName="concern">
+      <column name="name_fr" type="TEXT" />
+    </addColumn>
+    <addColumn tableName="concern">
+      <column name="name_hr" type="TEXT" />
+    </addColumn>
+    <addColumn tableName="concern">
+      <column name="name_it" type="TEXT" />
+    </addColumn>
+    <addColumn tableName="concern">
+      <column name="name_pl" type="TEXT" />
+    </addColumn>
+    <addColumn tableName="concern">
+      <column name="name_prs" type="TEXT" />
+    </addColumn>
+    <addColumn tableName="concern">
+      <column name="name_ro" type="TEXT" />
+    </addColumn>
+    <addColumn tableName="concern">
+      <column name="name_ru" type="TEXT" />
+    </addColumn>
+    <addColumn tableName="concern">
+      <column name="name_tr" type="TEXT" />
+    </addColumn>
+    <addColumn tableName="concern">
+      <column name="name_uk" type="TEXT" />
+    </addColumn>
+    <addColumn tableName="oms_document">
+      <column name="document_type_ar" type="TEXT"/>
+    </addColumn>
+    <addColumn tableName="oms_document">
+      <column name="document_type_es" type="TEXT"/>
+    </addColumn>
+    <addColumn tableName="oms_document">
+      <column name="document_type_fa" type="TEXT"/>
+    </addColumn>
+    <addColumn tableName="oms_document">
+      <column name="document_type_fr" type="TEXT"/>
+    </addColumn>
+    <addColumn tableName="oms_document">
+      <column name="document_type_hr" type="TEXT"/>
+    </addColumn>
+    <addColumn tableName="oms_document">
+      <column name="document_type_it" type="TEXT"/>
+    </addColumn>
+    <addColumn tableName="oms_document">
+      <column name="document_type_pl" type="TEXT"/>
+    </addColumn>
+    <addColumn tableName="oms_document">
+      <column name="document_type_prs" type="TEXT"/>
+    </addColumn>
+    <addColumn tableName="oms_document">
+      <column name="document_type_ro" type="TEXT"/>
+    </addColumn>
+    <addColumn tableName="oms_document">
+      <column name="document_type_ru" type="TEXT"/>
+    </addColumn>
+    <addColumn tableName="oms_document">
+      <column name="document_type_tr" type="TEXT"/>
+    </addColumn>
+    <addColumn tableName="oms_document">
+      <column name="document_type_uk" type="TEXT"/>
+    </addColumn>
+    <addColumn tableName="oms_document">
+      <column name="help_text_ar" type="TEXT"/>
+    </addColumn>
+    <addColumn tableName="oms_document">
+      <column name="help_text_es" type="TEXT"/>
+    </addColumn>
+    <addColumn tableName="oms_document">
+      <column name="help_text_fa" type="TEXT"/>
+    </addColumn>
+    <addColumn tableName="oms_document">
+      <column name="help_text_fr" type="TEXT"/>
+    </addColumn>
+    <addColumn tableName="oms_document">
+      <column name="help_text_hr" type="TEXT"/>
+    </addColumn>
+    <addColumn tableName="oms_document">
+      <column name="help_text_it" type="TEXT"/>
+    </addColumn>
+    <addColumn tableName="oms_document">
+      <column name="help_text_pl" type="TEXT"/>
+    </addColumn>
+    <addColumn tableName="oms_document">
+      <column name="help_text_prs" type="TEXT"/>
+    </addColumn>
+    <addColumn tableName="oms_document">
+      <column name="help_text_ro" type="TEXT"/>
+    </addColumn>
+    <addColumn tableName="oms_document">
+      <column name="help_text_ru" type="TEXT"/>
+    </addColumn>
+    <addColumn tableName="oms_document">
+      <column name="help_text_tr" type="TEXT"/>
+    </addColumn>
+    <addColumn tableName="oms_document">
+      <column name="help_text_uk" type="TEXT"/>
+    </addColumn>
+  </changeSet>
+</databaseChangeLog>

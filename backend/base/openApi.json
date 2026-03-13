@@ -836,24 +836,22 @@
               "schema" : {
                 "type" : "object",
                 "properties" : {
-                  "citizen_de" : {
-                    "type" : "string",
-                    "format" : "binary"
+                  "citizen" : {
+                    "type" : "array",
+                    "items" : {
+                      "type" : "string",
+                      "format" : "binary"
+                    }
                   },
-                  "citizen_en" : {
-                    "type" : "string",
-                    "format" : "binary"
-                  },
-                  "employee_de" : {
-                    "type" : "string",
-                    "format" : "binary"
-                  },
-                  "employee_en" : {
-                    "type" : "string",
-                    "format" : "binary"
+                  "employee" : {
+                    "type" : "array",
+                    "items" : {
+                      "type" : "string",
+                      "format" : "binary"
+                    }
                   }
                 },
-                "required" : [ "citizen_de", "employee_de" ]
+                "required" : [ "citizen", "employee" ]
               }
             }
           }
@@ -891,16 +889,14 @@
               "schema" : {
                 "type" : "object",
                 "properties" : {
-                  "de" : {
-                    "type" : "string",
-                    "format" : "binary"
-                  },
-                  "en" : {
-                    "type" : "string",
-                    "format" : "binary"
+                  "files" : {
+                    "type" : "array",
+                    "items" : {
+                      "type" : "string",
+                      "format" : "binary"
+                    }
                   }
-                },
-                "required" : [ "de" ]
+                }
               }
             }
           }
@@ -1061,16 +1057,14 @@
               "schema" : {
                 "type" : "object",
                 "properties" : {
-                  "de" : {
-                    "type" : "string",
-                    "format" : "binary"
-                  },
-                  "en" : {
-                    "type" : "string",
-                    "format" : "binary"
+                  "files" : {
+                    "type" : "array",
+                    "items" : {
+                      "type" : "string",
+                      "format" : "binary"
+                    }
                   }
-                },
-                "required" : [ "de" ]
+                }
               }
             }
           }
@@ -1145,16 +1139,14 @@
               "schema" : {
                 "type" : "object",
                 "properties" : {
-                  "de" : {
-                    "type" : "string",
-                    "format" : "binary"
-                  },
-                  "en" : {
-                    "type" : "string",
-                    "format" : "binary"
+                  "files" : {
+                    "type" : "array",
+                    "items" : {
+                      "type" : "string",
+                      "format" : "binary"
+                    }
                   }
-                },
-                "required" : [ "de" ]
+                }
               }
             }
           }
@@ -1304,16 +1296,14 @@
               "schema" : {
                 "type" : "object",
                 "properties" : {
-                  "de" : {
-                    "type" : "string",
-                    "format" : "binary"
-                  },
-                  "en" : {
-                    "type" : "string",
-                    "format" : "binary"
+                  "files" : {
+                    "type" : "array",
+                    "items" : {
+                      "type" : "string",
+                      "format" : "binary"
+                    }
                   }
-                },
-                "required" : [ "de" ]
+                }
               }
             }
           }
@@ -1378,16 +1368,14 @@
               "schema" : {
                 "type" : "object",
                 "properties" : {
-                  "de" : {
-                    "type" : "string",
-                    "format" : "binary"
-                  },
-                  "en" : {
-                    "type" : "string",
-                    "format" : "binary"
+                  "files" : {
+                    "type" : "array",
+                    "items" : {
+                      "type" : "string",
+                      "format" : "binary"
+                    }
                   }
-                },
-                "required" : [ "de" ]
+                }
               }
             }
           }
@@ -1452,24 +1440,22 @@
               "schema" : {
                 "type" : "object",
                 "properties" : {
-                  "citizen_de" : {
-                    "type" : "string",
-                    "format" : "binary"
+                  "citizen" : {
+                    "type" : "array",
+                    "items" : {
+                      "type" : "string",
+                      "format" : "binary"
+                    }
                   },
-                  "citizen_en" : {
-                    "type" : "string",
-                    "format" : "binary"
-                  },
-                  "employee_de" : {
-                    "type" : "string",
-                    "format" : "binary"
-                  },
-                  "employee_en" : {
-                    "type" : "string",
-                    "format" : "binary"
+                  "employee" : {
+                    "type" : "array",
+                    "items" : {
+                      "type" : "string",
+                      "format" : "binary"
+                    }
                   }
                 },
-                "required" : [ "citizen_de", "employee_de" ]
+                "required" : [ "citizen", "employee" ]
               }
             }
           }
@@ -2007,7 +1993,6 @@
           "name" : "name",
           "required" : true,
           "schema" : {
-            "minLength" : 1,
             "type" : "string"
           }
         } ],
@@ -2475,6 +2460,35 @@
           }
         },
         "summary" : "Perform a consistent update of the existent facility file state and its\nassociated reference facility\n",
+        "tags" : [ "Facility" ]
+      }
+    },
+    "/facilities/reference-facility/bulk-get" : {
+      "post" : {
+        "operationId" : "getReferenceFacilities",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/GetReferenceFacilitiesRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/GetReferenceFacilitiesResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Get multiple reference facilities",
         "tags" : [ "Facility" ]
       }
     },
@@ -5265,6 +5279,311 @@
         "tags" : [ "Resource" ]
       }
     },
+    "/sampling-points" : {
+      "get" : {
+        "operationId" : "searchReferenceSamplingPoints",
+        "parameters" : [ {
+          "description" : "Left-truncated part of the SamplingPoint's ZID (knowledge factor) which shall be searched for.",
+          "in" : "query",
+          "name" : "zid",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/GetSamplingPointFileStatesResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Search reference sampling pointFileStates for the given knowledge factor 'name'.\nExcludes sampling pointFileStates created from external sources.\nCaution: The returned ids of the reference sampling pointFileStates must not be stored.\n",
+        "tags" : [ "SamplingPoint" ]
+      }
+    },
+    "/sampling-points/centralfilestates" : {
+      "post" : {
+        "operationId" : "addSamplingPointFileState",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/AddSamplingPointFileStateRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/AddSamplingPointFileStateResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Add a new sampling point file state and associate it with a reference sampling point.\nIf no reference id is provided, an existing reference sampling point with matching sampling point data is selected or (if\nit does not exist) created for this purpose.\n",
+        "tags" : [ "SamplingPoint" ]
+      }
+    },
+    "/sampling-points/centralfilestates/bulk-get" : {
+      "post" : {
+        "operationId" : "getSamplingPointFileStates",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/GetSamplingPointFileStatesRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/GetSamplingPointFileStatesResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Get multiple sampling point fileStates",
+        "tags" : [ "SamplingPoint" ]
+      }
+    },
+    "/sampling-points/centralfilestates/reference/get-all" : {
+      "get" : {
+        "operationId" : "getAllReferenceSamplingPoints",
+        "parameters" : [ {
+          "description" : "A prefix of the sampling point name to be searched for",
+          "in" : "query",
+          "name" : "namePrefix",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/GetReferenceSamplingPointsResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Get all reference sampling points, optionally matching the given namePrefix.\nCaution: The returned id of the reference sampling point must not be stored.\n",
+        "tags" : [ "SamplingPoint" ]
+      }
+    },
+    "/sampling-points/centralfilestates/reference/{facilityId}" : {
+      "get" : {
+        "operationId" : "getReferenceSamplingPointsByFacilityFileStateId",
+        "parameters" : [ {
+          "description" : "The facility id of the SamplingPoint.",
+          "in" : "path",
+          "name" : "facilityId",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }, {
+          "description" : "A prefix of the sampling points to be searched for",
+          "in" : "query",
+          "name" : "namePrefix",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/GetReferenceSamplingPointsResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Get the data of the reference sampling point associated with a given facility file state.\nCaution: The returned id of the reference sampling point must not be stored.\n",
+        "tags" : [ "SamplingPoint" ]
+      }
+    },
+    "/sampling-points/centralfilestates/{id}" : {
+      "get" : {
+        "operationId" : "getSamplingPointFileState",
+        "parameters" : [ {
+          "description" : "The Id of the File State of the SamplingPoint.",
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/GetSamplingPointFileStateResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Get a sampling point",
+        "tags" : [ "SamplingPoint" ]
+      }
+    },
+    "/sampling-points/centralfilestates/{id}/linked-ids" : {
+      "get" : {
+        "operationId" : "getSiblingFileStateIds",
+        "parameters" : [ {
+          "description" : "The Id of the File State of the Facility.",
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/GetFileStateIdsResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Get the Ids of all other sampling point file states associated\nwith the reference sampling point of the given file state.\nThink of the result being the list of siblings of the provided file state.\n",
+        "tags" : [ "SamplingPoint" ]
+      }
+    },
+    "/sampling-points/centralfilestates/{id}/reference-sampling-point" : {
+      "get" : {
+        "operationId" : "getReferenceSamplingPoint",
+        "parameters" : [ {
+          "description" : "The external id, either of the reference data, or an existing File State of the SamplingPoint.",
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/GetReferenceSamplingPointResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Get the reference data of a sampling point identified by an id.\nCaution: The returned id of the reference sampling point must not be stored.\n",
+        "tags" : [ "SamplingPoint" ]
+      }
+    },
+    "/sampling-points/reference/{id}/linked-ids" : {
+      "get" : {
+        "operationId" : "getChildFacilityFileStateIds",
+        "parameters" : [ {
+          "description" : "The Id of the Reference sampling point.",
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/GetFileStateIdsResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Get the Ids of all sampling point file states associated with the given reference.\nThink of the result being all child file states for the provided reference",
+        "tags" : [ "SamplingPoint" ]
+      }
+    },
+    "/sampling-points/reference/{id}/update" : {
+      "post" : {
+        "operationId" : "updateReferenceSamplingPoint",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/UpdateReferenceSamplingPointRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/AddSamplingPointFileStateResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Updates reference sampling point data identified by given id. Sets dataOrigin to DataOrigin.EDIT.\nReturns a new file state with the resulting new state.\n",
+        "tags" : [ "SamplingPoint" ]
+      }
+    },
     "/streets" : {
       "get" : {
         "operationId" : "searchStreet",
@@ -5673,6 +5992,32 @@
         } ],
         "responses" : {
           "200" : {
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "TestHelper" ]
+      }
+    },
+    "/test-helper/enabled-new-features/{featureEnabled}" : {
+      "get" : {
+        "operationId" : "isNewFeatureEnabled",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "featureEnabled",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/components/schemas/BaseFeature"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "type" : "boolean"
+                }
+              }
+            },
             "description" : "OK"
           }
         },
@@ -7620,6 +7965,78 @@
           }
         }
       },
+      "AddSamplingPointFileStateRequest" : {
+        "required" : [ "dataOrigin", "name" ],
+        "type" : "object",
+        "properties" : {
+          "dataOrigin" : {
+            "$ref" : "#/components/schemas/DataOrigin"
+          },
+          "facilityId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "name" : {
+            "maxLength" : 300,
+            "minLength" : 1,
+            "type" : "string",
+            "description" : "The name of the Sampling Point.",
+            "example" : "Example Sampling Point"
+          },
+          "referenceSamplingPointId" : {
+            "type" : "string",
+            "description" : "Id of a referenceSamplingPoint. If this Id is provided, a new File State with the input attributes is created for that referenceSamplingPoint, regardless of any matching logic.",
+            "format" : "uuid",
+            "example" : "UUID_2"
+          },
+          "zid" : {
+            "maxLength" : 300,
+            "minLength" : 1,
+            "type" : "string",
+            "description" : "Unique identifier of the Sampling Point, defined by TEIS3 spec.",
+            "example" : "010212345678901234567"
+          }
+        },
+        "description" : "Request used for adding sampling points from non-external sources"
+      },
+      "AddSamplingPointFileStateResponse" : {
+        "required" : [ "dataOrigin", "id", "name", "version" ],
+        "type" : "object",
+        "properties" : {
+          "dataOrigin" : {
+            "$ref" : "#/components/schemas/DataOrigin"
+          },
+          "facilityId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "facilityName" : {
+            "type" : "string"
+          },
+          "id" : {
+            "type" : "string",
+            "description" : "The Id of the Sampling Point.",
+            "format" : "uuid",
+            "example" : "UUID_1"
+          },
+          "name" : {
+            "maxLength" : 300,
+            "minLength" : 1,
+            "type" : "string",
+            "description" : "The name of the Sampling Point.",
+            "example" : "Example Sampling Point"
+          },
+          "version" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "zid" : {
+            "type" : "string",
+            "description" : "Unique identifier of the Sampling Point, defined by TEIS3 spec.",
+            "example" : "010212345678901234567"
+          }
+        }
+      },
       "AddUserRequest" : {
         "required" : [ "firstName", "groups", "lastName", "username" ],
         "type" : "object",
@@ -7761,7 +8178,7 @@
       },
       "BaseFeature" : {
         "type" : "string",
-        "enum" : [ "INBOX", "VACCINATION_CHECK" ]
+        "enum" : [ "INBOX", "VACCINATION_CHECK", "SAMPLES" ]
       },
       "BlockingEventsOfCalendar" : {
         "required" : [ "calendarId", "events" ],
@@ -10460,6 +10877,47 @@
         },
         "description" : "Contains the details on the public keys from users which have the right to decrypt audit log files\n"
       },
+      "GetReferenceFacilitiesRequest" : {
+        "required" : [ "fileStateIds" ],
+        "type" : "object",
+        "properties" : {
+          "fileStateIds" : {
+            "maxItems" : 2147483647,
+            "minItems" : 1,
+            "type" : "array",
+            "description" : "A list of file state Ids for requested Reference Facilities.",
+            "items" : {
+              "type" : "string",
+              "format" : "uuid"
+            }
+          }
+        }
+      },
+      "GetReferenceFacilitiesResponse" : {
+        "required" : [ "facilityByCFSId", "notFoundIds" ],
+        "type" : "object",
+        "properties" : {
+          "facilityByCFSId" : {
+            "type" : "array",
+            "description" : "A list of requested Reference Facilities.",
+            "items" : {
+              "type" : "object",
+              "additionalProperties" : {
+                "$ref" : "#/components/schemas/GetReferenceFacilityResponse"
+              }
+            }
+          },
+          "notFoundIds" : {
+            "type" : "array",
+            "description" : "A list containing the IDs of those requested reference facilities which could not be found in the database.",
+            "example" : "['UUID_1','UUID_4','UUID_5']",
+            "items" : {
+              "type" : "string",
+              "format" : "uuid"
+            }
+          }
+        }
+      },
       "GetReferenceFacilityResponse" : {
         "required" : [ "contactPersons", "dataOrigin", "emailAddresses", "id", "name", "phoneNumbers", "version" ],
         "type" : "object",
@@ -10645,6 +11103,60 @@
           }
         }
       },
+      "GetReferenceSamplingPointResponse" : {
+        "required" : [ "dataOrigin", "id", "name", "version" ],
+        "type" : "object",
+        "properties" : {
+          "dataOrigin" : {
+            "$ref" : "#/components/schemas/DataOrigin"
+          },
+          "facilityId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "facilityName" : {
+            "type" : "string"
+          },
+          "id" : {
+            "type" : "string",
+            "description" : "Id of the Reference SamplingPoint. This Id MUST NOT be persisted in any other database.",
+            "format" : "uuid",
+            "example" : "UUID_1"
+          },
+          "name" : {
+            "maxLength" : 300,
+            "minLength" : 1,
+            "type" : "string",
+            "description" : "The name of the Sampling Point.",
+            "example" : "Example Sampling Point"
+          },
+          "version" : {
+            "type" : "integer",
+            "description" : "Version of the entity. Each time the entity is changed, it is incremented by one.",
+            "format" : "int64"
+          },
+          "zid" : {
+            "maxLength" : 300,
+            "minLength" : 1,
+            "type" : "string",
+            "description" : "Unique identifier of the Sampling Point, defined by TEIS3 spec.",
+            "example" : "010212345678901234567"
+          }
+        }
+      },
+      "GetReferenceSamplingPointsResponse" : {
+        "required" : [ "samplingPoints" ],
+        "type" : "object",
+        "properties" : {
+          "samplingPoints" : {
+            "type" : "array",
+            "description" : "A list of reference sampling points",
+            "items" : {
+              "$ref" : "#/components/schemas/GetReferenceSamplingPointResponse"
+            }
+          }
+        }
+      },
       "GetRelevantCalendarsResponse" : {
         "required" : [ "currentUserCalendar", "globalCalendars", "moduleCalendars", "resolvedUsers", "userGroupCalendarInfos" ],
         "type" : "object",
@@ -10727,6 +11239,92 @@
             "type" : "integer",
             "description" : "The total number of Resources in the response.",
             "format" : "int64"
+          }
+        }
+      },
+      "GetSamplingPointFileStateResponse" : {
+        "required" : [ "dataOrigin", "id", "name", "referenceVersion" ],
+        "type" : "object",
+        "properties" : {
+          "dataOrigin" : {
+            "$ref" : "#/components/schemas/DataOrigin"
+          },
+          "facilityId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "id" : {
+            "type" : "string",
+            "description" : "Id of the SamplingPoint.",
+            "format" : "uuid",
+            "example" : "UUID_1"
+          },
+          "name" : {
+            "maxLength" : 300,
+            "minLength" : 1,
+            "type" : "string",
+            "description" : "The name of the Sampling Point.",
+            "example" : "Example Sampling Point"
+          },
+          "outdated" : {
+            "type" : "boolean",
+            "description" : "A flag that signals if a File State differs from the referenceFacility it is connected to.",
+            "example" : true
+          },
+          "referenceVersion" : {
+            "type" : "integer",
+            "description" : "The version of referenceData that was present when the FileState was created. Can be increased if a newer version is irrelevant for the Procedure and the outdated flag shall be suppressed.",
+            "format" : "int64",
+            "example" : 1
+          },
+          "zid" : {
+            "maxLength" : 300,
+            "minLength" : 1,
+            "type" : "string",
+            "description" : "Unique identifier of the Sampling Point, defined by TEIS3 spec.",
+            "example" : "010212345678901234567"
+          }
+        }
+      },
+      "GetSamplingPointFileStatesRequest" : {
+        "required" : [ "fileStateIds" ],
+        "type" : "object",
+        "properties" : {
+          "checkOutdated" : {
+            "type" : "boolean"
+          },
+          "fileStateIds" : {
+            "maxItems" : 2147483647,
+            "minItems" : 1,
+            "uniqueItems" : true,
+            "type" : "array",
+            "description" : "A list of Ids for requested SamplingPoint File States.",
+            "items" : {
+              "type" : "string",
+              "format" : "uuid"
+            }
+          }
+        }
+      },
+      "GetSamplingPointFileStatesResponse" : {
+        "required" : [ "notFoundIds", "samplingPointFileStates" ],
+        "type" : "object",
+        "properties" : {
+          "notFoundIds" : {
+            "type" : "array",
+            "description" : "A list containing the IDs of those requested facility file states which could not be found in the database.",
+            "example" : "['UUID_1','UUID_4','UUID_5']",
+            "items" : {
+              "type" : "string",
+              "format" : "uuid"
+            }
+          },
+          "samplingPointFileStates" : {
+            "type" : "array",
+            "description" : "A list of requested File States of Facilities.",
+            "items" : {
+              "$ref" : "#/components/schemas/GetSamplingPointFileStateResponse"
+            }
           }
         }
       },
@@ -11470,7 +12068,7 @@
       },
       "Language" : {
         "type" : "string",
-        "enum" : [ "GERMAN", "ENGLISH" ]
+        "enum" : [ "GERMAN", "ENGLISH", "SPANISH", "TURKISH", "RUSSIAN", "ARABIC", "FRENCH", "ITALIAN", "POLISH", "ROMANIAN", "UKRAINIAN", "CROATIAN", "FARSI", "DARI" ]
       },
       "Location" : {
         "required" : [ "latitude", "longitude" ],
@@ -11552,14 +12150,14 @@
         "description" : "The MUK attributes of a user"
       },
       "MultiLangDocument" : {
-        "required" : [ "de" ],
+        "required" : [ "localizations" ],
         "type" : "object",
         "properties" : {
-          "de" : {
-            "$ref" : "#/components/schemas/DocumentDetails"
-          },
-          "en" : {
-            "$ref" : "#/components/schemas/DocumentDetails"
+          "localizations" : {
+            "type" : "object",
+            "additionalProperties" : {
+              "$ref" : "#/components/schemas/DocumentDetails"
+            }
           }
         }
       },
@@ -12309,6 +12907,29 @@
         "description" : "A list of categories for the salutation from which specific salutation phrases can be derived. The choice of salutation is free for every citizen and not dependent on gender.",
         "example" : "NOT_SPECIFIED",
         "enum" : [ "NOT_SPECIFIED", "NEUTRAL", "FEMALE", "MALE" ]
+      },
+      "SamplingPointDetails" : {
+        "required" : [ "name" ],
+        "type" : "object",
+        "properties" : {
+          "facilityId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "name" : {
+            "maxLength" : 300,
+            "minLength" : 1,
+            "type" : "string",
+            "description" : "The name of the Sampling Point.",
+            "example" : "Example Sampling Point"
+          },
+          "zid" : {
+            "type" : "string",
+            "description" : "Unique identifier of the Sampling Point, defined by TEIS3 spec.",
+            "example" : "010212345678901234567"
+          }
+        },
+        "description" : "The data relating to a sampling point"
       },
       "SearchContactsResponse" : {
         "required" : [ "elements", "totalNumberOfElements" ],
@@ -13270,6 +13891,20 @@
           }
         }
       },
+      "UpdateReferenceSamplingPointRequest" : {
+        "required" : [ "samplingPointDetails", "version" ],
+        "type" : "object",
+        "properties" : {
+          "samplingPointDetails" : {
+            "$ref" : "#/components/schemas/SamplingPointDetails"
+          },
+          "version" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        },
+        "description" : "Request used to modify reference facility data provided the new state in\nfacilityDetails and the expected current version number.\n"
+      },
       "UpdateResourceRequest" : {
         "required" : [ "name" ],
         "type" : "object",
@@ -13520,7 +14155,7 @@
       "UserRole" : {
         "type" : "string",
         "description" : "A filter for a role users can have",
-        "enum" : [ "INSPECTION_LEADER", "INSPECTION_LANDESAMT_LEADER", "SCHOOL_ENTRY_LEADER", "TRAVEL_MEDICINE_LEADER", "MEASLES_PROTECTION_LEADER", "STATISTICS_LEADER", "MEDS_ABROAD_LEADER", "BASE_PERSONS_READ", "BASE_PERSONS_WRITE", "BASE_PERSONS_DELETE", "BASE_FACILITIES_READ", "BASE_FACILITIES_WRITE", "BASE_FACILITIES_DELETE", "BASE_RESOURCES_READ", "BASE_RESOURCES_WRITE", "BASE_INVENTORY_READ", "BASE_INVENTORY_USE", "BASE_INVENTORY_ADMINISTRATE", "BASE_LABELS_READ", "BASE_LABELS_WRITE", "BASE_CONTACTS_READ", "BASE_CONTACTS_WRITE", "BASE_GDPR_PROCEDURE_REVIEW", "BASE_GDPR_PROCEDURE_READ", "BASE_GDPR_PROCEDURE_WRITE", "BASE_MUK_FACILITY_LINK_WRITE", "BASE_BUNDID_PERSON_LINK_WRITE", "BASE_GLOBAL_CALENDARS_WRITE", "BASE_CALENDAR_BUSINESS_EVENTS_WRITE", "BASE_PROCEDURES_READ", "BASE_PROCEDURE_METRICS_READ", "BASE_TASKS_READ", "BASE_ACCESS_CODE_USER_ADMIN", "BASE_ACCESS_CODE_USER_VERIFY", "SCHOOL_ENTRY_ADMIN", "INSPECTION_NOTIFICATIONS_READ", "INSPECTION_PROCEDURE_EDIT", "INSPECTION_PROCEDURE_ASSIGN", "INSPECTION_OBJECTTYPES_READ", "INSPECTION_OBJECTTYPES_WRITE", "INSPECTION_CHECKLISTDEFINITIONS_READ", "INSPECTION_CHECKLISTDEFINITIONS_WRITE", "INSPECTION_CORECHECKLISTDEFINITIONS_EDIT", "INSPECTION_CENTRALREPOSITORY_READ", "INSPECTION_CENTRALREPOSITORY_WRITE", "INSPECTION_CENTRALREPOSITORY_DELETE", "INSPECTION_CENTRALREPOSITORY_WRITE_CORECHECKLISTS", "INSPECTION_IMPORT", "SCHOOL_ENTRY_VACCINATED_FILE_STATES", "TRAVEL_MEDICINE_ADMIN", "MEASLES_PROTECTION_ADMIN", "MEDS_ABROAD_ADMIN", "CHAT_USER", "STATISTICS_STATISTICS_READ", "STATISTICS_STATISTICS_WRITE", "STATISTICS_STATISTICS_ADMIN", "STATISTICS_STATISTICS_TECHNICAL_USER", "BASE_MAIL_SEND", "INBOX_PROCEDURE_WRITE", "PROCEDURE_ARCHIVE", "PROCEDURE_ARCHIVE_ADMIN", "AUDITLOG_FILE_SEND", "AUDITLOG_DECRYPT_AND_ACCESS", "AUDITLOG_AUTHORIZE_ACCESS", "AUDITLOG_PUBLIC_KEYS_READ", "STANDARD_EMPLOYEE", "STI_PROTECTION_ADMIN", "STI_PROTECTION_LEADER", "MEDICAL_REGISTRY_LEADER", "MEDICAL_REGISTRY_ADMIN", "DENTAL_LEADER", "DENTAL_ADMIN", "OPEN_DATA_ADMIN", "OPEN_DATA_LEADER", "MEDICAL_REGISTRY_IMPORT", "OFFICIAL_MEDICAL_SERVICE_LEADER", "OFFICIAL_MEDICAL_SERVICE_ADMIN", "BASE_GDPR_VALIDATION_TASK_CLEANUP", "CONFIGURATION_ACCESS", "SCHOOL_ENTRY_VACCINATION_CHECK", "PROSTITUTE_PROTECTION_LEADER", "PROSTITUTE_PROTECTION_ADMIN", "INFECTION_BRIEFING_LEADER", "INFECTION_BRIEFING_ADMIN", "BASE_INTER_MODULE_MIGRATION" ]
+        "enum" : [ "INSPECTION_LEADER", "INSPECTION_LANDESAMT_LEADER", "SCHOOL_ENTRY_LEADER", "TRAVEL_MEDICINE_LEADER", "MEASLES_PROTECTION_LEADER", "STATISTICS_LEADER", "MEDS_ABROAD_LEADER", "BASE_PERSONS_READ", "BASE_PERSONS_WRITE", "BASE_PERSONS_DELETE", "BASE_FACILITIES_READ", "BASE_FACILITIES_WRITE", "BASE_FACILITIES_DELETE", "BASE_RESOURCES_READ", "BASE_RESOURCES_WRITE", "BASE_INVENTORY_READ", "BASE_INVENTORY_USE", "BASE_INVENTORY_ADMINISTRATE", "BASE_LABELS_READ", "BASE_LABELS_WRITE", "BASE_CONTACTS_READ", "BASE_CONTACTS_WRITE", "BASE_GDPR_PROCEDURE_REVIEW", "BASE_GDPR_PROCEDURE_READ", "BASE_GDPR_PROCEDURE_WRITE", "BASE_MUK_FACILITY_LINK_WRITE", "BASE_BUNDID_PERSON_LINK_WRITE", "BASE_GLOBAL_CALENDARS_WRITE", "BASE_CALENDAR_BUSINESS_EVENTS_WRITE", "BASE_PROCEDURES_READ", "BASE_PROCEDURE_METRICS_READ", "BASE_TASKS_READ", "BASE_ACCESS_CODE_USER_ADMIN", "BASE_ACCESS_CODE_USER_VERIFY", "SCHOOL_ENTRY_ADMIN", "INSPECTION_NOTIFICATIONS_READ", "INSPECTION_PROCEDURE_EDIT", "INSPECTION_PROCEDURE_ASSIGN", "INSPECTION_OBJECTTYPES_READ", "INSPECTION_OBJECTTYPES_WRITE", "INSPECTION_CHECKLISTDEFINITIONS_READ", "INSPECTION_CHECKLISTDEFINITIONS_WRITE", "INSPECTION_CORECHECKLISTDEFINITIONS_EDIT", "INSPECTION_CENTRALREPOSITORY_READ", "INSPECTION_CENTRALREPOSITORY_WRITE", "INSPECTION_CENTRALREPOSITORY_DELETE", "INSPECTION_CENTRALREPOSITORY_WRITE_CORECHECKLISTS", "INSPECTION_IMPORT", "SCHOOL_ENTRY_VACCINATED_FILE_STATES", "TRAVEL_MEDICINE_ADMIN", "MEASLES_PROTECTION_ADMIN", "MEDS_ABROAD_ADMIN", "CHAT_USER", "STATISTICS_STATISTICS_READ", "STATISTICS_STATISTICS_WRITE", "STATISTICS_STATISTICS_ADMIN", "STATISTICS_STATISTICS_TECHNICAL_USER", "BASE_MAIL_SEND", "INBOX_PROCEDURE_WRITE", "PROCEDURE_ARCHIVE", "PROCEDURE_ARCHIVE_ADMIN", "AUDITLOG_FILE_SEND", "AUDITLOG_DECRYPT_AND_ACCESS", "AUDITLOG_AUTHORIZE_ACCESS", "AUDITLOG_PUBLIC_KEYS_READ", "STANDARD_EMPLOYEE", "STI_PROTECTION_ADMIN", "STI_PROTECTION_LEADER", "MEDICAL_REGISTRY_LEADER", "MEDICAL_REGISTRY_ADMIN", "DENTAL_LEADER", "DENTAL_ADMIN", "OPEN_DATA_ADMIN", "OPEN_DATA_LEADER", "MEDICAL_REGISTRY_IMPORT", "OFFICIAL_MEDICAL_SERVICE_LEADER", "OFFICIAL_MEDICAL_SERVICE_ADMIN", "OFFICIAL_MEDICAL_SERVICE_ASSESSMENT_CREATE", "OFFICIAL_MEDICAL_SERVICE_ASSESSMENT_EDITOR_EDIT", "OFFICIAL_MEDICAL_SERVICE_ASSESSMENT_PREVIEW_READER_EDIT", "OFFICIAL_MEDICAL_SERVICE_TEXT_TEMPLATES_WRITE", "OFFICIAL_MEDICAL_SERVICE_LEGAL_NOTES_WRITE", "BASE_GDPR_VALIDATION_TASK_CLEANUP", "CONFIGURATION_ACCESS", "SCHOOL_ENTRY_VACCINATION_CHECK", "PROSTITUTE_PROTECTION_LEADER", "PROSTITUTE_PROTECTION_ADMIN", "INFECTION_BRIEFING_LEADER", "INFECTION_BRIEFING_ADMIN", "BASE_INTER_MODULE_MIGRATION" ]
       },
       "VCardAddress" : {
         "required" : [ "addressAddition", "city", "country", "houseNumber", "postBox", "postalCode", "street" ],

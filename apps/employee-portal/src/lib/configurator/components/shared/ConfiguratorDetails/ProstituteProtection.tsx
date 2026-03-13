@@ -6,9 +6,13 @@
 import { notFound } from "next/navigation";
 import { useMemo } from "react";
 
-import { ApiLanguage } from "@eshg/base-api";
 import { FileType } from "@eshg/lib-portal";
 
+import { useUpdateProstituteProtection } from "@/lib/configurator/api/mutations/useUpdateProstituteProtection";
+import {
+  useDownloadProstituteProtectionLandingPage,
+  useGetProstituteProtectionConfig,
+} from "@/lib/configurator/api/queries/prostituteProtection";
 import {
   ConfiguratorForm,
   FormSection,
@@ -21,15 +25,14 @@ import {
   ConfiguratorEndpointName,
   ConfiguratorModuleName,
 } from "@/lib/configurator/shared/types";
-import { useUpdateProstituteProtection } from "@/lib/shared/api/mutations/configurator/useUpdateProstituteProtection";
 import {
-  useDownloadProstituteProtectionLandingPage,
-  useGetProstituteProtectionConfig,
-} from "@/lib/shared/api/queries/configurator/prostituteProtection";
+  SupportedLanguage,
+  languageLabel,
+  supportedLanguages,
+} from "@/lib/i18n/language";
 
 export interface ProstituteProtectionFormModel {
-  landingContentDe: ConfigFile;
-  landingContentEn: ConfigFile;
+  landingContent: Record<SupportedLanguage, ConfigFile>;
   onlinePortalBookingEnabled: boolean;
 }
 
@@ -57,26 +60,14 @@ function ProstituteProtectionConfiguratorForm(props: {
   });
   const sheets = useProstituteProtectionSheets();
 
-  async function handleSubmit({
-    landingContentDe,
-    landingContentEn,
-    onlinePortalBookingEnabled,
-  }: ProstituteProtectionFormModel) {
-    await updateProstituteProtection({
-      landingContentDe,
-      landingContentEn,
-      onlinePortalBookingEnabled,
-    });
+  async function handleSubmit(model: ProstituteProtectionFormModel) {
+    await updateProstituteProtection(model);
   }
 
   return (
     <ConfiguratorForm
       sheets={sheets}
-      initialValues={{
-        landingContentDe: data.landingContentDe,
-        landingContentEn: data.landingContentEn,
-        onlinePortalBookingEnabled: data.onlinePortalBookingEnabled,
-      }}
+      initialValues={data}
       status={currentTabStatus}
       onSubmit={handleSubmit}
     />
@@ -92,20 +83,14 @@ function useProstituteProtectionSheets() {
       [
         {
           title: "Startseite im Online Portal",
-          sections: [
+          sections: supportedLanguages.map((language) =>
             markdownFileSection({
-              title: "Deutsch",
-              name: "landingContentDe",
-              required: true,
-              downloadFile: () => downloadLandingPage(ApiLanguage.German),
+              title: languageLabel[language],
+              name: `landingContent.${language}`,
+              required: language === "de",
+              downloadFile: () => downloadLandingPage(language),
             }),
-            markdownFileSection({
-              title: "Englisch",
-              name: "landingContentEn",
-              required: false,
-              downloadFile: () => downloadLandingPage(ApiLanguage.English),
-            }),
-          ],
+          ),
         },
         {
           title: "Termine im Online Portal buchbar",

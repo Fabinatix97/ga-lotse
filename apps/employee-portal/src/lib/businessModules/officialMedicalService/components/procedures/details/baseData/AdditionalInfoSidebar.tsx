@@ -47,14 +47,14 @@ function AdditionalInfoSidebar(props: Readonly<AdditionalInfoSidebarProps>) {
   const concernMap: Map<string, ApiConcernConfig> = allConcerns.categories
     .flatMap((category) => category.concerns)
     .reduce((map, concern) => {
-      map.set(concern.nameDe, concern);
+      map.set(concern.names.GERMAN!, concern);
       return map;
     }, new Map<string, ApiConcernConfig>());
 
   const categoryMap: Map<string, ApiConcernCategoryConfig> =
     allConcerns.categories.reduce((map, category) => {
       for (const concern of category.concerns) {
-        map.set(concern.nameDe, category);
+        map.set(concern.names.GERMAN!, category);
       }
       return map;
     }, new Map<string, ApiConcernCategoryConfig>());
@@ -72,8 +72,7 @@ function AdditionalInfoSidebar(props: Readonly<AdditionalInfoSidebarProps>) {
         concern: {
           ...concern,
           version: props.procedure.concern?.version ?? 0,
-          categoryNameDe: categoryMap.get(values.concern)!.nameDe,
-          categoryNameEn: categoryMap.get(values.concern)!.nameEn,
+          categoryNames: categoryMap.get(values.concern)!.names,
         },
         physicianId: values.physician,
         cutOffDate: isNonEmptyString(values.cutOffDate)
@@ -101,9 +100,9 @@ function AdditionalInfoSidebar(props: Readonly<AdditionalInfoSidebarProps>) {
       }
       initialValues={{
         category: props.procedure.concern
-          ? props.procedure.concern.categoryNameDe
+          ? props.procedure.concern.categoryNames.GERMAN
           : ALL_CATEGORIES_KEY,
-        concern: props.procedure.concern?.nameDe,
+        concern: props.procedure.concern?.names?.GERMAN,
         physician: mapPhysicianFormValues(props.procedure),
         ...(!!props.procedure.affectedPerson.emailAddresses?.length && {
           sendEmailNotifications: props.procedure.sendEmailNotifications,

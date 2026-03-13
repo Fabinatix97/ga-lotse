@@ -210,19 +210,18 @@
               "schema" : {
                 "type" : "object",
                 "properties" : {
-                  "termsOfUseDe" : {
-                    "type" : "string",
-                    "format" : "binary"
-                  },
-                  "termsOfUseEn" : {
-                    "type" : "string",
-                    "format" : "binary"
+                  "files" : {
+                    "type" : "array",
+                    "items" : {
+                      "type" : "string",
+                      "format" : "binary"
+                    }
                   },
                   "updateOpenDataConfigRequest" : {
                     "$ref" : "#/components/schemas/UpdateOpenDataConfigRequest"
                   }
                 },
-                "required" : [ "termsOfUseDe", "updateOpenDataConfigRequest" ]
+                "required" : [ "updateOpenDataConfigRequest" ]
               }
             }
           }
@@ -810,17 +809,17 @@
       },
       "Language" : {
         "type" : "string",
-        "enum" : [ "GERMAN", "ENGLISH" ]
+        "enum" : [ "GERMAN", "ENGLISH", "SPANISH", "TURKISH", "RUSSIAN", "ARABIC", "FRENCH", "ITALIAN", "POLISH", "ROMANIAN", "UKRAINIAN", "CROATIAN", "FARSI", "DARI" ]
       },
       "MultiLangDocument" : {
-        "required" : [ "de" ],
+        "required" : [ "localizations" ],
         "type" : "object",
         "properties" : {
-          "de" : {
-            "$ref" : "#/components/schemas/DocumentDetails"
-          },
-          "en" : {
-            "$ref" : "#/components/schemas/DocumentDetails"
+          "localizations" : {
+            "type" : "object",
+            "additionalProperties" : {
+              "$ref" : "#/components/schemas/DocumentDetails"
+            }
           }
         }
       },

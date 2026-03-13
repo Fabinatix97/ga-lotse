@@ -47,6 +47,7 @@ import {
 import {
   AppointmentBlockAvailabilityConfigApi as SchoolEntryAppointmentBlockAvailabilityConfigApi,
   SchoolEntryAppointmentStandardDurationConfigApi,
+  SchoolEntryDeviceRegistryConfigApi,
   SchoolEntryLibConfigApi,
 } from "@eshg/school-entry-api";
 import {
@@ -201,6 +202,11 @@ export function useConfiguratorOpeningHoursApi(
 export function useConfiguratorSchoolEntryApi() {
   const configuration = useSchoolEntryConfiguration();
   return new SchoolEntryLibConfigApi(configuration);
+}
+
+export function useSchoolEntryDeviceRegistryConfigApi() {
+  const configuration = useSchoolEntryConfiguration();
+  return new SchoolEntryDeviceRegistryConfigApi(configuration);
 }
 
 export function useConfiguratorOmsApi() {

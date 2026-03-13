@@ -1045,13 +1045,12 @@
               "schema" : {
                 "type" : "object",
                 "properties" : {
-                  "de" : {
-                    "type" : "string",
-                    "format" : "binary"
-                  },
-                  "en" : {
-                    "type" : "string",
-                    "format" : "binary"
+                  "files" : {
+                    "type" : "array",
+                    "items" : {
+                      "type" : "string",
+                      "format" : "binary"
+                    }
                   }
                 }
               }
@@ -1118,13 +1117,12 @@
               "schema" : {
                 "type" : "object",
                 "properties" : {
-                  "de" : {
-                    "type" : "string",
-                    "format" : "binary"
-                  },
-                  "en" : {
-                    "type" : "string",
-                    "format" : "binary"
+                  "files" : {
+                    "type" : "array",
+                    "items" : {
+                      "type" : "string",
+                      "format" : "binary"
+                    }
                   }
                 }
               }
@@ -1399,6 +1397,13 @@
           }
         }, {
           "in" : "query",
+          "name" : "zid",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "in" : "query",
           "name" : "name",
           "required" : false,
           "schema" : {
@@ -1516,13 +1521,6 @@
           "required" : false,
           "schema" : {
             "type" : "boolean"
-          }
-        }, {
-          "in" : "query",
-          "name" : "pointOfWithdrawal",
-          "required" : false,
-          "schema" : {
-            "type" : "string"
           }
         }, {
           "in" : "query",
@@ -5008,6 +5006,125 @@
         "tags" : [ "ProgressEntry" ]
       }
     },
+    "/sampling-points" : {
+      "get" : {
+        "operationId" : "getSamplingPoints",
+        "parameters" : [ {
+          "in" : "query",
+          "name" : "namePrefix",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "in" : "query",
+          "name" : "facilityId",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/GetSamplingPointsResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Get all sampling points with prefix",
+        "tags" : [ "SamplingPoint" ]
+      },
+      "post" : {
+        "operationId" : "createSamplingPoint",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/CreateSamplingPointRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/SamplingPoint"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Creates a sampling point",
+        "tags" : [ "SamplingPoint" ]
+      }
+    },
+    "/sampling-points/facilities" : {
+      "get" : {
+        "operationId" : "getFacilities",
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/GetFacilitiesForSamplingPointsResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Get all facilityFileStates that can have sampling points added to them",
+        "tags" : [ "SamplingPoint" ]
+      }
+    },
+    "/sampling-points/{samplingPointId}" : {
+      "put" : {
+        "operationId" : "updateSamplingPoint",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "samplingPointId",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/UpdateSamplingPointRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/SamplingPoint"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Update a sampling point",
+        "tags" : [ "SamplingPoint" ]
+      }
+    },
     "/statistics-inclusion" : {
       "post" : {
         "operationId" : "updateStatisticsInclusion",
@@ -7340,7 +7457,7 @@
         }
       },
       "CreateInspectionSampleRequest" : {
-        "required" : [ "evaluatingActor", "evaluationType", "externalId", "measurementParameters", "pointOfWithdrawal", "sampleNumber", "samplingActor", "typeOfSample" ],
+        "required" : [ "evaluatingActor", "evaluationType", "externalId", "measurementParameters", "sampleNumber", "samplingActor", "samplingPointId", "typeOfSample" ],
         "type" : "object",
         "properties" : {
           "evaluatingActor" : {
@@ -7366,9 +7483,6 @@
               "$ref" : "#/components/schemas/CreateInspectionSampleMeasurementParameterRequest"
             }
           },
-          "pointOfWithdrawal" : {
-            "type" : "string"
-          },
           "sampleNumber" : {
             "type" : "string"
           },
@@ -7380,6 +7494,10 @@
             }, {
               "$ref" : "#/components/schemas/InspectionSampleUserReference"
             } ]
+          },
+          "samplingPointId" : {
+            "type" : "string",
+            "format" : "uuid"
           },
           "timeOfEvaluation" : {
             "type" : "string",
@@ -7465,6 +7583,26 @@
           "objectTypeId" : {
             "type" : "string",
             "format" : "uuid"
+          }
+        }
+      },
+      "CreateSamplingPointRequest" : {
+        "required" : [ "facilityId", "name", "zid" ],
+        "type" : "object",
+        "properties" : {
+          "facilityId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "name" : {
+            "maxLength" : 300,
+            "minLength" : 1,
+            "type" : "string"
+          },
+          "zid" : {
+            "maxLength" : 300,
+            "minLength" : 1,
+            "type" : "string"
           }
         }
       },
@@ -8512,6 +8650,18 @@
           }
         }
       },
+      "GetFacilitiesForSamplingPointsResponse" : {
+        "required" : [ "facilities" ],
+        "type" : "object",
+        "properties" : {
+          "facilities" : {
+            "type" : "object",
+            "additionalProperties" : {
+              "$ref" : "#/components/schemas/GetReferenceFacilityResponse"
+            }
+          }
+        }
+      },
       "GetFacilityFileStateResponse" : {
         "required" : [ "contactPersons", "dataOrigin", "emailAddresses", "id", "name", "phoneNumbers", "referenceVersion" ],
         "type" : "object",
@@ -9283,6 +9433,18 @@
           }
         }
       },
+      "GetSamplingPointsResponse" : {
+        "required" : [ "samplingPoints" ],
+        "type" : "object",
+        "properties" : {
+          "samplingPoints" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/SamplingPoint"
+            }
+          }
+        }
+      },
       "GetTaskByUserResponse" : {
         "required" : [ "resolvedUsers", "tasksByUser" ],
         "type" : "object",
@@ -9654,6 +9816,10 @@
         "required" : [ "banned", "baseFacility", "id" ],
         "type" : "object",
         "properties" : {
+          "assigneeId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
           "banned" : {
             "type" : "boolean"
           },
@@ -10237,7 +10403,7 @@
         "enum" : [ "OPEN", "SUCCESSFUL", "FAILED", "SUCCESSFUL_WITH_INCIDENTS" ]
       },
       "InspectionSample" : {
-        "required" : [ "createdAt", "evaluatingActor", "evaluationType", "inspectionId", "measurementParameters", "pointOfWithdrawal", "sampleId", "sampleNumber", "samplingActor", "typeOfSample" ],
+        "required" : [ "createdAt", "evaluatingActor", "evaluationType", "inspectionId", "measurementParameters", "sampleId", "sampleNumber", "samplingActor", "samplingPoint", "typeOfSample" ],
         "type" : "object",
         "properties" : {
           "createdAt" : {
@@ -10269,9 +10435,6 @@
               "$ref" : "#/components/schemas/InspectionSampleMeasurementParameter"
             }
           },
-          "pointOfWithdrawal" : {
-            "type" : "string"
-          },
           "sampleId" : {
             "type" : "string",
             "format" : "uuid"
@@ -10287,6 +10450,9 @@
             }, {
               "$ref" : "#/components/schemas/InspectionSampleUser"
             } ]
+          },
+          "samplingPoint" : {
+            "$ref" : "#/components/schemas/InspectionSamplingPoint"
           },
           "timeOfEvaluation" : {
             "type" : "string",
@@ -10443,7 +10609,7 @@
         "enum" : [ "PENDING", "TOO_LOW", "WITHIN_NORM", "TOO_HIGH", "NO_NORM_SPECIFIED" ]
       },
       "InspectionSampleTemplate" : {
-        "required" : [ "evaluationType", "id", "measurementParameters", "name", "pointOfWithdrawal", "typeOfSample" ],
+        "required" : [ "evaluationType", "id", "measurementParameters", "name", "typeOfSample" ],
         "type" : "object",
         "properties" : {
           "evaluationType" : {
@@ -10460,9 +10626,6 @@
             }
           },
           "name" : {
-            "type" : "string"
-          },
-          "pointOfWithdrawal" : {
             "type" : "string"
           },
           "typeOfSample" : {
@@ -10515,6 +10678,26 @@
             }
           }
         } ]
+      },
+      "InspectionSamplingPoint" : {
+        "required" : [ "id", "name", "zid" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "name" : {
+            "maxLength" : 300,
+            "minLength" : 1,
+            "type" : "string"
+          },
+          "zid" : {
+            "maxLength" : 300,
+            "minLength" : 1,
+            "type" : "string"
+          }
+        }
       },
       "InspectionSyncFileStateRequest" : {
         "required" : [ "facilityVersion" ],
@@ -10646,7 +10829,7 @@
       },
       "Language" : {
         "type" : "string",
-        "enum" : [ "GERMAN", "ENGLISH" ]
+        "enum" : [ "GERMAN", "ENGLISH", "SPANISH", "TURKISH", "RUSSIAN", "ARABIC", "FRENCH", "ITALIAN", "POLISH", "ROMANIAN", "UKRAINIAN", "CROATIAN", "FARSI", "DARI" ]
       },
       "Mail" : {
         "required" : [ "@type", "createdAt", "deletable", "deleted", "fileId", "fileName", "fileSizeBytes", "fileType", "locked", "modifiedAt", "removedInvalidAttachments" ],
@@ -10830,14 +11013,14 @@
         "enum" : [ "UP", "DOWN" ]
       },
       "MultiLangDocument" : {
-        "required" : [ "de" ],
+        "required" : [ "localizations" ],
         "type" : "object",
         "properties" : {
-          "de" : {
-            "$ref" : "#/components/schemas/DocumentDetails"
-          },
-          "en" : {
-            "$ref" : "#/components/schemas/DocumentDetails"
+          "localizations" : {
+            "type" : "object",
+            "additionalProperties" : {
+              "$ref" : "#/components/schemas/DocumentDetails"
+            }
           }
         }
       },
@@ -11549,6 +11732,51 @@
         "description" : "A list of categories for the salutation from which specific salutation phrases can be derived. The choice of salutation is free for every citizen and not dependent on gender.",
         "enum" : [ "NOT_SPECIFIED", "NEUTRAL", "FEMALE", "MALE" ]
       },
+      "SamplingPoint" : {
+        "required" : [ "facility", "id", "name", "version", "zid" ],
+        "type" : "object",
+        "properties" : {
+          "facility" : {
+            "$ref" : "#/components/schemas/SamplingPointFacility"
+          },
+          "id" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "name" : {
+            "maxLength" : 300,
+            "minLength" : 1,
+            "type" : "string"
+          },
+          "version" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "zid" : {
+            "maxLength" : 300,
+            "minLength" : 1,
+            "type" : "string"
+          }
+        }
+      },
+      "SamplingPointFacility" : {
+        "required" : [ "externalId", "name" ],
+        "type" : "object",
+        "properties" : {
+          "externalId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "name" : {
+            "maxLength" : 300,
+            "minLength" : 1,
+            "type" : "string"
+          },
+          "user" : {
+            "$ref" : "#/components/schemas/User"
+          }
+        }
+      },
       "SelfAssignTaskRequest" : {
         "required" : [ "taskVersion" ],
         "type" : "object",
@@ -11610,13 +11838,6 @@
           "properties" : {
             "changeDescription" : {
               "type" : "string"
-            },
-            "keyDocumentType" : {
-              "type" : "string"
-            },
-            "keyDocumentVersion" : {
-              "type" : "integer",
-              "format" : "int32"
             },
             "previousFacilityFileStateId" : {
               "type" : "string",
@@ -12214,7 +12435,7 @@
         }
       },
       "UpdateInspectionSampleRequest" : {
-        "required" : [ "evaluatingActor", "evaluationType", "measurementParametersToAdd", "measurementParametersToDelete", "pointOfWithdrawal", "sampleNumber", "samplingActor", "typeOfSample" ],
+        "required" : [ "evaluatingActor", "evaluationType", "measurementParametersToAdd", "measurementParametersToDelete", "sampleNumber", "samplingActor", "samplingPointId", "typeOfSample" ],
         "type" : "object",
         "properties" : {
           "evaluatingActor" : {
@@ -12242,9 +12463,6 @@
               "format" : "uuid"
             }
           },
-          "pointOfWithdrawal" : {
-            "type" : "string"
-          },
           "sampleNumber" : {
             "type" : "string"
           },
@@ -12256,6 +12474,10 @@
             }, {
               "$ref" : "#/components/schemas/InspectionSampleUserReference"
             } ]
+          },
+          "samplingPointId" : {
+            "type" : "string",
+            "format" : "uuid"
           },
           "timeOfEvaluation" : {
             "type" : "string",
@@ -12339,6 +12561,30 @@
         "properties" : {
           "checked" : {
             "type" : "boolean"
+          }
+        }
+      },
+      "UpdateSamplingPointRequest" : {
+        "required" : [ "facilityId", "name", "version", "zid" ],
+        "type" : "object",
+        "properties" : {
+          "facilityId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "name" : {
+            "maxLength" : 300,
+            "minLength" : 1,
+            "type" : "string"
+          },
+          "version" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "zid" : {
+            "maxLength" : 300,
+            "minLength" : 1,
+            "type" : "string"
           }
         }
       },

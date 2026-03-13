@@ -13,6 +13,7 @@ import {
   useSidebarWithFormRef,
 } from "@eshg/lib-employee-portal";
 import {
+  ApiLanguage,
   PatchCompleteDocumentFileUploadRequest,
   PatchDocumentInformationRequest,
   PatchDocumentNoteRequest,
@@ -31,6 +32,7 @@ import {
 } from "@/lib/businessModules/officialMedicalService/components/procedures/details/documents/DocumentForm";
 import { EditDocumentInformationForm } from "@/lib/businessModules/officialMedicalService/components/procedures/details/documents/EditDocumentInformationForm";
 import { EditDocumentNoteForm } from "@/lib/businessModules/officialMedicalService/components/procedures/details/documents/EditDocumentNoteForm";
+import { mapToApiLanguage, supportedLanguages } from "@/lib/i18n/language";
 
 import { RejectDocumentForm } from "./RejectDocumentForm";
 
@@ -89,10 +91,20 @@ function DocumentSidebar({
     const request: PatchDocumentInformationRequest = {
       id: document.id,
       apiPatchDocumentInformationRequest: {
-        documentTypeDe: values.documentTypeDe,
-        documentTypeEn: values.documentTypeEn,
-        helpTextDe: values.helpTextDe,
-        helpTextEn: values.helpTextEn,
+        documentType: supportedLanguages.reduce(
+          (acc, lang) => {
+            acc[mapToApiLanguage(lang)] = values.documentType[lang];
+            return acc;
+          },
+          {} as Partial<Record<ApiLanguage, string>>,
+        ),
+        helpText: supportedLanguages.reduce(
+          (acc, lang) => {
+            acc[mapToApiLanguage(lang)] = values.helpText[lang];
+            return acc;
+          },
+          {} as Partial<Record<ApiLanguage, string>>,
+        ),
         mandatoryDocument: values.mandatoryDocument,
         uploadInCitizenPortal: values.uploadInCitizenPortal,
         labCode: values.labCode,
@@ -134,10 +146,20 @@ function DocumentSidebar({
   }
 
   const INITIAL_VALUES: DocumentFormValues = {
-    documentTypeDe: document.documentTypeDe,
-    documentTypeEn: document.documentTypeEn ?? "",
-    helpTextDe: document.helpTextDe ?? "",
-    helpTextEn: document.helpTextEn ?? "",
+    documentType: supportedLanguages.reduce(
+      (acc, lang) => {
+        acc[lang] = document.documentType?.[mapToApiLanguage(lang)] ?? "";
+        return acc;
+      },
+      { de: "" } as DocumentFormValues["documentType"],
+    ),
+    helpText: supportedLanguages.reduce(
+      (acc, lang) => {
+        acc[lang] = document.helpText?.[mapToApiLanguage(lang)] ?? "";
+        return acc;
+      },
+      { de: "" } as DocumentFormValues["helpText"],
+    ),
     mandatoryDocument: document.mandatoryDocument,
     uploadInCitizenPortal: document.uploadInCitizenPortal,
     files: [],
@@ -149,7 +171,7 @@ function DocumentSidebar({
     <>
       {mode === "default" && (
         <DocumentForm
-          title={document.documentTypeDe}
+          title={document.documentType.GERMAN!}
           formRef={props.formRef}
           initialValues={INITIAL_VALUES}
           document={document}

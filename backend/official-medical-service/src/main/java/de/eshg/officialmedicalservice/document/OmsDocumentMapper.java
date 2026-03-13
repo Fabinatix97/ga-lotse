@@ -5,12 +5,15 @@
 
 package de.eshg.officialmedicalservice.document;
 
+import de.cronn.commons.lang.StreamUtil;
 import de.eshg.officialmedicalservice.document.api.DocumentDto;
 import de.eshg.officialmedicalservice.document.api.DocumentStatusDto;
 import de.eshg.officialmedicalservice.document.api.DocumentUploadedByDto;
 import de.eshg.officialmedicalservice.document.persistence.entity.OmsDocument;
 import de.eshg.officialmedicalservice.document.persistence.entity.OmsDocumentStatus;
 import de.eshg.officialmedicalservice.file.OmsFileMapper;
+import de.eshg.rest.service.i18n.Language;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import org.springframework.stereotype.Component;
@@ -29,7 +32,9 @@ public class OmsDocumentMapper {
     }
     return documentList.stream()
         .sorted(
-            (doc1, doc2) -> doc1.getDocumentTypeDe().compareToIgnoreCase(doc2.getDocumentTypeDe()))
+            (doc1, doc2) ->
+                doc1.getDocumentType(Language.GERMAN)
+                    .compareToIgnoreCase(doc2.getDocumentType(Language.GERMAN)))
         .map(this::toInterfaceType)
         .toList();
   }
@@ -40,10 +45,10 @@ public class OmsDocumentMapper {
     }
     return new DocumentDto(
         document.getId(),
-        document.getDocumentTypeDe(),
-        document.getDocumentTypeEn(),
-        document.getHelpTextDe(),
-        document.getHelpTextEn(),
+        Arrays.stream(Language.values())
+            .collect(StreamUtil.toLinkedHashMap(l -> l, document::getDocumentType)),
+        Arrays.stream(Language.values())
+            .collect(StreamUtil.toLinkedHashMap(l -> l, document::getHelpText)),
         toInterfaceType(document.getDocumentStatus()),
         document.getLastDocumentUpload(),
         omsFileMapper.toInterfaceType(document.getFiles()),

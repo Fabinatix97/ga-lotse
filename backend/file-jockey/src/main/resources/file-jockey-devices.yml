@@ -4,5 +4,5 @@
 de:
   eshg:
     file-jockey:
-      default-max-file-size:
+      default-max-file-size: 10MB
       devices:

@@ -2,6 +2,15 @@ GA-Lotse ist ein Kooperationsprojekt des Gesundheitsamts Frankfurt am Main mit d
 
 Finanziert von der Europäischen Union – NextGenerationEU
 
+## GA-Lotse 2.23
+_04.03.2026_
+
+Sechsunddreißigster Release der Anwendung GA-Lotse
+
+### Zahnärztlicher Dienst und Statistikmodul:
+
+* Die Datenbasis der Auswertungen für „ZAD Kind“ richtet sich nun nach den Maßnahmen im entsprechenden Zeitraum.
+
 ## GA-Lotse 2.22
 _25.02.2026_
 

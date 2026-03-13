@@ -8,6 +8,8 @@ import { notFound } from "next/navigation";
 
 import { useValidateEmail } from "@eshg/lib-portal";
 
+import { useUpdateNotificationConfig } from "@/lib/configurator/api/mutations/useUpdateNotification";
+import { useGetNotificationConfig } from "@/lib/configurator/api/queries/notification";
 import {
   ConfiguratorForm,
   FormSection,
@@ -18,8 +20,6 @@ import {
   ConfiguratorEndpointName,
   ConfiguratorModuleName,
 } from "@/lib/configurator/shared/types";
-import { useUpdateNotificationConfig } from "@/lib/shared/api/mutations/configurator/useUpdateNotification";
-import { useGetNotificationConfig } from "@/lib/shared/api/queries/configurator/notification";
 
 enum FormNames {
   FROM_ADDRESS = "fromAddress",

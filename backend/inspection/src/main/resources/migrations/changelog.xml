@@ -104,5 +104,7 @@
   <include file="migrations/0089_add_infection_briefing_procedure_types.xml"/>
   <include file="migrations/0090_add_statistics_inclusion_to_procedure.xml"/>
   <include file="migrations/0091_modify_ppr_procedure_type.xml"/>
+  <include file="migrations/0092_sampling_point_file_states.xml"/>
+  <include file="migrations/0093_add_additional_languages.xml"/>
 
 </databaseChangeLog>

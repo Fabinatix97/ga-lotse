@@ -48,7 +48,7 @@ export function EditPersonDetailsForm({
         name="firstName"
         label={PERSON_FIELD_NAME.firstName}
         required="Bitte einen Vornamen angeben."
-        validate={validateLength(1, 120)}
+        validate={validateLength(1, 80)}
         disabled={disablePersonFields}
       />
       <InputField

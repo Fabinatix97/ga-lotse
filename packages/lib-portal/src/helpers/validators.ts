@@ -251,6 +251,21 @@ export function validateHexColorCode(message: string): Validator<string> {
   return validateRegex(/^#([A-Fa-f0-9]{6})$/, message);
 }
 
+export function validateEquipmentSelector(
+  value: string,
+  message = "Die Gerätekennung muss genau 4 Zeichen lang sein (Ziffern und Großbuchstaben).",
+) {
+  if (value === undefined || isEmptyString(value)) {
+    return undefined;
+  }
+
+  if (!/^[A-Z0-9]{4}$/.test(value)) {
+    return message;
+  }
+
+  return undefined;
+}
+
 export function validateZipCode(country: ApiCountryCode, message?: string) {
   switch (country) {
     case ApiCountryCode.De:

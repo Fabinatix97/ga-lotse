@@ -6,7 +6,12 @@
 package de.eshg.base.config;
 
 import static de.eshg.base.config.DepartmentConfigurationController.BASE_URL;
-import static de.eshg.base.config.MarkdownMapper.*;
+import static de.eshg.base.config.MarkdownMapper.mapToAccessibilityInfo;
+import static de.eshg.base.config.MarkdownMapper.mapToAcknowledgementInfo;
+import static de.eshg.base.config.MarkdownMapper.mapToContactInfo;
+import static de.eshg.base.config.MarkdownMapper.mapToImprintInfo;
+import static de.eshg.base.config.MarkdownMapper.mapToPrivacyInfo;
+import static de.eshg.config.mapper.MultiLangDocumentMapper.mapMultipartFilesToDomain;
 import static de.eshg.config.mapper.MultiLangDocumentMapper.mapToDomain;
 import static de.eshg.rest.service.security.config.BaseUrls.Base.ACCESSIBILITY_STATEMENT_MARKDOWN_CONFIG_API;
 import static de.eshg.rest.service.security.config.BaseUrls.Base.ACKNOWLEDGEMENTS_MARKDOWN_CONFIG_API;
@@ -35,6 +40,7 @@ import de.eshg.rest.service.security.config.BaseUrls;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.NotNull;
 import java.io.IOException;
+import java.util.List;
 import org.springframework.core.io.Resource;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -43,6 +49,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
@@ -53,10 +60,6 @@ import org.springframework.web.multipart.MultipartFile;
 public class DepartmentConfigurationController {
 
   public static final String BASE_URL = BaseUrls.DepartmentInfoLibrary.CONFIGURATION_API;
-  public static final String CITIZEN_PREFIX = "citizen_";
-  public static final String EMPLOYEE_PREFIX = "employee_";
-  public static final String DE = "de";
-  public static final String EN = "en";
   public static final String SVG_FILE_PARAM_NAME = "svg";
 
   private final DepartmentConfigurationService departmentConfigurationService;
@@ -147,59 +150,46 @@ public class DepartmentConfigurationController {
       consumes = MULTIPART_FORM_DATA_VALUE)
   @Transactional
   public void updateAccessibilityMarkdown(
-      @RequestPart(CITIZEN_PREFIX + DE) MultipartFile citizenAccessibilityDe,
-      @RequestPart(value = CITIZEN_PREFIX + EN, required = false)
-          MultipartFile citizenAccessibilityEn,
-      @RequestPart(EMPLOYEE_PREFIX + DE) MultipartFile employeeAccessibilityDe,
-      @RequestPart(value = EMPLOYEE_PREFIX + EN, required = false)
-          MultipartFile employeeAccessibilityEn)
+      @RequestParam("citizen") List<MultipartFile> citizen,
+      @RequestParam("employee") List<MultipartFile> employee)
       throws IOException {
     departmentConfigurationService.updateAccessibility(
-        validateAndMapToDomain(citizenAccessibilityDe, citizenAccessibilityEn),
-        validateAndMapToDomain(employeeAccessibilityDe, employeeAccessibilityEn));
+        validateAndMapToDomain(citizen), validateAndMapToDomain(employee));
   }
 
   @PutMapping(value = ACKNOWLEDGEMENTS_MARKDOWN_CONFIG_API, consumes = MULTIPART_FORM_DATA_VALUE)
   @Transactional
   public void updateAcknowledgementsMarkdown(
-      @RequestPart(DE) MultipartFile commonAcknowledgementsDe,
-      @RequestPart(value = EN, required = false) MultipartFile commonAcknowledgementsEn)
+      @RequestParam(value = "files", required = false) List<MultipartFile> commonAcknowledgements)
       throws IOException {
     departmentConfigurationService.updateAcknowledgements(
-        validateAndMapToDomain(commonAcknowledgementsDe, commonAcknowledgementsEn));
+        validateAndMapToDomain(commonAcknowledgements));
   }
 
   @PutMapping(value = CONTACT_MARKDOWN_CONFIG_API, consumes = MULTIPART_FORM_DATA_VALUE)
   @Transactional
   public void updateContactMarkdown(
-      @RequestPart(DE) MultipartFile employeeContactDe,
-      @RequestPart(value = EN, required = false) MultipartFile employeeContactEn)
+      @RequestParam(value = "files", required = false) List<MultipartFile> employeeContact)
       throws IOException {
-    departmentConfigurationService.updateEmployeeContact(
-        validateAndMapToDomain(employeeContactDe, employeeContactEn));
+    departmentConfigurationService.updateEmployeeContact(validateAndMapToDomain(employeeContact));
   }
 
   @PutMapping(value = IMPRINT_MARKDOWN_CONFIG_API, consumes = MULTIPART_FORM_DATA_VALUE)
   @Transactional
   public void updateImprintMarkdown(
-      @RequestPart(DE) MultipartFile citizenImprintDe,
-      @RequestPart(value = EN, required = false) MultipartFile citizenImprintEn)
+      @RequestParam(value = "files", required = false) List<MultipartFile> citizenImprint)
       throws IOException {
-    departmentConfigurationService.updateCitizenImprint(
-        validateAndMapToDomain(citizenImprintDe, citizenImprintEn));
+    departmentConfigurationService.updateCitizenImprint(validateAndMapToDomain(citizenImprint));
   }
 
   @PutMapping(value = PRIVACY_POLICY_MARKDOWN_CONFIG_API, consumes = MULTIPART_FORM_DATA_VALUE)
   @Transactional
   public void updatePrivacyMarkdown(
-      @RequestPart(CITIZEN_PREFIX + DE) MultipartFile citizenPrivacyDe,
-      @RequestPart(value = CITIZEN_PREFIX + EN, required = false) MultipartFile citizenPrivacyEn,
-      @RequestPart(EMPLOYEE_PREFIX + DE) MultipartFile employeePrivacyDe,
-      @RequestPart(value = EMPLOYEE_PREFIX + EN, required = false) MultipartFile employeePrivacyEn)
+      @RequestParam("citizen") List<MultipartFile> citizenPrivacy,
+      @RequestParam("employee") List<MultipartFile> employeePrivacy)
       throws IOException {
     departmentConfigurationService.updatePrivacy(
-        validateAndMapToDomain(citizenPrivacyDe, citizenPrivacyEn),
-        validateAndMapToDomain(employeePrivacyDe, employeePrivacyEn));
+        validateAndMapToDomain(citizenPrivacy), validateAndMapToDomain(employeePrivacy));
   }
 
   @PutMapping(value = LOGO_SVG_CONFIG_API, consumes = MULTIPART_FORM_DATA_VALUE)
@@ -210,19 +200,28 @@ public class DepartmentConfigurationController {
     departmentConfigurationService.updateLogoSvg(logoSvg.getResource());
   }
 
-  private MultiLangDocument validateAndMapToDomain(MultipartFile de, MultipartFile en)
+  private MultiLangDocument validateAndMapToDomain(List<MultipartFile> multipartFiles)
       throws IOException {
-    return mapToDomain(validate(de), validate(en));
+    final var mapped = mapMultipartFilesToDomain(multipartFiles);
+
+    if (!mapped.containsKey(Language.GERMAN)) {
+      throw new BadRequestException("German is required");
+    }
+    for (var entry : mapped.entrySet()) {
+      validate(entry.getValue());
+    }
+
+    return mapToDomain(mapped);
   }
 
-  private MultipartFile validate(MultipartFile input) {
+  private void validate(MultipartFile input) {
     if (input == null) {
-      return null;
+      return;
     }
+
     if (input.getSize() > baseConfigurationProperties.maxMarkdownFileSizeBytes()) {
       throw new BadRequestException("File is too large");
     }
     FileValidator.validateMarkdownFile(input);
-    return input;
   }
 }

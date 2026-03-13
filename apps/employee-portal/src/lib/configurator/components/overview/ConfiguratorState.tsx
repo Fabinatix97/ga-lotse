@@ -45,7 +45,7 @@ export function AllModulesAlert({
               Alle Pflichtangaben sind vollständig.
             </ListItem>
             <ListItem color="success" variant="soft">
-              Es wird empfohlen, auch die optionalen Felder für englische
+              Es wird empfohlen, auch die optionalen Felder für die
               Übersetzungen auszufüllen.
             </ListItem>
           </List>

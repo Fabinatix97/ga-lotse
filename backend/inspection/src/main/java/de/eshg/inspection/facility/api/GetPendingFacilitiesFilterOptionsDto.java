@@ -16,6 +16,7 @@ import java.util.UUID;
 @Schema(name = "GetPendingFacilitiesFilterOptions")
 public record GetPendingFacilitiesFilterOptionsDto(
     Set<InspPendingFacilityKind> kind,
+    String zid,
     String name,
     String postalCode,
     String city,
@@ -30,5 +31,4 @@ public record GetPendingFacilitiesFilterOptionsDto(
     Boolean hasDuplicates,
     Boolean banned,
     Boolean unfinishedSamples,
-    Boolean suspiciousSamples,
-    String pointOfWithdrawal) {}
+    Boolean suspiciousSamples) {}

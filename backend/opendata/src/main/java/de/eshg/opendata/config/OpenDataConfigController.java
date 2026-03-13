@@ -7,6 +7,7 @@ package de.eshg.opendata.config;
 
 import de.eshg.config.domain.MultiLangDocument;
 import de.eshg.config.i18n.MultiLangDocumentHelper;
+import de.eshg.config.mapper.MultiLangDocumentMapper;
 import de.eshg.file.common.FileValidator;
 import de.eshg.opendata.api.GetOpenDataConfigResponse;
 import de.eshg.opendata.api.UpdateOpenDataConfigRequest;
@@ -18,6 +19,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import java.io.IOException;
+import java.util.List;
 import org.springframework.core.io.Resource;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -35,8 +37,6 @@ import org.springframework.web.multipart.MultipartFile;
 @RequestMapping(OpenDataConfigController.BASE_URL)
 class OpenDataConfigController {
   static final String BASE_URL = BaseUrls.DepartmentInfoLibrary.CONFIGURATION_API + "/open-data";
-  static final String TERMS_OF_USE_DE_PART = "termsOfUseDe";
-  static final String TERMS_OF_USE_EN_PART = "termsOfUseEn";
   static final String UPDATE_OPEN_DATA_CONFIG_REQUEST_PART = "updateOpenDataConfigRequest";
   static final String TERMS_OF_USE_PATH = "/terms-of-use/{lang}";
 
@@ -78,13 +78,19 @@ class OpenDataConfigController {
   public void updateOpenDataConfig(
       @Valid @RequestPart(name = UPDATE_OPEN_DATA_CONFIG_REQUEST_PART)
           UpdateOpenDataConfigRequest updateOpenDataConfigRequest,
-      @RequestPart(name = TERMS_OF_USE_DE_PART) MultipartFile termsOfUseDe,
-      @RequestPart(name = TERMS_OF_USE_EN_PART, required = false) MultipartFile termsOfUseEn)
+      @RequestPart(value = "files", required = false) List<MultipartFile> termsOfUse)
       throws IOException {
-    validate(termsOfUseDe);
-    validate(termsOfUseEn);
+    final var files = MultiLangDocumentMapper.mapMultipartFilesToDomain(termsOfUse);
+    if (!files.containsKey(Language.GERMAN)) {
+      throw new BadRequestException("German terms of use is mandatory.");
+    }
+
+    for (MultipartFile file : termsOfUse) {
+      validate(file);
+    }
+
     openDataConfigService.updateConfig(
-        OpenDataConfigMapper.mapToDomain(updateOpenDataConfigRequest, termsOfUseDe, termsOfUseEn));
+        OpenDataConfigMapper.mapToDomain(updateOpenDataConfigRequest, files));
   }
 
   private void validate(MultipartFile input) {

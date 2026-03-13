@@ -8,7 +8,12 @@ import { Sheet, Typography, styled } from "@mui/joy";
 import { useFormikContext } from "formik";
 import { useMemo } from "react";
 
-import { InputField, RadioButtonsField, SelectField } from "@eshg/lib-portal";
+import {
+  InputField,
+  RadioButtonsField,
+  SelectField,
+  useValidateLength,
+} from "@eshg/lib-portal";
 import {
   ApiPersonLanguage,
   ApiProstituteProtectionProcedureType,
@@ -24,6 +29,8 @@ import { StepSubTitle } from "./StepSubTitle";
 export function PersonalDataStep() {
   const { t } = useTranslation("prostituteProtection/forms");
   const { values } = useFormikContext<AppointmentFormData>();
+  const validateLength = useValidateLength();
+
   const translatedProcedureTypeOptions: SelectionOption[] = useMemo(
     () =>
       Object.values(ApiProstituteProtectionProcedureType).map((value) => {
@@ -49,6 +56,7 @@ export function PersonalDataStep() {
           label={t("personal_data.fields.alias")}
           name="alias"
           required={t("personal_data.fields.alias_required")}
+          validate={validateLength(1, 80)}
         />
         <Language />
       </PersonalDataGrid>

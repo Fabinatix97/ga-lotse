@@ -29,10 +29,12 @@ import {
 import {
   ApiAppointmentBookingType,
   ApiProcedureDetails,
+  ApiProstituteProtectionProcedureType,
   ApiUpdateProstituteProtectionProcedureRequest,
 } from "@eshg/prostitute-protection-api";
 
 import { useUpdateProcedureMutation } from "../../../../api/mutations/procedures";
+import { useGetFreeAppointmentsForProcedure } from "../../../../api/queries/procedures";
 import {
   ADDITIONAL_DATA_FIELD_NAME,
   PROCEDURE_TYPE_VALUES,
@@ -92,7 +94,7 @@ function EditAdditionalDataSidebar({
       onClose={onClose}
       onSubmit={handleSubmit}
     >
-      {({ isSubmitting, setFieldValue }) => (
+      {({ isSubmitting, setFieldValue, values }) => (
         <SidebarForm ref={formRef}>
           <SidebarContent title="Zusatzinfos">
             <Stack gap={2}>
@@ -103,8 +105,21 @@ function EditAdditionalDataSidebar({
                 required="Bitte einen Beratungstyp auswählen."
                 options={buildEnumOptions(PROCEDURE_TYPE_VALUES)}
                 onChange={() => {
-                  void setFieldValue("appointmentBookingType", "");
-                  void setFieldValue("blockAppointment", undefined);
+                  if (
+                    initialValues.appointmentBookingType === "APPOINTMENT_BLOCK"
+                  ) {
+                    void setFieldValue(
+                      "appointmentBookingType",
+                      ApiAppointmentBookingType.AppointmentBlock,
+                    );
+                    void setFieldValue(
+                      "blockAppointment",
+                      initialValues.blockAppointment,
+                    );
+                  } else {
+                    void setFieldValue("appointmentBookingType", "");
+                    void setFieldValue("blockAppointment", undefined);
+                  }
                 }}
               />
               <ConsultantSelectField
@@ -112,7 +127,10 @@ function EditAdditionalDataSidebar({
                 selfUser={selfUser}
                 options={allAssignableUsers}
               />
-              <AppointmentFields />
+              <AppointmentFieldsWrapper
+                procedureId={procedure.id}
+                procedureType={values.procedureType}
+              />
             </Stack>
           </SidebarContent>
           <SidebarActions>
@@ -126,6 +144,19 @@ function EditAdditionalDataSidebar({
       )}
     </Formik>
   );
+}
+
+function AppointmentFieldsWrapper(
+  props: Readonly<{
+    procedureId: string;
+    procedureType: ApiProstituteProtectionProcedureType;
+  }>,
+) {
+  const { data: freeAppointments } = useGetFreeAppointmentsForProcedure(
+    props.procedureId,
+    props.procedureType,
+  );
+  return <AppointmentFields freeAppointments={freeAppointments} />;
 }
 
 function getAppointmentBookingType(procedure: ApiProcedureDetails) {

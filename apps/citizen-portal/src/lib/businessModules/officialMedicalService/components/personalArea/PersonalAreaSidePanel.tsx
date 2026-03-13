@@ -27,6 +27,11 @@ import {
 import { useCancelAppointmentByCitizen } from "@/lib/businessModules/officialMedicalService/api/mutations/citizenAuthApi";
 import { useCitizenRoutes } from "@/lib/businessModules/officialMedicalService/shared/routes";
 import { useTranslation } from "@/lib/i18n/client";
+import {
+  SupportedLanguage,
+  mapToApiLanguage,
+  supportedLanguages,
+} from "@/lib/i18n/options";
 import { byBreakpoint } from "@/lib/shared/breakpoints";
 import { DetailsItem } from "@/lib/shared/components/DetailsItem";
 import {
@@ -47,10 +52,15 @@ export function PersonalAreaSidePanel({
 }: PersonalAreaSidePanelProps) {
   const { t } = useTranslation(["officialMedicalService/personalArea"]);
 
-  const concernName = useManualTranslation({
-    de: procedure.concern.nameDe,
-    en: procedure.concern.nameEn,
-  });
+  const concernName = useManualTranslation<string>(
+    supportedLanguages.reduce(
+      (acc, it) => {
+        acc[it] = procedure.concern.names[mapToApiLanguage(it)]!;
+        return acc;
+      },
+      {} as { de: string } & Partial<Record<SupportedLanguage, string>>,
+    ),
+  );
 
   return (
     <ContentSheet data-testid="appointment-panel">

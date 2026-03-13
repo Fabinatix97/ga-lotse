@@ -246,7 +246,7 @@ function UpdateProcedureSidebar(props: UpdateProcedureSidebarProps) {
   const form = useUpdateProcedureForm(procedure, locationSelectionMode, () =>
     props.onClose(true),
   );
-  const { values, isSubmitting, setFieldValue } = form;
+  const { values, isSubmitting, setFieldValue, initialValues } = form;
 
   const getFreeAppointments = useGetFreeAppointmentsForProcedureUnsuspended({
     procedureId: procedure.id,
@@ -292,6 +292,11 @@ function UpdateProcedureSidebar(props: UpdateProcedureSidebarProps) {
                   ? PROCEDURE_TYPE_OPTIONS_ENTRY_LEVEL
                   : PROCEDURE_TYPE_OPTIONS_EXCLUDING_DRAFT
               }
+              onChange={() => {
+                if (values.appointmentSelectionType === "block") {
+                  void setFieldValue("appointment", initialValues.appointment);
+                }
+              }}
             />
             <SchoolYearField name="schoolYear" label="Schuljahr" />
             <ProcedureLabelSelection

@@ -6,11 +6,16 @@
 import { OtherHousesOutlined } from "@mui/icons-material";
 
 import { ApiUserRole } from "@eshg/base-api";
+import { ApiInspectionFeature } from "@eshg/inspection-api";
 import {
   SideNavigationItem,
   SideNavigationSubItem,
+  SideNavigationSuspenseItem,
   hasUserRole,
 } from "@eshg/lib-employee-portal";
+
+import { NavigationItem } from "@/lib/baseModule/components/layout/sideNavigation/items/NavigationItem";
+import { useIsNewFeatureEnabled } from "@/lib/businessModules/inspection/api/queries/feature";
 
 import { routes } from "./routes";
 
@@ -41,6 +46,11 @@ const subItems: SideNavigationSubItem[] = [
     accessCheck: hasUserRole(ApiUserRole.InspectionObjecttypesRead),
   },
   {
+    name: "Entnahmestellen",
+    href: routes.samplingPoints.index,
+    accessCheck: hasUserRole(ApiUserRole.InspectionProcedureEdit),
+  },
+  {
     name: "Textbausteine",
     href: routes.textBlocks.index,
     accessCheck: hasUserRole(ApiUserRole.InspectionProcedureEdit),
@@ -62,13 +72,35 @@ const subItems: SideNavigationSubItem[] = [
   },
 ];
 
+function SamplingPointSideNavigationItem() {
+  const sampleFeatureEnabled = useIsNewFeatureEnabled(
+    ApiInspectionFeature.Samples,
+  );
+
+  const filteredSubItems = sampleFeatureEnabled
+    ? subItems
+    : subItems.filter((item) => item.name !== "Entnahmestellen");
+
+  return (
+    <NavigationItem
+      item={{
+        type: "SideNavigationParentItem",
+        name: "Hygiene",
+        decorator: <OtherHousesOutlined />,
+        subItems: filteredSubItems,
+      }}
+    />
+  );
+}
+
+const sideNavigationItem: SideNavigationSuspenseItem = {
+  type: "SideNavigationSuspenseItem",
+  name: "Hygiene",
+  decorator: <OtherHousesOutlined />,
+  accessCheck: hasUserRole(ApiUserRole.InspectionProcedureEdit),
+  component: SamplingPointSideNavigationItem,
+};
+
 export function resolveSideNavigationItems(): SideNavigationItem[] {
-  return [
-    {
-      type: "SideNavigationParentItem",
-      name: "Hygiene",
-      decorator: <OtherHousesOutlined />,
-      subItems,
-    },
-  ];
+  return [sideNavigationItem];
 }

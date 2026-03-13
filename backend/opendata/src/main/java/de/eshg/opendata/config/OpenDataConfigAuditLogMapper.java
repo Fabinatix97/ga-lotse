@@ -8,8 +8,8 @@ package de.eshg.opendata.config;
 import static de.eshg.config.HashUtil.hashOf;
 
 import de.eshg.base.util.MapUtils;
-import de.eshg.config.domain.Document;
 import de.eshg.config.domain.MultiLangDocument;
+import de.eshg.rest.service.i18n.Language;
 import java.util.LinkedHashMap;
 import java.util.SequencedMap;
 
@@ -31,10 +31,12 @@ public class OpenDataConfigAuditLogMapper {
       return MapUtils.orderedMapOfEntries();
     }
     SequencedMap<String, String> relevantFields = new LinkedHashMap<>();
-    relevantFields.put("termsOfUse.de", hashOf(termsOfUse.getDe().getContent()));
-    Document en = termsOfUse.getEn();
-    if (en != null) {
-      relevantFields.put("termsOfUse.en", hashOf(en.getContent()));
+    for (Language language : Language.values()) {
+      if (termsOfUse.get(language) != null) {
+        relevantFields.put(
+            "termsOfUse." + Language.LANGUAGE_TO_LANGUAGE_TAG.get(language),
+            hashOf(termsOfUse.get(language).getContent()));
+      }
     }
     return relevantFields;
   }

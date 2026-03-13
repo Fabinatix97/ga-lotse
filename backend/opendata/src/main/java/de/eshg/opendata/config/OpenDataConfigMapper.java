@@ -8,7 +8,9 @@ package de.eshg.opendata.config;
 import de.eshg.config.mapper.MultiLangDocumentMapper;
 import de.eshg.opendata.api.OpenDataConfigDto;
 import de.eshg.opendata.api.UpdateOpenDataConfigRequest;
+import de.eshg.rest.service.i18n.Language;
 import java.io.IOException;
+import java.util.Map;
 import org.springframework.web.multipart.MultipartFile;
 
 final class OpenDataConfigMapper {
@@ -30,14 +32,12 @@ final class OpenDataConfigMapper {
 
   public static OpenDataConfiguration mapToDomain(
       UpdateOpenDataConfigRequest updateOpenDataConfigRequest,
-      MultipartFile termsOfUseDe,
-      MultipartFile termsOfUseEn)
+      Map<Language, MultipartFile> termsOfUse)
       throws IOException {
     OpenDataConfiguration openDataConfiguration = new OpenDataConfiguration();
     openDataConfiguration.setAuthor(updateOpenDataConfigRequest.author());
     openDataConfiguration.setFallbackLicenseUrl(updateOpenDataConfigRequest.fallbackLicenseUrl());
-    openDataConfiguration.setTermsOfUse(
-        MultiLangDocumentMapper.mapToDomain(termsOfUseDe, termsOfUseEn));
+    openDataConfiguration.setTermsOfUse(MultiLangDocumentMapper.mapToDomain(termsOfUse));
     return openDataConfiguration;
   }
 }

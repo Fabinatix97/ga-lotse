@@ -5,6 +5,7 @@
 
 package de.eshg.inspection.sample.api;
 
+import de.eshg.inspection.samplingpoint.api.InspectionSamplingPointDto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
@@ -17,7 +18,7 @@ public record InspectionSampleDto(
     @NotNull UUID inspectionId,
     @NotNull UUID sampleId,
     @NotNull InspectionSampleTypeDto typeOfSample,
-    @NotNull String pointOfWithdrawal,
+    @NotNull @Valid InspectionSamplingPointDto samplingPoint,
     @NotNull String sampleNumber,
     @NotNull InspectionSampleEvaluationTypeDto evaluationType,
     @NotNull @Valid InspectionSampleActorDto samplingActor,

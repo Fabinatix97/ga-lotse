@@ -252,10 +252,9 @@ public class OpenDataService {
 
   public byte[] getMarkdownWithGermanFallback(
       MultiLangDocument multiLangDocument, Language language) {
-    if (language == Language.ENGLISH && multiLangDocument.getEn() != null) {
-      return multiLangDocument.getEn().getContent();
-    } else {
-      return multiLangDocument.getDe().getContent();
+    if (multiLangDocument.get(language) != null) {
+      return multiLangDocument.get(language).getContent();
     }
+    return multiLangDocument.get(Language.GERMAN).getContent();
   }
 }

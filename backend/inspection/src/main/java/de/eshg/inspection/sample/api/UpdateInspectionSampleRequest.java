@@ -15,7 +15,7 @@ import java.util.UUID;
 @Schema(name = "UpdateInspectionSampleRequest")
 public record UpdateInspectionSampleRequest(
     @NotNull InspectionSampleTypeDto typeOfSample,
-    @NotNull String pointOfWithdrawal,
+    @NotNull UUID samplingPointId,
     @NotNull String sampleNumber,
     @NotNull InspectionSampleEvaluationTypeDto evaluationType,
     @NotNull @Valid InspectionSampleActorReferenceDto samplingActor,

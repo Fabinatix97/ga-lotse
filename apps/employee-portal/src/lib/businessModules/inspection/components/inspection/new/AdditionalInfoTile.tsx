@@ -32,6 +32,7 @@ import {
 } from "@eshg/lib-portal";
 
 import { useStartInspection } from "@/lib/businessModules/inspection/api/mutations/inspection";
+import { useIsNewFeatureEnabled } from "@/lib/businessModules/inspection/api/queries/feature";
 import { ObjectTypesSelectField } from "@/lib/businessModules/inspection/components/checklistDefinition/editor/header/ObjectTypesSelectField";
 import { InspectionAssigneeSelection } from "@/lib/businessModules/inspection/components/inspection/assignee/InspectionAssigneeSelection";
 import { useEditFileNumberSidebar } from "@/lib/businessModules/inspection/components/inspection/basedata/EditFileNumberSidebar";
@@ -39,7 +40,7 @@ import { inspectionTypeNames } from "@/lib/businessModules/inspection/shared/enu
 import { routes } from "@/lib/businessModules/inspection/shared/routes";
 import { InfoTile } from "@/lib/shared/components/infoTile/InfoTile";
 
-interface FormData {
+export interface AdditionalInfoTileFormData {
   objectTypeId: string;
   type: ApiInspectionType;
   progressEntryText: string;
@@ -53,6 +54,7 @@ interface AdditionalInfoTileProps {
   facility: ApiInspFacility;
   selfUser: ApiUser;
   allAssignableUsers: ApiUser[];
+  assignee?: ApiUser;
 }
 
 export function AdditionalInfoTile({
@@ -61,6 +63,7 @@ export function AdditionalInfoTile({
   facility,
   selfUser,
   allAssignableUsers,
+  assignee,
 }: Readonly<AdditionalInfoTileProps>) {
   const { mutateAsync: startInspection } = useStartInspection();
 
@@ -73,19 +76,31 @@ export function AdditionalInfoTile({
 
   const TYPE_OPTIONS = buildEnumOptions(inspectionTypeNames);
 
-  const initialValues: FormData = {
+  const initialValues: AdditionalInfoTileFormData = {
     objectTypeId: facility.objectType?.id ?? "",
     type: ApiInspectionType.Initial,
     progressEntryText: "",
-    assigneeId: onlySelfAssignable ? selfUser.userId : null,
-    assigneeName: onlySelfAssignable ? formatUserName(selfUser) : null,
+    assigneeId: onlySelfAssignable
+      ? selfUser.userId
+      : getAssigneeUserId(assignee),
+    assigneeName: onlySelfAssignable
+      ? formatUserName(selfUser)
+      : getAssigneeName(assignee),
   };
+
+  function getAssigneeUserId(assignee?: ApiUser) {
+    return assignee ? assignee.userId : null;
+  }
+
+  function getAssigneeName(assignee?: ApiUser) {
+    return assignee ? formatUserName(assignee) : null;
+  }
 
   function handleSuccess() {
     router.push(routes.procedures.basedata(procedureId));
   }
 
-  async function handleSubmit(data: FormData) {
+  async function handleSubmit(data: AdditionalInfoTileFormData) {
     await startInspection(
       {
         id: procedureId,
@@ -129,6 +144,36 @@ export function AdditionalInfoTile({
     );
   }
 
+  const featureToggleEnabled = useIsNewFeatureEnabled("OBJECT_TYPE_HIERARCHY");
+
+  function getSelectObjectType(
+    objectTypeId: string,
+    objectTypes: ApiObjectTypeHierarchyTreeNode[] | ApiObjectType[],
+  ): ApiObjectType | undefined {
+    if (featureToggleEnabled) {
+      const objectTypesArray = objectTypes as ApiObjectTypeHierarchyTreeNode[];
+      for (const object of objectTypesArray) {
+        const directMatch = object.objectTypes?.find(
+          (ot) => ot.id === objectTypeId,
+        );
+        if (directMatch) {
+          return directMatch;
+        }
+
+        if (object.subNodes?.length) {
+          const found = getSelectObjectType(objectTypeId, object.subNodes);
+          if (found) {
+            return found;
+          }
+        }
+      }
+      return undefined;
+    } else {
+      const objectTypesArray = objectTypes as ApiObjectType[];
+      return objectTypesArray.find((oT) => oT.id === objectTypeId);
+    }
+  }
+
   return (
     <InfoTile name="additional-infos" title="Zusatzinfos">
       <Formik initialValues={initialValues} onSubmit={handleSubmit}>
@@ -144,6 +189,27 @@ export function AdditionalInfoTile({
               <ObjectTypesSelectField
                 name="objectTypeId"
                 objectTypes={objectTypes}
+                onChange={async (value) => {
+                  if (
+                    isNullish(values.assigneeId) ||
+                    values.assigneeId === ""
+                  ) {
+                    const objectTypeResult = getSelectObjectType(
+                      value,
+                      objectTypes,
+                    );
+                    if (objectTypeResult !== undefined) {
+                      await setFieldValue(
+                        "assigneeId",
+                        objectTypeResult?.designatedAssigneeId,
+                      );
+                      await setFieldValue(
+                        "assigneeName",
+                        objectTypeResult?.designatedAssigneeName,
+                      );
+                    }
+                  }
+                }}
               />
             )}
             <SelectField

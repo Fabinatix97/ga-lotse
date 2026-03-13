@@ -48,8 +48,7 @@ public class ConcernService {
             .map(
                 category ->
                     new ConcernCategoryConfigDto(
-                        category.nameDe(),
-                        category.nameEn(),
+                        category.names(),
                         category.concerns().stream()
                             .filter(ConcernConfigDto::visibleInOnlinePortal)
                             .toList()))

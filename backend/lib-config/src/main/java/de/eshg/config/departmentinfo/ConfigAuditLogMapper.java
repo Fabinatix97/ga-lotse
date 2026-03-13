@@ -7,12 +7,14 @@ package de.eshg.config.departmentinfo;
 
 import static de.eshg.config.HashUtil.hashOf;
 
+import de.eshg.config.domain.AbstractOpeningHours;
 import de.eshg.config.domain.DepartmentInfo;
 import de.eshg.config.domain.Document;
 import de.eshg.config.domain.MultiLangDocument;
+import de.eshg.rest.service.i18n.Language;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.SequencedMap;
+import java.util.function.BiFunction;
 
 public class ConfigAuditLogMapper {
 
@@ -22,9 +24,31 @@ public class ConfigAuditLogMapper {
       MultiLangDocument document) {
     LinkedHashMap<String, String> relevantFields = new LinkedHashMap<>();
     if (document != null) {
-      relevantFields.put("de", hashOf(document.getDe().getContent()));
-      relevantFields.put(
-          "en", document.getEn() == null ? null : hashOf(document.getEn().getContent()));
+      final BiFunction<String, Language, Void> putLanguage =
+          (String languageTag, Language language) -> {
+            relevantFields.put(
+                languageTag,
+                document.get(language) == null
+                    ? null
+                    : hashOf(document.get(language).getContent()));
+
+            return null;
+          };
+
+      relevantFields.put("de", hashOf(document.get(Language.GERMAN).getContent()));
+      putLanguage.apply(Language.ENGLISH_LANGUAGE_TAG, Language.ENGLISH);
+      putLanguage.apply(Language.SPANISH_LANGUAGE_TAG, Language.SPANISH);
+      putLanguage.apply(Language.TURKISH_LANGUAGE_TAG, Language.TURKISH);
+      putLanguage.apply(Language.RUSSIAN_LANGUAGE_TAG, Language.RUSSIAN);
+      putLanguage.apply(Language.ARABIC_LANGUAGE_TAG, Language.ARABIC);
+      putLanguage.apply(Language.FRENCH_LANGUAGE_TAG, Language.FRENCH);
+      putLanguage.apply(Language.ITALIAN_LANGUAGE_TAG, Language.ITALIAN);
+      putLanguage.apply(Language.POLISH_LANGUAGE_TAG, Language.POLISH);
+      putLanguage.apply(Language.ROMANIAN_LANGUAGE_TAG, Language.ROMANIAN);
+      putLanguage.apply(Language.UKRAINIAN_LANGUAGE_TAG, Language.UKRAINIAN);
+      putLanguage.apply(Language.CROATIAN_LANGUAGE_TAG, Language.CROATIAN);
+      putLanguage.apply(Language.FARSI_LANGUAGE_TAG, Language.FARSI);
+      putLanguage.apply(Language.DARI_LANGUAGE_TAG, Language.DARI);
     }
     return relevantFields;
   }
@@ -57,13 +81,17 @@ public class ConfigAuditLogMapper {
   }
 
   static SequencedMap<String, String> getRelevantFieldsForLogging(
-      List<String> de, List<String> en) {
+      AbstractOpeningHours openingHours) {
     LinkedHashMap<String, String> relevantFields = new LinkedHashMap<>();
-    for (int i = 0; i < de.size(); i++) {
-      relevantFields.put("de[" + i + "]", de.get(i));
-    }
-    for (int i = 0; i < en.size(); i++) {
-      relevantFields.put("en[" + i + "]", en.get(i));
+    for (Language language : Language.values()) {
+      final var openingHoursForLanguage = openingHours.get(language);
+      if (openingHoursForLanguage != null) {
+        for (int i = 0; i < openingHoursForLanguage.size(); i++) {
+          relevantFields.put(
+              language.getLocale().getLanguage().toLowerCase() + "[" + i + "]",
+              openingHoursForLanguage.get(i));
+        }
+      }
     }
     return relevantFields;
   }

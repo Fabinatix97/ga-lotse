@@ -19,6 +19,7 @@ import de.eshg.config.initialization.InitialPrivacyDocuments;
 import de.eshg.config.mapper.MultiLangDocumentMapper;
 import de.eshg.config.spring.DepartmentInfoPropertyBinding;
 import de.eshg.persistence.TransactionHelper;
+import de.eshg.rest.service.i18n.Language;
 import jakarta.persistence.EntityManager;
 import jakarta.validation.constraints.NotNull;
 import java.util.SequencedMap;
@@ -55,11 +56,13 @@ public class BasePrivacyDocumentService
     BasePrivacyDocumentsConfig basePrivacyDocumentsConfig = new BasePrivacyDocumentsConfig();
 
     MultiLangDocument privacyNotice = new MultiLangDocument();
-    privacyNotice.updateDe(initialPrivacyDocuments.privacyNotice().getContentAsByteArray());
+    privacyNotice.update(
+        Language.GERMAN, initialPrivacyDocuments.privacyNotice().getContentAsByteArray());
     basePrivacyDocumentsConfig.setPrivacyNotice(privacyNotice);
 
     MultiLangDocument privacyPolicy = new MultiLangDocument();
-    privacyPolicy.updateDe(initialPrivacyDocuments.privacyPolicy().getContentAsByteArray());
+    privacyPolicy.update(
+        Language.GERMAN, initialPrivacyDocuments.privacyPolicy().getContentAsByteArray());
     basePrivacyDocumentsConfig.setPrivacyPolicy(privacyPolicy);
 
     return basePrivacyDocumentsConfig;

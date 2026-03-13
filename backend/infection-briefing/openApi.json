@@ -421,6 +421,62 @@
         "tags" : [ "InfectionBriefingAppointmentStandardDuration" ]
       }
     },
+    "/appointments/new-certificate" : {
+      "post" : {
+        "operationId" : "bookNewCertificateAppointmentByEmployee",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/BookNewCertificateAppointmentByEmployeeRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/BookAppointmentResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "InfectionBriefingAppointment" ]
+      }
+    },
+    "/appointments/replacement-certificate" : {
+      "post" : {
+        "operationId" : "bookReplacementCertificateByEmployee",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/BookReplacementCertificateAppointmentByEmployeeRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/BookAppointmentResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "InfectionBriefingAppointment" ]
+      }
+    },
     "/approval-requests/{approvalRequestId}" : {
       "get" : {
         "operationId" : "getApprovalRequest",
@@ -796,7 +852,7 @@
             "content" : {
               "*/*" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/BookNewCertificateAppointmentResponse"
+                  "$ref" : "#/components/schemas/BookAppointmentResponse"
                 }
               }
             },
@@ -824,7 +880,7 @@
             "content" : {
               "*/*" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/BookReplacementCertificateAppointmentResponse"
+                  "$ref" : "#/components/schemas/BookAppointmentResponse"
                 }
               }
             },
@@ -908,7 +964,7 @@
             "content" : {
               "*/*" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/GetOpeningHoursResponse"
+                  "$ref" : "#/components/schemas/OpeningHours"
                 }
               }
             },
@@ -916,6 +972,46 @@
           }
         },
         "summary" : "Get the official opening hours.",
+        "tags" : [ "InfectionBriefingPublicCitizen" ]
+      }
+    },
+    "/citizen/public/privacy-notice" : {
+      "get" : {
+        "operationId" : "getPrivacyNotice",
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "type" : "string",
+                  "format" : "binary"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Get the privacy-notice document.",
+        "tags" : [ "InfectionBriefingPublicCitizen" ]
+      }
+    },
+    "/citizen/public/privacy-policy" : {
+      "get" : {
+        "operationId" : "getPrivacyPolicy",
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "type" : "string",
+                  "format" : "binary"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Get the privacy-policy document.",
         "tags" : [ "InfectionBriefingPublicCitizen" ]
       }
     },
@@ -1038,13 +1134,12 @@
               "schema" : {
                 "type" : "object",
                 "properties" : {
-                  "landingContent_de" : {
-                    "type" : "string",
-                    "format" : "binary"
-                  },
-                  "landingContent_en" : {
-                    "type" : "string",
-                    "format" : "binary"
+                  "files" : {
+                    "type" : "array",
+                    "items" : {
+                      "type" : "string",
+                      "format" : "binary"
+                    }
                   }
                 }
               }
@@ -1156,13 +1251,12 @@
               "schema" : {
                 "type" : "object",
                 "properties" : {
-                  "de" : {
-                    "type" : "string",
-                    "format" : "binary"
-                  },
-                  "en" : {
-                    "type" : "string",
-                    "format" : "binary"
+                  "files" : {
+                    "type" : "array",
+                    "items" : {
+                      "type" : "string",
+                      "format" : "binary"
+                    }
                   }
                 }
               }
@@ -1229,13 +1323,12 @@
               "schema" : {
                 "type" : "object",
                 "properties" : {
-                  "de" : {
-                    "type" : "string",
-                    "format" : "binary"
-                  },
-                  "en" : {
-                    "type" : "string",
-                    "format" : "binary"
+                  "files" : {
+                    "type" : "array",
+                    "items" : {
+                      "type" : "string",
+                      "format" : "binary"
+                    }
                   }
                 }
               }
@@ -2011,6 +2104,23 @@
           }
         }, {
           "in" : "query",
+          "name" : "instructionYear",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "in" : "query",
+          "name" : "status",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/ProcedureStatus"
+            }
+          }
+        }, {
+          "in" : "query",
           "name" : "pageNumber",
           "required" : false,
           "schema" : {
@@ -2053,7 +2163,7 @@
             "content" : {
               "*/*" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/GetProceduresResponse"
+                  "$ref" : "#/components/schemas/GetInfectionBriefingProceduresResponse"
                 }
               }
             },
@@ -2106,7 +2216,7 @@
             "content" : {
               "*/*" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/ProcedureDetails"
+                  "$ref" : "#/components/schemas/InfectionBriefingProcedureDetails"
                 }
               }
             },
@@ -3931,6 +4041,34 @@
           }
         }
       },
+      "BookAppointmentResponse" : {
+        "required" : [ "appointment", "emailSent" ],
+        "type" : "object",
+        "properties" : {
+          "appointment" : {
+            "$ref" : "#/components/schemas/InfectionBriefingAppointment"
+          },
+          "emailSent" : {
+            "type" : "boolean"
+          }
+        }
+      },
+      "BookNewCertificateAppointmentByEmployeeRequest" : {
+        "required" : [ "applicant", "startTime" ],
+        "type" : "object",
+        "properties" : {
+          "applicant" : {
+            "$ref" : "#/components/schemas/PersonWithOptionalEmail"
+          },
+          "applicantAddress" : {
+            "$ref" : "#/components/schemas/ApplicantAddress"
+          },
+          "startTime" : {
+            "type" : "string",
+            "format" : "date-time"
+          }
+        }
+      },
       "BookNewCertificateAppointmentRequest" : {
         "required" : [ "applicant", "startTime" ],
         "type" : "object",
@@ -3947,15 +4085,16 @@
           }
         }
       },
-      "BookNewCertificateAppointmentResponse" : {
-        "required" : [ "appointment", "emailSent" ],
+      "BookReplacementCertificateAppointmentByEmployeeRequest" : {
+        "required" : [ "applicant", "startTime" ],
         "type" : "object",
         "properties" : {
-          "appointment" : {
-            "$ref" : "#/components/schemas/Appointment"
+          "applicant" : {
+            "$ref" : "#/components/schemas/PersonWithOptionalEmail"
           },
-          "emailSent" : {
-            "type" : "boolean"
+          "startTime" : {
+            "type" : "string",
+            "format" : "date-time"
           }
         }
       },
@@ -3969,18 +4108,6 @@
           "startTime" : {
             "type" : "string",
             "format" : "date-time"
-          }
-        }
-      },
-      "BookReplacementCertificateAppointmentResponse" : {
-        "required" : [ "appointment", "emailSent" ],
-        "type" : "object",
-        "properties" : {
-          "appointment" : {
-            "$ref" : "#/components/schemas/Appointment"
-          },
-          "emailSent" : {
-            "type" : "boolean"
           }
         }
       },
@@ -5382,6 +5509,23 @@
           }
         }
       },
+      "GetInfectionBriefingProceduresResponse" : {
+        "required" : [ "elements", "totalNumberOfElements" ],
+        "type" : "object",
+        "properties" : {
+          "elements" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/InfectionBriefingProcedure"
+            }
+          },
+          "totalNumberOfElements" : {
+            "minimum" : 0,
+            "type" : "integer",
+            "format" : "int64"
+          }
+        }
+      },
       "GetInternalConfigDepartmentInfoResponse" : {
         "type" : "object",
         "properties" : {
@@ -5423,24 +5567,6 @@
         "properties" : {
           "openingHoursDto" : {
             "$ref" : "#/components/schemas/OpeningHours"
-          }
-        }
-      },
-      "GetOpeningHoursResponse" : {
-        "required" : [ "de", "en" ],
-        "type" : "object",
-        "properties" : {
-          "de" : {
-            "type" : "array",
-            "items" : {
-              "type" : "string"
-            }
-          },
-          "en" : {
-            "type" : "array",
-            "items" : {
-              "type" : "string"
-            }
           }
         }
       },
@@ -5981,6 +6107,20 @@
         "type" : "string",
         "enum" : [ "INFECTION_BRIEFING_NEW", "INFECTION_BRIEFING_REPLACEMENT" ]
       },
+      "InfectionBriefingAppointment" : {
+        "required" : [ "end", "start" ],
+        "type" : "object",
+        "properties" : {
+          "end" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "start" : {
+            "type" : "string",
+            "format" : "date-time"
+          }
+        }
+      },
       "InfectionBriefingAppointmentStandardDurations" : {
         "required" : [ "infectionBriefingNew", "infectionBriefingReplacement" ],
         "type" : "object",
@@ -6000,6 +6140,84 @@
         "properties" : {
           "landingPageContent" : {
             "$ref" : "#/components/schemas/MultiLangDocument"
+          }
+        }
+      },
+      "InfectionBriefingProcedure" : {
+        "required" : [ "dateOfBirth", "firstName", "lastName", "procedureId", "procedureType", "status" ],
+        "type" : "object",
+        "properties" : {
+          "appointmentTime" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "dateOfBirth" : {
+            "type" : "string",
+            "format" : "date"
+          },
+          "firstName" : {
+            "minLength" : 1,
+            "type" : "string"
+          },
+          "instructionDate" : {
+            "type" : "string",
+            "format" : "date"
+          },
+          "instructionType" : {
+            "$ref" : "#/components/schemas/InstructionType"
+          },
+          "lastName" : {
+            "minLength" : 1,
+            "type" : "string"
+          },
+          "procedureId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "procedureType" : {
+            "$ref" : "#/components/schemas/ProcedureType"
+          },
+          "status" : {
+            "$ref" : "#/components/schemas/ProcedureStatus"
+          }
+        }
+      },
+      "InfectionBriefingProcedureDetails" : {
+        "required" : [ "applicant", "custodianConsent", "procedureId", "procedureStatus", "procedureType" ],
+        "type" : "object",
+        "properties" : {
+          "applicant" : {
+            "$ref" : "#/components/schemas/PersonDetails"
+          },
+          "applicantCategory" : {
+            "$ref" : "#/components/schemas/ApplicantCategory"
+          },
+          "appointmentTime" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "custodianConsent" : {
+            "$ref" : "#/components/schemas/CustodianConsent"
+          },
+          "instructionDate" : {
+            "type" : "string",
+            "format" : "date"
+          },
+          "instructionType" : {
+            "$ref" : "#/components/schemas/InstructionType"
+          },
+          "procedureId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "procedureStatus" : {
+            "$ref" : "#/components/schemas/ProcedureStatus"
+          },
+          "procedureType" : {
+            "$ref" : "#/components/schemas/ProcedureType"
+          },
+          "sourceDto" : {
+            "$ref" : "#/components/schemas/ProcedureSource"
           }
         }
       },
@@ -6057,7 +6275,7 @@
       },
       "Language" : {
         "type" : "string",
-        "enum" : [ "GERMAN", "ENGLISH" ]
+        "enum" : [ "GERMAN", "ENGLISH", "SPANISH", "TURKISH", "RUSSIAN", "ARABIC", "FRENCH", "ITALIAN", "POLISH", "ROMANIAN", "UKRAINIAN", "CROATIAN", "FARSI", "DARI" ]
       },
       "Location" : {
         "required" : [ "latitude", "longitude" ],
@@ -6227,33 +6445,28 @@
         }
       },
       "MultiLangDocument" : {
-        "required" : [ "de" ],
+        "required" : [ "localizations" ],
         "type" : "object",
         "properties" : {
-          "de" : {
-            "$ref" : "#/components/schemas/DocumentDetails"
-          },
-          "en" : {
-            "$ref" : "#/components/schemas/DocumentDetails"
+          "localizations" : {
+            "type" : "object",
+            "additionalProperties" : {
+              "$ref" : "#/components/schemas/DocumentDetails"
+            }
           }
         }
       },
       "OpeningHours" : {
-        "required" : [ "de", "en" ],
+        "required" : [ "localizations" ],
         "type" : "object",
         "properties" : {
-          "de" : {
-            "minItems" : 1,
-            "type" : "array",
-            "items" : {
-              "type" : "string"
-            }
-          },
-          "en" : {
-            "minItems" : 1,
-            "type" : "array",
-            "items" : {
-              "type" : "string"
+          "localizations" : {
+            "type" : "object",
+            "additionalProperties" : {
+              "type" : "array",
+              "items" : {
+                "type" : "string"
+              }
             }
           }
         }
@@ -6323,7 +6536,7 @@
         } ]
       },
       "PersonDetails" : {
-        "required" : [ "dateOfBirth", "firstName", "lastName" ],
+        "required" : [ "dateOfBirth", "external", "firstName", "lastName" ],
         "type" : "object",
         "properties" : {
           "address" : {
@@ -6338,6 +6551,9 @@
             "items" : {
               "type" : "string"
             }
+          },
+          "external" : {
+            "type" : "boolean"
           },
           "firstName" : {
             "type" : "string"
@@ -6543,45 +6759,6 @@
           }
         }
       },
-      "ProcedureDetails" : {
-        "required" : [ "applicant", "custodianConsent", "procedureId", "procedureStatus", "procedureType" ],
-        "type" : "object",
-        "properties" : {
-          "applicant" : {
-            "$ref" : "#/components/schemas/PersonDetails"
-          },
-          "applicantCategory" : {
-            "$ref" : "#/components/schemas/ApplicantCategory"
-          },
-          "appointmentTime" : {
-            "type" : "string",
-            "format" : "date-time"
-          },
-          "custodianConsent" : {
-            "$ref" : "#/components/schemas/CustodianConsent"
-          },
-          "instructionDate" : {
-            "type" : "string",
-            "format" : "date"
-          },
-          "instructionType" : {
-            "$ref" : "#/components/schemas/InstructionType"
-          },
-          "procedureId" : {
-            "type" : "string",
-            "format" : "uuid"
-          },
-          "procedureStatus" : {
-            "$ref" : "#/components/schemas/ProcedureStatus"
-          },
-          "procedureType" : {
-            "$ref" : "#/components/schemas/ProcedureType"
-          },
-          "sourceDto" : {
-            "$ref" : "#/components/schemas/ProcedureSource"
-          }
-        }
-      },
       "ProcedureMetric" : {
         "required" : [ "abortedCount", "businessModule", "closedCount", "inProgressCount", "openOrDraftCount", "procedureType", "totalCount" ],
         "type" : "object",
@@ -6780,13 +6957,6 @@
           "properties" : {
             "changeDescription" : {
               "type" : "string"
-            },
-            "keyDocumentType" : {
-              "type" : "string"
-            },
-            "keyDocumentVersion" : {
-              "type" : "integer",
-              "format" : "int32"
             },
             "previousFacilityFileStateId" : {
               "type" : "string",

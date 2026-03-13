@@ -8,19 +8,21 @@ package de.eshg.infectionbriefing;
 import static de.eshg.infectionbriefing.mapper.ApplicantCategoryMapper.toInterfaceType;
 import static de.eshg.infectionbriefing.mapper.PersonDetailsMapper.mapToPersonDetailsDto;
 import static de.eshg.infectionbriefing.mapper.ProcedureSearchParametersMapper.mapToProcedureApiType;
-import static de.eshg.infectionbriefing.util.PageUtil.applyPagination;
 import static de.eshg.infectionbriefing.util.PageUtil.toPageSpec;
 import static de.eshg.infectionbriefing.util.ProcedureUtil.getFieldOrNull;
+import static de.eshg.lib.procedure.util.ProcedureValidator.hasNonNullValue;
 
 import de.cronn.commons.lang.StreamUtil;
 import de.eshg.base.centralfile.api.person.GetPersonFileStateResponse;
-import de.eshg.infectionbriefing.api.GetProceduresResponse;
-import de.eshg.infectionbriefing.api.ProcedureDetailsDto;
+import de.eshg.domain.model.SequencedBaseEntity;
+import de.eshg.infectionbriefing.api.GetInfectionBriefingProceduresResponse;
+import de.eshg.infectionbriefing.api.InfectionBriefingProcedureDetailsDto;
 import de.eshg.infectionbriefing.api.ProcedureFilterParameters;
 import de.eshg.infectionbriefing.api.ProcedurePaginationParameters;
 import de.eshg.infectionbriefing.api.ProcedureSearchParameters;
 import de.eshg.infectionbriefing.api.ProcedureSourceDto;
 import de.eshg.infectionbriefing.domain.model.InfectionBriefingProcedure;
+import de.eshg.infectionbriefing.domain.model.InfectionBriefingProcedure_;
 import de.eshg.infectionbriefing.domain.model.NewCertificateProcedure;
 import de.eshg.infectionbriefing.domain.repository.InfectionBriefingProcedureRepository;
 import de.eshg.infectionbriefing.domain.specification.InfectionBriefingProcedureSpecification;
@@ -30,7 +32,6 @@ import de.eshg.infectionbriefing.util.ProcedureValidator;
 import de.eshg.lib.appointmentblock.persistence.entity.Appointment;
 import de.eshg.lib.auditlog.AuditLogger;
 import de.eshg.lib.procedure.domain.model.PersonType;
-import de.eshg.lib.procedure.domain.model.Procedure;
 import de.eshg.lib.procedure.domain.model.ProcedureStatus;
 import de.eshg.lib.procedure.domain.model.RelatedPerson;
 import de.eshg.lib.procedure.mapping.ProcedureMapper;
@@ -39,19 +40,21 @@ import de.eshg.rest.service.error.NotFoundException;
 import java.time.Clock;
 import java.time.Instant;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Comparator;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 @Service
 public class InfectionBriefingProcedureService {
 
   private final InfectionBriefingProcedureRepository repository;
-  private final InfectionBriefingProcedureMapper procedureMapper;
   private final ProcedureSearchService<InfectionBriefingProcedure> procedureSearchService;
   private final Clock clock;
   private final AuditLogger auditLogger;
@@ -60,14 +63,12 @@ public class InfectionBriefingProcedureService {
 
   public InfectionBriefingProcedureService(
       InfectionBriefingProcedureRepository repository,
-      InfectionBriefingProcedureMapper procedureMapper,
       ProcedureSearchService<InfectionBriefingProcedure> procedureSearchService,
       Clock clock,
       AuditLogger auditLogger,
       PersonClient personClient,
       CustodianConsentHelper custodianConsentHelper) {
     this.repository = repository;
-    this.procedureMapper = procedureMapper;
     this.procedureSearchService = procedureSearchService;
     this.clock = clock;
     this.auditLogger = auditLogger;
@@ -75,43 +76,37 @@ public class InfectionBriefingProcedureService {
     this.custodianConsentHelper = custodianConsentHelper;
   }
 
-  public GetProceduresResponse getProcedures(
+  public GetInfectionBriefingProceduresResponse getProcedures(
       ProcedureFilterParameters filterParameters,
-      ProcedurePaginationParameters paginationParameters) {
+      ProcedurePaginationParameters paginationParameters,
+      ProcedureSearchParameters searchParameters) {
 
     Page<InfectionBriefingProcedure> proceduresPage =
-        repository.findAll(getSpecification(filterParameters), toPageSpec(paginationParameters));
-    return new GetProceduresResponse(
-        proceduresPage.stream().map(procedureMapper::enrichAndMapToInterfaceType).toList(),
+        repository.findAll(
+            getSpecification(filterParameters, searchParameters),
+            toPageSpec(paginationParameters)
+                .withSort(
+                    Sort.by(Direction.DESC, InfectionBriefingProcedure_.CREATED_AT)
+                        .and(Sort.by(Direction.ASC, InfectionBriefingProcedure_.ID))));
+
+    Map<UUID, GetPersonFileStateResponse> applicantDirectory =
+        getApplicantDirectory(proceduresPage);
+
+    return new GetInfectionBriefingProceduresResponse(
+        proceduresPage.stream()
+            .map(
+                procedure ->
+                    InfectionBriefingProcedureMapper.enrichAndMapToInterfaceType(
+                        procedure, applicantDirectory))
+            .toList(),
         proceduresPage.getTotalElements());
   }
 
-  public GetProceduresResponse searchProcedures(
-      ProcedureSearchParameters searchParameters,
-      ProcedurePaginationParameters paginationParameters) {
-    List<InfectionBriefingProcedure> searchResult =
-        procedureSearchService
-            .searchProceduresByPerson(
-                mapToProcedureApiType(searchParameters), PersonType.PROFESSIONAL)
-            .stream()
-            .filter(procedure -> procedure.getProcedureStatus() == ProcedureStatus.CLOSED)
-            .sorted(Comparator.comparing(Procedure::getCreatedAt))
-            .toList();
-    return new GetProceduresResponse(
-        applyPagination(searchResult.stream(), paginationParameters)
-            .map(procedureMapper::enrichAndMapToInterfaceType)
-            .toList(),
-        searchResult.size());
-  }
-
-  public ProcedureDetailsDto getProcedureDetails(UUID procedureId) {
+  public InfectionBriefingProcedureDetailsDto getProcedureDetails(UUID procedureId) {
     InfectionBriefingProcedure procedure = getProcedure(procedureId);
     GetPersonFileStateResponse applicant =
-        personClient.getPersonFileState(
-            procedure.getRelatedPersons().stream()
-                .map(RelatedPerson::getCentralFileStateId)
-                .collect(StreamUtil.toSingleElement()));
-    return new ProcedureDetailsDto(
+        personClient.getPersonFileState(procedure.getApplicant().getCentralFileStateId());
+    return new InfectionBriefingProcedureDetailsDto(
         procedure.getExternalId(),
         ProcedureMapper.toInterfaceType(procedure.getProcedureStatus()),
         ProcedureMapper.toInterfaceType(procedure.getProcedureType()),
@@ -127,13 +122,44 @@ public class InfectionBriefingProcedureService {
         ProcedureSourceDto.STAFF_PORTAL);
   }
 
-  private InfectionBriefingProcedureSpecification getSpecification(
+  private Specification<InfectionBriefingProcedure> getSpecification(
+      ProcedureFilterParameters filterParameters, ProcedureSearchParameters searchParameters) {
+    if (hasNonNullValue(searchParameters)) {
+      List<Long> searchResult =
+          procedureSearchService
+              .searchProceduresByPerson(
+                  mapToProcedureApiType(searchParameters), PersonType.PROFESSIONAL)
+              .stream()
+              .map(SequencedBaseEntity::getId)
+              .toList();
+      return getSpecification(filterParameters)
+          .and(((root, _, _) -> root.get(InfectionBriefingProcedure_.id).in(searchResult)));
+    } else {
+      return getSpecification(filterParameters);
+    }
+  }
+
+  private Specification<InfectionBriefingProcedure> getSpecification(
       ProcedureFilterParameters parameters) {
     return new InfectionBriefingProcedureSpecification(
-        new ArrayList<>(
-            List.of(ProcedureStatus.DRAFT, ProcedureStatus.OPEN, ProcedureStatus.IN_PROGRESS)),
         getStartOfDay(parameters.appointmentDay()),
-        InstructionTypeMapper.toDomainType(parameters.instructionType()));
+        InstructionTypeMapper.toDomainType(parameters.instructionType()),
+        parameters.instructionYear(),
+        InfectionBriefingProcedureMapper.toDomainType(parameters.status()));
+  }
+
+  private Map<UUID, GetPersonFileStateResponse> getApplicantDirectory(
+      Page<InfectionBriefingProcedure> proceduresPage) {
+    List<UUID> centralFileStateIds =
+        proceduresPage.stream()
+            .map(InfectionBriefingProcedure::getApplicant)
+            .map(RelatedPerson::getCentralFileStateId)
+            .toList();
+    if (centralFileStateIds.isEmpty()) {
+      return Collections.emptyMap();
+    }
+    return personClient.getPersonFileStates(centralFileStateIds).stream()
+        .collect(StreamUtil.toLinkedHashMap(GetPersonFileStateResponse::id));
   }
 
   private Instant getStartOfDay(LocalDate localDate) {

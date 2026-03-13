@@ -66,7 +66,6 @@ public class CreateInspectionSampleTemplatesTask {
             if (inspectionSampleTemplateRepository.count() == 0) {
               createSampleTemplate(
                   "Trinkwasser",
-                  "Bad Herren links",
                   InspectionSampleType.DRINKING_WATER,
                   InspectionSampleEvaluationType.ON_SITE,
                   List.of(
@@ -79,7 +78,6 @@ public class CreateInspectionSampleTemplatesTask {
 
               createSampleTemplate(
                   "Badewasser",
-                  "Schwimmerbecken",
                   InspectionSampleType.DRINKING_WATER,
                   InspectionSampleEvaluationType.ON_SITE,
                   List.of(
@@ -95,13 +93,11 @@ public class CreateInspectionSampleTemplatesTask {
 
   private void createSampleTemplate(
       String name,
-      String pointOfWithdrawal,
       InspectionSampleType typeOfSample,
       InspectionSampleEvaluationType evaluationType,
       List<InspectionSampleMeasurementParameterTemplate> measurementParameters) {
     InspectionSampleTemplate template = new InspectionSampleTemplate();
     template.setName(name);
-    template.setPointOfWithdrawal(pointOfWithdrawal);
     template.setTypeOfSample(typeOfSample);
     template.setEvaluationType(evaluationType);
 

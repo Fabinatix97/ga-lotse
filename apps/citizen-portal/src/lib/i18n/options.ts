@@ -5,13 +5,63 @@
 
 import { InitOptions } from "i18next";
 
+import { ApiLanguage } from "@eshg/base-api";
 import {
   i18nNamespace as i18nNamespaceLibPortal,
   loadLocale as loadLocaleLibPortal,
 } from "@eshg/lib-portal";
 
 export const defaultLang = "de";
-export const supportedLanguages = ["en", "de"] as const;
+export const supportedLanguages = [
+  "en",
+  "de",
+  "es",
+  "tr",
+  "ru",
+  "ar",
+  "fr",
+  "it",
+  "pl",
+  "ro",
+  "uk",
+  "hr",
+  "fa",
+  "prs",
+] as const;
+
+export function mapToApiLanguage(language: SupportedLanguage): ApiLanguage {
+  switch (language) {
+    case "de":
+      return ApiLanguage.German;
+    case "en":
+      return ApiLanguage.English;
+    case "es":
+      return ApiLanguage.Spanish;
+    case "tr":
+      return ApiLanguage.Turkish;
+    case "ru":
+      return ApiLanguage.Russian;
+    case "ar":
+      return ApiLanguage.Arabic;
+    case "fr":
+      return ApiLanguage.French;
+    case "it":
+      return ApiLanguage.Italian;
+    case "pl":
+      return ApiLanguage.Polish;
+    case "ro":
+      return ApiLanguage.Romanian;
+    case "uk":
+      return ApiLanguage.Ukrainian;
+    case "hr":
+      return ApiLanguage.Croatian;
+    case "fa":
+      return ApiLanguage.Farsi;
+    case "prs":
+      return ApiLanguage.Dari;
+  }
+}
+
 export const options = {
   // debug: true,
   supportedLngs: supportedLanguages,

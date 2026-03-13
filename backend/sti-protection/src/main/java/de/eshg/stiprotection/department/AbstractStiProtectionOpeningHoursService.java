@@ -6,11 +6,12 @@
 package de.eshg.stiprotection.department;
 
 import de.eshg.config.AuditLogWriter;
+import de.eshg.config.api.OpeningHoursDto;
 import de.eshg.config.departmentinfo.AbstractOpeningHoursService;
 import de.eshg.config.domain.AbstractOpeningHours;
 import de.eshg.config.initialization.MandatoryInitialOpeningHours;
+import de.eshg.config.mapper.OpeningHoursMapper;
 import de.eshg.persistence.TransactionHelper;
-import de.eshg.stiprotection.api.citizen.GetOpeningHoursResponse;
 import jakarta.persistence.EntityManager;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,8 +28,8 @@ abstract class AbstractStiProtectionOpeningHoursService<O extends AbstractOpenin
   }
 
   @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
-  public GetOpeningHoursResponse getOpeningHours() {
+  public OpeningHoursDto getOpeningHours() {
     O config = getConfig();
-    return new GetOpeningHoursResponse(config.getDe(), config.getEn());
+    return OpeningHoursMapper.mapToDto(config);
   }
 }

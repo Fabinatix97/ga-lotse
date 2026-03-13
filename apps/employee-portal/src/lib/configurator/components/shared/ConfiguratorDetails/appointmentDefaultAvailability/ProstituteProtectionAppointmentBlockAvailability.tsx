@@ -5,6 +5,8 @@
 
 import { ApiGetAppointmentBlockAvailabilityResponse } from "@eshg/prostitute-protection-api";
 
+import { useUpdateAppointmentBlockAvailability } from "@/lib/configurator/api/mutations/useUpdateAppointmentBlockAvailability";
+import { useGetAppointmentDefaultAvailability } from "@/lib/configurator/api/queries/appointmentBlockDefaultAvailability";
 import {
   AppointmentBlockAvailabilityFormModel,
   AppointmentBlockDefaultAvailabilityForm,
@@ -12,8 +14,6 @@ import {
 } from "@/lib/configurator/components/shared/ConfiguratorDetails/appointmentDefaultAvailability/AppointmentBlockDefaultAvailability";
 import { ConfiguratorModuleName } from "@/lib/configurator/shared/types";
 import { useProstituteProtectionAppointmentBlockAvailabilityApi } from "@/lib/shared/api/clients";
-import { useUpdateAppointmentBlockAvailability } from "@/lib/shared/api/mutations/configurator/useUpdateAppointmentBlockAvailability";
-import { useGetAppointmentDefaultAvailability } from "@/lib/shared/api/queries/configurator/appointmentBlockDefaultAvailability";
 
 export function ProstituteProtectionAppointmentBlockAvailability() {
   function useGetProstituteProtectionAppointmentBlockAvailability() {

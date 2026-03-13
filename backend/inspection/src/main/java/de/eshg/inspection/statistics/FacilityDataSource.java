@@ -9,6 +9,7 @@ import de.eshg.inspection.facility.persistence.Facility;
 import de.eshg.inspection.facility.persistence.FacilityRepository;
 import de.eshg.inspection.inspection.api.InspectionResult;
 import de.eshg.inspection.objecttype.ObjectTypeProperties;
+import de.eshg.inspection.objecttype.persistence.ObjectTypeHierarchyReader;
 import de.eshg.lib.statistics.api.DataSourceSensitivity;
 import de.eshg.lib.statistics.datasource.EntityDataSource;
 import de.eshg.lib.statistics.util.TimeRange;
@@ -27,7 +28,9 @@ public class FacilityDataSource extends EntityDataSource<Facility, FacilityAttri
   private final FacilityRepository facilityRepository;
 
   public FacilityDataSource(
-      FacilityRepository facilityRepository, ObjectTypeProperties objectTypeProperties) {
+      FacilityRepository facilityRepository,
+      ObjectTypeProperties objectTypeProperties,
+      ObjectTypeHierarchyReader objectTypeHierarchyReader) {
     super(
         DATA_SOURCE_ID,
         DATA_SOURCE_NAME,
@@ -35,7 +38,8 @@ public class FacilityDataSource extends EntityDataSource<Facility, FacilityAttri
         null,
         FacilityAttributes.values());
     this.facilityRepository = facilityRepository;
-    AttributeUtil.addValueOptions(FacilityAttributes.OBJECT_TYPE, objectTypeProperties);
+    AttributeUtil.addValueOptions(
+        FacilityAttributes.OBJECT_TYPE, objectTypeProperties, objectTypeHierarchyReader);
   }
 
   @Override

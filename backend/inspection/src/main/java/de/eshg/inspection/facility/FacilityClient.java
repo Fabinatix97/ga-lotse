@@ -18,6 +18,7 @@ import de.eshg.base.centralfile.api.facility.GetFacilityFileStatesFilteredReques
 import de.eshg.base.centralfile.api.facility.GetFacilityFileStatesFilteredResponse;
 import de.eshg.base.centralfile.api.facility.GetFacilityFileStatesRequest;
 import de.eshg.base.centralfile.api.facility.GetFacilityFileStatesResponse;
+import de.eshg.base.centralfile.api.facility.GetReferenceFacilitiesRequest;
 import de.eshg.base.centralfile.api.facility.GetReferenceFacilityResponse;
 import de.eshg.base.centralfile.api.facility.PutFacilityRequest;
 import de.eshg.base.centralfile.api.facility.SearchFacilityFileStatesByFileNumberResponse;
@@ -30,6 +31,8 @@ import de.eshg.rest.service.error.ErrorResponse;
 import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 import java.util.function.Supplier;
 import org.springframework.http.HttpStatus;
@@ -75,6 +78,13 @@ public class FacilityClient {
   public GetFacilityFileStatesResponse getFacilityFileStatesWithNotFound(List<UUID> fileStateIds) {
     return doAndForwardErrorCodes(
         () -> facilityApi.getFacilityFileStates(new GetFacilityFileStatesRequest(fileStateIds)));
+  }
+
+  public Map<UUID, GetReferenceFacilityResponse> getReferenceFacilitiesByCFSId(
+      Set<UUID> fileStateIds) {
+    return facilityApi
+        .getReferenceFacilities(new GetReferenceFacilitiesRequest(fileStateIds.stream().toList()))
+        .facilityByCFSId();
   }
 
   public GetFacilityFileStatesFilteredResponse getFacilityFileStatesFiltered(

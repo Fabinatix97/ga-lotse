@@ -3,9 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { useUpdateContactMarkdown } from "@/lib/configurator/api/mutations/useUpdateContact";
+import { useGetContactMarkdown } from "@/lib/configurator/api/queries/contact";
 import { ConfiguratorModuleName } from "@/lib/configurator/shared/types";
-import { useUpdateContactMarkdown } from "@/lib/shared/api/mutations/configurator/useUpdateContact";
-import { useGetContactMarkdown } from "@/lib/shared/api/queries/configurator/contact";
 
 import { MarkdownFiles } from "./MarkdownFiles";
 

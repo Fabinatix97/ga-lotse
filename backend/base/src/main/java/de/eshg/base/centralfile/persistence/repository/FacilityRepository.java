@@ -8,11 +8,16 @@ package de.eshg.base.centralfile.persistence.repository;
 import de.eshg.base.centralfile.persistence.entity.DataOrigin;
 import de.eshg.base.centralfile.persistence.entity.Facility;
 import de.eshg.base.centralfile.persistence.entity.Facility_;
+import de.eshg.base.centralfile.persistence.entity.PairUUIDFacility;
 import java.time.Instant;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.springframework.data.jpa.repository.*;
 import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
@@ -50,6 +55,21 @@ public interface FacilityRepository
   Optional<Facility> findReferenceFacilityByFileStateExternalId(UUID fileStateIdExternalId);
 
   @Query(
+      "select distinct f.referenceFacility from Facility f where f.externalId in :fileStateIdExternalIds")
+  List<Facility> findReferenceFacilitiesByFileStateExternalIds(List<UUID> fileStateIdExternalIds);
+
+  @Query(
+      "select f.externalId, f.referenceFacility from Facility f where f.externalId in :fileStateIdExternalIds")
+  Stream<PairUUIDFacility> streamReferenceFacilitiesByFileStateExternalIds(
+      Set<UUID> fileStateIdExternalIds);
+
+  default Map<UUID, Facility> getReferenceFacilitiesByFileStateExternalIds(
+      Set<UUID> fileStateIdExternalIds) {
+    return streamReferenceFacilitiesByFileStateExternalIds(fileStateIdExternalIds)
+        .collect(Collectors.toMap(PairUUIDFacility::id, PairUUIDFacility::facility));
+  }
+
+  @Query(
       """
     select not exists(
       from Facility f
@@ -58,6 +78,17 @@ public interface FacilityRepository
     )
     """)
   boolean isReferenceFacilityObsolete(UUID externalId);
+
+  @Query(
+      """
+  select exists(
+    select s
+    from SamplingPoint s join s.referenceFacility f
+    where f = :facility
+    and (s.deleteAt is null or (f.deleteAt is not null and s.deleteAt > f.deleteAt))
+  )
+  """)
+  boolean hasSamplingPointNotToBeDeletedBefore(Facility facility);
 
   @EntityGraph(
       attributePaths = {

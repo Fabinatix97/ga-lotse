@@ -30,8 +30,6 @@ public class OmsConfigValidator {
     @Serial private static final long serialVersionUID = 1L;
 
     public static final String CONCERNS_DOCUMENT = "concerns";
-    public static final String LANDING_PAGE_DE_DOCUMENT = "landing page (de)";
-    public static final String LANDING_PAGE_EN_DOCUMENT = "landing page (en)";
 
     private final String whichDocument;
 
@@ -115,16 +113,13 @@ public class OmsConfigValidator {
         FileValidator.validateMarkdownFile(content);
       } catch (BadRequestException bre) {
         throw new OmsConfigValidatorException(
-            switch (language) {
-              case GERMAN -> OmsConfigValidatorException.LANDING_PAGE_DE_DOCUMENT;
-              case ENGLISH -> OmsConfigValidatorException.LANDING_PAGE_EN_DOCUMENT;
-            },
+            "landing page (" + Language.LANGUAGE_TO_LANGUAGE_TAG.get(language) + ")",
             "invalid " + name + " file (" + language + "): " + bre.getLocalizedMessage());
       }
     }
   }
 
   private static String categoryName(ConcernCategoryConfigDto category) {
-    return category.nameDe() + "/" + category.nameEn();
+    return category.names().get(Language.GERMAN) + "/" + category.names().get(Language.ENGLISH);
   }
 }

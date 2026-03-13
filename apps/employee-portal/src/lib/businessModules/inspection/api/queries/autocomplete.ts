@@ -50,7 +50,7 @@ export function useAutocompleteParameterRegulationQuery({
 
 export function useAutocompleteUserFacilityContactQuery({
   prefix,
-  useLaboratories,
+  useLaboratories = false,
 }: {
   prefix: string;
   useLaboratories: boolean;

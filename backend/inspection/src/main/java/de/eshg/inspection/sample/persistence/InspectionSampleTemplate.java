@@ -28,11 +28,6 @@ public class InspectionSampleTemplate extends GloballyUniqueEntityBase {
 
   @Column(nullable = false)
   @NotNull
-  @DataSensitivity(SensitivityLevel.PSEUDONYMIZED)
-  private String pointOfWithdrawal;
-
-  @Column(nullable = false)
-  @NotNull
   @JdbcType(PostgreSQLEnumJdbcType.class)
   @DataSensitivity(SensitivityLevel.PSEUDONYMIZED)
   private InspectionSampleType typeOfSample;
@@ -58,14 +53,6 @@ public class InspectionSampleTemplate extends GloballyUniqueEntityBase {
 
   public void setName(@NotNull String name) {
     this.name = name;
-  }
-
-  public @NotNull String getPointOfWithdrawal() {
-    return pointOfWithdrawal;
-  }
-
-  public void setPointOfWithdrawal(@NotNull String pointOfWithdrawal) {
-    this.pointOfWithdrawal = pointOfWithdrawal;
   }
 
   public @NotNull InspectionSampleType getTypeOfSample() {

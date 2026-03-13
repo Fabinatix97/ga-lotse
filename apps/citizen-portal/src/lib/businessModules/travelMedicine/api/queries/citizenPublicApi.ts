@@ -13,6 +13,7 @@ import {
 
 import { useCitizenPublicApi } from "@/lib/businessModules/travelMedicine/api/clients";
 import { citizenPublicApiQueryKey } from "@/lib/businessModules/travelMedicine/api/queries/apiQueryKeys";
+import { OpeningHoursTranslations } from "@/lib/shared/components/ContactAndAvailabilitySheet";
 
 export function useGetAllDiseasesCitizen() {
   const citizenPublicApi = useCitizenPublicApi();
@@ -86,5 +87,7 @@ export function useGetOpeningHoursQuery() {
   return queryOptions({
     queryKey: citizenPublicApiQueryKey(["getOpeningHours"]),
     queryFn: () => departmentApi.getOpeningHours(),
+    select: (openingHours) =>
+      openingHours.localizations as OpeningHoursTranslations,
   });
 }

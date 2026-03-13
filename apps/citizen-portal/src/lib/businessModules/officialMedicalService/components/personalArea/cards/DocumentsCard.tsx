@@ -12,6 +12,7 @@ import { Alert, FileType, FormPlus, SubmitButton } from "@eshg/lib-portal";
 import {
   ApiDocument,
   ApiDocumentStatus,
+  ApiLanguage,
   PostDocumentCitizenRequest,
 } from "@eshg/official-medical-service-api";
 
@@ -23,6 +24,11 @@ import {
   useMapToFrontendErrorMessage,
 } from "@/lib/businessModules/officialMedicalService/shared/file/helpers";
 import { useTranslation } from "@/lib/i18n/client";
+import {
+  SupportedLanguage,
+  mapToApiLanguage,
+  supportedLanguages,
+} from "@/lib/i18n/options";
 import { byBreakpoint } from "@/lib/shared/breakpoints";
 import {
   ContentSheet,
@@ -110,15 +116,31 @@ function DocumentSheet({
   const postDocumentCitizen = usePostDocumentCitizen();
   const errorMessageMapping = useMapToFrontendErrorMessage();
 
-  const documentType = useManualTranslation({
-    de: document.documentTypeDe,
-    en: document.documentTypeEn,
-  });
+  const documentType = useManualTranslation<string>(
+    supportedLanguages.reduce(
+      (acc, lang) => {
+        acc[lang] =
+          (document.documentType as Record<ApiLanguage, string>)[
+            mapToApiLanguage(lang)
+          ] ?? undefined;
+        return acc;
+      },
+      {} as { de: string } & Partial<Record<SupportedLanguage, string>>,
+    ),
+  );
 
-  const helpText = useManualTranslation({
-    de: document.helpTextDe,
-    en: document.helpTextEn,
-  });
+  const helpText = useManualTranslation<string>(
+    supportedLanguages.reduce(
+      (acc, lang) => {
+        acc[lang] =
+          (document.helpText as Record<ApiLanguage, string>)[
+            mapToApiLanguage(lang)
+          ] ?? undefined;
+        return acc;
+      },
+      {} as { de: string } & Partial<Record<SupportedLanguage, string>>,
+    ),
+  );
 
   async function handleSubmit(
     values: DocumentsCardFormValue,

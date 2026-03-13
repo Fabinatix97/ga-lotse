@@ -9,7 +9,7 @@ import * as v from "valibot";
 import { DynamicLayoutProps } from "@eshg/lib-portal";
 
 import { AppLayout } from "@/lib/baseModule/components/layout/AppLayout";
-import { BaseTranslation, baseTranslations } from "@/lib/baseModule/locales";
+import { getBaseTranslation } from "@/lib/baseModule/locales";
 import { options, supportedLanguages } from "@/lib/i18n/options";
 
 const RouteParamsSchema = v.object({
@@ -36,10 +36,9 @@ export async function generateMetadata(
 ): Promise<Metadata> {
   const { lang } = await parseRouteParams(props.params);
 
-  const translations: BaseTranslation = baseTranslations[lang];
   return {
-    description: translations.site_description,
-    keywords: translations.site_keywords,
+    description: getBaseTranslation(lang, "site_description"),
+    keywords: getBaseTranslation(lang, "site_keywords"),
   };
 }
 

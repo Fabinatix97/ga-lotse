@@ -5,6 +5,7 @@
 
 package de.eshg.infectionbriefing.domain.model;
 
+import de.cronn.commons.lang.StreamUtil;
 import de.eshg.lib.appointmentblock.EntityWithAppointment;
 import de.eshg.lib.appointmentblock.persistence.entity.Appointment;
 import de.eshg.lib.common.DataSensitivity;
@@ -35,6 +36,10 @@ public abstract class InfectionBriefingProcedure
 
   protected InfectionBriefingProcedure(TriggerType triggerType) {
     super(triggerType);
+  }
+
+  public InfectionBriefingPerson getApplicant() {
+    return getRelatedPersons().stream().collect(StreamUtil.toSingleElement());
   }
 
   @OneToOne(orphanRemoval = true, cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)

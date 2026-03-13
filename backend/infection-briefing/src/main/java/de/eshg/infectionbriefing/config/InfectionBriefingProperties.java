@@ -22,6 +22,8 @@ public class InfectionBriefingProperties {
 
   @NotNull @Valid private Mail newCertificateAppointmentConfirmationMail;
   @NotNull @Valid private Mail replacementCertificateAppointmentConfirmationMail;
+  @NotNull @Valid private Mail newCertificateAppointmentByEmployeeConfirmationMail;
+  @NotNull @Valid private Mail replacementCertificateAppointmentByEmployeeConfirmationMail;
   @NotNull @Valid private Mail cancelNewCertificateAppointmentConfirmationMail;
   @NotNull @Valid private Mail cancelReplacementCertificateAppointmentConfirmationMail;
 
@@ -31,6 +33,14 @@ public class InfectionBriefingProperties {
 
   public Mail getReplacementCertificateAppointmentConfirmationMail() {
     return replacementCertificateAppointmentConfirmationMail;
+  }
+
+  public Mail getNewCertificateAppointmentByEmployeeConfirmationMail() {
+    return newCertificateAppointmentByEmployeeConfirmationMail;
+  }
+
+  public Mail getReplacementCertificateAppointmentByEmployeeConfirmationMail() {
+    return replacementCertificateAppointmentByEmployeeConfirmationMail;
   }
 
   public Mail getCancelNewCertificateAppointmentConfirmationMail() {
@@ -50,6 +60,18 @@ public class InfectionBriefingProperties {
       Mail replacementCertificateAppointmentConfirmationMail) {
     this.replacementCertificateAppointmentConfirmationMail =
         replacementCertificateAppointmentConfirmationMail;
+  }
+
+  public void setNewCertificateAppointmentByEmployeeConfirmationMail(
+      Mail newCertificateAppointmentByEmployeeConfirmationMail) {
+    this.newCertificateAppointmentByEmployeeConfirmationMail =
+        newCertificateAppointmentByEmployeeConfirmationMail;
+  }
+
+  public void setReplacementCertificateAppointmentByEmployeeConfirmationMail(
+      Mail replacementCertificateAppointmentByEmployeeConfirmationMail) {
+    this.replacementCertificateAppointmentByEmployeeConfirmationMail =
+        replacementCertificateAppointmentByEmployeeConfirmationMail;
   }
 
   public void setCancelNewCertificateAppointmentConfirmationMail(

@@ -31,7 +31,7 @@ export function InspectionSampleSidebarTemplateData({
           selectedIndex={selectedIndex}
           title={template.name}
           parameters={template.measurementParameters}
-          onSelect={onSelect}
+          action={onSelect}
         />
       ))}
     </Grid>
