@@ -30,6 +30,8 @@ public class SchoolEntryConfigAuditLogMapper {
           Boolean.toString(schoolEntryConfig.isInvitationIncludePerson()));
       relevantFields.put(
           "invitationIncludeRoom", Boolean.toString(schoolEntryConfig.isInvitationIncludeRoom()));
+      relevantFields.put(
+          "documentsWithEmployeeInfo", schoolEntryConfig.getDocumentsWithEmployeeInfo().toString());
     }
     return relevantFields;
   }

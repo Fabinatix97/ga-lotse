@@ -16,11 +16,13 @@ dependencies {
     implementation project(':lib-document-generator')
     implementation project(':lib-procedures')
     implementation project(":lib-statistics")
+    implementation project(":lib-user-flow-metrics")
     implementation project(":lib-xlsx-import")
     implementation project(':business-module-persistence-commons')
     implementation project(':file-commons')
     implementation project(':lib-scheduling')
     implementation project(':rest-oauth-client-commons')
+    implementation project(':lib-gdt')
 
     implementation 'org.apache.commons:commons-math3:latest.release'
     implementation 'org.apache.commons:commons-text:latest.release'
@@ -45,6 +47,7 @@ dependencies {
     testImplementation testFixtures(project(':lib-statistics'))
     testImplementation testFixtures(project(':lib-auditlog'))
     testImplementation testFixtures(project(':lib-appointmentblock'))
+    testImplementation project(':lib-file-jockey-client')
 }
 
 dockerCompose {
@@ -52,6 +55,12 @@ dockerCompose {
         'school-entry',
         'school-entry-db'
     ]
+}
+
+evaluationDependsOn(':file-jockey')
+
+tasks.named("test") {
+    dependsOn(project(":file-jockey").tasks.named("composeUp"))
 }
 
 dependencyTrack {

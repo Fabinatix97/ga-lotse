@@ -21,6 +21,7 @@ interface ChecklistSidebarProps {
   inspectionExternalId: string;
   withCoreVersions: boolean;
   currentSelectedNonCoreVersions: ApiInspectionCLDVersion[];
+  checkListsAlwaysRemovable: boolean;
   onClose: () => void;
 }
 
@@ -37,6 +38,7 @@ function ChecklistSelectSidebarWithQueries({
   inspectionExternalId,
   withCoreVersions,
   currentSelectedNonCoreVersions,
+  checkListsAlwaysRemovable,
   onClose,
 }: Readonly<ChecklistSidebarProps>) {
   const { data: availableCLDVs } = useGetAvailableCLDVs(inspectionExternalId);
@@ -47,11 +49,12 @@ function ChecklistSelectSidebarWithQueries({
 
   return (
     <Sidebar open={open} onClose={onClose}>
-      {cldsAvailable ? (
+      {cldsAvailable || checkListsAlwaysRemovable ? (
         <ChecklistSelectSidebarForm
           inspectionExternalId={inspectionExternalId}
           availableCldvs={availableCLDVs}
           currentSelectedNonCoreVersions={currentSelectedNonCoreVersions}
+          checkListsAlwaysRemovable={checkListsAlwaysRemovable}
           onClose={onClose}
         />
       ) : (

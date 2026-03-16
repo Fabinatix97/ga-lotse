@@ -1,9 +1,10 @@
 {
   "appointmentsSection": {
-    "create_appointment": "Zur Terminvereinbarung",
-    "description_enabled": "Termine für die Beratung können online oder telefonisch vereinbart werden.",
+    "create_appointment": "Termin buchen",
+    "go_to_personal_area": "Zu meinem Termin",
+    "description_enabled": "Sie haben die Möglichkeit, Termine für eine Belehrung nach § 43 IfSG (Lebensmittelausweis) sowie für die Beantragung eines Duplikats bei verlorenem Lebensmittelausweis zu vereinbaren (gilt nur für in Frankfurt am Main erworbene Ausweise).",
     "description_not_enabled": "Termine für die Beratung können telefonisch vereinbart werden.",
-    "title": "Möchten Sie einen Termin vereinbaren?"
+    "title": "Termin vereinbaren?"
   },
   "generalInformation": {
     "title": "Informationen"

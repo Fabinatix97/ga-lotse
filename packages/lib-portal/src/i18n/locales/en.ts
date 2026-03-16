@@ -25,6 +25,7 @@ export const en = {
     length:
       "Text must be between {{startInclusive}} and {{endInclusive}} symbols long.",
     pastOrTodayDate: "The date lies in the future.",
+    phoneNumber: "Please enter a valid Phone Number.",
     number: "Please enter a number.",
     pleaseEnterYearInRange: "Please enter year between {{min}} and {{max}}",
 

@@ -9,6 +9,9 @@ import de.eshg.base.centralfile.PersonApi;
 import de.eshg.base.centralfile.api.person.GetPersonFileStateResponse;
 import de.eshg.lib.appointmentblock.api.AppointmentDto;
 import de.eshg.lib.procedure.domain.model.ProcedureStatus;
+import de.eshg.lib.userflowmetrics.UserFlowService;
+import de.eshg.lib.userflowmetrics.api.GetStartUserFlowTrackingRequest;
+import de.eshg.lib.userflowmetrics.api.GetStartUserFlowTrackingResponse;
 import de.eshg.rest.service.error.BadRequestException;
 import de.eshg.rest.service.security.config.BaseUrls;
 import de.eshg.schoolentry.api.citizen.*;
@@ -31,17 +34,27 @@ public class SchoolEntryCitizenController {
   public static final String BASE_URL = BaseUrls.SchoolEntry.SCHOOL_ENTRY_CITIZEN_CONTROLLER;
   public static final int MAX_ALLOWED_APPOINTMENT_CHANGES = 2;
 
+  private final UserFlowService userFlowService;
   private final SchoolEntryCitizenService schoolEntryCitizenService;
   private final PersonApi personApi;
   private final Validator validator;
 
   public SchoolEntryCitizenController(
+      UserFlowService userFlowService,
       SchoolEntryCitizenService schoolEntryCitizenService,
       PersonApi personApi,
       Validator validator) {
+    this.userFlowService = userFlowService;
     this.schoolEntryCitizenService = schoolEntryCitizenService;
     this.personApi = personApi;
     this.validator = validator;
+  }
+
+  @PostMapping("/start-user-flow")
+  @Transactional
+  public GetStartUserFlowTrackingResponse getStartUserFlowTrackingResponse(
+      @Valid @RequestBody GetStartUserFlowTrackingRequest request) {
+    return userFlowService.startUserFlow(request.userFlowType());
   }
 
   @GetMapping("/procedure")
@@ -93,6 +106,7 @@ public class SchoolEntryCitizenController {
     AppointmentDto newAppointment = request.newAppointment();
 
     schoolEntryCitizenService.updateAppointment(schoolEntryProcedure, newAppointment);
+    userFlowService.finishUserFlow(request.userFlowTrackingId());
   }
 
   private SchoolEntryProcedure getSchoolEntryProcedure(Jwt principal) {
@@ -124,5 +138,6 @@ public class SchoolEntryCitizenController {
     validator.validateCitizenAnamnesis(request.anamnesis());
 
     schoolEntryCitizenService.addCitizenAnamnesis(schoolEntryProcedure, request.anamnesis());
+    userFlowService.finishUserFlow(request.userFlowTrackingId());
   }
 }

@@ -8,13 +8,13 @@ Bei Minderjährigen bis einschließlich 15 Jahren ist die Anwesenheit eines Sorg
 
 Für verpflichtende Schulpraktika und ehrenamtliche Tätigkeiten ist eine entsprechende Bescheinigung vorzulegen (z. B. Bestätigung der Schule oder der Einsatzstelle). Schülerinnen und Schüler müssen zusätzlich einen gültigen Schülerausweis mitbringen.
 
-Für den Fall, dass Sie Ihren Termin ändern oder stornieren möchten, bitten wir Sie, dies über unseren Online-Service vorzunehmen. Nutzen Sie hierfür bitte den folgenden Link:
+Für den Fall, dass Sie Ihren Termin stornieren möchten, bitten wir Sie, dies über unseren Online-Service vorzunehmen. Nutzen Sie hierfür bitte den folgenden Link:
 %s
 
 Anmeldecode: %s
 Zur Verifikation wird Ihr Geburtsdatum benötigt.
 
-Beachten Sie bitte, dass es nicht möglich ist auf diese Email zu antworten. Für eine Terminabsage verwenden Sie bitte den angegebenen Link.
+Beachten Sie bitte, dass es nicht möglich ist auf diese Email zu antworten.
 
 Vielen Dank, dass Sie unseren Service nutzen. Wir freuen uns darauf, Sie bald bei uns begrüßen zu dürfen.
 

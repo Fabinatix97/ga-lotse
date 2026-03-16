@@ -180,7 +180,7 @@ public class ChecklistReportMapper {
     report.getReportElements().add(topLevelTitle);
   }
 
-  private static void addChapter(Report report, String title) {
+  public static void addChapter(Report report, String title) {
     ReportElementChapter chapter = new ReportElementChapter();
     chapter.setEditable(false);
     chapter.setTitle(title);

@@ -5,9 +5,9 @@
 
 package de.eshg.lib.gdt.v35.builder;
 
-import de.eshg.lib.gdt.v35.model.GdtElement;
-import de.eshg.lib.gdt.v35.model.GdtField;
-import de.eshg.lib.gdt.v35.model.GdtObject;
+import de.eshg.lib.gdt.v35.model.Gdt35Element;
+import de.eshg.lib.gdt.v35.model.Gdt35Field;
+import de.eshg.lib.gdt.v35.model.Gdt35Object;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
@@ -16,13 +16,13 @@ import java.util.function.Consumer;
  * Base class for all GDT object builders.
  *
  * <p>Implements the fluent interface pattern to construct the hierarchical structure of GDT
- * records. Manages the list of {@link GdtElement}s (fields and nested objects).
+ * records. Manages the list of {@link Gdt35Element}s (fields and nested objects).
  *
  * @param <T> The concrete type of the builder (Self-type pattern).
  */
 abstract class BaseBuilder<T extends BaseBuilder<T>> {
 
-  protected final List<GdtElement> elements = new ArrayList<>();
+  protected final List<Gdt35Element> elements = new ArrayList<>();
 
   protected abstract T self();
 
@@ -34,7 +34,7 @@ abstract class BaseBuilder<T extends BaseBuilder<T>> {
    * @return This builder instance.
    */
   public T addField(String tag, String value) {
-    elements.add(new GdtField(tag, value));
+    elements.add(new Gdt35Field(tag, value));
     return self();
   }
 
@@ -67,7 +67,7 @@ abstract class BaseBuilder<T extends BaseBuilder<T>> {
               + objectId
               + ").");
     }
-    elements.add(new GdtObject(attributeTag, attributeName, objectId, builder.elements));
+    elements.add(new Gdt35Object(attributeTag, attributeName, objectId, builder.elements));
     return self();
   }
 

@@ -16,10 +16,13 @@ import de.eshg.lib.common.BusinessModule;
 import de.eshg.lib.common.BusinessModuleCapability;
 import de.eshg.lib.procedure.api.ProcedureMetricsApi;
 import de.eshg.lib.procedure.model.*;
+import de.eshg.lib.userflowmetrics.api.GetUserFlowMetricsResponse;
+import de.eshg.lib.userflowmetrics.api.UserFlowMetric;
 import de.eshg.rest.service.error.ErrorResponseWithLocation;
 import java.time.Instant;
 import java.util.*;
 import java.util.function.Function;
+import java.util.stream.Stream;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -83,27 +86,72 @@ public class ProcedureAggregationService {
     TimeRangeValidator.validateTimeRange(
         timeRangeStart, timeRangeEnd, ProcedureMetricsApi.MAXIMUM_DAYS_METRICS);
 
-    List<ClientResponse<GetProcedureMetricsResponse>> extractedResponses =
+    List<ClientResponse<GetProcedureMetricsResponse>> procedureMetricsResponses =
         businessModuleAggregationHelper.requestFromBusinessModules(
             null,
             BusinessModuleCapability.PROCEDURE_AND_TASK_METRICS,
             client -> client.getProcedureMetrics(timeRangeStart, timeRangeEnd));
+    List<ClientResponse<GetUserFlowMetricsResponse>> userFlowResponses =
+        businessModuleAggregationHelper.requestFromBusinessModules(
+            null,
+            BusinessModuleCapability.USER_FLOW_METRICS,
+            client -> client.getUserFlowMetrics(timeRangeStart, timeRangeEnd));
 
+    List<ProcedureMetric> procedureMetrics = getProcedureMetrics(procedureMetricsResponses);
+    List<ProcedureActionMetric> procedureActionMetrics =
+        getProcedureActionMetrics(procedureMetricsResponses);
+    List<UserFlowMetric> userFlowMetrics = getGetUserFlowMetrics(userFlowResponses);
+
+    List<ErrorResponseWithLocation> errorResponses =
+        Stream.concat(
+                aggregateErrorResponses(procedureMetricsResponses).stream(),
+                aggregateErrorResponses(userFlowResponses).stream())
+            .toList();
+
+    return new GetAggregatedProcedureMetricsResponse(
+        procedureMetrics, procedureActionMetrics, userFlowMetrics, errorResponses);
+  }
+
+  private static List<ProcedureMetric> getProcedureMetrics(
+      List<ClientResponse<GetProcedureMetricsResponse>> procedureMetricsResponses) {
     Comparator<ProcedureMetric> moduleComparator =
         Comparator.comparing(metric -> metric.businessModule().name());
     Comparator<ProcedureMetric> procedureType =
         Comparator.comparing(metric -> metric.procedureType().name());
 
-    List<ProcedureMetric> metrics =
-        extractedResponses.stream()
-            .map(ClientResponse::response)
-            .filter(Objects::nonNull)
-            .map(GetProcedureMetricsResponse::procedureMetrics)
-            .flatMap(Collection::stream)
-            .sorted(moduleComparator.thenComparing(procedureType))
-            .toList();
+    return procedureMetricsResponses.stream()
+        .map(ClientResponse::response)
+        .filter(Objects::nonNull)
+        .map(GetProcedureMetricsResponse::procedureMetrics)
+        .flatMap(Collection::stream)
+        .sorted(moduleComparator.thenComparing(procedureType))
+        .toList();
+  }
 
-    return new GetAggregatedProcedureMetricsResponse(
-        metrics, aggregateErrorResponses(extractedResponses));
+  private static List<ProcedureActionMetric> getProcedureActionMetrics(
+      List<ClientResponse<GetProcedureMetricsResponse>> procedureMetricsResponses) {
+    return procedureMetricsResponses.stream()
+        .map(ClientResponse::response)
+        .filter(Objects::nonNull)
+        .map(GetProcedureMetricsResponse::procedureActionMetric)
+        .filter(Objects::nonNull)
+        .sorted(Comparator.comparing(metric -> metric.businessModule().name()))
+        .toList();
+  }
+
+  private static List<UserFlowMetric> getGetUserFlowMetrics(
+      List<ClientResponse<GetUserFlowMetricsResponse>> userFlowResponses) {
+    Comparator<UserFlowMetric> moduleComparator =
+        Comparator.comparing(metric -> metric.businessModule().name());
+    Comparator<UserFlowMetric> flowTypeComparator =
+        Comparator.comparing(metric -> metric.userFlowType().name());
+
+    return userFlowResponses.stream()
+        .map(ClientResponse::response)
+        .filter(Objects::nonNull)
+        .map(GetUserFlowMetricsResponse::userFlowMetrics)
+        .flatMap(Collection::stream)
+        .sorted(moduleComparator.thenComparing(flowTypeComparator))
+        .toList();
   }
 }

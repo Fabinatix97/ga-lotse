@@ -786,6 +786,8 @@ public class InspectionUpdater {
         && inspection.getPlannedAppointment() != null
         && (inspectionFeatureToggle.isNewFeatureEnabled(
                 InspectionFeature.CHECKLIST_REQUIREMENT_REMOVAL)
+            || inspectionFeatureToggle.isNewFeatureEnabled(
+                InspectionFeature.CHECKLISTS_ALWAYS_REMOVABLE)
             || !inspection.getChecklists().isEmpty())
         && (!inspection.getFacility().getObjectType().isEmailAnnouncement()
             || (inspection.getFacility().getObjectType().isEmailAnnouncement()

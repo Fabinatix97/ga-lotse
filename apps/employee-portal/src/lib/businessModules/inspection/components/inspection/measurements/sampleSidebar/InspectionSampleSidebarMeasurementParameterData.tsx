@@ -26,6 +26,7 @@ export function InspectionSampleSidebarMeasurementParameterData({
       <FieldArray
         valueLength={values.measurementParameters.length}
         name="measurementParameters"
+        validateOnChange={false}
       >
         {({ push, remove }) => (
           <>
@@ -39,12 +40,7 @@ export function InspectionSampleSidebarMeasurementParameterData({
               }}
             >
               {values.measurementParameters.map((element, elementIndex) => (
-                <Stack
-                  key={elementIndex}
-                  direction="row"
-                  spacing={2}
-                  sx={{ alignItems: "center" }}
-                >
+                <Stack key={elementIndex} direction="row" spacing={2}>
                   <MeasurementParameterField
                     data-testid={
                       "measurementParameterAutocomplete-" + elementIndex
@@ -66,7 +62,7 @@ export function InspectionSampleSidebarMeasurementParameterData({
                         borderWidth: "1px",
                         height: "36px",
                         width: "36px",
-                        alignSelf: "flex-end",
+                        marginTop: "1.5rem",
                       }}
                       onClick={() => remove(elementIndex)}
                     >
@@ -87,7 +83,7 @@ export function InspectionSampleSidebarMeasurementParameterData({
                 variant="plain"
                 startDecorator={<Add />}
                 sx={{ alignSelf: "flex-end" }}
-                onClick={() => push("")}
+                onClick={() => push({ parent: null, child: null })}
               >
                 Messparameter hinzufügen
               </Button>

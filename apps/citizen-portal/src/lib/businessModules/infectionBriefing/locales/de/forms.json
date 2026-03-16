@@ -1,32 +1,95 @@
 {
   "common": {
-    "appointment_booking_title": "Termin buchen",
+    "appointment_booking_title": "Lebensmittelausweis",
     "required_title": "* Pflichtfeld",
     "current_step": "Schritt {{currentStep}} von {{totalSteps}}",
-    "overview_title": "Terminübersicht",
-    "overview_header": "Lebensmittelausweis Beratung",
-    "yes": "Ja",
-    "no": "Nein",
+    "newInfectionBriefing": "Neue Belehrung nach §43 IfSG",
+    "replacementInfectionBriefing": "Lebensmittelausweis-Duplikat",
+    "overview_title": "Übersicht",
     "cancel": "Abbrechen",
     "continue": "Weiter",
     "back": "Zurück",
-    "submit": "Termin buchen",
-    "create_appointment": "Zur Terminvereinbarung"
+    "submit": "Termin buchen"
+  },
+  "appointmentTypeFormContent": {
+    "title": "Terminart",
+    "infoHeader": "Wichtige Informationen zum Termin",
+    "infoTextListItem1": "Personalausweis/ Reisepass",
+    "infoTextListItem2": "Wenn Sie nicht in Frankfurt gemeldet sind: Nachweis des Arbeitgebers über den Einsatzort in Frankfurt",
+    "fields": {
+      "newInfectionBriefing": {
+        "label": "Neuer Lebensmittelausweis",
+        "iconLabel": "Information about $t(appointmentTypeFormContent.fields.newInfectionBriefing.label)",
+        "modalTitle": "$t(appointmentTypeFormContent.fields.newInfectionBriefing.label)",
+        "modalTextParagraph1": "Termin für eine Belehrung nach §43 IfSG (Lebensmittelausweis). Termindauer in der Regel ca. 30 Minuten.",
+        "modalTextParagraph2": "Bitte Personalausweis/Reisepass mitbringen. Wenn Sie nicht in Frankfurt gemeldet sind: Nachweis des Arbeitgebers über den Einsatzort in Frankfurt."
+      },
+      "replacementInfectionBriefing": {
+        "label": "Lebensmittelausweis-Duplikat",
+        "iconLabel": "Information about $t(appointmentTypeFormContent.fields.replacementInfectionBriefing.label)",
+        "modalTitle": "$t(appointmentTypeFormContent.fields.replacementInfectionBriefing.label)",
+        "modalTextParagraph1": "Sie haben Ihren Lebensmittelausweis verloren und benötigen ein Duplikat (gilt nur für in Frankfurt/Main erworbene Ausweise). Termindauer in der Regel ca. 30 Minuten.",
+        "modalTextParagraph2": "Bitte Personalausweis/Reisepass mitbringen. Wenn Sie nicht in Frankfurt gemeldet sind: Nachweis des Arbeitgebers über den Einsatzort in Frankfurt."
+      },
+      "error": "Bitte eine Terminart auswählen"
+    }
   },
   "personal_data": {
     "fields": {
-      "alias": "Alias",
-      "alias_required": "Bitte geben Sie einen Alias ein.",
-      "application_type": "Beratungstyp",
-      "application_type_required": "Bitte wählen Sie einen Beratungstyp aus.",
-      "other_known_languages": "Weitere Sprachen",
-      "other_known_languages_required": "Bitte geben Sie Ihre weiteren Sprachkenntnisse an.",
-      "sufficient_german_skills": "Reichen Ihre Kenntnisse der deutschen Sprache aus?",
-      "sufficient_german_skills_required": "Bitte geben Sie an, ob Ihre Deutschkenntnisse ausreichend sind."
+      "salutation": "Anrede",
+      "firstName": "Vorname",
+      "firstName_required": "Bitte einen Vornamen angeben.",
+      "lastName": "Nachname",
+      "lastName_required": "Bitte einen Nachnamen angeben.",
+      "dateOfBirth": "Geburtsdatum",
+      "dateOfBirth_required": "Bitte geben Sie Ihr Geburtsdatum ein",
+      "phoneNumber": "Telefon",
+      "emailAddress": "E-Mail-Adresse",
+      "emailAddress_required": "Bitte eine gültige E-Mail-Adresse angeben.",
+      "confirmOnlineServices": "Ich bestätige, dass ich die Online-Dienste für die Lebensmittelausweis nutzen und die hierzu notwendigen E-Mails erhalten möchte.",
+      "confirmOnlineServices_required": "Bitte Zustimmung erteilen um fortzufahren."
     },
-    "title": "Angaben",
-    "translator_required_text": "Sollten Ihre Deutschkenntnisse nicht ausreichen, bringen Sie bitte einen Dolmetscher zu dem Beratungsgespräch mit.",
-    "no_translator_text": "Falls Ihnen kein Dolmetscher zur Verfügung steht, vereinbaren Sie bitte telefonisch einen Termin."
+    "title": "Persönlichen Daten"
+  },
+  "summary": {
+    "appointment_information": {
+      "body": "Sie erhalten <bold>in den nächsten Minuten</bold> eine <bold>Terminbestätigung</bold> per E-Mail. Dort sind alle Informationen zum Termin enthalten. Sie haben zudem die Möglichkeit den Termin zu ändern oder zu stornieren",
+      "closingGreeting": "Mit freundlichen Grüßen",
+      "healthDepartment": "Ihr Gesundheitsamt",
+      "importantInformationBody": "Bitte bringen Sie Ihren Personalausweis oder Reisepass mit.",
+      "importantInformationTitle": "Vorbereitungen zum Termin",
+      "necessaryDocuments": "Notwendige Dokumente, welche Sie bitte zum Termin mitbringen, sind:",
+      "listItemIdCard": "<bold>Personalausweis/Reisepass</bold>",
+      "title": "Informationen zum Termin"
+    },
+    "cancelModal": {
+      "modalTitle": "Terminbuchung abbrechen?",
+      "modalBody": "Bisher eingegebene Daten werden nicht gespeichert.",
+      "confirmButton": "Ja, abbrechen",
+      "cancelButton": "Nein"
+    },
+    "data_and_privacy": {
+      "title": "Terminbuchung",
+      "confirm_privacy_notice": "Ich akzeptiere den Datenschutzhinweis.",
+      "privacy_notice": "Zum Datenschutzhinweis",
+      "confirm_privacy_policy": "Ich akzeptiere die Datenschutzerklärung.",
+      "privacy_policy": "Zur Datenschutzerklärung",
+      "confirm_required": "Bitte Zustimmung erteilen um fortzufahren."
+    },
+    "details": {
+      "appointmentType": "Terminart",
+      "date": "Datum",
+      "dateOfBirth": "Geburtsdatum",
+      "email": "E-Mail-Adresse",
+      "emailConfirmationLink": "Bestätigungsmail senden",
+      "location": "Ort",
+      "name": "Name",
+      "title": "Übersicht",
+      "time": "Uhrzeit"
+    },
+    "importantInformationBody": "Anwesenheit eines Sorgeberechtigten notwendig. Ab 16 Jahren genügt eine schriftliche Einverständniserklärung.",
+    "importantInformationTitle": "Wichtiger Hinweis",
+    "title": "Lebensmittelausweis"
   },
   "time_slot": {
     "title": "Verfügbare Termine"
@@ -45,33 +108,5 @@
     "no_appointments_available": "Derzeit sind keine Termine verfügbar",
     "try_later": "Wir schalten in Kürze Termine frei. Bitte versuchen Sie es zu einem späteren Zeitpunkt erneut",
     "back_to_overview": "Zurück zur Übersicht"
-  },
-  "options": {
-    "language": {
-      "BULGARIAN": "Bulgarisch",
-      "CHINESE": "Chinesisch",
-      "GERMAN": "Deutsch",
-      "ENGLISH": "Englisch",
-      "FRENCH": "Französisch",
-      "GREEK": "Griechisch",
-      "ITALIAN": "Italienisch",
-      "POLISH": "Polnisch",
-      "PORTUGUESE": "Portugiesisch",
-      "ROMANIAN": "Rumänisch",
-      "RUSSIAN": "Russisch",
-      "SERBO_CROATIAN": "Serbokroatisch",
-      "SLOVAKIAN": "Slowakisch",
-      "SPANISH": "Spanisch",
-      "THAI": "Thai",
-      "CZECH": "Tschechisch",
-      "TURKISH": "Türkisch",
-      "UKRAINIAN": "Ukrainisch",
-      "HUNGARIAN": "Ungarisch",
-      "UNKNOWN": "Unbekannt"
-    },
-    "consultation_type": {
-      "INITIAL": "Erstberatung",
-      "FOLLOW_UP": "Folgeberatung"
-    }
   }
 }

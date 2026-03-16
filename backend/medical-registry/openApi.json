@@ -5086,6 +5086,9 @@
         "required" : [ "procedureMetrics" ],
         "type" : "object",
         "properties" : {
+          "procedureActionMetric" : {
+            "$ref" : "#/components/schemas/ProcedureActionMetric"
+          },
           "procedureMetrics" : {
             "type" : "array",
             "items" : {
@@ -6344,6 +6347,41 @@
             "type" : "string"
           }
         }
+      },
+      "ProcedureAction" : {
+        "required" : [ "count", "procedureActionType" ],
+        "type" : "object",
+        "properties" : {
+          "count" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "procedureActionType" : {
+            "$ref" : "#/components/schemas/ProcedureActionType"
+          }
+        }
+      },
+      "ProcedureActionMetric" : {
+        "required" : [ "businessModule", "referenceProcedureAction", "relatedProcedureActions" ],
+        "type" : "object",
+        "properties" : {
+          "businessModule" : {
+            "$ref" : "#/components/schemas/BusinessModule"
+          },
+          "referenceProcedureAction" : {
+            "$ref" : "#/components/schemas/ProcedureAction"
+          },
+          "relatedProcedureActions" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/ProcedureAction"
+            }
+          }
+        }
+      },
+      "ProcedureActionType" : {
+        "type" : "string",
+        "enum" : [ "APPOINTMENTS_BOOKED", "APPOINTMENTS_CANCELED", "APPOINTMENTS_RESCHEDULED", "APPOINTMENTS_RESCHEDULED_AT_LEAST_ONCE", "APPOINTMENTS_RESCHEDULED_AT_LEAST_TWICE", "DOCUMENTS_ACCEPTED", "DOCUMENTS_PROVIDED", "DOCUMENTS_REJECTED", "DOCUMENTS_REQUESTED", "INVITATIONS_SENT", "SUBMITTED_ANAMNESIS", "SUBMITTED_DECLARATIONS", "SUBMITTED_INFORMATION_SHEETS" ]
       },
       "ProcedureMetric" : {
         "required" : [ "abortedCount", "businessModule", "closedCount", "inProgressCount", "openOrDraftCount", "procedureType", "totalCount" ],

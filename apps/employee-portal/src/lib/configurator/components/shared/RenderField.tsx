@@ -19,6 +19,7 @@ import {
   Alert,
   AlertProps,
   CheckboxField,
+  CheckboxGroupField,
   FileType,
   InputField,
   NumberField,
@@ -56,6 +57,7 @@ export type FormFields =
   | NumberFormField
   | UploadFormField
   | CheckboxFormField
+  | CheckboxGroupFormField
   | RadioFormField
   | OpeningHoursFormField;
 
@@ -95,6 +97,21 @@ interface UploadFormField extends BaseFormField {
 interface CheckboxFormField extends BaseFormField {
   type: "checkbox";
   readonly?: boolean;
+}
+
+interface CheckboxGroupFormField extends Omit<BaseFormField, "label"> {
+  type: "checkbox-group";
+  label?: string;
+  direction?: "vertical" | "horizontal";
+  readonly?: boolean;
+  disabled?: boolean;
+  alert?: ConfiguratorAlertProps;
+  options: {
+    label: string;
+    infoLabel?: string;
+    value: string;
+  }[];
+  value?: string[];
 }
 
 interface RadioFormField extends Omit<BaseFormField, "label"> {
@@ -219,6 +236,19 @@ export function RenderField({ field }: { field: FormFields }) {
           readonly={field.readonly}
           disabled={field.readonly}
           required={field.required}
+        />
+      );
+    case "checkbox-group":
+      return (
+        <CheckboxGroupField
+          label={field.label}
+          name={field.name}
+          required={field.required}
+          options={field.options}
+          orientation={field.direction}
+          readOnly={field.readonly}
+          disabled={field.disabled}
+          sx={{ flex: 1 }}
         />
       );
     case "radio":

@@ -8,8 +8,6 @@ package de.eshg.filejockey;
 import static java.nio.file.StandardCopyOption.ATOMIC_MOVE;
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 
-import de.eshg.filejockey.api.CorrelationId;
-import de.eshg.filejockey.api.EquipmentSelector;
 import de.eshg.filejockey.config.FileJockeyProperties;
 import de.eshg.filejockey.config.FileJockeyProperties.Device;
 import de.eshg.filejockey.config.FileJockeyProperties.DeviceInputFileProperties;
@@ -41,11 +39,8 @@ public class FileIoService {
     this.fileJockeyProperties = fileJockeyProperties;
   }
 
-  void putInputFile(String equipmentSelectorValue, String correlationIdValue, byte[] content) {
-    EquipmentSelector equipmentSelector = EquipmentSelector.of(equipmentSelectorValue);
-    CorrelationId correlationId = CorrelationId.of(correlationIdValue);
-
-    Device device = getDevice(equipmentSelector);
+  void putInputFile(String equipmentSelector, String correlationId, byte[] content) {
+    Device device = fileJockeyProperties.getDeviceOrThrow(equipmentSelector);
     if (content.length > device.maxFileSize().toBytes()) {
       throw new BadRequestException("Content too large!");
     }
@@ -60,8 +55,8 @@ public class FileIoService {
   }
 
   private static String getInputFilename(
-      String template, EquipmentSelector equipmentSelector, CorrelationId correlationId) {
-    return MessageFormat.format(template, equipmentSelector.value(), correlationId.value());
+      String template, String equipmentSelector, String correlationId) {
+    return MessageFormat.format(template, equipmentSelector, correlationId);
   }
 
   private static void writeContent(Path inputFolder, String inputFilename, byte[] content) {
@@ -75,11 +70,8 @@ public class FileIoService {
     }
   }
 
-  boolean deleteFiles(String equipmentSelectorValue, String correlationIdValue) {
-    EquipmentSelector equipmentSelector = EquipmentSelector.of(equipmentSelectorValue);
-    CorrelationId correlationId = CorrelationId.of(correlationIdValue);
-
-    Device device = getDevice(equipmentSelector);
+  boolean deleteFiles(String equipmentSelector, String correlationId) {
+    Device device = fileJockeyProperties.getDeviceOrThrow(equipmentSelector);
     Path inputFolder = getValidInputFolder(device.input(), equipmentSelector);
     Path outputFolder = getValidOutputFolder(device.output(), equipmentSelector);
 
@@ -93,10 +85,7 @@ public class FileIoService {
   }
 
   private boolean tryToDeleteInputFile(
-      Path inputFolder,
-      String filenameTemplate,
-      EquipmentSelector equipmentSelector,
-      CorrelationId correlationId) {
+      Path inputFolder, String filenameTemplate, String equipmentSelector, String correlationId) {
     String inputFilename = getInputFilename(filenameTemplate, equipmentSelector, correlationId);
     Path inputFile = inputFolder.resolve(inputFilename);
     try {
@@ -111,8 +100,7 @@ public class FileIoService {
     }
   }
 
-  private boolean tryToDeleteOutputFiles(
-      Path outputFolder, Device device, CorrelationId correlationId) {
+  private boolean tryToDeleteOutputFiles(Path outputFolder, Device device, String correlationId) {
     String pattern = buildSearchPattern(device.output(), correlationId);
     Charset charset = device.charset();
 
@@ -142,11 +130,8 @@ public class FileIoService {
 
   public record OutputFile(Path path, String filename) {}
 
-  public OutputFile getOutputFile(String equipmentSelectorValue, String correlationIdValue) {
-    EquipmentSelector equipmentSelector = EquipmentSelector.of(equipmentSelectorValue);
-    CorrelationId correlationId = CorrelationId.of(correlationIdValue);
-
-    Device device = getDevice(equipmentSelector);
+  public OutputFile getOutputFile(String equipmentSelector, String correlationId) {
+    Device device = fileJockeyProperties.getDeviceOrThrow(equipmentSelector);
     Path outputFolder = getValidOutputFolder(device.output(), equipmentSelector);
 
     long maxSizeBytes = device.maxFileSize().toBytes();
@@ -161,53 +146,38 @@ public class FileIoService {
     return readFile(matchingFile);
   }
 
-  private Device getDevice(EquipmentSelector equipmentSelector) {
-    return fileJockeyProperties
-        .getDevice(equipmentSelector.value())
-        .orElseThrow(
-            () ->
-                new NotFoundException("Unknown equipment selector: " + equipmentSelector.value()));
-  }
-
-  private Path getValidInputFolder(
-      DeviceInputFileProperties input, EquipmentSelector equipmentSelector) {
+  private Path getValidInputFolder(DeviceInputFileProperties input, String equipmentSelector) {
     Path inputFolder = input.folder();
     if (!Files.exists(inputFolder)
         || !Files.isDirectory(inputFolder)
         || !Files.isWritable(inputFolder)) {
       throw new ServiceUnavailableException(
           "Input folder for equipment selector '"
-              + equipmentSelector.value()
+              + equipmentSelector
               + "' does not exist or is not writable");
     }
     return inputFolder;
   }
 
-  private Path getValidOutputFolder(
-      DeviceOutputFileProperties output, EquipmentSelector equipmentSelector) {
+  private Path getValidOutputFolder(DeviceOutputFileProperties output, String equipmentSelector) {
     Path outputFolder = output.folder();
     if (!Files.exists(outputFolder)
         || !Files.isDirectory(outputFolder)
         || !Files.isReadable(outputFolder)) {
       throw new ServiceUnavailableException(
           "Output folder for equipment selector '"
-              + equipmentSelector.value()
+              + equipmentSelector
               + "' does not exist or is not accessible");
     }
     return outputFolder;
   }
 
-  private String buildSearchPattern(
-      DeviceOutputFileProperties output, CorrelationId correlationId) {
-    return output.embeddingPrefix() + correlationId.value() + output.embeddingPostfix();
+  private String buildSearchPattern(DeviceOutputFileProperties output, String correlationId) {
+    return output.embeddingPrefix() + correlationId + output.embeddingPostfix();
   }
 
   private Path findMatchingFile(
-      Path outputFolder,
-      String pattern,
-      CorrelationId correlationId,
-      long maxSizeBytes,
-      Charset charset) {
+      Path outputFolder, String pattern, String correlationId, long maxSizeBytes, Charset charset) {
 
     try (Stream<Path> files = getCandidateFilesStream(outputFolder, maxSizeBytes)) {
 
@@ -217,7 +187,7 @@ public class FileIoService {
           .orElseThrow(
               () ->
                   new NotFoundException(
-                      "No matching file found for correlation ID: " + correlationId.value()));
+                      "No matching file found for correlation ID: " + correlationId));
 
     } catch (IOException e) {
       log.error("Error scanning output folder: {}", outputFolder, e);

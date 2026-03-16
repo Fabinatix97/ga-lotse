@@ -24,4 +24,6 @@ public interface UserFlowRepository extends JpaRepository<UserFlow, Long> {
 
   Stream<UserFlow> findByUserFlowTypeAndFlowStartBetween(
       UserFlowType userFlowType, Instant timeRangeStart, Instant timeRangeEnd);
+
+  long deleteByFlowStartLessThan(Instant createdAtLimit);
 }

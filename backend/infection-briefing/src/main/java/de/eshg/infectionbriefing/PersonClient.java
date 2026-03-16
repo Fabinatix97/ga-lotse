@@ -25,6 +25,7 @@ import de.eshg.base.centralfile.api.person.UpdateReferencePersonRequest;
 import de.eshg.infectionbriefing.api.ApplicantAddressDto;
 import de.eshg.infectionbriefing.api.PersonCreationData;
 import de.eshg.infectionbriefing.api.PersonWithOptionalEmailDto;
+import de.eshg.infectionbriefing.api.UpdateApplicantRequest;
 import de.eshg.lib.common.CountryCode;
 import de.eshg.rest.service.error.BadRequestException;
 import java.util.HashSet;
@@ -41,10 +42,6 @@ public class PersonClient {
 
   public PersonClient(PersonApi personApi) {
     this.personApi = personApi;
-  }
-
-  public UUID createExternalSourcePerson(PersonCreationData applicant) {
-    return createExternalSourcePerson(applicant, null);
   }
 
   public UUID createExternalSourcePerson(
@@ -104,6 +101,17 @@ public class PersonClient {
     } else {
       return personApi.addPersonFileState(mapToAddPersonRequest(referencePerson)).id();
     }
+  }
+
+  public UUID updatePersonInCentralFile(UUID fileStateId, UpdateApplicantRequest updateRequest) {
+    GetPersonFileStateResponse personFileState = getPersonFileState(fileStateId);
+    if (personFileState.dataOrigin() == DataOriginDto.EXTERNAL) {
+      throw new BadRequestException("Cannot update external person data");
+    }
+    return personApi
+        .updatePersonFileStateAndReference(
+            fileStateId, mapToUpdatePersonRequest(updateRequest, personFileState))
+        .id();
   }
 
   public List<GetPersonFileStateResponse> getPersonFileStates(List<UUID> fileStateIds) {
@@ -251,6 +259,24 @@ public class PersonClient {
         referencePerson.phoneNumbers(),
         referencePerson.contactAddress(),
         referencePerson.differentBillingAddress());
+  }
+
+  private UpdatePersonRequest mapToUpdatePersonRequest(
+      UpdateApplicantRequest updateRequest, GetPersonFileStateResponse existingPerson) {
+    return new UpdatePersonRequest(
+        existingPerson.title(),
+        mapToBaseSalutationDto(updateRequest.salutation()),
+        existingPerson.gender(),
+        updateRequest.firstName().trim(),
+        updateRequest.lastName().trim(),
+        updateRequest.dateOfBirth(),
+        existingPerson.nameAtBirth(),
+        existingPerson.placeOfBirth(),
+        existingPerson.countryOfBirth(),
+        updateRequest.email(),
+        updateRequest.phone(),
+        mapToBaseAddress(updateRequest.address()),
+        existingPerson.differentBillingAddress());
   }
 
   private static <T> List<T> listOrNull(T object) {

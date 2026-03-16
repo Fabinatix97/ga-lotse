@@ -9,7 +9,6 @@ import de.eshg.lib.common.BusinessModule;
 import de.eshg.lib.userflowmetrics.api.GetUserFlowMetricsResponse;
 import de.eshg.lib.userflowmetrics.api.UserFlowMetric;
 import de.eshg.lib.userflowmetrics.api.UserFlowMetricsApi;
-import de.eshg.lib.userflowmetrics.api.UserFlowTypeDto;
 import de.eshg.lib.userflowmetrics.persistence.UserFlow;
 import de.eshg.lib.userflowmetrics.persistence.UserFlowRepository;
 import de.eshg.lib.userflowmetrics.persistence.UserFlowType;
@@ -59,7 +58,6 @@ public class UserFlowMetricsController implements UserFlowMetricsApi {
     Set<UserFlowType> distinctUserFlowTypes = userFlowRepository.findDistinctUserFlowTypes();
 
     return new GetUserFlowMetricsResponse(
-        businessModule,
         distinctUserFlowTypes.stream()
             .map(type -> getUserFlowMetricForType(now, type, timeRangeStart, timeRangeEnd))
             .sorted(Comparator.comparing(UserFlowMetric::userFlowType))
@@ -93,7 +91,12 @@ public class UserFlowMetricsController implements UserFlowMetricsApi {
 
     String averageDuration = getAverageDuration(durations, type, timeRangeStart, timeRangeEnd);
 
-    return new UserFlowMetric(mapToApi(type), total.get(), averageDuration, noDuration.get());
+    return new UserFlowMetric(
+        businessModule,
+        UserFlowTypeMapper.mapToApi(type),
+        total.get(),
+        averageDuration,
+        noDuration.get());
   }
 
   private static boolean userFlowRelevant(
@@ -127,16 +130,5 @@ public class UserFlowMetricsController implements UserFlowMetricsApi {
    */
   private static boolean isValidDuration(Duration duration) {
     return duration.isZero() || duration.isPositive();
-  }
-
-  private UserFlowTypeDto mapToApi(UserFlowType type) {
-    return switch (type) {
-      case ANAMNESIS -> UserFlowTypeDto.ANAMNESIS;
-      case BOOKING -> UserFlowTypeDto.BOOKING;
-      case CANCELING -> UserFlowTypeDto.CANCELING;
-      case INFORMATION_STATEMENT -> UserFlowTypeDto.INFORMATION_STATEMENT;
-      case REPORTING -> UserFlowTypeDto.REPORTING;
-      case RESCHEDULING -> UserFlowTypeDto.RESCHEDULING;
-    };
   }
 }

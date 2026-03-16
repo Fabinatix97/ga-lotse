@@ -62,7 +62,7 @@ export function ArchiveTableTitle(props: ArchiveTableTitleProps) {
     openConfirmationDialog({
       title: "Vorgänge löschen?",
       description:
-        "Sind Sie sicher, dass Sie die ausgewählten Vorgänge löschen möchten? Diese Aktion ist unwiderruflich.",
+        "Sind Sie sicher, dass Sie die ausgewählten Vorgänge löschen möchten? Diese Aktion ist unwiderruflich. Das Löschen des Vorgangs kann bis zu einem Tag dauern.",
       confirmLabel: "Löschen",
       color: "danger",
       onConfirm: handleBulkDeleteActionConfirm,

@@ -6,12 +6,12 @@
 package de.eshg.infectionbriefing.domain.model;
 
 import de.cronn.commons.lang.StreamUtil;
+import de.eshg.infectionbriefing.InfectionBriefingTriggerType;
 import de.eshg.lib.appointmentblock.EntityWithAppointment;
 import de.eshg.lib.appointmentblock.persistence.entity.Appointment;
 import de.eshg.lib.common.DataSensitivity;
 import de.eshg.lib.common.SensitivityLevel;
 import de.eshg.lib.procedure.domain.model.Procedure;
-import de.eshg.lib.procedure.domain.model.TriggerType;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -34,8 +34,8 @@ public abstract class InfectionBriefingProcedure
     super();
   }
 
-  protected InfectionBriefingProcedure(TriggerType triggerType) {
-    super(triggerType);
+  protected InfectionBriefingProcedure(InfectionBriefingTriggerType triggerType) {
+    super(triggerType.toTriggerType());
   }
 
   public InfectionBriefingPerson getApplicant() {

@@ -1,32 +1,96 @@
 {
   "common": {
-    "appointment_booking_title": "Book an appointment",
+    "appointment_booking_title": "Infection Briefing",
     "required_title": "* Required field",
     "current_step": "Step {{currentStep}} of {{totalSteps}}",
+    "newInfectionBriefing": "New Infection Briefing Certificate §43 IfSG",
+    "replacementInfectionBriefing": "Duplicate Infection Briefing Certificate",
     "overview_title": "Appointment overview",
-    "overview_header": "Infection Briefing Consultation",
-    "yes": "Yes",
-    "no": "No",
+    "overview_header": "Gesundheitsamt Frankfurt, Breite G. 28, 60313 Frankfurt am Main",
     "cancel": "Cancel",
     "continue": "Continue",
     "back": "Back",
-    "submit": "Book appointment",
-    "create_appointment": "Schedule Another Appointment"
+    "submit": "Book appointment"
+  },
+  "appointmentTypeFormContent": {
+    "title": "Appointment Type",
+    "infoHeader": "Important Information about the Appointment",
+    "infoTextListItem1": "Identity Card/ Passport",
+    "infoTextListItem2": "If you are not registered as living in Frankfurt: Proof from your employer of your place of work in Frankfurt.",
+    "fields": {
+      "newInfectionBriefing": {
+        "label": "New Infection Briefing Certificate",
+        "iconLabel": "Information about $t(appointmentTypeFormContent.fields.newInfectionBriefing.label)",
+        "modalTitle": "$t(appointmentTypeFormContent.fields.newInfectionBriefing.label)",
+        "modalTextParagraph1": "Appointment for instruction in accordance with Section 43 of the Infection Protection Act (food certificate). Appointment duration is usually approx. 30 minutes.",
+        "modalTextParagraph2": "Please bring your identity card/passport with you. If you are not registered in Frankfurt: proof from your employer of your place of work in Frankfurt."
+      },
+      "replacementInfectionBriefing": {
+        "label": "Duplicate Infection Briefing Certificate",
+        "iconLabel": "Information about $t(appointmentTypeFormContent.fields.replacementInfectionBriefing.label)",
+        "modalTitle": "$t(appointmentTypeFormContent.fields.replacementInfectionBriefing.label)",
+        "modalTextParagraph1": "You have lost your Infection Briefing Certificate and require a duplicate (only applies to cards purchased in Frankfurt/Main). The appointment usually takes around 30 minutes.",
+        "modalTextParagraph2": "Please bring your identity card/passport with you. If you are not registered in Frankfurt: proof from your employer of your place of work in Frankfurt."
+      },
+      "error": "Please select your required appointment"
+    }
   },
   "personal_data": {
     "fields": {
-      "alias": "Alias",
-      "alias_required": "Please enter an alias.",
-      "application_type": "Type of consultation",
-      "application_type_required": "Please select a type of consultation.",
-      "other_known_languages": "Other languages",
-      "other_known_languages_required": "Please specify your other language skills.",
-      "sufficient_german_skills": "Are your German language skills sufficient?",
-      "sufficient_german_skills_required": "Please indicate whether your German language skills are sufficient."
+      "salutation": "Salutation",
+      "firstName": "First Name",
+      "firstName_required": "Please enter your first name.",
+      "lastName": "Last Name",
+      "lastName_required": "Please enter your last name.",
+      "dateOfBirth": "Date of birth",
+      "dateOfBirth_required": "Please enter a date of birth",
+      "phoneNumber": "Phone",
+      "emailAddress": "Email",
+      "emailAddress_required": "Please enter a valid email address",
+      "confirmOnlineServices": "I confirm that I wish to use the online services for Infection Briefing Consultation and receive the necessary emails.",
+      "confirmOnlineServices_required": "Please provide consent to continue."
     },
-    "title": "Details",
-    "translator_required_text": "If your German language skills are not sufficient, please bring an interpreter with you to the consultation.",
-    "no_translator_text": "If no interpreter is available to you, please schedule an appointment by phone."
+    "title": "Personal Data"
+  },
+  "summary": {
+    "appointment_information": {
+      "body": "You will receive an <bold>appointment confirmation</bold> via email in <bold>the next few minutes</bold>. All information regarding the appointment is included. You will also have the option to change or cancel the appointment.",
+      "closingGreeting": "Sincerely",
+      "healthDepartment": "Your Health Department",
+      "importantInformationTitle": "Prepare for the Appointment",
+      "importantInformationBody": "Please bring your identity card/passport with you.",
+      "necessaryDocuments": "Necessary documents, which you should bring with you to the appointment:",
+      "listItemIdCard": "<bold>Passport or identity card</bold>",
+      "title": "Appointment Information"
+    },
+    "cancelModal": {
+      "modalTitle": "Cancel Booking?",
+      "modalBody": "Progress will not be saved.",
+      "confirmButton": "Yes, cancel",
+      "cancelButton": "Go Back"
+    },
+    "data_and_privacy": {
+      "title": "Appointment",
+      "confirm_privacy_notice": "I accept the privacy notice.",
+      "privacy_notice": "View Privacy Notice",
+      "confirm_privacy_policy": "I accept the privacy policy.",
+      "privacy_policy": "View Privacy Policy",
+      "confirm_required": "Please give your consent to continue."
+    },
+    "details": {
+      "appointmentType": "Appointment Type",
+      "date": "Date",
+      "dateOfBirth": "Date of Birth",
+      "email": "Email",
+      "emailConfirmationLink": "Email Confirmation",
+      "location": "Location",
+      "name": "Name",
+      "title": "Overview",
+      "time": "Time"
+    },
+    "importantInformationBody": "The presence of a legal guardian is required. From the age of 16, a written declaration of consent is sufficient.",
+    "importantInformationTitle": "Important information",
+    "title": "Infection Briefing"
   },
   "time_slot": {
     "title": "Available Appointments"
@@ -45,33 +109,5 @@
     "no_appointments_available": "No appointments are currently available.",
     "try_later": "We will make more appointments available soon. Please try again later.",
     "back_to_overview": "Back to overview"
-  },
-  "options": {
-    "language": {
-      "BULGARIAN": "Bulgarian",
-      "CHINESE": "Chinese",
-      "GERMAN": "German",
-      "ENGLISH": "English",
-      "FRENCH": "French",
-      "GREEK": "Greek",
-      "ITALIAN": "Italian",
-      "POLISH": "Polish",
-      "PORTUGUESE": "Portuguese",
-      "ROMANIAN": "Romanian",
-      "RUSSIAN": "Russian",
-      "SERBO_CROATIAN": "Serbo-Croatian",
-      "SLOVAKIAN": "Slovak",
-      "SPANISH": "Spanish",
-      "THAI": "Thai",
-      "CZECH": "Czech",
-      "TURKISH": "Turkish",
-      "UKRAINIAN": "Ukrainian",
-      "HUNGARIAN": "Hungarian",
-      "UNKNOWN": "Unknown"
-    },
-    "consultation_type": {
-      "INITIAL": "Initial consultation",
-      "FOLLOW_UP": "Follow-up consultation"
-    }
   }
 }

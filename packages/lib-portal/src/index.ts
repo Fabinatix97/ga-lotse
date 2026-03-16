@@ -389,6 +389,7 @@ export {
   useValidateLength,
   useValidateNumber,
   useValidatePastOrTodayDate,
+  useValidatePhoneNumber,
   useValidateZipCode,
   useValidateGermanZipCode,
 } from "./hooks/useValidators";

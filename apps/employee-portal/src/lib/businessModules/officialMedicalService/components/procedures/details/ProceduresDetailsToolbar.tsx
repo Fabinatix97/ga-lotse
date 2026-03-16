@@ -6,6 +6,7 @@
 "use client";
 
 import {
+  ApprovalOutlined,
   DescriptionOutlined,
   ListOutlined,
   TextSnippetOutlined,
@@ -13,6 +14,7 @@ import {
 } from "@mui/icons-material";
 import { Chip, Typography } from "@mui/joy";
 import { visuallyHidden } from "@mui/utils";
+import { useSuspenseQueries } from "@tanstack/react-query";
 
 import { ApiUserRole } from "@eshg/base-api";
 import {
@@ -22,9 +24,11 @@ import {
   ToolbarBackButton,
   useHasUserRoleCheck,
 } from "@eshg/lib-employee-portal";
+import { ApiOmsFeature } from "@eshg/official-medical-service-api";
 
 import { procedureStatusNames } from "@/lib/baseModule/api/procedures/enums";
-import { useGetProcedureHeader } from "@/lib/businessModules/officialMedicalService/api/queries/employeeOmsProcedureApi";
+import { useGetProcedureHeaderQuery } from "@/lib/businessModules/officialMedicalService/api/queries/employeeOmsProcedureApi";
+import { useEnabledNewFeatureToggleQuery } from "@/lib/businessModules/officialMedicalService/api/queries/feature";
 import { ProcedureDetailsTabHeader } from "@/lib/businessModules/officialMedicalService/components/procedures/details/ProcedureDetailsTabHeader";
 import { routes } from "@/lib/businessModules/officialMedicalService/shared/routes";
 
@@ -36,8 +40,14 @@ export function ProcedureDetailsToolbar(props: ProcedureDetailsToolbarProps) {
   const hasOfficialMedicalServiceAdminRole = useHasUserRoleCheck(
     ApiUserRole.OfficialMedicalServiceAdmin,
   );
-  const { data: procedureHeader } = useGetProcedureHeader(props.id);
-  const tabItems = buildTabItems(props.id);
+  const [{ data: procedureHeader }, { data: assessmentEnabled }] =
+    useSuspenseQueries({
+      queries: [
+        useGetProcedureHeaderQuery(props.id),
+        useEnabledNewFeatureToggleQuery(ApiOmsFeature.Assessment),
+      ],
+    });
+  const tabItems = buildTabItems(props.id, assessmentEnabled);
 
   return (
     <TabNavigationToolbar
@@ -64,7 +74,10 @@ export function ProcedureDetailsToolbar(props: ProcedureDetailsToolbarProps) {
   );
 }
 
-function buildTabItems(id: string): TabNavigationItem[] {
+function buildTabItems(
+  id: string,
+  assessmentEnabled: boolean,
+): TabNavigationItem[] {
   return [
     {
       tabButtonName: "Vorgangsdaten",
@@ -81,6 +94,15 @@ function buildTabItems(id: string): TabNavigationItem[] {
       href: routes.procedures.byId(id).anamnesis,
       decorator: <ListOutlined />,
     },
+    ...(assessmentEnabled
+      ? [
+          {
+            tabButtonName: "Schriftgüter",
+            href: routes.procedures.byId(id).assessmentsOverview,
+            decorator: <ApprovalOutlined />,
+          },
+        ]
+      : []),
     {
       tabButtonName: "Verlaufseinträge",
       href: routes.procedures.byId(id).progressEntries,

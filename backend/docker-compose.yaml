@@ -675,6 +675,8 @@ services:
   file-jockey:
     image: ga-lotse/file-jockey
     environment:
+      - DOCKER_HOSTNAME=${DOCKER_HOSTNAME:-localhost}
       - spring.profiles.active=${ACTIVE_SPRING_PROFILES:-local,dev-config,test-helper}
+      - eshg.keycloak.internal.url=http://keycloak:8080
     ports:
       - 8104:8080

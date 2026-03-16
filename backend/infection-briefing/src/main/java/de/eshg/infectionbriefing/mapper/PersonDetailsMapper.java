@@ -19,8 +19,10 @@ import de.eshg.rest.service.error.InternalServerErrorException;
 public class PersonDetailsMapper {
   private PersonDetailsMapper() {}
 
-  public static PersonDetailsDto mapToPersonDetailsDto(GetPersonFileStateResponse person) {
+  public static PersonDetailsDto mapToPersonDetailsDto(
+      GetPersonFileStateResponse person, long version) {
     return new PersonDetailsDto(
+        version,
         mapToInfectionBriefingSalutationDto(person.salutation()),
         person.firstName(),
         person.lastName(),

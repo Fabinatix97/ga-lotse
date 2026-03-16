@@ -5,6 +5,7 @@
 
 package de.eshg.rest.service.security.config;
 
+import static de.eshg.lib.keycloak.EmployeePermissionRole.FILEJOCKEY_MEDICAL_DEVICE;
 import static de.eshg.rest.service.security.config.BaseUrls.FileJockey.FILE_IO_API;
 import static org.springframework.http.HttpMethod.DELETE;
 import static org.springframework.http.HttpMethod.GET;
@@ -21,8 +22,8 @@ public class FileJockeyPublicSecurityConfig extends AbstractPublicSecurityConfig
   }
 
   private void configureFileIoEndpoints() {
-    requestMatchers(DELETE, FILE_IO_API + "/**").permitAll();
-    requestMatchers(GET, FILE_IO_API + "/**").permitAll();
-    requestMatchers(PUT, FILE_IO_API + "/**").permitAll();
+    requestMatchers(DELETE, FILE_IO_API + "/**").hasRole(FILEJOCKEY_MEDICAL_DEVICE);
+    requestMatchers(GET, FILE_IO_API + "/**").hasRole(FILEJOCKEY_MEDICAL_DEVICE);
+    requestMatchers(PUT, FILE_IO_API + "/**").hasRole(FILEJOCKEY_MEDICAL_DEVICE);
   }
 }

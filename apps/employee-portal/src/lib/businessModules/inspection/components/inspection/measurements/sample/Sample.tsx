@@ -53,6 +53,7 @@ import {
 import {
   useDeleteSample,
   useDeleteSampleMeasurementParameter,
+  useHandleSampleMeasurementParameterUserAssessment,
   useUpdateSampleMeasurementParameterValue,
 } from "@/lib/businessModules/inspection/api/mutations/sample";
 import { useInspectionEditSampleSidebar } from "@/lib/businessModules/inspection/components/inspection/measurements/InspectionEditSampleSidebar";
@@ -70,6 +71,7 @@ interface MeasurementsTileItemProps {
   classification: "SUSPICIOUS" | "PENDING" | "NO_NORM" | "OK";
   showOnlySuspiciousParameters: boolean;
   expand: boolean;
+  hasReachedClosed: boolean;
   onSetExpand: (expanded: boolean) => void;
 }
 
@@ -81,12 +83,15 @@ export function Sample({
   classification,
   showOnlySuspiciousParameters,
   expand,
+  hasReachedClosed,
   onSetExpand,
 }: Readonly<MeasurementsTileItemProps>) {
   const [open, setOpen] = useState(false);
   const inspectionEditSampleSidebar = useInspectionEditSampleSidebar();
   const { mutateAsync: updateSampleMeasurementParameterValue } =
     useUpdateSampleMeasurementParameterValue();
+  const { mutateAsync: updateSampleMeasurementParameterUserAssessment } =
+    useHandleSampleMeasurementParameterUserAssessment();
   const { mutateAsync: deleteSampleParameter } =
     useDeleteSampleMeasurementParameter();
   const { mutateAsync: deleteSample } = useDeleteSample();
@@ -178,6 +183,23 @@ export function Sample({
     }
   }
 
+  async function handleUserAssessment(
+    value: string | number | undefined,
+    index: number,
+  ) {
+    if (sample.measurementParameters[index]) {
+      await updateSampleMeasurementParameterUserAssessment({
+        inspectionId: procedureId,
+        sampleId: sample.sampleId,
+        measurementParameterId: sample.measurementParameters[index].externalId,
+        apiUpdateInspectionSampleMeasurementParameterUserAssessmentRequest: {
+          userAssessment:
+            value !== undefined && value !== "" ? String(value) : undefined,
+        },
+      });
+    }
+  }
+
   function getParameterPreclassificationColor(
     preclassification?: ApiInspectionSamplePreclassification,
   ) {
@@ -203,6 +225,18 @@ export function Sample({
         return "#51BC51";
       default:
         return "transparent";
+    }
+  }
+
+  function isParameterValueOutOfNorm(
+    preclassification?: ApiInspectionSamplePreclassification,
+  ) {
+    switch (preclassification) {
+      case "TOO_HIGH":
+      case "TOO_LOW":
+        return true;
+      default:
+        return false;
     }
   }
 
@@ -357,6 +391,7 @@ export function Sample({
                   </MenuButton>
                   <Menu>
                     <MenuItem
+                      disabled={hasReachedClosed}
                       aria-label="Probe bearbeiten"
                       onClick={(e) => {
                         handleOpenEditSidebar(e);
@@ -401,6 +436,7 @@ export function Sample({
                       Begleitschein herunterladen
                     </MenuItem>
                     <MenuItem
+                      disabled={hasReachedClosed}
                       aria-label="Probe löschen"
                       sx={{
                         color: "#C41C1C",
@@ -564,6 +600,7 @@ export function Sample({
                           }}
                         >
                           <DebouncedInput
+                            readOnly={hasReachedClosed}
                             data-testid={"measurementParameterInput-" + index}
                             name={
                               "measurementValue-" + sampleIndex + "-" + index
@@ -586,22 +623,51 @@ export function Sample({
                           paddingRight: 3,
                         }}
                       >
-                        <Typography
-                          data-testid={
-                            "measurementParameterClassification-" + index
-                          }
-                          component="span"
-                          level="body-md"
+                        <Stack
+                          direction={{ md: "row" }}
+                          gap={2}
                           sx={{
-                            color: getParameterPreclassificationColor(
-                              parameter.preclassification,
-                            ),
+                            alignItems: "center",
                           }}
                         >
-                          {translateInspectionSamplePreclassification(
+                          {(isParameterValueOutOfNorm(
                             parameter.preclassification,
+                          ) ||
+                            parameter.userAssessment) && (
+                            <DebouncedInput
+                              data-testid={
+                                "measurementParameterUserAssessmentInput-" +
+                                index
+                              }
+                              readOnly={hasReachedClosed}
+                              name={
+                                "userAssessment-" + sampleIndex + "-" + index
+                              }
+                              inputMode="text"
+                              type="text"
+                              defaultValue={parameter.userAssessment}
+                              onChange={(value) =>
+                                handleUserAssessment(value, index)
+                              }
+                            />
                           )}
-                        </Typography>
+                          <Typography
+                            data-testid={
+                              "measurementParameterClassification-" + index
+                            }
+                            component="span"
+                            level="body-md"
+                            sx={{
+                              color: getParameterPreclassificationColor(
+                                parameter.preclassification,
+                              ),
+                            }}
+                          >
+                            {translateInspectionSamplePreclassification(
+                              parameter.preclassification,
+                            )}
+                          </Typography>
+                        </Stack>
                       </Grid>
                     </Grid>
                     {initObject.measurementParameters.length >= 2 && (

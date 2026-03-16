@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { List, ListItem, Typography } from "@mui/joy";
+import { Box, List, ListItem, Typography } from "@mui/joy";
 import { JSX } from "react";
 import ReactMarkdown, { Components } from "react-markdown";
 
@@ -63,11 +63,17 @@ export function Markdown({
     // Please note that this component is used to render markdown content on the client side.
     // It is important to carefully configure this component to keep things secure.
     // Please double-check any changes and contact the security team if in doubt.
-    <>
+    <Box
+      sx={{
+        display: "contents",
+        whiteSpace: "pre-wrap",
+        wordBreak: "break-word",
+      }}
+    >
       <ReactMarkdown components={components} allowedElements={allowedElements}>
         {source}
       </ReactMarkdown>
       {footer}
-    </>
+    </Box>
   );
 }

@@ -22,10 +22,8 @@ import de.eshg.infectionbriefing.util.InfectionBriefingKeyDocumentType;
 import de.eshg.infectionbriefing.util.InfectionBriefingProgressEntryType;
 import de.eshg.infectionbriefing.util.InfectionBriefingSystemProgressEntryFactory;
 import de.eshg.infectionbriefing.util.ProcedureValidator;
-import de.eshg.lib.auditlog.AuditLogger;
 import de.eshg.lib.procedure.domain.model.ProcedureStatus;
 import de.eshg.lib.procedure.domain.model.SystemProgressEntry;
-import de.eshg.lib.procedure.domain.model.TriggerType;
 import de.eshg.lib.procedure.progressentry.ProgressEntryService;
 import de.eshg.rest.service.error.BadRequestException;
 import de.eshg.rest.service.error.NotFoundException;
@@ -43,7 +41,7 @@ public class NewCertificateProcedureService {
   private final PersonClient personClient;
   private final CustodianConsentHelper custodianConsentHelper;
   private final InfectionBriefingProcedureRepository repository;
-  private final AuditLogger auditLogger;
+  private final ProcedureStatusUpdater procedureStatusUpdater;
   private final Clock clock;
 
   public NewCertificateProcedureService(
@@ -52,14 +50,14 @@ public class NewCertificateProcedureService {
       PersonClient personClient,
       CustodianConsentHelper custodianConsentHelper,
       InfectionBriefingProcedureRepository repository,
-      AuditLogger auditLogger,
+      ProcedureStatusUpdater procedureStatusUpdater,
       Clock clock) {
     this.progressEntryService = progressEntryService;
     this.certificateGenerator = certificateGenerator;
     this.personClient = personClient;
     this.custodianConsentHelper = custodianConsentHelper;
     this.repository = repository;
-    this.auditLogger = auditLogger;
+    this.procedureStatusUpdater = procedureStatusUpdater;
     this.clock = clock;
   }
 
@@ -80,7 +78,7 @@ public class NewCertificateProcedureService {
         .setCentralFileStateId(
             getCentralFileState(
                 request.map(AcceptDraftRequest::referencePersonId).orElse(null), personFileState));
-    procedure.updateProcedureStatus(ProcedureStatus.OPEN, clock, auditLogger);
+    procedureStatusUpdater.open(procedure);
   }
 
   public void confirmInfectionBriefing(UUID procedureId) {
@@ -93,8 +91,8 @@ public class NewCertificateProcedureService {
     procedure.setInstructionDate(LocalDate.now(clock));
     progressEntryService.addSystemProgressEntry(
         procedure,
-        InfectionBriefingSystemProgressEntryFactory.createSystemProgressEntry(
-            InfectionBriefingProgressEntryType.BRIEFING_CONFIRMED, TriggerType.EMPLOYEE));
+        InfectionBriefingSystemProgressEntryFactory.createEmployeeTriggeredSystemProgressEntry(
+            InfectionBriefingProgressEntryType.BRIEFING_CONFIRMED));
   }
 
   public void confirmPayment(UUID procedureId, ConfirmPaymentRequest request) {
@@ -109,8 +107,8 @@ public class NewCertificateProcedureService {
         ApplicantCategoryMapper.toDomainType(request.applicantCategory()));
     progressEntryService.addSystemProgressEntry(
         procedure,
-        InfectionBriefingSystemProgressEntryFactory.createSystemProgressEntry(
-            InfectionBriefingProgressEntryType.FEE_PAYED, TriggerType.EMPLOYEE));
+        InfectionBriefingSystemProgressEntryFactory.createEmployeeTriggeredSystemProgressEntry(
+            InfectionBriefingProgressEntryType.FEE_PAYED));
   }
 
   public IssueCertificateResponse issueCertificate(UUID procedureId) {
@@ -127,10 +125,10 @@ public class NewCertificateProcedureService {
         progressEntryService
             .addSystemProgressEntry(
                 procedure,
-                InfectionBriefingSystemProgressEntryFactory.createSystemProgressEntry(
-                    InfectionBriefingProgressEntryType.CERTIFICATE_ISSUED,
-                    TriggerType.EMPLOYEE,
-                    InfectionBriefingKeyDocumentType.CERTIFICATE),
+                InfectionBriefingSystemProgressEntryFactory
+                    .createEmployeeTriggeredSystemProgressEntry(
+                        InfectionBriefingProgressEntryType.CERTIFICATE_ISSUED,
+                        InfectionBriefingKeyDocumentType.CERTIFICATE),
                 certificateGenerator.generate(
                     personClient.getPersonFileState(
                         procedure.getApplicant().getCentralFileStateId()),
@@ -147,9 +145,8 @@ public class NewCertificateProcedureService {
     UUID fileId = getCertificateFileId(procedure);
     progressEntryService.addSystemProgressEntry(
         procedure,
-        InfectionBriefingSystemProgressEntryFactory.createSystemProgressEntry(
-            InfectionBriefingProgressEntryType.REPLACEMENT_CERTIFICATE_ISSUED,
-            TriggerType.EMPLOYEE));
+        InfectionBriefingSystemProgressEntryFactory.createEmployeeTriggeredSystemProgressEntry(
+            InfectionBriefingProgressEntryType.REPLACEMENT_CERTIFICATE_ISSUED));
     return new IssueCertificateResponse(fileId);
   }
 

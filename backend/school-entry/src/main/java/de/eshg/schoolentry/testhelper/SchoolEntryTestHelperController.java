@@ -14,6 +14,7 @@ import de.eshg.lib.auditlog.AuditLogTestHelperService;
 import de.eshg.schoolentry.SchoolEntryConfigService;
 import de.eshg.schoolentry.SchoolEntryGuard;
 import de.eshg.schoolentry.api.CreateProcedureResponse;
+import de.eshg.schoolentry.api.DocumentTypes;
 import de.eshg.schoolentry.api.GetClosedProceduresResponse;
 import de.eshg.schoolentry.api.SchoolEntryAppointmentBlockPopulationResult;
 import de.eshg.schoolentry.api.SchoolEntryFeature;
@@ -27,6 +28,7 @@ import de.eshg.testhelper.api.PopulationRequest;
 import de.eshg.testhelper.environment.EnvironmentConfig;
 import de.eshg.testhelper.population.ListWithTotalNumber;
 import jakarta.validation.Valid;
+import java.util.List;
 import java.util.UUID;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -108,6 +110,13 @@ public class SchoolEntryTestHelperController extends TestHelperController
     appointmentBlockConfig.setLocationSelectionMode(newLocationSelectionMode);
   }
 
+  @PostExchange("/documents-with-wmployee-info")
+  @Transactional
+  public void updateDocumentsWithEmployeeInfo(
+      @RequestBody List<DocumentTypes> newDocumentsWithEmployeeInfo) {
+    schoolEntryConfigService.updateDocumentsWithEmployeeInfo(newDocumentsWithEmployeeInfo);
+  }
+
   @PostExchange("/direct-procedure-type-assignment-on-import")
   @Transactional
   public void enableDirectProcedureTypeAssignmentOnImport() {
@@ -130,6 +139,11 @@ public class SchoolEntryTestHelperController extends TestHelperController
         appointmentBlockGroupsPopulator.populate(request.numberOfEntitiesToPopulate());
     return new SchoolEntryAppointmentBlockPopulationResult(
         result.entities(), result.totalNumberOfElements());
+  }
+
+  @PostExchange("/run-archiving-job")
+  public void runArchivingJob() {
+    schoolEntryTestHelperService.runArchivingJob();
   }
 
   @Override

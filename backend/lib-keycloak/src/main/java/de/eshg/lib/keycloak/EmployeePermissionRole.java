@@ -437,6 +437,9 @@ public enum EmployeePermissionRole implements PermissionRole {
       "Technischer User Migration",
       "Technischer User von Fachmodulen, für inter-modul Datenmigration, nicht für menschliche User bestimmt; hat nur migrationsspezifische, temporäre Rechte für die Dauer der Migration",
       Module.BASE),
+
+  FILEJOCKEY_MEDICAL_DEVICE(
+      "Medizingerät", "Zugriff auf FileJockey-Endpunkte für Medizingeräte", Module.FILE_JOCKEY),
   ;
 
   private final String keycloakNameWithoutPrefix;
@@ -495,7 +498,8 @@ public enum EmployeePermissionRole implements PermissionRole {
     CONFIGURATION("Konfigurator"),
     MEDS_ABROAD("Reisen mit Betäubungsmitteln"),
     PROSTITUTE_PROTECTION("Prostituiertenschutzgesetz"),
-    INFECTION_BRIEFING("Belehrung nach Infektionsschutz");
+    INFECTION_BRIEFING("Belehrung nach Infektionsschutz"),
+    FILE_JOCKEY("FileJockey");
 
     private final String displayName;
 

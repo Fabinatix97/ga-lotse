@@ -45,7 +45,6 @@ export function InspectionAssigneeSelection(
         <AssigneeAutocompleteField
           name={props.assigneeIdFieldValueName}
           options={assignableUsersOptions}
-          required="Bitte einen Bearbeiter auswählen"
         />
       )}
       {!(props.onlySelfAssignable && props.currentAssigneeId === null) &&

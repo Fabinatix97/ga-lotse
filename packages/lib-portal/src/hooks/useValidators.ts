@@ -20,6 +20,8 @@ import {
   validateLength,
   validateNumber,
   validatePastOrTodayDate,
+  validatePipe,
+  validateRegex,
   validateZipCode,
 } from "../helpers/validators";
 import { useTranslation } from "../i18n/useTranslation";
@@ -50,6 +52,23 @@ export function useValidatePastOrTodayDate() {
   return useMemo(
     () => validatePastOrTodayDate(t("validation.pastOrTodayDate")),
     [t],
+  );
+}
+
+export function useValidatePhoneNumber() {
+  const { t } = useTranslation();
+  const phoneNumberRegex = new RegExp(/^(\+[1-9])?[-+0-9 ]+$/);
+  const validateLength = useValidateLength();
+
+  return validatePipe(
+    (value: string) => {
+      if (!value || value.trim() === "") {
+        return undefined;
+      }
+      return undefined;
+    },
+    validateLength(1, 23),
+    validateRegex(phoneNumberRegex, t("validation.phoneNumber")),
   );
 }
 

@@ -8178,7 +8178,7 @@
       },
       "BaseFeature" : {
         "type" : "string",
-        "enum" : [ "INBOX", "VACCINATION_CHECK", "SAMPLES" ]
+        "enum" : [ "INBOX", "VACCINATION_CHECK", "SAMPLES", "MULTIPLE_LANGUAGES" ]
       },
       "BlockingEventsOfCalendar" : {
         "required" : [ "calendarId", "events" ],
@@ -9003,7 +9003,7 @@
       },
       "ErrorCode" : {
         "type" : "string",
-        "enum" : [ "UNEXPECTED_ERROR", "BAD_REQUEST", "UNAUTHORIZED", "INSUFFICIENT_USER_RIGHTS", "NOT_FOUND", "CONFLICT", "INTERNAL_SERVER_ERROR", "CONSTRAINT_VIOLATION", "TIMEOUT", "DATA_INTEGRITY_VIOLATION", "ALREADY_EXISTS", "AGGREGATION_EXCEPTION", "INVALID_FILE", "NONCONFORM_PDF", "CSV_INVALID_HEADER", "CORRUPT", "LOCKED", "XLSX_TOO_MANY_ROWS", "SERVICE_UNAVAILABLE" ]
+        "enum" : [ "UNEXPECTED_ERROR", "BAD_REQUEST", "UNAUTHORIZED", "INSUFFICIENT_USER_RIGHTS", "NOT_FOUND", "CONFLICT", "INTERNAL_SERVER_ERROR", "CONSTRAINT_VIOLATION", "TIMEOUT", "DATA_INTEGRITY_VIOLATION", "ALREADY_EXISTS", "AGGREGATION_EXCEPTION", "INVALID_FILE", "NONCONFORM_PDF", "CSV_INVALID_HEADER", "CORRUPT", "LOCKED", "MARKED_FOR_DELETION", "XLSX_TOO_MANY_ROWS", "SERVICE_UNAVAILABLE" ]
       },
       "ErrorResponseWithLocation" : {
         "required" : [ "errorCode", "errorLocation" ],
@@ -9593,7 +9593,7 @@
         }
       },
       "GetAggregatedProcedureMetricsResponse" : {
-        "required" : [ "errorResponses", "procedureMetrics" ],
+        "required" : [ "errorResponses", "procedureActionMetrics", "procedureMetrics", "userFlowMetrics" ],
         "type" : "object",
         "properties" : {
           "errorResponses" : {
@@ -9602,10 +9602,22 @@
               "$ref" : "#/components/schemas/ErrorResponseWithLocation"
             }
           },
+          "procedureActionMetrics" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/ProcedureActionMetric"
+            }
+          },
           "procedureMetrics" : {
             "type" : "array",
             "items" : {
               "$ref" : "#/components/schemas/ProcedureMetric"
+            }
+          },
+          "userFlowMetrics" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/UserFlowMetric"
             }
           }
         }
@@ -12678,6 +12690,41 @@
           }
         }
       },
+      "ProcedureAction" : {
+        "required" : [ "count", "procedureActionType" ],
+        "type" : "object",
+        "properties" : {
+          "count" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "procedureActionType" : {
+            "$ref" : "#/components/schemas/ProcedureActionType"
+          }
+        }
+      },
+      "ProcedureActionMetric" : {
+        "required" : [ "businessModule", "referenceProcedureAction", "relatedProcedureActions" ],
+        "type" : "object",
+        "properties" : {
+          "businessModule" : {
+            "$ref" : "#/components/schemas/BusinessModule"
+          },
+          "referenceProcedureAction" : {
+            "$ref" : "#/components/schemas/ProcedureAction"
+          },
+          "relatedProcedureActions" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/ProcedureAction"
+            }
+          }
+        }
+      },
+      "ProcedureActionType" : {
+        "type" : "string",
+        "enum" : [ "APPOINTMENTS_BOOKED", "APPOINTMENTS_CANCELED", "APPOINTMENTS_RESCHEDULED", "APPOINTMENTS_RESCHEDULED_AT_LEAST_ONCE", "APPOINTMENTS_RESCHEDULED_AT_LEAST_TWICE", "DOCUMENTS_ACCEPTED", "DOCUMENTS_PROVIDED", "DOCUMENTS_REJECTED", "DOCUMENTS_REQUESTED", "INVITATIONS_SENT", "SUBMITTED_ANAMNESIS", "SUBMITTED_DECLARATIONS", "SUBMITTED_INFORMATION_SHEETS" ]
+      },
       "ProcedureMetric" : {
         "required" : [ "abortedCount", "businessModule", "closedCount", "inProgressCount", "openOrDraftCount", "procedureType", "totalCount" ],
         "type" : "object",
@@ -14091,6 +14138,34 @@
         "type" : "string",
         "enum" : [ "LOGIN", "LOGIN_ERROR" ]
       },
+      "UserFlowMetric" : {
+        "required" : [ "abortedCount", "businessModule", "total", "userFlowType" ],
+        "type" : "object",
+        "properties" : {
+          "abortedCount" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "averageDuration" : {
+            "type" : "string",
+            "description" : "A duration in ISO 8601"
+          },
+          "businessModule" : {
+            "$ref" : "#/components/schemas/BusinessModule"
+          },
+          "total" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "userFlowType" : {
+            "$ref" : "#/components/schemas/UserFlowType"
+          }
+        }
+      },
+      "UserFlowType" : {
+        "type" : "string",
+        "enum" : [ "ANAMNESIS", "BOOKING", "CANCELING", "INFORMATION_STATEMENT", "REPORTING", "RESCHEDULING" ]
+      },
       "UserGroup" : {
         "required" : [ "name" ],
         "type" : "object",
@@ -14155,7 +14230,7 @@
       "UserRole" : {
         "type" : "string",
         "description" : "A filter for a role users can have",
-        "enum" : [ "INSPECTION_LEADER", "INSPECTION_LANDESAMT_LEADER", "SCHOOL_ENTRY_LEADER", "TRAVEL_MEDICINE_LEADER", "MEASLES_PROTECTION_LEADER", "STATISTICS_LEADER", "MEDS_ABROAD_LEADER", "BASE_PERSONS_READ", "BASE_PERSONS_WRITE", "BASE_PERSONS_DELETE", "BASE_FACILITIES_READ", "BASE_FACILITIES_WRITE", "BASE_FACILITIES_DELETE", "BASE_RESOURCES_READ", "BASE_RESOURCES_WRITE", "BASE_INVENTORY_READ", "BASE_INVENTORY_USE", "BASE_INVENTORY_ADMINISTRATE", "BASE_LABELS_READ", "BASE_LABELS_WRITE", "BASE_CONTACTS_READ", "BASE_CONTACTS_WRITE", "BASE_GDPR_PROCEDURE_REVIEW", "BASE_GDPR_PROCEDURE_READ", "BASE_GDPR_PROCEDURE_WRITE", "BASE_MUK_FACILITY_LINK_WRITE", "BASE_BUNDID_PERSON_LINK_WRITE", "BASE_GLOBAL_CALENDARS_WRITE", "BASE_CALENDAR_BUSINESS_EVENTS_WRITE", "BASE_PROCEDURES_READ", "BASE_PROCEDURE_METRICS_READ", "BASE_TASKS_READ", "BASE_ACCESS_CODE_USER_ADMIN", "BASE_ACCESS_CODE_USER_VERIFY", "SCHOOL_ENTRY_ADMIN", "INSPECTION_NOTIFICATIONS_READ", "INSPECTION_PROCEDURE_EDIT", "INSPECTION_PROCEDURE_ASSIGN", "INSPECTION_OBJECTTYPES_READ", "INSPECTION_OBJECTTYPES_WRITE", "INSPECTION_CHECKLISTDEFINITIONS_READ", "INSPECTION_CHECKLISTDEFINITIONS_WRITE", "INSPECTION_CORECHECKLISTDEFINITIONS_EDIT", "INSPECTION_CENTRALREPOSITORY_READ", "INSPECTION_CENTRALREPOSITORY_WRITE", "INSPECTION_CENTRALREPOSITORY_DELETE", "INSPECTION_CENTRALREPOSITORY_WRITE_CORECHECKLISTS", "INSPECTION_IMPORT", "SCHOOL_ENTRY_VACCINATED_FILE_STATES", "TRAVEL_MEDICINE_ADMIN", "MEASLES_PROTECTION_ADMIN", "MEDS_ABROAD_ADMIN", "CHAT_USER", "STATISTICS_STATISTICS_READ", "STATISTICS_STATISTICS_WRITE", "STATISTICS_STATISTICS_ADMIN", "STATISTICS_STATISTICS_TECHNICAL_USER", "BASE_MAIL_SEND", "INBOX_PROCEDURE_WRITE", "PROCEDURE_ARCHIVE", "PROCEDURE_ARCHIVE_ADMIN", "AUDITLOG_FILE_SEND", "AUDITLOG_DECRYPT_AND_ACCESS", "AUDITLOG_AUTHORIZE_ACCESS", "AUDITLOG_PUBLIC_KEYS_READ", "STANDARD_EMPLOYEE", "STI_PROTECTION_ADMIN", "STI_PROTECTION_LEADER", "MEDICAL_REGISTRY_LEADER", "MEDICAL_REGISTRY_ADMIN", "DENTAL_LEADER", "DENTAL_ADMIN", "OPEN_DATA_ADMIN", "OPEN_DATA_LEADER", "MEDICAL_REGISTRY_IMPORT", "OFFICIAL_MEDICAL_SERVICE_LEADER", "OFFICIAL_MEDICAL_SERVICE_ADMIN", "OFFICIAL_MEDICAL_SERVICE_ASSESSMENT_CREATE", "OFFICIAL_MEDICAL_SERVICE_ASSESSMENT_EDITOR_EDIT", "OFFICIAL_MEDICAL_SERVICE_ASSESSMENT_PREVIEW_READER_EDIT", "OFFICIAL_MEDICAL_SERVICE_TEXT_TEMPLATES_WRITE", "OFFICIAL_MEDICAL_SERVICE_LEGAL_NOTES_WRITE", "BASE_GDPR_VALIDATION_TASK_CLEANUP", "CONFIGURATION_ACCESS", "SCHOOL_ENTRY_VACCINATION_CHECK", "PROSTITUTE_PROTECTION_LEADER", "PROSTITUTE_PROTECTION_ADMIN", "INFECTION_BRIEFING_LEADER", "INFECTION_BRIEFING_ADMIN", "BASE_INTER_MODULE_MIGRATION" ]
+        "enum" : [ "INSPECTION_LEADER", "INSPECTION_LANDESAMT_LEADER", "SCHOOL_ENTRY_LEADER", "TRAVEL_MEDICINE_LEADER", "MEASLES_PROTECTION_LEADER", "STATISTICS_LEADER", "MEDS_ABROAD_LEADER", "BASE_PERSONS_READ", "BASE_PERSONS_WRITE", "BASE_PERSONS_DELETE", "BASE_FACILITIES_READ", "BASE_FACILITIES_WRITE", "BASE_FACILITIES_DELETE", "BASE_RESOURCES_READ", "BASE_RESOURCES_WRITE", "BASE_INVENTORY_READ", "BASE_INVENTORY_USE", "BASE_INVENTORY_ADMINISTRATE", "BASE_LABELS_READ", "BASE_LABELS_WRITE", "BASE_CONTACTS_READ", "BASE_CONTACTS_WRITE", "BASE_GDPR_PROCEDURE_REVIEW", "BASE_GDPR_PROCEDURE_READ", "BASE_GDPR_PROCEDURE_WRITE", "BASE_MUK_FACILITY_LINK_WRITE", "BASE_BUNDID_PERSON_LINK_WRITE", "BASE_GLOBAL_CALENDARS_WRITE", "BASE_CALENDAR_BUSINESS_EVENTS_WRITE", "BASE_PROCEDURES_READ", "BASE_PROCEDURE_METRICS_READ", "BASE_TASKS_READ", "BASE_ACCESS_CODE_USER_ADMIN", "BASE_ACCESS_CODE_USER_VERIFY", "SCHOOL_ENTRY_ADMIN", "INSPECTION_NOTIFICATIONS_READ", "INSPECTION_PROCEDURE_EDIT", "INSPECTION_PROCEDURE_ASSIGN", "INSPECTION_OBJECTTYPES_READ", "INSPECTION_OBJECTTYPES_WRITE", "INSPECTION_CHECKLISTDEFINITIONS_READ", "INSPECTION_CHECKLISTDEFINITIONS_WRITE", "INSPECTION_CORECHECKLISTDEFINITIONS_EDIT", "INSPECTION_CENTRALREPOSITORY_READ", "INSPECTION_CENTRALREPOSITORY_WRITE", "INSPECTION_CENTRALREPOSITORY_DELETE", "INSPECTION_CENTRALREPOSITORY_WRITE_CORECHECKLISTS", "INSPECTION_IMPORT", "SCHOOL_ENTRY_VACCINATED_FILE_STATES", "TRAVEL_MEDICINE_ADMIN", "MEASLES_PROTECTION_ADMIN", "MEDS_ABROAD_ADMIN", "CHAT_USER", "STATISTICS_STATISTICS_READ", "STATISTICS_STATISTICS_WRITE", "STATISTICS_STATISTICS_ADMIN", "STATISTICS_STATISTICS_TECHNICAL_USER", "BASE_MAIL_SEND", "INBOX_PROCEDURE_WRITE", "PROCEDURE_ARCHIVE", "PROCEDURE_ARCHIVE_ADMIN", "AUDITLOG_FILE_SEND", "AUDITLOG_DECRYPT_AND_ACCESS", "AUDITLOG_AUTHORIZE_ACCESS", "AUDITLOG_PUBLIC_KEYS_READ", "STANDARD_EMPLOYEE", "STI_PROTECTION_ADMIN", "STI_PROTECTION_LEADER", "MEDICAL_REGISTRY_LEADER", "MEDICAL_REGISTRY_ADMIN", "DENTAL_LEADER", "DENTAL_ADMIN", "OPEN_DATA_ADMIN", "OPEN_DATA_LEADER", "MEDICAL_REGISTRY_IMPORT", "OFFICIAL_MEDICAL_SERVICE_LEADER", "OFFICIAL_MEDICAL_SERVICE_ADMIN", "OFFICIAL_MEDICAL_SERVICE_ASSESSMENT_CREATE", "OFFICIAL_MEDICAL_SERVICE_ASSESSMENT_EDITOR_EDIT", "OFFICIAL_MEDICAL_SERVICE_ASSESSMENT_PREVIEW_READER_EDIT", "OFFICIAL_MEDICAL_SERVICE_TEXT_TEMPLATES_WRITE", "OFFICIAL_MEDICAL_SERVICE_LEGAL_NOTES_WRITE", "BASE_GDPR_VALIDATION_TASK_CLEANUP", "CONFIGURATION_ACCESS", "SCHOOL_ENTRY_VACCINATION_CHECK", "PROSTITUTE_PROTECTION_LEADER", "PROSTITUTE_PROTECTION_ADMIN", "INFECTION_BRIEFING_LEADER", "INFECTION_BRIEFING_ADMIN", "BASE_INTER_MODULE_MIGRATION", "FILEJOCKEY_MEDICAL_DEVICE" ]
       },
       "VCardAddress" : {
         "required" : [ "addressAddition", "city", "country", "houseNumber", "postBox", "postalCode", "street" ],

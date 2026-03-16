@@ -8,5 +8,6 @@ package de.eshg.base.feature;
 public enum BaseFeature {
   INBOX,
   VACCINATION_CHECK,
-  SAMPLES
+  SAMPLES,
+  MULTIPLE_LANGUAGES
 }

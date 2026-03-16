@@ -115,6 +115,7 @@ function InspectionInboxProcedureCreateSidebar({
           createBaseFacilityFromInboxProcedure(inboxProcedure, searchInputs),
         )
       }
+      alertMessage="Der Inhalt des Posteingangseintrags sowie Anhänge werden als Verlaufseintrag hinzugefügt."
       onCreateNew={async (values) => {
         await handleSaveFacility(values.createInputs);
       }}

@@ -41,6 +41,7 @@ function mapToApi(
     locationSelectionMode: mapRequiredValue(model.locationSelectionMode),
     directProcedureTypeAssignmentOnImport:
       model.directProcedureTypeAssignmentOnImport,
+    documentsWithEmployeeInfo: model.documentsWithEmployeeInfo ?? [],
     pdfDocumentAccentColor: model.pdfDocumentAccentColor,
     invitationIncludePerson: model.invitationIncludePerson,
     invitationIncludeRoom: model.invitationIncludeRoom,

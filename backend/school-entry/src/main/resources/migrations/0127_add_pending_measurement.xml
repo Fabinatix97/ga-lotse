@@ -1,0 +1,41 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<!--
+ Copyright 2026 cronn GmbH
+ SPDX-License-Identifier: AGPL-3.0-only
+-->
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+  <changeSet author="GA-Lotse" id="1772214335095-1">
+    <createTable tableName="pending_measurement">
+      <column autoIncrement="true" name="id" type="BIGINT">
+        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_pending_measurement"/>
+      </column>
+      <column name="version" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="correlation_id" type="TEXT"/>
+      <column name="equipment_selector" type="TEXT"/>
+      <column name="first_name_alias" type="TEXT"/>
+      <column name="last_name_alias" type="TEXT"/>
+    </createTable>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1772214335095-2">
+    <addColumn tableName="hearing_test_result">
+      <column name="pending_measurement_id" type="BIGINT"/>
+    </addColumn>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1772214335095-3">
+    <addUniqueConstraint columnNames="pending_measurement_id" constraintName="hearing_test_result_pending_measurement_id_key" tableName="hearing_test_result"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1772214335095-4">
+    <addForeignKeyConstraint baseColumnNames="pending_measurement_id" baseTableName="hearing_test_result" constraintName="fk_hearing_test_result_pending_measurement" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="pending_measurement" validate="true"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1772214335095-5">
+    <addUniqueConstraint columnNames="correlation_id" tableName="pending_measurement"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1772214335095-6">
+    <addColumn tableName="pending_measurement">
+      <column name="equipment_name" type="TEXT"/>
+    </addColumn>
+  </changeSet>
+</databaseChangeLog>

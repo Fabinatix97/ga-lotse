@@ -9,5 +9,5 @@ import io.swagger.v3.oas.annotations.media.Schema;
 
 @Schema(name = "GdtDriver")
 public enum GdtDriverDto {
-  DUMMY,
+  OSCILLA_AUDIO_CONSOLE,
 }

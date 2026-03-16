@@ -5,10 +5,10 @@
 
 package de.eshg.lib.gdt.v35.codec;
 
-import de.eshg.lib.gdt.v35.model.GdtElement;
-import de.eshg.lib.gdt.v35.model.GdtField;
-import de.eshg.lib.gdt.v35.model.GdtObject;
-import de.eshg.lib.gdt.v35.model.GdtRecord;
+import de.eshg.lib.gdt.v35.model.Gdt35Element;
+import de.eshg.lib.gdt.v35.model.Gdt35Field;
+import de.eshg.lib.gdt.v35.model.Gdt35Object;
+import de.eshg.lib.gdt.v35.model.Gdt35Record;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -20,7 +20,7 @@ import java.util.Deque;
 import java.util.List;
 
 /**
- * Decodes GDT data streams into {@link GdtRecord} objects.
+ * Decodes GDT data streams into {@link Gdt35Record} objects.
  *
  * <p>Handles the line-based structure of GDT files:
  *
@@ -74,25 +74,25 @@ public class GdtReader {
    * @param input The input stream (will be read as ISO-8859-15).
    * @return A list of parsed GDT records.
    * @throws UncheckedIOException If an I/O error occurs.
-   * @throws GdtParseException If the GDT format is invalid (e.g., length mismatch, unclosed
+   * @throws Gdt35ParseException If the GDT format is invalid (e.g., length mismatch, unclosed
    *     objects).
    */
-  public List<GdtRecord> read(InputStream input) {
-    List<GdtRecord> records = new ArrayList<>();
+  public List<Gdt35Record> read(InputStream input) {
+    List<Gdt35Record> records = new ArrayList<>();
     ParsingContext context = new ParsingContext();
 
     try (BufferedReader reader =
-        new BufferedReader(new InputStreamReader(input, GdtConstants.CHARSET))) {
+        new BufferedReader(new InputStreamReader(input, Gdt35Constants.CHARSET))) {
       while ((context.currentLine = reader.readLine()) != null) {
         context.lineCount++;
         if (context.currentLine.isEmpty()) {
           continue;
         }
         if (context.lineCount > MAX_TOTAL_LINES) {
-          throw new GdtParseException("File exceeds maximum line count: " + MAX_TOTAL_LINES);
+          throw new Gdt35ParseException("File exceeds maximum line count: " + MAX_TOTAL_LINES);
         }
 
-        GdtField field = parseLine(context);
+        Gdt35Field field = parseLine(context);
         processField(field, context, records);
       }
       validateFinalState(context);
@@ -102,25 +102,25 @@ public class GdtReader {
     return records;
   }
 
-  private GdtField parseLine(ParsingContext context) {
+  private Gdt35Field parseLine(ParsingContext context) {
     String line = context.currentLine;
     int length = line.length();
     if (length > MAX_LINE_LENGTH) {
-      throw new GdtParseException("Line exceeds maximum length: " + length);
+      throw new Gdt35ParseException("Line exceeds maximum length: " + length);
     }
     if (length < MIN_LINE_LENGTH) {
-      throw new GdtParseException("Line too short: expected at least " + MIN_LINE_LENGTH);
+      throw new Gdt35ParseException("Line too short: expected at least " + MIN_LINE_LENGTH);
     }
 
     int declaredLength;
     try {
       declaredLength = Integer.parseInt(line.substring(0, LENGTH_PREFIX_SIZE));
     } catch (NumberFormatException e) {
-      throw new GdtParseException("Invalid length format at line " + context.lineCount);
+      throw new Gdt35ParseException("Invalid length format at line " + context.lineCount);
     }
 
     if (length != declaredLength - CRLF_SIZE) {
-      throw new GdtParseException(
+      throw new Gdt35ParseException(
           "Length mismatch. Declared: "
               + declaredLength
               + ", Actual (+CRLF): "
@@ -131,27 +131,27 @@ public class GdtReader {
 
     String tag = line.substring(LENGTH_PREFIX_SIZE, LENGTH_PREFIX_SIZE + TAG_SIZE);
     if (!tag.matches("\\d{4}")) {
-      throw new GdtParseException(
+      throw new Gdt35ParseException(
           "Invalid tag format: must be 4 digits, got '" + tag + "' at line " + context.lineCount);
     }
 
     String value = line.substring(LENGTH_PREFIX_SIZE + TAG_SIZE);
-    return new GdtField(tag, value);
+    return new Gdt35Field(tag, value);
   }
 
-  private void processField(GdtField field, ParsingContext context, List<GdtRecord> records) {
+  private void processField(Gdt35Field field, ParsingContext context, List<Gdt35Record> records) {
     switch (field.tag()) {
-      case GdtConstants.TAG_RECORD_START -> handleRecordStart(field.value(), context);
-      case GdtConstants.TAG_RECORD_END -> handleRecordEnd(context, records);
-      case GdtConstants.TAG_OBJECT_START -> handleObjectStart(field.value(), context);
-      case GdtConstants.TAG_OBJECT_END -> handleObjectEnd(field.value(), context);
+      case Gdt35Constants.TAG_RECORD_START -> handleRecordStart(field.value(), context);
+      case Gdt35Constants.TAG_RECORD_END -> handleRecordEnd(context, records);
+      case Gdt35Constants.TAG_OBJECT_START -> handleObjectStart(field.value(), context);
+      case Gdt35Constants.TAG_OBJECT_END -> handleObjectEnd(field.value(), context);
       default -> handleDefaultField(field, context);
     }
   }
 
   private void handleRecordStart(String recordType, ParsingContext context) {
     if (context.currentRecord != null) {
-      throw new GdtParseException(
+      throw new Gdt35ParseException(
           "Nested or unclosed record found at line "
               + context.lineCount
               + ": "
@@ -162,13 +162,13 @@ public class GdtReader {
     context.pendingAttribute = null;
   }
 
-  private void handleRecordEnd(ParsingContext context, List<GdtRecord> records) {
+  private void handleRecordEnd(ParsingContext context, List<Gdt35Record> records) {
     if (context.currentRecord == null) {
-      throw new GdtParseException(
+      throw new Gdt35ParseException(
           "End of record without start at line " + context.lineCount + ": " + context.currentLine);
     }
     if (!context.objectStack.isEmpty()) {
-      throw new GdtParseException(
+      throw new Gdt35ParseException(
           "Record ended with unclosed objects at line "
               + context.lineCount
               + ": "
@@ -184,9 +184,9 @@ public class GdtReader {
 
   private void handleObjectStart(String objectId, ParsingContext context) {
     if (context.currentRecord == null) {
-      throw new GdtParseException(
+      throw new Gdt35ParseException(
           "Object start "
-              + GdtConstants.TAG_OBJECT_START
+              + Gdt35Constants.TAG_OBJECT_START
               + " encountered outside of a record context at line "
               + context.lineCount
               + ": "
@@ -199,7 +199,7 @@ public class GdtReader {
 
     GdtObjectBuilder newObj = new GdtObjectBuilder(attrTag, attrName, objectId);
     if (context.objectStack.size() >= MAX_NESTING_DEPTH) {
-      throw new GdtParseException(
+      throw new Gdt35ParseException(
           "Maximum nesting depth exceeded: "
               + MAX_NESTING_DEPTH
               + " at line "
@@ -212,9 +212,9 @@ public class GdtReader {
 
   private void handleObjectEnd(String objectId, ParsingContext context) {
     if (context.objectStack.isEmpty()) {
-      throw new GdtParseException(
+      throw new Gdt35ParseException(
           "Object end "
-              + GdtConstants.TAG_OBJECT_END
+              + Gdt35Constants.TAG_OBJECT_END
               + " without start at line "
               + context.lineCount
               + ": "
@@ -223,7 +223,7 @@ public class GdtReader {
 
     GdtObjectBuilder finishedObj = context.objectStack.pop();
     if (!finishedObj.objectId.equals(objectId)) {
-      throw new GdtParseException(
+      throw new Gdt35ParseException(
           "Object ID mismatch. Start: "
               + finishedObj.objectId
               + ", End: "
@@ -235,7 +235,7 @@ public class GdtReader {
     }
 
     if (finishedObj.elements.isEmpty()) {
-      throw new GdtParseException(
+      throw new Gdt35ParseException(
           "Empty object "
               + objectId
               + " at line "
@@ -252,7 +252,7 @@ public class GdtReader {
     addToCurrentContext(context, finishedObj.build());
   }
 
-  private void handleDefaultField(GdtField field, ParsingContext context) {
+  private void handleDefaultField(Gdt35Field field, ParsingContext context) {
     if (context.pendingAttribute != null) {
       addToCurrentContext(context, context.pendingAttribute);
     }
@@ -261,8 +261,8 @@ public class GdtReader {
     int tagNum = Integer.parseInt(field.tag());
 
     // Attribute tags (81xx range) are held pending until next object/field
-    if (tagNum >= GdtConstants.TAG_OBJECT_ATTRIBUTE_START_RANGE
-        && tagNum <= GdtConstants.TAG_OBJECT_ATTRIBUTE_END_RANGE) {
+    if (tagNum >= Gdt35Constants.TAG_OBJECT_ATTRIBUTE_START_RANGE
+        && tagNum <= Gdt35Constants.TAG_OBJECT_ATTRIBUTE_END_RANGE) {
       context.pendingAttribute = field;
     } else {
       context.pendingAttribute = null;
@@ -272,17 +272,17 @@ public class GdtReader {
 
   private void validateFinalState(ParsingContext context) {
     if (context.currentRecord != null) {
-      throw new GdtParseException(
+      throw new Gdt35ParseException(
           "Stream ended with unclosed record. Last line was " + context.lineCount);
     }
   }
 
-  private void addToCurrentContext(ParsingContext context, GdtElement element) {
+  private void addToCurrentContext(ParsingContext context, Gdt35Element element) {
     if (context.objectStack.isEmpty()) {
       if (context.currentRecord != null) {
         context.currentRecord.elements.add(element);
       } else {
-        throw new GdtParseException(
+        throw new Gdt35ParseException(
             "Field encountered outside of record context at line "
                 + context.lineCount
                 + ": "
@@ -296,7 +296,7 @@ public class GdtReader {
   private static class ParsingContext {
     GdtRecordBuilder currentRecord = null;
     final Deque<GdtObjectBuilder> objectStack = new ArrayDeque<>();
-    GdtField pendingAttribute = null;
+    Gdt35Field pendingAttribute = null;
     int lineCount = 0;
     String currentLine = "";
   }
@@ -304,14 +304,14 @@ public class GdtReader {
   private static class GdtRecordBuilder {
 
     final String recordType;
-    final List<GdtElement> elements = new ArrayList<>();
+    final List<Gdt35Element> elements = new ArrayList<>();
 
     GdtRecordBuilder(String recordType) {
       this.recordType = recordType;
     }
 
-    GdtRecord build() {
-      return new GdtRecord(recordType, elements);
+    Gdt35Record build() {
+      return new Gdt35Record(recordType, elements);
     }
   }
 
@@ -320,7 +320,7 @@ public class GdtReader {
     final String attributeTag;
     final String attributeName;
     final String objectId;
-    final List<GdtElement> elements = new ArrayList<>();
+    final List<Gdt35Element> elements = new ArrayList<>();
 
     GdtObjectBuilder(String attributeTag, String attributeName, String objectId) {
       this.attributeTag = attributeTag;
@@ -328,8 +328,8 @@ public class GdtReader {
       this.objectId = objectId;
     }
 
-    GdtObject build() {
-      return new GdtObject(attributeTag, attributeName, objectId, elements);
+    Gdt35Object build() {
+      return new Gdt35Object(attributeTag, attributeName, objectId, elements);
     }
   }
 }

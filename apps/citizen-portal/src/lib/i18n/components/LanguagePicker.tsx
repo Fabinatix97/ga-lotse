@@ -29,6 +29,7 @@ import { MouseEvent, useRef } from "react";
 
 import { useIsMobile } from "@eshg/lib-portal";
 
+import { useIsNewFeatureEnabled } from "@/lib/baseModule/api/queries/feature";
 import { useTranslation } from "@/lib/i18n/client";
 import {
   AfghanFlag,
@@ -74,12 +75,11 @@ function useCurrentLanguage() {
   }
   return currentLanguage;
 }
-
 export function LanguagePicker() {
   const toggleButton = useRef<HTMLButtonElement>(null);
   const { t } = useTranslation("languagePicker");
   const currentLanguage = useCurrentLanguage();
-
+  const enabled = useIsNewFeatureEnabled("MULTIPLE_LANGUAGES");
   return (
     <Dropdown>
       <MenuButton
@@ -104,6 +104,7 @@ export function LanguagePicker() {
         }}
       >
         <LanguagePickerListItems
+          multipleLanguages={enabled}
           t={t}
           onClose={() => toggleButton.current?.click()}
         />
@@ -111,7 +112,6 @@ export function LanguagePicker() {
     </Dropdown>
   );
 }
-
 interface LanguagePickerReducedProps {
   slotProps?: { menuButton?: MenuButtonProps["slotProps"] };
 }
@@ -121,6 +121,8 @@ export function LanguagePickerReduced(props: LanguagePickerReducedProps) {
   const { t } = useTranslation("languagePicker");
   const currentLanguage = useCurrentLanguage();
   const isMobile = useIsMobile();
+  const enabled = useIsNewFeatureEnabled("MULTIPLE_LANGUAGES");
+
   return (
     <Dropdown>
       <MenuButton
@@ -168,6 +170,7 @@ export function LanguagePickerReduced(props: LanguagePickerReducedProps) {
         }}
       >
         <LanguagePickerListItems
+          multipleLanguages={enabled}
           t={t}
           onClose={() => toggleButton.current?.click()}
         />
@@ -192,21 +195,35 @@ export function LanguagePickerMobileButton({
 
 export function LanguagePickerMobile({ onClose }: { onClose: () => void }) {
   const { t } = useTranslation("languagePicker");
+  const enabled = useIsNewFeatureEnabled("MULTIPLE_LANGUAGES");
+
   return (
     <MenuList sx={{ border: "none", backgroundColor: "common.white" }}>
-      <LanguagePickerListItems t={t} onClose={onClose} />
+      <LanguagePickerListItems
+        multipleLanguages={enabled}
+        t={t}
+        onClose={onClose}
+      />
     </MenuList>
   );
 }
 
 function LanguagePickerListItems({
+  multipleLanguages,
   onClose,
   t,
 }: {
+  multipleLanguages: boolean;
   onClose: () => void;
   t: (key: string | string[], tOptions?: TOptions) => string;
 }) {
   const currentLanguage = useCurrentLanguage();
+  const enabledLanguages = multipleLanguages
+    ? languages
+    : ([
+        { name: "Deutsch", shortCode: "de", image: <GermanFlag /> },
+        { name: "English", shortCode: "en", image: <UKFlag /> },
+      ] as const);
 
   return (
     <Stack
@@ -234,7 +251,7 @@ function LanguagePickerListItems({
         {t("all_languages_title")}
       </Typography>
       <LanguageOptions>
-        {languages.map((language) => (
+        {enabledLanguages.map((language) => (
           <LanguageOption key={language.shortCode} option={language} />
         ))}
       </LanguageOptions>

@@ -11,18 +11,23 @@ import {
   FileUploadOutlined,
 } from "@mui/icons-material";
 import { Button, Checkbox, Divider, Stack, Typography } from "@mui/joy";
+import { useSuspenseQueries } from "@tanstack/react-query";
 import { useState } from "react";
 
 import {
   ApiInspFacility,
+  ApiInspectionPhase,
   ApiInspectionSample,
   ApiInspectionSampleEvaluationType,
 } from "@eshg/inspection-api";
 
+import { useInspectionApi } from "@/lib/businessModules/inspection/api/clients";
+import { getInspectionQuery } from "@/lib/businessModules/inspection/api/queries/inspection";
 import { useGetSamples } from "@/lib/businessModules/inspection/api/queries/sample";
 import { useInspectionAddSampleSidebar } from "@/lib/businessModules/inspection/components/inspection/measurements/InspectionAddSampleSidebar";
 import { useInspectionTemplateSampleSidebar } from "@/lib/businessModules/inspection/components/inspection/measurements/InspectionTemplateSampleSidebar";
 import { Sample } from "@/lib/businessModules/inspection/components/inspection/measurements/sample/Sample";
+import { inspectionIsBeforePhase } from "@/lib/businessModules/inspection/shared/enums";
 import { InfoTile } from "@/lib/shared/components/infoTile/InfoTile";
 
 interface SamplesTileProps {
@@ -46,7 +51,16 @@ export function SamplesTile({
     {},
   );
 
+  const inspectionApi = useInspectionApi();
   const { data: samples } = useGetSamples(procedureId);
+  const [{ data: inspection }] = useSuspenseQueries({
+    queries: [getInspectionQuery(inspectionApi, procedureId)],
+  });
+
+  const hasReachedClosed = !inspectionIsBeforePhase(
+    inspection.phase,
+    ApiInspectionPhase.Closed,
+  );
 
   const visibleSamples = samples.filter((sample) => {
     const suspicious = sample.measurementParameters.some(
@@ -134,6 +148,7 @@ export function SamplesTile({
           classification={getSampleClassification(sample)}
           showOnlySuspiciousParameters={showOnlySuspiciousParameters}
           expand={expanded}
+          hasReachedClosed={hasReachedClosed}
           onSetExpand={(open) =>
             setExpandedItems((prev) => ({
               ...prev,
@@ -194,7 +209,7 @@ export function SamplesTile({
       data-testid="samplesTile"
       name={"measurements" + procedureId}
       title="Proben"
-      controls={addAction}
+      controls={!hasReachedClosed && addAction}
     >
       <Divider />
       <Stack

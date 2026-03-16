@@ -40,6 +40,7 @@ const ERROR_MAPPING: Record<ApiErrorCode, PortalErrorCode> = {
   [ApiErrorCode.CsvInvalidHeader]: PortalErrorCode.CsvInvalidHeader,
   [ApiErrorCode.Corrupt]: PortalErrorCode.Corrupt,
   [ApiErrorCode.Locked]: PortalErrorCode.Locked,
+  [ApiErrorCode.MarkedForDeletion]: PortalErrorCode.MarkedForDeletion,
   [ApiErrorCode.XlsxTooManyRows]: PortalErrorCode.XlsxTooManyRows,
   [ApiErrorCode.ServiceUnavailable]: PortalErrorCode.ServiceUnavailable,
 };

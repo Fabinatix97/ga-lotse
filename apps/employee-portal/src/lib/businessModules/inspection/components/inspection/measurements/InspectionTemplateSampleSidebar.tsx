@@ -230,14 +230,16 @@ function InspectionTemplateSampleSidebar({
             <Fields values={values} setFieldValue={setFieldValue} />
           </SidebarContent>
           <SidebarActions>
-            <MultiFormButtonBar
-              submitting={isSubmitting}
-              submitLabel={
-                isOnLastStep ? "Probe hinzufügen" : "Vorlage verwenden"
-              }
-              onCancel={handleClose}
-              onBack={isOnFirstStep ? undefined : handlePrev}
-            />
+            {templates.length >= 1 && (
+              <MultiFormButtonBar
+                submitting={isSubmitting}
+                submitLabel={
+                  isOnLastStep ? "Probe hinzufügen" : "Vorlage verwenden"
+                }
+                onCancel={handleClose}
+                onBack={isOnFirstStep ? undefined : handlePrev}
+              />
+            )}
           </SidebarActions>
         </SidebarForm>
       )}

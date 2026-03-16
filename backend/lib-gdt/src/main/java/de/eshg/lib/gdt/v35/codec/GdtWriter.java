@@ -5,10 +5,10 @@
 
 package de.eshg.lib.gdt.v35.codec;
 
-import de.eshg.lib.gdt.v35.model.GdtElement;
-import de.eshg.lib.gdt.v35.model.GdtField;
-import de.eshg.lib.gdt.v35.model.GdtObject;
-import de.eshg.lib.gdt.v35.model.GdtRecord;
+import de.eshg.lib.gdt.v35.model.Gdt35Element;
+import de.eshg.lib.gdt.v35.model.Gdt35Field;
+import de.eshg.lib.gdt.v35.model.Gdt35Object;
+import de.eshg.lib.gdt.v35.model.Gdt35Record;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
@@ -17,7 +17,7 @@ import java.io.Writer;
 import java.util.List;
 
 /**
- * Serializes {@link GdtRecord} objects into a GDT data stream.
+ * Serializes {@link Gdt35Record} objects into a GDT data stream.
  *
  * <p>Ensures the correct line format: <code>Length (3 bytes) + Tag (4 bytes) + Content + CRLF
  * </code> <br>
@@ -35,9 +35,9 @@ public class GdtWriter {
    * @param output The output stream (written as ISO-8859-15).
    * @throws UncheckedIOException If an I/O error occurs.
    */
-  public void write(List<GdtRecord> records, OutputStream output) {
-    try (Writer writer = new OutputStreamWriter(output, GdtConstants.CHARSET)) {
-      for (GdtRecord rec : records) {
+  public void write(List<Gdt35Record> records, OutputStream output) {
+    try (Writer writer = new OutputStreamWriter(output, Gdt35Constants.CHARSET)) {
+      for (Gdt35Record rec : records) {
         writeRecord(writer, rec);
       }
     } catch (IOException e) {
@@ -52,47 +52,47 @@ public class GdtWriter {
    * @param output The output stream (written as ISO-8859-15).
    * @throws UncheckedIOException If an I/O error occurs.
    */
-  public void write(GdtRecord record, OutputStream output) {
+  public void write(Gdt35Record record, OutputStream output) {
     write(List.of(record), output);
   }
 
-  private void writeRecord(Writer writer, GdtRecord rec) throws IOException {
+  private void writeRecord(Writer writer, Gdt35Record rec) throws IOException {
     // Record Start
-    writeLine(writer, GdtConstants.TAG_RECORD_START, rec.recordType());
+    writeLine(writer, Gdt35Constants.TAG_RECORD_START, rec.recordType());
 
     // Elements (Fields and Objects mixed)
-    for (GdtElement element : rec.elements()) {
+    for (Gdt35Element element : rec.elements()) {
       writeElement(writer, element);
     }
 
     // Record End
-    writeLine(writer, GdtConstants.TAG_RECORD_END, rec.recordType());
+    writeLine(writer, Gdt35Constants.TAG_RECORD_END, rec.recordType());
   }
 
-  private void writeElement(Writer writer, GdtElement element) throws IOException {
-    if (element instanceof GdtField(String tag, String value)) {
+  private void writeElement(Writer writer, Gdt35Element element) throws IOException {
+    if (element instanceof Gdt35Field(String tag, String value)) {
       writeLine(writer, tag, value);
-    } else if (element instanceof GdtObject object) {
+    } else if (element instanceof Gdt35Object object) {
       writeObject(writer, object);
     }
   }
 
-  private void writeObject(Writer writer, GdtObject object) throws IOException {
+  private void writeObject(Writer writer, Gdt35Object object) throws IOException {
     // Attribute Field (if tag exists)
     if (object.attributeTag() != null) {
       writeLine(writer, object.attributeTag(), object.attributeName());
     }
 
     // Object Start
-    writeLine(writer, GdtConstants.TAG_OBJECT_START, object.objectId());
+    writeLine(writer, Gdt35Constants.TAG_OBJECT_START, object.objectId());
 
     // Elements (Fields and Nested Objects mixed)
-    for (GdtElement element : object.elements()) {
+    for (Gdt35Element element : object.elements()) {
       writeElement(writer, element);
     }
 
     // Object End
-    writeLine(writer, GdtConstants.TAG_OBJECT_END, object.objectId());
+    writeLine(writer, Gdt35Constants.TAG_OBJECT_END, object.objectId());
   }
 
   /**
@@ -112,7 +112,7 @@ public class GdtWriter {
 
     int totalLength = LINE_METADATA_SIZE + content.length();
     String lengthStr = String.format("%03d", totalLength);
-    String line = lengthStr + tag + content + GdtConstants.CRLF;
+    String line = lengthStr + tag + content + Gdt35Constants.CRLF;
     writer.write(line);
   }
 }

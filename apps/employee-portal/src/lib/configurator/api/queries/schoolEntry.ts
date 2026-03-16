@@ -40,6 +40,9 @@ export function useGetSchoolEntryConfig() {
           data._configuration?.invitationIncludePerson ?? false,
         invitationIncludeRoom:
           data._configuration?.invitationIncludeRoom ?? false,
+        documentsWithEmployeeInfo: [
+          ...(data._configuration?.documentsWithEmployeeInfo ?? []),
+        ],
       } satisfies SchoolEntryFormModel,
 
       locationSelectionModeReadOnly:

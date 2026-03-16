@@ -215,7 +215,12 @@ export function useFilterSettings({
         handleApply(draftValues);
       }
     },
-    isDirty: !isDeepEqual(mapDraftToActiveValues(draftValues), activeValues),
+    isDirty: !isDeepEqual(
+      mapDraftToActiveValues(draftValues),
+      activeValues.toSorted((activeValueA, activeValueB) =>
+        activeValueA.key.localeCompare(activeValueB.key),
+      ),
+    ),
     scalingWidth,
     id: filterSettingsId,
     errorMessages,

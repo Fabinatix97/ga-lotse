@@ -19,8 +19,11 @@ dependencies {
     implementation project(':file-commons')
 
     implementation 'org.springdoc:springdoc-openapi-starter-common:latest.release'
+    implementation 'org.mapstruct:mapstruct:latest.release'
+    implementation 'com.googlecode.owasp-java-html-sanitizer:owasp-java-html-sanitizer:latest.release'
 
     annotationProcessor 'org.hibernate.orm:hibernate-jpamodelgen'
+    annotationProcessor "org.mapstruct:mapstruct-processor:latest.release"
 
     runtimeOnly 'org.postgresql:postgresql'
 
@@ -41,6 +44,10 @@ dockerCompose {
 
 dependencyTrack {
     projectId = project.findProperty('dependency-track-project-id-official-medical-service') ?: "unspecified"
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.compilerArgs.add("-AaddSuppressWarningsAnnotation=true")
 }
 
 

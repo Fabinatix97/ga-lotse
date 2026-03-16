@@ -8,6 +8,7 @@ package de.eshg.officialmedicalservice;
 import de.eshg.lib.common.BusinessModule;
 import de.eshg.officialmedicalservice.config.InitialOmsConfiguration;
 import de.eshg.officialmedicalservice.config.OmsConfigurationProperties;
+import de.eshg.officialmedicalservice.feature.OmsFeatureToggle;
 import de.eshg.rest.service.security.config.OfficialMedicalServicePublicSecurityConfig;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -17,7 +18,11 @@ import org.springframework.context.annotation.Import;
 
 @SpringBootApplication
 @Import(OfficialMedicalServicePublicSecurityConfig.class)
-@EnableConfigurationProperties({InitialOmsConfiguration.class, OmsConfigurationProperties.class})
+@EnableConfigurationProperties({
+  InitialOmsConfiguration.class,
+  OmsConfigurationProperties.class,
+  OmsFeatureToggle.class
+})
 public class OfficialMedicalServiceApplication {
 
   @Bean

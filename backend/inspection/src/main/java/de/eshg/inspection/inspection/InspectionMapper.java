@@ -26,6 +26,8 @@ import de.eshg.inspection.facility.FacilityFileNumberService;
 import de.eshg.inspection.facility.FacilityMapper;
 import de.eshg.inspection.facility.api.InspFacilityDto;
 import de.eshg.inspection.facility.persistence.Facility;
+import de.eshg.inspection.feature.InspectionFeature;
+import de.eshg.inspection.feature.InspectionFeatureToggle;
 import de.eshg.inspection.incident.InspectionIncidentMapper;
 import de.eshg.inspection.incident.api.InspectionIncidentDto;
 import de.eshg.inspection.incident.persistence.InspectionIncident;
@@ -60,6 +62,7 @@ import de.eshg.inspection.sample.persistence.InspectionSampleEvaluationType;
 import de.eshg.inspection.sample.persistence.InspectionSampleType;
 import de.eshg.inspection.samplingpoint.SamplingPointClient;
 import de.eshg.inspection.util.Holder;
+import de.eshg.lib.procedure.domain.model.ManualProgressEntry;
 import de.eshg.lib.procedure.domain.model.Pdf;
 import de.eshg.lib.procedure.domain.model.Task;
 import de.eshg.lib.procedure.domain.model.TaskType;
@@ -90,6 +93,7 @@ public class InspectionMapper {
   private final FacilityFileNumberService facilityFileNumberService;
   private final ContactClient contactClient;
   private final SamplingPointClient samplingPointClient;
+  private final InspectionFeatureToggle inspectionFeatureToggle;
 
   public InspectionMapper(
       InventoryApi inventoryApi,
@@ -99,6 +103,7 @@ public class InspectionMapper {
       FacilityClient facilityClient,
       FacilityFileNumberService facilityFileNumberService,
       ContactClient contactClient,
+      InspectionFeatureToggle inspectionFeatureToggle,
       SamplingPointClient samplingPointClient) {
     this.inventoryApi = inventoryApi;
     this.resourceApi = resourceApi;
@@ -108,6 +113,7 @@ public class InspectionMapper {
     this.facilityFileNumberService = facilityFileNumberService;
     this.contactClient = contactClient;
     this.samplingPointClient = samplingPointClient;
+    this.inspectionFeatureToggle = inspectionFeatureToggle;
   }
 
   public static String mapToTaskSummary(String facilityName, TaskType taskType) {
@@ -180,6 +186,8 @@ public class InspectionMapper {
         selectedCLDVersions,
         selectedPLDRevisions,
         inspection.getNotes(),
+        resolvedClosingRemark(inspection),
+        inspection.getClosingRemarkProgressEntryId(),
         mapInventories(inspection),
         mapResources(inspection),
         mapAppointment(inspection.getPlannedAppointment(), inspection.getPlanningTask()),
@@ -194,6 +202,25 @@ public class InspectionMapper {
         lockedByUser,
         inspection.getFacility().hasPossibleDuplicates(),
         !inspection.getPossibleDuplicates().isEmpty());
+  }
+
+  private String resolvedClosingRemark(Inspection inspection) {
+    boolean closeWithNoteEnabled =
+        inspectionFeatureToggle.isNewFeatureEnabled(InspectionFeature.CLOSE_PROCEDURE_WITH_NOTE);
+    if (closeWithNoteEnabled) {
+      UUID closingRemarkProgressEntryId = inspection.getClosingRemarkProgressEntryId();
+      if (closingRemarkProgressEntryId != null) {
+        var entryId = closingRemarkProgressEntryId;
+        return inspection.getProgressEntries().stream()
+            .filter(pe -> pe instanceof ManualProgressEntry)
+            .map(pe -> (ManualProgressEntry) pe)
+            .filter(mpe -> entryId.equals(mpe.getExternalId()))
+            .map(ManualProgressEntry::getNote)
+            .findFirst()
+            .orElse(null);
+      }
+    }
+    return null;
   }
 
   private List<InspectionInventoryDto> mapInventories(Inspection inspection) {

@@ -7,6 +7,7 @@ plugins {
 }
 
 dependencies {
+    implementation project(':file-jockey-api')
     implementation project(':lib-base-client')
     implementation project(':business-module-commons')
     implementation 'com.bucket4j:bucket4j-core:latest.release'

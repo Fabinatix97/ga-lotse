@@ -3,9 +3,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { UseMutationResult } from "@tanstack/react-query";
 import { useCallback } from "react";
 
 import {
+  ApiCloseProcedureRequest,
+  ApiInspection,
   ApproveInspectionRequest,
   FinalizeInspectionRequest,
   ResolveFacilityDuplicateRequest,
@@ -120,6 +123,20 @@ export function useSyncFacility() {
         .then(unwrapRawResponse),
     onSuccess: () => {
       snackbar.confirmation("Einrichtung erfolgreich synchronisiert.");
+    },
+  });
+}
+
+export function useCloseProcedure(
+  id: string,
+): UseMutationResult<ApiInspection, Error, ApiCloseProcedureRequest, unknown> {
+  const inspectionApi = useInspectionApi();
+  const snackbar = useSnackbar();
+  return useHandledMutation({
+    mutationFn: (req: ApiCloseProcedureRequest) =>
+      inspectionApi.closeProcedure(id, req),
+    onSuccess: () => {
+      snackbar.confirmation("Vorgang erfolgreich geschlossen.");
     },
   });
 }

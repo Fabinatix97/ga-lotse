@@ -18,6 +18,7 @@
 <#-- @ftlvariable name="school" type="de.eshg.schoolentry.api.pdf.Address" -->
 <#-- @ftlvariable name="examination" type="de.eshg.schoolentry.api.schoolinfoletter.SchoolInfoLetterExaminationDto" -->
 <#-- @ftlvariable name="date" type="java.lang.String" -->
+<#-- @ftlvariable name="employeeInfo" type="de.eshg.schoolentry.api.pdf.EmployeeInfoDto" -->
 
 <#macro additionalStyle>
   h4 {
@@ -38,7 +39,7 @@
 ]>
   <@footer.content office=office />
 
-  <@letterhead.content sender=office logo=departmentLogo date=date>
+  <@letterhead.content sender=office logo=departmentLogo date=date employeeInfo=employeeInfo!"">
     <@address.content address=school />
   </@letterhead.content>
 
@@ -84,7 +85,10 @@
 
     <div style="margin-top: 2cm;">
       <div>Im Auftrag</div>
-      <div>Ihr Kinder- und Jugendgesundheitsdienst</div>
+      <#if employeeInfo??>
+        <div>${employeeInfo.firstName} ${employeeInfo.lastName}</div>
+      </#if>
+        <div>Ihr Kinder- und Jugendgesundheitsdienst</div>
     </div>
 
   </div>

@@ -1628,6 +1628,422 @@
         "tags" : [ "OmsAppointment" ]
       }
     },
+    "/employee/assessment" : {
+      "post" : {
+        "operationId" : "createAssessment",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/OmsCreateAssessment"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "string",
+                  "format" : "uuid"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Create a new Assessment linked to a specific procedure",
+        "tags" : [ "OmsMedicalAssessment" ]
+      }
+    },
+    "/employee/assessment/by-procedure/{id}" : {
+      "get" : {
+        "operationId" : "getAssessmentsByProcedureExternalId",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/GetAllAssessmentsResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Get all Assessments related to a specific procedure",
+        "tags" : [ "OmsMedicalAssessment" ]
+      }
+    },
+    "/employee/assessment/{id}" : {
+      "delete" : {
+        "operationId" : "deleteAssessment",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          }
+        },
+        "summary" : "Delete an Assessment",
+        "tags" : [ "OmsMedicalAssessment" ]
+      },
+      "get" : {
+        "operationId" : "getAssessmentByExternalId",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/OmsAssessmentDetails"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Get a specific Assessment",
+        "tags" : [ "OmsMedicalAssessment" ]
+      }
+    },
+    "/employee/assessment/{id}/content" : {
+      "put" : {
+        "operationId" : "updateAssessmentContent",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/UpdateAssessmentContentRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          }
+        },
+        "summary" : "Update Assessment content",
+        "tags" : [ "OmsMedicalAssessment" ]
+      }
+    },
+    "/employee/assessment/{id}/legal-basis" : {
+      "put" : {
+        "operationId" : "updateAssessmentLegalBasis",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/OmsUpdateLegalBasis"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          }
+        },
+        "summary" : "Update Assessment legal basis",
+        "tags" : [ "OmsMedicalAssessment" ]
+      }
+    },
+    "/employee/assessment/{id}/preview-reader" : {
+      "put" : {
+        "operationId" : "updateAssessmentPreviewReaders",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/OmsPreviewReader"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          }
+        },
+        "summary" : "Update Assessment preview readers",
+        "tags" : [ "OmsMedicalAssessment" ]
+      }
+    },
+    "/employee/assessment/{id}/recipient" : {
+      "put" : {
+        "operationId" : "updateAssessmentRecipient",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/UpdateAssessmentRecipientTypeRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          }
+        },
+        "summary" : "Update Assessment recipient type",
+        "tags" : [ "OmsMedicalAssessment" ]
+      }
+    },
+    "/employee/assessment/{id}/result" : {
+      "put" : {
+        "operationId" : "updateAssessmentResult",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/UpdateAssessmentResultRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          }
+        },
+        "summary" : "Update Assessment result",
+        "tags" : [ "OmsMedicalAssessment" ]
+      }
+    },
+    "/employee/assessment/{id}/sources" : {
+      "put" : {
+        "operationId" : "updateAssessmentSources",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/OmsUpdateSources"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          }
+        },
+        "summary" : "Update Assessment sources",
+        "tags" : [ "OmsMedicalAssessment" ]
+      }
+    },
+    "/employee/assessment/{id}/status/finish" : {
+      "put" : {
+        "operationId" : "updateAssessmentStatusToFinished",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          }
+        },
+        "summary" : "Update Assessment status to finished",
+        "tags" : [ "OmsMedicalAssessment" ]
+      }
+    },
+    "/employee/assessment/{id}/status/open" : {
+      "put" : {
+        "operationId" : "updateAssessmentStatusToOpen",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          }
+        },
+        "summary" : "Update Assessment status to open",
+        "tags" : [ "OmsMedicalAssessment" ]
+      }
+    },
+    "/employee/assessment/{id}/status/publish" : {
+      "put" : {
+        "operationId" : "updateAssessmentStatusToPublished",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          }
+        },
+        "summary" : "Update Assessment status to published",
+        "tags" : [ "OmsMedicalAssessment" ]
+      }
+    },
+    "/employee/assessment/{id}/summary" : {
+      "put" : {
+        "operationId" : "updateAssessmentSummary",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/UpdateAssessmentSummaryRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          }
+        },
+        "summary" : "Update Assessment content",
+        "tags" : [ "OmsMedicalAssessment" ]
+      }
+    },
+    "/employee/assessment/{id}/title-and-type" : {
+      "put" : {
+        "operationId" : "updateAssessmentTitleAndType",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/UpdateAssessmentTitleAndTypeRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          }
+        },
+        "summary" : "Update Assessment title and type",
+        "tags" : [ "OmsMedicalAssessment" ]
+      }
+    },
     "/employee/concerns" : {
       "get" : {
         "operationId" : "getAllConcerns",
@@ -2635,6 +3051,24 @@
         },
         "summary" : "Get all procedures in waiting room.",
         "tags" : [ "WaitingRoom" ]
+      }
+    },
+    "/feature-toggles" : {
+      "get" : {
+        "operationId" : "getFeatureToggles",
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/GetOmsFeatureTogglesResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "OmsFeatureToggles" ]
       }
     },
     "/files/{fileId}" : {
@@ -4353,6 +4787,25 @@
         "tags" : [ "TestHelper" ]
       }
     },
+    "/test-helper/enable-new-feature/{featureToEnable}" : {
+      "post" : {
+        "operationId" : "enableNewFeature",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "featureToEnable",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/components/schemas/OmsFeature"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "TestHelper" ]
+      }
+    },
     "/test-helper/population" : {
       "post" : {
         "operationId" : "populateDefaults",
@@ -5200,6 +5653,36 @@
           },
           "defaultArchivingRelevance" : {
             "$ref" : "#/components/schemas/ArchivingRelevance"
+          }
+        }
+      },
+      "AssessmentPopulation" : {
+        "required" : [ "assessmentType", "title" ],
+        "type" : "object",
+        "properties" : {
+          "assessmentResult" : {
+            "$ref" : "#/components/schemas/OmsAssessmentResult"
+          },
+          "assessmentStatus" : {
+            "$ref" : "#/components/schemas/OmsAssessmentStatus"
+          },
+          "assessmentType" : {
+            "$ref" : "#/components/schemas/OmsAssessmentType"
+          },
+          "htmlContent" : {
+            "type" : "string"
+          },
+          "jsonContent" : {
+            "type" : "string"
+          },
+          "recipientType" : {
+            "$ref" : "#/components/schemas/OmsRecipientType"
+          },
+          "summary" : {
+            "type" : "string"
+          },
+          "title" : {
+            "type" : "string"
           }
         }
       },
@@ -6559,6 +7042,18 @@
           }
         } ]
       },
+      "GetAllAssessmentsResponse" : {
+        "required" : [ "assessmentDtos" ],
+        "type" : "object",
+        "properties" : {
+          "assessmentDtos" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/OmsAssessment"
+            }
+          }
+        }
+      },
       "GetAllValidationTasksResponse" : {
         "required" : [ "elements", "totalNumberOfElements" ],
         "type" : "object",
@@ -7202,6 +7697,26 @@
           }
         }
       },
+      "GetOmsFeatureTogglesResponse" : {
+        "required" : [ "disabledOldFeatures", "enabledNewFeatures" ],
+        "type" : "object",
+        "properties" : {
+          "disabledOldFeatures" : {
+            "uniqueItems" : true,
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/OmsFeature"
+            }
+          },
+          "enabledNewFeatures" : {
+            "uniqueItems" : true,
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/OmsFeature"
+            }
+          }
+        }
+      },
       "GetOpeningHoursConfigResponse" : {
         "type" : "object",
         "properties" : {
@@ -7397,6 +7912,9 @@
         "required" : [ "procedureMetrics" ],
         "type" : "object",
         "properties" : {
+          "procedureActionMetric" : {
+            "$ref" : "#/components/schemas/ProcedureActionMetric"
+          },
           "procedureMetrics" : {
             "type" : "array",
             "items" : {
@@ -8241,6 +8759,124 @@
         },
         "description" : "A request containing the standard durations. All standard durations must be set."
       },
+      "OmsAssessment" : {
+        "required" : [ "assessmentStatus", "assessmentType", "created", "editor", "id", "previewReader", "title" ],
+        "type" : "object",
+        "properties" : {
+          "assessmentResult" : {
+            "$ref" : "#/components/schemas/OmsAssessmentResult"
+          },
+          "assessmentStatus" : {
+            "$ref" : "#/components/schemas/OmsAssessmentStatus"
+          },
+          "assessmentType" : {
+            "$ref" : "#/components/schemas/OmsAssessmentType"
+          },
+          "created" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "editor" : {
+            "$ref" : "#/components/schemas/OmsUser"
+          },
+          "finished" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "id" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "previewReader" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/OmsUser"
+            }
+          },
+          "title" : {
+            "maxLength" : 60,
+            "minLength" : 1,
+            "type" : "string"
+          }
+        }
+      },
+      "OmsAssessmentDetails" : {
+        "required" : [ "assessmentStatus", "assessmentType", "created", "editor", "htmlContent", "id", "jsonContent", "legalBases", "previewReader", "sources", "summary", "title" ],
+        "type" : "object",
+        "properties" : {
+          "assessmentResult" : {
+            "$ref" : "#/components/schemas/OmsAssessmentResult"
+          },
+          "assessmentStatus" : {
+            "$ref" : "#/components/schemas/OmsAssessmentStatus"
+          },
+          "assessmentType" : {
+            "$ref" : "#/components/schemas/OmsAssessmentType"
+          },
+          "created" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "editor" : {
+            "$ref" : "#/components/schemas/OmsUser"
+          },
+          "finished" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "htmlContent" : {
+            "type" : "string"
+          },
+          "id" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "jsonContent" : {
+            "type" : "string"
+          },
+          "legalBases" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/OmsLegalBasis"
+            }
+          },
+          "previewReader" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/OmsUser"
+            }
+          },
+          "recipientType" : {
+            "$ref" : "#/components/schemas/OmsRecipientType"
+          },
+          "sources" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/OmsSource"
+            }
+          },
+          "summary" : {
+            "type" : "string"
+          },
+          "title" : {
+            "maxLength" : 60,
+            "minLength" : 1,
+            "type" : "string"
+          }
+        }
+      },
+      "OmsAssessmentResult" : {
+        "type" : "string",
+        "enum" : [ "POSITIVE", "NEGATIVE", "UNDETERMINED" ]
+      },
+      "OmsAssessmentStatus" : {
+        "type" : "string",
+        "enum" : [ "OPEN", "FINISHED", "PUBLISHED" ]
+      },
+      "OmsAssessmentType" : {
+        "type" : "string",
+        "enum" : [ "EXPERT_OPINION", "STATEMENT" ]
+      },
       "OmsConfig" : {
         "required" : [ "citizenPortalAnamnesisEnabled", "concerns", "keycloakUserCleanupJobOverdueDuration", "landingPageContent", "medicalOpinionCutOffDateLeadTime" ],
         "type" : "object",
@@ -8267,6 +8903,31 @@
           }
         }
       },
+      "OmsCreateAssessment" : {
+        "required" : [ "assessmentType", "procedureExternalId", "title" ],
+        "type" : "object",
+        "properties" : {
+          "assessmentType" : {
+            "$ref" : "#/components/schemas/OmsAssessmentType"
+          },
+          "procedureExternalId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "recipientType" : {
+            "$ref" : "#/components/schemas/OmsRecipientType"
+          },
+          "title" : {
+            "maxLength" : 60,
+            "minLength" : 1,
+            "type" : "string"
+          }
+        }
+      },
+      "OmsFeature" : {
+        "type" : "string",
+        "enum" : [ "ASSESSMENT" ]
+      },
       "OmsFile" : {
         "required" : [ "creationDate", "fileType", "id", "name", "size" ],
         "type" : "object",
@@ -8288,6 +8949,76 @@
           "size" : {
             "type" : "integer",
             "format" : "int32"
+          }
+        }
+      },
+      "OmsLegalBasis" : {
+        "type" : "object"
+      },
+      "OmsPreviewReader" : {
+        "required" : [ "previewPersons" ],
+        "type" : "object",
+        "properties" : {
+          "previewPersons" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "format" : "uuid"
+            }
+          }
+        }
+      },
+      "OmsRecipientType" : {
+        "type" : "string",
+        "enum" : [ "PERSON", "FACILITY" ]
+      },
+      "OmsSource" : {
+        "required" : [ "author", "link", "title" ],
+        "type" : "object",
+        "properties" : {
+          "author" : {
+            "type" : "string"
+          },
+          "link" : {
+            "type" : "string"
+          },
+          "title" : {
+            "type" : "string"
+          }
+        }
+      },
+      "OmsUpdateLegalBasis" : {
+        "type" : "object",
+        "properties" : {
+          "legalBases" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/OmsLegalBasis"
+            }
+          }
+        }
+      },
+      "OmsUpdateSources" : {
+        "type" : "object",
+        "properties" : {
+          "sources" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/OmsSource"
+            }
+          }
+        }
+      },
+      "OmsUser" : {
+        "required" : [ "id" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "name" : {
+            "type" : "string"
           }
         }
       },
@@ -8698,6 +9429,12 @@
           "facility" : {
             "$ref" : "#/components/schemas/PostEmployeeOmsProcedureFacilityRequest"
           },
+          "medicalAssessments" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/AssessmentPopulation"
+            }
+          },
           "medicalOpinionComment" : {
             "type" : "string"
           },
@@ -8744,10 +9481,17 @@
         }
       },
       "PostPopulateProcedureResponse" : {
-        "required" : [ "appointments", "procedureId" ],
+        "required" : [ "appointments", "assessments", "procedureId" ],
         "type" : "object",
         "properties" : {
           "appointments" : {
+            "type" : "object",
+            "additionalProperties" : {
+              "type" : "string",
+              "format" : "uuid"
+            }
+          },
+          "assessments" : {
             "type" : "object",
             "additionalProperties" : {
               "type" : "string",
@@ -8885,6 +9629,41 @@
             "type" : "string"
           }
         }
+      },
+      "ProcedureAction" : {
+        "required" : [ "count", "procedureActionType" ],
+        "type" : "object",
+        "properties" : {
+          "count" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "procedureActionType" : {
+            "$ref" : "#/components/schemas/ProcedureActionType"
+          }
+        }
+      },
+      "ProcedureActionMetric" : {
+        "required" : [ "businessModule", "referenceProcedureAction", "relatedProcedureActions" ],
+        "type" : "object",
+        "properties" : {
+          "businessModule" : {
+            "$ref" : "#/components/schemas/BusinessModule"
+          },
+          "referenceProcedureAction" : {
+            "$ref" : "#/components/schemas/ProcedureAction"
+          },
+          "relatedProcedureActions" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/ProcedureAction"
+            }
+          }
+        }
+      },
+      "ProcedureActionType" : {
+        "type" : "string",
+        "enum" : [ "APPOINTMENTS_BOOKED", "APPOINTMENTS_CANCELED", "APPOINTMENTS_RESCHEDULED", "APPOINTMENTS_RESCHEDULED_AT_LEAST_ONCE", "APPOINTMENTS_RESCHEDULED_AT_LEAST_TWICE", "DOCUMENTS_ACCEPTED", "DOCUMENTS_PROVIDED", "DOCUMENTS_REJECTED", "DOCUMENTS_REQUESTED", "INVITATIONS_SENT", "SUBMITTED_ANAMNESIS", "SUBMITTED_DECLARATIONS", "SUBMITTED_INFORMATION_SHEETS" ]
       },
       "ProcedureMetric" : {
         "required" : [ "abortedCount", "businessModule", "closedCount", "inProgressCount", "openOrDraftCount", "procedureType", "totalCount" ],
@@ -9517,6 +10296,59 @@
             "description" : "Time at which the appointment block starts.",
             "format" : "date-time",
             "example" : "2016-01-01T01:00:00.123456+01:00"
+          }
+        }
+      },
+      "UpdateAssessmentContentRequest" : {
+        "required" : [ "htmlContent", "jsonContent" ],
+        "type" : "object",
+        "properties" : {
+          "htmlContent" : {
+            "type" : "string"
+          },
+          "jsonContent" : {
+            "type" : "string"
+          }
+        }
+      },
+      "UpdateAssessmentRecipientTypeRequest" : {
+        "required" : [ "recipientTypeDto" ],
+        "type" : "object",
+        "properties" : {
+          "recipientTypeDto" : {
+            "$ref" : "#/components/schemas/OmsRecipientType"
+          }
+        }
+      },
+      "UpdateAssessmentResultRequest" : {
+        "required" : [ "result" ],
+        "type" : "object",
+        "properties" : {
+          "result" : {
+            "$ref" : "#/components/schemas/OmsAssessmentResult"
+          }
+        }
+      },
+      "UpdateAssessmentSummaryRequest" : {
+        "required" : [ "summary" ],
+        "type" : "object",
+        "properties" : {
+          "summary" : {
+            "type" : "string"
+          }
+        }
+      },
+      "UpdateAssessmentTitleAndTypeRequest" : {
+        "required" : [ "assessmentType", "title" ],
+        "type" : "object",
+        "properties" : {
+          "assessmentType" : {
+            "$ref" : "#/components/schemas/OmsAssessmentType"
+          },
+          "title" : {
+            "maxLength" : 60,
+            "minLength" : 1,
+            "type" : "string"
           }
         }
       },

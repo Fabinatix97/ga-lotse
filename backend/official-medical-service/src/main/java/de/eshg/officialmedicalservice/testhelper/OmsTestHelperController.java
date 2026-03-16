@@ -7,6 +7,8 @@ package de.eshg.officialmedicalservice.testhelper;
 
 import de.eshg.auditlog.AuditLogClientTestHelperApi;
 import de.eshg.lib.auditlog.AuditLogTestHelperService;
+import de.eshg.officialmedicalservice.feature.OmsFeature;
+import de.eshg.officialmedicalservice.feature.OmsFeatureToggle;
 import de.eshg.officialmedicalservice.testhelper.api.PostPopulateAdministrativeResponse;
 import de.eshg.officialmedicalservice.testhelper.api.PostPopulateProcedureRequest;
 import de.eshg.officialmedicalservice.testhelper.api.PostPopulateProcedureResponse;
@@ -17,6 +19,9 @@ import de.eshg.testhelper.TestHelperController;
 import de.eshg.testhelper.environment.EnvironmentConfig;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.service.annotation.PostExchange;
@@ -28,20 +33,25 @@ public class OmsTestHelperController extends TestHelperController
   public static final String TEST_POPULATION_PATH = "/population";
   public static final String TEST_POPULATION_URL = TestHelperApi.BASE_URL + TEST_POPULATION_PATH;
 
+  private static final Logger logger = LoggerFactory.getLogger(OmsTestHelperController.class);
+
   private final TestPopulateProcedureService testPopulateProcedureService;
   private final TestPopulateAdministrativeService testPopulateAdministrativeService;
   private final AuditLogTestHelperService auditLogTestHelperService;
+  private final OmsFeatureToggle omsFeatureToggle;
 
   public OmsTestHelperController(
       DefaultTestHelperService testHelperService,
       TestPopulateProcedureService testPopulateProcedureService,
       TestPopulateAdministrativeService testPopulateAdministrativeService,
       AuditLogTestHelperService auditLogTestHelperService,
-      EnvironmentConfig environmentConfig) {
+      EnvironmentConfig environmentConfig,
+      OmsFeatureToggle omsFeatureToggle) {
     super(testHelperService, environmentConfig);
     this.testPopulateProcedureService = testPopulateProcedureService;
     this.testPopulateAdministrativeService = testPopulateAdministrativeService;
     this.auditLogTestHelperService = auditLogTestHelperService;
+    this.omsFeatureToggle = omsFeatureToggle;
   }
 
   @PostExchange(TEST_POPULATION_PATH + "/administrative")
@@ -55,6 +65,15 @@ public class OmsTestHelperController extends TestHelperController
   public PostPopulateProcedureResponse populateProcedure(
       @Valid @RequestBody PostPopulateProcedureRequest request) {
     return testPopulateProcedureService.populateProcedure(request);
+  }
+
+  @PostExchange("/enable-new-feature/{featureToEnable}")
+  public void enableNewFeature(@PathVariable("featureToEnable") OmsFeature featureToEnable) {
+    try {
+      omsFeatureToggle.enableNewFeature(featureToEnable);
+    } catch (IllegalArgumentException e) {
+      logger.warn("Feature {} is already enabled", featureToEnable, e);
+    }
   }
 
   @Override

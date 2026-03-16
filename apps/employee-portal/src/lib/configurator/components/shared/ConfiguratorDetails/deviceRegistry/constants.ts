@@ -14,7 +14,7 @@ export const DEVICE_TYPE_VALUES: EnumMap<ApiMeasuringDeviceType> = {
 export const DEVICE_TYPE_OPTIONS = buildEnumOptions(DEVICE_TYPE_VALUES);
 
 export const GDT_FILE_DRIVER_VALUES: EnumMap<ApiGdtDriver> = {
-  DUMMY: "Dummy",
+  OSCILLA_AUDIO_CONSOLE: "Oscilla AudioConsole",
 };
 
 export const GDT_FILE_DRIVER_OPTIONS = buildEnumOptions(GDT_FILE_DRIVER_VALUES);

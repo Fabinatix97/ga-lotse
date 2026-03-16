@@ -171,7 +171,7 @@ function InspectionEditSampleSidebar({
       initialValues={initialValues}
       onSubmit={onFinalSubmit}
     >
-      {({ isValid, values, setFieldValue }) => (
+      {({ isSubmitting, values, setFieldValue }) => (
         <SidebarForm ref={formRef}>
           <ConfirmLeaveDirtyFormEffect />
           <SidebarContent title="Probe bearbeiten">
@@ -291,7 +291,7 @@ function InspectionEditSampleSidebar({
           </SidebarContent>
           <SidebarActions>
             <MultiFormButtonBar
-              submitting={!isValid}
+              submitting={isSubmitting}
               submitLabel="Probe speichern"
               onCancel={handleClose}
             />

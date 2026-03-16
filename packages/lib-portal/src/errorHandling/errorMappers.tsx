@@ -73,6 +73,11 @@ const ERROR_DESCRIPTION: Record<PortalErrorCode, ErrorDescription> = {
     title: "Daten gesperrt",
     message: "Die angefragten Daten sind von einem anderen Nutzer gesperrt.",
   },
+  [PortalErrorCode.MarkedForDeletion]: {
+    title: "Vorgemerkt zum Löschen/Archivieren",
+    message:
+      "Die Ressource ist bereits zum Löschen oder zur Archivierung vorgemerkt.",
+  },
   [PortalErrorCode.XlsxTooManyRows]: {
     title: "Zu viele Zeilen",
     message: "Die XLSX-Datei enthält mehr Zeilen als erlaubt.",

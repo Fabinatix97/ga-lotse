@@ -93,6 +93,42 @@ public class InspectionReportService {
     return inspectionReportRepository.saveAndFlush(report);
   }
 
+  /**
+   * Applies the provided closing remark to the inspection's report. If no report exists yet, a
+   * minimal report is created
+   */
+  public Report applyClosingRemarkToReport(Inspection inspection, String remark) {
+    Report report = inspection.getReport();
+    if (report == null) {
+      report = new Report();
+      report.setInspection(inspection);
+      inspection.setReport(report);
+
+      // Use the same route as the normal report creation to avoid missing items
+      ChecklistReportMapper.addTopLevelTitle(report);
+      addInitialParticipants(report, inspection);
+      addDateOfInspection(report, inspection, clock);
+      addLegalBasis(report, inspection);
+
+      // Include all available checklists
+      for (Checklist checklist : inspection.getChecklists()) {
+        ChecklistReportMapper.addChecklist(report, checklist);
+      }
+
+      // Include incidents section
+      IncidentReportMapper.addIncidents(report, inspection.getIncidents());
+    }
+
+    // The closing remark from user
+    ChecklistReportMapper.addChapter(report, "Bemerkung zum Vorgangsabschluss");
+    ChecklistReportMapper.addTextBlock(
+        report, "", remark == null ? "" : remark.trim(), false, true);
+
+    // renumber all elements and persist
+    adjustPositions(report);
+    return inspectionReportRepository.saveAndFlush(report);
+  }
+
   public static void addDateOfInspection(Report report, Inspection inspection, Clock clock) {
     Instant appointmentEnd = inspection.getExecutionAppointment().getAppointmentEnd();
     ChecklistReportMapper.addTextBlock(

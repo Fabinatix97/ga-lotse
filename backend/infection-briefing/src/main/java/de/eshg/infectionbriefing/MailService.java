@@ -5,8 +5,6 @@
 
 package de.eshg.infectionbriefing;
 
-import static de.eshg.infectionbriefing.api.InfectionBriefingAppointTypeDto.INFECTION_BRIEFING_REPLACEMENT;
-
 import de.eshg.base.mail.MailApi;
 import de.eshg.base.mail.MailType;
 import de.eshg.base.mail.SendEmailRequest;
@@ -14,7 +12,6 @@ import de.eshg.config.departmentinfo.DepartmentInfoConfigService;
 import de.eshg.infectionbriefing.config.InfectionBriefingProperties;
 import de.eshg.infectionbriefing.config.InfectionBriefingProperties.Mail;
 import de.eshg.lib.appointmentblock.persistence.AppointmentType;
-import de.eshg.lib.procedure.domain.model.TriggerType;
 import de.eshg.lib.rest.oauth.client.commons.ModuleClientAuthenticator;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -68,10 +65,10 @@ public class MailService {
     this.citizenPortalUrl = citizenPortalUrl;
   }
 
-  public boolean sendAppointmentConfirmationMail(
+  public void sendAppointmentConfirmationMail(
       String recipientEmail,
       AppointmentType appointmentType,
-      TriggerType triggerType,
+      InfectionBriefingTriggerType triggerType,
       Instant startTime,
       String accessCode) {
     Mail template = getConfirmationMailTemplate(appointmentType, triggerType);
@@ -86,51 +83,63 @@ public class MailService {
                   timeStringOf(startTime),
                   buildLoginUrl(accessCode),
                   accessCode));
-      return true;
     } catch (Exception e) {
       log.warn("Cannot send confirmation e-mail", e);
-      return false;
     }
   }
 
   public void sendCancelAppointmentConfirmationMail(
-      String recipientEmail, AppointmentType appointmentType, Instant startTime) {
-    Mail template = getCancellationMailTemplate(appointmentType);
-    sendMail(
-        recipientEmail,
-        departmentInfoConfigService.getDepartmentInfo().email(),
-        template.getSubject(),
-        readTemplateBody(template.getBody())
-            .formatted(dateStringOf(startTime), timeStringOf(startTime)));
+      String recipientEmail,
+      AppointmentType appointmentType,
+      InfectionBriefingTriggerType triggerType,
+      Instant startTime) {
+    Mail template = getCancellationMailTemplate(appointmentType, triggerType);
+    try {
+      sendMail(
+          recipientEmail,
+          departmentInfoConfigService.getDepartmentInfo().email(),
+          template.getSubject(),
+          readTemplateBody(template.getBody())
+              .formatted(dateStringOf(startTime), timeStringOf(startTime)));
+    } catch (Exception e) {
+      log.warn("Cannot send cancellation confirmation e-mail", e);
+    }
   }
 
   private Mail getConfirmationMailTemplate(
-      AppointmentType appointmentType, TriggerType triggerType) {
+      AppointmentType appointmentType, InfectionBriefingTriggerType triggerType) {
     return switch (appointmentType) {
       case INFECTION_BRIEFING_NEW ->
           switch (triggerType) {
             case CITIZEN -> properties.getNewCertificateAppointmentConfirmationMail();
             case EMPLOYEE -> properties.getNewCertificateAppointmentByEmployeeConfirmationMail();
-            default -> throw new IllegalArgumentException("Unsupported triggerType " + triggerType);
           };
       case INFECTION_BRIEFING_REPLACEMENT ->
           switch (triggerType) {
             case CITIZEN -> properties.getReplacementCertificateAppointmentConfirmationMail();
             case EMPLOYEE ->
                 properties.getReplacementCertificateAppointmentByEmployeeConfirmationMail();
-            default -> throw new IllegalArgumentException("Unsupported triggerType " + triggerType);
           };
       default ->
           throw new IllegalArgumentException("Unsupported appointment type " + appointmentType);
     };
   }
 
-  private Mail getCancellationMailTemplate(AppointmentType appointmentType) {
+  private Mail getCancellationMailTemplate(
+      AppointmentType appointmentType, InfectionBriefingTriggerType triggerType) {
     return switch (appointmentType) {
       case INFECTION_BRIEFING_NEW ->
-          properties.getCancelNewCertificateAppointmentConfirmationMail();
+          switch (triggerType) {
+            case CITIZEN -> properties.getCancelNewCertificateAppointmentConfirmationMail();
+            case EMPLOYEE ->
+                properties.getCancelNewCertificateAppointmentByEmployeeConfirmationMail();
+          };
       case INFECTION_BRIEFING_REPLACEMENT ->
-          properties.getCancelReplacementCertificateAppointmentConfirmationMail();
+          switch (triggerType) {
+            case CITIZEN -> properties.getCancelReplacementCertificateAppointmentConfirmationMail();
+            case EMPLOYEE ->
+                properties.getCancelReplacementCertificateAppointmentByEmployeeConfirmationMail();
+          };
       default ->
           throw new IllegalArgumentException(
               "Unsupported appointment type %s".formatted(appointmentType));

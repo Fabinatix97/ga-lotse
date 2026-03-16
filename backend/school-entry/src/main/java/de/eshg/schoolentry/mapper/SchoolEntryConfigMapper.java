@@ -17,6 +17,7 @@ public class SchoolEntryConfigMapper {
     schoolEntryConfig.setDirectProcedureTypeAssignmentOnImport(
         request.directProcedureTypeAssignmentOnImport());
     schoolEntryConfig.setLocationSelectionMode(request.locationSelectionMode());
+    schoolEntryConfig.setDocumentsWithEmployeeInfo(request.documentsWithEmployeeInfo());
     schoolEntryConfig.setPdfDocumentAccentColor(request.pdfDocumentAccentColor());
     schoolEntryConfig.setInvitationIncludePerson(request.invitationIncludePerson());
     schoolEntryConfig.setInvitationIncludeRoom(request.invitationIncludeRoom());

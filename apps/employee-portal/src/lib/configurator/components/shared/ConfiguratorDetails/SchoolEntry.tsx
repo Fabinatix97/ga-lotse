@@ -8,7 +8,10 @@ import { notFound } from "next/navigation";
 import { useMemo } from "react";
 
 import { OptionalFieldValue, validateHexColorCode } from "@eshg/lib-portal";
-import { ApiLocationSelectionMode } from "@eshg/school-entry-api";
+import {
+  ApiDocumentTypes,
+  ApiLocationSelectionMode,
+} from "@eshg/school-entry-api";
 
 import { useUpdateSchoolEntry } from "@/lib/configurator/api/mutations/useUpdateSchoolEntry";
 import { useGetSchoolEntryConfig } from "@/lib/configurator/api/queries/schoolEntry";
@@ -29,6 +32,7 @@ enum FormNames {
   PDF_DOCUMENT_ACCENT_COLOR = "pdfDocumentAccentColor",
   INVITATION_INCLUDE_PERSON = "invitationIncludePerson",
   INVITATION_INCLUDE_ROOM = "invitationIncludeRoom",
+  DOCUMENTS_WITH_EMPLOYEE_INFO = "documentsWithEmployeeInfo",
 }
 
 export interface SchoolEntryFormModel extends FormikValues {
@@ -37,7 +41,13 @@ export interface SchoolEntryFormModel extends FormikValues {
   [FormNames.PDF_DOCUMENT_ACCENT_COLOR]: string;
   [FormNames.INVITATION_INCLUDE_PERSON]: boolean;
   [FormNames.INVITATION_INCLUDE_ROOM]: boolean;
+  [FormNames.DOCUMENTS_WITH_EMPLOYEE_INFO]: ApiDocumentTypes[];
 }
+
+export const DOCUMENT_TYPE_OPTIONS = [
+  { value: ApiDocumentTypes.MedicalReport, label: "Arztbrief" },
+  { value: ApiDocumentTypes.SchoolInfoLetter, label: "Schulinfobrief" },
+];
 
 const endpointName: ConfiguratorEndpointName = "SCHOOL_ENTRY";
 
@@ -130,9 +140,9 @@ function SchoolEntryConfiguratorForm(props: {
         ] satisfies FormSection[],
       },
       {
-        title: "Farbakzent für Dokumente",
+        title: "Dokumente",
         description:
-          "Definieren Sie den Farbton als HEX-Code, der für Akzente auf Dokumenten verwendet wird.",
+          "Definieren Sie den Akzentfarbton für alle Dokumente sowie die Einbindung der Mitarbeiter-Kontaktdaten je Dokument.",
         sections: [
           {
             content: {
@@ -149,6 +159,24 @@ function SchoolEntryConfiguratorForm(props: {
                       validate: validateHexColorCode(
                         "Bitte einen gültigen HEX-Farbcode angeben.",
                       ),
+                    },
+                  ],
+                },
+              ],
+            },
+          },
+          {
+            content: {
+              type: "field",
+              rows: [
+                {
+                  fields: [
+                    {
+                      name: "documentsWithEmployeeInfo",
+                      label:
+                        "Ersteller automatisch als Ansprechperson eintragen.",
+                      type: "checkbox-group",
+                      options: DOCUMENT_TYPE_OPTIONS,
                     },
                   ],
                 },

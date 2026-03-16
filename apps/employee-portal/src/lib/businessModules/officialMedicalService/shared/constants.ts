@@ -8,6 +8,8 @@ import { ChipProps } from "@mui/joy";
 import {
   ApiDocumentStatus,
   ApiMedicalOpinionStatus,
+  ApiOmsAssessmentResult,
+  ApiOmsAssessmentStatus,
   ApiProcedureType,
   ApiWaitingStatus,
 } from "@eshg/official-medical-service-api";
@@ -60,5 +62,17 @@ export const statusColorsWaitingStatus = {
   [ApiWaitingStatus.InConsultation]: "primary",
   [ApiWaitingStatus.Done]: "success",
 } satisfies Record<ApiWaitingStatus, ChipProps["color"]>;
+
+export const statusColorsAssessmentStatus = {
+  [ApiOmsAssessmentStatus.Open]: "primary",
+  [ApiOmsAssessmentStatus.Finished]: "success",
+  [ApiOmsAssessmentStatus.Published]: "success",
+} satisfies Record<ApiOmsAssessmentStatus, ChipProps["color"]>;
+
+export const statusColorsAssessmentResult = {
+  [ApiOmsAssessmentResult.Positive]: "success",
+  [ApiOmsAssessmentResult.Negative]: "danger",
+  [ApiOmsAssessmentResult.Undetermined]: "warning",
+} satisfies Record<ApiOmsAssessmentResult, ChipProps["color"]>;
 
 export const procedureTypes = [ApiProcedureType.OfficialMedicalService];

@@ -50,7 +50,10 @@ public enum ModuleLeaderGroup implements KeycloakGroup {
   OFFICIAL_MEDICAL_SERVICE(
       "Amtsärztlicher Dienst",
       ModuleMemberGroup.OFFICIAL_MEDICAL_SERVICE,
-      EmployeePermissionRole.OFFICIAL_MEDICAL_SERVICE_LEADER),
+      EmployeePermissionRole.OFFICIAL_MEDICAL_SERVICE_LEADER,
+      EmployeePermissionRole.OFFICIAL_MEDICAL_SERVICE_ASSESSMENT_EDITOR_EDIT,
+      EmployeePermissionRole.OFFICIAL_MEDICAL_SERVICE_ASSESSMENT_PREVIEW_READER_EDIT,
+      EmployeePermissionRole.OFFICIAL_MEDICAL_SERVICE_LEGAL_NOTES_WRITE),
   MEDS_ABROAD(
       "Reisen mit Betäubungsmitteln",
       ModuleMemberGroup.MEDS_ABROAD,

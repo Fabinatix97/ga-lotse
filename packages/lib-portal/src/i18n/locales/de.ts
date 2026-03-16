@@ -23,6 +23,7 @@ export const de = {
     length:
       "Bitte eine Textlänge zwischen {{startInclusive}} und {{endInclusive}} Zeichen angeben.",
     pastOrTodayDate: "Das Datum liegt in der Zukunft.",
+    phoneNumber: "Bitte eine gültige Telefonnummer angeben.",
     number: "Bitte eine Nummer angeben.",
     pleaseEnterYearInRange:
       "Bitte ein Jahr zwischen {{min}} und {{max}} eingeben",

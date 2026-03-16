@@ -37,6 +37,10 @@ import { useTranslation } from "@/lib/i18n/client";
 import { TwoColumnGrid } from "@/lib/shared/components/layout/grid";
 import { PageTitle } from "@/lib/shared/components/layout/page";
 import { useScopedRouter } from "@/lib/shared/components/scopedLinks";
+import {
+  clearUserFlowTrackingId,
+  getUserFlowTrackingId,
+} from "@/lib/shared/helpers/userFlowTracking.storage";
 
 import { CitizenAnamnesisStepOne } from "./steps/CitizenAnamnesisStepOne";
 
@@ -290,11 +294,16 @@ export function CitizenAnamnesisForm(props: CitizenAnamnesisFormProps) {
   const citizenRoutes = useCitizenRoutes();
 
   async function handleSubmit(values: CitizenAnamnesisFormValues) {
-    await addCitizenAnamnesis.mutateAsync(mapToRequest(values), {
-      onSuccess: () => {
-        void router.push(citizenRoutes.appointment.index(undefined));
+    const userFlowTrackingId = getUserFlowTrackingId();
+    await addCitizenAnamnesis.mutateAsync(
+      mapToRequest(values, userFlowTrackingId),
+      {
+        onSuccess: () => {
+          clearUserFlowTrackingId();
+          void router.push(citizenRoutes.appointment.index(undefined));
+        },
       },
-    });
+    );
   }
 
   const titleId = useId();
@@ -363,6 +372,7 @@ function StepIndicator({
 
 function mapToRequest(
   values: CitizenAnamnesisFormValues,
+  userFlowTrackingId?: string,
 ): ApiAddCitizenAnamnesisRequest {
   return {
     anamnesis: {
@@ -558,6 +568,7 @@ function mapToRequest(
       },
       personalConspicuities: mapNullableValue(values.personalConspicuities),
     },
+    userFlowTrackingId,
   };
 }
 

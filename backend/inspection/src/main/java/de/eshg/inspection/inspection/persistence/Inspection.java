@@ -127,6 +127,10 @@ public class Inspection
   @DataSensitivity(SensitivityLevel.SENSITIVE)
   private String notes;
 
+  @Column
+  @DataSensitivity(SensitivityLevel.SENSITIVE)
+  private UUID closingRemarkProgressEntryId;
+
   @OneToOne(
       cascade = {CascadeType.PERSIST, CascadeType.REMOVE},
       orphanRemoval = true)
@@ -438,6 +442,14 @@ public class Inspection
 
   public void setNotes(String notes) {
     this.notes = notes;
+  }
+
+  public UUID getClosingRemarkProgressEntryId() {
+    return closingRemarkProgressEntryId;
+  }
+
+  public void setClosingRemarkProgressEntryId(UUID closingRemarkProgressEntryId) {
+    this.closingRemarkProgressEntryId = closingRemarkProgressEntryId;
   }
 
   public InspectionAnnouncement getAnnouncement() {

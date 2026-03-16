@@ -3,7 +3,9 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { Ref, useRef } from "react";
+import { Ref, RefObject, useRef } from "react";
+
+import { ConfirmationDialogOptions } from "@eshg/lib-portal";
 
 import { useConfirmationDialog } from "../../../hooks/useConfirmationDialog";
 import { DrawerOpenOptions, DrawerProps } from "../types/drawer";
@@ -17,7 +19,9 @@ export interface SidebarWithFormRefProps extends DrawerProps {
 
 export type UseSidebarWithFormRefOptions<
   TSidebarProps extends SidebarWithFormRefProps,
-> = Omit<DrawerOpenOptions<TSidebarProps>, "onBeforeClose">;
+> = Omit<DrawerOpenOptions<TSidebarProps>, "onBeforeClose"> & {
+  onBeforeClose?: (options: OnBeforeCloseOptions) => void;
+};
 
 export type UseSidebarWithFormRefResult<
   TSidebarProps extends SidebarWithFormRefProps = SidebarWithFormRefProps,
@@ -31,6 +35,7 @@ export function useSidebarWithFormRef<
   const { component: SidebarComponent, ...sidebarOptions } = options;
   const { openCancelDialog } = useConfirmationDialog();
   const formRef = useRef<SidebarFormHandle>(null);
+  const onBeforeClose = options.onBeforeClose ?? onBeforeCloseDefault;
   return useSidebar({
     ...sidebarOptions,
     component: (sidebarProps) => {
@@ -40,24 +45,37 @@ export function useSidebarWithFormRef<
       } as TSidebarProps;
       return <SidebarComponent {...mergedProps} />;
     },
-    onBeforeClose: (confirmClose) => {
-      if (formRef.current?.dirty) {
-        openCancelDialog({
-          title: "Änderungen verwerfen",
-          description:
-            "Sie haben nicht gespeicherte Änderungen. Was möchten Sie damit machen?",
-          cancelLabel: "Behalten",
-          confirmLabel: "Verwerfen",
-          onConfirm: () => confirmClose(true),
-          onCancel: () => confirmClose(false),
-        });
-      } else {
-        confirmClose(true);
-      }
-    },
+    onBeforeClose: (confirmClose) =>
+      onBeforeClose({ confirmClose, formRef, openCancelDialog }),
     onClose: () => {
       formRef.current?.resetForm();
       options.onClose?.();
     },
   });
+}
+
+interface OnBeforeCloseOptions {
+  confirmClose: (force: boolean) => void;
+  formRef: RefObject<SidebarFormHandle | null>;
+  openCancelDialog: (options: ConfirmationDialogOptions) => void;
+}
+
+function onBeforeCloseDefault({
+  confirmClose,
+  formRef,
+  openCancelDialog,
+}: OnBeforeCloseOptions): void {
+  if (formRef.current?.dirty) {
+    openCancelDialog({
+      title: "Änderungen verwerfen",
+      description:
+        "Sie haben nicht gespeicherte Änderungen. Was möchten Sie damit machen?",
+      cancelLabel: "Behalten",
+      confirmLabel: "Verwerfen",
+      onConfirm: () => confirmClose(true),
+      onCancel: () => confirmClose(false),
+    });
+  } else {
+    confirmClose(true);
+  }
 }

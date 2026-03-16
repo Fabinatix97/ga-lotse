@@ -13,4 +13,5 @@ public enum InfectionBriefingProgressEntryType {
   FEE_PAYED,
   CERTIFICATE_ISSUED,
   REPLACEMENT_CERTIFICATE_ISSUED,
+  APPLICANT_MODIFIED
 }

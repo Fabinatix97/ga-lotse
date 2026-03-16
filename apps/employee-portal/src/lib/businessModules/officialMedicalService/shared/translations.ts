@@ -8,6 +8,9 @@ import {
   ApiDocumentStatus,
   ApiMedicalOpinionResult,
   ApiMedicalOpinionStatus,
+  ApiOmsAssessmentResult,
+  ApiOmsAssessmentStatus,
+  ApiOmsAssessmentType,
   ApiWaitingStatus,
 } from "@eshg/official-medical-service-api";
 
@@ -35,4 +38,21 @@ export const WAITING_STATUS_VALUES: EnumMap<ApiWaitingStatus> = {
   [ApiWaitingStatus.WaitingForConsultation]: "Wartet",
   [ApiWaitingStatus.InConsultation]: "Im Gespräch",
   [ApiWaitingStatus.Done]: "Fertig",
+};
+
+export const NAMES_ASSESSMENT_TYPE: EnumMap<ApiOmsAssessmentType> = {
+  [ApiOmsAssessmentType.Statement]: "Stellungnahme",
+  [ApiOmsAssessmentType.ExpertOpinion]: "Gutachten",
+};
+
+export const NAMES_ASSESSMENT_STATUS: EnumMap<ApiOmsAssessmentStatus> = {
+  [ApiOmsAssessmentStatus.Open]: "In Arbeit",
+  [ApiOmsAssessmentStatus.Finished]: "Fertig",
+  [ApiOmsAssessmentStatus.Published]: "Fertig - Übermittelt",
+};
+
+export const NAMES_ASSESSMENT_RESULT: EnumMap<ApiOmsAssessmentResult> = {
+  [ApiOmsAssessmentResult.Positive]: "Positiv",
+  [ApiOmsAssessmentResult.Negative]: "Negativ",
+  [ApiOmsAssessmentResult.Undetermined]: "Unbestimmt",
 };

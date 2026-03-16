@@ -16,6 +16,7 @@ export const PortalErrorCode = {
   CsvInvalidHeader: "CSV_INVALID_HEADER",
   Corrupt: "CORRUPT",
   Locked: "LOCKED",
+  MarkedForDeletion: "MARKED_FOR_DELETION",
   XlsxTooManyRows: "XLSX_TOO_MANY_ROWS",
   ServiceUnavailable: "SERVICE_UNAVAILABLE",
 } as const;

@@ -1,6 +1,6 @@
 Guten Tag,
 
-Sie haben Ihren Termin am %s um %s Uhr für eine Austellung einer Ersatzbescheinigung für eine bereits durchgeführte Infektionsschutzbelehrung abgesagt. Ihre Absage haben wir zur Kenntnis genommen.
+Sie haben Ihren Termin am %s um %s Uhr zur Austellung einer Ersatzbescheinigung für eine bereits durchgeführte Infektionsschutzbelehrung abgesagt. Ihre Absage haben wir zur Kenntnis genommen. Ihr Anmeldecode ist nicht mehr gültig.
 
 
 Mit freundlichen Grüßen,

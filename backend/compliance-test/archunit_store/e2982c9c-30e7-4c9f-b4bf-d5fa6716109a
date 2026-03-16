@@ -1,3 +1,4 @@
+Class <de.eshg.filejockey.FileJockeyApplication> is not de.eshg.lib.scheduling.spring.SchedulingConfiguration in (FileJockeyApplication.java:0)
 Class <de.eshg.relayserver.EndpointConfiguration> is not de.eshg.lib.scheduling.spring.SchedulingConfiguration in (EndpointConfiguration.java:0)
 Class <de.eshg.servicedirectory.logging.GetTrustedActorsStatistics> is not de.eshg.lib.scheduling.spring.SchedulingConfiguration in (GetTrustedActorsStatistics.java:0)
 Class <de.eshg.spatz.common.ServiceDirectoryTopologyService> is not de.eshg.lib.scheduling.spring.SchedulingConfiguration in (ServiceDirectoryTopologyService.java:0)

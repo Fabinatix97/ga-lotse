@@ -7,8 +7,9 @@ package de.eshg.infectionbriefing;
 
 import de.cronn.commons.lang.StreamUtil;
 import de.eshg.base.centralfile.api.person.GetPersonFileStateResponse;
+import de.eshg.infectionbriefing.api.AbortDraftRequest;
 import de.eshg.infectionbriefing.api.AppointmentSummaryDto;
-import de.eshg.infectionbriefing.api.GetCitizenAppointmentOverviewResponse;
+import de.eshg.infectionbriefing.api.GetCitizenAppointmentResponse;
 import de.eshg.infectionbriefing.api.InfectionBriefingAppointmentDto;
 import de.eshg.infectionbriefing.domain.model.InfectionBriefingProcedure;
 import de.eshg.infectionbriefing.domain.repository.InfectionBriefingProcedureRepository;
@@ -20,6 +21,7 @@ import de.eshg.lib.appointmentblock.persistence.AppointmentType;
 import de.eshg.lib.appointmentblock.persistence.entity.Appointment;
 import de.eshg.lib.procedure.domain.model.RelatedPerson;
 import de.eshg.rest.service.error.BadRequestException;
+import de.eshg.rest.service.error.NotFoundException;
 import java.time.Clock;
 import java.time.Instant;
 import java.util.List;
@@ -37,6 +39,7 @@ public class InfectionBriefingAppointmentService
   private final InfectionBriefingAppointmentStandardDurationService standardDurationService;
   private final PersonClient personClient;
   private final InfectionBriefingProcedureRepository procedureRepository;
+  private final ProcedureStatusUpdater procedureStatusUpdater;
   private final MailService mailService;
 
   public InfectionBriefingAppointmentService(
@@ -45,12 +48,14 @@ public class InfectionBriefingAppointmentService
       InfectionBriefingAppointmentStandardDurationService standardDurationService,
       PersonClient personClient,
       InfectionBriefingProcedureRepository procedureRepository,
+      ProcedureStatusUpdater procedureStatusUpdater,
       MailService mailService) {
     this.clock = clock;
     this.appointmentBlockSlotUtil = appointmentBlockSlotUtil;
     this.standardDurationService = standardDurationService;
     this.personClient = personClient;
     this.procedureRepository = procedureRepository;
+    this.procedureStatusUpdater = procedureStatusUpdater;
     this.mailService = mailService;
   }
 
@@ -62,36 +67,57 @@ public class InfectionBriefingAppointmentService
     return new InfectionBriefingAppointmentDto(startTime, endTime);
   }
 
-  public GetCitizenAppointmentOverviewResponse getAppointsmentOfCitizen(UUID citizenUserId) {
+  public GetCitizenAppointmentResponse getCitizenAppointment(UUID citizenUserId) {
     InfectionBriefingProcedure procedure = getProcedureByUser(citizenUserId);
 
     Appointment appointment = procedure.getAppointment();
-    AppointmentTypeDto interfaceType = AppointmentTypeMapper.toInterfaceType(appointment.getType());
+    AppointmentTypeDto appointmentType =
+        AppointmentTypeMapper.toInterfaceType(appointment.getType());
 
     GetPersonFileStateResponse personFileStateResponse = getPersonDetailsByProcedure(procedure);
 
     var appointmentSummaryDto =
-        new AppointmentSummaryDto(appointment.getAppointmentStart(), interfaceType);
-    return new GetCitizenAppointmentOverviewResponse(
+        new AppointmentSummaryDto(
+            appointment.getAppointmentStart(),
+            appointment.getAppointmentStart().until(appointment.getAppointmentEnd()),
+            appointmentType);
+    return new GetCitizenAppointmentResponse(
         appointmentSummaryDto,
         personFileStateResponse.lastName(),
         personFileStateResponse.firstName(),
         personFileStateResponse.dateOfBirth());
   }
 
-  public void cancelAppointmentByCitizen(UUID citizenUserId) {
-    InfectionBriefingProcedure procedure = getProcedureByUser(citizenUserId);
-    Appointment appointment = procedure.getAppointment();
-    appointmentBlockSlotUtil.removeAppointment(procedure);
-    procedureRepository.delete(procedure);
+  public void cancelAppointmentAndAbortDraftByCitizen(UUID citizenUserId) {
+    cancelAppointmentAndAbortDraft(
+        getProcedureByUser(citizenUserId), InfectionBriefingTriggerType.CITIZEN, true);
+  }
 
+  public void cancelAppointmentAndAbortDraftByEmployee(
+      UUID procedureId, AbortDraftRequest request) {
+    cancelAppointmentAndAbortDraft(
+        getProcedureById(procedureId),
+        InfectionBriefingTriggerType.EMPLOYEE,
+        request.notifyCitizen());
+  }
+
+  private void cancelAppointmentAndAbortDraft(
+      InfectionBriefingProcedure procedure,
+      InfectionBriefingTriggerType triggerType,
+      boolean notifyCitizen) {
+    procedureStatusUpdater.abort(procedure);
+    AppointmentType appointmentType = procedure.getAppointment().getType();
+    Instant startTime = procedure.getAppointment().getAppointmentStart();
+    appointmentBlockSlotUtil.removeAppointment(procedure);
     GetPersonFileStateResponse personDetails = getPersonDetailsByProcedure(procedure);
-    personDetails
-        .emailAddresses()
-        .forEach(
-            email ->
-                mailService.sendCancelAppointmentConfirmationMail(
-                    email, appointment.getType(), appointment.getAppointmentStart()));
+    if (notifyCitizen) {
+      personDetails
+          .emailAddresses()
+          .forEach(
+              email ->
+                  mailService.sendCancelAppointmentConfirmationMail(
+                      email, appointmentType, triggerType, startTime));
+    }
   }
 
   private InfectionBriefingProcedure getProcedureByUser(UUID citizenUserId) {
@@ -100,7 +126,13 @@ public class InfectionBriefingAppointmentService
         .orElseThrow(() -> new BadRequestException("Citizen has no procedures"));
   }
 
-  public GetPersonFileStateResponse getPersonDetailsByProcedure(
+  private InfectionBriefingProcedure getProcedureById(UUID procedureId) {
+    return procedureRepository
+        .findByExternalId(procedureId)
+        .orElseThrow(() -> new NotFoundException("Procedure not found"));
+  }
+
+  private GetPersonFileStateResponse getPersonDetailsByProcedure(
       InfectionBriefingProcedure procedure) {
     UUID centralFileStateId = procedure.getApplicant().getCentralFileStateId();
     return personClient.getPersonFileState(centralFileStateId);

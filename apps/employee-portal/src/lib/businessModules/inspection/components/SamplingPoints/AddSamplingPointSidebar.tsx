@@ -26,7 +26,7 @@ export interface AddSamplingPoint {
   facility: {
     value: string;
     label: string;
-  };
+  } | null;
   name: string;
   zid: string;
   version: number;
@@ -43,7 +43,7 @@ function AddSamplingPointSidebarWithQueriesAndMutations({
   formRef,
 }: Readonly<SidebarWithFormRefProps>) {
   const initialValues: AddSamplingPoint = {
-    facility: { value: "", label: "" },
+    facility: null,
     name: "",
     zid: "",
     version: 0,
@@ -63,7 +63,7 @@ function AddSamplingPointSidebarWithQueriesAndMutations({
   async function save(values: AddSamplingPoint) {
     await saveSamplingPoint(
       {
-        facilityId: values.facility.value,
+        facilityId: values.facility!.value,
         name: values.name,
         zid: values.zid,
         version: values.version,

@@ -32,3 +32,11 @@ export const concernApiQueryKey = queryKeyFactory(
 export const waitingRoomApiQueryKey = queryKeyFactory(
   officialMedicalServiceApiQueryKey(["waitingRoomApi"]),
 );
+
+export const assessmentApiQueryKey = queryKeyFactory(
+  officialMedicalServiceApiQueryKey(["assessmentApi"]),
+);
+
+export const omsFeatureTogglesApiQueryKey = queryKeyFactory(
+  officialMedicalServiceApiQueryKey(["featureTogglesApi"]),
+);

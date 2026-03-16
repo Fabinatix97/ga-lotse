@@ -22,6 +22,7 @@ import {
 import {
   ApiDecibelValue,
   ApiHertzValue,
+  ApiPendingMeasurement,
   UpdateHearingTestResultRequest,
 } from "@eshg/school-entry-api";
 
@@ -29,6 +30,7 @@ import {
   ExaminationResultFields,
   ExaminationResultFieldsValues,
 } from "@/lib/businessModules/schoolEntry/features/procedures/examinations/ExaminationResultFields";
+import { MeasurementProgressPanel } from "@/lib/businessModules/schoolEntry/features/procedures/examinations/measurements/MeasurementProgressPanel";
 import { EarForm } from "@/lib/businessModules/schoolEntry/features/procedures/hearingTest/EarForm";
 import { REQUIRED_PROCEDURE_PROPERTIES } from "@/lib/businessModules/schoolEntry/features/procedures/translations";
 import { FormGroupGrid } from "@/lib/shared/components/form/FormGroupGrid";
@@ -46,6 +48,12 @@ interface HearingTestFormProps extends FormProps<HearingTestFormValues> {
   valuesToMutationBundle: (
     values: HearingTestFormValues,
   ) => MutationBundle<UpdateHearingTestResultRequest>;
+  pendingMeasurement?: ApiPendingMeasurement;
+  procedureId: string;
+  isDeviceRegistryEnabled: boolean;
+  getTestResults: () => void;
+  showPendingBanner: boolean;
+  stopAwaitingResult: () => void;
 }
 
 export function HearingTestForm(props: HearingTestFormProps) {
@@ -57,6 +65,9 @@ export function HearingTestForm(props: HearingTestFormProps) {
     helpers.resetForm({ values: formValues });
   }
 
+  const { correlationId, equipmentName, lastNameAlias, firstNameAlias } =
+    props.pendingMeasurement ?? {};
+
   return (
     <Formik initialValues={props.initialValues} onSubmit={handleSubmit}>
       {({ values, isSubmitting, handleSubmit, setFieldValue }) => (
@@ -64,22 +75,33 @@ export function HearingTestForm(props: HearingTestFormProps) {
           <ConfirmLeaveDirtyFormEffect
             onSaveMutation={props.valuesToMutationBundle(values)}
           />
-          <FormGroupGrid columns={{ xs: 6, xxl: 12 }}>
-            <Grid xs={6}>
-              <EarForm
-                name="leftEar"
-                sideIndicator="L"
-                sideIndicatorPosition={{ xs: "center", xxl: "left" }}
-              />
-            </Grid>
-            <Grid xs={6}>
-              <EarForm
-                name="rightEar"
-                sideIndicator="R"
-                sideIndicatorPosition="center"
-              />
-            </Grid>
-          </FormGroupGrid>
+          {props.isDeviceRegistryEnabled && props.pendingMeasurement ? (
+            <MeasurementProgressPanel
+              alias={`${firstNameAlias} ${lastNameAlias}`}
+              correlationId={correlationId}
+              equipmentName={equipmentName}
+              showPendingBanner={props.showPendingBanner}
+              stopAwaitingResult={props.stopAwaitingResult}
+              getTestResults={props.getTestResults}
+            />
+          ) : (
+            <FormGroupGrid columns={{ xs: 6, xxl: 12 }}>
+              <Grid xs={6}>
+                <EarForm
+                  name="leftEar"
+                  sideIndicator="L"
+                  sideIndicatorPosition={{ xs: "center", xxl: "left" }}
+                />
+              </Grid>
+              <Grid xs={6}>
+                <EarForm
+                  name="rightEar"
+                  sideIndicator="R"
+                  sideIndicatorPosition="center"
+                />
+              </Grid>
+            </FormGroupGrid>
+          )}
           <Divider />
           <FormGroupGrid columns={{ xs: 6, xl: 12 }}>
             <Grid xs={6}>

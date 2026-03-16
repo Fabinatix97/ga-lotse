@@ -8,6 +8,7 @@ package de.eshg.infectionbriefing;
 import static de.eshg.infectionbriefing.InfectionBriefingProcedureController.BASE_URL;
 
 import de.eshg.api.commons.InlineParameterObject;
+import de.eshg.infectionbriefing.api.AbortDraftRequest;
 import de.eshg.infectionbriefing.api.AcceptDraftRequest;
 import de.eshg.infectionbriefing.api.ConfirmPaymentRequest;
 import de.eshg.infectionbriefing.api.CreateNewCertificateProcedureRequest;
@@ -18,6 +19,7 @@ import de.eshg.infectionbriefing.api.IssueCertificateResponse;
 import de.eshg.infectionbriefing.api.ProcedureFilterParameters;
 import de.eshg.infectionbriefing.api.ProcedurePaginationParameters;
 import de.eshg.infectionbriefing.api.ProcedureSearchParameters;
+import de.eshg.infectionbriefing.api.UpdateApplicantRequest;
 import de.eshg.rest.service.security.config.BaseUrls.InfectionBriefing;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -26,6 +28,7 @@ import java.util.UUID;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -42,14 +45,17 @@ public class InfectionBriefingProcedureController {
   private final InfectionBriefingProcedureService infectionBriefingProcedureService;
   private final NewCertificateProcedureService newCertificateProcedureService;
   private final CreateInfectionBriefingProcedureService createInfectionBriefingProcedureService;
+  private final InfectionBriefingAppointmentService infectionBriefingAppointmentService;
 
   public InfectionBriefingProcedureController(
       InfectionBriefingProcedureService infectionBriefingProcedureService,
       NewCertificateProcedureService newCertificateProcedureService,
-      CreateInfectionBriefingProcedureService createInfectionBriefingProcedureService) {
+      CreateInfectionBriefingProcedureService createInfectionBriefingProcedureService,
+      InfectionBriefingAppointmentService infectionBriefingAppointmentService) {
     this.infectionBriefingProcedureService = infectionBriefingProcedureService;
     this.newCertificateProcedureService = newCertificateProcedureService;
     this.createInfectionBriefingProcedureService = createInfectionBriefingProcedureService;
+    this.infectionBriefingAppointmentService = infectionBriefingAppointmentService;
   }
 
   @GetMapping
@@ -85,10 +91,13 @@ public class InfectionBriefingProcedureController {
     newCertificateProcedureService.acceptDraft(procedureId, Optional.ofNullable(request));
   }
 
-  @PostMapping("{procedureId}/abort-procedure")
+  @PostMapping("{procedureId}/abort-draft")
   @Transactional
-  public void abortDraft(@PathVariable(name = "procedureId") UUID procedureId) {
-    infectionBriefingProcedureService.abort(procedureId);
+  public void abortDraft(
+      @PathVariable(name = "procedureId") UUID procedureId,
+      @Valid @RequestBody AbortDraftRequest request) {
+    infectionBriefingAppointmentService.cancelAppointmentAndAbortDraftByEmployee(
+        procedureId, request);
   }
 
   @PostMapping("{procedureId}/briefing")
@@ -129,5 +138,13 @@ public class InfectionBriefingProcedureController {
   @Transactional
   public void reopenProcedure(@PathVariable(name = "procedureId") UUID procedureId) {
     infectionBriefingProcedureService.reopen(procedureId);
+  }
+
+  @PatchMapping("{procedureId}/applicant")
+  @Transactional
+  public void updateApplicant(
+      @PathVariable(name = "procedureId") UUID procedureId,
+      @Valid @RequestBody UpdateApplicantRequest applicant) {
+    infectionBriefingProcedureService.updateApplicant(procedureId, applicant);
   }
 }

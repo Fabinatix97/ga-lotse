@@ -10,8 +10,16 @@ import de.eshg.domain.model.BaseEntity;
 import de.eshg.lib.appointmentblock.api.LocationSelectionMode;
 import de.eshg.lib.common.DataSensitivity;
 import de.eshg.lib.common.SensitivityLevel;
+import de.eshg.schoolentry.api.DocumentTypes;
+import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OrderBy;
+import java.util.LinkedHashSet;
+import java.util.Set;
 import org.hibernate.annotations.JdbcType;
 import org.hibernate.dialect.PostgreSQLEnumJdbcType;
 
@@ -31,6 +39,15 @@ public class SchoolEntryConfig extends BaseEntity implements Initializable {
 
   @Column(nullable = false)
   private String pdfDocumentAccentColor;
+
+  @ElementCollection(fetch = FetchType.EAGER)
+  @CollectionTable(
+      name = "documents_with_employee_info",
+      joinColumns = @JoinColumn(name = "school_entry_config_id", nullable = false))
+  @JdbcType(PostgreSQLEnumJdbcType.class)
+  @OrderBy
+  @Column(name = "document_type", nullable = false)
+  private Set<DocumentTypes> documentsWithEmployeeInfo = new LinkedHashSet<>();
 
   @Column(nullable = false)
   private boolean invitationIncludePerson;
@@ -71,6 +88,14 @@ public class SchoolEntryConfig extends BaseEntity implements Initializable {
 
   public void setPdfDocumentAccentColor(String pdfDocumentAccentColor) {
     this.pdfDocumentAccentColor = pdfDocumentAccentColor;
+  }
+
+  public Set<DocumentTypes> getDocumentsWithEmployeeInfo() {
+    return documentsWithEmployeeInfo;
+  }
+
+  public void setDocumentsWithEmployeeInfo(Set<DocumentTypes> documentsWithEmployeeInfo) {
+    this.documentsWithEmployeeInfo = documentsWithEmployeeInfo;
   }
 
   public boolean isInvitationIncludePerson() {

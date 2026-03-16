@@ -20,7 +20,7 @@ dependencyResolutionManagement {
     versionCatalogs {
         libs {
             version('keycloak-client', '26.0.8')
-            version('keycloak-server', '26.5.3')
+            version('keycloak-server', '26.5.5')
 
             library('keycloak-client-admin-client', 'org.keycloak', 'keycloak-admin-client').versionRef('keycloak-client')
 
@@ -54,6 +54,7 @@ include 'compliance-test'
 include 'dental'
 include 'file-commons'
 include 'file-jockey'
+include 'file-jockey-api'
 include 'inspection'
 include 'keycloak'
 include 'keycloak-api'
@@ -73,6 +74,7 @@ include 'lib-config'
 include 'lib-document-generator'
 include 'lib-editor'
 include 'lib-editor-api'
+include 'lib-file-jockey-client'
 include 'lib-four-eyes-principle'
 include 'lib-four-eyes-principle-api'
 include 'lib-gdt'

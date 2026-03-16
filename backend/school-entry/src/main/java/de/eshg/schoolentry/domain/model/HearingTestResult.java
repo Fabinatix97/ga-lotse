@@ -10,6 +10,7 @@ import static de.eshg.lib.common.SensitivityLevel.SENSITIVE;
 import de.cronn.reflection.util.PropertyUtils;
 import de.eshg.domain.model.GenericEntity;
 import de.eshg.lib.common.DataSensitivity;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -37,6 +38,9 @@ public class HearingTestResult extends GenericEntity<Long> implements Validatabl
   @Embedded private ExaminationResult examinationResult;
 
   private String note;
+
+  @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+  private PendingMeasurement pendingMeasurement;
 
   @Override
   public Long getId() {
@@ -87,12 +91,22 @@ public class HearingTestResult extends GenericEntity<Long> implements Validatabl
     this.note = note;
   }
 
+  public PendingMeasurement getPendingMeasurement() {
+    return pendingMeasurement;
+  }
+
+  public void setPendingMeasurement(PendingMeasurement pendingExpectation) {
+    this.pendingMeasurement = pendingExpectation;
+  }
+
   public Stream<PropertyDescriptor> getPropertiesToValidate() {
     List<PropertyDescriptor> propertiesToIgnore =
         List.of(
             PropertyUtils.getPropertyDescriptor(HearingTestResult.class, HearingTestResult::getId),
             PropertyUtils.getPropertyDescriptor(
-                HearingTestResult.class, HearingTestResult::getProcedure));
+                HearingTestResult.class, HearingTestResult::getProcedure),
+            PropertyUtils.getPropertyDescriptor(
+                HearingTestResult.class, HearingTestResult::getPendingMeasurement));
 
     return PropertyUtils.getPropertyDescriptors(HearingTestResult.class).stream()
         .filter(prop -> !propertiesToIgnore.contains(prop))

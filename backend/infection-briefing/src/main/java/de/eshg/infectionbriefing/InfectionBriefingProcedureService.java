@@ -21,6 +21,8 @@ import de.eshg.infectionbriefing.api.ProcedureFilterParameters;
 import de.eshg.infectionbriefing.api.ProcedurePaginationParameters;
 import de.eshg.infectionbriefing.api.ProcedureSearchParameters;
 import de.eshg.infectionbriefing.api.ProcedureSourceDto;
+import de.eshg.infectionbriefing.api.UpdateApplicantRequest;
+import de.eshg.infectionbriefing.domain.model.InfectionBriefingPerson;
 import de.eshg.infectionbriefing.domain.model.InfectionBriefingProcedure;
 import de.eshg.infectionbriefing.domain.model.InfectionBriefingProcedure_;
 import de.eshg.infectionbriefing.domain.model.NewCertificateProcedure;
@@ -28,14 +30,17 @@ import de.eshg.infectionbriefing.domain.repository.InfectionBriefingProcedureRep
 import de.eshg.infectionbriefing.domain.specification.InfectionBriefingProcedureSpecification;
 import de.eshg.infectionbriefing.mapper.InfectionBriefingProcedureMapper;
 import de.eshg.infectionbriefing.mapper.InstructionTypeMapper;
+import de.eshg.infectionbriefing.util.InfectionBriefingProgressEntryType;
+import de.eshg.infectionbriefing.util.InfectionBriefingSystemProgressEntryFactory;
 import de.eshg.infectionbriefing.util.ProcedureValidator;
 import de.eshg.lib.appointmentblock.persistence.entity.Appointment;
-import de.eshg.lib.auditlog.AuditLogger;
 import de.eshg.lib.procedure.domain.model.PersonType;
 import de.eshg.lib.procedure.domain.model.ProcedureStatus;
 import de.eshg.lib.procedure.domain.model.RelatedPerson;
+import de.eshg.lib.procedure.domain.model.SystemProgressEntry;
 import de.eshg.lib.procedure.mapping.ProcedureMapper;
 import de.eshg.lib.procedure.procedures.ProcedureSearchService;
+import de.eshg.rest.service.error.BadRequestException;
 import de.eshg.rest.service.error.NotFoundException;
 import java.time.Clock;
 import java.time.Instant;
@@ -56,22 +61,22 @@ public class InfectionBriefingProcedureService {
 
   private final InfectionBriefingProcedureRepository repository;
   private final ProcedureSearchService<InfectionBriefingProcedure> procedureSearchService;
+  private final ProcedureStatusUpdater procedureStatusUpdater;
   private final Clock clock;
-  private final AuditLogger auditLogger;
   private final PersonClient personClient;
   private final CustodianConsentHelper custodianConsentHelper;
 
   public InfectionBriefingProcedureService(
       InfectionBriefingProcedureRepository repository,
       ProcedureSearchService<InfectionBriefingProcedure> procedureSearchService,
+      ProcedureStatusUpdater procedureStatusUpdater,
       Clock clock,
-      AuditLogger auditLogger,
       PersonClient personClient,
       CustodianConsentHelper custodianConsentHelper) {
     this.repository = repository;
     this.procedureSearchService = procedureSearchService;
+    this.procedureStatusUpdater = procedureStatusUpdater;
     this.clock = clock;
-    this.auditLogger = auditLogger;
     this.personClient = personClient;
     this.custodianConsentHelper = custodianConsentHelper;
   }
@@ -110,7 +115,7 @@ public class InfectionBriefingProcedureService {
         procedure.getExternalId(),
         ProcedureMapper.toInterfaceType(procedure.getProcedureStatus()),
         ProcedureMapper.toInterfaceType(procedure.getProcedureType()),
-        mapToPersonDetailsDto(applicant),
+        mapToPersonDetailsDto(applicant, procedure.getApplicant().getVersion()),
         custodianConsentHelper.getCustodianConsent(procedure, applicant.dateOfBirth()),
         Optional.ofNullable(procedure.getAppointment())
             .map(Appointment::getAppointmentStart)
@@ -170,25 +175,41 @@ public class InfectionBriefingProcedureService {
     }
   }
 
-  public void abort(UUID procedureId) {
-    new ProcedureValidator<>(getProcedure(procedureId))
-        .validateStatus(ProcedureStatus.DRAFT)
-        .get()
-        .updateProcedureStatus(ProcedureStatus.ABORTED, clock, auditLogger);
-  }
-
   public void close(UUID procedureId) {
-    new ProcedureValidator<>(getProcedure(procedureId))
-        .validateStatus(ProcedureStatus.OPEN)
-        .get()
-        .updateProcedureStatus(ProcedureStatus.CLOSED, clock, auditLogger);
+    procedureStatusUpdater.close(getProcedure(procedureId));
   }
 
   public void reopen(UUID procedureId) {
-    new ProcedureValidator<>(getProcedure(procedureId))
-        .validateStatus(ProcedureStatus.CLOSED)
-        .get()
-        .updateProcedureStatus(ProcedureStatus.OPEN, clock, auditLogger);
+    procedureStatusUpdater.reopen(getProcedure(procedureId));
+  }
+
+  public void updateApplicant(UUID procedureId, UpdateApplicantRequest request) {
+    InfectionBriefingProcedure procedure =
+        new ProcedureValidator<>(getProcedure(procedureId))
+            .validateStatus(ProcedureStatus.DRAFT, ProcedureStatus.OPEN)
+            .get();
+    validateVersion(request, procedure.getApplicant());
+    UUID currentFileState = procedure.getApplicant().getCentralFileStateId();
+    UUID updatedFileState = personClient.updatePersonInCentralFile(currentFileState, request);
+    if (!updatedFileState.equals(currentFileState)) {
+      procedure.getApplicant().setCentralFileStateId(updatedFileState);
+      procedure.addProgressEntry(applicantModifiedProgressEntry(currentFileState));
+    }
+  }
+
+  private void validateVersion(
+      UpdateApplicantRequest request, InfectionBriefingPerson persistentApplicant) {
+    if (request.version() != persistentApplicant.getVersion()) {
+      throw new BadRequestException("Version does not match");
+    }
+  }
+
+  private SystemProgressEntry applicantModifiedProgressEntry(UUID previousPersonFileState) {
+    SystemProgressEntry systemProgressEntry =
+        InfectionBriefingSystemProgressEntryFactory.createEmployeeTriggeredSystemProgressEntry(
+            InfectionBriefingProgressEntryType.APPLICANT_MODIFIED);
+    systemProgressEntry.setPreviousPersonFileStateId(previousPersonFileState);
+    return systemProgressEntry;
   }
 
   private InfectionBriefingProcedure getProcedure(UUID procedureId) {

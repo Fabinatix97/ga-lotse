@@ -22,6 +22,7 @@ import {
 } from "@/lib/shared/components/layout/contentSheet";
 import { GridColumnStack } from "@/lib/shared/components/layout/grid";
 import { ScopedInternalLinkButton } from "@/lib/shared/components/scopedLinks";
+import { useAccessCodeParam } from "@/lib/shared/helpers/accessCode";
 
 interface LandingPageContentProps {
   landingContent: string;
@@ -60,6 +61,7 @@ interface AppointmentSectionProps {
 
 export function AppointmentSection({ enabled }: AppointmentSectionProps) {
   const { t } = useTranslation(["infectionBriefing/overview"]);
+  const accessCode = useAccessCodeParam();
   const InfectionBriefingRoutes = useCitizenRoutes();
 
   return (
@@ -74,6 +76,12 @@ export function AppointmentSection({ enabled }: AppointmentSectionProps) {
             href={InfectionBriefingRoutes.bookAppointment}
           >
             {t("appointmentsSection.create_appointment")}
+          </ScopedInternalLinkButton>
+          <ScopedInternalLinkButton
+            href={InfectionBriefingRoutes.personalArea.index(accessCode)}
+            variant="outlined"
+          >
+            {t("appointmentsSection.go_to_personal_area")}
           </ScopedInternalLinkButton>
         </>
       ) : (

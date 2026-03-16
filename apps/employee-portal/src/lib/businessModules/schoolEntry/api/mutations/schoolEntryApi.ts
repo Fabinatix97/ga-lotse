@@ -21,6 +21,8 @@ import {
   ApiCreateProcedureRequest,
   ApiDevelopmentScreeningResult,
   ApiEyeExaminationResult,
+  type ApiHearingTestCompleteRequest,
+  ApiHearingTestInitializationRequest,
   ApiHearingTestResult,
   ApiRemoveCustodianRequest,
   ApiReopenProcedureRequest,
@@ -115,6 +117,30 @@ export function useUpdateHearingTestResultOptions(): MutationOptions<
       );
     },
   };
+}
+
+export function useInitiateHearingTest(procedureId: string) {
+  const schoolEntryApi = useSchoolEntryApi();
+  const snackbar = useSnackbar();
+
+  return useHandledMutation({
+    mutationFn: (request: ApiHearingTestInitializationRequest) =>
+      schoolEntryApi.initiateHearingTest(procedureId, request),
+    onSuccess: () => {
+      snackbar.confirmation(
+        "Messgerät ausgewählt. Die Messung wird gestartet.",
+      );
+    },
+  });
+}
+
+export function useCompleteHearingTest(procedureId: string) {
+  const schoolEntryApi = useSchoolEntryApi();
+
+  return useHandledMutation({
+    mutationFn: (request: ApiHearingTestCompleteRequest) =>
+      schoolEntryApi.completeHearingTest(procedureId, request),
+  });
 }
 
 export function useUpdateEyeExaminationResultOptions(): MutationOptions<

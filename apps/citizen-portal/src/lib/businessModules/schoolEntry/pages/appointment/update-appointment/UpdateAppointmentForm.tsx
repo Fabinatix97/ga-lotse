@@ -16,6 +16,10 @@ import { useCitizenRoutes } from "@/lib/businessModules/schoolEntry/shared/route
 import { useTranslation } from "@/lib/i18n/client";
 import { TwoColumnGrid } from "@/lib/shared/components/layout/grid";
 import { useScopedRouter } from "@/lib/shared/components/scopedLinks";
+import {
+  clearUserFlowTrackingId,
+  getUserFlowTrackingId,
+} from "@/lib/shared/helpers/userFlowTracking.storage";
 
 interface AppointmentFormValues {
   newAppointment: Appointment | undefined;
@@ -37,9 +41,12 @@ export function UpdateAppointmentForm(props: UpdateAppointmentFormProps) {
 
   async function handleSubmit(values: AppointmentFormValues) {
     if (values.newAppointment) {
+      const userFlowTrackingId = getUserFlowTrackingId();
       await updateAppointment.mutateAsync({
         newAppointment: values.newAppointment,
+        userFlowTrackingId,
       });
+      clearUserFlowTrackingId();
       router.push(citizenRoutes.appointment.index(undefined));
     }
   }

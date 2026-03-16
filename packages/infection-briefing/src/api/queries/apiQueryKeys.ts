@@ -16,3 +16,7 @@ export const appointmentBlockApiQueryKey = queryKeyFactory(
 export const appointmentStandardDurationApiQueryKey = queryKeyFactory(
   infectionBriefingApiQueryKey(["appointmentStandardDurationApi"]),
 );
+
+export const proceduresQueryKey = queryKeyFactory(
+  infectionBriefingApiQueryKey(["procedures"]),
+);

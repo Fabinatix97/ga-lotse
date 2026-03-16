@@ -85,6 +85,7 @@ import de.eshg.lib.procedure.model.GetProceduresSortOptionsDto;
 import de.eshg.lib.procedure.model.GetProceduresSortOrderDto;
 import de.eshg.lib.procedure.model.GetRecentProceduresResponse;
 import de.eshg.lib.procedure.model.PersonTypeDto;
+import de.eshg.lib.procedure.model.ProcedureActionMetric;
 import de.eshg.lib.procedure.model.ProcedureDto;
 import de.eshg.lib.procedure.model.ProcedureMetric;
 import de.eshg.lib.procedure.model.ProcedureStatusDto;
@@ -115,6 +116,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
@@ -142,6 +144,7 @@ public class ProcedureController<
   private final PersonApi personApi;
   private final UserHelper userHelper;
   private final ProcedureSearchService<ProcedureT> procedureSearchService;
+  private final AbstractProcedureActionMetricService procedureActionMetricService;
 
   public ProcedureController(
       BusinessModule businessModule,
@@ -153,7 +156,9 @@ public class ProcedureController<
       FacilityApi facilityApi,
       PersonApi personApi,
       UserHelper userHelper,
-      ProcedureSearchService<ProcedureT> procedureSearchService) {
+      ProcedureSearchService<ProcedureT> procedureSearchService,
+      @Autowired(required = false)
+          AbstractProcedureActionMetricService procedureActionMetricService) {
     this.businessModule = businessModule;
     this.procedureRepository = procedureRepository;
     this.progressEntryApprovalRequestRepository = progressEntryApprovalRequestRepository;
@@ -164,6 +169,7 @@ public class ProcedureController<
     this.userHelper = userHelper;
     this.progressEntryRepository = progressEntryRepository;
     this.procedureSearchService = procedureSearchService;
+    this.procedureActionMetricService = procedureActionMetricService;
   }
 
   @Override
@@ -346,8 +352,13 @@ public class ProcedureController<
       Instant timeRangeStart, Instant timeRangeEnd) {
     MetricTimeRangeValidator.validateTimeRange(timeRangeStart, timeRangeEnd);
 
+    ProcedureActionMetric procedureActionMetric =
+        procedureActionMetricService == null
+            ? null
+            : procedureActionMetricService.getProcedureActionMetric(timeRangeStart, timeRangeEnd);
+
     return new GetProcedureMetricsResponse(
-        getAggregatedProcedureMetrics(timeRangeStart, timeRangeEnd));
+        getAggregatedProcedureMetrics(timeRangeStart, timeRangeEnd), procedureActionMetric);
   }
 
   private List<ProcedureMetric> getAggregatedProcedureMetrics(

@@ -17,7 +17,7 @@ function useConfiguration() {
   return new Configuration(configurationParameters);
 }
 
-export function useInfectionBriefingCitizenPublicApi() {
+export function useInfectionBriefingPublicCitizenApi() {
   const configuration = useConfiguration();
   return new InfectionBriefingPublicCitizenApi(configuration);
 }

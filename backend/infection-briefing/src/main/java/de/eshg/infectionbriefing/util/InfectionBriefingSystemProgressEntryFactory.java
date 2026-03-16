@@ -13,17 +13,16 @@ public class InfectionBriefingSystemProgressEntryFactory {
 
   private InfectionBriefingSystemProgressEntryFactory() {}
 
-  public static SystemProgressEntry createSystemProgressEntry(
-      InfectionBriefingProgressEntryType progressEntryType, TriggerType triggerType) {
+  public static SystemProgressEntry createEmployeeTriggeredSystemProgressEntry(
+      InfectionBriefingProgressEntryType progressEntryType) {
     return SystemProgressEntryFactory.createSystemProgressEntry(
-        progressEntryType.name(), triggerType);
+        progressEntryType.name(), TriggerType.EMPLOYEE);
   }
 
-  public static SystemProgressEntry createSystemProgressEntry(
+  public static SystemProgressEntry createEmployeeTriggeredSystemProgressEntry(
       InfectionBriefingProgressEntryType progressEntryType,
-      TriggerType triggerType,
       InfectionBriefingKeyDocumentType keyDocumentType) {
     return SystemProgressEntryFactory.createSystemProgressEntry(
-        progressEntryType.name(), null, triggerType, keyDocumentType.name());
+        progressEntryType.name(), null, TriggerType.EMPLOYEE, keyDocumentType.name());
   }
 }

@@ -13,6 +13,7 @@ import static de.eshg.lib.keycloak.EmployeePermissionRole.BASE_GDPR_VALIDATION_T
 import static de.eshg.lib.keycloak.EmployeePermissionRole.BASE_INTER_MODULE_MIGRATION;
 import static de.eshg.lib.keycloak.EmployeePermissionRole.BASE_MAIL_SEND;
 import static de.eshg.lib.keycloak.EmployeePermissionRole.BASE_PERSONS_DELETE;
+import static de.eshg.lib.keycloak.EmployeePermissionRole.FILEJOCKEY_MEDICAL_DEVICE;
 import static de.eshg.lib.keycloak.EmployeePermissionRole.SCHOOL_ENTRY_VACCINATION_CHECK;
 import static de.eshg.lib.keycloak.EmployeePermissionRole.STANDARD_EMPLOYEE;
 import static de.eshg.lib.keycloak.EmployeePermissionRole.STATISTICS_STATISTICS_TECHNICAL_USER;
@@ -42,7 +43,8 @@ public enum ModuleClient {
           BASE_MAIL_SEND,
           BASE_PERSONS_DELETE,
           BASE_FACILITIES_DELETE,
-          BASE_INTER_MODULE_MIGRATION)),
+          BASE_INTER_MODULE_MIGRATION,
+          FILEJOCKEY_MEDICAL_DEVICE)),
   STATISTICS("statistics", List.of(STATISTICS_STATISTICS_TECHNICAL_USER)),
   TRAVEL_MEDICINE(
       "travel-medicine",

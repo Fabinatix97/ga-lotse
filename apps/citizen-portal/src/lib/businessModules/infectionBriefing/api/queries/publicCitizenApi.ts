@@ -11,7 +11,7 @@ import {
 } from "@eshg/infection-briefing-api";
 import { SEMI_STATIC_QUERY_OPTIONS } from "@eshg/lib-portal";
 
-import { useInfectionBriefingCitizenPublicApi } from "@/lib/businessModules/infectionBriefing/api/clients";
+import { useInfectionBriefingPublicCitizenApi } from "@/lib/businessModules/infectionBriefing/api/clients";
 import { infectionBriefingPublicCitizenApiQueryKey } from "@/lib/businessModules/infectionBriefing/api/queries/apiQueryKeys";
 import { useLang } from "@/lib/i18n/useLang";
 import { OpeningHoursTranslations } from "@/lib/shared/components/ContactAndAvailabilitySheet";
@@ -57,7 +57,7 @@ function getFreeAppointmentsQuery(
 }
 
 export function useFreeAppointments() {
-  const publicCitizenApi = useInfectionBriefingCitizenPublicApi();
+  const publicCitizenApi = useInfectionBriefingPublicCitizenApi();
   return useSuspenseQuery(getFreeAppointmentsQuery(publicCitizenApi));
 }
 
@@ -72,6 +72,6 @@ export function getDepartmentInfoQuery(
 }
 
 export function useDepartmentInfo() {
-  const publicCitizenApi = useInfectionBriefingCitizenPublicApi();
+  const publicCitizenApi = useInfectionBriefingPublicCitizenApi();
   return useSuspenseQuery(getDepartmentInfoQuery(publicCitizenApi));
 }

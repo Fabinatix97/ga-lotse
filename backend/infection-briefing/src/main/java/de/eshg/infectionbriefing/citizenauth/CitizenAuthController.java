@@ -6,7 +6,7 @@
 package de.eshg.infectionbriefing.citizenauth;
 
 import de.eshg.infectionbriefing.InfectionBriefingAppointmentService;
-import de.eshg.infectionbriefing.api.GetCitizenAppointmentOverviewResponse;
+import de.eshg.infectionbriefing.api.GetCitizenAppointmentResponse;
 import de.eshg.rest.service.security.config.BaseUrls;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -27,8 +27,7 @@ public class CitizenAuthController {
 
   public static final String BASE_URL = BaseUrls.InfectionBriefing.CITIZEN_AUTH_CONTROLLER;
 
-  public static final String PROCEDURE_APPOINTMENTS_URL = "/procedure-appointments";
-  public static final String APPOINTMENTS_URL = "/appointments";
+  public static final String CITIZEN_APPOINTMENT_URL = "/appointment";
 
   private final InfectionBriefingAppointmentService infectionBriefingAppointmentService;
 
@@ -37,20 +36,20 @@ public class CitizenAuthController {
     this.infectionBriefingAppointmentService = infectionBriefingAppointmentService;
   }
 
-  @GetMapping(PROCEDURE_APPOINTMENTS_URL)
-  @Operation(summary = "Gets all procedure appointments")
+  @GetMapping(CITIZEN_APPOINTMENT_URL)
+  @Operation(summary = "Gets the appointment of the citizen")
   @Transactional(readOnly = true)
-  public GetCitizenAppointmentOverviewResponse getCitizenAppointmentOverview(
+  public GetCitizenAppointmentResponse getCitizenAppointment(
       @AuthenticationPrincipal Jwt principal) {
-    return infectionBriefingAppointmentService.getAppointsmentOfCitizen(
-        getCitizenUserId(principal));
+    return infectionBriefingAppointmentService.getCitizenAppointment(getCitizenUserId(principal));
   }
 
-  @DeleteMapping(PROCEDURE_APPOINTMENTS_URL)
+  @DeleteMapping(CITIZEN_APPOINTMENT_URL)
   @Operation(summary = "Cancel an appointment from citizen portal.")
   @Transactional
-  public void cancelAppointment(@AuthenticationPrincipal Jwt principal) {
-    infectionBriefingAppointmentService.cancelAppointmentByCitizen(getCitizenUserId(principal));
+  public void cancelCitizenAppointment(@AuthenticationPrincipal Jwt principal) {
+    infectionBriefingAppointmentService.cancelAppointmentAndAbortDraftByCitizen(
+        getCitizenUserId(principal));
   }
 
   private UUID getCitizenUserId(Jwt principal) {

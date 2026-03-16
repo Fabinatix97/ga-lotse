@@ -1,0 +1,21 @@
+<?xml version="1.1" encoding="UTF-8"?>
+<!--
+ Copyright 2026 SCOOP Software GmbH, cronn GmbH
+ SPDX-License-Identifier: AGPL-3.0-only
+-->
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+  <changeSet id="0094-add-closing-remark-fields-to-inspection" author="GA-Lotse">
+
+    <addColumn tableName="inspection">
+      <column name="closing_remark_progress_entry_id" type="UUID"/>
+    </addColumn>
+
+    <rollback>
+      <dropColumn tableName="inspection" columnName="closing_remark_progress_entry_id"/>
+    </rollback>
+  </changeSet>
+</databaseChangeLog>

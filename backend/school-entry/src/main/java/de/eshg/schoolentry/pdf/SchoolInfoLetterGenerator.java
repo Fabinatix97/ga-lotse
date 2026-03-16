@@ -5,14 +5,20 @@
 
 package de.eshg.schoolentry.pdf;
 
+import de.eshg.base.user.UserApi;
+import de.eshg.base.user.api.UserProfileDto;
 import de.eshg.lib.contact.ContactClient;
 import de.eshg.lib.document.generator.DocumentGenerator;
 import de.eshg.lib.document.generator.department.DepartmentLogoClient;
 import de.eshg.lib.procedure.domain.model.Pdf;
 import de.eshg.lib.procedure.domain.model.PdfMetaData;
 import de.eshg.lib.procedure.file.FileFactory;
+import de.eshg.rest.service.security.CurrentUserHelper;
+import de.eshg.schoolentry.SchoolEntryConfigService;
 import de.eshg.schoolentry.SchoolInfoLetterService;
+import de.eshg.schoolentry.api.DocumentTypes;
 import de.eshg.schoolentry.api.pdf.Address;
+import de.eshg.schoolentry.api.pdf.EmployeeInfoDto;
 import de.eshg.schoolentry.api.schoolinfoletter.DepartmentLogo;
 import de.eshg.schoolentry.api.schoolinfoletter.SchoolInfoLetterData;
 import de.eshg.schoolentry.business.model.ProcedureDetailsData;
@@ -38,6 +44,8 @@ public class SchoolInfoLetterGenerator extends AbstractGenerator {
   private final DepartmentLogoClient departmentLogoClient;
   private final SchoolInfoLetterService schoolInfoLetterService;
   private final DocumentGenerator documentGenerator;
+  private final UserApi userClient;
+  private final SchoolEntryConfigService schoolEntryConfigService;
   private final Clock clock;
 
   public SchoolInfoLetterGenerator(
@@ -46,6 +54,8 @@ public class SchoolInfoLetterGenerator extends AbstractGenerator {
       DepartmentInfoClient departmentInfoClient,
       ContactClient contactClient,
       DocumentGenerator documentGenerator,
+      UserApi userClient,
+      SchoolEntryConfigService schoolEntryConfigService,
       Clock clock,
       SchoolInfoLetterService schoolInfoLetterService) {
     super(departmentInfoClient, contactClient);
@@ -55,6 +65,8 @@ public class SchoolInfoLetterGenerator extends AbstractGenerator {
         schoolInfoLetterTemplate.exists(), () -> schoolInfoLetterTemplate + " does not exist");
     this.schoolInfoLetterTemplate = schoolInfoLetterTemplate;
     this.documentGenerator = documentGenerator;
+    this.userClient = userClient;
+    this.schoolEntryConfigService = schoolEntryConfigService;
     this.clock = clock;
   }
 
@@ -77,13 +89,21 @@ public class SchoolInfoLetterGenerator extends AbstractGenerator {
   @VisibleForTesting
   SchoolInfoLetterData buildSchoolInfoLetterData(
       SchoolEntryProcedure procedure, ProcedureDetailsData procedureDetailsData) {
+
     Address departmentAddress = getDepartmentAddress();
     Address schoolAddress = getAddressOfInstitution(procedureDetailsData.school().id());
     DepartmentLogo departmentLogo = mapToSchoolEntryDto(departmentLogoClient.getDepartmentLogo());
+
+    UserProfileDto userProfile = userClient.getUserProfile(CurrentUserHelper.getCurrentUserId());
+    EmployeeInfoDto employeeInfo =
+        schoolEntryConfigService.getEmployeeInfoIfAllowed(
+            userProfile, DocumentTypes.SCHOOL_INFO_LETTER);
+
     return new SchoolInfoLetterData(
         LocalDate.now(clock).format(DateTimeFormatter.ofPattern("dd.MM.yyyy")),
         departmentLogo,
         departmentAddress,
+        employeeInfo,
         schoolAddress,
         schoolInfoLetterService.getSchoolInfoLetterExamination(procedure, procedureDetailsData));
   }

@@ -3208,6 +3208,44 @@
         "tags" : [ "Inspection" ]
       }
     },
+    "/inspections/{id}/close-procedure" : {
+      "post" : {
+        "operationId" : "closeProcedure",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/CloseProcedureRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Inspection"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Close an inspection procedure (with remark)",
+        "tags" : [ "Inspection" ]
+      }
+    },
     "/inspections/{id}/facility-duplicates" : {
       "get" : {
         "operationId" : "getFacilityDuplicates",
@@ -7308,6 +7346,16 @@
           }
         }
       },
+      "CloseProcedureRequest" : {
+        "required" : [ "note" ],
+        "type" : "object",
+        "properties" : {
+          "note" : {
+            "minLength" : 1,
+            "type" : "string"
+          }
+        }
+      },
       "ConfigurationStatus" : {
         "type" : "string",
         "enum" : [ "COMPLETE", "PARTIALLY_COMPLETE", "INCOMPLETE" ]
@@ -9184,6 +9232,9 @@
         "required" : [ "procedureMetrics" ],
         "type" : "object",
         "properties" : {
+          "procedureActionMetric" : {
+            "$ref" : "#/components/schemas/ProcedureActionMetric"
+          },
           "procedureMetrics" : {
             "type" : "array",
             "items" : {
@@ -10034,6 +10085,15 @@
           "challenging" : {
             "type" : "boolean"
           },
+          "closingRemark" : {
+            "type" : "string",
+            "nullable" : true
+          },
+          "closingRemarkProgressEntryId" : {
+            "type" : "string",
+            "format" : "uuid",
+            "nullable" : true
+          },
           "executedAppointment" : {
             "$ref" : "#/components/schemas/InspectionAppointment"
           },
@@ -10245,7 +10305,7 @@
       },
       "InspectionFeature" : {
         "type" : "string",
-        "enum" : [ "SAMPLES", "OBJECT_TYPE_HIERARCHY", "TEIS_DATA", "CHECKLIST_REQUIREMENT_REMOVAL", "OBJECT_TYPE_ASSIGNEE", "CHECKLISTS_ALWAYS_REMOVABLE" ]
+        "enum" : [ "SAMPLES", "OBJECT_TYPE_HIERARCHY", "TEIS_DATA", "CHECKLIST_REQUIREMENT_REMOVAL", "OBJECT_TYPE_ASSIGNEE", "CHECKLISTS_ALWAYS_REMOVABLE", "CLOSE_PROCEDURE_WITH_NOTE" ]
       },
       "InspectionFollowupInfo" : {
         "type" : "object",
@@ -11506,6 +11566,41 @@
             "type" : "string"
           }
         }
+      },
+      "ProcedureAction" : {
+        "required" : [ "count", "procedureActionType" ],
+        "type" : "object",
+        "properties" : {
+          "count" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "procedureActionType" : {
+            "$ref" : "#/components/schemas/ProcedureActionType"
+          }
+        }
+      },
+      "ProcedureActionMetric" : {
+        "required" : [ "businessModule", "referenceProcedureAction", "relatedProcedureActions" ],
+        "type" : "object",
+        "properties" : {
+          "businessModule" : {
+            "$ref" : "#/components/schemas/BusinessModule"
+          },
+          "referenceProcedureAction" : {
+            "$ref" : "#/components/schemas/ProcedureAction"
+          },
+          "relatedProcedureActions" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/ProcedureAction"
+            }
+          }
+        }
+      },
+      "ProcedureActionType" : {
+        "type" : "string",
+        "enum" : [ "APPOINTMENTS_BOOKED", "APPOINTMENTS_CANCELED", "APPOINTMENTS_RESCHEDULED", "APPOINTMENTS_RESCHEDULED_AT_LEAST_ONCE", "APPOINTMENTS_RESCHEDULED_AT_LEAST_TWICE", "DOCUMENTS_ACCEPTED", "DOCUMENTS_PROVIDED", "DOCUMENTS_REJECTED", "DOCUMENTS_REQUESTED", "INVITATIONS_SENT", "SUBMITTED_ANAMNESIS", "SUBMITTED_DECLARATIONS", "SUBMITTED_INFORMATION_SHEETS" ]
       },
       "ProcedureMetric" : {
         "required" : [ "abortedCount", "businessModule", "closedCount", "inProgressCount", "openOrDraftCount", "procedureType", "totalCount" ],

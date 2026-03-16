@@ -15,6 +15,7 @@ dependencies {
     api project(':lib-calendar-api')
     api project(':lib-contact-api')
     api project(':lib-notification-api')
+    api project(':lib-user-flow-metrics-api')
 
     testFixturesApi(project(":test-commons"))
     testFixturesImplementation("org.mockito:mockito-junit-jupiter")

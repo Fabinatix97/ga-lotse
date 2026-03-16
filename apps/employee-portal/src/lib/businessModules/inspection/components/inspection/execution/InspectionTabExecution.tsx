@@ -16,6 +16,7 @@ import { useCallback, useEffect, useState } from "react";
 import {
   ApiChecklist,
   ApiInspection,
+  ApiInspectionFeature,
   ApiInspectionPhase,
   ApiUpdateInspectionRequest,
 } from "@eshg/inspection-api";
@@ -29,6 +30,7 @@ import {
 } from "@/lib/businessModules/inspection/api/clients";
 import { useUpdateInspection } from "@/lib/businessModules/inspection/api/mutations/inspection";
 import { getChecklistsQuery } from "@/lib/businessModules/inspection/api/queries/checklist";
+import { useIsNewFeatureEnabled } from "@/lib/businessModules/inspection/api/queries/feature";
 import { getIncidentsQuery } from "@/lib/businessModules/inspection/api/queries/incidents";
 import {
   getAvailableCLDVsQuery,
@@ -97,6 +99,10 @@ export function InspectionTabExecution({
   const { openCancelDialog } = useConfirmationDialog();
   const currentSelectedNonCoreVersions =
     getCurrentSelectedNonCoreVersions(checklists);
+  const featureToggleCheckListsAlwaysRemovableEnabled = useIsNewFeatureEnabled(
+    ApiInspectionFeature.ChecklistsAlwaysRemovable,
+  );
+
   const { tabs, tabsList } = createTabs(checklists);
   const hasChecklists = checklists.length > 0;
 
@@ -273,6 +279,9 @@ export function InspectionTabExecution({
               withCoreVersions={false}
               inspectionExternalId={inspectionId}
               currentSelectedNonCoreVersions={currentSelectedNonCoreVersions}
+              checkListsAlwaysRemovable={
+                featureToggleCheckListsAlwaysRemovableEnabled
+              }
               onClose={() => setChecklistSidebar(false)}
             />
           )}

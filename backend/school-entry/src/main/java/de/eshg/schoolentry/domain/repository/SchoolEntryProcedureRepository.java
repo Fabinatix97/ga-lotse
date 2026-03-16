@@ -132,4 +132,38 @@ public interface SchoolEntryProcedureRepository extends ProcedureRepository<Scho
         """)
   List<WeeklyDataBinDto> getExaminationDates(
       @Param("userId") UUID userId, @Param("start") Instant start, @Param("end") Instant end);
+
+  @Query(
+      """
+  select count(p)
+    from SchoolEntryProcedure p
+  where p.isInvitationSent = true
+    and p.createdAt between :start and :end""")
+  long countInvitationSentTrueCreatedAtBetween(
+      @Param("start") Instant start, @Param("end") Instant end);
+
+  @Query(
+      """
+  select count(p)
+    from SchoolEntryProcedure p
+  where p.appointmentChangesByCitizen >= :times
+    and p.createdAt between :start and :end""")
+  long countByAppointmentChangedAtLeastTimesByCitizenCreatedAtBetween(
+      @Param("times") int times, @Param("start") Instant start, @Param("end") Instant end);
+
+  @Query(
+      """
+    select count(p)
+        from SchoolEntryProcedure p
+    where
+        p.createdAt between :start and :end
+            and exists (
+                SELECT 1
+                    FROM SystemProgressEntry spe
+                    WHERE spe.procedureId = p.id
+                    AND spe.systemProgressEntryType = :type
+                )
+    """)
+  long countBySystemProgressEntryTypeExistCreatedAtBetween(
+      @Param("type") String type, @Param("start") Instant start, @Param("end") Instant end);
 }

@@ -23,6 +23,7 @@ import java.util.Map;
 import java.util.SequencedMap;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
 public abstract class AbstractOpeningHoursService<O extends AbstractOpeningHours>
     extends EshgConfigurationService<O> {
@@ -70,10 +71,13 @@ public abstract class AbstractOpeningHoursService<O extends AbstractOpeningHours
 
   protected ConfigurationStatus toConfigurationStatus(O config) {
     if (config.isInitialized()
-        && Arrays.stream(Language.values()).noneMatch(lang -> config.get(lang).isEmpty())) {
+        && Arrays.stream(Language.values())
+            .noneMatch(lang -> CollectionUtils.isEmpty(config.get(lang)))) {
       return ConfigurationStatus.COMPLETE;
     } else if (config.isInitialized()
-        && Arrays.stream(Language.values()).filter(lang -> !config.get(lang).isEmpty()).count()
+        && Arrays.stream(Language.values())
+                .filter(lang -> !CollectionUtils.isEmpty(config.get(lang)))
+                .count()
             < Language.values().length) {
       return ConfigurationStatus.PARTIALLY_COMPLETE;
     } else {

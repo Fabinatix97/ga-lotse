@@ -5,9 +5,9 @@
 
 package de.eshg.infectionbriefing.domain.model;
 
+import de.eshg.infectionbriefing.InfectionBriefingTriggerType;
 import de.eshg.lib.common.DataSensitivity;
 import de.eshg.lib.common.SensitivityLevel;
-import de.eshg.lib.procedure.domain.model.TriggerType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import java.time.LocalDate;
@@ -35,7 +35,7 @@ public class NewCertificateProcedure extends InfectionBriefingProcedure {
 
   public NewCertificateProcedure() {}
 
-  public NewCertificateProcedure(TriggerType triggerType) {
+  public NewCertificateProcedure(InfectionBriefingTriggerType triggerType) {
     super(triggerType);
   }
 

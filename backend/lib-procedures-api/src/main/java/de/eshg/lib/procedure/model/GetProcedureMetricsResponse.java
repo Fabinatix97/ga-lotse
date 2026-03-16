@@ -9,4 +9,6 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import java.util.List;
 
-public record GetProcedureMetricsResponse(@Valid @NotNull List<ProcedureMetric> procedureMetrics) {}
+public record GetProcedureMetricsResponse(
+    @Valid @NotNull List<ProcedureMetric> procedureMetrics,
+    @Valid ProcedureActionMetric procedureActionMetric) {}

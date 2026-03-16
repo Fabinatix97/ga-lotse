@@ -9,7 +9,7 @@ import { useSuspenseQueries } from "@tanstack/react-query";
 
 import { useIsMobile } from "@eshg/lib-portal";
 
-import { useInfectionBriefingCitizenPublicApi } from "@/lib/businessModules/infectionBriefing/api/clients";
+import { useInfectionBriefingPublicCitizenApi } from "@/lib/businessModules/infectionBriefing/api/clients";
 import {
   getDepartmentInfoQuery,
   getOpeningHoursQuery,
@@ -32,7 +32,7 @@ export default function CitizenInfectionBriefingPage() {
   const { t } = useTranslation(["infectionBriefing/overview"]);
 
   const isMobile = useIsMobile();
-  const publicCitizenApi = useInfectionBriefingCitizenPublicApi();
+  const publicCitizenApi = useInfectionBriefingPublicCitizenApi();
   const [
     { data: landingContent },
     { data: departmentInfo },

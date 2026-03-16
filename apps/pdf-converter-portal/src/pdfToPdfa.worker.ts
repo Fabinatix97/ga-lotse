@@ -39,7 +39,7 @@ async function convertPdfWithGs(
       "-sDEVICE=pdfwrite",
       "-DNOPAUSE",
       "-dBATCH",
-      "-dPDFA",
+      "-dPDFA=2",
       "-dPDFACompatibilityPolicy=1",
       "-sColorConversionStrategy=UseDeviceIndependentColor",
       "-sOutputFile=output.pdf",

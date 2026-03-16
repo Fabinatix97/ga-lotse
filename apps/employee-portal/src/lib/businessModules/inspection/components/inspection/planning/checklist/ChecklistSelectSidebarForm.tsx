@@ -33,6 +33,7 @@ interface ChecklistSelectSidebarFormProps {
   inspectionExternalId: string;
   currentSelectedNonCoreVersions: ApiInspectionCLDVersion[];
   availableCldvs: ApiInspectionAvailableCLDVersionsResponse;
+  checkListsAlwaysRemovable: boolean;
 }
 
 interface ChecklistSelectFormType {
@@ -44,6 +45,7 @@ export function ChecklistSelectSidebarForm({
   availableCldvs: { versions, coreVersions, isExpandable },
   inspectionExternalId,
   currentSelectedNonCoreVersions,
+  checkListsAlwaysRemovable,
   onClose,
 }: Readonly<ChecklistSelectSidebarFormProps>) {
   const sidebarFormRef = useRef<SidebarFormHandle>(null);
@@ -58,7 +60,11 @@ export function ChecklistSelectSidebarForm({
 
   function validate({ selectedVersionIdsCount }: ChecklistSelectFormType) {
     const errors: FormikErrors<ChecklistSelectFormType> = {};
-    if (selectedVersionIdsCount === 0 && coreVersions.length === 0) {
+    if (
+      selectedVersionIdsCount === 0 &&
+      coreVersions.length === 0 &&
+      !checkListsAlwaysRemovable
+    ) {
       errors.selectedVersionIdsCount =
         "Bitte mindestens eine Checkliste auswählen.";
     }

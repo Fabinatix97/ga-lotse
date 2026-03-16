@@ -14,6 +14,8 @@ import de.eshg.domain.model.SequencedBaseEntityWithExternalId;
 import de.eshg.lib.auditlog.AuditLogger;
 import de.eshg.lib.common.DataSensitivity;
 import de.eshg.lib.common.SensitivityLevel;
+import de.eshg.rest.service.error.BadRequestException;
+import de.eshg.rest.service.error.ErrorCode;
 import de.eshg.rest.service.security.CurrentUserHelper;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -179,6 +181,11 @@ public abstract class Procedure<
       throw new IllegalArgumentException(
           "Status transition from '%s' to '%s' is not allowed"
               .formatted(this.procedureStatus, ProcedureStatus.DRAFT));
+    }
+    if (isReopened(procedureStatus) && this.archivingRelevance != ArchivingRelevance.DEFAULT) {
+      throw new BadRequestException(
+          ErrorCode.MARKED_FOR_DELETION,
+          "Procedures marked for archiving or deletion cannot be reopened.");
     }
   }
 

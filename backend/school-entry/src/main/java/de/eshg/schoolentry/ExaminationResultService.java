@@ -22,6 +22,7 @@ import de.eshg.schoolentry.domain.model.ExaminationWithDiagnosis;
 import de.eshg.schoolentry.domain.model.EyeExaminationResult;
 import de.eshg.schoolentry.domain.model.HandicapWithDiagnosis;
 import de.eshg.schoolentry.domain.model.HearingTestResult;
+import de.eshg.schoolentry.domain.model.PendingMeasurement;
 import de.eshg.schoolentry.domain.model.SopessExaminationResult;
 import de.eshg.schoolentry.domain.model.VaccinationStatus;
 import de.eshg.schoolentry.domain.repository.AnamnesisRepository;
@@ -173,7 +174,7 @@ public class ExaminationResultService {
 
   void updateHearingTestResult(
       HearingTestResult persistedHearingTestResult, HearingTestResult newHearingTestResult) {
-    copyValues(newHearingTestResult, persistedHearingTestResult);
+    copyValuesClearingPendingMeasurement(newHearingTestResult, persistedHearingTestResult);
 
     progressEntryUtil.addProgressEntry(
         persistedHearingTestResult.getProcedure(), HEARING_TEST_MODIFIED);
@@ -181,11 +182,27 @@ public class ExaminationResultService {
     hearingTestResultRepository.flush();
   }
 
-  private static void copyValues(HearingTestResult fromResult, HearingTestResult toResult) {
+  void startHearingTestOnADevice(
+      UUID procedureId, PendingMeasurement pendingMeasurement, long version) {
+    HearingTestResult hearingTestResult = findHearingTestResultForUpdate(procedureId, version);
+
+    hearingTestResult.setPendingMeasurement(pendingMeasurement);
+
+    hearingTestResultRepository.flush();
+  }
+
+  private void copyValues(HearingTestResult fromResult, HearingTestResult toResult) {
     toResult.setLeftEar(fromResult.getLeftEar());
     toResult.setRightEar(fromResult.getRightEar());
     toResult.setExaminationResult(fromResult.getExaminationResult());
     toResult.setNote(fromResult.getNote());
+    toResult.setPendingMeasurement(fromResult.getPendingMeasurement());
+  }
+
+  private void copyValuesClearingPendingMeasurement(
+      HearingTestResult fromResult, HearingTestResult toResult) {
+    copyValues(fromResult, toResult);
+    toResult.setPendingMeasurement(null);
   }
 
   void updateEyeExaminationResult(

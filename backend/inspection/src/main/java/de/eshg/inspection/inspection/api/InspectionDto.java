@@ -5,6 +5,7 @@
 
 package de.eshg.inspection.inspection.api;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import de.eshg.base.user.api.UserDto;
 import de.eshg.inspection.facility.api.InspFacilityDto;
 import de.eshg.inspection.incident.api.InspectionIncidentDto;
@@ -29,6 +30,9 @@ public record InspectionDto(
     @NotNull @Valid List<InspectionCLDVersionDto> selectedChecklistDefinitionVersions,
     @NotNull @Valid List<InspectionPLDRevisionDto> selectedPacklistDefinitionRevisions,
     String notes,
+    @Schema(nullable = true) @JsonInclude(JsonInclude.Include.NON_NULL) String closingRemark,
+    @Schema(nullable = true) @JsonInclude(JsonInclude.Include.NON_NULL)
+        UUID closingRemarkProgressEntryId,
     @NotNull @Valid List<InspectionInventoryDto> inventories,
     @NotNull @Valid List<InspectionResourceDto> resources,
     @Valid InspectionAppointmentDto plannedAppointment,

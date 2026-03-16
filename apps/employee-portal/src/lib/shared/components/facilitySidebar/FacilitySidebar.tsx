@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { Stack } from "@mui/joy";
 import { FormikProps } from "formik";
 import { ComponentType, ReactNode } from "react";
 import { isDefined } from "remeda";
@@ -15,7 +16,7 @@ import {
   useResetAlertContextOnChange,
   useSidebarFormHandle,
 } from "@eshg/lib-employee-portal";
-import { LoadingIndicator } from "@eshg/lib-portal";
+import { Alert, LoadingIndicator } from "@eshg/lib-portal";
 
 import {
   FacilityDetailsSidebar,
@@ -61,6 +62,7 @@ export type FacilitySidebarProps<TSearchValues, TFormValues> = {
   requiresContactPerson?: boolean;
   additionalFormFields?: ReactNode;
   additionalDetailsFields?: ReactNode;
+  alertMessage?: string;
 } & SidebarWithFormRefProps &
   OptionalSearchFormComponent<TSearchValues>;
 
@@ -115,20 +117,25 @@ function EmbeddedFacilitySidebar<
         />
       )}
       {state.stage === "search" && (
-        <FacilitySearchForm
-          title={props.title}
-          loading={state.queryEnabled}
-          initialValues={state.searchState}
-          formFieldsComponent={SearchFormComponent}
-          sidebarFormRef={props.formRef}
-          onCancel={() => props.onClose(false)}
-          onSearch={(inputs) =>
-            dispatch({
-              type: "SEARCH_START",
-              inputs,
-            })
-          }
-        />
+        <Stack direction="column" gap={2}>
+          {props.alertMessage && (
+            <Alert color="primary" message={props.alertMessage} />
+          )}
+          <FacilitySearchForm
+            title={props.title}
+            loading={state.queryEnabled}
+            initialValues={state.searchState}
+            formFieldsComponent={SearchFormComponent}
+            sidebarFormRef={props.formRef}
+            onCancel={() => props.onClose(false)}
+            onSearch={(inputs) =>
+              dispatch({
+                type: "SEARCH_START",
+                inputs,
+              })
+            }
+          />
+        </Stack>
       )}
       {state.stage === "search_results" && (
         <FacilitySearchResults

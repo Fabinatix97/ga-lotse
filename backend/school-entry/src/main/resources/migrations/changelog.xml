@@ -134,5 +134,9 @@
   <include file="migrations/0124_add_whodunit_columns_to_procedure.xml"/>
   <include file="migrations/0125_add_additional_languages.xml"/>
   <include file="migrations/0126_add_measuring_toggles.xml"/>
+  <include file="migrations/0127_add_pending_measurement.xml"/>
+  <include file="migrations/0128_add_user_flow.xml"/>
+  <include file="migrations/0129_add_documents_with_employee_info_to_config.xml" />
+  <include file="migrations/0130_add_oscilla_audio_device.xml"/>
 
 </databaseChangeLog>

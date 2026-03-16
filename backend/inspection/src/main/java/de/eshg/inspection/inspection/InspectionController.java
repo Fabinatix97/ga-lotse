@@ -5,6 +5,8 @@
 
 package de.eshg.inspection.inspection;
 
+import static de.eshg.inspection.feature.InspectionFeature.CLOSE_PROCEDURE_WITH_NOTE;
+import static de.eshg.rest.service.error.ErrorCode.BAD_REQUEST;
 import static de.eshg.rest.service.error.ErrorCode.INSUFFICIENT_USER_RIGHTS;
 
 import de.eshg.inspection.facility.FileNumberCollisionService;
@@ -115,6 +117,24 @@ public class InspectionController {
   @Transactional
   public InspectionDto approveInspection(@PathVariable("id") UUID externalId) {
     return inspectionService.approveInspection(externalId);
+  }
+
+  @PostMapping(path = "/{id}/close-procedure")
+  @Operation(summary = "Close an inspection procedure (with remark)")
+  @Transactional
+  public InspectionDto closeProcedure(
+      @PathVariable("id") UUID externalId, @Valid @RequestBody CloseProcedureRequest request) {
+    if (inspectionFeatureToggle.isNewFeatureDisabled(CLOSE_PROCEDURE_WITH_NOTE)) {
+      throw new BadRequestException(BAD_REQUEST, "Feature not enabled");
+    }
+    // Only users with edit permission may close procedures
+    if (!CurrentUserHelper.currentUserHasRole(EmployeePermissionRole.INSPECTION_PROCEDURE_EDIT)) {
+      throw new BadRequestException(INSUFFICIENT_USER_RIGHTS, "No rights to close procedures");
+    }
+    if (request.note().isBlank()) {
+      throw new BadRequestException("A non-empty note is required to close the procedure");
+    }
+    return inspectionService.closeProcedureWithRemark(externalId, request);
   }
 
   @GetMapping(path = "/report/{reportId}")

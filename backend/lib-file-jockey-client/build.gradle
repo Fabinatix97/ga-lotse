@@ -1,0 +1,16 @@
+// Copyright 2026 cronn GmbH
+// SPDX-License-Identifier: Apache-2.0
+
+plugins {
+    id 'eshg.java-lib'
+}
+
+dependencies {
+    api project(':file-jockey-api')
+
+    implementation project(':rest-client-commons')
+
+    implementation 'org.springframework.boot:spring-boot'
+    implementation 'org.springframework.boot:spring-boot-autoconfigure'
+    implementation 'org.springframework:spring-context'
+}

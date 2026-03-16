@@ -27,6 +27,12 @@ export function AdditionalInfoCard({
 }>) {
   const editAdditionalInfoSidebar = useEditAdditionalInfoSidebar();
 
+  function extractClosingRemark(remark: unknown): string | null {
+    if (typeof remark !== "string") return null;
+    return remark.split(":").slice(1).join(":");
+  }
+  const value = extractClosingRemark(inspection.closingRemark);
+
   return (
     <InformationSheet>
       {!inspection.assignee && (
@@ -65,6 +71,13 @@ export function AdditionalInfoCard({
                 : "-"
             }
           />
+          {typeof inspection.closingRemark === "string" &&
+          inspection.closingRemark ? (
+            <DetailsItem
+              label="Vermerk zur Schließung des Vorgangs"
+              value={value}
+            />
+          ) : null}
         </Grid>
       </DetailsSection>
     </InformationSheet>

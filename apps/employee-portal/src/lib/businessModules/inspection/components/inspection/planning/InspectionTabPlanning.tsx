@@ -12,6 +12,7 @@ import { ApiGetDepartmentInfoResponse } from "@eshg/base-api";
 import {
   ApiInspection,
   ApiInspectionAvailableCLDVersionsResponse,
+  ApiInspectionFeature,
   ApiInspectionPhase,
 } from "@eshg/inspection-api";
 import { useHeaderHeights, useIsOffline } from "@eshg/lib-employee-portal";
@@ -23,6 +24,7 @@ import {
 } from "@/lib/baseModule/api/clients";
 import { useInspectionApi } from "@/lib/businessModules/inspection/api/clients";
 import { getDepartmentQuery } from "@/lib/businessModules/inspection/api/queries/department";
+import { useIsNewFeatureEnabled } from "@/lib/businessModules/inspection/api/queries/feature";
 import {
   getAvailableCLDVsQuery,
   getInspectionQuery,
@@ -36,6 +38,8 @@ import { PacklistTile } from "@/lib/businessModules/inspection/components/inspec
 import { ResourceTile } from "@/lib/businessModules/inspection/components/inspection/planning/resource/ResourceTile";
 import { TravelTimeTile } from "@/lib/businessModules/inspection/components/inspection/planning/traveltime/TravelTimeTile";
 import { inspectionIsBeforePhase } from "@/lib/businessModules/inspection/shared/enums";
+
+import { CloseProcedureTile } from "./closeProcedure/CloseProcedureTile";
 
 interface InspectionTabPlanningProps {
   inspectionId: string;
@@ -68,6 +72,10 @@ export function InspectionTabPlanning({
   const isLargeLayout = width && width >= theme.breakpoints.values.lg;
 
   const isOffline = useIsOffline();
+
+  const featureToggleCloseProcedureWithNote = useIsNewFeatureEnabled(
+    ApiInspectionFeature.CloseProcedureWithNote,
+  );
 
   // Disallow editing of appointment and checklists as soon as the execution has started
   const hasReachedExecuting = !inspectionIsBeforePhase(
@@ -125,6 +133,7 @@ export function InspectionTabPlanning({
                 hasReachedExecuting={hasReachedExecuting}
                 inspection={inspection}
                 availableCldvs={availableCldvs}
+                hasReachedClosed={hasReachedClosed}
               />
             </Box>
             <Box
@@ -164,6 +173,9 @@ export function InspectionTabPlanning({
               hasReachedClosed={hasReachedClosed}
               inspection={inspection}
               department={department}
+              featureToggleCloseProcedureWithNote={
+                featureToggleCloseProcedureWithNote
+              }
             />
           </Box>
         </Box>
@@ -186,6 +198,7 @@ export function InspectionTabPlanning({
             hasReachedExecuting={hasReachedExecuting}
             inspection={inspection}
             availableCldvs={availableCldvs}
+            hasReachedClosed={hasReachedClosed}
           />
           <RightColumnElements
             isOffline={isOffline}
@@ -195,6 +208,9 @@ export function InspectionTabPlanning({
             hasReachedClosed={hasReachedClosed}
             inspection={inspection}
             department={department}
+            featureToggleCloseProcedureWithNote={
+              featureToggleCloseProcedureWithNote
+            }
           />
           <LeftColumnBottomElements
             isOffline={isOffline}
@@ -215,25 +231,38 @@ function TopTwinElements({
   hasReachedExecuting,
   inspection,
   availableCldvs,
+  hasReachedClosed,
 }: {
   isOffline: boolean;
   lockedByDifferentUser: boolean;
   hasReachedExecuting: boolean;
   inspection: ApiInspection;
   availableCldvs: ApiInspectionAvailableCLDVersionsResponse;
+  hasReachedClosed: boolean;
 }) {
   return (
     <>
       <Box sx={{ flex: 1, display: "flex" }}>
         <AppointmentTile
-          readonly={isOffline || lockedByDifferentUser || hasReachedExecuting}
+          readonly={
+            isOffline ||
+            lockedByDifferentUser ||
+            hasReachedExecuting ||
+            hasReachedClosed
+          }
           inspection={inspection}
           appointment={inspection.plannedAppointment}
+          hasReachedClosed={hasReachedClosed}
         />
       </Box>
       <Box sx={{ flex: 1, display: "flex" }}>
         <ChecklistTile
-          readonly={isOffline || lockedByDifferentUser || hasReachedExecuting}
+          readonly={
+            isOffline ||
+            lockedByDifferentUser ||
+            hasReachedExecuting ||
+            hasReachedClosed
+          }
           inspection={inspection}
           availableCldvs={availableCldvs}
         />
@@ -282,6 +311,7 @@ function RightColumnElements({
   hasReachedClosed,
   inspection,
   department,
+  featureToggleCloseProcedureWithNote,
 }: {
   isOffline: boolean;
   lockedByDifferentUser: boolean;
@@ -290,6 +320,7 @@ function RightColumnElements({
   hasReachedClosed: boolean;
   inspection: ApiInspection;
   department: ApiGetDepartmentInfoResponse;
+  featureToggleCloseProcedureWithNote: boolean;
 }) {
   return (
     <>
@@ -309,6 +340,9 @@ function RightColumnElements({
         isOffline={isOffline}
         inspection={inspection}
       />
+      {!hasReachedClosed && featureToggleCloseProcedureWithNote && (
+        <CloseProcedureTile inspection={inspection} />
+      )}
     </>
   );
 }

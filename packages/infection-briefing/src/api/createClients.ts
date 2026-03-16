@@ -7,6 +7,7 @@ import {
   AppointmentBlockApi,
   Configuration,
   InfectionBriefingAppointmentStandardDurationApi,
+  InfectionBriefingProcedureApi,
 } from "@eshg/infection-briefing-api";
 import { apiMiddlewares } from "@eshg/lib-portal";
 
@@ -19,6 +20,7 @@ export function createClients(baseUrl: string) {
     appointmentBlockApi: new AppointmentBlockApi(config),
     appointmentStandardDurationApi:
       new InfectionBriefingAppointmentStandardDurationApi(config),
+    infectionBriefingProcedureApi: new InfectionBriefingProcedureApi(config),
   };
 }
 export type InfectionBriefingClients = ReturnType<typeof createClients>;

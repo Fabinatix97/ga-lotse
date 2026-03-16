@@ -49,7 +49,7 @@ export type SelectFieldValue<TMultiple extends boolean> = NonNullable<
 
 export interface GroupedOption {
   id: string;
-  name: string;
+  name: ReactNode;
 }
 
 export interface SelectFieldProps<

@@ -8,6 +8,7 @@ import {
   ApiDecibelValue,
   ApiHearingTestResult,
   ApiHertzValue,
+  ApiPendingMeasurement,
 } from "@eshg/school-entry-api";
 
 import {
@@ -20,6 +21,7 @@ export interface HearingTestResult extends Versioned {
   rightEar: HearingTest;
   examinationResult: ExaminationResult;
   note?: string;
+  pendingMeasurement?: ApiPendingMeasurement;
 }
 
 type HearingTest = Record<ApiHertzValue, ApiDecibelValue>;
@@ -33,5 +35,6 @@ export function mapHearingTestResult(
     rightEar: response.rightEar as HearingTest,
     examinationResult: mapExaminationResult(response.examinationResult),
     note: response.note,
+    pendingMeasurement: response.pendingMeasurement,
   };
 }

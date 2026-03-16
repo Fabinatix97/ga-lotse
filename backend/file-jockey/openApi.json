@@ -331,6 +331,57 @@
         },
         "tags" : [ "TestHelper" ]
       }
+    },
+    "/test-helper/{equipmentSelector}/{correlationId}/output-device" : {
+      "put" : {
+        "operationId" : "createBasicDeviceOutputFile",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "equipmentSelector",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "in" : "path",
+          "name" : "correlationId",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/octet-stream" : { }
+            },
+            "description" : "Output file created"
+          },
+          "400" : {
+            "content" : {
+              "application/json" : { }
+            },
+            "description" : "Invalid correlation ID format"
+          },
+          "404" : {
+            "content" : {
+              "application/json" : { }
+            },
+            "description" : "Provided equipment selector is unknown"
+          },
+          "429" : {
+            "description" : "Too many requests"
+          },
+          "503" : {
+            "content" : {
+              "application/json" : { }
+            },
+            "description" : "Output folder does not exist or is not accessible"
+          }
+        },
+        "summary" : "Create an output file for device using a mock template file. Inserts a correlationId embedding specific for passed parameters.",
+        "tags" : [ "TestHelper" ]
+      }
     }
   },
   "components" : {

@@ -5,9 +5,11 @@
 
 "use client";
 
+import { Grid } from "@mui/joy";
 import { useSuspenseQueries } from "@tanstack/react-query";
 import { Formik, FormikErrors } from "formik";
-import { useMemo, useRef } from "react";
+import { useMemo, useRef, useState } from "react";
+import { undefined } from "valibot";
 
 import {
   ApiCreateInspectionSampleRequest,
@@ -26,7 +28,7 @@ import {
   useSidebarWithFormRef,
   useStepper,
 } from "@eshg/lib-employee-portal";
-import { formatUserName } from "@eshg/lib-portal";
+import { Alert, FormPlus, formatUserName } from "@eshg/lib-portal";
 
 import { useUserApi } from "@/lib/baseModule/api/clients";
 import { useCreateSample } from "@/lib/businessModules/inspection/api/mutations/sample";
@@ -69,7 +71,17 @@ function InspectionAddSampleSidebar({
     onClose(force);
   }
 
+  const [measurementFilled, setMeasurementFilled] = useState("");
+
   async function onFinalSubmit(formValues: InspectionSampleSidebarFormType) {
+    if (formValues.measurementParameters.length <= 0) {
+      setMeasurementFilled(
+        "Es muss mindestens ein Messparameter hinzugefügt werden!",
+      );
+      return;
+    }
+    setMeasurementFilled("");
+
     const payload: ApiCreateInspectionSampleRequest =
       makeCreateInspectionSampleRequest(formValues);
     await createSample(
@@ -170,24 +182,15 @@ function InspectionAddSampleSidebar({
 
   const initialValues: InspectionSampleSidebarFormType = useMemo(() => {
     return {
-      evaluatingActor: {
-        label: "",
-        value: { id: "", type: "InspectionSampleUserReference" },
-      },
+      evaluatingActor: null,
       evaluationType: ApiInspectionSampleEvaluationType.OnSite,
       externalId: "",
       measurementParameters: [],
       sampleNumber: "",
-      samplingPoint: {
-        label: "",
-        value: "",
-      },
-      samplingActor: {
-        label: "",
-        value: { id: "", type: "InspectionSampleUserReference" },
-      },
-      timeOfEvaluation: undefined,
-      timeOfSampling: undefined,
+      samplingPoint: null,
+      samplingActor: null,
+      timeOfEvaluation: "",
+      timeOfSampling: "",
       typeOfSample: ApiInspectionSampleType.DrinkingWater,
     };
   }, []);
@@ -198,15 +201,29 @@ function InspectionAddSampleSidebar({
       initialValues={initialValues}
       onSubmit={handleNext}
     >
-      {({ isValid, values, setFieldValue }) => (
+      {({ isSubmitting, values, setFieldValue }) => (
         <SidebarForm ref={formRef}>
           <ConfirmLeaveDirtyFormEffect />
           <SidebarContent title={step.title} subtitle={step.subTitle}>
-            <Fields values={values} setFieldValue={setFieldValue} />
+            <Grid
+              container
+              component={FormPlus}
+              spacing={2}
+              sx={{ flexGrow: 1 }}
+            >
+              {measurementFilled && (
+                <Grid xxs={12}>
+                  <Alert color="danger" message={measurementFilled} />
+                </Grid>
+              )}
+              <Grid xxs={12}>
+                <Fields values={values} setFieldValue={setFieldValue} />
+              </Grid>
+            </Grid>
           </SidebarContent>
           <SidebarActions>
             <MultiFormButtonBar
-              submitting={!isValid}
+              submitting={isSubmitting}
               submitLabel={isOnLastStep ? "Probe hinzufügen" : "Weiter"}
               onCancel={handleClose}
               onBack={isOnFirstStep ? undefined : handlePrev}

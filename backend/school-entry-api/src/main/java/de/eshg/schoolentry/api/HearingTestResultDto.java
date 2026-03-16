@@ -52,4 +52,6 @@ public record HearingTestResultDto(
                     """)
         Map<HertzValueDto, DecibelValueDto> rightEar,
     @Valid @NotNull ExaminationResultDto examinationResult,
-    @Schema(description = "Notes recorded for the hearing test.") String note) {}
+    @Schema(description = "Notes recorded for the hearing test.") String note,
+    @Schema(description = "Data of pending measurement on a device.") @Valid
+        PendingMeasurementDto pendingMeasurement) {}

@@ -44,7 +44,7 @@ public class MeasuringDeviceMapper {
 
   public static GdtDriverDto mapGdtDriverToDto(GdtDriver driver) {
     return switch (driver) {
-      case DUMMY -> GdtDriverDto.DUMMY;
+      case OSCILLA_AUDIO_CONSOLE -> GdtDriverDto.OSCILLA_AUDIO_CONSOLE;
     };
   }
 
@@ -68,7 +68,7 @@ public class MeasuringDeviceMapper {
 
   public static GdtDriver mapGdtDriverToDomain(GdtDriverDto dto) {
     return switch (dto) {
-      case DUMMY -> GdtDriver.DUMMY;
+      case OSCILLA_AUDIO_CONSOLE -> GdtDriver.OSCILLA_AUDIO_CONSOLE;
     };
   }
 

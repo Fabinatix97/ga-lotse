@@ -5,19 +5,19 @@
 
 "use client";
 
-import { Typography } from "@mui/joy";
-
 import {
   MainContentLayout,
   StickyToolbarLayout,
   Toolbar,
 } from "@eshg/lib-employee-portal";
 
+import { InfectionBriefingProceduresTable } from "../components/procedures/proceduresTable/InfectionBriefingProceduresTable";
+
 export function InfectionBriefingOverviewPage() {
   return (
     <StickyToolbarLayout toolbar={<Toolbar title="Lebensmittelausweis" />}>
       <MainContentLayout fullViewportHeight>
-        <Typography>Infection Briefing Procedures Table</Typography>
+        <InfectionBriefingProceduresTable />
       </MainContentLayout>
     </StickyToolbarLayout>
   );

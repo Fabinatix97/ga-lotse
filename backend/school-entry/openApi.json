@@ -846,6 +846,34 @@
         "tags" : [ "SchoolEntryCitizen" ]
       }
     },
+    "/citizen/auth/start-user-flow" : {
+      "post" : {
+        "operationId" : "getStartUserFlowTrackingResponse",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/GetStartUserFlowTrackingRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/GetStartUserFlowTrackingResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "SchoolEntryCitizen" ]
+      }
+    },
     "/citizen/public/department-info" : {
       "get" : {
         "operationId" : "getDepartmentInfo",
@@ -4274,6 +4302,82 @@
         "tags" : [ "SchoolEntry" ]
       }
     },
+    "/school-entries/{procedureId}/hearing-test-complete" : {
+      "post" : {
+        "operationId" : "completeHearingTest",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "procedureId",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/HearingTestCompleteRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/HearingTestResult"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Fetch hearing test results from measuring device, update and complete the test for a procedure.",
+        "tags" : [ "SchoolEntry" ]
+      }
+    },
+    "/school-entries/{procedureId}/hearing-test-initiate" : {
+      "post" : {
+        "operationId" : "initiateHearingTest",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "procedureId",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/HearingTestInitializationRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/HearingTestInitializationResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Initiate hearing test on a measuring device for a procedure.",
+        "tags" : [ "SchoolEntry" ]
+      }
+    },
     "/school-entries/{procedureId}/hearing-test-result" : {
       "get" : {
         "operationId" : "getHearingTestResult",
@@ -4721,41 +4825,6 @@
           }
         },
         "summary" : "Update waiting room details for a procedure.",
-        "tags" : [ "SchoolEntry" ]
-      }
-    },
-    "/school-entries/{procedureId}/{equipmentId}/hearing-test-initiate" : {
-      "post" : {
-        "operationId" : "initiateHearingTest",
-        "parameters" : [ {
-          "in" : "path",
-          "name" : "procedureId",
-          "required" : true,
-          "schema" : {
-            "type" : "string",
-            "format" : "uuid"
-          }
-        }, {
-          "in" : "path",
-          "name" : "equipmentId",
-          "required" : true,
-          "schema" : {
-            "type" : "string"
-          }
-        } ],
-        "responses" : {
-          "200" : {
-            "content" : {
-              "*/*" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/HearingTestInitializationResponse"
-                }
-              }
-            },
-            "description" : "OK"
-          }
-        },
-        "summary" : "Initiates hearing test on a machine for a procedure.",
         "tags" : [ "SchoolEntry" ]
       }
     },
@@ -5241,6 +5310,30 @@
         "tags" : [ "TestHelper" ]
       }
     },
+    "/test-helper/documents-with-wmployee-info" : {
+      "post" : {
+        "operationId" : "updateDocumentsWithEmployeeInfo",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "type" : "array",
+                "items" : {
+                  "$ref" : "#/components/schemas/DocumentTypes"
+                }
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "TestHelper" ]
+      }
+    },
     "/test-helper/enabled-new-features/{featureToDisable}" : {
       "delete" : {
         "operationId" : "disableNewFeature",
@@ -5473,6 +5566,17 @@
                 }
               }
             },
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "TestHelper" ]
+      }
+    },
+    "/test-helper/run-archiving-job" : {
+      "post" : {
+        "operationId" : "runArchivingJob",
+        "responses" : {
+          "200" : {
             "description" : "OK"
           }
         },
@@ -5782,6 +5886,10 @@
         "properties" : {
           "anamnesis" : {
             "$ref" : "#/components/schemas/CitizenAnamnesis"
+          },
+          "userFlowTrackingId" : {
+            "type" : "string",
+            "format" : "uuid"
           }
         },
         "description" : "Add an anamnesis of the child completed by the custodians."
@@ -7458,6 +7566,10 @@
           }
         }
       },
+      "DocumentTypes" : {
+        "type" : "string",
+        "enum" : [ "MEDICAL_REPORT", "SCHOOL_INFO_LETTER" ]
+      },
       "DomesticAddress" : {
         "required" : [ "city", "country", "postalCode", "street" ],
         "type" : "object",
@@ -7941,7 +8053,7 @@
       },
       "GdtDriver" : {
         "type" : "string",
-        "enum" : [ "DUMMY" ]
+        "enum" : [ "OSCILLA_AUDIO_CONSOLE" ]
       },
       "Gender" : {
         "type" : "string",
@@ -8815,6 +8927,9 @@
         "required" : [ "procedureMetrics" ],
         "type" : "object",
         "properties" : {
+          "procedureActionMetric" : {
+            "$ref" : "#/components/schemas/ProcedureActionMetric"
+          },
           "procedureMetrics" : {
             "type" : "array",
             "items" : {
@@ -9087,6 +9202,25 @@
           }
         }
       },
+      "GetStartUserFlowTrackingRequest" : {
+        "required" : [ "userFlowType" ],
+        "type" : "object",
+        "properties" : {
+          "userFlowType" : {
+            "$ref" : "#/components/schemas/UserFlowType"
+          }
+        }
+      },
+      "GetStartUserFlowTrackingResponse" : {
+        "required" : [ "userFlowTrackingId" ],
+        "type" : "object",
+        "properties" : {
+          "userFlowTrackingId" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }
+      },
       "GetTaskByUserResponse" : {
         "required" : [ "resolvedUsers", "tasksByUser" ],
         "type" : "object",
@@ -9220,12 +9354,44 @@
         },
         "description" : "Diagnosis related to disability."
       },
+      "HearingTestCompleteRequest" : {
+        "required" : [ "version" ],
+        "type" : "object",
+        "properties" : {
+          "version" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        }
+      },
+      "HearingTestInitializationRequest" : {
+        "required" : [ "equipmentSelector", "version" ],
+        "type" : "object",
+        "properties" : {
+          "equipmentSelector" : {
+            "minLength" : 1,
+            "type" : "string"
+          },
+          "version" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        }
+      },
       "HearingTestInitializationResponse" : {
-        "required" : [ "correlationId", "firstNameAlias", "lastNameAlias" ],
+        "required" : [ "correlationId", "equipmentName", "equipmentSelector", "firstNameAlias", "lastNameAlias" ],
         "type" : "object",
         "properties" : {
           "correlationId" : {
             "pattern" : "^[A-Za-z0-9]{6}$",
+            "type" : "string"
+          },
+          "equipmentName" : {
+            "minLength" : 1,
+            "type" : "string"
+          },
+          "equipmentSelector" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "firstNameAlias" : {
@@ -9264,6 +9430,9 @@
           "note" : {
             "type" : "string",
             "description" : "Notes recorded for the hearing test."
+          },
+          "pendingMeasurement" : {
+            "$ref" : "#/components/schemas/PendingMeasurement"
           },
           "rightEar" : {
             "type" : "object",
@@ -9973,6 +10142,33 @@
           }
         } ]
       },
+      "PendingMeasurement" : {
+        "required" : [ "correlationId", "equipmentName", "equipmentSelector", "firstNameAlias", "lastNameAlias" ],
+        "type" : "object",
+        "properties" : {
+          "correlationId" : {
+            "pattern" : "^[A-Za-z0-9]{6}$",
+            "type" : "string"
+          },
+          "equipmentName" : {
+            "minLength" : 1,
+            "type" : "string"
+          },
+          "equipmentSelector" : {
+            "minLength" : 1,
+            "type" : "string"
+          },
+          "firstNameAlias" : {
+            "minLength" : 1,
+            "type" : "string"
+          },
+          "lastNameAlias" : {
+            "minLength" : 1,
+            "type" : "string"
+          }
+        },
+        "description" : "Data of pending measurement on a device."
+      },
       "PercentageValue" : {
         "type" : "string",
         "description" : "Percentage value of visibility",
@@ -10262,6 +10458,41 @@
             "type" : "string"
           }
         }
+      },
+      "ProcedureAction" : {
+        "required" : [ "count", "procedureActionType" ],
+        "type" : "object",
+        "properties" : {
+          "count" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "procedureActionType" : {
+            "$ref" : "#/components/schemas/ProcedureActionType"
+          }
+        }
+      },
+      "ProcedureActionMetric" : {
+        "required" : [ "businessModule", "referenceProcedureAction", "relatedProcedureActions" ],
+        "type" : "object",
+        "properties" : {
+          "businessModule" : {
+            "$ref" : "#/components/schemas/BusinessModule"
+          },
+          "referenceProcedureAction" : {
+            "$ref" : "#/components/schemas/ProcedureAction"
+          },
+          "relatedProcedureActions" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/ProcedureAction"
+            }
+          }
+        }
+      },
+      "ProcedureActionType" : {
+        "type" : "string",
+        "enum" : [ "APPOINTMENTS_BOOKED", "APPOINTMENTS_CANCELED", "APPOINTMENTS_RESCHEDULED", "APPOINTMENTS_RESCHEDULED_AT_LEAST_ONCE", "APPOINTMENTS_RESCHEDULED_AT_LEAST_TWICE", "DOCUMENTS_ACCEPTED", "DOCUMENTS_PROVIDED", "DOCUMENTS_REJECTED", "DOCUMENTS_REQUESTED", "INVITATIONS_SENT", "SUBMITTED_ANAMNESIS", "SUBMITTED_DECLARATIONS", "SUBMITTED_INFORMATION_SHEETS" ]
       },
       "ProcedureDetails" : {
         "required" : [ "child", "createdAt", "custodians", "hasBeenClosed", "hasInformationBlock", "id", "isDeceased", "isDeletable", "isEntryLevel", "isInvitationSent", "isPastProcedure", "labels", "modifiedAt", "statisticsInclusion", "status", "type", "version", "waitingRoom" ],
@@ -10761,6 +10992,13 @@
         "properties" : {
           "directProcedureTypeAssignmentOnImport" : {
             "type" : "boolean"
+          },
+          "documentsWithEmployeeInfo" : {
+            "uniqueItems" : true,
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/DocumentTypes"
+            }
           },
           "invitationIncludePerson" : {
             "type" : "boolean"
@@ -11788,6 +12026,10 @@
         "properties" : {
           "newAppointment" : {
             "$ref" : "#/components/schemas/Appointment"
+          },
+          "userFlowTrackingId" : {
+            "type" : "string",
+            "format" : "uuid"
           }
         },
         "description" : "Citizen appointment update."
@@ -12073,6 +12315,12 @@
           "directProcedureTypeAssignmentOnImport" : {
             "type" : "boolean"
           },
+          "documentsWithEmployeeInfo" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/DocumentTypes"
+            }
+          },
           "invitationIncludePerson" : {
             "type" : "boolean"
           },
@@ -12158,6 +12406,10 @@
             "example" : "testuser"
           }
         }
+      },
+      "UserFlowType" : {
+        "type" : "string",
+        "enum" : [ "ANAMNESIS", "BOOKING", "CANCELING", "INFORMATION_STATEMENT", "REPORTING", "RESCHEDULING" ]
       },
       "VaccinationCheckRequest" : {
         "required" : [ "fileStateIds" ],

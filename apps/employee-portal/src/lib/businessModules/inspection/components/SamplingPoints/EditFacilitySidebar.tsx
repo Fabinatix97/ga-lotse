@@ -18,7 +18,7 @@ import {
   useConfirmationDialog,
   useSidebarWithFormRef,
 } from "@eshg/lib-employee-portal";
-import { SetFieldValueHelper, formatPersonName } from "@eshg/lib-portal";
+import { Alert, SetFieldValueHelper, formatPersonName } from "@eshg/lib-portal";
 
 import { useUserApi } from "@/lib/baseModule/api/clients";
 import { useAssignUserToFacility } from "@/lib/businessModules/inspection/api/mutations/samplingPoints";
@@ -122,6 +122,12 @@ function EditFacilitySidebarWithQueriesAndMutations({
         <SidebarForm ref={formRef} aria-label={`${facilityName} bearbeiten`}>
           <SidebarContent title={`${facilityName} bearbeiten`}>
             <Grid container columnSpacing={1} rowSpacing={3}>
+              <Grid xxs={12}>
+                <Alert
+                  color="primary"
+                  message="Der für die Einrichtung zuständige Mitarbeiter wird automatisch für alle Vorgänge dieser Einrichtung verwendet."
+                />
+              </Grid>
               <Grid xs={12}>
                 <InspectionAssigneeSelection
                   selfUser={selfUser}

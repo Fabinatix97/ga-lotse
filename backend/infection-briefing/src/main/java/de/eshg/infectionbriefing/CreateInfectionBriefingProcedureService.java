@@ -26,14 +26,9 @@ import de.eshg.infectionbriefing.domain.model.NewCertificateProcedure;
 import de.eshg.infectionbriefing.domain.model.ReplacementCertificateProcedure;
 import de.eshg.infectionbriefing.domain.repository.InfectionBriefingProcedureRepository;
 import de.eshg.lib.appointmentblock.persistence.AppointmentType;
-import de.eshg.lib.auditlog.AuditLogger;
-import de.eshg.lib.procedure.domain.model.ProcedureStatus;
 import de.eshg.lib.procedure.domain.model.ProcedureType;
-import de.eshg.lib.procedure.domain.model.TriggerType;
 import de.eshg.lib.rest.oauth.client.commons.ModuleClientAuthenticator;
-import java.time.Clock;
 import java.time.Instant;
-import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Consumer;
 import org.springframework.stereotype.Service;
@@ -44,8 +39,7 @@ public class CreateInfectionBriefingProcedureService {
   private final InfectionBriefingAppointmentService appointmentService;
   private final PersonClient personClient;
   private final InfectionBriefingProcedureRepository procedureRepository;
-  private final Clock clock;
-  private final AuditLogger auditLogger;
+  private final ProcedureStatusUpdater procedureStatusUpdater;
   private final MailService mailService;
   private final ModuleClientAuthenticator moduleClientAuthenticator;
   private final CitizenAccessCodeUserApi citizenAccessCodeUserApi;
@@ -54,16 +48,14 @@ public class CreateInfectionBriefingProcedureService {
       InfectionBriefingAppointmentService appointmentService,
       PersonClient personClient,
       InfectionBriefingProcedureRepository procedureRepository,
-      Clock clock,
-      AuditLogger auditLogger,
+      ProcedureStatusUpdater procedureStatusUpdater,
       MailService mailService,
       ModuleClientAuthenticator moduleClientAuthenticator,
       CitizenAccessCodeUserApi citizenAccessCodeUserApi) {
     this.appointmentService = appointmentService;
     this.personClient = personClient;
     this.procedureRepository = procedureRepository;
-    this.clock = clock;
-    this.auditLogger = auditLogger;
+    this.procedureStatusUpdater = procedureStatusUpdater;
     this.mailService = mailService;
     this.moduleClientAuthenticator = moduleClientAuthenticator;
     this.citizenAccessCodeUserApi = citizenAccessCodeUserApi;
@@ -71,8 +63,8 @@ public class CreateInfectionBriefingProcedureService {
 
   public BookAppointmentResponse createNewCertificateProcedureByCitizen(
       BookNewCertificateAppointmentRequest request) {
-    return createProcedureWithApointment(
-        TriggerType.CITIZEN,
+    return createProcedureWithAppointment(
+        InfectionBriefingTriggerType.CITIZEN,
         AppointmentType.INFECTION_BRIEFING_NEW,
         request.startTime(),
         request.applicant(),
@@ -81,8 +73,8 @@ public class CreateInfectionBriefingProcedureService {
 
   public BookAppointmentResponse createNewCertificateProcedureByEmployee(
       BookNewCertificateAppointmentByEmployeeRequest request) {
-    return createProcedureWithApointment(
-        TriggerType.EMPLOYEE,
+    return createProcedureWithAppointment(
+        InfectionBriefingTriggerType.EMPLOYEE,
         AppointmentType.INFECTION_BRIEFING_NEW,
         request.startTime(),
         request.applicant(),
@@ -91,8 +83,8 @@ public class CreateInfectionBriefingProcedureService {
 
   public BookAppointmentResponse createReplacementCertificateProcedureByCitizen(
       BookReplacementCertificateAppointmentRequest request) {
-    return createProcedureWithApointment(
-        TriggerType.CITIZEN,
+    return createProcedureWithAppointment(
+        InfectionBriefingTriggerType.CITIZEN,
         AppointmentType.INFECTION_BRIEFING_REPLACEMENT,
         request.startTime(),
         request.applicant(),
@@ -101,8 +93,8 @@ public class CreateInfectionBriefingProcedureService {
 
   public BookAppointmentResponse createReplacementCertificateProcedureByEmployee(
       BookReplacementCertificateAppointmentByEmployeeRequest request) {
-    return createProcedureWithApointment(
-        TriggerType.EMPLOYEE,
+    return createProcedureWithAppointment(
+        InfectionBriefingTriggerType.EMPLOYEE,
         AppointmentType.INFECTION_BRIEFING_REPLACEMENT,
         request.startTime(),
         request.applicant(),
@@ -111,20 +103,21 @@ public class CreateInfectionBriefingProcedureService {
 
   public CreateNewCertificateProcedureResponse createNewCertificateProcedureByEmployee(
       CreateNewCertificateProcedureRequest request) {
-    NewCertificateProcedure procedure = new NewCertificateProcedure(TriggerType.EMPLOYEE);
+    NewCertificateProcedure procedure =
+        new NewCertificateProcedure(InfectionBriefingTriggerType.EMPLOYEE);
     procedure.addRelatedPerson(
         mapToInfectionBriefingPerson(
             personClient.createPersonInCentralFile(
                 request.applicant(), request.applicantAddress())));
     procedure.setProcedureType(ProcedureType.INFECTION_BRIEFING_NEW);
-    procedure.updateProcedureStatus(ProcedureStatus.OPEN, clock, auditLogger);
+    procedureStatusUpdater.initializeAsOpen(procedure);
     procedure.setInstructionType(InstructionType.ON_SITE);
     return new CreateNewCertificateProcedureResponse(
         procedureRepository.save(procedure).getExternalId());
   }
 
-  private BookAppointmentResponse createProcedureWithApointment(
-      TriggerType triggerType,
+  private BookAppointmentResponse createProcedureWithAppointment(
+      InfectionBriefingTriggerType triggerType,
       AppointmentType appointmentType,
       Instant startTime,
       PersonCreationData applicant,
@@ -134,25 +127,22 @@ public class CreateInfectionBriefingProcedureService {
         appointmentService.bookAppointment(procedure, appointmentType, startTime);
     UUID fileStateId = createFileState(triggerType, applicant, applicantAddress);
     procedure.addRelatedPerson(mapToInfectionBriefingPerson(fileStateId));
-    procedure.updateProcedureStatus(ProcedureStatus.DRAFT, clock, auditLogger);
-    boolean emailSent =
-        Optional.ofNullable(applicant.email())
-            .map(
-                email ->
-                    createAccessCodeAndSendMail(
-                        email,
-                        appointmentType,
-                        triggerType,
-                        startTime,
-                        fileStateId,
-                        procedure::setCitizenUserId))
-            .orElse(false);
+    procedureStatusUpdater.initializeAsDraft(procedure);
+    if (applicant.email() != null) {
+      createAccessCodeAndSendMail(
+          applicant.email(),
+          appointmentType,
+          triggerType,
+          startTime,
+          fileStateId,
+          procedure::setCitizenUserId);
+    }
     procedureRepository.save(procedure);
-    return new BookAppointmentResponse(appointment, emailSent);
+    return new BookAppointmentResponse(appointment);
   }
 
   private InfectionBriefingProcedure createProcedure(
-      TriggerType triggerType, AppointmentType appointmentType) {
+      InfectionBriefingTriggerType triggerType, AppointmentType appointmentType) {
     return switch (appointmentType) {
       case INFECTION_BRIEFING_NEW -> createNewCertificateProcedure(triggerType);
       case INFECTION_BRIEFING_REPLACEMENT -> createReplacementCertificateProcedure(triggerType);
@@ -161,7 +151,8 @@ public class CreateInfectionBriefingProcedureService {
     };
   }
 
-  private InfectionBriefingProcedure createNewCertificateProcedure(TriggerType triggerType) {
+  private InfectionBriefingProcedure createNewCertificateProcedure(
+      InfectionBriefingTriggerType triggerType) {
     NewCertificateProcedure procedure = new NewCertificateProcedure(triggerType);
     procedure.setProcedureType(ProcedureType.INFECTION_BRIEFING_NEW);
     procedure.setInstructionType(InstructionType.ON_SITE);
@@ -169,16 +160,16 @@ public class CreateInfectionBriefingProcedureService {
   }
 
   private InfectionBriefingProcedure createReplacementCertificateProcedure(
-      TriggerType triggerType) {
+      InfectionBriefingTriggerType triggerType) {
     ReplacementCertificateProcedure procedure = new ReplacementCertificateProcedure(triggerType);
     procedure.setProcedureType(ProcedureType.INFECTION_BRIEFING_REPLACEMENT);
     return procedure;
   }
 
-  private boolean createAccessCodeAndSendMail(
+  private void createAccessCodeAndSendMail(
       String email,
       AppointmentType appointmentType,
-      TriggerType triggerType,
+      InfectionBriefingTriggerType triggerType,
       Instant startTime,
       UUID fileStateId,
       Consumer<UUID> citizenUserIdConsumer) {
@@ -188,16 +179,17 @@ public class CreateInfectionBriefingProcedureService {
                 citizenAccessCodeUserApi.addCitizenAccessCodeUserWithDateOfBirthCredential(
                     new AddCitizenAccessCodeUserWithDateOfBirthCredentialRequest(fileStateId)));
     citizenUserIdConsumer.accept(citizenAccessCodeUser.userId());
-    return mailService.sendAppointmentConfirmationMail(
+    mailService.sendAppointmentConfirmationMail(
         email, appointmentType, triggerType, startTime, citizenAccessCodeUser.accessCode());
   }
 
   private UUID createFileState(
-      TriggerType triggerType, PersonCreationData applicant, ApplicantAddressDto applicantAddress) {
+      InfectionBriefingTriggerType triggerType,
+      PersonCreationData applicant,
+      ApplicantAddressDto applicantAddress) {
     return switch (triggerType) {
       case CITIZEN -> personClient.createExternalSourcePerson(applicant, applicantAddress);
       case EMPLOYEE -> personClient.createPersonInCentralFile(applicant, applicantAddress);
-      default -> throw new IllegalArgumentException("Unsupported triggerType " + triggerType);
     };
   }
 }

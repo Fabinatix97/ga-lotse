@@ -13,6 +13,7 @@ import {
   FilterValue,
   PROCEDURE_STATUS_NAMES,
   ToggleFilterButton,
+  toSet,
   useFilterSettings,
   useQueryParamStateProvider,
 } from "@eshg/lib-employee-portal";
@@ -130,23 +131,6 @@ function toLabelValue([key, label]: [key: string, label: string]) {
 
 function useProceduresFilterState() {
   return useQueryParamStateProvider(filterDefinitions);
-}
-
-function toSet<T extends string>(
-  list: string[] | undefined,
-  map: Record<string, T>,
-): Set<T> | undefined {
-  if (list === undefined) {
-    return;
-  }
-  const setValues = Object.values(map);
-  const typedList = list.filter((t): t is T =>
-    (setValues as string[]).includes(t),
-  );
-  if (typedList.length === 0) {
-    return;
-  }
-  return new Set(typedList);
 }
 
 type ActualProcedureFilterDefinition = (typeof filterDefinitions)[number];

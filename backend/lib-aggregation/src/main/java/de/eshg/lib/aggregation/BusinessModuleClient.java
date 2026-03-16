@@ -39,6 +39,8 @@ import de.eshg.lib.statistics.api.GetDataTableHeaderRequest;
 import de.eshg.lib.statistics.api.GetDataTableHeaderResponse;
 import de.eshg.lib.statistics.api.GetSpecificDataRequest;
 import de.eshg.lib.statistics.api.GetSpecificDataResponse;
+import de.eshg.lib.userflowmetrics.api.GetUserFlowMetricsResponse;
+import de.eshg.lib.userflowmetrics.api.UserFlowMetricsApi;
 import de.eshg.rest.client.AcceptLanguageForwardingInterceptor;
 import de.eshg.rest.client.BearerAuthInterceptor;
 import de.eshg.rest.client.CorrelationIdForwardingInterceptor;
@@ -64,7 +66,8 @@ public class BusinessModuleClient
         StatisticsApi,
         BusinessModuleProcedureApi,
         ProcedureMetricsApi,
-        GdprValidationTaskApi {
+        GdprValidationTaskApi,
+        UserFlowMetricsApi {
 
   private final BusinessModule businessModule;
   private final URI url;
@@ -77,6 +80,7 @@ public class BusinessModuleClient
   private final StatisticsApi statisticsApiDelegate;
   private final GdprValidationTaskApi gdprValidationTaskApiDelegate;
   private final ContactEventCallbackApi contactEventCallbackApiDelegate;
+  private final UserFlowMetricsApi userFlowMetricsApi;
 
   public BusinessModuleClient(
       BusinessModule businessModule,
@@ -101,6 +105,7 @@ public class BusinessModuleClient
         httpServiceProxyFactory.createClient(GdprValidationTaskApi.class);
     contactEventCallbackApiDelegate =
         httpServiceProxyFactory.createClient(ContactEventCallbackApi.class);
+    userFlowMetricsApi = httpServiceProxyFactory.createClient(UserFlowMetricsApi.class);
   }
 
   public BusinessModuleClient(
@@ -174,6 +179,12 @@ public class BusinessModuleClient
   public GetProcedureMetricsResponse getProcedureMetrics(
       Instant timeRangeStart, Instant timeRangeEnd) {
     return procedureApiDelegate.getProcedureMetrics(timeRangeStart, timeRangeEnd);
+  }
+
+  @Override
+  public GetUserFlowMetricsResponse getUserFlowMetrics(
+      Instant timeRangeStart, Instant timeRangeEnd) {
+    return userFlowMetricsApi.getUserFlowMetrics(timeRangeStart, timeRangeEnd);
   }
 
   @Override

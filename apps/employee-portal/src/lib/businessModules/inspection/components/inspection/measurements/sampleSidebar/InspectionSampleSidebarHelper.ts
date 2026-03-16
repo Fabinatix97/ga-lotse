@@ -14,8 +14,8 @@ import {
 } from "@eshg/inspection-api";
 
 export interface MeasurementParametersType {
-  parent: { label: string; value: string };
-  child: { label: string; value: string };
+  parent: { label: string; value: string } | null;
+  child: { label: string; value: string } | null;
 }
 
 export interface InspectionSampleSidebarFormType {
@@ -57,7 +57,7 @@ export function makeCreateInspectionSampleRequest(
     externalId: uuidv4(),
     measurementParameters: formValues.measurementParameters.map((param) => ({
       externalId: uuidv4(),
-      parameterZid: param.parent.value,
+      parameterZid: param.parent!.value,
       untersuchungsparameterZid: param?.child?.value,
     })),
   };
@@ -71,7 +71,7 @@ export function makeUpdateInspectionSampleRequest(
     measurementParametersToAdd: formValues.measurementParameters.map(
       (param) => ({
         externalId: uuidv4(),
-        parameterZid: param.parent.value,
+        parameterZid: param.parent!.value,
         untersuchungsparameterZid: param?.child?.value,
       }),
     ),

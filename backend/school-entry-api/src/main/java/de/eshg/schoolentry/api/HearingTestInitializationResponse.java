@@ -11,5 +11,7 @@ import jakarta.validation.constraints.Pattern;
 
 public record HearingTestInitializationResponse(
     @NotNull @Pattern(regexp = "^[A-Za-z0-9]{6}$") String correlationId,
+    @NotBlank String equipmentSelector,
+    @NotBlank String equipmentName,
     @NotBlank String firstNameAlias,
     @NotBlank String lastNameAlias) {}

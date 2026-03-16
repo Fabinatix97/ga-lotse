@@ -30,14 +30,13 @@ import de.eshg.schoolentry.business.model.PagedProcedures;
 import de.eshg.schoolentry.business.model.PagedWaitingRoomProcedures;
 import de.eshg.schoolentry.business.model.PersonDetailsData;
 import de.eshg.schoolentry.business.model.ProcedureDetailsData;
+import de.eshg.schoolentry.config.SchoolEntryFeatureToggle;
 import de.eshg.schoolentry.domain.model.*;
 import de.eshg.schoolentry.mapper.*;
 import de.eshg.schoolentry.mapper.SchoolInfoLetterExaminationMapper;
 import de.eshg.schoolentry.pdf.SchoolInfoLetterGenerator;
 import de.eshg.schoolentry.pdf.medicalreport.MedicalReportGenerator;
-import de.eshg.schoolentry.util.CorrelationIdGenerator;
 import de.eshg.schoolentry.util.ExceptionUtil;
-import de.eshg.schoolentry.util.NameAliasGenerator;
 import de.eshg.schoolentry.util.ProgressEntryUtil;
 import de.eshg.schoolentry.util.SchoolEntryKeyDocumentType;
 import de.eshg.schoolentry.util.TaskUtil;
@@ -73,6 +72,7 @@ public class SchoolEntryController {
   private final SchoolEntryService schoolEntryService;
   private final ProcedureOverviewService procedureOverviewService;
   private final ExaminationResultService examinationResultService;
+  private final MeasuringDeviceService measuringDeviceService;
   private final PersonService personService;
   private final SchoolEntryProcedureDeletionService procedureDeletionService;
   private final MedicalReportGenerator medicalReportGenerator;
@@ -83,12 +83,13 @@ public class SchoolEntryController {
   private final AppointmentBlockConfig appointmentBlockConfig;
   private final ProgressEntryUtil progressEntryUtil;
   private final AuditLogger auditLogger;
-  private final CorrelationIdGenerator correlationIdGenerator;
+  private final SchoolEntryFeatureToggle schoolEntryFeatureToggle;
 
   public SchoolEntryController(
       SchoolEntryService schoolEntryService,
       ProcedureOverviewService procedureOverviewService,
       ExaminationResultService examinationResultService,
+      MeasuringDeviceService measuringDeviceService,
       PersonService personService,
       SchoolEntryProcedureDeletionService procedureDeletionService,
       MedicalReportGenerator medicalReportGenerator,
@@ -99,10 +100,11 @@ public class SchoolEntryController {
       AppointmentBlockConfig appointmentBlockConfig,
       ProgressEntryUtil progressEntryUtil,
       AuditLogger auditLogger,
-      CorrelationIdGenerator correlationIdGenerator) {
+      SchoolEntryFeatureToggle schoolEntryFeatureToggle) {
     this.schoolEntryService = schoolEntryService;
     this.procedureOverviewService = procedureOverviewService;
     this.examinationResultService = examinationResultService;
+    this.measuringDeviceService = measuringDeviceService;
     this.personService = personService;
     this.procedureDeletionService = procedureDeletionService;
     this.medicalReportGenerator = medicalReportGenerator;
@@ -113,7 +115,7 @@ public class SchoolEntryController {
     this.appointmentBlockConfig = appointmentBlockConfig;
     this.progressEntryUtil = progressEntryUtil;
     this.auditLogger = auditLogger;
-    this.correlationIdGenerator = correlationIdGenerator;
+    this.schoolEntryFeatureToggle = schoolEntryFeatureToggle;
   }
 
   @PostMapping
@@ -415,23 +417,49 @@ public class SchoolEntryController {
     return ExaminationResultMapper.mapToDto(hearingTestResult);
   }
 
-  @PostMapping("/{procedureId}/{equipmentId}/hearing-test-initiate")
+  @PostMapping("/{procedureId}/hearing-test-initiate")
   @Transactional
-  @Operation(summary = "Initiates hearing test on a machine for a procedure.")
+  @Operation(summary = "Initiate hearing test on a measuring device for a procedure.")
   public HearingTestInitializationResponse initiateHearingTest(
       @PathVariable("procedureId") UUID procedureId,
-      @PathVariable("equipmentId") String equipmentId) {
+      @Valid @RequestBody HearingTestInitializationRequest request) {
+    validateMeasuringDevicesFeatureToggleEnabled();
     ProcedureDetailsData procedureDetailsData =
         schoolEntryService.findAndAugmentProcedureByExternalId(procedureId);
     PersonDetailsData child = procedureDetailsData.child();
 
-    String correlationId = correlationIdGenerator.generateCorrelationId();
-    NameAliasGenerator.NameAlias nameAlias =
-        NameAliasGenerator.generateAlias(
-            procedureId, child.gender(), child.firstName(), child.lastName());
+    PendingMeasurement pendingMeasurement =
+        measuringDeviceService.initiateHearingTest(procedureId, request.equipmentSelector(), child);
 
-    return new HearingTestInitializationResponse(
-        correlationId, nameAlias.firstName(), nameAlias.lastName());
+    examinationResultService.startHearingTestOnADevice(
+        procedureId, pendingMeasurement, request.version());
+
+    return ExaminationResultMapper.mapToResponse(pendingMeasurement);
+  }
+
+  @PostMapping("/{procedureId}/hearing-test-complete")
+  @Transactional
+  @Operation(
+      summary =
+          "Fetch hearing test results from measuring device, update and complete the test for a procedure.")
+  public HearingTestResultDto completeHearingTest(
+      @PathVariable("procedureId") UUID procedureId,
+      @Valid @RequestBody HearingTestCompleteRequest request) {
+    validateMeasuringDevicesFeatureToggleEnabled();
+
+    HearingTestResult hearingTestResult =
+        examinationResultService.findHearingTestResultForUpdate(procedureId, request.version());
+    ProcedureValidator.validateProcedureStatusNotClosed(hearingTestResult.getProcedure());
+    Validator.validateMeasurementIsPending(hearingTestResult);
+
+    HearingTestResult hearingTestResultFromMeasuringDevice =
+        measuringDeviceService.completeHearingTest(hearingTestResult);
+
+    examinationResultService.updateHearingTestResult(
+        hearingTestResult, hearingTestResultFromMeasuringDevice);
+    schoolEntryService.updateFirstEyeExaminationOrHearingTestModifiedBy(procedureId);
+
+    return ExaminationResultMapper.mapToDto(hearingTestResult);
   }
 
   @GetMapping("/{procedureId}/eye-examination-result")
@@ -744,5 +772,11 @@ public class SchoolEntryController {
       @RequestParam(name = "timeRangeEnd") Instant timeRangeEnd) {
     return schoolEntryService.getEmployeeStatistics(
         CurrentUserHelper.getCurrentUserId(), timeRangeStart, timeRangeEnd);
+  }
+
+  private void validateMeasuringDevicesFeatureToggleEnabled() {
+    if (!schoolEntryFeatureToggle.isNewFeatureEnabled(SchoolEntryFeature.MEASURING_DEVICES)) {
+      throw new BadRequestException("Feature toggle for examination on devices is not enabled!");
+    }
   }
 }

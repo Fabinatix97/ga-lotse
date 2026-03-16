@@ -22,4 +22,6 @@ public interface MeasuringDeviceRepository extends JpaRepository<MeasuringDevice
   boolean existsByName(String name);
 
   boolean existsByEquipmentSelector(String equipmentSelector);
+
+  Optional<MeasuringDevice> findByEquipmentSelector(String equipmentSelector);
 }

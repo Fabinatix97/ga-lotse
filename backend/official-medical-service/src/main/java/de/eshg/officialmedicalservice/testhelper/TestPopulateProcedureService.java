@@ -11,6 +11,9 @@ import static de.eshg.lib.procedure.model.ProcedureStatusDto.OPEN;
 import de.eshg.base.citizenuser.api.CitizenAccessCodeUserDto;
 import de.eshg.officialmedicalservice.anamnesis.api.UpdateAnamnesisRequest;
 import de.eshg.officialmedicalservice.appointment.OmsAppointmentService;
+import de.eshg.officialmedicalservice.assessment.OmsMedicalAssessmentService;
+import de.eshg.officialmedicalservice.assessment.api.AssessmentStatusDto;
+import de.eshg.officialmedicalservice.assessment.api.CreateAssessmentDto;
 import de.eshg.officialmedicalservice.citizenpublic.CitizenPublicProcedureService;
 import de.eshg.officialmedicalservice.concern.ConcernMapper;
 import de.eshg.officialmedicalservice.concern.ConcernService;
@@ -29,6 +32,7 @@ import de.eshg.officialmedicalservice.procedure.api.PostCitizenProcedureRequest;
 import de.eshg.officialmedicalservice.procedure.persistence.entity.OmsProcedure;
 import de.eshg.officialmedicalservice.procedure.persistence.entity.OmsProcedureRepository;
 import de.eshg.officialmedicalservice.testhelper.api.AppointmentPopulationDto;
+import de.eshg.officialmedicalservice.testhelper.api.AssessmentPopulationDto;
 import de.eshg.officialmedicalservice.testhelper.api.CitizenPortalCredentialsDto;
 import de.eshg.officialmedicalservice.testhelper.api.ConcernTestDataConfig;
 import de.eshg.officialmedicalservice.testhelper.api.DocumentPopulationDto;
@@ -53,6 +57,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -61,6 +66,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 import org.springframework.web.multipart.MultipartFile;
 
 /*
@@ -145,6 +151,7 @@ public class TestPopulateProcedureService {
   private final WaitingRoomService waitingRoomService;
   private final CitizenAccessCodeUserClient citizenAccessCodeUserClient;
   private final OmsProcedureRepository omsProcedureRepository;
+  private final OmsMedicalAssessmentService omsMedicalAssessmentService;
 
   public TestPopulateProcedureService(
       EmployeeOmsProcedureService employeeOmsProcedureService,
@@ -156,7 +163,8 @@ public class TestPopulateProcedureService {
       OmsDocumentRepository omsDocumentRepository,
       WaitingRoomService waitingRoomService,
       CitizenAccessCodeUserClient citizenAccessCodeUserClient,
-      OmsProcedureRepository omsProcedureRepository) {
+      OmsProcedureRepository omsProcedureRepository,
+      OmsMedicalAssessmentService omsMedicalAssessmentService) {
     this.employeeOmsProcedureService = employeeOmsProcedureService;
     this.citizenPublicProcedureService = citizenPublicProcedureService;
     this.concernService = concernService;
@@ -167,6 +175,7 @@ public class TestPopulateProcedureService {
     this.waitingRoomService = waitingRoomService;
     this.citizenAccessCodeUserClient = citizenAccessCodeUserClient;
     this.omsProcedureRepository = omsProcedureRepository;
+    this.omsMedicalAssessmentService = omsMedicalAssessmentService;
   }
 
   @Transactional
@@ -177,6 +186,7 @@ public class TestPopulateProcedureService {
           UUID procedureId;
           UUID facilityId = null;
           Map<String, UUID> appointmentMap;
+          Map<String, UUID> assessmentMap = new HashMap<>();
           Map<String, UUID> documentMap;
           UUID citizenUserId;
           CitizenPortalCredentialsDto citizenPortalCredentials = null;
@@ -265,30 +275,78 @@ public class TestPopulateProcedureService {
                     request.medicalOpinionComment()));
           }
 
-          // 12. update waiting room
+          // 12. update medical assessments
+          if (request.medicalAssessments() != null) {
+            for (AssessmentPopulationDto assessment : request.medicalAssessments()) {
+              UUID assessmentId =
+                  omsMedicalAssessmentService.createAssessment(
+                      new CreateAssessmentDto(
+                          procedureId,
+                          assessment.title(),
+                          assessment.assessmentType(),
+                          assessment.recipientType()));
+
+              if (assessment.summary() != null) {
+                omsMedicalAssessmentService.updateAssessmentSummary(
+                    assessmentId, assessment.summary());
+              }
+
+              Assert.isTrue(
+                  (assessment.jsonContent() != null) == (assessment.htmlContent() != null),
+                  "jsonContent and htmlContent must be set together.");
+              if (assessment.jsonContent() != null) {
+                omsMedicalAssessmentService.updateAssessmentContent(
+                    assessmentId, assessment.jsonContent(), assessment.htmlContent());
+              }
+
+              if (assessment.assessmentResult() != null) {
+                omsMedicalAssessmentService.updateAssessmentResult(
+                    assessmentId, assessment.assessmentResult());
+              }
+
+              if (assessment.assessmentStatus() != null) {
+                if (assessment.assessmentStatus() != AssessmentStatusDto.OPEN) {
+                  omsMedicalAssessmentService.updateAssessmentStatus(
+                      assessmentId, AssessmentStatusDto.FINISHED);
+                }
+                if (assessment.assessmentStatus() == AssessmentStatusDto.PUBLISHED) {
+                  omsMedicalAssessmentService.updateAssessmentStatus(
+                      assessmentId, AssessmentStatusDto.PUBLISHED);
+                }
+              }
+              assessmentMap.put(assessment.title(), assessmentId);
+            }
+          }
+
+          // 13. update waiting room
           if (request.waitingRoom() != null) {
             waitingRoomService.updateWaitingRoom(procedureId, request.waitingRoom());
           }
 
-          // 13. update cut-off date
+          // 14. update cut-off date
           if (request.cutOffDate() != null) {
             employeeOmsProcedureService.updateMedicalOpinionCutOffDate(
                 loadOmsProcedure(procedureId), request.cutOffDate());
           }
 
-          // 14. update anamnesis
+          // 15. update anamnesis
           if (request.anamnesis() != null) {
             employeeOmsProcedureService.updateAnamnesis(
                 procedureId, new UpdateAnamnesisRequest(request.anamnesis()));
           }
 
-          // 15. close procedure
+          // 16. close procedure
           if (Objects.equals(CLOSED, request.targetState())) {
             employeeOmsProcedureService.closeOpenProcedure(procedureId);
           }
 
           return new PostPopulateProcedureResponse(
-              procedureId, facilityId, appointmentMap, documentMap, citizenPortalCredentials);
+              procedureId,
+              facilityId,
+              appointmentMap,
+              documentMap,
+              assessmentMap,
+              citizenPortalCredentials);
         });
   }
 

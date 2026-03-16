@@ -35,3 +35,20 @@ export function buildOptionsFromProcedureTypes(
 function buildOptionFromProcedureType(procedureType: ApiProcedureType) {
   return { value: procedureType, label: PROCEDURE_TYPE_NAMES[procedureType] };
 }
+
+export function toSet<T extends string>(
+  list: string[] | undefined,
+  mapWithViableValues: Record<string, T>,
+): Set<T> | undefined {
+  if (list === undefined) {
+    return;
+  }
+  const setValues = Object.values(mapWithViableValues);
+  const typedList = list.filter((t): t is T =>
+    (setValues as string[]).includes(t),
+  );
+  if (typedList.length === 0) {
+    return;
+  }
+  return new Set(typedList);
+}

@@ -31,6 +31,7 @@ public record PostPopulateProcedureRequest(
     List<String> rejectedDocuments,
     List<String> acceptedDocuments,
     MedicalOpinionStatusDto medicalOpinionStatus,
+    @Valid List<AssessmentPopulationDto> medicalAssessments,
     MedicalOpinionResultDto medicalOpinionResult,
     String medicalOpinionComment,
     ProcedureStatusDto targetState,

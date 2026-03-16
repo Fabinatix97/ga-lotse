@@ -31,6 +31,7 @@ import de.eshg.inspection.report.persistence.InspectionSignature;
 import de.eshg.inspection.report.persistence.Report;
 import de.eshg.inspection.util.FileUtil;
 import de.eshg.lib.auditlog.AuditLogger;
+import de.eshg.lib.procedure.domain.model.ManualProgressEntry;
 import de.eshg.lib.procedure.domain.model.Pdf;
 import de.eshg.lib.procedure.domain.model.PdfMetaData;
 import de.eshg.lib.procedure.domain.model.ProcedureStatus;
@@ -156,6 +157,63 @@ public class InspectionFinalizer {
     inspectionValidator.generateSignatureHash(signature, inspection.getPhase());
     inspectionValidator.generateChecklistHashes(inspection.getChecklists(), inspection.getPhase());
     inspectionUpdater.updateModified(inspection);
+  }
+
+  /**
+   * Close procedure with remark by following the normal finalize/approve route but without
+   * requiring filled checklists. Ensures execution task and appointment exist, creates a minimal
+   * report containing the remark (and samples), transitions phases/tasks and then approves to
+   * close.
+   */
+  void closeWithRemark(Inspection inspection, ManualProgressEntry remark) {
+    // Bring procedure into EXECUTING
+    if (inspection.getPhase() == InspectionPhase.NEW
+        || inspection.getPhase() == InspectionPhase.PLANNING
+        || inspection.getPhase() == InspectionPhase.READY_FOR_EXECUTION) {
+      inspection.setPhase(InspectionPhase.EXECUTING);
+    }
+
+    // Ensure there is an execution appointment
+    if (inspection.getExecutionAppointment() == null) {
+      var appt = new InspectionAppointment();
+      Instant start = clock.instant();
+      // calculate end using object type standard duration if available (fallback: +1h)
+      Integer stdHours =
+          inspection.getRelatedFacility().getFacility().getObjectType().getStandardDuration();
+      Instant end = start.plusSeconds((long) (stdHours != null ? stdHours : 1) * 3600);
+      appt.setAppointmentStart(start);
+      appt.setAppointmentEnd(end);
+      inspection.setExecutionAppointment(appt);
+    }
+
+    // Ensure there is an execution task
+    if (inspection.getExecutionTask().isEmpty()) {
+      inspection.createExecutionTask(clock.instant());
+    }
+
+    // Ensure the report exists and append the closing remark
+    String note = remark == null ? "" : remark.getNote();
+    inspectionReportService.applyClosingRemarkToReport(inspection, note);
+
+    // Persist once to get an ID for the created progress entry
+    inspectionRepository.saveAndFlush(inspection);
+    // Store closing remark info on the inspection
+    inspection.setClosingRemarkProgressEntryId(remark.getExternalId());
+
+    // Move into report creation phase and create report task
+    inspection.setPhase(InspectionPhase.CREATING_REPORT_AND_INVOICE);
+    inspection.getExecutionTaskOrThrow().setTaskStatus(TaskStatus.CLOSED);
+    if (inspection.getReportTask().isEmpty()) {
+      inspection.createReportTask(clock.instant());
+    }
+
+    // Set a result so that follow-up creation behaves like normal
+    inspection.setResult(InspectionResult.SUCCESSFUL);
+
+    inspectionUpdater.updateModified(inspection);
+
+    // approve to finish and generate the PDF and close the procedure
+    approveInspection(inspection);
   }
 
   /**

@@ -805,9 +805,9 @@
         "tags" : [ "Archiving" ]
       }
     },
-    "/citizen/auth/procedure-appointments" : {
+    "/citizen/auth/appointment" : {
       "delete" : {
-        "operationId" : "cancelAppointment",
+        "operationId" : "cancelCitizenAppointment",
         "responses" : {
           "200" : {
             "description" : "OK"
@@ -817,20 +817,20 @@
         "tags" : [ "CitizenAuth" ]
       },
       "get" : {
-        "operationId" : "getCitizenAppointmentOverview",
+        "operationId" : "getCitizenAppointment",
         "responses" : {
           "200" : {
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/GetCitizenAppointmentOverviewResponse"
+                  "$ref" : "#/components/schemas/GetCitizenAppointmentResponse"
                 }
               }
             },
             "description" : "OK"
           }
         },
-        "summary" : "Gets all procedure appointments",
+        "summary" : "Gets the appointment of the citizen",
         "tags" : [ "CitizenAuth" ]
       }
     },
@@ -2226,7 +2226,7 @@
         "tags" : [ "InfectionBriefingProcedure" ]
       }
     },
-    "/infection-briefing-procedures/{procedureId}/abort-procedure" : {
+    "/infection-briefing-procedures/{procedureId}/abort-draft" : {
       "post" : {
         "operationId" : "abortDraft",
         "parameters" : [ {
@@ -2238,6 +2238,16 @@
             "format" : "uuid"
           }
         } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/AbortDraftRequest"
+              }
+            }
+          },
+          "required" : true
+        },
         "responses" : {
           "200" : {
             "description" : "OK"
@@ -2266,6 +2276,36 @@
               }
             }
           }
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "InfectionBriefingProcedure" ]
+      }
+    },
+    "/infection-briefing-procedures/{procedureId}/applicant" : {
+      "patch" : {
+        "operationId" : "updateApplicant",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "procedureId",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/UpdateApplicantRequest"
+              }
+            }
+          },
+          "required" : true
         },
         "responses" : {
           "200" : {
@@ -3381,6 +3421,34 @@
         "tags" : [ "Task" ]
       }
     },
+    "/test-helper/create/procedure" : {
+      "post" : {
+        "operationId" : "createInfectionBriefingProcedure",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/CreateInfectionBriefingProcedureRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/CreateInfectionBriefingProcedureResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "TestHelper" ]
+      }
+    },
     "/test-helper/population" : {
       "post" : {
         "operationId" : "populateDefaults",
@@ -3565,6 +3633,15 @@
   },
   "components" : {
     "schemas" : {
+      "AbortDraftRequest" : {
+        "required" : [ "notifyCitizen" ],
+        "type" : "object",
+        "properties" : {
+          "notifyCitizen" : {
+            "type" : "boolean"
+          }
+        }
+      },
       "AbstractFile" : {
         "required" : [ "@type", "createdAt", "deletable", "deleted", "fileId", "fileName", "fileSizeBytes", "fileType", "locked", "modifiedAt" ],
         "type" : "object",
@@ -3913,11 +3990,14 @@
         }
       },
       "AppointmentSummary" : {
-        "required" : [ "appointmentType", "start" ],
+        "required" : [ "appointmentType", "duration", "start" ],
         "type" : "object",
         "properties" : {
           "appointmentType" : {
             "$ref" : "#/components/schemas/AppointmentType"
+          },
+          "duration" : {
+            "type" : "string"
           },
           "start" : {
             "type" : "string",
@@ -4042,14 +4122,11 @@
         }
       },
       "BookAppointmentResponse" : {
-        "required" : [ "appointment", "emailSent" ],
+        "required" : [ "appointment" ],
         "type" : "object",
         "properties" : {
           "appointment" : {
             "$ref" : "#/components/schemas/InfectionBriefingAppointment"
-          },
-          "emailSent" : {
-            "type" : "boolean"
           }
         }
       },
@@ -4460,6 +4537,45 @@
           },
           "subject" : {
             "type" : "string"
+          }
+        }
+      },
+      "CreateInfectionBriefingProcedureRequest" : {
+        "required" : [ "appointmentStartTime", "instructionType", "procedureStatus", "procedureType" ],
+        "type" : "object",
+        "properties" : {
+          "applicant" : {
+            "$ref" : "#/components/schemas/PersonWithEmail"
+          },
+          "applicantAddress" : {
+            "$ref" : "#/components/schemas/ApplicantAddress"
+          },
+          "appointmentStartTime" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "instructionDate" : {
+            "type" : "string",
+            "format" : "date"
+          },
+          "instructionType" : {
+            "$ref" : "#/components/schemas/InstructionType"
+          },
+          "procedureStatus" : {
+            "$ref" : "#/components/schemas/ProcedureStatus"
+          },
+          "procedureType" : {
+            "$ref" : "#/components/schemas/ProcedureType"
+          }
+        }
+      },
+      "CreateInfectionBriefingProcedureResponse" : {
+        "required" : [ "procedureId" ],
+        "type" : "object",
+        "properties" : {
+          "procedureId" : {
+            "type" : "string",
+            "format" : "uuid"
           }
         }
       },
@@ -5180,7 +5296,7 @@
           }
         }
       },
-      "GetCitizenAppointmentOverviewResponse" : {
+      "GetCitizenAppointmentResponse" : {
         "required" : [ "dateOfBirth", "firstName", "lastName" ],
         "type" : "object",
         "properties" : {
@@ -5729,6 +5845,9 @@
         "required" : [ "procedureMetrics" ],
         "type" : "object",
         "properties" : {
+          "procedureActionMetric" : {
+            "$ref" : "#/components/schemas/ProcedureActionMetric"
+          },
           "procedureMetrics" : {
             "type" : "array",
             "items" : {
@@ -6239,7 +6358,7 @@
       },
       "InstructionType" : {
         "type" : "string",
-        "enum" : [ "ON_SITE", "ONLINE" ]
+        "enum" : [ "ONLINE", "ON_SITE" ]
       },
       "InterceptionType" : {
         "type" : "string",
@@ -6536,7 +6655,7 @@
         } ]
       },
       "PersonDetails" : {
-        "required" : [ "dateOfBirth", "external", "firstName", "lastName" ],
+        "required" : [ "dateOfBirth", "external", "firstName", "lastName", "version" ],
         "type" : "object",
         "properties" : {
           "address" : {
@@ -6571,6 +6690,10 @@
           },
           "salutation" : {
             "$ref" : "#/components/schemas/InfectionBriefingSalutation"
+          },
+          "version" : {
+            "type" : "integer",
+            "format" : "int64"
           }
         }
       },
@@ -6758,6 +6881,41 @@
             "type" : "string"
           }
         }
+      },
+      "ProcedureAction" : {
+        "required" : [ "count", "procedureActionType" ],
+        "type" : "object",
+        "properties" : {
+          "count" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "procedureActionType" : {
+            "$ref" : "#/components/schemas/ProcedureActionType"
+          }
+        }
+      },
+      "ProcedureActionMetric" : {
+        "required" : [ "businessModule", "referenceProcedureAction", "relatedProcedureActions" ],
+        "type" : "object",
+        "properties" : {
+          "businessModule" : {
+            "$ref" : "#/components/schemas/BusinessModule"
+          },
+          "referenceProcedureAction" : {
+            "$ref" : "#/components/schemas/ProcedureAction"
+          },
+          "relatedProcedureActions" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/ProcedureAction"
+            }
+          }
+        }
+      },
+      "ProcedureActionType" : {
+        "type" : "string",
+        "enum" : [ "APPOINTMENTS_BOOKED", "APPOINTMENTS_CANCELED", "APPOINTMENTS_RESCHEDULED", "APPOINTMENTS_RESCHEDULED_AT_LEAST_ONCE", "APPOINTMENTS_RESCHEDULED_AT_LEAST_TWICE", "DOCUMENTS_ACCEPTED", "DOCUMENTS_PROVIDED", "DOCUMENTS_REJECTED", "DOCUMENTS_REQUESTED", "INVITATIONS_SENT", "SUBMITTED_ANAMNESIS", "SUBMITTED_DECLARATIONS", "SUBMITTED_INFORMATION_SHEETS" ]
       },
       "ProcedureMetric" : {
         "required" : [ "abortedCount", "businessModule", "closedCount", "inProgressCount", "openOrDraftCount", "procedureType", "totalCount" ],
@@ -7169,6 +7327,46 @@
       "TriggerType" : {
         "type" : "string",
         "enum" : [ "SYSTEM_AUTOMATIC", "EMPLOYEE", "CITIZEN" ]
+      },
+      "UpdateApplicantRequest" : {
+        "required" : [ "dateOfBirth", "firstName", "lastName", "version" ],
+        "type" : "object",
+        "properties" : {
+          "address" : {
+            "$ref" : "#/components/schemas/ApplicantAddress"
+          },
+          "dateOfBirth" : {
+            "type" : "string",
+            "format" : "date"
+          },
+          "email" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          },
+          "firstName" : {
+            "type" : "string"
+          },
+          "lastName" : {
+            "type" : "string"
+          },
+          "phone" : {
+            "type" : "array",
+            "items" : {
+              "maxLength" : 23,
+              "minLength" : 1,
+              "type" : "string"
+            }
+          },
+          "salutation" : {
+            "$ref" : "#/components/schemas/InfectionBriefingSalutation"
+          },
+          "version" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        }
       },
       "UpdateAppointmentBlockRequest" : {
         "required" : [ "consultants", "end", "mfas", "parallelExaminations", "physicians", "sopasss", "start" ],

@@ -9,6 +9,7 @@ import de.eshg.infectionbriefing.domain.model.InfectionBriefingProcedure;
 import de.eshg.lib.procedure.domain.model.ProcedureStatus;
 import de.eshg.lib.procedure.domain.model.SystemProgressEntry;
 import de.eshg.rest.service.error.BadRequestException;
+import java.util.Arrays;
 import java.util.List;
 
 public class ProcedureValidator<T extends InfectionBriefingProcedure> {
@@ -31,9 +32,18 @@ public class ProcedureValidator<T extends InfectionBriefingProcedure> {
     this.procedure = procedure;
   }
 
-  public ProcedureValidator<T> validateStatus(ProcedureStatus expectedStatus) {
-    if (procedure.getProcedureStatus() != expectedStatus) {
-      throw new BadRequestException("Procedure does not have status %s".formatted(expectedStatus));
+  public ProcedureValidator<T> validateStatusNull() {
+    if (procedure.getProcedureStatus() != null) {
+      throw new BadRequestException("Procedure does not have status null");
+    }
+    return this;
+  }
+
+  public ProcedureValidator<T> validateStatus(ProcedureStatus... expectedStatus) {
+    if (!Arrays.asList(expectedStatus).contains(procedure.getProcedureStatus())) {
+      throw new BadRequestException(
+          "Procedure does not have status %s"
+              .formatted(Arrays.toString(expectedStatus).replace("[", "").replace("]", "")));
     }
     return this;
   }

@@ -9,8 +9,10 @@ import de.eshg.rest.service.security.config.FileJockeyPublicSecurityConfig;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Import;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 @SpringBootApplication
+@EnableScheduling
 @Import(FileJockeyPublicSecurityConfig.class)
 public class FileJockeyApplication {
 

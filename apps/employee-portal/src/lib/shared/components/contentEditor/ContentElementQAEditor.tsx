@@ -14,7 +14,7 @@ import {
   ApiUpdateEditorRequest,
 } from "@eshg/lib-editor-api";
 import { FormButtonBar } from "@eshg/lib-employee-portal";
-import { FormPlus, TextareaField } from "@eshg/lib-portal";
+import { FormPlus, TextareaField, useValidateLength } from "@eshg/lib-portal";
 
 interface ContentElementQAEditorProps {
   element: ApiEditorElementQA;
@@ -44,6 +44,8 @@ export function ContentElementQAEditor({
     }
   }
 
+  const validateLength = useValidateLength();
+
   return (
     <Formik initialValues={element} enableReinitialize onSubmit={handleSubmit}>
       {({ values, isSubmitting, dirty }) => (
@@ -53,6 +55,7 @@ export function ContentElementQAEditor({
             {values.answers.map((answer, index) => (
               <TextareaField
                 key={`${values.id}.${answer.answerId}`}
+                validate={validateLength(0, 50000)}
                 name={`answers.${index}.extraText`}
                 label={<AnswerLabel answer={answer} />}
               />

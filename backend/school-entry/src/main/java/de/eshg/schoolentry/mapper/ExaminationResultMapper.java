@@ -339,6 +339,28 @@ public final class ExaminationResultMapper {
         mapToDto(examinationResult.getValue()), mapToDto(examinationResult.getDoctorLetter()));
   }
 
+  public static HearingTestInitializationResponse mapToResponse(
+      PendingMeasurement pendingMeasurement) {
+    return new HearingTestInitializationResponse(
+        pendingMeasurement.getCorrelationId(),
+        pendingMeasurement.getEquipmentSelector(),
+        pendingMeasurement.getEquipmentName(),
+        pendingMeasurement.getFirstNameAlias(),
+        pendingMeasurement.getLastNameAlias());
+  }
+
+  private static PendingMeasurementDto mapToDto(PendingMeasurement pendingMeasurement) {
+    if (pendingMeasurement == null) {
+      return null;
+    }
+    return new PendingMeasurementDto(
+        pendingMeasurement.getCorrelationId(),
+        pendingMeasurement.getEquipmentSelector(),
+        pendingMeasurement.getEquipmentName(),
+        pendingMeasurement.getFirstNameAlias(),
+        pendingMeasurement.getLastNameAlias());
+  }
+
   private static DecibelValueDto mapToDto(DecibelValue decibelValue) {
     return switch (decibelValue) {
       case null -> null;
@@ -375,7 +397,8 @@ public final class ExaminationResultMapper {
         mapToDto(hearingTestResult.getLeftEar()),
         mapToDto(hearingTestResult.getRightEar()),
         mapToDto(hearingTestResult.getExaminationResult()),
-        hearingTestResult.getNote());
+        hearingTestResult.getNote(),
+        mapToDto(hearingTestResult.getPendingMeasurement()));
   }
 
   private static PercentageValueDto mapToDto(PercentageValue value) {

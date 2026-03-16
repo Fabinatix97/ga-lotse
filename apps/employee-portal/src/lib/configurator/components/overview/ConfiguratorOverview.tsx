@@ -8,7 +8,7 @@ import { isNullish } from "remeda";
 
 import { ApiSchoolEntryFeature } from "@eshg/school-entry-api";
 
-import { useIsNewFeatureEnabled } from "@/lib/businessModules/schoolEntry/api/queries/featureTogglesApi";
+import { useIsNewFeatureEnabledUnsuspended } from "@/lib/businessModules/schoolEntry/api/queries/featureTogglesApi";
 import { useGetAllModulesStatuses } from "@/lib/configurator/api/queries/status";
 import { ConfiguratorLayout } from "@/lib/configurator/components/shared/ConfiguratorLayout";
 import { configuratorNameMapping } from "@/lib/configurator/components/shared/configuratorNameMapping";
@@ -25,7 +25,7 @@ export function ConfiguratorOverview({
   module: ConfiguratorModuleName;
 }) {
   const { data } = useGetAllModulesStatuses();
-  const isDeviceRegistryEnabled = useIsNewFeatureEnabled(
+  const { data: isDeviceRegistryEnabled } = useIsNewFeatureEnabledUnsuspended(
     ApiSchoolEntryFeature.MeasuringDevices,
   );
 

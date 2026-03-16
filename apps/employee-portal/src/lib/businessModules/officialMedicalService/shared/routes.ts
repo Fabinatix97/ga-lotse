@@ -13,6 +13,11 @@ export const routes = defineRoutes("/official-medical-service", (omsPath) => ({
         details: procedurePath("/details"),
         documents: procedurePath("/documents"),
         anamnesis: procedurePath("/anamnesis"),
+        assessmentsOverview: procedurePath("/assessments"),
+        assessmentDetails: (assessmentId: string) =>
+          procedurePath(`/assessments/${assessmentId}`),
+        assessmentEditContent: (assessmentId: string) =>
+          procedurePath(`/assessments/${assessmentId}/edit-content`),
         progressEntries: procedurePath("/progress-entries"),
         syncAffectedPerson: (fileStateId: string, personVersion: number) =>
           procedurePath(

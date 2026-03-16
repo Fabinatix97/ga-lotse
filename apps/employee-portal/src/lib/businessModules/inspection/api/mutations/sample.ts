@@ -6,6 +6,7 @@
 import {
   CreateSampleRequest,
   DeleteSampleRequest,
+  UpdateSampleMeasurementParameterUserAssessmentRequest,
   UpdateSampleMeasurementParameterValueRequest,
   UpdateSampleRequest,
 } from "@eshg/inspection-api";
@@ -100,6 +101,31 @@ export function useUpdateSampleMeasurementParameterValue() {
         snackbar.notification("Zwischengespeichert");
       } else {
         snackbar.confirmation("Messparameter gespeichert");
+      }
+    },
+  });
+}
+
+export function useHandleSampleMeasurementParameterUserAssessment() {
+  const sampleApi = useSampleApi();
+  const snackbar = useSnackbar();
+  return useHandledMutation({
+    mutationFn: async (
+      req: UpdateSampleMeasurementParameterUserAssessmentRequest,
+    ) => {
+      const rawResponse =
+        await sampleApi.updateSampleMeasurementParameterUserAssessmentRaw(req);
+      const response = await unwrapRawResponse(rawResponse);
+      return {
+        ...response,
+        serviceWorkerResponse: isServiceWorkerResponse(rawResponse),
+      };
+    },
+    onSuccess: (data) => {
+      if (data.serviceWorkerResponse) {
+        snackbar.notification("Zwischengespeichert");
+      } else {
+        snackbar.confirmation("Bewertung gespeichert");
       }
     },
   });

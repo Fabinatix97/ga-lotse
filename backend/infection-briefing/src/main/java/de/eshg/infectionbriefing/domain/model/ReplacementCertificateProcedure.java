@@ -5,7 +5,7 @@
 
 package de.eshg.infectionbriefing.domain.model;
 
-import de.eshg.lib.procedure.domain.model.TriggerType;
+import de.eshg.infectionbriefing.InfectionBriefingTriggerType;
 import jakarta.persistence.Entity;
 
 @Entity
@@ -13,7 +13,7 @@ public class ReplacementCertificateProcedure extends InfectionBriefingProcedure 
 
   public ReplacementCertificateProcedure() {}
 
-  public ReplacementCertificateProcedure(TriggerType triggerType) {
+  public ReplacementCertificateProcedure(InfectionBriefingTriggerType triggerType) {
     super(triggerType);
   }
 }

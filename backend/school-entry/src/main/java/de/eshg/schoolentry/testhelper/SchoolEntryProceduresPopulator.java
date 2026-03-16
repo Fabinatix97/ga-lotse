@@ -286,7 +286,7 @@ public class SchoolEntryProceduresPopulator extends BasePopulator<CreateProcedur
     Map<HertzValueDto, DecibelValueDto> leftEar = randomHertzDecibelMapping(faker);
     Map<HertzValueDto, DecibelValueDto> rightEar = randomHertzDecibelMapping(faker);
     return new HearingTestResultDto(
-        0L, leftEar, rightEar, randomExaminationResult(faker), faker.coffee().notes());
+        0L, leftEar, rightEar, randomExaminationResult(faker), faker.coffee().notes(), null);
   }
 
   private static Map<HertzValueDto, DecibelValueDto> randomHertzDecibelMapping(Faker faker) {

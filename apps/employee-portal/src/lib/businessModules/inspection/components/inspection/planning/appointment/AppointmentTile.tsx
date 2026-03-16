@@ -21,12 +21,14 @@ interface AppointmentTileProps {
   readonly?: boolean;
   inspection: ApiInspection;
   appointment?: ApiInspectionAppointment;
+  hasReachedClosed: boolean;
 }
 
 export function AppointmentTile({
   readonly,
   inspection,
   appointment,
+  hasReachedClosed,
 }: Readonly<AppointmentTileProps>) {
   const { date, fromTo } = getFormattedAppointmentParts(appointment);
   const [open, setOpen] = useState(false);
@@ -71,7 +73,7 @@ export function AppointmentTile({
       }
       onEdit={handleEdit}
     >
-      {!date && (
+      {!date && !hasReachedClosed && (
         <Alert
           color="primary"
           message="Termin muss ausgewählt sein, um eine Begehung durchzuführen."

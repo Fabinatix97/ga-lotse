@@ -5,6 +5,7 @@
 
 package de.eshg.schoolentry.testhelper;
 
+import de.eshg.lib.procedure.housekeeping.archiving.ArchivingJob;
 import de.eshg.schoolentry.domain.model.SchoolEntryProcedure;
 import de.eshg.schoolentry.domain.repository.SchoolEntryProcedureRepository;
 import de.eshg.testhelper.*;
@@ -21,6 +22,7 @@ import org.springframework.stereotype.Service;
 public class SchoolEntryTestHelperService extends DefaultTestHelperService {
 
   private final SchoolEntryProcedureRepository schoolEntryProcedureRepository;
+  private final ArchivingJob<SchoolEntryProcedure> archivingJob;
 
   protected SchoolEntryTestHelperService(
       DatabaseResetHelper databaseResetHelper,
@@ -30,7 +32,8 @@ public class SchoolEntryTestHelperService extends DefaultTestHelperService {
       List<ResettableProperties> resettableProperties,
       SchoolEntryProcedureRepository schoolEntryProcedureRepository,
       List<TestHelperServiceResetAction> resetActions,
-      EnvironmentConfig environmentConfig) {
+      EnvironmentConfig environmentConfig,
+      ArchivingJob<SchoolEntryProcedure> archivingJob) {
     super(
         databaseResetHelper,
         testRequestInterceptor,
@@ -40,6 +43,7 @@ public class SchoolEntryTestHelperService extends DefaultTestHelperService {
         resetActions,
         environmentConfig);
     this.schoolEntryProcedureRepository = schoolEntryProcedureRepository;
+    this.archivingJob = archivingJob;
   }
 
   public UUID getCitizenUserId(UUID procedureId) {
@@ -55,5 +59,9 @@ public class SchoolEntryTestHelperService extends DefaultTestHelperService {
 
   public List<UUID> getIdsOfClosedProcedures() {
     return schoolEntryProcedureRepository.findExternalIdsOfClosedProcedures();
+  }
+
+  public void runArchivingJob() {
+    archivingJob.run();
   }
 }

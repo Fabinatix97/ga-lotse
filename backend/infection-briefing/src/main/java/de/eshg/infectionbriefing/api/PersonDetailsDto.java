@@ -15,6 +15,7 @@ import java.util.List;
 
 @Schema(name = "PersonDetails")
 public record PersonDetailsDto(
+    @NotNull long version,
     InfectionBriefingSalutationDto salutation,
     @NotNull String firstName,
     @NotNull String lastName,

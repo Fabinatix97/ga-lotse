@@ -5,6 +5,7 @@
 
 package de.eshg.lib.gdt.v21.model;
 
+import de.eshg.lib.gdt.GdtRecord;
 import java.util.List;
 import java.util.Optional;
 import java.util.regex.Pattern;
@@ -14,7 +15,7 @@ import java.util.regex.Pattern;
  *
  * <p>GDT 2.10 records are non-hierarchical — there are no nested objects, only fields.
  */
-public record Gdt21Record(String recordType, List<Gdt21Field> fields) {
+public record Gdt21Record(String recordType, List<Gdt21Field> fields) implements GdtRecord {
 
   private static final Pattern RECORD_TYPE_PATTERN = Pattern.compile("\\d{4}");
 

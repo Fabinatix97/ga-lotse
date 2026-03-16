@@ -44,6 +44,8 @@ public enum ErrorCode {
   CORRUPT,
   /** Use when a resource is locked by another user */
   LOCKED,
+  /** Use when a resource is marked for deletion or archivation */
+  MARKED_FOR_DELETION,
   /** Use when a xlsx file has too many rows */
   XLSX_TOO_MANY_ROWS,
   /** Equivalent to http status 503: Service Unavailable */

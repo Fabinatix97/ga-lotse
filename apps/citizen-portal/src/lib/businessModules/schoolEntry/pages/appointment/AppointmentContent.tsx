@@ -13,7 +13,7 @@ import {
   MedicalServicesOutlined,
   PersonOutlined,
 } from "@mui/icons-material";
-import { Box, Typography, styled } from "@mui/joy";
+import { Box, Button, Typography, styled } from "@mui/joy";
 import { formatDuration } from "date-fns";
 import { de } from "date-fns/locale";
 
@@ -24,9 +24,11 @@ import {
   formatStreetAndHouseNumber,
   formatTime,
 } from "@eshg/lib-portal";
+import { ApiUserFlowType } from "@eshg/school-entry-api";
 
 import { theme } from "@/lib/baseModule/theme/theme";
 import { SchoolEntryProcedure } from "@/lib/businessModules/schoolEntry/api/models/SchoolEntryProcedure";
+import { useStartUserFlowTracking } from "@/lib/businessModules/schoolEntry/api/mutations/userFlowTrackingApi";
 import { useCitizenRoutes } from "@/lib/businessModules/schoolEntry/shared/routes";
 import { useTranslation } from "@/lib/i18n/client";
 import {
@@ -39,7 +41,8 @@ import {
   ContentSheetTitle,
 } from "@/lib/shared/components/layout/contentSheet";
 import { GridColumnStack } from "@/lib/shared/components/layout/grid";
-import { ScopedInternalLinkButton } from "@/lib/shared/components/scopedLinks";
+import { useScopedRouter } from "@/lib/shared/components/scopedLinks";
+import { setUserFlowTrackingId } from "@/lib/shared/helpers/userFlowTracking.storage";
 
 const StyledList = styled("ul")({
   margin: 0,
@@ -139,19 +142,35 @@ function CitizenAnamnesisAllowed() {
   const { t } = useTranslation(["schoolEntry/appointment"]);
 
   const citizenRoutes = useCitizenRoutes();
+  const router = useScopedRouter();
+  const startUserFlowTracking = useStartUserFlowTracking();
+
+  function handleAnamnesisClick() {
+    startUserFlowTracking.mutate(
+      { userFlowType: ApiUserFlowType.Anamnesis },
+      {
+        onSuccess: (response) => {
+          setUserFlowTrackingId(response.userFlowTrackingId);
+          router.push(citizenRoutes.appointment.citizenAnamnesis);
+        },
+      },
+    );
+  }
+
   return (
     <InfoSectionGrid>
       <InfoSection icon={<CloseOutlined color="danger" />}>
         <InfoSectionTitle>{t("anamnesis.title")}</InfoSectionTitle>
         <Typography>{t("anamnesis.notSubmitted")}</Typography>
       </InfoSection>
-      <ScopedInternalLinkButton
-        href={citizenRoutes.appointment.citizenAnamnesis}
+      <Button
         sx={{ marginTop: 1 }}
         fullWidth
+        disabled={startUserFlowTracking.isPending}
+        onClick={handleAnamnesisClick}
       >
         {t("anamnesis.fillIn")}
-      </ScopedInternalLinkButton>
+      </Button>
     </InfoSectionGrid>
   );
 }

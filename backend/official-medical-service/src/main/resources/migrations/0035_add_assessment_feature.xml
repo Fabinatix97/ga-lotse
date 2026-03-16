@@ -1,0 +1,158 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<!--
+ Copyright 2026 SCOOP Software GmbH, cronn GmbH
+ SPDX-License-Identifier: AGPL-3.0-only
+-->
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+  <changeSet author="GA-Lotse" id="1771939441708-1">
+    <ext:createPostgresEnumType name="assessmentresult" values="NEGATIVE, POSITIVE, UNDETERMINED"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1771939441708-2">
+    <ext:createPostgresEnumType name="assessmentstatus" values="FINISHED, OPEN, PUBLISHED"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1771939441708-3">
+    <ext:createPostgresEnumType name="assessmenttype" values="EXPERT_OPINION, STATEMENT"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1772025551467-1">
+    <ext:createPostgresEnumType name="recipienttype" values="FACILITY, PERSON"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1771939441708-4">
+    <createTable tableName="medical_assessment_legal_bases">
+      <column name="medical_assessment_id" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="legal_bases_id" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1771939441708-5">
+    <createTable tableName="medical_assessment_sources">
+      <column name="medical_assessment_id" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="sources_id" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1771939441708-6">
+    <createTable tableName="oms_legal_basis">
+      <column autoIncrement="true" name="id" type="BIGINT">
+        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_oms_legal_basis"/>
+      </column>
+      <column name="version" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="external_id" type="UUID">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1771939441708-7">
+    <createTable tableName="oms_source">
+      <column autoIncrement="true" name="id" type="BIGINT">
+        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_oms_source"/>
+      </column>
+      <column name="version" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="external_id" type="UUID">
+        <constraints nullable="false"/>
+      </column>
+      <column name="author" type="TEXT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="link" type="TEXT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="title" type="TEXT">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1771939441708-8">
+    <createTable tableName="medical_assessment">
+      <column autoIncrement="true" name="id" type="BIGINT">
+        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_medical_assessment"/>
+      </column>
+      <column name="version" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="external_id" type="UUID">
+        <constraints nullable="false"/>
+      </column>
+      <column name="assessment_result" type="ASSESSMENTRESULT"/>
+      <column name="assessment_status" type="ASSESSMENTSTATUS">
+        <constraints nullable="false"/>
+      </column>
+      <column name="assessment_type" type="ASSESSMENTTYPE">
+        <constraints nullable="false"/>
+      </column>
+      <column name="document_cache" type="TEXT"/>
+      <column name="document_content" type="TEXT"/>
+      <column name="created" type="TIMESTAMP WITH TIME ZONE">
+        <constraints nullable="false"/>
+      </column>
+      <column name="editor" type="UUID">
+        <constraints nullable="false"/>
+      </column>
+      <column name="finished" type="TIMESTAMP WITH TIME ZONE"/>
+      <column name="summary" type="TEXT"/>
+      <column name="title" type="TEXT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="procedure_id" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="recipient_type" type="RECIPIENTTYPE"/>
+    </createTable>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1771939441708-9">
+    <addUniqueConstraint columnNames="legal_bases_id" constraintName="medical_assessment_legal_bases_legal_bases_id_key" tableName="medical_assessment_legal_bases"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1771939441708-10">
+    <addUniqueConstraint columnNames="sources_id" constraintName="medical_assessment_sources_sources_id_key" tableName="medical_assessment_sources"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1771939441708-11">
+    <addUniqueConstraint columnNames="external_id" constraintName="oms_legal_basis_external_id_key" tableName="oms_legal_basis"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1771939441708-12">
+    <addUniqueConstraint columnNames="external_id" constraintName="oms_source_external_id_key" tableName="oms_source"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1771939441708-13">
+    <addUniqueConstraint columnNames="external_id" constraintName="medical_assessment_external_id_key" tableName="medical_assessment"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1771939441708-14">
+    <createTable tableName="medical_assessment_preview_reader">
+      <column name="medical_assessment_id" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="preview_reader" type="UUID"/>
+    </createTable>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1771939441708-16">
+    <createIndex indexName="idx_medical_assessment_procedure_id" tableName="medical_assessment">
+      <column name="procedure_id"/>
+    </createIndex>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1771939441708-18">
+    <addForeignKeyConstraint baseColumnNames="medical_assessment_id" baseTableName="medical_assessment_legal_bases" constraintName="fk_medical_assessment_legal_bases_medical_assessment" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="medical_assessment" validate="true"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1771939441708-19">
+    <addForeignKeyConstraint baseColumnNames="legal_bases_id" baseTableName="medical_assessment_legal_bases" constraintName="fk_medical_assessment_legal_bases_oms_legal_basis" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="oms_legal_basis" validate="true"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1771939441708-20">
+    <addForeignKeyConstraint baseColumnNames="procedure_id" baseTableName="medical_assessment" constraintName="fk_medical_assessment_oms_procedure" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="oms_procedure" validate="true"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1771939441708-21">
+    <addForeignKeyConstraint baseColumnNames="medical_assessment_id" baseTableName="medical_assessment_preview_reader" constraintName="fk_medical_assessment_preview_reader_medical_assessment" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="medical_assessment" validate="true"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1771939441708-22">
+    <addForeignKeyConstraint baseColumnNames="medical_assessment_id" baseTableName="medical_assessment_sources" constraintName="fk_medical_assessment_sources_medical_assessment" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="medical_assessment" validate="true"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1771939441708-23">
+    <addForeignKeyConstraint baseColumnNames="sources_id" baseTableName="medical_assessment_sources" constraintName="fk_medical_assessment_sources_oms_source" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="oms_source" validate="true"/>
+  </changeSet>
+</databaseChangeLog>

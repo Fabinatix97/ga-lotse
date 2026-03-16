@@ -76,10 +76,11 @@ export function ChecklistTile({
 
   function showDeleteButton(version: ApiInspectionCLDVersion) {
     return (
-      !version.isCoreChecklist &&
-      !readonly &&
-      !isFollowupInspection &&
-      currentSelectedNonCoreVersions.length > 1
+      featureToggleCheckListsAlwaysRemovableEnabled ||
+      (!version.isCoreChecklist &&
+        !readonly &&
+        !isFollowupInspection &&
+        currentSelectedNonCoreVersions.length > 1)
     );
   }
 
@@ -124,12 +125,20 @@ export function ChecklistTile({
       title="Checkliste"
       footer={
         listIsEmpty &&
-        !readonly &&
-        !isFollowupInspection && (
+        (!readonly && !isFollowupInspection ? (
           <InfoTileAddButton onClick={handleAddClick}>
             Checkliste auswählen
           </InfoTileAddButton>
-        )
+        ) : (
+          <Typography
+            data-testid="empty"
+            component="i"
+            color="neutral"
+            level="title-md"
+          >
+            Keine
+          </Typography>
+        ))
       }
       onEdit={
         !listIsEmpty && !readonly && !isFollowupInspection
@@ -143,12 +152,18 @@ export function ChecklistTile({
           withCoreVersions
           inspectionExternalId={inspection.externalId}
           currentSelectedNonCoreVersions={currentSelectedNonCoreVersions}
+          checkListsAlwaysRemovable={
+            featureToggleCheckListsAlwaysRemovableEnabled
+          }
           onClose={() => setChecklistSidebar(false)}
         />
       )}
 
       <Stack direction="column" spacing={1} role="list">
-        {!featureToggleChecklistRequirementRemovalEnabled &&
+        {!(
+          featureToggleChecklistRequirementRemovalEnabled ||
+          featureToggleCheckListsAlwaysRemovableEnabled
+        ) &&
           !inspection.selectedChecklistDefinitionVersions.length && (
             <Alert
               color="primary"
@@ -182,8 +197,7 @@ export function ChecklistTile({
                   <Chip color="primary">Kern - Checkliste</Chip>
                 )}
               </Stack>
-              {(featureToggleCheckListsAlwaysRemovableEnabled ||
-                showDeleteButton(version)) && (
+              {showDeleteButton(version) && (
                 <IconButton
                   aria-label="Löschen"
                   variant="plain"

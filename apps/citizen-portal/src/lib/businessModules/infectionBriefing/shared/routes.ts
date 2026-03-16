@@ -8,6 +8,7 @@ import { defineRoutes } from "@eshg/lib-portal/universal";
 import { routes as baseRoutes } from "@/lib/baseModule/shared/routes";
 import { SupportedLanguage } from "@/lib/i18n/options";
 import { useGivenLang } from "@/lib/i18n/useLang";
+import { accessCodeRoute } from "@/lib/shared/helpers/accessCode";
 
 function citizenRoutes(locale: SupportedLanguage | undefined) {
   return defineRoutes(
@@ -15,6 +16,12 @@ function citizenRoutes(locale: SupportedLanguage | undefined) {
     (infectionBriefingPath) => ({
       overview: infectionBriefingPath("/"),
       bookAppointment: infectionBriefingPath("/termin-buchen"),
+      personalArea: defineRoutes(
+        infectionBriefingPath("/mein-bereich"),
+        (path) => ({
+          index: accessCodeRoute(path("/")),
+        }),
+      ),
     }),
   );
 }

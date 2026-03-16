@@ -3,13 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
+import { queryOptions } from "@tanstack/react-query";
 
 import { unwrapRawResponse } from "@eshg/lib-portal";
-import {
-  EmployeeOmsProcedureApi,
-  GetAllEmployeeProceduresRequest,
-} from "@eshg/official-medical-service-api";
+import { GetAllEmployeeProceduresRequest } from "@eshg/official-medical-service-api";
 
 import { useEmployeeOmsProcedureApi } from "@/lib/businessModules/officialMedicalService/api/clients";
 import { employeeOmsProcedureApiQueryKey } from "@/lib/businessModules/officialMedicalService/api/queries/apiQueryKeys";
@@ -31,17 +28,8 @@ export function useGetAllProceduresQuery(
   });
 }
 
-export function useGetProcedureHeader(procedureId: string) {
+export function useGetProcedureHeaderQuery(procedureId: string) {
   const employeeOmsProcedureApi = useEmployeeOmsProcedureApi();
-  return useSuspenseQuery(
-    getProcedureHeaderQuery(employeeOmsProcedureApi, procedureId),
-  );
-}
-
-function getProcedureHeaderQuery(
-  employeeOmsProcedureApi: EmployeeOmsProcedureApi,
-  procedureId: string,
-) {
   return queryOptions({
     queryKey: employeeOmsProcedureApiQueryKey([
       "getEmployeeProcedureHeader",

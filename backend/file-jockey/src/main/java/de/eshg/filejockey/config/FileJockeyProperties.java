@@ -7,6 +7,7 @@ package de.eshg.filejockey.config;
 
 import static de.cronn.commons.lang.StreamUtil.toLinkedHashMap;
 
+import de.eshg.filejockey.exception.DeviceNotFoundException;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
@@ -42,14 +43,18 @@ public class FileJockeyProperties {
 
   public final RateLimit rateLimit;
 
+  public final Duration fileRetentionThreshold;
+
   public FileJockeyProperties(
       DataSize maxRequestSize,
       DataSize defaultMaxFileSize,
       List<Device> devices,
-      @DefaultValue RateLimit rateLimit) {
+      @DefaultValue RateLimit rateLimit,
+      @DefaultValue("7") @Positive @DurationUnit(ChronoUnit.DAYS) Duration fileRetentionThreshold) {
     this.maxRequestSize = maxRequestSize;
     this.defaultMaxFileSize = defaultMaxFileSize;
     this.rateLimit = rateLimit;
+    this.fileRetentionThreshold = fileRetentionThreshold;
     UnaryOperator<Device> withDefaults = device -> device.withDefaults(defaultMaxFileSize);
     this.devicesByEquipmentSelector =
         Optional.ofNullable(devices).orElseGet(List::of).stream()
@@ -62,6 +67,12 @@ public class FileJockeyProperties {
 
   public Optional<Device> getDevice(String equipmentSelector) {
     return Optional.ofNullable(devicesByEquipmentSelector.get(equipmentSelector));
+  }
+
+  public Device getDeviceOrThrow(String equipmentSelector) {
+    return getDevice(equipmentSelector)
+        .orElseThrow(
+            () -> new DeviceNotFoundException("Unknown equipment selector: " + equipmentSelector));
   }
 
   public record Device(

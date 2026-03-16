@@ -1,7 +1,9 @@
 {
   "appointmentsSection": {
     "create_appointment": "Schedule an Appointment",
-    "description": "Appointments for consultations can be arranged online.",
+    "go_to_personal_area": "Go to my appointment",
+    "description_enabled": "You have the opportunity to arrange appointments for a briefing according to § 43 IfSG (food ID card) as well as for applying for a duplicate in case of lost food ID card (only applies to ID cards purchased in Frankfurt am Main).",
+    "description_not_enabled": "Appointments for consultations can be arranged by Telephone.",
     "title": "Would you like to schedule an appointment?"
   },
   "generalInformation": {

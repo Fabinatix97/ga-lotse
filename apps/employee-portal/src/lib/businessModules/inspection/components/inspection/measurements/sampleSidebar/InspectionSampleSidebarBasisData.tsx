@@ -10,6 +10,7 @@ import { Divider, Grid } from "@mui/joy";
 import { ApiInspectionSampleEvaluationType } from "@eshg/inspection-api";
 import { DateTimeField } from "@eshg/lib-employee-portal";
 import {
+  Alert,
   FormPlus,
   InputField,
   SelectField,
@@ -79,6 +80,12 @@ export function InspectionSampleSidebarBasisData({
           label="Art der Probe"
           options={SAMPLE_TYPE_OPTIONS}
           required="Bitte Art der Probe auswählen"
+        />
+      </Grid>
+      <Grid xxs={12}>
+        <Alert
+          color="primary"
+          message="Die Probe-Nr. ist die eindeutige Kennzeichnung Ihrer Probe. Sie wird automatisch für das Protokoll, das Flaschenetikett und die Messungwerte verwendet."
         />
       </Grid>
       <Grid xxs={12}>

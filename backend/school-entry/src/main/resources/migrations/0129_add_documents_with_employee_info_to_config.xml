@@ -1,0 +1,24 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<!--
+ Copyright 2026 cronn GmbH
+ SPDX-License-Identifier: AGPL-3.0-only
+-->
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+<changeSet author="GA-Lotse" id="1770994191899-2">
+    <ext:createPostgresEnumType name="documenttypes" values="MEDICAL_REPORT, SCHOOL_INFO_LETTER"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1770994191899-1">
+    <createTable tableName="documents_with_employee_info">
+      <column name="school_entry_config_id" type="BIGINT">
+        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_documents_with_employee_info"/>
+      </column>
+      <column name="document_type" type="DOCUMENTTYPES">
+        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_documents_with_employee_info"/>
+      </column>
+    </createTable>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1770994191899-3">
+    <addForeignKeyConstraint baseColumnNames="school_entry_config_id" baseTableName="documents_with_employee_info" constraintName="fk_documents_with_employee_info_school_entry_config" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="school_entry_config" validate="true"/>
+  </changeSet>
+</databaseChangeLog>

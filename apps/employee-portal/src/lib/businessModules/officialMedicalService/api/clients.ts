@@ -15,7 +15,9 @@ import {
   OmsAppointmentApi,
   OmsAppointmentStandardDurationApi,
   OmsDocumentApi,
+  OmsFeatureTogglesApi,
   OmsFileApi,
+  OmsMedicalAssessmentApi,
   ProcedureApi,
   ProgressEntryApi,
   WaitingRoomApi,
@@ -94,4 +96,14 @@ export function useGdprValidationTaskApi() {
 export function useArchivingApi() {
   const configuration = useConfiguration();
   return new ArchivingApi(configuration);
+}
+
+export function useOmsAssessmentApi() {
+  const configuration = useConfiguration();
+  return new OmsMedicalAssessmentApi(configuration);
+}
+
+export function useOmsFeatureTogglesApi() {
+  const configuration = useConfiguration();
+  return new OmsFeatureTogglesApi(configuration);
 }

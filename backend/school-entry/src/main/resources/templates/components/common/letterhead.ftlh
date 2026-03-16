@@ -38,7 +38,7 @@
   }
 </#macro>
 
-<#macro content sender logo date >
+<#macro content sender logo date employeeInfo>
 <#-- @ftlvariable name="sender" type="de.eshg.schoolentry.api.pdf.Address" -->
 <#-- @ftlvariable name="logo" type="de.eshg.lib.document.generator.department.DepartmentLogo" -->
 <#-- @ftlvariable name="date" type="java.lang.String" -->
@@ -68,21 +68,44 @@
           <div>${sender.street}</div>
           <div>${sender.zipCode} ${sender.city}</div>
         </div>
-        <#if office.phoneNumber?has_content>
-          <div class="sender-label">Telefon</div>
-          <div class="sender-data">
-            <#list office.phoneNumber as phone>
-              <div>${phone}</div>
-            </#list>
-          </div>
-        </#if>
-        <#if office.email?has_content>
+        <#if employeeInfo?has_content && employeeInfo.lastName?has_content &&  employeeInfo.firstName?has_content>
+          <div class="sender-label">Ansprechperson</div>
+          <div class="sender-data">${employeeInfo.
+            salutation!""} ${employeeInfo.title!""}
+            ${employeeInfo.firstName?substring(0,1)?upper_case}.
+            ${employeeInfo.lastName}</div>
+          <#if employeeInfo.phoneNumber??>
+            <div class="sender-label">Telefon</div>
+            <div class="sender-data">${employeeInfo.phoneNumber}</div>
+          <#else>
+            <#if office.phoneNumber?has_content>
+              <div class="sender-label">Telefon</div>
+              <div class="sender-data">
+                <#list office.phoneNumber as phone>
+                  <div>${phone}</div>
+                </#list>
+              </div>
+            </#if>
+          </#if>
           <div class="sender-label">E-Mail</div>
-          <div class="sender-data">
-            <#list office.email as email>
-              <div>${email}</div>
-            </#list>
-          </div>
+          <div class="sender-data">${employeeInfo.email}</div>
+        <#else>
+          <#if office.phoneNumber?has_content>
+            <div class="sender-label">Telefon</div>
+            <div class="sender-data">
+              <#list office.phoneNumber as phone>
+                <div>${phone}</div>
+              </#list>
+            </div>
+          </#if>
+          <#if office.email?has_content>
+            <div class="sender-label">E-Mail</div>
+            <div class="sender-data">
+              <#list office.email as email>
+                <div>${email}</div>
+              </#list>
+            </div>
+          </#if>
         </#if>
         <div class="sender-label">Datum</div>
         <div class="sender-data">${date}</div>

@@ -34,6 +34,7 @@ import de.eshg.schoolentry.api.anamnesis.DaycareAndSchoolInfoDto;
 import de.eshg.schoolentry.api.citizen.CitizenAnamnesisDto;
 import de.eshg.schoolentry.business.model.ChildData;
 import de.eshg.schoolentry.business.model.ProcedureDetailsData;
+import de.eshg.schoolentry.domain.model.HearingTestResult;
 import de.eshg.schoolentry.domain.model.SchoolEntryProcedure;
 import de.eshg.schoolentry.util.ExceptionUtil;
 import java.beans.PropertyDescriptor;
@@ -139,6 +140,12 @@ public class Validator {
     if (person.contactAddress() == null) {
       throw new BadRequestException(
           "Appointment cannot be updated because custodian contact address is missing.");
+    }
+  }
+
+  public static void validateMeasurementIsPending(HearingTestResult result) {
+    if (result.getPendingMeasurement() == null) {
+      throw new BadRequestException("No pending measurement for current procedure.");
     }
   }
 

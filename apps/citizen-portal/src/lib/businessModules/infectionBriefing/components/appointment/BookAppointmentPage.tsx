@@ -4,14 +4,15 @@
  */
 
 "use client";
-import { Typography } from "@mui/joy";
 
 import { PageContent } from "@/lib/shared/components/layout/PageContent";
+
+import { AppointmentStepper } from "./AppointmentStepper";
 
 export function BookAppointmentPage() {
   return (
     <PageContent>
-      <Typography>Infection Briefing Appointment Page Placeholder</Typography>
+      <AppointmentStepper />
     </PageContent>
   );
 }

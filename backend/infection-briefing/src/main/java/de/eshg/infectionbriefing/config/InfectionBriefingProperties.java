@@ -26,6 +26,8 @@ public class InfectionBriefingProperties {
   @NotNull @Valid private Mail replacementCertificateAppointmentByEmployeeConfirmationMail;
   @NotNull @Valid private Mail cancelNewCertificateAppointmentConfirmationMail;
   @NotNull @Valid private Mail cancelReplacementCertificateAppointmentConfirmationMail;
+  @NotNull @Valid private Mail cancelNewCertificateAppointmentByEmployeeConfirmationMail;
+  @NotNull @Valid private Mail cancelReplacementCertificateAppointmentByEmployeeConfirmationMail;
 
   public Mail getNewCertificateAppointmentConfirmationMail() {
     return newCertificateAppointmentConfirmationMail;
@@ -49,6 +51,14 @@ public class InfectionBriefingProperties {
 
   public Mail getCancelReplacementCertificateAppointmentConfirmationMail() {
     return cancelReplacementCertificateAppointmentConfirmationMail;
+  }
+
+  public Mail getCancelNewCertificateAppointmentByEmployeeConfirmationMail() {
+    return cancelNewCertificateAppointmentByEmployeeConfirmationMail;
+  }
+
+  public Mail getCancelReplacementCertificateAppointmentByEmployeeConfirmationMail() {
+    return cancelReplacementCertificateAppointmentByEmployeeConfirmationMail;
   }
 
   public void setNewCertificateAppointmentConfirmationMail(
@@ -84,6 +94,18 @@ public class InfectionBriefingProperties {
       Mail cancelReplacementCertificateAppointmentConfirmationMail) {
     this.cancelReplacementCertificateAppointmentConfirmationMail =
         cancelReplacementCertificateAppointmentConfirmationMail;
+  }
+
+  public void setCancelNewCertificateAppointmentByEmployeeConfirmationMail(
+      Mail cancelNewCertificateAppointmentByEmployeeConfirmationMail) {
+    this.cancelNewCertificateAppointmentByEmployeeConfirmationMail =
+        cancelNewCertificateAppointmentByEmployeeConfirmationMail;
+  }
+
+  public void setCancelReplacementCertificateAppointmentByEmployeeConfirmationMail(
+      Mail cancelReplacementCertificateAppointmentByEmployeeConfirmationMail) {
+    this.cancelReplacementCertificateAppointmentByEmployeeConfirmationMail =
+        cancelReplacementCertificateAppointmentByEmployeeConfirmationMail;
   }
 
   public static class Mail {

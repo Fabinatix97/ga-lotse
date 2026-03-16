@@ -25,6 +25,7 @@ import de.eshg.inspection.config.persistence.FacilityFileNumberMethod;
 import de.eshg.inspection.facility.FacilityClient;
 import de.eshg.inspection.facility.FileNumberCollisionService;
 import de.eshg.inspection.facility.persistence.Facility;
+import de.eshg.inspection.inspection.api.CloseProcedureRequest;
 import de.eshg.inspection.inspection.api.FinalizeInspectionRequest;
 import de.eshg.inspection.inspection.api.GetFileNumberCollisionsResponse;
 import de.eshg.inspection.inspection.api.InspectionAndFileNumberCollisionsDto;
@@ -510,6 +511,23 @@ public class InspectionService {
   public InspectionDto approveInspection(UUID externalId) {
     Inspection inspection = loadInspectionForUpdate(externalId);
     inspectionFinalizer.approveInspection(inspection);
+    return inspectionMapper.mapToDto(inspection);
+  }
+
+  public InspectionDto closeProcedureWithRemark(UUID externalId, CloseProcedureRequest request) {
+    Inspection inspection = loadInspectionForUpdate(externalId);
+
+    if (!inspection.getProcedureStatus().isOpen()) {
+      throw new BadRequestException(ErrorCode.CONFLICT, "Procedure is already closed.");
+    }
+
+    ManualProgressEntry combined = new ManualProgressEntry();
+    combined.setManualProgressEntryType(ManualProgressEntryType.NOTE);
+    combined.setNote("Vorgang wurde mit Vermerk durch Person geschlossen: " + request.note());
+    inspection.addProgressEntry(combined);
+
+    inspectionFinalizer.closeWithRemark(inspection, combined);
+
     return inspectionMapper.mapToDto(inspection);
   }
 

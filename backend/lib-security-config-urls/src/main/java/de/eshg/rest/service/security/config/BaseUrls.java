@@ -344,7 +344,9 @@ public final class BaseUrls {
   }
 
   public static final class OfficialMedicalService {
+    public static final String FEATURE_TOGGLES_CONTROLLER = "/feature-toggles";
     public static final String EMPLOYEE_API = "/employee";
+    public static final String ASSESSMENT_API = "/assessment";
     public static final String CITIZEN_PUBLIC_API = "/citizen-public";
     public static final String CITIZEN_AUTH_API = "/citizen-auth";
 
