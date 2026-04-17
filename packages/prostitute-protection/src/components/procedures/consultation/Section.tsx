@@ -16,7 +16,7 @@ export const SectionColumn = styled((props: GridProps) => (
 
 export const SectionGridContainer = styled((props: GridProps) => (
   <Grid container spacing={3} {...props} />
-))();
+))({});
 
 export function Section({
   title,
