@@ -30,6 +30,20 @@ dockerCompose {
 
 apply from: "startLocal.gradle"
 
+def prepareDockerContext = tasks.register("prepareDockerContext") {
+  group = 'docker'
+  description = 'Prepare Docker build contexts without building images'
+  dependsOn gradle.includedBuild("backend").task(":prepareDockerContext")
+}
+
+subprojects { subproject ->
+  subproject.pluginManager.withPlugin('eshg.image-push-sign') {
+    prepareDockerContext.configure {
+      dependsOn subproject.tasks.named('prepareDockerContext')
+    }
+  }
+}
+
 //CAUTION: run ./gradlew wrapper (twice) after changes to this task!
 //See https://docs.gradle.org/current/userguide/gradle_wrapper.html#sec:upgrading_wrapper
 wrapper {

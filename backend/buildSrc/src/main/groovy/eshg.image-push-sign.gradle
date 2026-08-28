@@ -71,6 +71,28 @@ ext {
     getImageNameWithLatestTag = this.&getImageNameWithLatestTag
 }
 
+def dockerContextTaskNames = [
+    'createDockerfile',
+    'copyAssetsToDockerBuildDir',
+    'copyFilesToBuildContext',
+    'copyResourcesToBuildContext',
+    'copyBootJarToDockerBuildContext',
+    'copyResourcesToDockerBuildContext',
+] as Set
+
+def prepareDockerContext = tasks.register('prepareDockerContext') {
+    group = 'docker'
+    description = 'Assemble the Docker build context without building the image'
+}
+
+tasks.configureEach { t ->
+    if (dockerContextTaskNames.contains(t.name)) {
+        prepareDockerContext.configure {
+            dependsOn t
+        }
+    }
+}
+
 tasks.register('pushDockerImage', DockerPushImage) {
     dependsOn 'buildDockerImage'
 

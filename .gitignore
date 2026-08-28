@@ -27,6 +27,9 @@ out/
 .gradleHome
 **/build
 
+# Collected Docker contexts (CI / local after prepareDockerContext)
+docker-contexts/
+
 HELP.md
 build/
 **/src/main/generated**

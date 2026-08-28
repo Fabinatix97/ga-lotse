@@ -333,3 +333,16 @@ subprojects {
 tasks.register("composeUp") {
     group 'docker'
 }
+
+def prepareDockerContext = tasks.register("prepareDockerContext") {
+    group 'docker'
+    description 'Prepare Docker build contexts without building images'
+}
+
+subprojects { subproject ->
+    subproject.pluginManager.withPlugin('eshg.image-push-sign') {
+        prepareDockerContext.configure {
+            dependsOn subproject.tasks.named('prepareDockerContext')
+        }
+    }
+}
