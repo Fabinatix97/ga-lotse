@@ -80,16 +80,13 @@ def dockerContextTaskNames = [
     'copyResourcesToDockerBuildContext',
 ] as Set
 
-def prepareDockerContext = tasks.register('prepareDockerContext') {
+tasks.register('prepareDockerContext') {
     group = 'docker'
     description = 'Assemble the Docker build context without building the image'
-}
-
-tasks.configureEach { t ->
-    if (dockerContextTaskNames.contains(t.name)) {
-        prepareDockerContext.configure {
-            dependsOn t
-        }
+    // Resolve after the project is fully configured: context-copy tasks are
+    // registered in other plugins / build.gradle files after this plugin runs.
+    dependsOn {
+        dockerContextTaskNames.collect { tasks.findByName(it) }.findAll { it != null }
     }
 }
 
