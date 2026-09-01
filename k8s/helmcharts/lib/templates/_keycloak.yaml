@@ -22,7 +22,7 @@ spec:
       name: keycloak
 
 ---
-{{ include "lib.certificate" (list .Values.keycloak.certificate.privateSecret .Values.domains.hosts.keycloakInternal .Values.domains.clusterIssuers.internal .Release.Namespace .Values.development.injectSelfSignedCA) }}
+{{ include "lib.certificate" (list .Values.keycloak.certificate.privateSecret .Values.domains.hosts.keycloakInternal .Values.domains.clusterIssuers.internal .Release.Namespace .Values.development.injectSelfSignedCA .Values.certificates.provider .Values.certificates.validateExternalSecrets) }}
 {{ if eq .Values.ingress.type "openshift" }}
 
 kind: Ingress

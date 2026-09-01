@@ -25,7 +25,7 @@ spec:
       targetPort: health-check
 
 ---
-{{ include "lib.certificate" (list .Values.employeeportal.certificate.secret .Values.domains.hosts.employeeportal .Values.domains.clusterIssuers.public .Release.Namespace .Values.development.injectSelfSignedCA) }}
+{{ include "lib.certificate" (list .Values.employeeportal.certificate.secret .Values.domains.hosts.employeeportal .Values.domains.clusterIssuers.public .Release.Namespace .Values.development.injectSelfSignedCA .Values.certificates.provider .Values.certificates.validateExternalSecrets) }}
 {{ include "ingress" (dict "name" "employee-portal" "type" .Values.ingress.type "host" .Values.domains.hosts.employeeportal "port" "proxy-incoming" "service" "employee-portal-reverse-proxy" "namespace" .Release.Namespace "proxyProtocol" true) }}
 
 ---

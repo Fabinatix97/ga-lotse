@@ -49,6 +49,10 @@ ingress:
   type: "traefik"
   internalIpRange: "10.42.0.0/16"
 
+certificates:
+  provider: cert-manager
+  validateExternalSecrets: false
+
 domains:
   clusterLocalSuffix: .central.svc.cluster.local
   centralservices:

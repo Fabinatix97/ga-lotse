@@ -8,9 +8,9 @@
 {{- $createDebugLogMount := include "createDebugLogMount" .Values }}
 
 {{ include "lib.database" (list "servicedirectory" .Values.servicedirectory.database .) }}
-{{ include "lib.certificate" (list .Values.servicedirectory.certificate.secret .Values.domains.centralservices.servicedirectory .Values.domains.clusterIssuers.public .Release.Namespace .Values.development.injectSelfSignedCA) }}
+{{ include "lib.certificate" (list .Values.servicedirectory.certificate.secret .Values.domains.centralservices.servicedirectory .Values.domains.clusterIssuers.public .Release.Namespace .Values.development.injectSelfSignedCA .Values.certificates.provider .Values.certificates.validateExternalSecrets) }}
 {{- if .Values.createSplitCertificates }}
-{{ include "lib.splitCertificates" (list .Values.servicedirectory.certificate.secret .Values.domains.centralservices.servicedirectory .Values.domains.clusterIssuers.publicClient .Values.domains.clusterIssuers.publicServer .Release.Namespace .Values.development.injectSelfSignedCA) }}
+{{ include "lib.splitCertificates" (list .Values.servicedirectory.certificate.secret .Values.domains.centralservices.servicedirectory .Values.domains.clusterIssuers.publicClient .Values.domains.clusterIssuers.publicServer .Release.Namespace .Values.development.injectSelfSignedCA .Values.certificates.provider .Values.certificates.validateExternalSecrets) }}
 {{- end }}
 
 kind: Service

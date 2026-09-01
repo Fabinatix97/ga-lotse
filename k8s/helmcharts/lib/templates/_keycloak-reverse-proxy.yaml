@@ -23,7 +23,7 @@ spec:
       targetPort: health-check
 
 ---
-{{ include "lib.certificate" (list .Values.keycloak.certificate.publicSecret .Values.domains.hosts.keycloak .Values.domains.clusterIssuers.public .Release.Namespace .Values.development.injectSelfSignedCA) }}
+{{ include "lib.certificate" (list .Values.keycloak.certificate.publicSecret .Values.domains.hosts.keycloak .Values.domains.clusterIssuers.public .Release.Namespace .Values.development.injectSelfSignedCA .Values.certificates.provider .Values.certificates.validateExternalSecrets) }}
 {{ include "ingress" (dict "name" "keycloak" "type" .Values.ingress.type "host" .Values.domains.hosts.keycloak "port" "proxy-incoming" "service" "keycloak-reverse-proxy" "namespace" .Release.Namespace "proxyProtocol" true) }}
 
 ---

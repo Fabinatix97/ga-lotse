@@ -69,6 +69,10 @@ deployerAdminRoleBinding:
 replicas:
   maximum: 2
 
+certificates:
+  provider: cert-manager
+  validateExternalSecrets: false
+
 domains:
   clusterLocalSuffix: .frankfurt.svc.cluster.local
   centralservices:

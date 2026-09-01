@@ -25,7 +25,7 @@ spec:
 ---
 
   {{ include "ingress" (dict "name" "pdfaconverterportal" "type" .Values.ingress.type "host" .Values.domains.centralservices.pdfaconverterportal "port" "incoming" "service" "pdf-converter-portal" "namespace" .Release.Namespace) }}
-  {{ include "lib.certificate" (list .Values.pdfaconverterportal.certificate.secret .Values.domains.centralservices.pdfaconverterportal .Values.domains.clusterIssuers.public .Release.Namespace .Values.development.injectSelfSignedCA) }}
+  {{ include "lib.certificate" (list .Values.pdfaconverterportal.certificate.secret .Values.domains.centralservices.pdfaconverterportal .Values.domains.clusterIssuers.public .Release.Namespace .Values.development.injectSelfSignedCA .Values.certificates.provider .Values.certificates.validateExternalSecrets) }}
 
 ---
 

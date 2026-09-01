@@ -9,6 +9,10 @@
 {{- $serverCertIssuer := index . 3 }}
 {{- $namespace := index . 4 }}
 {{- $selfSigned := index . 5 }}
+{{- $provider := default "cert-manager" (index . 6) }}
+{{- $validateExternalSecret := default false (index . 7) }}
+
+{{- if eq $provider "cert-manager" }}
 
 ---
 
@@ -69,5 +73,14 @@ spec:
     - server auth
 
 ---
+
+{{- else if eq $provider "external" }}
+{{- if $validateExternalSecret }}
+{{- include "lib.validateExternalTlsSecret" (list (printf "%s-client" $secretName) $namspace) }}
+{{- include "lib.validateExternalTlsSecret" (list (printf "%s-server" $secretName) $namspace) }}
+{{- end }}
+{{- else }}
+{{- fail (printf "unsupported certificates.provider %q; expected \"cert-manager\" or \"external\"" $provider) }}
+{{- end }}
 
 {{- end }}

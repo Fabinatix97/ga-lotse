@@ -47,9 +47,9 @@ type: Opaque
 ---
 
 {{ include "ingress" (dict "name" "adminportal" "type" .Values.ingress.type "host" .Values.domains.hosts.adminportal "port" "proxy-incoming" "service" "adminportal" "namespace" .Release.Namespace "proxyProtocol" true) }}
-{{ include "lib.certificate" (list .Values.adminportal.certificate.secret .Values.domains.hosts.adminportal .Values.domains.clusterIssuers.public .Release.Namespace .Values.development.injectSelfSignedCA) }}
+{{ include "lib.certificate" (list .Values.adminportal.certificate.secret .Values.domains.hosts.adminportal .Values.domains.clusterIssuers.public .Release.Namespace .Values.development.injectSelfSignedCA .Values.certificates.provider .Values.certificates.validateExternalSecrets) }}
 {{- if .Values.createSplitCertificates }}
-{{ include "lib.splitCertificates" (list .Values.adminportal.certificate.secret .Values.domains.hosts.adminportal .Values.domains.clusterIssuers.publicClient .Values.domains.clusterIssuers.publicServer .Release.Namespace .Values.development.injectSelfSignedCA) }}
+{{ include "lib.splitCertificates" (list .Values.adminportal.certificate.secret .Values.domains.hosts.adminportal .Values.domains.clusterIssuers.publicClient .Values.domains.clusterIssuers.publicServer .Release.Namespace .Values.development.injectSelfSignedCA .Values.certificates.provider .Values.certificates.validateExternalSecrets) }}
 {{- end }}
 
 ---
